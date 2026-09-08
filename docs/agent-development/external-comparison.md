@@ -1,5 +1,9 @@
 # Sentinel versus a pinned external neural checkpoint
 
+This is the initial eight-map comparison. The later [32-map frozen v2/v3
+evaluation](v3-final.md) is complete and reports all runtime faults; v2 remains
+the default. The historical results below remain unchanged.
+
 Sentinel finished **12 wins, 14 losses, 6 draws** over 32 games on 8 independent
 competition boards. Its win rate was **37.5%**, and its score was **46.9%**
 (win=1, draw=0.5, loss=0). This comparison does not establish an advantage over the

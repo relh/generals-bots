@@ -10,8 +10,10 @@ Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
 
-The [controlled v3 cycle](v3-cycle.md) adds remembered invasion threats and
-sustained defense in an experimental policy. V2 remains the default. To evaluate
+The [completed v3 cycle](v3-final.md) tests remembered invasion threats and
+sustained defense in an experimental policy. Local preservation gates passed,
+but external improvement was unproven and runtime faults prevented promotion.
+V2 remains the default. To evaluate
 the prototype, use `--candidate sentinel-v3`; the `sentinel-v3-memory` and
 `sentinel-v3-defense` aliases isolate its two changes. Replays include each
 player's memory and decision telemetry. Standalone builds select the same variants

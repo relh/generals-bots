@@ -1,5 +1,10 @@
 # Controlled Sentinel v3 cycle
 
+**Complete:** [final evaluation](v3-final.md) records all 1,280 reserved-seed
+games. Both local gates pass, but external improvement is unproven and the
+zero-reply-fault requirement fails. V2 remains the default. The sections below
+retain the preregistration and development history.
+
 V2 remains the default and frozen control, with policy SHA256
 `be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e`.
 The candidate adds public-observation threat memory and sustained home defense in

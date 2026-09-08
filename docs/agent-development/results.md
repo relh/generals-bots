@@ -82,11 +82,13 @@ and 77.6% score. All candidate command counters were clean. All four checkpoints
 remain retained; training is complete. See [learning.md](learning.md) for per-opponent
 results, checkpoint identity, regression analysis, and limitations.
 
-The [controlled v3 cycle](v3-cycle.md) is testing public threat memory and
-sustained defense. The initial prototype regressed externally and remains
-rejected. The final development revision matches v2 on the small local paired
-suites and passed all 480 runtime probes; its external and fresh-map comparisons
-are pending. V2 remains the default until the fixed promotion requirements pass.
+The [controlled v3 cycle](v3-final.md) completed all 1,280 fresh competition games.
+V3 won 252/256 against Expander and 250/256 against Hunter, two more wins than
+v2 in each matchup; both local preservation gates pass. Externally, v2 scored
+62.50% versus v3's 54.30%, with paired difference −8.20 percentage points
+(95% map interval −20.31 to +3.91). Runtime faults also invalidate promotion.
+All 480 separate runtime probes pass, but they do not remove faults from actual
+games. V2 remains the default and v3 remains experimental.
 
 Verification: 197 full-suite tests plus 20 focused tests passed, including two
 additional diagnostic regressions (199 unique tests). Changed production code
