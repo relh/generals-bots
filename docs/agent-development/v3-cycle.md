@@ -122,3 +122,39 @@ check). Real v3 replay parity, per-player memory separation, terminal memory/key
 freezing, stateless behavior parity, and stdio per-game reset are covered. The
 first implementation and tooling are committed as `ca5d877` on our fork;
 v2 remains the default.
+
+## Final candidate freeze and runtime qualification
+
+The final full-v3 source is frozen at
+`01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896`.
+The complete three-round strategy results are in [v3-development.md](v3-development.md).
+Its classic12 and competition development case outcomes now exactly match v2:
+30W/2L against Hunter and 32W against Expander in each suite. No strength gain is
+yet established. The final external development run uses the same consumed 83000
+maps and the unchanged pinned checkpoint; fresh 113000 maps remain uninspected.
+
+The frozen standalone archive `.cache/runs/sentinel-v3/revision2.zip` has SHA256
+`805d4884153a25cb7ca03da79959fd4eae12d48100dab5ec410da2007745df06`.
+Its offline build took 123.445s and left 161 files totaling 3,243,155bytes. All 16
+competition rectangles passed 30 fresh-process probe frames each (480 responses),
+with zero faults and verified policy cache hits. First responses were 1.428–1.617s;
+maximum ordinary response 8.09ms; maximum sampled RSS 255,217,664bytes. Three
+cache-disabled controls passed too, and all 90 actions matched their cached runs.
+Timing is on a shared host with one CPU affinity, synthetic frames, and sampled
+RSS rather than a hard cgroup; it is not an official tournament qualification.
+Evidence: `.cache/runs/sentinel-v3/revision2-cache-qualification.json` and
+`revision2-qualification/`, with per-shape replies, build logs, and exact runtime.
+
+The refreshed v2 external control reproduced every applied action trajectory,
+outcome, and turn count across all 32 historical cases, with 0 reply faults for either
+bot. It remains 12W/14L/6D. Historical and current arena source identities differ;
+the stricter comparison tool now rejects that historical pairing by default.
+The separate complete-trajectory equality proof is retained in
+`.cache/runs/sentinel-v3/external-v2-refresh/historical-trajectory-parity.json`.
+New comparisons use the refreshed control with matching runner identities.
+
+Comparison tooling now requires simulator/runner identities, the selected
+opponent's sources/dependencies or external directory hash, and opponent options.
+It refuses missing identity evidence. Nine focused tests cover mismatches,
+actual board changes, incomplete cases, and paired draw scoring. Final v3 also
+passed 13 focused strategy tests and the actual policy's arena/replay parity test.

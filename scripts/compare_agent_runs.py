@@ -45,13 +45,35 @@ def compare(control, candidate, resamples=100000):
         opponent_hashes = [m.get("opponent", {}).get("directory_sha256") for m in metadata]
         if not opponent_hashes[0] or opponent_hashes[0] != opponent_hashes[1]:
             raise ValueError("different or missing external opponent identity")
-    for field in ("source_hashes", "source_sha256"):
-        physics = [
-            {k: v for k, v in m.get(field, {}).items() if k.startswith(("generals/core/", "generals/modifiers/"))}
-            for m in metadata
-        ]
-        if physics[0] != physics[1]:
-            raise ValueError("different simulator physics sources")
+    sources = [m.get("source_hashes", m.get("source_sha256", {})) for m in metadata]
+    required = {
+        "generals/core/game.py",
+        "generals/core/action.py",
+        "generals/core/observation.py",
+        "generals/core/grid.py",
+        "generals/modifiers/build_castles.py",
+        "generals/modifiers/deathtouch.py",
+        "generals/evaluation/arena.py",
+    }
+    external = isinstance(metadata[0].get("opponent"), dict)
+    required.add("scripts/stdio_arena.py" if external else "generals/evaluation/cli.py")
+    if not external:
+        required.add("generals/agents/agent.py")
+        for name in {key[1] for key in left}:
+            module = "sentinel_v3" if name.startswith("sentinel-v3") else name
+            required.add(f"generals/agents/{module}_agent.py")
+            if module == "sentinel_v3":
+                required.add("generals/agents/sentinel_agent.py")
+    if any(not required <= source.keys() or any(not source[k] for k in required) for source in sources):
+        raise ValueError("missing simulator, runner, or opponent source identity")
+    physics = [
+        {k: v for k, v in source.items() if k.startswith(("generals/core/", "generals/modifiers/"))}
+        for source in sources
+    ]
+    if physics[0] != physics[1] or any(sources[0][k] != sources[1][k] for k in required):
+        raise ValueError("different simulator, runner, or opponent sources")
+    if metadata[0].get("opponent_options", {}) != metadata[1].get("opponent_options", {}):
+        raise ValueError("different opponent options")
     groups = {}
     values = {"win": 1.0, "loss": 0.0, "draw": 0.5}
     for key, old in left.items():

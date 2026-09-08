@@ -158,6 +158,39 @@ def test_adequate_garrison_does_not_pull_in_extra_stacks():
         reserve=jnp.float32(60), defend_until=jnp.int32(10), last_turn=jnp.int32(0)
     )
     action, _, telemetry = step(agent, obs, memory)
-    assert action[0] == 1
+    assert action[0] == 0
+    assert tuple(np.asarray(action[1:3])) == (0, 1)
+    assert action[3] in (1, 3)  # Productive forward move, not a transfer into home.
     assert telemetry["defense_override"]
     assert not telemetry["defense_recall"]
+    assert telemetry["defense_productive_alternative"]
+
+
+def test_extracted_campaign_scores_preserve_v2_on_observation_corpus():
+    from generals.agents.sentinel_v3_agent import _campaign_decision
+    from generals.core import game
+    from generals.core.action import compute_valid_move_mask_obs
+
+    size, shape = 64, (6, 6)
+    grid = jnp.zeros(shape, jnp.int32).at[0, 0].set(1).at[5, 5].set(2).at[2, 3].set(25)
+    states = jax.vmap(game.create_initial_state)(jnp.broadcast_to(grid, (size,) + shape))
+    rng = np.random.default_rng(6287)
+    owners = rng.integers(0, 3, (size,) + shape)
+    owners[:, 0, 0], owners[:, 5, 5] = 0, 1
+    armies = rng.integers(1, 81, (size,) + shape, dtype=np.int32)
+    states = states._replace(
+        ownership=jnp.array(np.stack((owners == 0, owners == 1), axis=1)),
+        ownership_neutral=jnp.array(owners == 2),
+        armies=jnp.array(armies),
+        time=jnp.array(rng.choice([0, 50, 799, 800, 1150], size), jnp.int32),
+    )
+    observations = jax.vmap(lambda state: game.get_observation(state, 0))(states)
+    keys = jax.random.split(KEY, size)
+    base = SentinelAgent(build_castles=True, deathtouch_turn=800)
+    actions, _, scores = jax.jit(jax.vmap(lambda obs, key: _campaign_decision(base, obs, key)))(observations, keys)
+    np.testing.assert_array_equal(actions, jax.vmap(base.act)(observations, keys))
+    valid = jax.vmap(compute_valid_move_mask_obs)(observations)[..., None]
+    assert jnp.all((scores <= -1e8) | valid)
+    disabled = SentinelV3Agent(build_castles=True, deathtouch_turn=800, remember_threats=False, sustained_defense=False)
+    memories = jax.tree.map(lambda x: jnp.broadcast_to(x, (size,) + x.shape), disabled.initial_memory(shape))
+    np.testing.assert_array_equal(jax.vmap(disabled.step)(observations, keys, memories)[0], actions)

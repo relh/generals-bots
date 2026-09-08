@@ -12,7 +12,149 @@ import jax.numpy as jnp
 
 from generals.core.action import compute_valid_move_mask_obs
 
-from .sentinel_agent import SentinelAgent, _distance, _neighbors
+from .sentinel_agent import SentinelAgent, _build_prices, _distance, _neighbors
+
+
+# Deliberate frozen-v2 scoring copy: only the extra scores return differs.
+# Keep action-parity tests when changing this local extraction; never edit v2.
+def _campaign_decision(self, obs, key):
+    del key  # Stable decisions aid replay diagnosis and paired comparisons.
+    a, mine = obs.armies, obs.owned_cells
+    h, w = a.shape
+    gen = mine & obs.generals
+    egen = obs.opponent_cells & obs.generals
+    own_structures = mine & (obs.generals | obs.castles)
+    gen_army = jnp.sum(jnp.where(gen, a, 0))
+    biggest = jnp.max(jnp.where(mine, a, 0))
+    active_touch = obs.timestep >= self.deathtouch_turn if self.deathtouch_turn is not None else jnp.array(False)
+    allied = jnp.zeros_like(mine) if obs.allied_cells is None else obs.allied_cells
+    friendly = mine | allied
+    # Keep expensive neutral castles out of scouting routes. Enemy structures
+    # remain potential targets, including an enemy general with any army.
+    affordable = obs.castles & obs.neutral_cells & (a + 6 < biggest)
+    passable = ~(obs.mountains | obs.structures_in_fog | (obs.castles & obs.neutral_cells & ~affordable))
+    home_distance = _distance(passable, gen)
+    enemy_force = jnp.where(obs.opponent_cells, jnp.maximum(a - 1, 0), 0)
+    local_threat = jnp.max(_neighbors(enemy_force, 0), axis=-1)
+    immediate = obs.opponent_cells & (home_distance == 1) & (a > 1)
+    imminent_army = jnp.max(jnp.where(immediate, a - 1, 0))
+    near_force = jnp.max(jnp.where(obs.opponent_cells & (home_distance <= 3), jnp.maximum(a - home_distance, 0), 0))
+    # A distant stack must first fight the outgoing army. Reserving its
+    # entire strength at home strands all income in two-step corridors.
+    # Discount by distance; adjacent threats retain their full reserve.
+    reserve_force = jnp.max(
+        jnp.where(
+            obs.opponent_cells & (home_distance <= 3),
+            jnp.maximum(a - home_distance, 0) / jnp.maximum(home_distance, 1),
+            0,
+        )
+    )
+    reserve = jnp.maximum(3.0, reserve_force + 1)
+    # A city pays back its army investment over the remaining horizon. Avoid
+    # detours while the home general is under attack.
+    city_value = jnp.where(affordable & (home_distance < 1e5), 50 - a * 0.4 - home_distance, -1e6)
+    city_index = jnp.argmax(city_value)
+    city_target = jnp.arange(h * w).reshape(h, w) == city_index
+    take_city = jnp.any(affordable) & (near_force < gen_army) & ~jnp.any(egen)
+    enemy = obs.opponent_cells & passable
+    fog = obs.fog_cells & passable & (home_distance < 1e5)
+    open_land = passable & ~friendly & (home_distance < 1e5)
+    scout = jnp.where(jnp.any(fog), fog, open_land)
+    farthest = scout & (home_distance == jnp.max(jnp.where(scout, home_distance, -1)))
+    goal = jnp.where(jnp.any(egen), egen, jnp.where(take_city, city_target, jnp.where(jnp.any(enemy), enemy, farthest)))
+    costs = 1 + jnp.where(~friendly, a, 0) * 0.12
+    to_goal = _distance(passable, goal, costs)
+    dest_distance = _neighbors(to_goal, 1e6)
+    advances = dest_distance < to_goal[..., None]
+    dest_a = _neighbors(a, 0)[..., None]
+    dest_mine = _neighbors(friendly, False)[..., None]
+    dest_enemy = _neighbors(obs.opponent_cells, False)[..., None]
+    dest_gen = _neighbors(gen, False)[..., None]
+    dest_egen = _neighbors(egen, False)[..., None]
+    dest_castle = _neighbors(obs.castles, False)[..., None]
+    dest_fog = _neighbors(obs.fog_cells, False)[..., None]
+    moved = jnp.stack((a - 1, a // 2), axis=-1)[..., None, :]
+    remaining = a[..., None, None] - moved
+    captures = ~dest_mine & (moved > dest_a)
+    kill = dest_egen & ((moved > dest_a) | active_touch)
+    valid = (
+        compute_valid_move_mask_obs(obs)[..., None] & ~_neighbors(obs.structures_in_fog, True)[..., None] & (moved > 0)
+    )
+    # Suicide attacks waste turns and feed an opponent a stationary target.
+    valid &= dest_mine | captures | kill
+    surplus = jnp.where(dest_mine, moved + dest_a, moved - dest_a)
+    safety = surplus - _neighbors(local_threat, 0)[..., None]
+    scores = (
+        advances[..., None] * (5 + moved * 0.65)
+        + captures * (3 + dest_enemy * 3 + dest_castle * 18)
+        + dest_fog * 1.5
+        + dest_mine * jnp.minimum(dest_a, moved) * 0.10
+        - jnp.where(captures, dest_a * 0.12, 0)
+        - jnp.maximum(-safety, 0) * 0.8
+    )
+    # Friendly transfers must advance the campaign or reinforce the general.
+    scores = jnp.where(dest_mine & ~advances[..., None], -5.0, scores)
+    # In a close general standoff, one safe founding army can buy the land
+    # income that breaks an otherwise permanent equal-growth stalemate.
+    # The hard immediate-threat check below still forbids a losing sortie.
+    close_standoff = jnp.any(egen & (home_distance == 1)) & (obs.owned_land_count == 1)
+    founding = close_standoff & captures & ~dest_enemy & ~dest_castle & (moved == 1)
+    reserve_penalty = jnp.where(founding, 0.5, 12.0)
+    scores -= gen[..., None, None] * jnp.maximum(reserve - remaining, 0) * reserve_penalty
+    # Evaluate the largest still-live adjacent attacker for each candidate.
+    # Third-tile interception works even after deathtouch; head-on attacks by
+    # our own general are deliberately not credited as safe interception.
+    removed_threat = dest_enemy & captures & (_neighbors(home_distance, 1e6)[..., None] == 1) & ~gen[..., None, None]
+    second_threat = jnp.sort(jnp.where(immediate, a - 1, 0).reshape(-1))[-2]
+    after_threat = jnp.where(removed_threat & (dest_a - 1 >= imminent_army), second_threat, imminent_army)
+    after_home = gen_army - gen[..., None, None] * moved + dest_gen * moved
+    unsafe = (after_threat > after_home) | (active_touch & (after_threat > 0))
+    scores -= unsafe * (2000 + jnp.maximum(after_threat - after_home, 0) * 20)
+    # When threatened but not immediately doomed, intercept or move reserves
+    # toward home instead of continuing an unrelated expedition.
+    toward_home = _neighbors(home_distance, 1e6) < home_distance[..., None]
+    emergency = near_force >= gen_army
+    scores += emergency * toward_home[..., None] * dest_mine * moved * 2
+    scores += removed_threat * (100 + moved)
+    scores += kill * 100000
+    scores = jnp.where(valid, scores, -1e9)
+    flat = jnp.argmax(scores)
+    split = flat % 2
+    direction = (flat // 2) % 4
+    cell = flat // 8
+    score = scores.reshape(-1)[flat]
+    pass_unsafe = (imminent_army > gen_army) | (active_touch & (imminent_army > 0))
+    pass_score = jnp.where(pass_unsafe, -2000 - jnp.maximum(imminent_army - gen_army, 0) * 20, 0)
+    action = jnp.array([score <= pass_score, cell // w, cell % w, direction, split], jnp.int32)
+    building = jnp.array(False)
+    if self.build_castles:
+        price = _build_prices(own_structures)
+        # Require repayment time plus a useful profit window, and preserve a
+        # buffer against visible attacks. Existing structures compound income.
+        safe_build = (
+            mine
+            & ~own_structures
+            & (a >= price + 5 + local_threat)
+            & (home_distance >= 2)
+            & (near_force < gen_army)
+            & (obs.timestep + 2 * price + 100 < self.max_turns)
+        )
+        build_score = jnp.where(safe_build, 45 + (self.max_turns - obs.timestep) * 0.08 - price * 0.3, -1e9)
+        bi = jnp.argmax(build_score)
+        building = jnp.max(build_score) > jnp.maximum(score, pass_score)
+        action = jnp.where(building, jnp.array([2, bi // w, bi % w, 0, 0], jnp.int32), action)
+    telemetry = {
+        "score": score,
+        "general_army": gen_army,
+        "general_reserve": reserve,
+        "adjacent_threat": imminent_army,
+        "goal_visible_general": jnp.any(egen),
+        "goal_city": take_city,
+        "building": building,
+        "deathtouch_active": active_touch,
+        "candidate_count": jnp.sum(valid),
+    }
+    return action, telemetry, scores
 
 
 class SentinelMemory(NamedTuple):
@@ -94,7 +236,7 @@ class SentinelV3Agent:
 
     @partial(jax.jit, static_argnums=0)
     def step(self, obs, key, memory):
-        base, telemetry = self.baseline.decision(obs, key)
+        base, telemetry, campaign_scores = _campaign_decision(self.baseline, obs, key)
         a, mine = obs.armies, obs.owned_cells
         h, w = a.shape
         general = mine & obs.generals
@@ -165,21 +307,25 @@ class SentinelV3Agent:
         # Preserve v2's immediate rescue/third-tile tactics and winning captures.
         emergency = (imminent > home_army) | (touch & (imminent > 0))
         override = active & (would_deplete | need_reinforcement) & ~wins_now & ~emergency
-        # V2 can prefer a full sortie even when its half alternative safely
-        # clears our stronger reserve. Do not recall another stack in that case.
-        half_sent = a[r, c] // 2
-        half_legal = compute_valid_move_mask_obs(obs)[r, c, direction] & (half_sent > 0)
-        half_captures = half_sent > _neighbors(a, 0)[r, c, direction]
-        half_safe = (
-            outgoing
-            & half_legal
-            & (home_army - half_sent >= jnp.maximum(reserve, imminent))
-            & (_neighbors(mine, False)[r, c, direction] | half_captures)
-            & ~_neighbors(obs.structures_in_fog, True)[r, c, direction]
-        )
-        fallback = jnp.where(need_reinforcement, defensive, jnp.array([1, 0, 0, 0, 0], jnp.int32))
-        fallback = jnp.where(half_safe, base.at[4].set(1), fallback)
+        # Constrain actual v2-scored moves, then select another useful campaign
+        # action instead of repeatedly vetoing the first choice and passing.
+        retains_reserve = ~general[..., None, None] | (a[..., None, None] - moved >= jnp.maximum(reserve, imminent))
+        alternatives = jnp.where(retains_reserve, campaign_scores, -1e9)
+        best = jnp.argmax(alternatives)
+        best_cell = best // 8
+        productive = jnp.array([0, best_cell // w, best_cell % w, (best // 2) % 4, best % 2], jnp.int32)
+        productive = jnp.where(jnp.max(alternatives) > 0, productive, jnp.array([1, 0, 0, 0, 0], jnp.int32))
+        recall = need_reinforcement & (defensive[0] == 0)
+        fallback = jnp.where(recall, defensive, productive)
         action = jnp.where(override, fallback, base)
+        half_sortie = (
+            override
+            & outgoing
+            & (action[0] == 0)
+            & jnp.all(action[1:4] == base[1:4])
+            & (action[4] == 1)
+            & (base[4] == 0)
+        )
         updated = SentinelMemory(threats, ages, obs.timestep, reserve, until)
         telemetry = dict(telemetry)
         telemetry.update(
@@ -187,8 +333,10 @@ class SentinelV3Agent:
             general_reserve=reserve,
             defense_active=active,
             defense_override=override,
-            defense_recall=override & need_reinforcement & ~half_safe & (action[0] == 0),
-            defense_half_sortie=override & half_safe,
+            defense_recall=override & recall,
+            defense_half_sortie=half_sortie,
+            defense_productive_alternative=override & ~recall & (action[0] == 0),
+            fallback_score=jnp.max(alternatives),
             visible_reserve=visible_reserve,
             remembered_reserve=fog_reserve,
             remembered_cells=jnp.sum((threats > 0) & ~observed),

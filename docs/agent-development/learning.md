@@ -1,8 +1,8 @@
-# Controlled spatial PPO pilot
+# Spatial PPO pilot and continuation
 
 Terminal-only PPO improved over initialization and outscored the shaped arm in
-all eight development matchups. Continue the terminal-only checkpoint for the
-next larger-budget run. This is a single-seed result; it does not establish that
+all eight development matchups. That result selected terminal-only for the
+16.8M-transition continuation, which is now complete. This is a single-seed result; it does not establish that
 potential shaping is generally harmful or that the learned bot is dominant.
 
 The controlled GPU pilot completed 1,048,576 training transitions and 3,072
@@ -108,8 +108,8 @@ reproduce the design without promising bit-identical cross-version trajectories.
 
 ## Bounded continuation campaign
 
-The prepared next experiment resumes the frozen terminal-only checkpoint at
-iteration 256 and trains to 1024, 2048, 4096 and 8192. This adds 16,252,928
+The continuation campaign resumed the frozen terminal-only checkpoint at
+iteration 256 and completed 1024, 2048, 4096 and 8192. This added 16,252,928
 transitions, for 16,777,216 total. After each segment it freezes the checkpoint,
 evaluates 32 development boards per suite (`classic8`, `classic12`) against all
 four scripted opponents using seed 51000, then resumes the complete training
@@ -136,9 +136,9 @@ arithmetic. Checkpoints preserve initialization provenance separately from the
 current training source/driver, and resume events record that transition.
 Historical and optimized trajectories are not promised to remain bit-identical.
 
-### Continuation measurements (campaign still running)
+### Completed continuation measurements
 
-Three frozen milestones have completed development evaluation. Each row contains
+All four frozen milestones completed development evaluation. Each row contains
 1,024 games: 32 boards per suite, two seats and two spawn-label assignments,
 against four opponents. Score averages all eight suite/opponent matchups equally.
 These development maps are reused for checkpoint selection; they are not a final
@@ -149,6 +149,7 @@ test. Every milestone snapshot remains retained with its manifest SHA256.
 | 1,024 / 2,097,152 | 686 | 235 | 103 | 67.0% | 72.0% | 64.9% |
 | 2,048 / 4,194,304 | 674 | 282 | 68 | 65.8% | 69.1% | 59.9% |
 | 4,096 / 8,388,608 | 720 | 222 | 82 | 70.3% | 74.3% | 67.4% |
+| 8,192 / 16,777,216 | 765 | 205 | 54 | 74.7% | 77.3% | 71.7% |
 
 The 4.2M checkpoint regressed against all six nonrandom matchups while improving
 against Random on classic12. All six individual paired score-difference intervals
@@ -166,12 +167,20 @@ with 2.1M include zero; checkpoint ranking remains exploratory at 32 maps per
 suite. Paired differences use 100,000 whole-board resamples with seed 91083,
 retaining seats/spawn assignments; intervals are not multiplicity adjusted.
 
-The final segment continues to 16,777,216 transitions. Once its evaluation is
-complete, select the milestone with highest equal-weight development score,
-freeze that choice, and evaluate once on reserved seed **61073**, with 64 boards
-per suite and the same four opponents (2,048 games). This selection rule was
-recorded before seeing the final milestone or generating the fresh test maps.
-The fresh evaluation will not be used to tune or reselect checkpoints.
+The completed final checkpoint has the highest equal-weight development score,
+77.3%, and was selected before generating the fresh test maps. Its classic8
+win rates are 88.3% against Expander, 73.4% against Hunter, and 75.0% against
+Harvester; classic12 rates are 59.4%, 60.9%, and 64.1%. Progress remains uneven:
+classic8 Hunter/Harvester are below the 8.4M milestone, and classic12 Random is
+below the 4.2M milestone. The selection rule rewards the aggregate and does not
+claim the selected checkpoint dominates every earlier checkpoint.
+
+The selected complete snapshot is
+`.cache/runs/spatial-terminal-extended/checkpoints/iteration-00008192.pkl`, SHA256
+`048a1f8fdbad895f8db81818c35ee32f19596ec335cf44d311a1d1359a5fda1b`.
+Selection was recorded in `fresh_evaluation_plan.json` before running reserved
+seed **61073**, with 64 boards per suite and four opponents (2,048 games).
+The fresh evaluation completed without tuning or reselecting checkpoints.
 
 Detailed counts, paired differences, behavior rates, and training windows are
 retained in `.cache/runs/spatial-terminal-extended/milestone_analysis.json`;
@@ -179,3 +188,77 @@ retained in `.cache/runs/spatial-terminal-extended/milestone_analysis.json`;
 milestone evidence. The trained policy has no recurrent memory and was trained
 only on 8×8 maps with builds disabled; these measurements do not establish
 competition readiness or external-opponent strength.
+
+### Fresh-seed result for the selected checkpoint
+
+The frozen 16.8M policy completed **1,514 wins, 385 losses, and 149 draws** on
+seed 61073: **73.9% wins** (95% board-cluster interval **69.8–77.9%**) and
+**77.6% score** (**74.0–81.0%**). Excluding Random, it won 1,060/1,536 games
+(69.0%) with 385 losses and 91 draws, for 72.0% score. This corroborates useful
+strength against the tested scripts on fresh maps; it does not establish
+competition or external-opponent dominance.
+
+| Fresh suite / opponent | Wins | Losses | Draws | Win rate, 95% CI | Score |
+|---|---:|---:|---:|---:|---:|
+| classic8/random | 242 | 0 | 14 | 94.5% [88.3, 99.2] | 97.3% |
+| classic8/expander | 213 | 41 | 2 | 83.2% [75.4, 90.2] | 83.6% |
+| classic8/hunter | 187 | 65 | 4 | 73.0% [65.6, 80.5] | 73.8% |
+| classic8/harvester | 183 | 69 | 4 | 71.5% [63.7, 78.9] | 72.3% |
+| classic12/random | 212 | 0 | 44 | 82.8% [75.8, 89.1] | 91.4% |
+| classic12/expander | 155 | 46 | 55 | 60.5% [51.6, 69.5] | 71.3% |
+| classic12/hunter | 160 | 84 | 12 | 62.5% [53.1, 71.1] | 64.8% |
+| classic12/harvester | 162 | 80 | 14 | 63.3% [54.7, 71.9] | 66.0% |
+
+Each matchup contains 64 distinct boards and four seat/spawn-label cases per
+board. Intervals use 100,000 board-cluster bootstrap samples with seed 61074;
+aggregate intervals resample boards separately within each suite, retaining
+all opponents and paired cases for each board. These intervals describe map
+sampling for one fixed training seed and opponent set, not training-seed
+variation or performance against an arbitrary bot. All 2,048 games had zero
+candidate invalid moves and malformed commands. Every source hash recorded at
+evaluation launch still matched at completion.
+
+The final policy was selected by development score, not training reward. The
+continuation logged 7,936 optimizer iterations after the 256-iteration pilot,
+54 KL-triggered early stops, and no nonfinite scalar metrics. All four milestone
+checkpoint hashes verify. Training diagnostics and throughput remain separate
+from the frozen evaluation results.
+
+Raw fresh-test evidence is under `.cache/runs/spatial-terminal-selected-fresh/`:
+`quality_report.json`, `summary.json`, `games.csv`, frozen checkpoint, exact board
+arrays, source/runtime metadata, and `launch.json`. The game CSV SHA256 is
+`c18d68437233d2a6db36df3d94f25a48f0a40a6ff2dc71aa14999c69d39669c4`;
+metadata SHA256 is
+`4ba2254d2d24cf14282b58cfe4ae199069aea645ae0107d04269c4af4270df63`.
+The selected snapshot's SHA256 is recorded above. Reproduce the fresh evaluation
+with a new output directory:
+
+```sh
+env -u LD_LIBRARY_PATH JAX_PLATFORMS=cuda .venv/bin/python -m generals.evaluation.cli \
+  --candidate learned \
+  --checkpoint .cache/runs/spatial-terminal-extended/checkpoints/iteration-00008192.pkl \
+  --seed 61073 --boards 64 --suites classic8 classic12 \
+  --opponents random expander hunter harvester \
+  --output .cache/runs/spatial-terminal-selected-fresh-reproduction
+```
+
+### Next learning hypothesis
+
+Use iteration 8,192 as the strongest measured aggregate checkpoint from this
+campaign, keeping earlier snapshots for regression comparisons. The next
+controlled hypothesis should be that **exposure to larger maps improves transfer**:
+compare an 8×8-only continuation with an alternating 8×8/12×12 curriculum,
+starting from identical selected weights and optimizer state, with the same
+transition budget, opponent mixture, reward, and optimizer settings. Use at
+least three training seeds, a new development set, and a separately reserved
+final test; seed 61073 is now consumed. Report classic8 regressions as well as
+classic12 gains. This is a proposed experiment, not an implemented change or
+an additional training launch.
+
+The observed size gap and the 8×8-only training distribution motivate that test,
+but do not prove its cause. The current actor also has a limited spatial
+receptive field and no persistent memory; a curriculum may be insufficient.
+Teacher imitation, global spatial context, or memory are separate hypotheses
+that should not be bundled into the same reward/curriculum comparison. The
+current policy has not been evaluated against Sentinel or the external neural
+checkpoint, and no learned-policy competition-rule evaluation was added here.
