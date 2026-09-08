@@ -26,6 +26,11 @@ from pathlib import Path
 
 import jax.numpy as jnp
 import jax.random as jrandom
+from protocol import (
+    decode_action,
+    encode_handshake,
+    encode_observation,
+)
 
 from generals import GeneralsEnv
 from generals.core import game
@@ -34,12 +39,6 @@ from generals.core.grid import generate_grid
 from generals.evaluation.arena import Rules, sanitize_actions
 from generals.modifiers import build_castles as _bc
 from generals.modifiers import deathtouch as _dt
-from protocol import (
-    decode_action,
-    encode_handshake,
-    encode_observation,
-)
-
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_AGENT = REPO_ROOT / "competition" / "agents" / "expander_python" / "run.sh"

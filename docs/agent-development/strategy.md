@@ -5,7 +5,7 @@ from the learned PPO policy: its wins demonstrate the scripted strategy's
 strength, not a training gain. Its source is frozen before held-out evaluation.
 
 Source: `generals/agents/sentinel_agent.py`  
-SHA-256: `16f9942624d82c4fa14ec664b8e2289067b13ef1aa23744c7906a9a21e826834`
+SHA-256: `be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e`
 
 ```python
 from generals.agents.sentinel_agent import SentinelAgent

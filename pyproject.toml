@@ -25,7 +25,8 @@ dev = [
 
 [project.urls]
 Homepage = "https://generals.bot"
-Repository = "https://github.com/strakam/generals-bots"
+Repository = "https://github.com/relh/generals-bots"
+Upstream = "https://github.com/strakam/generals-bots"
 
 [build-system]
 requires = ["setuptools>=61.0"]

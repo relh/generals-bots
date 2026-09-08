@@ -10,12 +10,12 @@ import hashlib
 import importlib.metadata
 import json
 import os
-from pathlib import Path
 import platform
 import statistics
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -60,20 +60,47 @@ def main():
             "python": sys.version,
             "cpu_count": os.cpu_count(),
             "cpu_affinity": sorted(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else None,
-            "cpu_model": next((line.split(":", 1)[1].strip() for line in Path("/proc/cpuinfo").read_text().splitlines()
-                               if line.startswith("model name")), "unknown"),
+            "cpu_model": next(
+                (
+                    line.split(":", 1)[1].strip()
+                    for line in Path("/proc/cpuinfo").read_text().splitlines()
+                    if line.startswith("model name")
+                ),
+                "unknown",
+            ),
             "devices": [str(d) for d in jax.devices()],
             "device_kinds": [d.device_kind for d in jax.devices()],
-            "packages": {name: importlib.metadata.version(name) for name in ("jax", "jaxlib", "equinox", "optax", "numpy")},
-            "environment": {k: os.environ.get(k) for k in ("JAX_PLATFORMS", "XLA_FLAGS", "OMP_NUM_THREADS", "XLA_PYTHON_CLIENT_PREALLOCATE", "LD_LIBRARY_PATH")},
+            "packages": {
+                name: importlib.metadata.version(name) for name in ("jax", "jaxlib", "equinox", "optax", "numpy")
+            },
+            "environment": {
+                k: os.environ.get(k)
+                for k in (
+                    "JAX_PLATFORMS",
+                    "XLA_FLAGS",
+                    "OMP_NUM_THREADS",
+                    "XLA_PYTHON_CLIENT_PREALLOCATE",
+                    "LD_LIBRARY_PATH",
+                )
+            },
         },
         "source": {
             "commit": command_output(["git", "rev-parse", "HEAD"]),
             "status": command_output(["git", "status", "--short"]),
-            "sha256": {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
-                       for path in [Path(__file__).resolve(), Path(train.__file__), ROOT / "examples/_experimental/ppo/network.py", ROOT / "generals/core/game.py"]},
+            "sha256": {
+                str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in [
+                    Path(__file__).resolve(),
+                    Path(train.__file__),
+                    ROOT / "examples/_experimental/ppo/network.py",
+                    ROOT / "generals/core/game.py",
+                ]
+            },
         },
-        "timing_semantics": "All timings synchronize all returned array leaves. First call includes tracing/compilation and execution; steady-state timings exclude first call and warmups. Stages overlap conceptually and must not be summed.",
+        "timing_semantics": (
+            "All timings synchronize all returned array leaves. First call includes tracing/compilation and execution; "
+            "steady-state timings exclude first call and warmups. Stages overlap conceptually and must not be summed."
+        ),
         "timings": {},
     }
     print(json.dumps(report["machine"]), flush=True)
@@ -92,8 +119,13 @@ def main():
             jax.block_until_ready(result)
             seconds.append(time.perf_counter() - start)
         median = statistics.median(seconds)
-        values = {"first_call_seconds": first, "steady_seconds": seconds,
-                  "median_seconds": median, "min_seconds": min(seconds), "max_seconds": max(seconds)}
+        values = {
+            "first_call_seconds": first,
+            "steady_seconds": seconds,
+            "median_seconds": median,
+            "min_seconds": min(seconds),
+            "max_seconds": max(seconds),
+        }
         if units:
             values["environment_steps_per_second"] = units / median
         report["timings"][name] = values
@@ -105,8 +137,7 @@ def main():
     grid = jnp.zeros((4, 4), dtype=jnp.int32).at[0, 0].set(1).at[3, 3].set(2)
     states = jax.vmap(game.create_initial_state)(jnp.broadcast_to(grid, (args.num_envs, 4, 4)))
     # Mature stacks and a near-timeout state ensure both moves and auto-resets are exercised.
-    states = states._replace(time=jnp.arange(args.num_envs, dtype=jnp.int32) % 2 * 498,
-                             armies=states.armies * 10)
+    states = states._replace(time=jnp.arange(args.num_envs, dtype=jnp.int32) % 2 * 498, armies=states.armies * 10)
     jax.block_until_ready((states, network))
 
     def python_rollout(states, network, key):
@@ -121,6 +152,7 @@ def main():
         def body(carry, _):
             states, row, key = train.rollout_step(carry[0], network, carry[1])
             return (states, key), row
+
         (states, key), data = jax.lax.scan(body, (states, key), None, length=args.steps)
         return states, data, key
 
@@ -145,7 +177,9 @@ def main():
         return obs, masks, actions, logprobs, advantages, returns
 
     measure("rollout_step", train.rollout_step, states, network, key, units=args.num_envs)
-    original = measure("python_rollout_and_stack", python_rollout, states, network, key, units=args.num_envs * args.steps)
+    original = measure(
+        "python_rollout_and_stack", python_rollout, states, network, key, units=args.num_envs * args.steps
+    )
     scanned = measure("scan_rollout", scan_rollout, states, network, key, units=args.num_envs * args.steps)
     integer_exact = True
     float_close = True
@@ -157,11 +191,13 @@ def main():
             max_absolute_difference = max(max_absolute_difference, float(np.max(np.abs(left - right), initial=0)))
         else:
             integer_exact &= bool(np.array_equal(left, right))
-    report["correctness"] = {"integer_and_boolean_leaves_exact": integer_exact,
-                             "floating_leaves_close_atol_rtol_1e_5": float_close,
-                             "max_absolute_float_difference": max_absolute_difference,
-                             "covers": "All final state, PRNG key, observation, mask, action, logprob, value, reward, done and info leaves",
-                             "episode_end_count": int(jnp.sum(original[1][6]))}
+    report["correctness"] = {
+        "integer_and_boolean_leaves_exact": integer_exact,
+        "floating_leaves_close_atol_rtol_1e_5": float_close,
+        "max_absolute_float_difference": max_absolute_difference,
+        "covers": "All final state, PRNG key, observation, mask, action, logprob, value, reward, done and info leaves",
+        "episode_end_count": int(jnp.sum(original[1][6])),
+    }
     print(f"correctness: {json.dumps(report['correctness'])}", flush=True)
     measure("observation_mask_and_inference", inference, states, network, key, units=args.num_envs)
     batch = measure("bootstrap_and_gae", prepare_batch, original[0], network, original[1])
@@ -176,8 +212,13 @@ def main():
 
     measure("python_iteration", lambda: iteration(python_rollout), units=args.num_envs * args.steps)
     measure("scan_iteration", lambda: iteration(scan_rollout), units=args.num_envs * args.steps)
-    report["scan_vs_python_rollout_speedup"] = report["timings"]["python_rollout_and_stack"]["median_seconds"] / report["timings"]["scan_rollout"]["median_seconds"]
-    report["scan_vs_python_iteration_speedup"] = report["timings"]["python_iteration"]["median_seconds"] / report["timings"]["scan_iteration"]["median_seconds"]
+    report["scan_vs_python_rollout_speedup"] = (
+        report["timings"]["python_rollout_and_stack"]["median_seconds"]
+        / report["timings"]["scan_rollout"]["median_seconds"]
+    )
+    report["scan_vs_python_iteration_speedup"] = (
+        report["timings"]["python_iteration"]["median_seconds"] / report["timings"]["scan_iteration"]["median_seconds"]
+    )
     if args.trace:
         args.trace.mkdir(parents=True, exist_ok=True)
         with jax.profiler.trace(str(args.trace)):
