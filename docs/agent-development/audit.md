@@ -89,3 +89,22 @@ See [the measured performance audit](performance.md) for reproducible profiling,
 trace evidence, compile-versus-steady-state distinctions, and the separate CPU
 and GPU acceptance decisions. Throughput evidence is specific to its measured
 workload and does not itself demonstrate stronger play.
+
+## Final counter regression
+
+A rejected build on a live general could still be counted as construction if an
+enemy captured that general on the same turn. The engine correctly rejected the
+build; capture then created a castle at the requested coordinate. A 2×2 fixture
+reproduced winner 1, zero actual builds, and one falsely reported build.
+
+Both arena counters and the interactive matchup log now require the source to
+have been owned plain land before the turn. Two regressions cover this collision
+alongside successful construction. This fix changes diagnostics only. It was
+applied after the frozen holdout and external runs, and after eight exact
+holdout-loss replays were recorded. Sentinel never emits builds on generals, so
+the measured candidate's counts and all game outcomes are unaffected. Use the
+recorded source revision when replaying historical runs with strict hash checks.
+
+The final full suite passed 197 tests; the subsequent focused 20-test run passed,
+including the two new counter regressions. Together these cover 199 unique tests.
+All changed production modules and tooling pass the repository's Ruff checks.

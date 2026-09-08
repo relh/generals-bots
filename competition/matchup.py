@@ -152,14 +152,15 @@ def make_transition(env):
     return transition
 
 
-def completed_builds(previous_castles, state, actions):
+def completed_builds(previous_state, state, actions):
     """Actual build actions that created castles, excluding general captures."""
-    born = state.castles & ~previous_castles
+    born = state.castles & ~previous_state.castles & ~previous_state.generals
     h, w = born.shape
     result = []
     for player, action in enumerate(actions):
         kind, r, c = (int(value) for value in action[:3])
-        if kind == 2 and 0 <= r < h and 0 <= c < w and bool(born[r, c]):
+        if (kind == 2 and 0 <= r < h and 0 <= c < w
+                and bool(previous_state.ownership[player, r, c]) and bool(born[r, c])):
             result.append((player, r, c))
     return result
 
@@ -248,7 +249,7 @@ def main():
 
     transition = make_transition(env)
     built = [0, 0]
-    prev_castles = state.castles
+    previous_state = state
     winner = -1
     turn = 0
     try:
@@ -268,11 +269,11 @@ def main():
             # land, or a bot saving up for a castle has no way to tell whether
             # its build was accepted.
             if env.build_castles:
-                for pid, r, c in completed_builds(prev_castles, state, actions):
+                for pid, r, c in completed_builds(previous_state, state, actions):
                     built[pid] += 1
                     print(f"[matchup] turn {turn}: player {pid} ({labels[pid]}) "
                           f"built a castle at ({r}, {c})", file=sys.stderr)
-                prev_castles = state.castles
+                previous_state = state
 
             if record:
                 states_log.append(state)

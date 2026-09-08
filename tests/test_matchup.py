@@ -118,11 +118,20 @@ def test_captured_general_is_not_reported_as_castle_construction():
     after, info = matchup.make_transition(GeneralsEnv(mode='competition'))(state, actions)
     assert int(info.winner) == 0
     assert bool(after.castles[0, 7])
-    assert matchup.completed_builds(state.castles, after, actions) == []
+    assert matchup.completed_builds(state, after, actions) == []
 
 
 def test_successful_construction_is_reported():
     state = give(open_board(), 0, (5, 5), 60)
     actions = jnp.stack([jnp.array([2, 5, 5, 0, 0]), PASS])
     after, _ = matchup.make_transition(GeneralsEnv(mode='competition'))(state, actions)
-    assert matchup.completed_builds(state.castles, after, actions) == [(0, 5, 5)]
+    assert matchup.completed_builds(state, after, actions) == [(0, 5, 5)]
+
+
+def test_rejected_build_on_captured_general_is_not_construction():
+    state = give(open_board(), 0, (0, 6), 20)
+    actions = jnp.array([[0, 0, 6, 3, 0], [2, 0, 7, 0, 0]])
+    after, info = matchup.make_transition(GeneralsEnv(mode='competition'))(state, actions)
+    assert int(info.winner) == 0
+    assert bool(after.castles[0, 7])
+    assert matchup.completed_builds(state, after, actions) == []

@@ -2,6 +2,10 @@
 
 Our fork: https://github.com/relh/generals-bots/tree/relh/sentinel-agent.
 
+Start with the [measured results](results.md). Sentinel passed the first local
+holdout gate; the learned policy and external opponent comparisons are reported
+separately.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

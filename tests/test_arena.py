@@ -67,3 +67,17 @@ def test_malformed_actions_are_rejected_and_counted():
         np.testing.assert_array_equal(after.ownership, state.ownership)
         counters = action_counters(state, after, actions)
         assert int(counters[0, 5]) == 1
+
+
+def test_rejected_build_on_captured_general_does_not_count_as_construction():
+    from generals.evaluation.arena import action_counters
+    state = game.create_initial_state(jnp.array([[1, 0], [0, 2]], dtype=jnp.int32))
+    state = state._replace(armies=state.armies.at[0, 1].set(10),
+                           ownership=state.ownership.at[1, 0, 1].set(True),
+                           ownership_neutral=state.ownership_neutral.at[0, 1].set(False))
+    actions = jnp.array([[2, 0, 0, 0, 0], [0, 0, 1, 2, 0]], dtype=jnp.int32)
+    rules = Rules(build_castles=True)
+    after, info = transition(state, actions, rules)
+    assert int(info.winner) == 1
+    assert bool(after.castles[0, 0])
+    assert int(action_counters(state, after, actions, rules)[0, 3]) == 0

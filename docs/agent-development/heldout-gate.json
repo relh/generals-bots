@@ -1,0 +1,198 @@
+{
+  "complete": true,
+  "local_gate_passed": true,
+  "matchups": {
+    "classic8/random": {
+      "maps": 64,
+      "games": 256,
+      "wins": 256,
+      "losses": 0,
+      "draws": 0,
+      "win_rate": 1.0,
+      "win_ci95": [
+        1.0,
+        1.0
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic8/expander": {
+      "maps": 64,
+      "games": 256,
+      "wins": 241,
+      "losses": 15,
+      "draws": 0,
+      "win_rate": 0.94140625,
+      "win_ci95": [
+        0.90234375,
+        0.9765625
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic8/hunter": {
+      "maps": 64,
+      "games": 256,
+      "wins": 230,
+      "losses": 18,
+      "draws": 8,
+      "win_rate": 0.8984375,
+      "win_ci95": [
+        0.84375,
+        0.9453125
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic8/harvester": {
+      "maps": 64,
+      "games": 256,
+      "wins": 228,
+      "losses": 20,
+      "draws": 8,
+      "win_rate": 0.890625,
+      "win_ci95": [
+        0.8359375,
+        0.9375
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic12/random": {
+      "maps": 64,
+      "games": 256,
+      "wins": 256,
+      "losses": 0,
+      "draws": 0,
+      "win_rate": 1.0,
+      "win_ci95": [
+        1.0,
+        1.0
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic12/expander": {
+      "maps": 64,
+      "games": 256,
+      "wins": 242,
+      "losses": 10,
+      "draws": 4,
+      "win_rate": 0.9453125,
+      "win_ci95": [
+        0.90625,
+        0.9765625
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic12/hunter": {
+      "maps": 64,
+      "games": 256,
+      "wins": 224,
+      "losses": 30,
+      "draws": 2,
+      "win_rate": 0.875,
+      "win_ci95": [
+        0.8203125,
+        0.9296875
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "classic12/harvester": {
+      "maps": 64,
+      "games": 256,
+      "wins": 224,
+      "losses": 30,
+      "draws": 2,
+      "win_rate": 0.875,
+      "win_ci95": [
+        0.8203125,
+        0.9296875
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 0,
+      "gate": true
+    },
+    "competition/random": {
+      "maps": 64,
+      "games": 256,
+      "wins": 256,
+      "losses": 0,
+      "draws": 0,
+      "win_rate": 1.0,
+      "win_ci95": [
+        1.0,
+        1.0
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 340,
+      "gate": true
+    },
+    "competition/expander": {
+      "maps": 64,
+      "games": 256,
+      "wins": 250,
+      "losses": 6,
+      "draws": 0,
+      "win_rate": 0.9765625,
+      "win_ci95": [
+        0.9453125,
+        1.0
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 1033,
+      "gate": true
+    },
+    "competition/hunter": {
+      "maps": 64,
+      "games": 256,
+      "wins": 246,
+      "losses": 8,
+      "draws": 2,
+      "win_rate": 0.9609375,
+      "win_ci95": [
+        0.921875,
+        0.9921875
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 358,
+      "gate": true
+    },
+    "competition/harvester": {
+      "maps": 64,
+      "games": 256,
+      "wins": 246,
+      "losses": 8,
+      "draws": 2,
+      "win_rate": 0.9609375,
+      "win_ci95": [
+        0.921875,
+        0.9921875
+      ],
+      "invalid_moves": 0,
+      "malformed_commands": 0,
+      "builds": 358,
+      "gate": true
+    }
+  }
+}

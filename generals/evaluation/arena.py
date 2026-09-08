@@ -79,7 +79,14 @@ def action_counters(before, after, actions, rules=Rules()):
         & before.passable[jnp.clip(dr.astype(jnp.int32), 0, h - 1), jnp.clip(dc.astype(jnp.int32), 0, w - 1)]
     )
     command_ok = valid_commands(actions, (h, w), rules)
-    built = command_ok & (kind == 2) & ~before.castles[rs, cs] & after.castles[rs, cs]
+    built = (
+        command_ok
+        & (kind == 2)
+        & before.ownership[players, rs, cs]
+        & ~before.generals[rs, cs]
+        & ~before.castles[rs, cs]
+        & after.castles[rs, cs]
+    )
     return jnp.stack(
         [kind == 1, (kind == 0) & (split == 1), kind == 2, built, (kind == 0) & ~(valid & command_ok), ~command_ok],
         axis=-1,

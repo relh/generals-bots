@@ -55,3 +55,22 @@ so simultaneous workloads do not contaminate measurements. Place transient
 runs under `.cache/runs/`; commit reusable tools and result summaries.
 
 Active branch: `relh/sentinel-agent`. Keep upstream separate from our fork.
+
+## Foundation milestone
+
+The frozen v2 candidate passed every local holdout gate on 3,072 games: 64 maps
+per suite, with win rates from 87.5% to 100%. Actual competition win rates are
+97.7% against Expander and 96.1% against Hunter/Harvester. See results.md for
+counts, clustered intervals, source identity, and limitations.
+
+The first external checkpoint comparison was 12 wins, 14 losses, and 6 draws;
+no advantage is established. The next controlled strategy iteration should target
+remembered invasion threats and sustained home defense, identified in complete
+loss replays. These observations must not be retroactively presented as held-out
+success for a tuned candidate. Keep v2 as a frozen control and use fresh final
+map families for subsequent versions.
+
+A bounded terminal-only learning campaign is running toward 16,777,216 total
+transitions, with frozen evaluations at four milestones. The controlled reward
+pilot did not support promoting the shaped variant. Reusable code and reports
+are committed to our fork; transient checkpoints and full traces remain local.
