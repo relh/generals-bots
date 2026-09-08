@@ -43,6 +43,22 @@ for terminal, timeout, curriculum, and checkpoint semantics. Checkpoints are
 trusted local pickle artifacts. The [learning experiment](learning.md) records
 matched initialization and budgets, frozen evaluation, and observed outcomes.
 
+The first controlled pilot favored terminal-only training on all eight measured
+development matchup scores. Shaping remains available for controlled experiments;
+the longer campaign continues the terminal-only checkpoint. GPU training uses the
+measured compiled optimizer; CPU retains the reference implementation. Checkpoints
+record any change of optimizer implementation and training source on resume.
+
+```sh
+env -u LD_LIBRARY_PATH .venv/bin/python -u scripts/train_campaign.py \
+  --platform cuda --resume .cache/runs/spatial-terminal/final_checkpoint.pkl \
+  --output-root .cache/runs/spatial-terminal-extended
+```
+
+This bounded campaign stops at 16,777,216 total training transitions and evaluates
+frozen checkpoints at iterations 1024, 2048, 4096, and 8192. Its `status.json`
+records the current phase, process IDs, latest metrics, and any failure.
+
 On this workstation, an old `LD_LIBRARY_PATH` overrides the installed CUDA
 libraries. GPU commands use this prefix:
 
@@ -76,6 +92,13 @@ Each run saves exact boards, rule settings, source hashes, and a private frozen
 checkpoint copy when applicable. Use `--candidate learned --checkpoint PATH`
 for the spatial network. Never change policy source during a run.
 
+Generate the fixed promotion-gate report after the complete arena run:
+
+```sh
+JAX_PLATFORMS=cpu .venv/bin/python -m generals.evaluation.report \
+  .cache/runs/sentinel-heldout-v2 --require-gate
+```
+
 Hunter and Harvester share behavior where no neutral castles exist; competition
 results against both therefore are not independent evidence. None of these
 scripted baselines establishes standing against external tournament players.
@@ -93,7 +116,12 @@ diagnostics and Sentinel decisions. Source or outcome mismatches are reported;
 an explicit diagnostic override is not exact replay evidence.
 
 See [strategy](strategy.md), [audit findings](audit.md),
-[performance measurements](performance.md), and the [promotion gates](PLAN.md).
+[performance measurements](performance.md), [deployment checks](deployment.md),
+and the [promotion gates](PLAN.md).
 `scripts/profile_agent.py` compares old Python-dispatched PPO collection with a
 compiled scan using identical trajectories. That experiment's speedup is not a
 throughput claim for the more demanding spatial mixed-opponent trainer.
+`scripts/profile_optimizer.py` measures the latter's optimizer change on matched
+inputs. `scripts/profile_sentinel.py` measures synchronized scalar and batched
+agent inference. The standalone bundle and CPU deadline probe are described in
+the deployment checks; no tool automatically submits a bot to the tournament.

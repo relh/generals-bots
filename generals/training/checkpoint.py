@@ -1,4 +1,5 @@
 """Atomic complete snapshots for trusted local training artifacts only."""
+
 import os
 import pickle
 from pathlib import Path

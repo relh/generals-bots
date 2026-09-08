@@ -1,4 +1,5 @@
 """Size-independent actor/critic with a single pass and optional castle builds."""
+
 import equinox as eqx
 import jax
 import jax.numpy as jnp
@@ -25,8 +26,11 @@ def action_mask(obs, build_enabled=False):
     # Hidden structures may be mountains OR castles. Do not inspect hidden truth:
     # an attempted move there is allowed, and may be rejected by the simulator.
     moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1)
-    builds = (obs.owned_cells & ~obs.generals & ~obs.castles
-              & (obs.armies >= build_costs(obs))) if build_enabled else jnp.zeros_like(obs.owned_cells)
+    builds = (
+        (obs.owned_cells & ~obs.generals & ~obs.castles & (obs.armies >= build_costs(obs)))
+        if build_enabled
+        else jnp.zeros_like(obs.owned_cells)
+    )
     return jnp.concatenate([moves.reshape(-1), moves.reshape(-1), builds.reshape(-1), jnp.ones(1, bool)])
 
 
@@ -34,8 +38,10 @@ def decode_action(index, shape):
     h, w = shape
     cells = h * w
     channel, position = index // cells, index % cells
-    action = jnp.array([jnp.where(channel == 8, 2, 0), position // w, position % w,
-                        channel % 4, (channel >= 4) & (channel < 8)], dtype=jnp.int32)
+    action = jnp.array(
+        [jnp.where(channel == 8, 2, 0), position // w, position % w, channel % 4, (channel >= 4) & (channel < 8)],
+        dtype=jnp.int32,
+    )
     return jnp.where(index == 9 * cells, jnp.array([1, 0, 0, 0, 0], jnp.int32), action)
 
 

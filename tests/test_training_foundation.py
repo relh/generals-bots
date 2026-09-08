@@ -168,3 +168,13 @@ def test_actual_mutual_deathtouch_rollout_counts_terminal_draw():
     assert float(data["outcome"][0, 0]) == 0
     assert outcome_counts(data["terminated"], data["truncated"], data["outcome"]) == dict(
         completed_episodes=1, wins=0, losses=0, draws=1, timeouts=0, terminal_draws=1)
+
+
+def test_sentinel_training_opponent_uses_environment_horizon():
+    from generals import GeneralsEnv
+    from generals.training.train import Config, opponents_for
+
+    opponent = opponents_for(Config(opponents="sentinel"),
+                             GeneralsEnv(grid_dims=(8, 8), truncation=500, build_castles=True))[0]
+    assert opponent.max_turns == 500
+    assert opponent.build_castles

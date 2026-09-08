@@ -137,6 +137,84 @@ Trace artifacts are under `.cache/runs/profiling/gpu-trace/plugins/profile/`:
    comparisons must include the same rollout budget, optimization epochs,
    minibatch sizes, opponent distribution, seeds and held-out evaluation.
 
-No simulator or original trainer optimization was merged by this audit. The
+No simulator or original trainer optimization was merged by this first audit. The
 deliverables are reproducible tooling, measured prototype evidence, and the
 device-specific decision gate above.
+
+## Spatial PPO optimizer follow-up
+
+The replacement 8×8 trainer has a different workload: 32 environments × 64
+steps, four PPO epochs and 256-sample minibatches, yielding 32 optimizer updates
+per iteration. Its throughput must not be compared directly with the original
+4×4 single-update benchmark above.
+
+Source inspection identified a host synchronization after every minibatch:
+seven scalar diagnostics were converted to Python floats before the next update
+could start. The new [compiled driver](../../generals/training/optimization.py)
+keeps minibatch gathering, shuffling, finite checks and KL stopping on the device.
+It returns buffered diagnostics once per iteration. The
+[training entry point](../../generals/training/train.py) now selects this driver
+on GPU and retains the reference Python loop on CPU, whose throughput has not
+been measured for this change.
+
+The prototype was measured before integration with this exact command:
+
+```bash
+env -u LD_LIBRARY_PATH .venv/bin/python scripts/profile_optimizer.py \
+  --device gpu \
+  --checkpoint .cache/runs/spatial-terminal/final_checkpoint.pkl \
+  --with-rollout --repeats 7 \
+  --trace .cache/runs/profiling/optimizer-gpu-trace \
+  --output .cache/runs/profiling/optimizer-gpu.json
+```
+
+The [benchmark tool](../../scripts/profile_optimizer.py) collects one real rollout
+from the frozen terminal-only pilot checkpoint, then compares both implementations
+from identical network, optimizer, batch and random-key inputs. Both implementations
+are warmed first; timed order alternates across seven paired repeats, synchronizing
+all outputs. It saves an exact input fixture beside the JSON report. Use
+`--fixture FILE` for later optimizer-only comparisons without regenerating data.
+
+| GPU workload | Reference Python | Compiled | Ratio |
+| --- | ---: | ---: | ---: |
+| Optimizer phase, median | 650.76 ms | 37.23 ms | 17.48× |
+| Optimizer phase, repeat range | 497.23–839.70 ms | 34.68–48.98 ms | |
+| Rollout + GAE + optimizer, median | 921.09 ms | 321.21 ms | 2.87× |
+| Rollout + GAE + optimizer, repeat range | 737.84–1,123.51 ms | 245.54–387.54 ms | |
+| Environment steps per iteration second | 2,223 | 6,376 | 2.87× |
+
+Hardware and package versions match the earlier audit. The GPU was reserved for
+this benchmark; CPU correctness tests were active concurrently, so host contention
+and the broad repeat ranges limit extrapolation. These are matched measurements
+on one frozen pilot workload, not a promised speedup for every model or map size.
+Iteration timings include rollout, GAE, optimizer and diagnostic means; they
+exclude pool refresh, episode JSON logging and checkpoint writes. First optimizer
+invocations took 4.65 s for the reference and 3.20 s for the compiled driver,
+including compilation and execution. The trained checkpoint and benchmark fixture
+are unchanged by profiling.
+
+Both drivers performed exactly 32 updates without KL stopping. Final RNG and
+integer optimizer state matched exactly; floating parameters and optimizer state
+differed by at most 2.98e-8, and diagnostic means agreed within the recorded
+tolerances. A separate traced iteration reduced host callback launches from
+3,184 to 21, while CUDA graph launches increased from 100 to 129. This supports
+the host-overhead explanation; traced timings are excluded from the table.
+
+The compiled driver preserves a split only when an epoch is entered, applies
+each update before checking that update's reported KL, stops before any further
+update on nonfinite diagnostics, and preserves partial final minibatches. Only
+executed finite diagnostic rows enter the same float64 NumPy means; inactive
+buffer slots never dilute reported statistics.
+
+[Optimizer regressions](../../tests/test_compiled_optimizer.py) cover those
+control-flow cases, real PPO parameter/optimizer parity, strict KL comparison,
+failures on the first and later updates, and exact checkpoint continuation.
+The full compiled trainer is also exercised on CPU test inputs, including
+partial minibatches and uninterrupted-versus-resumed equality. Together with the
+training foundation regressions, 22 focused tests passed after integration.
+
+Checkpoints and startup/resume events now record `optimizer_implementation`
+(`compiled-v1` or `python-v1`), and resume events record the previous driver.
+Exact continuation is tested within the same implementation and backend;
+switching between drivers can introduce the small floating differences measured
+above and is not promised to reproduce a historical trajectory bit for bit.
