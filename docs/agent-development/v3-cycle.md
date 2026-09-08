@@ -94,3 +94,31 @@ and about 0.9ms subsequent policy calls, excluding observation preparation and
 stdio. This is a diagnostic from a shared host, not a controlled speedup. No
 cache-signature miss explains the original slow first response; midgame deadline
 misses remain unattributed. Full qualification must include protocol overhead.
+
+The initial external run is complete: **8 wins, 21 losses, 3 draws**, score 29.69%,
+versus the historical frozen v2's 12 wins, 14 losses, 6 draws (46.88%). The paired
+eight-map score difference is −17.19 percentage points, 95% bootstrap interval
+[−32.81,−1.56]. This is a development rejection, not a promotion. There were
+3 candidate and 20 opponent reply faults, with 0 candidate invalid actions;
+the opponent's 697 correctly formatted illegal actions became silent passes.
+Because runtime contention differs from the historical comparison, a fresh run
+of the exact v2 archive on the same maps is underway. Both runs retain all faults.
+The initial comparison artifacts are `.cache/runs/sentinel-v3/external-initial/`;
+`paired-v2.json` verifies board arrays, rules, simulator source, and opponent identity.
+
+Revision 1’s 256-game rerun also fails to establish improvement. Full v3 still has
+30W2L against Hunter and 30W2D against Expander. Memory-only has 28W4L / 32W;
+defense-only 30W2L / 30W2L respectively. The full policy repairs the old Expander
+regression but causes a different win to become a draw: replacing unneeded recalls
+with passes repeatedly rejects the top move without selecting another useful move.
+One final development revision will apply the defensive constraint to the actual
+candidate move scores in separate v3 code. It must preserve frozen v2 and reproduce
+its actions when disabled. Fresh seed 113000 remains uninspected.
+
+Validation of the memory tooling: 230 tests passed in the full CPU suite, with 14
+existing Optax deprecation warnings. Subsequent focused checks passed 12 strategy
+cases (three added for revision 1) and 4 comparison cases (one additional identity
+check). Real v3 replay parity, per-player memory separation, terminal memory/key
+freezing, stateless behavior parity, and stdio per-game reset are covered. The
+first implementation and tooling are committed as `ca5d877` on our fork;
+v2 remains the default.
