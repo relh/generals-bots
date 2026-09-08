@@ -13,6 +13,12 @@
 
 A high-performance JAX-based simulator for [generals.io](https://generals.io), designed for reinforcement learning research.
 
+This fork develops **Sentinel**, our observation-only strategic agent, alongside
+a spatial PPO trainer with outcome rewards, potential shaping, and complete
+resumable checkpoints. The [development runbook](docs/agent-development/README.md)
+covers running the bot, training, paired evaluation, profiling, and measured
+results. Local baseline results do not establish an external leaderboard rank.
+
 **Highlights:**
 * ⚡ **10M+ steps/second** — fully JIT-compiled JAX simulator with vectorized `vmap` for massive parallelism
 * 🎯 **Pure functional design** — immutable state, reproducible trajectories

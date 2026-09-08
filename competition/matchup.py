@@ -31,6 +31,7 @@ from generals import GeneralsEnv
 from generals.core import game
 from generals.core.game import create_initial_state
 from generals.core.grid import generate_grid
+from generals.evaluation.arena import Rules, sanitize_actions
 from generals.modifiers import build_castles as _bc
 from generals.modifiers import deathtouch as _dt
 from protocol import (
@@ -141,6 +142,8 @@ def make_transition(env):
     same composition env.step() performs, minus its vectorised-training pool.
     """
     def transition(state, actions):
+        actions = sanitize_actions(actions, state.armies.shape,
+                                   Rules(env.truncation, env.build_castles, env.deathtouch_turn))
         if env.build_castles:
             # builds resolve first and come back rewritten as passes
             state, actions = _bc.apply_build_actions(state, actions)
@@ -148,6 +151,18 @@ def make_transition(env):
             return _dt.step(state, actions, env.deathtouch_turn)
         return game.step(state, actions)
     return transition
+
+
+def completed_builds(previous_castles, state, actions):
+    """Actual build actions that created castles, excluding general captures."""
+    born = state.castles & ~previous_castles
+    h, w = born.shape
+    result = []
+    for player, action in enumerate(actions):
+        kind, r, c = (int(value) for value in action[:3])
+        if kind == 2 and 0 <= r < h and 0 <= c < w and bool(born[r, c]):
+            result.append((player, r, c))
+    return result
 
 
 def replay(states_log, infos_log, agent_ids, fps):
@@ -254,14 +269,11 @@ def main():
             # land, or a bot saving up for a castle has no way to tell whether
             # its build was accepted.
             if env.build_castles:
-                born = state.castles & ~prev_castles
-                if bool(born.any()):
-                    for pid in (0, 1):
-                        for r, c in zip(*jnp.where(born & state.ownership[pid])):
-                            built[pid] += 1
-                            print(f"[matchup] turn {turn}: player {pid} ({labels[pid]}) "
-                                  f"built a castle at ({int(r)}, {int(c)})", file=sys.stderr)
-                    prev_castles = state.castles
+                for pid, r, c in completed_builds(prev_castles, state, actions):
+                    built[pid] += 1
+                    print(f"[matchup] turn {turn}: player {pid} ({labels[pid]}) "
+                          f"built a castle at ({r}, {c})", file=sys.stderr)
+                prev_castles = state.castles
 
             if record:
                 states_log.append(state)
@@ -276,8 +288,10 @@ def main():
 
     if winner >= 0:
         print(f"[matchup] turn {turn}: player {winner} captured the enemy general")
-    else:
+    elif turn >= env.truncation:
         print(f"[matchup] turn {turn}: truncated at {env.truncation} turns (draw)")
+    else:
+        print(f"[matchup] turn {turn}: game ended in a draw")
     if env.build_castles:
         print(f"[matchup] castles built: {built[0]} ({labels[0]}) "
               f"vs {built[1]} ({labels[1]})")

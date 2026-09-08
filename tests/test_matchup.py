@@ -110,3 +110,19 @@ def test_competition_boards_are_rectangular_and_castle_free(seed):
     assert env.min_grid_size <= w <= env.max_grid_size
     assert int(state.castles.sum()) == 0, "neutral castles were not stripped"
     assert int(state.generals.sum()) == 2
+
+
+def test_captured_general_is_not_reported_as_castle_construction():
+    state = give(open_board(), 0, (0, 6), 20)
+    actions = jnp.stack([jnp.array([0, 0, 6, 3, 0]), PASS])
+    after, info = matchup.make_transition(GeneralsEnv(mode='competition'))(state, actions)
+    assert int(info.winner) == 0
+    assert bool(after.castles[0, 7])
+    assert matchup.completed_builds(state.castles, after, actions) == []
+
+
+def test_successful_construction_is_reported():
+    state = give(open_board(), 0, (5, 5), 60)
+    actions = jnp.stack([jnp.array([2, 5, 5, 0, 0]), PASS])
+    after, _ = matchup.make_transition(GeneralsEnv(mode='competition'))(state, actions)
+    assert matchup.completed_builds(state.castles, after, actions) == [(0, 5, 5)]
