@@ -24,6 +24,93 @@ def indexed_rows(directory):
     return indexed
 
 
+def validate_segments(directory, metadata, rows, *, require_segments=False):
+    """Require every external execution segment to retain the original identities.
+
+    Completed legacy runs predate resume support. New formats explicitly require
+    segment evidence; any recorded segments are checked, including on old runs.
+    """
+    directory = Path(directory)
+    files = sorted((directory / "segments").glob("[0-9][0-9][0-9][0-9].json"))
+    recorded = list((directory / "segments").glob("*.json"))
+    if {p for p in recorded if not p.name.endswith(".result.json")} != set(files):
+        raise ValueError("unexpected immutable runner segment filenames")
+    if recorded and not files:
+        raise ValueError("missing immutable runner segment metadata")
+    new_format = type(metadata.get("schema_version")) is int and metadata["schema_version"] >= 2
+    if not files and not require_segments and not metadata.get("segments_required", False) and not new_format:
+        return {"segments": 0, "legacy_nonresumable": True, "metadata_sha256": {}}
+    if not files or [p.stem for p in files] != [f"{i:04d}" for i in range(len(files))]:
+        raise ValueError("missing/noncontiguous immutable runner segments")
+    original_hash = hashlib.sha256((directory / "metadata.json").read_bytes()).hexdigest()
+    try:
+        game_ids = [int(row["game_id"]) for row in rows]
+    except (KeyError, ValueError) as exc:
+        raise ValueError("missing/invalid external game IDs for segment validation") from exc
+    if len(game_ids) != len(set(game_ids)):
+        raise ValueError("duplicate external game IDs")
+    previous_completed = set()
+    hashes = {}
+    for path in files:
+        data = path.read_bytes()
+        hashes[str(path.resolve())] = hashlib.sha256(data).hexdigest()
+        segment = json.loads(data)
+        if "source_equivalence" not in segment or segment["source_equivalence"] is not None:
+            raise ValueError("source-equivalence exceptions cannot enter strict comparisons")
+        if segment.get("original_metadata_sha256") != original_hash:
+            raise ValueError("segment original metadata hash mismatch")
+        for key, value in metadata.items():
+            if key not in segment or segment[key] != value:
+                raise ValueError(f"segment execution identity changed: {key}")
+        snapshot = path.with_name(path.stem + "-runner.py")
+        if snapshot.exists() or new_format:
+            if not snapshot.is_file():
+                raise ValueError("missing segment runner source snapshot")
+            snapshot_hash = hashlib.sha256(snapshot.read_bytes()).hexdigest()
+            sources = segment.get("source_hashes", segment.get("source_sha256", {}))
+            if sources.get("scripts/stdio_arena.py") != snapshot_hash:
+                raise ValueError("segment runner snapshot identity mismatch")
+            hashes[str(snapshot.resolve())] = snapshot_hash
+        completed, pending = segment.get("completed_game_ids"), segment.get("pending_game_ids")
+        if not isinstance(completed, list) or not isinstance(pending, list):
+            raise ValueError("missing segment game IDs")
+        if any(type(i) is not int for i in completed + pending):
+            raise ValueError("invalid segment game IDs")
+        if (
+            len(completed) != len(set(completed))
+            or len(pending) != len(set(pending))
+            or set(completed) & set(pending)
+            or set(completed) | set(pending) != set(game_ids)
+        ):
+            raise ValueError("incomplete/overlapping segment game IDs")
+        if not previous_completed <= set(completed):
+            raise ValueError("segment completion went backwards")
+        previous_completed = set(completed)
+    return {"segments": len(files), "original_metadata_sha256": original_hash, "metadata_sha256": hashes}
+
+
+def validate_planned_cases(metadata, rows, external):
+    count, repeats = metadata.get("boards"), metadata.get("repeats", 1 if external else None)
+    if type(count) is not int or count < 1 or type(repeats) is not int or repeats < 1:
+        raise ValueError("missing/invalid planned board or repeat budget")
+    suites = [""] if external else metadata.get("suites")
+    opponents = [""] if external else metadata.get("opponents")
+    if not isinstance(suites, list) or not suites or not isinstance(opponents, list) or not opponents:
+        raise ValueError("missing planned suites/opponents")
+    expected = {
+        (suite, opponent, str(board), str(repeat), str(swapped), str(seat))
+        for suite in suites
+        for opponent in opponents
+        for board in range(count)
+        for repeat in range(repeats)
+        for swapped in (0, 1)
+        for seat in (0, 1)
+    }
+    actual = {tuple(r.get(k, "") for k in ("suite", "opponent", "board_id", "repeat", "swapped", "seat")) for r in rows}
+    if actual != expected:
+        raise ValueError("incomplete map cluster or planned case set")
+
+
 def compare(control, candidate, resamples=100000):
     control, candidate = Path(control), Path(candidate)
     left, right = indexed_rows(control), indexed_rows(candidate)
@@ -74,6 +161,13 @@ def compare(control, candidate, resamples=100000):
         raise ValueError("different simulator, runner, or opponent sources")
     if metadata[0].get("opponent_options", {}) != metadata[1].get("opponent_options", {}):
         raise ValueError("different opponent options")
+    for m, rows in zip(metadata, (left, right)):
+        validate_planned_cases(m, rows.values(), external)
+    segments = (
+        [validate_segments(p, m, rows.values()) for p, m, rows in zip((control, candidate), metadata, (left, right))]
+        if external
+        else []
+    )
     groups = {}
     values = {"win": 1.0, "loss": 0.0, "draw": 0.5}
     for key, old in left.items():
@@ -120,6 +214,7 @@ def compare(control, candidate, resamples=100000):
             hashlib.sha256((p / "metadata.json").read_bytes()).hexdigest() for p in (control, candidate)
         ],
         "matchups": results,
+        "execution_segments": segments,
     }
 
 

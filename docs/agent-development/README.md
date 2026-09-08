@@ -19,6 +19,30 @@ with `scripts/build_sentinel_bundle.py --variant v3 --output PATH`.
 Use `scripts/compare_agent_runs.py CONTROL_DIR CANDIDATE_DIR --output PATH` for
 paired score differences; it verifies actual boards, rules, and complete cases.
 
+The external runner, `scripts/stdio_arena.py`, retains every reply and completed
+outcome before cleaning up both processes. To continue an interrupted run, repeat
+its original command with `--resume --check-resume` first, then remove
+`--check-resume`. It verifies policy/runtime identities, retained boards, complete
+case traces, and process ownership before running only missing cases. Each
+execution retains an immutable metadata segment and runner source snapshot.
+Changed-source resumes require an explicit reviewed equivalence record and are
+excluded from strict strength comparisons. Do not edit the original metadata.
+
+After the preregistered v3 evaluation finishes, check its fixed promotion gates:
+
+```sh
+.venv/bin/python scripts/check_v3_promotion.py \
+  --local-v2 LOCAL_V2 --local-v3 LOCAL_V3 \
+  --external-v2 EXTERNAL_V2 --external-v3 EXTERNAL_V3 \
+  --qualification V3_QUALIFICATION --output promotion.json
+```
+
+The checker validates full case budgets, paired maps, frozen sources/archives,
+raw replies and cleanup records, and all sixteen runtime probes. Exit status 0
+means the evidence passes every promotion gate; status 1 means rejection or
+incomplete evidence. The JSON distinguishes invalid evidence from a failed
+strength gate. These are local measurements, not an official ladder placement.
+
 ## Install and run
 
 ```sh
@@ -44,7 +68,7 @@ latency; see the profiling tools below.
 
 ```sh
 JAX_PLATFORMS=cpu .venv/bin/python -m generals.training.train \
-  --output .cache/runs/my-spatial --board-size 8 --iterations 256
+  --output .cache/runs/my-spatial --board-size 8 --iterations 256 --shaping-scale 0
 JAX_PLATFORMS=cpu .venv/bin/python -m generals.training.train \
   --output .cache/runs/my-spatial --resume .cache/runs/my-spatial/checkpoint.pkl \
   --iterations 512

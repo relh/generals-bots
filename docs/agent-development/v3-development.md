@@ -136,3 +136,51 @@ v3 records 678 Hunter passes versus v2's 362, and 428 Expander passes versus 350
 so conservative behavior remains a measurable cost. This source is frozen for
 the separately scheduled competition and external comparisons. Promotion still
 requires demonstrated improvement; these classic results alone do not provide it.
+
+## External game-0 diagnosis after the final freeze
+
+![Observed battle, stale remembered pressure, and the subsequent army deficit](plots/v3-stale-threat.svg)
+
+The plot uses reconstructed public observations and policy telemetry from this
+one completed development episode. The shaded window locates the same period
+in the close-up and full-game views; recall marks show the four returning moves.
+
+This read-only audit compares `external-revision2/game-0000.json` with
+`external-v2-refresh/game-0000.json` under `.cache/runs/sentinel-v3/`. They use the
+same 21×18 board, starting position, rules, and pinned Amin checkpoint. V2 wins
+at turn 383; final v3 loses at 665. Both processes have zero protocol faults and
+zero skipped observations in both games. Sentinel emits no invalid actions;
+Amin's 32 and 53 physically invalid attempts, respectively, are recorded passes,
+not missing observations. These are different policy-induced trajectories.
+
+The reconstruction applies the retained **applied** actions to the actual engine.
+It uses JAX 0.11.0 and reconstructs Sentinel's observation/memory sequence with
+`PRNGKey(player)` and a two-way split per protocol frame. Both final winners,
+terminal frames, and turn counts match. All 1,048 Sentinel raw reply vectors
+match the reconstructed policy output exactly; sampled wire encode/decode
+observations also match. The opponent is not re-executed. The script, state and
+telemetry arrays, and verification reports are in
+`.cache/runs/sentinel-v3/external-diagnostic/`.
+
+| Turns | Evidence | Interpretation |
+| --- | --- | --- |
+| 0–241 | Both games have exactly the same applied actions. They exchange the castle at `(13,10)` several times; at 234 a visible enemy stack of 37 attacks our 37 at `(12,10)`. Both stacks lose 36; the visible cells become 1 and public enemy army falls 149→113. | Opening play and early castle trades do not explain the difference between policies. The battle supplies evidence that a previously dangerous army has been depleted. |
+| 242–245 | First policy divergence: home has 14; visible threat pressure is 0, but remembered pressure is 23. V3 reverses the convoy at `(6,1)` and returns it through `(6,0)`, `(5,0)`, `(4,0)` to home. V2 sends it forward. | The explicit memory model, rather than an immediate visible attack, triggers the first recall. |
+| 242–260 | At 242, the maximum remembered pressure comes from hypothetical 35-army locations `(4,9)` and `(5,8)`, age 16, twelve route steps from home. These derive from the 47-army sighting at turn 226. Pressure rises 23→29 through 250 as the possible region approaches home; the old memory expires at 251 but the held reserve remains. | Location-wise visibility clearing does not associate later sightings and battle losses with every older alternative trajectory. Its aging rule can increase estimated arrival pressure while the underlying remembered force decays. This is a concrete mechanism for excessive defense. The actual largest enemy stack at 242 is only 17, a hindsight fact unavailable directly to the policy. |
+| 280–300 | V3 loses its original castle at 280. At 283 it builds at `(12,9)` using a 40-army stack while an enemy 19 is visibly two moves away at `(13,10)`. The enemy approaches and captures the new castle at 284. By 300, v3 trails 170/239 in army with 0/2 castles; v2 has 211/204 and 1/0. | The shared v2 construction heuristic protects against adjacent threats but permits this visibly unsafe two-move investment. This costly mistake occurs on the changed v3 trajectory; it is not a new construction rule introduced by v3. |
+| 350–500 | V3 repeatedly loses and recaptures remote castles and continues recalls. At 500 its general holds 108 of its total 272 troops; the enemy has 536. V2 has already won at 383 after reaching the enemy general. | Defensive concentration fails to preserve the production and attack tempo needed to compete with this opponent. V3 never sees the enemy general in its entire episode. |
+| 534–665 | A real 136-army attacker hits home's 148 at 534, leaving 13. V3 survives and rebuilds. A later 286-army adjacent attacker overwhelms home 112 on turn 664; defeat is recorded at 665. | The last attack is the terminal mechanism, following a substantial economic deficit. Deathtouch has not activated. |
+
+V3 makes 282 defensive overrides: 173 recalls and 109 productive alternatives.
+The final selection correction therefore does not remove the strategic cost of
+an overly conservative threat model. The clean protocol reconstruction rules
+out missed frames or inference deadlines as explanations for this selected pair.
+
+This evidence supports two weaknesses: stale alternative threat trajectories can
+cause unnecessary withdrawal, and the inherited castle heuristic can invest
+into a visible two-turn capture. The full-policy comparison establishes a
+changed outcome on this board; it does **not** prove that changing only turn 242
+would recover the win. No intervention or policy tuning was performed, and this
+selected loss does not estimate failure frequency or external rank. The frozen
+v3 hash remains `01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896`;
+seed-113000 final-test observations were not inspected here.

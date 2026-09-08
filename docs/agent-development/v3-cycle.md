@@ -37,6 +37,10 @@ regression exceeding three percentage points. Runtime qualification must cover a
 16 rectangles, with zero reply faults, first response below 10 seconds and every
 subsequent response below 150ms in the measured sample. Report sample uncertainty
 and shared-host/RSS limits. Thresholds are fixed before fresh maps are generated.
+The fresh external comparison must also have zero reply faults from either bot
+to support promotion without a runtime-fault confound. All faults remain reported
+even when this validity check fails; correctly formatted illegal game actions
+remain silent passes under the competition rules.
 
 If the candidate fails, retain v2 as default, publish the measured rejection,
 and keep the new memory tooling and prototype explicitly experimental. Do not tune

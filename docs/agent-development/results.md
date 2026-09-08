@@ -64,8 +64,8 @@ See [failure analysis](failures.md) for specific decision timelines.
 Sentinel is the strategic policy above. The separate spatial PPO learner has
 not passed this gate. Its controlled [reward pilot](learning.md) improved over
 initialization but favored terminal-only training over shaping in all eight
-measured development matchup scores. The extended terminal-only campaign targets
-16,777,216 total training transitions with four frozen evaluation milestones.
+measured development matchup scores. The extended terminal-only campaign completed
+16,777,216 total training transitions and four frozen evaluation milestones.
 
 The deadline-aware external comparison finished with **12 wins, 14 losses, and
 6 draws** against the pinned Amin NumPy PPO checkpoint, across eight maps and
@@ -75,10 +75,18 @@ not establish dominance against that checkpoint or an external leaderboard rank.
 See the [external comparison](external-comparison.md) and
 [deployment and opponent provenance](deployment.md).
 
-The extended learner's first milestone, 2,097,152 transitions, won 67.2% against
-Hunter on 32 development 8×8 maps and 50.0% on 32 development 12×12 maps. Training
-continues toward the bounded 16,777,216-transition target. Its live status and
-milestone reports are under `.cache/runs/spatial-terminal-extended/`.
+The learner's final checkpoint led the prespecified development metric and was
+selected before fresh testing. It finished 1,514 wins, 385 losses, and 149 draws
+on 2,048 fresh classic8/classic12 games: 73.9% wins (95% map interval 69.8–77.9%)
+and 77.6% score. All candidate command counters were clean. All four checkpoints
+remain retained; training is complete. See [learning.md](learning.md) for per-opponent
+results, checkpoint identity, regression analysis, and limitations.
+
+The [controlled v3 cycle](v3-cycle.md) is testing public threat memory and
+sustained defense. The initial prototype regressed externally and remains
+rejected. The final development revision matches v2 on the small local paired
+suites and passed all 480 runtime probes; its external and fresh-map comparisons
+are pending. V2 remains the default until the fixed promotion requirements pass.
 
 Verification: 197 full-suite tests plus 20 focused tests passed, including two
 additional diagnostic regressions (199 unique tests). Changed production code

@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 
 import numpy as np
@@ -25,13 +26,27 @@ def write_run(path, result, local=False):
             "generals/agents/hunter_agent.py",
         )
     }
-    metadata = {"rules": {"max_turns": 1200}, "source_hashes": sources}
+    metadata = {"rules": {"max_turns": 1200}, "source_hashes": sources, "boards": 1, "repeats": 1}
     if not local:
         metadata["opponent"] = {"directory_sha256": "fixture-opponent"}
+        metadata["segments_required"] = True
+    else:
+        metadata.update(suites=[""], opponents=["hunter"])
     (path / "metadata.json").write_text(json.dumps(metadata))
+    if not local:
+        (path / "segments").mkdir()
+        segment = metadata | {
+            "source_equivalence": None,
+            "original_metadata_sha256": hashlib.sha256((path / "metadata.json").read_bytes()).hexdigest(),
+            "completed_game_ids": [],
+            "pending_game_ids": list(range(4)),
+        }
+        (path / "segments/0000.json").write_text(json.dumps(segment))
     np.savez(path / "boards.npz", **{"0": np.array([[1, 0], [0, 2]])})
     with (path / "games.csv").open("w") as stream:
-        writer = csv.DictWriter(stream, fieldnames=["opponent", "board_id", "repeat", "swapped", "seat", "result"])
+        writer = csv.DictWriter(
+            stream, fieldnames=["opponent", "board_id", "repeat", "swapped", "seat", "result", "game_id"]
+        )
         writer.writeheader()
         for swapped in (0, 1):
             for seat in (0, 1):
@@ -43,6 +58,7 @@ def write_run(path, result, local=False):
                         swapped=swapped,
                         seat=seat,
                         result=result,
+                        game_id=swapped * 2 + seat,
                     )
                 )
 
@@ -110,3 +126,65 @@ def test_rejects_changed_or_missing_local_identity(tmp_path, field):
     path.write_text(json.dumps(metadata))
     with pytest.raises(ValueError, match="missing|different"):
         compare(a, b)
+
+
+@pytest.mark.parametrize("mutation", ["missing", "source", "exception"])
+def test_external_segment_cannot_hide_different_execution(tmp_path, mutation):
+    a, b = tmp_path / "a", tmp_path / "b"
+    write_run(a, "draw")
+    write_run(b, "win")
+    path = b / "segments/0000.json"
+    if mutation == "missing":
+        path.unlink()
+    else:
+        segment = json.loads(path.read_text())
+        if mutation == "source":
+            segment["source_hashes"]["scripts/stdio_arena.py"] = "new-runner"
+        else:
+            segment["source_equivalence"] = {"approved": True}
+        path.write_text(json.dumps(segment))
+    with pytest.raises(ValueError, match="segment|source-equivalence"):
+        compare(a, b, resamples=100)
+
+
+def test_same_identity_resume_segments_pass(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    write_run(a, "draw")
+    write_run(b, "win")
+    segment = json.loads((b / "segments/0000.json").read_text())
+    segment.update(completed_game_ids=[0, 1], pending_game_ids=[2, 3])
+    (b / "segments/0001.json").write_text(json.dumps(segment))
+    result = compare(a, b, resamples=100)
+    assert result["execution_segments"][1]["segments"] == 2
+
+
+def test_completed_legacy_nonresumable_runs_remain_comparable(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    for path in (a, b):
+        write_run(path, "draw")
+        (path / "segments/0000.json").unlink()
+        metadata = json.loads((path / "metadata.json").read_text())
+        metadata.pop("segments_required")
+        (path / "metadata.json").write_text(json.dumps(metadata))
+    result = compare(a, b, resamples=100)
+    assert result["execution_segments"][0]["legacy_nonresumable"]
+
+
+def test_identically_missing_planned_board_does_not_count_as_complete(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    for path in (a, b):
+        write_run(path, "win")
+        original = list(csv.DictReader((path / "games.csv").open()))
+        rows = []
+        for board in range(7):
+            rows.extend([r | {"board_id": str(board), "game_id": str(board * 4 + i)} for i, r in enumerate(original)])
+        with (path / "games.csv").open("w") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows)
+        metadata = json.loads((path / "metadata.json").read_text())
+        metadata["boards"] = 8
+        (path / "metadata.json").write_text(json.dumps(metadata))
+        np.savez(path / "boards.npz", **{str(i): np.array([[1, 0], [0, 2]]) for i in range(7)})
+    with pytest.raises(ValueError, match="planned case set"):
+        compare(a, b, resamples=100)
