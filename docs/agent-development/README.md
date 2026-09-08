@@ -10,6 +10,15 @@ Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
 
+The [controlled v3 cycle](v3-cycle.md) adds remembered invasion threats and
+sustained defense in an experimental policy. V2 remains the default. To evaluate
+the prototype, use `--candidate sentinel-v3`; the `sentinel-v3-memory` and
+`sentinel-v3-defense` aliases isolate its two changes. Replays include each
+player's memory and decision telemetry. Standalone builds select the same variants
+with `scripts/build_sentinel_bundle.py --variant v3 --output PATH`.
+Use `scripts/compare_agent_runs.py CONTROL_DIR CANDIDATE_DIR --output PATH` for
+paired score differences; it verifies actual boards, rules, and complete cases.
+
 ## Install and run
 
 ```sh
@@ -84,7 +93,7 @@ JAX_PLATFORMS=cpu .venv/bin/python -m generals.evaluation.cli \
   --output .cache/runs/sentinel-heldout-v2
 ```
 
-Seed 73000 is reserved for the first frozen v2 holdout. Development used seed
+Seed 73000 was consumed by the first frozen v2 holdout. Development used seed
 31000; the reward pilot uses a separate development family. Once inspected,
 holdout maps become development data for subsequent versions. Do not rerun a
 tuned candidate on them and call the result held out.

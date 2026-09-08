@@ -18,8 +18,8 @@ import numpy as np
 
 from generals.core import game
 
-from .arena import Rules, action_counters, transition
-from .cli import agent
+from .arena import Rules, action_counters, initial_memory, policy_step, transition
+from .cli import V3_OPTIONS, agent
 
 ROOT = Path(__file__).resolve().parents[2]
 METRICS = ("passes", "splits", "build_attempts", "builds", "invalid_moves", "malformed_commands")
@@ -76,56 +76,94 @@ def rules_for(metadata, suite):
     return defaults[suite], "legacy suite defaults; historical rules provenance unverified"
 
 
-def make_policy(name, rules, checkpoint=None, source=None):
+def make_policy(name, rules, checkpoint=None, source=None, *, options=None):
     if source:
-        if name != "sentinel":
+        if name != "sentinel" and name not in V3_OPTIONS:
             raise ValueError("--candidate-source currently supports Sentinel snapshots only")
         spec = importlib.util.spec_from_file_location("generals.agents._sentinel_snapshot", source)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        player = module.SentinelAgent(
-            build_castles=rules.build_castles, deathtouch_turn=rules.deathtouch_turn, max_turns=rules.max_turns
+        player_class = module.SentinelV3Agent if name in V3_OPTIONS else module.SentinelAgent
+        player = player_class(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V3_OPTIONS.get(name, {}) | (options or {})),
         )
+        if name in V3_OPTIONS:
+            return player, None
         return player.act, player.decision
-    policy = agent(name, rules, checkpoint)
+    policy = agent(name, rules, checkpoint, options=options)
     owner = getattr(policy, "__self__", None)
     return policy, getattr(owner, "decision", None)
+
+
+def store_tree_trace(arrays, prefix, snapshots):
+    """Store arbitrary array pytrees without pickle, with ordered paths and structure.
+
+    Memory snapshots include the initial value (T+1); telemetry has T values.
+    Leaf names are numeric so arbitrary dictionary keys cannot collide. The
+    paths and tree description preserve their association for trace readers.
+    """
+    leaves, structure = jax.tree_util.tree_flatten_with_path(snapshots[0])
+    arrays[f"{prefix}_paths"] = np.asarray([jax.tree_util.keystr(path) for path, _ in leaves], dtype=str)
+    arrays[f"{prefix}_structure"] = np.asarray(str(structure))
+    flattened = [jax.tree.leaves(snapshot) for snapshot in snapshots]
+    for index in range(len(leaves)):
+        arrays[f"{prefix}_leaf_{index}"] = np.stack([values[index] for values in flattened])
 
 
 def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision=None):
     """Record full state only outside policies; policies receive fog observations.
 
     Keys split in the exact candidate/opponent order used by arena.make_runner.
-    Arrays hold T+1 states, T observations/actions/keys/counters and telemetry.
+    Arrays hold T+1 states and per-policy memories, plus T observations,
+    actions, keys, counters and both policies' telemetry. Stateful telemetry
+    comes from the same step that selected the action, never a second call.
     """
 
     @jax.jit
-    def step(state, key):
+    def step(state, key, memories):
         keys = jax.random.split(key, 3)
         ours = game.get_observation(state, seat)
         theirs = game.get_observation(state, 1 - seat)
-        action = candidate(ours, keys[1])
-        telemetry = {} if decision is None else decision(ours, keys[1])[1]
-        enemy_action = opponent(theirs, keys[2])
+        action, own_memory, telemetry = policy_step(candidate, ours, keys[1], memories[0])
+        if decision is not None and not callable(getattr(candidate, "step", None)):
+            telemetry = decision(ours, keys[1])[1]
+        enemy_action, enemy_memory, enemy_telemetry = policy_step(opponent, theirs, keys[2], memories[1])
         actions = jnp.stack((action, enemy_action) if seat == 0 else (enemy_action, action))
         observations = (ours, theirs) if seat == 0 else (theirs, ours)
         after, info = transition(state, actions, rules)
         counters = action_counters(state, after, actions, rules)
-        return after, keys[0], observations, actions, counters, telemetry, info.is_done
+        return (
+            after,
+            keys[0],
+            observations,
+            actions,
+            counters,
+            (telemetry, enemy_telemetry),
+            info.is_done,
+            (own_memory, enemy_memory),
+        )
 
     state = game.create_initial_state(jnp.array(grid))
     key = jax.random.PRNGKey(action_seed)
+    memories = tuple(initial_memory(policy, grid.shape) for policy in (candidate, opponent))
+    memory_history = [jax.device_get(memories)]
     states = [jax.device_get(state)]
     records = []
-    finished = False
+    finished = bool(state.winner >= 0)
     while int(state.time) < rules.max_turns and not finished:
         old_key = np.asarray(key)
-        state, key, obs, actions, counters, telemetry, terminal = step(state, key)
+        state, key, obs, actions, counters, telemetry, terminal, memories = step(state, key, memories)
         state_host, obs, actions, counters, telemetry = jax.device_get((state, obs, actions, counters, telemetry))
         states.append(state_host)
+        memory_history.append(jax.device_get(memories))
         records.append((old_key, obs, actions, counters, telemetry))
         finished = bool(terminal)
     arrays = {"initial_grid": np.asarray(grid), "final_key": np.asarray(key)}
+    for index, role in enumerate(("candidate", "opponent")):
+        store_tree_trace(arrays, f"{role}_memory", [memory[index] for memory in memory_history])
     for field in state._fields:
         arrays[f"state_{field}"] = np.stack([getattr(s, field) for s in states])
     arrays["keys"] = np.stack([r[0] for r in records]) if records else np.empty((0, 2), np.uint32)
@@ -138,8 +176,13 @@ def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision
             for field in records[0][1][player]._fields:
                 if getattr(records[0][1][player], field) is not None:
                     arrays[f"observation_{player}_{field}"] = np.stack([getattr(r[1][player], field) for r in records])
-        for field in records[0][4]:
-            arrays[f"telemetry_{field}"] = np.stack([r[4][field] for r in records])
+        for index, role in enumerate(("candidate", "opponent")):
+            store_tree_trace(arrays, f"{role}_telemetry", [record[4][index] for record in records])
+        # Retain the original flat Sentinel diagnostic names for report readers.
+        if isinstance(records[0][4][0], dict):
+            for field, value in records[0][4][0].items():
+                if isinstance(value, (np.ndarray, np.generic, int, float, bool)):
+                    arrays[f"telemetry_{field}"] = np.stack([r[4][0][field] for r in records])
     winner = int(state.winner)
     outcome = "draw" if winner < 0 else ("win" if winner == seat else "loss")
     result = dict(result=outcome, winner=winner, turns=int(state.time), terminal=finished)
@@ -280,22 +323,34 @@ def source_provenance(metadata, row, candidate_source=None):
         paths.update(str(path.relative_to(ROOT)) for path in (ROOT / directory).rglob("*.py"))
     current = {name: file_hash(ROOT / name) if (ROOT / name).is_file() else None for name in sorted(paths)}
     changed = [name for name in recorded if current[name] != recorded[name]]
-    candidate_module = {"sentinel": "sentinel_agent", "old-ppo": None, "learned": None}.get(
-        row["candidate"], f"{row['candidate']}_agent"
-    )
+    candidate_module = {
+        "sentinel": "sentinel_agent",
+        "sentinel-v3": "sentinel_v3_agent",
+        "old-ppo": None,
+        "learned": None,
+    }.get(row["candidate"], f"{row['candidate']}_agent")
+    if row["candidate"] in V3_OPTIONS:
+        candidate_module = "sentinel_v3_agent"
+    opponent_module = "sentinel_v3_agent" if row["opponent"] in V3_OPTIONS else f"{row['opponent']}_agent"
     critical = [
         name
         for name in changed
         if name.startswith(("generals/core/", "generals/modifiers/"))
-        or name in ("generals/evaluation/arena.py", "generals/evaluation/scenarios.py")
-        or name == f"generals/agents/{row['opponent']}_agent.py"
+        or name in ("generals/evaluation/arena.py", "generals/evaluation/scenarios.py", "generals/evaluation/cli.py")
+        or name == f"generals/agents/{opponent_module}.py"
+        or (
+            any(policy in V3_OPTIONS for policy in (row["candidate"], row["opponent"]))
+            and name == "generals/agents/sentinel_agent.py"
+        )
         or (candidate_module and name == f"generals/agents/{candidate_module}.py" and not candidate_source)
         or (row["candidate"] == "learned" and name.startswith("generals/training/"))
         or (row["candidate"] == "old-ppo" and name.startswith("examples/_experimental/ppo/"))
     ]
     candidate_path = Path(candidate_source) if candidate_source else ROOT / "generals/agents" / f"{candidate_module}.py"
     actual_candidate_hash = file_hash(candidate_path) if candidate_path.is_file() else None
-    expected_candidate_hash = metadata.get("candidate_source_sha256")
+    expected_candidate_hash = metadata.get("candidate_source_sha256") or recorded.get(
+        f"generals/agents/{candidate_module}.py"
+    )
     if expected_candidate_hash and actual_candidate_hash != expected_candidate_hash:
         critical.append("candidate_source_sha256")
     return dict(
@@ -360,8 +415,12 @@ def main():
                 f"Source changed: {provenance['critical_changed_sources']}. "
                 "Supply the historical snapshot or explicitly use --allow-mismatch."
             )
-        ours, decision = make_policy(row["candidate"], rules, checkpoint, args.candidate_source)
-        theirs, _ = make_policy(row["opponent"], rules)
+        ours, decision = make_policy(
+            row["candidate"], rules, checkpoint, args.candidate_source, options=metadata.get("candidate_options")
+        )
+        theirs, _ = make_policy(
+            row["opponent"], rules, options=metadata.get("opponent_options", {}).get(row["opponent"])
+        )
         arrays, actual = replay_game(
             load_grid(args.run_dir, row),
             ours,
@@ -385,6 +444,13 @@ def main():
             source_provenance=provenance,
             rules=asdict(rules),
             rule_provenance=rule_provenance,
+            candidate_options=metadata.get("candidate_options", {}),
+            opponent_options=metadata.get("opponent_options", {}).get(row["opponent"], {}),
+            policy_trace={
+                prefix: dict(paths=arrays[f"{prefix}_paths"].tolist(), structure=arrays[f"{prefix}_structure"].item())
+                for prefix in ("candidate_memory", "opponent_memory", "candidate_telemetry", "opponent_telemetry")
+                if f"{prefix}_paths" in arrays
+            },
             runtime=dict(jax_version=jax.__version__, devices=[str(d) for d in jax.devices()]),
             **detail,
         )

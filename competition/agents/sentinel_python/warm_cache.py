@@ -8,9 +8,7 @@ import time
 from pathlib import Path
 
 import jax
-from main import read_observation
-
-from generals.agents.sentinel_agent import SentinelAgent
+from main import make_agent, read_observation
 
 
 def initial_frame(height, width):
@@ -33,7 +31,7 @@ def main():
     if os.environ.get("JAX_ENABLE_COMPILATION_CACHE", "true").lower() == "false":
         raise RuntimeError("build requires JAX_ENABLE_COMPILATION_CACHE=true")
     started = time.perf_counter()
-    agent = SentinelAgent(build_castles=True, deathtouch_turn=800, max_turns=1200)
+    agent = make_agent()
     key = jax.random.PRNGKey(0)
     report = {
         "jax": jax.__version__,
@@ -48,7 +46,10 @@ def main():
         before = time.perf_counter()
         obs = read_observation(io.StringIO(initial_frame(h, w)), h, w)
         key, action_key = jax.random.split(key)
-        action = jax.block_until_ready(agent.act(obs, action_key))
+        if hasattr(agent, "initial_memory"):
+            action, _, _ = jax.block_until_ready(agent.step(obs, action_key, agent.initial_memory((h, w))))
+        else:
+            action = jax.block_until_ready(agent.act(obs, action_key))
         report["shapes"].append(
             {"shape": [h, w], "seconds": time.perf_counter() - before, "action": [int(x) for x in action]}
         )

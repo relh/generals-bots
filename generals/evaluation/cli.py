@@ -19,8 +19,27 @@ from generals.agents.harvester_agent import HarvesterAgent
 from .arena import make_runner
 from .scenarios import make_suite, paired_cases
 
+V3_OPTIONS = {
+    "sentinel-v3": {"remember_threats": True, "sustained_defense": True},
+    "sentinel-v3-memory": {"remember_threats": True, "sustained_defense": False},
+    "sentinel-v3-defense": {"remember_threats": False, "sustained_defense": True},
+    "sentinel-v3-disabled": {"remember_threats": False, "sustained_defense": False},
+}
 
-def agent(name, rules, checkpoint=None):
+
+def agent(name, rules, checkpoint=None, *, options=None):
+    options = options or {}
+    if options and (name not in V3_OPTIONS or set(options) - {"remember_threats", "sustained_defense"}):
+        raise ValueError(f"Unsupported policy options for {name}: {options}")
+    if name in V3_OPTIONS:
+        from generals.agents.sentinel_v3_agent import SentinelV3Agent
+
+        return SentinelV3Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V3_OPTIONS[name] | options),
+        )
     if name == "sentinel":
         from generals.agents.sentinel_agent import SentinelAgent
 
@@ -74,7 +93,7 @@ def main():
     parser.add_argument(
         "--candidate",
         default="sentinel",
-        choices=["sentinel", "learned", "old-ppo", "random", "expander", "hunter", "harvester"],
+        choices=["sentinel", *V3_OPTIONS, "learned", "old-ppo", "random", "expander", "hunter", "harvester"],
     )
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--opponents", nargs="+", default=["random", "expander", "hunter", "harvester"])
@@ -92,6 +111,8 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     metadata = {k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items()}
     metadata.update(devices=[str(d) for d in jax.devices()], jax_version=jax.__version__)
+    if args.candidate in V3_OPTIONS:
+        metadata["candidate_options"] = V3_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p

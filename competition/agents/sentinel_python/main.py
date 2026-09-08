@@ -54,23 +54,46 @@ def read_observation(stream, height, width):
     )
 
 
+def make_agent():
+    mode = os.environ.get("SENTINEL_MODE", "competition")
+    if mode not in ("classic", "competition"):
+        raise ValueError(f"unsupported SENTINEL_MODE={mode!r}")
+    variant = os.environ.get("SENTINEL_VARIANT", "v2")
+    agent_type = SentinelAgent
+    options = {}
+    if variant in ("v3", "v3-memory", "v3-defense", "v3-disabled"):
+        from generals.agents.sentinel_v3_agent import SentinelV3Agent
+
+        agent_type = SentinelV3Agent
+        options = dict(
+            remember_threats=variant in ("v3", "v3-memory"),
+            sustained_defense=variant in ("v3", "v3-defense"),
+        )
+    elif variant != "v2":
+        raise ValueError(f"unsupported SENTINEL_VARIANT={variant!r}")
+    return agent_type(
+        build_castles=mode == "competition",
+        deathtouch_turn=800 if mode == "competition" else None,
+        max_turns=1200 if mode == "competition" else 800,
+        **options,
+    )
+
+
 def main():
     handshake = sys.stdin.readline()
     if not handshake:
         return
     player, height, width = map(int, handshake.split())
-    mode = os.environ.get("SENTINEL_MODE", "competition")
-    if mode not in ("classic", "competition"):
-        raise ValueError(f"unsupported SENTINEL_MODE={mode!r}")
-    agent = SentinelAgent(
-        build_castles=mode == "competition",
-        deathtouch_turn=800 if mode == "competition" else None,
-        max_turns=1200 if mode == "competition" else 800,
-    )
+    agent = make_agent()
+    stateful = hasattr(agent, "initial_memory")
+    memory = agent.initial_memory((height, width)) if stateful else None
     key = jax.random.PRNGKey(player)
     while (obs := read_observation(sys.stdin, height, width)) is not None:
         key, action_key = jax.random.split(key)
-        action = agent.act(obs, action_key)
+        if stateful:
+            action, memory, _ = agent.step(obs, action_key, memory)
+        else:
+            action = agent.act(obs, action_key)
         print(" ".join(str(int(x)) for x in action), flush=True)
 
 

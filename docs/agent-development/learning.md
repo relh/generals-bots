@@ -135,3 +135,47 @@ and control counters, with maximum GPU parameter difference 2.98e-8 from floatin
 arithmetic. Checkpoints preserve initialization provenance separately from the
 current training source/driver, and resume events record that transition.
 Historical and optimized trajectories are not promised to remain bit-identical.
+
+### Continuation measurements (campaign still running)
+
+Three frozen milestones have completed development evaluation. Each row contains
+1,024 games: 32 boards per suite, two seats and two spawn-label assignments,
+against four opponents. Score averages all eight suite/opponent matchups equally.
+These development maps are reused for checkpoint selection; they are not a final
+test. Every milestone snapshot remains retained with its manifest SHA256.
+
+| Iteration / total transitions | Wins | Losses | Draws | Win rate | Score | Nonrandom score |
+|---|---:|---:|---:|---:|---:|---:|
+| 1,024 / 2,097,152 | 686 | 235 | 103 | 67.0% | 72.0% | 64.9% |
+| 2,048 / 4,194,304 | 674 | 282 | 68 | 65.8% | 69.1% | 59.9% |
+| 4,096 / 8,388,608 | 720 | 222 | 82 | 70.3% | 74.3% | 67.4% |
+
+The 4.2M checkpoint regressed against all six nonrandom matchups while improving
+against Random on classic12. All six individual paired score-difference intervals
+include zero. Training wins still increased over the final 100-iteration windows
+against Expander (75.2% to 77.4%) and Hunter (79.7% to 80.4%). On development games,
+pass frequency rose from 2.1% to 8.2%, and half-army moves from 7.2% to 14.0%.
+These are observed behavior changes; they do not establish the cause of the
+regression or prove overfitting.
+
+The 8.4M checkpoint recovered on classic8: win rates are 81.2% against Expander
+and 76.6% against Hunter/Harvester. Its classic12 results remain weaker: 48.4%,
+50.0%, and 50.0%, respectively. Thus more training has not produced uniform
+improvement across board sizes. All eight paired score intervals comparing 8.4M
+with 2.1M include zero; checkpoint ranking remains exploratory at 32 maps per
+suite. Paired differences use 100,000 whole-board resamples with seed 91083,
+retaining seats/spawn assignments; intervals are not multiplicity adjusted.
+
+The final segment continues to 16,777,216 transitions. Once its evaluation is
+complete, select the milestone with highest equal-weight development score,
+freeze that choice, and evaluate once on reserved seed **61073**, with 64 boards
+per suite and the same four opponents (2,048 games). This selection rule was
+recorded before seeing the final milestone or generating the fresh test maps.
+The fresh evaluation will not be used to tune or reselect checkpoints.
+
+Detailed counts, paired differences, behavior rates, and training windows are
+retained in `.cache/runs/spatial-terminal-extended/milestone_analysis.json`;
+`REPORT.md`, `manifest.json`, `checkpoints/`, and `evaluations/` retain the raw
+milestone evidence. The trained policy has no recurrent memory and was trained
+only on 8×8 maps with builds disabled; these measurements do not establish
+competition readiness or external-opponent strength.

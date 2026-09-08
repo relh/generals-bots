@@ -9,7 +9,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build(output, prewarm_cache=True):
+VARIANTS = ("v2", "v3", "v3-memory", "v3-defense", "v3-disabled")
+
+
+def build(output, prewarm_cache=True, variant="v2"):
+    if variant not in VARIANTS:
+        raise ValueError(f"unsupported variant: {variant}")
     # Package initializers are intentionally minimal: inference does not need to
     # import the environment, GUI, trainers, or optional training dependencies.
     files = {
@@ -24,12 +29,16 @@ def build(output, prewarm_cache=True):
     ):
         files[name] = (ROOT / name).read_bytes()
     files["main.py"] = (ROOT / "competition/agents/sentinel_python/main.py").read_bytes()
+    if variant != "v2":
+        name = "generals/agents/sentinel_v3_agent.py"
+        files[name] = (ROOT / name).read_bytes()
     bootstrap = b"""#!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
 export JAX_PLATFORMS=cpu
 export PYTHONNOUSERSITE=1
 """
+    bootstrap += f"export SENTINEL_VARIANT={variant}\nexport SENTINEL_MODE=competition\n".encode()
     if prewarm_cache:
         bootstrap += b"""export JAX_COMPILATION_CACHE_DIR="$PWD/.jax_cache"
 export JAX_PERSISTENT_CACHE_MIN_COMPILE_TIME_SECS=0
@@ -44,6 +53,7 @@ export JAX_PERSISTENT_CACHE_MIN_ENTRY_SIZE_BYTES=0
     manifest = {
         "kind": "sentinel-standalone/1",
         "rules": "competition",
+        "variant": variant,
         "entrypoint": "run.sh",
         "prewarm_cache": prewarm_cache,
         "prewarm_shapes": [[h, w] for h in range(18, 22) for w in range(18, 22)] if prewarm_cache else [],
@@ -70,16 +80,19 @@ export JAX_PERSISTENT_CACHE_MIN_ENTRY_SIZE_BYTES=0
         "files": len(files),
         "unpacked_bytes": sum(map(len, files.values())),
         "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
-        "policy_sha256": manifest["source_sha256"]["generals/agents/sentinel_agent.py"],
+        "policy_sha256": manifest["source_sha256"][
+            "generals/agents/sentinel_agent.py" if variant == "v2" else "generals/agents/sentinel_v3_agent.py"
+        ],
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--variant", choices=VARIANTS, default="v2")
     parser.add_argument("--no-prewarm-cache", action="store_true", help="Omit build.sh and cache configuration")
     args = parser.parse_args()
-    print(json.dumps(build(args.output, not args.no_prewarm_cache), indent=2))
+    print(json.dumps(build(args.output, not args.no_prewarm_cache, args.variant), indent=2))
 
 
 if __name__ == "__main__":

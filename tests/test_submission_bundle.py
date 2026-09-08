@@ -78,3 +78,17 @@ def test_cache_build_is_complete_and_can_be_disabled(tmp_path):
     with zipfile.ZipFile(cold) as archive:
         assert "build.sh" not in archive.namelist()
         assert not json.loads(archive.read("manifest.json"))["prewarm_cache"]
+
+
+def test_v3_bundle_pins_variant_for_build_and_runtime(tmp_path):
+    path = tmp_path / "memory.zip"
+    build(path, variant="v3-memory")
+    with zipfile.ZipFile(path) as archive:
+        assert json.loads(archive.read("manifest.json"))["variant"] == "v3-memory"
+        assert (
+            archive.read("generals/agents/sentinel_v3_agent.py")
+            == (ROOT / "generals/agents/sentinel_v3_agent.py").read_bytes()
+        )
+        for script in ("build.sh", "run.sh"):
+            assert b"export SENTINEL_VARIANT=v3-memory\n" in archive.read(script)
+            assert b"export SENTINEL_MODE=competition\n" in archive.read(script)

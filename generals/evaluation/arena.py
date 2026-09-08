@@ -28,6 +28,37 @@ class MatchResult(NamedTuple):
     counters: jax.Array
 
 
+class MemoryMatchResult(NamedTuple):
+    """Optional final policy state, indexed by candidate/opponent then game."""
+
+    state: game.GameState
+    finished: jax.Array
+    counters: jax.Array
+    candidate_memory: object
+    opponent_memory: object
+    keys: jax.Array
+
+
+def initial_memory(policy, shape):
+    """Stateless callables use an empty pytree; stateful policies implement both methods."""
+    has_initial = callable(getattr(policy, "initial_memory", None))
+    has_step = callable(getattr(policy, "step", None))
+    if has_initial != has_step:
+        raise TypeError("A stateful policy must provide both initial_memory(shape) and step(obs, key, memory)")
+    return policy.initial_memory(shape) if has_initial else ()
+
+
+def policy_step(policy, observation, key, memory):
+    """Only the player's fog observation, explicit key and own memory cross this boundary."""
+    if callable(getattr(policy, "step", None)):
+        return policy.step(observation, key, memory)
+    return policy(observation, key), memory, {}
+
+
+def select_active(active, new, old):
+    return jax.tree.map(lambda n, o: jnp.where(active.reshape((-1,) + (1,) * (n.ndim - 1)), n, o), new, old)
+
+
 def valid_commands(actions, shape, rules):
     h, w = shape
     kind, row, col, direction, split = actions.T
@@ -93,28 +124,47 @@ def action_counters(before, after, actions, rules=Rules()):
     ).astype(jnp.int32)
 
 
-def make_runner(candidate, opponent, rules=Rules(), *, from_states=False):
-    """Each callable receives only its own Observation and PRNG key.
+def make_runner(candidate, opponent, rules=Rules(), *, from_states=False, with_memory=False):
+    """Each policy receives only its own Observation, PRNG key and optional memory.
 
     `seats` gives the candidate's player ID. Completed games, including mutual
     deathtouch draws, freeze at the first terminal state. Timeouts are draws.
+    Memory is initialized independently for each game and policy on every call.
+    ``with_memory=True`` additionally exposes final memories and per-game keys;
+    the default return type remains MatchResult for existing callers.
+    When supplying existing states, pass their ``initial_finished`` flags to
+    ``run``: GameState alone does not encode terminal deathtouch draws.
     """
 
     @jax.jit
-    def run(grids, keys, seats):
+    def run(grids, keys, seats, initial_finished=None):
         states = grids if from_states else jax.vmap(game.create_initial_state)(grids)
         finished = states.winner >= 0
+        if initial_finished is not None:
+            finished = finished | jnp.asarray(initial_finished, dtype=jnp.bool_)
         counters = jnp.zeros((len(seats), 2, 6), dtype=jnp.int32)
+        shape = states.armies.shape[1:]
+        memories = tuple(
+            jax.tree.map(
+                lambda leaf: jnp.broadcast_to(jnp.asarray(leaf), (len(seats),) + jnp.shape(leaf)),
+                initial_memory(policy, shape),
+            )
+            for policy in (candidate, opponent)
+        )
 
         def cond(carry):
-            states, _, finished, _ = carry
+            states, _, finished, _, _ = carry
             return jnp.any(~finished & (states.time < rules.max_turns))
 
         def body(carry):
-            states, keys, finished, counters = carry
+            states, keys, finished, counters, memories = carry
             split = jax.vmap(lambda key: jax.random.split(key, 3))(keys)
-            ours = jax.vmap(candidate)(jax.vmap(game.get_observation)(states, seats), split[:, 1])
-            theirs = jax.vmap(opponent)(jax.vmap(game.get_observation)(states, 1 - seats), split[:, 2])
+            ours, own_memory, _ = jax.vmap(lambda obs, key, memory: policy_step(candidate, obs, key, memory))(
+                jax.vmap(game.get_observation)(states, seats), split[:, 1], memories[0]
+            )
+            theirs, enemy_memory, _ = jax.vmap(lambda obs, key, memory: policy_step(opponent, obs, key, memory))(
+                jax.vmap(game.get_observation)(states, 1 - seats), split[:, 2], memories[1]
+            )
             actions = jnp.stack(
                 [jnp.where(seats[:, None] == 0, ours, theirs), jnp.where(seats[:, None] == 0, theirs, ours)], axis=1
             )
@@ -122,13 +172,17 @@ def make_runner(candidate, opponent, rules=Rules(), *, from_states=False):
             active = ~finished & (states.time < rules.max_turns)
             increment = jax.vmap(lambda s, n, a: action_counters(s, n, a, rules))(states, new_states, actions)
             counters = counters + jnp.where(active[:, None, None], increment, 0)
-            states = jax.tree.map(
-                lambda new, old: jnp.where(active.reshape((-1,) + (1,) * (new.ndim - 1)), new, old), new_states, states
-            )
+            states = select_active(active, new_states, states)
+            memories = select_active(active, (own_memory, enemy_memory), memories)
+            keys = select_active(active, split[:, 0], keys)
             finished = finished | (active & info.is_done)
-            return states, split[:, 0], finished, counters
+            return states, keys, finished, counters, memories
 
-        states, _, finished, counters = jax.lax.while_loop(cond, body, (states, keys, finished, counters))
+        states, keys, finished, counters, memories = jax.lax.while_loop(
+            cond, body, (states, keys, finished, counters, memories)
+        )
+        if with_memory:
+            return MemoryMatchResult(states, finished, counters, memories[0], memories[1], keys)
         return MatchResult(states, finished, counters)
 
     return run
