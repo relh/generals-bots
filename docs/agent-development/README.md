@@ -1,6 +1,6 @@
 # Sentinel development runbook
 
-Our fork: https://github.com/relh/generals-bots/tree/relh/sentinel-agent.
+Our fork: https://github.com/relh/generals-bots/tree/main.
 
 Start with the [measured results](results.md). Sentinel passed the first local
 holdout gate; the learned policy and external opponent comparisons are reported

@@ -58,7 +58,7 @@ to make your local environment match the one your submitted bot runs in
 ## 📦 Installation
 
 ```bash
-git clone --branch relh/sentinel-agent https://github.com/relh/generals-bots
+git clone --branch main https://github.com/relh/generals-bots
 cd generals-bots
 pip install -e .
 ```
