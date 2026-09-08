@@ -184,3 +184,46 @@ would recover the win. No intervention or policy tuning was performed, and this
 selected loss does not estimate failure frequency or external rank. The frozen
 v3 hash remains `01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896`;
 seed-113000 final-test observations were not inspected here.
+
+## Complete external development comparison
+
+Against the pinned Amin `main8_iter160` checkpoint, final v3 records 19 wins,
+13 losses, and no draws; refreshed frozen v2 records 12 wins, 14 losses, and
+6 draws. Both runs contain all 32 games on the same eight competition maps
+(seed 83000), with all four seat/general-label assignments per map and the
+1200-turn competition rules.
+
+| Candidate | W / L / D | Score, win = 1 and draw = ½ | Candidate / opponent runtime faults |
+| --- | ---: | ---: | ---: |
+| Refreshed frozen v2 | 12 / 14 / 6 | 46.875% | 0 / 0 |
+| Final v3 revision 2 | 19 / 13 / 0 | 59.375% | 1 / 27 |
+
+The paired score difference is **+12.5 percentage points**, with a paired
+map-bootstrap 95% interval of **[−12.5, +37.5] percentage points** (100,000
+resamples, bootstrap seed 19983). The resampling unit is the map, retaining its
+four games together. This exploratory sample does not establish superiority.
+Runtime faults are part of these observed outcomes: the opponent incurred 27
+faults against v3 versus none against v2. Deadlines are coordinator-observed on
+a shared host, so this comparison cannot attribute the score difference solely
+to strategic changes. Agents control their own PRNGs; the pairing covers maps
+and seat assignments, not a harness-controlled action seed.
+
+V3's first 15 completed games retain the original runner and original metadata.
+After a bounded post-game cleanup failure interrupted the run, the remaining
+17 games were completed under the explicitly reviewed recovery runner; no
+completed case was replayed. The review pins old runner `b2fcd9fe…` and new
+runner `cc5f8df6…`, verifies unchanged action/deadline/gameplay and startup
+preparation AST, and explicitly attests the previously unrecorded protocol
+source. Child ownership journaling adds a small amount of startup work. All
+17 resumed games have successful, instrumented child cleanup; legacy games
+have no equivalent cleanup measurement. Historical runtime package metadata
+matches, but historical interpreter binary hashes were not recorded.
+
+The separate read-only analysis verifies original metadata, both archives and
+agent files, exact stored board arrays, all 32 CSV/raw traces per candidate,
+and the completed immutable recovery segment. Its report and command are
+`.cache/runs/sentinel-v3/external-revision2-vs-v2-reviewed-development.json` and
+`.cache/runs/sentinel-v3/analyze_resumed_development.py`; 11 synthetic validation
+tests passed. This documented development-only source exception remains
+ineligible for strict fresh comparisons. No metadata was rewritten, no
+comparison guard was relaxed, and the frozen policy was unchanged.
