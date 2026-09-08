@@ -162,3 +162,24 @@ opponent's sources/dependencies or external directory hash, and opponent options
 It refuses missing identity evidence. Nine focused tests cover mismatches,
 actual board changes, incomplete cases, and paired draw scoring. Final v3 also
 passed 13 focused strategy tests and the actual policy's arena/replay parity test.
+
+## Release of the final evaluation
+
+The final external development run completed all 32 cases: full v3 has 19 wins,
+13 losses, and no draws, versus refreshed v2's 12 wins, 14 losses, and 6 draws.
+V3's run has 1 candidate and 27 opponent reply faults, so these development
+scores cannot establish a clean strategy advantage. No policy revision follows
+this result. Full v3 remains the selected experimental candidate at the source
+and archive hashes above; v2 remains the default control.
+
+The interrupted development run resumed only its 17 missing cases after exact
+board regeneration, complete trace validation, and an explicit review of the
+cleanup-only runner change. Its original metadata and first 15 results remain
+unchanged. This legacy source exception is confined to development analysis.
+
+Seed 113000 is released now, after development completion and final selection.
+Both fresh external runs use runner SHA256
+`cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b`
+with immutable execution segments, and no source-equivalence exception. The
+64-map local and 32-map external budgets and promotion thresholds remain as
+preregistered. No further tuning on these final results is permitted.
