@@ -1,0 +1,831 @@
+{
+  "kind": "sentinel-v10-public-opponent-coverage/1",
+  "complete": true,
+  "checked_date": "2026-09-09",
+  "scope": "Bounded public-source census and synthetic original-entrypoint qualification; zero full games, no official rank claim, no opponent source-byte edits.",
+  "current_six": [
+    "Expander",
+    "Hunter",
+    "Amin main8 iter160 at34506fe2",
+    "Juraj V3.4 pinned",
+    "Juraj V3.5 e50123ce",
+    "PR138 my_bot9 f624c741"
+  ],
+  "census": {
+    "pr138": {
+      "url": "https://github.com/strakam/generals-bots/pull/138",
+      "state": "open",
+      "head_sha": "f624c741ad5084be63fc17bacd3961599b8dcc82",
+      "head_unchanged": true,
+      "releases": [],
+      "variants": 9,
+      "family_count": 1,
+      "not_covered_by_current_six": [
+        "my_bot",
+        "my_bot2",
+        "my_bot3",
+        "my_bot4",
+        "my_bot5",
+        "my_bot6",
+        "my_bot7",
+        "my_bot8"
+      ]
+    },
+    "recommended_next_distinct_implementation": {
+      "name": "doomstack_rusher default doomstack",
+      "repo": "Klincent/generals-bots",
+      "commit": "2260b6f19d51a14d7c68770677f22d04dfd88022",
+      "directory": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack",
+      "entrypoint": "run.sh (exec python -u main.py, requires bot cwd)",
+      "files": [
+        {
+          "path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/agent.py",
+          "url": "https://github.com/Klincent/generals-bots/blob/2260b6f19d51a14d7c68770677f22d04dfd88022/competition/agents/doomstack_rusher/agent.py",
+          "source_commit": "2260b6f19d51a14d7c68770677f22d04dfd88022",
+          "git_blob_sha1": "82ac57dc4cb6718ea74e290f28ead5f782a1ab7a",
+          "sha256": "4a3744b7dade613e8c894ca9d8b2e5b3f63323e164fcfa565763140200130648",
+          "bytes": 7393
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/main.py",
+          "url": "https://github.com/Klincent/generals-bots/blob/2260b6f19d51a14d7c68770677f22d04dfd88022/competition/agents/doomstack_rusher/main.py",
+          "source_commit": "2260b6f19d51a14d7c68770677f22d04dfd88022",
+          "git_blob_sha1": "791a0ab90af03b6ecb8268a7c48ef35529fc1777",
+          "sha256": "cf4622771ed2e1faeefc98ccd45d00fb5aae8be80b81c008136e3d6c09327eba",
+          "bytes": 1001
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/run.sh",
+          "url": "https://github.com/Klincent/generals-bots/blob/2260b6f19d51a14d7c68770677f22d04dfd88022/competition/agents/doomstack_rusher/run.sh",
+          "source_commit": "2260b6f19d51a14d7c68770677f22d04dfd88022",
+          "git_blob_sha1": "f6e45eb16083a66ee6f2bf3c7746bb3e7f6cd477",
+          "sha256": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+          "bytes": 43
+        }
+      ],
+      "license": "Repository MIT; retained exact LICENSE separately",
+      "difference": "Separate7393-byte Python stress policy; persistent rally, owned BFS donor harvesting, large concentration release and direct pressure; no castle construction or Juraj C++ strategy dependency.",
+      "modes": [
+        "doomstack",
+        "earlyrush",
+        "pressure",
+        "flood"
+      ],
+      "modes_are_independent_families": false,
+      "compatibility": [
+        "Standard-library only, rectangular handshake and relative owner codes, EOF and flushed5-integer replies.",
+        "STRESS_MODE affects action behavior; pin/unset it explicitly and bind chosen mode in provenance before comparing.",
+        "Source-only eligible for next qualification; no measured150ms/10s compliance yet.",
+        "Routes ignore combat affordability; no explicit general defense or deathtouch adaptation. This is a public adversarial stress reference, not an identified official entrant.",
+        "No subprocess/network/dynamic execution in inspected policy; os.environ reads onlySTRESS_MODE, stderr telemetry every25turns."
+      ]
+    },
+    "ready_family_contrast": {
+      "name": "my_bot3",
+      "prepared": {
+        "archive": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/my_bot3-f624c741.zip",
+        "sha256": "d04ffb6da1ab0eb59d2f06c19833cb9047edc9b692c56d23fd7e788c1a071e3f",
+        "bytes": 6739,
+        "run_sh": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot3/run.sh",
+        "file_sha256": {
+          "LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+          "agent.py": "6d0e0ff425bb4972113b3f53ba023eaa1f65f82375eb7650453dab1403f46d7b",
+          "main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+          "run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75"
+        },
+        "packaging": "Original three source files plus unmodified repository MIT LICENSE; local deterministic source bundle, not author-published archive."
+      },
+      "distinct_mechanism": "Structure-wide savings/staging for castle economy; differs from tested my_bot9 scouting/consolidation/attack pipeline.",
+      "limitations": [
+        "Same evolving family asmy_bot9; not a new entrant identity.",
+        "Original proximity penalty10 differs from current14; retain original and report invalid builds.",
+        "No measuredstrength/runtime claim from sourceavailability."
+      ]
+    },
+    "additional_candidates": [
+      {
+        "name": "Juraj final-superbot sourcearchive",
+        "commit": "704ce13d891af22361cb76b9389da92a36b9903c",
+        "artifact": {
+          "path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/final-superbot.zip",
+          "url": "https://github.com/Klincent/generals-bots/blob/704ce13d891af22361cb76b9389da92a36b9903c/submissions/final-superbot.zip",
+          "source_commit": "704ce13d891af22361cb76b9389da92a36b9903c",
+          "git_blob_sha1": "8d6760bbc0405de2811dacd06e8c59790fc62d86",
+          "sha256": "5eaaf799328bdf39fb9cd4d2ae2cfb0a795eb0cb73d019122747ecbc1ac8a9ca",
+          "bytes": 18694
+        },
+        "contents": [
+          "main.cpp",
+          "core.hpp",
+          "build.sh",
+          "run.sh"
+        ],
+        "distinct_from_J35": true,
+        "differences": "49,686-byte main vs30,713-byte pinnedJ35; explicit edge-picker/muster/doomguard and anti-cycle logic, current live castle-cost14.",
+        "eligibility": "Needs complete source/security/behavior review and C++17 build/protocol/timing qualification before execution; only entrypoint/includes/selectedlogic scanned here.",
+        "runtime_dependencies": "g++ C++17 and C++standard library; no binary/model download required; build.sh -O2 -DNDEBUG; run.sh exec ./agent.",
+        "strength": "Unmeasured; name and bundled author validation are not evidence of superiority."
+      },
+      {
+        "name": "Amin main7 iter79/iter308",
+        "commit": "34506fe2d684f163ada3a0cc3401d192436bfc37",
+        "assets": [
+          "competition/agents/bot_archive/my_bot_main7_iter79.zip",
+          "competition/agents/bot_archive/my_bot_main7_iter308.zip"
+        ],
+        "sizes": [
+          523527,
+          523566
+        ],
+        "eligibility": "Git tree verifies availability; archives not downloaded/inspected in this census; separate weight/runtime checks needed.",
+        "distinctness": "Additional checkpoints, not proven new architectures. Current main imports CNN numpy_infer, not the present but unused transformer helper."
+      }
+    ],
+    "current_public_source_limits": {
+      "Klincent_master": "73e5141afaf8ac2453a91f885e95d26d0cc178a7 tree lacks runnableJuraj agent files; historicalrefs/otherbranches remain available.",
+      "branches": "First100Klincent branches inspected; list may have further pages, not an exhaustivehistoricalvariantcensus.",
+      "other_sampled_forks": [
+        "dylantirandaz",
+        "annakavosh",
+        "LH1-ZKA",
+        "neurion-ai"
+      ],
+      "other_sampled_result": "No extra named competition agent/model artifact found in these default trees beyond starter baselines; not proof no unpublished/otherbranchbots.",
+      "official": "Public leaderboard/results pages do not supply runnable submissions in retrievedtext; no authenticated/dashboard access, private artifacts, or official rank-to-source mapping established. Unavailable entrants remain untested.",
+      "leaderboard_api": "Browser tool could not open api/leaderboard; no fresh numeric Elo claims made."
+    },
+    "source_links": [
+      "https://www.generals.bot/docs",
+      "https://www.generals.bot/leaderboard",
+      "https://www.generals.bot/results",
+      "https://github.com/strakam/generals-bots/pull/138",
+      "https://github.com/Klincent/generals-bots/tree/2260b6f19d51a14d7c68770677f22d04dfd88022/competition/agents/doomstack_rusher",
+      "https://github.com/Klincent/generals-bots/blob/704ce13d891af22361cb76b9389da92a36b9903c/submissions/final-superbot.zip"
+    ]
+  },
+  "qualification": {
+    "complete": true,
+    "build": {
+      "seconds": 7.338647878001211,
+      "returncode": 0,
+      "binary_sha256": "b3042fa1b0cf827351bf2ffedd3b84300f5c8e29d3b993145ee74b3030719b5c"
+    },
+    "python": "Python 3.12.10",
+    "compiler": "g++ (Ubuntu 13.2.0-23ubuntu4) 13.2.0",
+    "default_mode": {
+      "inherited_STRESS_MODE": null,
+      "probe_STRESS_MODE": null,
+      "effective": "doomstack"
+    },
+    "limits": {
+      "first_seconds": 10,
+      "later_seconds": 0.15,
+      "address_space_bytes": 2147483648
+    },
+    "limitations": [
+      "Shared host; sampled RSS not continuous measurement.",
+      "Thirty synthetic snapshots per shape, monotonic turn jumps and static terrain, not a valid action-consistent episode. No full-game strength or worst-case timing claim.",
+      "Original run.sh executed through bash from required bot cwd; default doomstack mode pinned by removing STRESS_MODE; no source modifications.",
+      "Limits terminate first failing probe without late-reply reuse; these probes are not a full competitionfault-forfeit harness."
+    ],
+    "source_sha256": {
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/main.py": "cf4622771ed2e1faeefc98ccd45d00fb5aae8be80b81c008136e3d6c09327eba",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/agent.py": "4a3744b7dade613e8c894ca9d8b2e5b3f63323e164fcfa565763140200130648",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/source/build.sh": "7e022c2c59996406b18c4221c2ceb3cb3980aeb6b2446bb5d5d6a127d0dfaa64",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/source/core.hpp": "cd956d634c4791b3a077918cc587da0013e40c5822ae36f7361154862ac7f542",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/source/main.cpp": "4b7d51fead72eaad23a2130123c2f342604552164867b9babf04e17760b50847",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/source/run.sh": "ac272996e744283df3042ad61cb0de34de945fcb2bf40fcee14d87afa7e1e0ae"
+    },
+    "variants": {
+      "doomstack": {
+        "shapes": 16,
+        "responses": 480,
+        "faults": 0,
+        "invalid": 0,
+        "all_exit_zero": true,
+        "first_min": 0.037201857019681484,
+        "first_max": 0.04338676601764746,
+        "warm_median": 0.0005581079894909635,
+        "warm_p95": 0.0006435010000132024,
+        "warm_max": 0.0008004989940673113,
+        "rss_sampled_peak": 16318464
+      },
+      "final-superbot": {
+        "shapes": 16,
+        "responses": 480,
+        "faults": 0,
+        "invalid": 0,
+        "all_exit_zero": true,
+        "first_min": 0.01811592298327014,
+        "first_max": 0.027926968992687762,
+        "warm_median": 0.0005882859986741096,
+        "warm_p95": 0.0007371079991571605,
+        "warm_max": 0.0009750490135047585,
+        "rss_sampled_peak": 5111808
+      }
+    },
+    "compile_environment_mismatch": {
+      "official_gcc": "12.2",
+      "actual_gcc": "13.2.0",
+      "unsupported_cxx_extensions_observed": false,
+      "official_image_binary_portability_verified": false
+    },
+    "original_executable_modes_restored": {
+      ".cache/runs/sentinel-v10/development/opponent-census-sources/doomstack/run.sh": "0o644",
+      ".cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/source/run.sh": "0o755",
+      ".cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/source/build.sh": "0o755"
+    },
+    "qualification_report_sha256": "504654cdc1935c947a7eec5c1650ea65c7f4151e4055d94f3645c4d381923fda"
+  },
+  "per_shape": [
+    {
+      "opponent": "doomstack",
+      "shape": [
+        18,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.04338676601764746,
+      "warm_max_seconds": 0.0005919120158068836,
+      "sampled_peak_rss_bytes": 16318464
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        18,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.03771448999759741,
+      "warm_max_seconds": 0.0005771639989688993,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        18,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.037201857019681484,
+      "warm_max_seconds": 0.0006843669980298728,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        18,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.039078826986951753,
+      "warm_max_seconds": 0.0006968409870751202,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        19,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.0388804709946271,
+      "warm_max_seconds": 0.0006420380086638033,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        19,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.03753230400616303,
+      "warm_max_seconds": 0.000663197977701202,
+      "sampled_peak_rss_bytes": 15335424
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        19,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.037555066985078156,
+      "warm_max_seconds": 0.0006628870032727718,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        19,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.038686251995386556,
+      "warm_max_seconds": 0.0006886160117574036,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        20,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.03751950999139808,
+      "warm_max_seconds": 0.0006475980044342577,
+      "sampled_peak_rss_bytes": 15335424
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        20,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.039724611007841304,
+      "warm_max_seconds": 0.0006695599877275527,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        20,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.04039703600574285,
+      "warm_max_seconds": 0.0007916910108178854,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        20,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.03826517399284057,
+      "warm_max_seconds": 0.0008004989940673113,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        21,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.039206918998388574,
+      "warm_max_seconds": 0.0007440010085701942,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        21,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.0382665749930311,
+      "warm_max_seconds": 0.0006888360076118261,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        21,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.03864251900813542,
+      "warm_max_seconds": 0.0007411760161630809,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "doomstack",
+      "shape": [
+        21,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.03784251201432198,
+      "warm_max_seconds": 0.0007299749995581806,
+      "sampled_peak_rss_bytes": 15138816
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        18,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.01811592298327014,
+      "warm_max_seconds": 0.0005795589822810143,
+      "sampled_peak_rss_bytes": 4521984
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        18,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.01922478701453656,
+      "warm_max_seconds": 0.0006064100016374141,
+      "sampled_peak_rss_bytes": 4718592
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        18,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.020802849001483992,
+      "warm_max_seconds": 0.0006230309954844415,
+      "sampled_peak_rss_bytes": 4718592
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        18,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.021877997991396114,
+      "warm_max_seconds": 0.0006547320226673037,
+      "sampled_peak_rss_bytes": 4915200
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        19,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.019027942995307967,
+      "warm_max_seconds": 0.0005638189904857427,
+      "sampled_peak_rss_bytes": 4718592
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        19,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.02061890999902971,
+      "warm_max_seconds": 0.0006833660008851439,
+      "sampled_peak_rss_bytes": 4718592
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        19,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.023229139973409474,
+      "warm_max_seconds": 0.0006470769876614213,
+      "sampled_peak_rss_bytes": 4718592
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        19,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.023020273976726457,
+      "warm_max_seconds": 0.0006791280175093561,
+      "sampled_peak_rss_bytes": 5111808
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        20,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.021681885002180934,
+      "warm_max_seconds": 0.0006118199962656945,
+      "sampled_peak_rss_bytes": 4915200
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        20,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.023545870004454628,
+      "warm_max_seconds": 0.0006796079978812486,
+      "sampled_peak_rss_bytes": 4915200
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        20,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.02455118700163439,
+      "warm_max_seconds": 0.0006817120010964572,
+      "sampled_peak_rss_bytes": 4915200
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        20,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.025492532004136592,
+      "warm_max_seconds": 0.0007809209928382188,
+      "sampled_peak_rss_bytes": 5111808
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        21,
+        18
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.022252658003708348,
+      "warm_max_seconds": 0.0006773849891033024,
+      "sampled_peak_rss_bytes": 4915200
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        21,
+        19
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.02454836099059321,
+      "warm_max_seconds": 0.000858918996527791,
+      "sampled_peak_rss_bytes": 5111808
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        21,
+        20
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.02506976100266911,
+      "warm_max_seconds": 0.0009750490135047585,
+      "sampled_peak_rss_bytes": 5111808
+    },
+    {
+      "opponent": "final-superbot",
+      "shape": [
+        21,
+        21
+      ],
+      "responses": 30,
+      "faults": 0,
+      "invalid": 0,
+      "exit_code": 0,
+      "first_seconds": 0.027926968992687762,
+      "warm_max_seconds": 0.0008515649824403226,
+      "sampled_peak_rss_bytes": 5111808
+    }
+  ],
+  "artifact_sha256": {
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x21.wires.json": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x20.json": "ef71b0e98b97658490be1f06bcc66612f56fae7457ee688bd81f1a69caabb038",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x20.stderr.log": "89d987a7c77a0120a6c9a9a3da22031023bd55e79bcae93e27cde9a9d1fba3a9",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x20.stderr.log": "0b484240d0f7a8c153d09872cb34bca4b0ded349f80ff803405d6e118b693a54",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x21.json": "76874e6d20914034d12debcedcaa8336993712646421b47f9fbf75c51da63fe7",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x21.wires.json": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x21.json": "5a3930511797f0ef2f71a7d78a0ed3fff8ef5e7e89eb8a0d7f10df7a0f6c1039",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x20.wires.json": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x21.stderr.log": "46b0cf116ef5e2d30d398992e878a599c800ba407166e18f24126db28ac08533",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x21.stderr.log": "22dbe865bac30ad9ef281e88ce6e1d8c7b3f70a90b5d0ec9d94595df2ed33075",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x18.stderr.log": "674b66f8f4697c0a463d6b8775208f6a2b725dc35cfd4925a68692f1b6b36c75",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x19.wires.json": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x18.wires.json": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x18.wires.json": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x18.json": "c6046950fe8fa3bc2509004eee0f5288aaaae32ec7cceb32a933e400b4cd1984",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x21.stderr.log": "d81a143775b494db4293dc05d1d11a36f620ce5faed074ec2ec1dd490604c2e6",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x19.wires.json": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x19.stderr.log": "5234226b520ac6f2b8eb3945590b666629a6c58aab2d611eb556743e98752f3a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x19.json": "c659fe0774da498620db7ad8aaee36313d47a3fb5e844bf8b566ba15c81d4b2a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x18.wires.json": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x20.json": "5f420778add751e51d6b748726fb38120535e5d2571ff9bb12d804c604dbcd8a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x18.stderr.log": "57bdf45a90a559d93151883f69f037140e28b90b42ca9cc973826cab920f099c",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x20.json": "1b4d7ac24c47eec8bc8fb7fc2ba4464bbe5a86bbf7fd71e8138355e35e0f77f3",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x19.stderr.log": "2aace00b51675187e7e6753dec0a94bf7fcd3a9eec933429e69f50a91f58ba33",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x20.stderr.log": "108ae6c4413dd92f2a6d6d645f9cbe87e630e620e70154da54ca59076299a4c0",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x20.stderr.log": "47812bfa7205c008793fe70554af2c5c9fe94346dd720eeab35e820498320d8b",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x20.stderr.log": "b68932dbad9d734c5da3aabbf288cd76f1c9b29fdcd56d0bc7fd8af48f142c68",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x20.wires.json": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x18.stderr.log": "4a82690b94edcdd78448d0c969559a5a39caa48806b7176f2ec59cf542c834b6",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x21.wires.json": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x18.wires.json": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x21.stderr.log": "47812bfa7205c008793fe70554af2c5c9fe94346dd720eeab35e820498320d8b",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x19.json": "5db14a9fe205e82443c2db15fb63967b13ae962adfb0153d759c2a50872a080a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x19.wires.json": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x20.stderr.log": "2e24bcd47a9b9d2d0e41c744b62ecef9227ea0436b6670b8d9ba936cac68161a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x18.json": "7c7df846743137dd9e1d5d567e51228424be9ccb11885bb59686bfa72300a445",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x21.json": "7c81aee26e288358e0689efa793f742e1bdf116ed1de457bccf3a364c173c551",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x21.stderr.log": "15ece65e212c8be665215b989aba6d162b74b6e4ea959b91d5f65a8d839b8612",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x18.stderr.log": "33b92ddfe6e054c7f6e20d3677a58ec1cc4a5933b92bee06edcd06beefadf25f",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x18.wires.json": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x20.json": "c147e05715c9e51a2dda7deec1e6e76e0c2deda1a394411e41611ad13334755c",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x21.wires.json": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x19.json": "cbf17676942a07d9824eec434319d439d4a14ac0d002a84d094f80a4c6208c9e",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x21.wires.json": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x20.wires.json": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x20.stderr.log": "46b0cf116ef5e2d30d398992e878a599c800ba407166e18f24126db28ac08533",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x21.stderr.log": "8776ca765a6669d6d83ea0f10c6e6ff887dc144609447277748c6d79d39ca255",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x19.wires.json": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x18.wires.json": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x20.wires.json": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x19.wires.json": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x18.wires.json": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x21.json": "4181d292818f7dbb4f2a976c93e9bd60482790a56ef16ff67b39a37026ccd336",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x18.stderr.log": "2aace00b51675187e7e6753dec0a94bf7fcd3a9eec933429e69f50a91f58ba33",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x21.json": "036d260e2e941e81afd8ab61f0c847d7ef9da51a9a921ad349733715e0d989ac",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x18.json": "97ee266606e219903670603763f372d22a92825d9547dcc15cd9a79a1b2ca46f",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x19.json": "6eafa73431b46f73e771658960ba3641f8865a01465dd31d0f522f378e1e5478",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x18.json": "1ba6207d569317e321eaa68b5ec82255970f51d147aa03b5a08b77665ce42fee",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x19.stderr.log": "c83dbbcdff1a453b534dc659ce3d4c6f97dbe1d2e6ee66bc7d97be557d0f25d0",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x18.stderr.log": "5a9fde0a89049de60043402adc4ab843859a3a24c7ff65727d876c264fc6f6d2",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x19.json": "cebe0ee7684c33ca2bf1a5b7c677f534a86b9bc69dedf489bce70d6bea95d64f",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x18.stderr.log": "dafdf507edd934a9b64d5c7eadc9047e4f6d6cf558ee024818af160ed9665187",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x19.stderr.log": "0321cfb42f1b03683a7f65db8996784e774cfd72aa2ed51d809f4bf231e9eda4",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x20.wires.json": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x19.json": "83b809ee460df6346fff1fc4ac243b5902a00b20a6404f8c17f711e36e8ab34f",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x21.stderr.log": "2e24bcd47a9b9d2d0e41c744b62ecef9227ea0436b6670b8d9ba936cac68161a",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x20.wires.json": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/report.json": "504654cdc1935c947a7eec5c1650ea65c7f4151e4055d94f3645c4d381923fda",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x18.json": "29ec732970e473b4334c42684c296c02e072cf3ea0272284b0d6d8b86de0607e",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x18.json": "58998819797a4d35545b25533466b579fce0b232cbed428f73d3626664645b22",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x18.stderr.log": "0321cfb42f1b03683a7f65db8996784e774cfd72aa2ed51d809f4bf231e9eda4",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x19.wires.json": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-20x21.wires.json": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x19.stderr.log": "dafdf507edd934a9b64d5c7eadc9047e4f6d6cf558ee024818af160ed9665187",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x18.json": "fa2ccfe3ef8309aca7833e51c79488d1f7fdb3cb2567a03b4e7fd2fcfa20924e",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x19.stderr.log": "dd56f32f9369e8e5d52b4ec99e5b2486b024c923f56e0fe9b4e0f154e103d893",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x18.json": "38041a0475abdbaf7f4d943d38d7f34561a8a67bc384281c4d067b08bdd9f48c",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x19.stderr.log": "0f3bf80d1e44f5310959599664aa8b4179610e4b78c3d185a76240a5c50a03e3",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x18.wires.json": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x20.wires.json": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x20.wires.json": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x19.json": "141039c4e30c5c78fde8f93693bd06e95692d278bfc7097e3d0a8a65591ce792",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x20.json": "7ca3242cd80ece0142cc5e0010bf17eddf3c267e7324c502ed9e4978f18f2976",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x20.json": "a0aaf80d8606f0f18c722736f99e6d8251477200761fb06a1650c1735c35f1ab",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x21.json": "3b5f8e60efe025a761261875a62c2daccff5fa052c289f4470fe849f5ec7506f",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x19.wires.json": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-18x19.json": "fe6d55e2d2b44d00474f53c12988360419352ec706176a02db0b6eac4210a208",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x20.stderr.log": "8776ca765a6669d6d83ea0f10c6e6ff887dc144609447277748c6d79d39ca255",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/summary.json": "9c0119fc45b8ee7131855cf51786e010f652f308171815ab652205e07b6e27fd",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x19.stderr.log": "57bdf45a90a559d93151883f69f037140e28b90b42ca9cc973826cab920f099c",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x19.wires.json": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-20x21.wires.json": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-19x20.json": "4b72d1c091f08a6738763765e60343fc63dd353f561db089a206d9921b8cf888",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-21x20.json": "ec8a899db485b7486e5105b1e935869287b09946857a53451b2a6a4df3db761d",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x21.wires.json": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/doomstack-18x21.json": "247222661ea7bd9d142d73a8e397087ee89b18013f4cebaf7b386e742273adda",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-21x21.stderr.log": "a305bc17f2f4f784ee4167dda1b7311994101ff50098f5a9c72c8ea57392219c",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualification/final-superbot-19x21.json": "9b3e0b1dea2592fe96acd157748d4a6885df265212bc8de77f8f27a0d87145d1",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/qualify.py": "75180525812cf1ed6cf6eaa1ab0e8ffac643a33e554a19573b6411be7a1bb9dc",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/new-candidate-manifest.json": "16d99aca709a036f6b450b79064e8c1e10be2828f3dff9610f7a70350152668b",
+    ".cache/runs/sentinel-v10/development/opponent-census.json": "a29fda52b8120770f460aa2d5f601fc46f099293631c0caa095375d1e91b20e3",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/pr138.json": "bf4681e5f650119cef3163675d1796e1499ec1028c9519a85245b241f39b4027",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/juraj-branches.json": "ab078e3057f9bc6d23f24c8c55ce2088e53b1bd5c75fcc7ff0b00843e7f69043",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/juraj-releases.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/pr138-releases.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/final-superbot/final-superbot.zip": "5eaaf799328bdf39fb9cd4d2ae2cfb0a795eb0cb73d019122747ecbc1ac8a9ca",
+    ".cache/runs/sentinel-v10/development/opponent-census-sources/license/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1"
+  },
+  "runner_contract": {
+    "source": "scripts/stdio_arena.py",
+    "sha256": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+    "launch": [
+      "taskset",
+      "-c",
+      "CPU",
+      "bash",
+      "RUN_SH"
+    ],
+    "cwd": "RUN_SH.parent",
+    "doomstack_original_run_sh_mode": "100644",
+    "mode_change_required": false,
+    "effective_STRESS_MODE": "doomstack via explicitly absent STRESS_MODE; original default, not selected by performance"
+  },
+  "static_audit": {
+    "doomstack": "Complete agent.py/main.py/run.sh read; standard library, current perspective-relative stdio, per-game state, only STRESS_MODE env read; no network, subprocess, dynamic evaluation, or explicit runtime file I/O.",
+    "final_superbot": "Complete main.cpp/core.hpp/build.sh/run.sh read; C++ standard library, local compile only, no environment policy options/network/subprocess/destructive file operations. chrono only records elapsed diagnostic time. Runtime stderr diagnostics; EOF destructor summary.",
+    "limits": "Source review and bounded probes cannot rule out all memory-safety or strategy defects. Final-superbot uses static initial passability, approximate arrival/force and ordinary-force terminal capture checks even after deathtouch. Doomstack lacks castle construction/explicit defense and can plan understrength routes."
+  },
+  "decision": {
+    "eligible_for_preregistered_expansion": [
+      "doomstack default",
+      "Juraj final-superbot pinned archive"
+    ],
+    "runtime_scope": "Both passed16shapes480syntheticresponses; full-game runtime/legality/outcome evidence still required.",
+    "no_mode_selection": true,
+    "no_current_campaign_change": true,
+    "no_promotion": true
+  }
+}
