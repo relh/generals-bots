@@ -96,7 +96,7 @@ def test_v3_bundle_pins_variant_for_build_and_runtime(tmp_path):
             assert b"export SENTINEL_MODE=competition\n" in archive.read(script)
 
 
-@pytest.mark.parametrize("version", [4, 5, 6, 7, 8])
+@pytest.mark.parametrize("version", [4, 5, 6, 7, 8, 9])
 def test_bundle_retains_scoring_dependencies_and_variant(tmp_path, version):
     variant = f"v{version}"
     path = tmp_path / f"{variant}.zip"
@@ -110,9 +110,27 @@ def test_bundle_retains_scoring_dependencies_and_variant(tmp_path, version):
             modules.append("sentinel_v6")
         if version >= 8:
             modules.append("sentinel_v7")
+        if version >= 9:
+            modules.append("sentinel_v8")
         for module in modules:
             name = f"generals/agents/{module}_agent.py"
             assert archive.read(name) == (ROOT / name).read_bytes()
         assert report["policy_sha256"] == manifest["source_sha256"][f"generals/agents/sentinel_{variant}_agent.py"]
         for script in ("build.sh", "run.sh"):
             assert f"export SENTINEL_VARIANT={variant}\n".encode() in archive.read(script)
+
+
+def test_v9_disabled_archive_keeps_full_policy_closure(tmp_path):
+    path = tmp_path / "v9-disabled.zip"
+    build(path, variant="v9-disabled")
+    with zipfile.ZipFile(path) as archive:
+        manifest = json.loads(archive.read("manifest.json"))
+        expected = {f"generals/agents/{name}_agent.py" for name in (
+            "sentinel", "sentinel_v3", "sentinel_v5", "sentinel_v6", "sentinel_v7", "sentinel_v8", "sentinel_v9"
+        )}
+        assert {name for name in archive.namelist() if name.startswith("generals/agents/sentinel")} == expected
+        assert manifest["variant"] == "v9-disabled"
+        for name in expected:
+            assert archive.read(name) == (ROOT / name).read_bytes()
+        for script in ("build.sh", "run.sh"):
+            assert b"export SENTINEL_VARIANT=v9-disabled\n" in archive.read(script)

@@ -58,8 +58,25 @@ V8_OPTIONS = {
 }
 
 
+V9_OPTIONS = {
+    "sentinel-v9": {"remember_enemy_general": True},
+    "sentinel-v9-disabled": {"remember_enemy_general": False},
+}
+
+
 def agent(name, rules, checkpoint=None, *, options=None):
     options = options or {}
+    if name in V9_OPTIONS:
+        from generals.agents.sentinel_v9_agent import SentinelV9Agent
+
+        if set(options) - {"remember_enemy_general"}:
+            raise ValueError(f"Unsupported policy options for {name}: {options}")
+        return SentinelV9Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V9_OPTIONS[name] | options),
+        )
     if name in V8_OPTIONS:
         from generals.agents.sentinel_v8_agent import SentinelV8Agent
 
@@ -187,6 +204,7 @@ def main():
             *V6_OPTIONS,
             *V7_OPTIONS,
             *V8_OPTIONS,
+            *V9_OPTIONS,
             "learned",
             "old-ppo",
             "random",
@@ -223,6 +241,8 @@ def main():
         metadata["candidate_options"] = V7_OPTIONS[args.candidate]
     if args.candidate in V8_OPTIONS:
         metadata["candidate_options"] = V8_OPTIONS[args.candidate]
+    if args.candidate in V9_OPTIONS:
+        metadata["candidate_options"] = V9_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p

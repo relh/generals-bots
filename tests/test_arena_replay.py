@@ -95,7 +95,7 @@ def test_v3_snapshot_guard_checks_base_dependency_cli_and_snapshot_identity(tmp_
     assert "candidate_source_sha256" in provenance["critical_changed_sources"]
 
 
-@pytest.mark.parametrize("version", [4, 5, 6, 7, 8])
+@pytest.mark.parametrize("version", [4, 5, 6, 7, 8, 9])
 def test_snapshot_guard_checks_frozen_scoring_dependencies(tmp_path, monkeypatch, version):
     monkeypatch.setattr(replay, "ROOT", tmp_path)
     names = [
@@ -109,6 +109,8 @@ def test_snapshot_guard_checks_frozen_scoring_dependencies(tmp_path, monkeypatch
         names.append("generals/agents/sentinel_v6_agent.py")
     if version >= 8:
         names.append("generals/agents/sentinel_v7_agent.py")
+    if version >= 9:
+        names.append("generals/agents/sentinel_v8_agent.py")
     recorded = {}
     for name in names:
         path = tmp_path / name
@@ -123,3 +125,30 @@ def test_snapshot_guard_checks_frozen_scoring_dependencies(tmp_path, monkeypatch
         dict(source_hashes=recorded), dict(candidate=f"sentinel-v{version}", opponent="hunter"), snapshot
     )
     assert set(provenance["critical_changed_sources"]) == set(names[1:])
+
+
+@pytest.mark.parametrize("alias,enabled", [("sentinel-v9", True), ("sentinel-v9-disabled", False)])
+def test_v9_live_and_snapshot_factories_preserve_stateful_options(alias, enabled):
+    from pathlib import Path
+
+    from generals.agents.sentinel_v9_agent import SentinelV9Agent
+    from generals.evaluation.cli import agent
+
+    rules = Rules(build_castles=True, deathtouch_turn=17, max_turns=73)
+    source = Path(__file__).resolve().parents[1] / "generals/agents/sentinel_v9_agent.py"
+    live, decision = replay.make_policy(alias, rules)
+    snapshot, snapshot_decision = replay.make_policy(alias, rules, source=source)
+    assert decision is None and snapshot_decision is None
+    for policy in (live, snapshot):
+        assert policy.remember_enemy_general is enabled
+        assert policy.build_castles is True
+        assert policy.deathtouch_turn == 17
+        assert policy.max_turns == 73
+        leaves = jax.tree.leaves(policy.initial_memory((18, 21)))
+        assert len(leaves) == 19
+        assert all(leaf.shape == () and leaf.dtype == jnp.int32 for leaf in leaves)
+        assert callable(policy.step)
+    assert isinstance(live, SentinelV9Agent)
+    assert agent(alias, rules, options={"remember_enemy_general": not enabled}).remember_enemy_general is not enabled
+    with pytest.raises(ValueError, match="Unsupported policy options"):
+        agent(alias, rules, options={"remember_threats": True})
