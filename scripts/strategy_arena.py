@@ -133,10 +133,21 @@ def candidate(name, rules):
         from generals.agents.sentinel_agent import SentinelAgent
 
         cls = SentinelAgent
-    else:
+    elif name == "sentinel-v4":
         from generals.agents.sentinel_v4_agent import SentinelV4Agent
 
         cls = SentinelV4Agent
+    elif name in ("sentinel-v5", "sentinel-v5-disabled"):
+        from generals.agents.sentinel_v5_agent import SentinelV5Agent
+
+        return SentinelV5Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            intercept_threats=name == "sentinel-v5",
+        )
+    else:
+        raise ValueError(f"Unknown strategy candidate: {name}")
     return cls(build_castles=rules.build_castles, deathtouch_turn=rules.deathtouch_turn, max_turns=rules.max_turns)
 
 
@@ -286,7 +297,9 @@ def main():
     parser.add_argument("--external-directory", type=Path, required=True)
     parser.add_argument("--external-archive", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--candidate", choices=["sentinel", "sentinel-v4"], default="sentinel")
+    parser.add_argument(
+        "--candidate", choices=["sentinel", "sentinel-v4", "sentinel-v5", "sentinel-v5-disabled"], default="sentinel"
+    )
     parser.add_argument("--boards", type=int, default=8)
     parser.add_argument("--seed", type=int, default=83000)
     parser.add_argument(

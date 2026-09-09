@@ -51,6 +51,24 @@ def test_v4_adapter_matches_arena_rules_and_explicit_horizon(monkeypatch):
         assert not hasattr(wire_agent, "initial_memory")
 
 
+def test_v5_factories_agree_on_rule_config_and_disabled_ablation(monkeypatch):
+    from generals.evaluation.arena import Rules
+    from generals.evaluation.cli import agent as make_arena_agent
+    from scripts.strategy_arena import candidate
+
+    rules = Rules(1200, True, 800)
+    monkeypatch.setenv("SENTINEL_MODE", "competition")
+    for variant, enabled in (("v5", True), ("v5-disabled", False)):
+        monkeypatch.setenv("SENTINEL_VARIANT", variant)
+        alias = "sentinel-" + variant
+        policies = (make_agent(), make_arena_agent(alias, rules).__self__, candidate(alias, rules))
+        assert len({type(policy) for policy in policies}) == 1
+        for policy in policies:
+            assert policy.intercept_threats is enabled
+            assert (policy.max_turns, policy.build_castles, policy.deathtouch_turn) == (1200, True, 800)
+            assert not hasattr(policy, "initial_memory")
+
+
 def test_stdio_carries_memory_between_frames_and_resets_on_new_handshake(monkeypatch, capsys):
     class CounterPolicy:
         def initial_memory(self, shape):

@@ -118,6 +118,11 @@ def test_timing_never_replaces_slow_action_or_rounds_values(monkeypatch):
     assert timing == {"wall_seconds": 20, "process_cpu_seconds": 0.1}
 
 
+def test_unknown_candidate_is_not_silently_another_policy():
+    with pytest.raises(ValueError, match="Unknown strategy candidate"):
+        arena.candidate("sentinel-typo", Rules())
+
+
 class PassPolicy:
     def act(self, obs, key):
         return jnp.array([1, 0, 0, 0, 0])

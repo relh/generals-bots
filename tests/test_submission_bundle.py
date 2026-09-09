@@ -7,6 +7,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+import pytest
+
 from scripts.build_sentinel_bundle import build
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -94,14 +96,16 @@ def test_v3_bundle_pins_variant_for_build_and_runtime(tmp_path):
             assert b"export SENTINEL_MODE=competition\n" in archive.read(script)
 
 
-def test_v4_bundle_retains_scoring_dependencies_and_variant(tmp_path):
-    path = tmp_path / "v4.zip"
-    report = build(path, variant="v4")
+@pytest.mark.parametrize("version", [4, 5])
+def test_stateless_bundle_retains_scoring_dependencies_and_variant(tmp_path, version):
+    variant = f"v{version}"
+    path = tmp_path / f"{variant}.zip"
+    report = build(path, variant=variant)
     with zipfile.ZipFile(path) as archive:
         manifest = json.loads(archive.read("manifest.json"))
-        for version in ("sentinel", "sentinel_v3", "sentinel_v4"):
-            name = f"generals/agents/{version}_agent.py"
+        for module in ("sentinel", "sentinel_v3", f"sentinel_{variant}"):
+            name = f"generals/agents/{module}_agent.py"
             assert archive.read(name) == (ROOT / name).read_bytes()
-        assert report["policy_sha256"] == manifest["source_sha256"]["generals/agents/sentinel_v4_agent.py"]
+        assert report["policy_sha256"] == manifest["source_sha256"][f"generals/agents/sentinel_{variant}_agent.py"]
         for script in ("build.sh", "run.sh"):
-            assert b"export SENTINEL_VARIANT=v4\n" in archive.read(script)
+            assert f"export SENTINEL_VARIANT={variant}\n".encode() in archive.read(script)

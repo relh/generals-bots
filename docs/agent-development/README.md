@@ -8,6 +8,11 @@ census](opponent-coverage.md), [v4 development evidence](v4-development.md), and
 [earlier measured results](results.md). Completing an experiment does not close
 the competitive goal.
 
+The [v5 interception experiment](v5-development.md) improves local Hunter and the
+small Juraj V3.5 sample but regresses on Amin; it is not promoted. Its complete
+episode diagnostics identify repeated defensive relocation and lost construction
+windows as targets for the next experiment. The default remains frozen v2.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

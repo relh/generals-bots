@@ -1,0 +1,1055 @@
+{
+  "decision": "Do not promote v5; frozen v2 remains default. Full competitive goal remains active and unachieved.",
+  "total_completed_games": 256,
+  "fresh_holdout_used": false,
+  "reserved_seed_unused": 143000,
+  "source_freeze": {
+    "policy_sha256": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+    "base_commit": "c06d3abab2dc12c886f8930d47e9cb144a77ce4c",
+    "candidate": "sentinel-v5",
+    "default": "sentinel v2 unchanged",
+    "development_seeds": [
+      83000,
+      93000
+    ],
+    "reserved_seed_unused": 143000,
+    "focused_tests_passed": 66,
+    "source_sha256": {
+      "generals/agents/expander_agent.py": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75",
+      "generals/agents/hunter_agent.py": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8",
+      "generals/agents/sentinel_v4_agent.py": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744",
+      "generals/agents/harvester_agent.py": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d",
+      "generals/agents/random_agent.py": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e",
+      "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+      "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+      "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+      "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+      "generals/agents/__init__.py": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190",
+      "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+      "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+      "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+      "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+      "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+      "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+      "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+      "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+      "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+      "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+      "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+      "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+      "generals/evaluation/scenarios.py": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd",
+      "generals/evaluation/cli.py": "259dff0a07ef744ea64e0fdf93547f8f0b8273d1c501ac48819aa70259d2de5d",
+      "generals/evaluation/replay.py": "a4d9cfbf0dfc48c4728fdee25cbc34d0bff564291b15fe48ed0af910a5aed2c1",
+      "generals/evaluation/report.py": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f",
+      "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+      "generals/evaluation/__init__.py": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09",
+      "scripts/strategy_arena.py": "8af2d20aa659ea2525ca3a8f1c7cf7f33c8474c69e33694e1960a2de9890ddb4",
+      "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+      "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+      "competition/agents/sentinel_python/main.py": "f0da72a440c9765d1841dbb9337ca44d7a34418ee7cc9cf01206db16958c9eb5",
+      "scripts/build_sentinel_bundle.py": "998940358ccf8bafecb7a6e0f7a95403d8d629862ebcb583bcb270cbde539b68"
+    }
+  },
+  "local": {
+    "competition/expander": {
+      "maps": 8,
+      "games_per_candidate": 32,
+      "control_score": 1.0,
+      "candidate_score": 1.0,
+      "paired_score_difference": 0.0,
+      "paired_score_difference_ci95": [
+        0.0,
+        0.0
+      ],
+      "counts": {
+        "control": {
+          "win": 32,
+          "loss": 0,
+          "draw": 0
+        },
+        "candidate": {
+          "win": 32,
+          "loss": 0,
+          "draw": 0
+        }
+      },
+      "board_score_differences": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+      }
+    },
+    "competition/hunter": {
+      "maps": 8,
+      "games_per_candidate": 32,
+      "control_score": 0.9375,
+      "candidate_score": 1.0,
+      "paired_score_difference": 0.0625,
+      "paired_score_difference_ci95": [
+        0.0,
+        0.1875
+      ],
+      "counts": {
+        "control": {
+          "win": 30,
+          "loss": 2,
+          "draw": 0
+        },
+        "candidate": {
+          "win": 32,
+          "loss": 0,
+          "draw": 0
+        }
+      },
+      "board_score_differences": {
+        "0": 0.5,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+      }
+    }
+  },
+  "amin_strategy": {
+    "kind": "synchronous-strategy-development-paired/1",
+    "seed": 83000,
+    "maps": 8,
+    "games_per_candidate": 32,
+    "counts": {
+      "v2": {
+        "win": 12,
+        "loss": 14,
+        "draw": 6
+      },
+      "v5": {
+        "win": 10,
+        "loss": 14,
+        "draw": 8
+      }
+    },
+    "v2_score": 0.46875,
+    "v5_score": 0.4375,
+    "paired_score_difference": -0.03125,
+    "paired_score_difference_ci95": [
+      -0.09375,
+      0.0
+    ],
+    "bootstrap": {
+      "unit": "whole map with all four paired seat/spawn cases",
+      "resamples": 100000,
+      "seed": 19983
+    },
+    "diagnostics": {
+      "v2": {
+        "counts": {
+          "candidate": {
+            "frames": 20338,
+            "invalid_actions": 0,
+            "malformed_commands": 0
+          },
+          "opponent": {
+            "frames": 20338,
+            "invalid_actions": 378,
+            "malformed_commands": 0
+          }
+        },
+        "timings": {
+          "candidate": {
+            "wall_seconds": {
+              "count": 20306,
+              "median": 0.0006342209999999999,
+              "p95": 0.00146414975,
+              "max": 0.020544812,
+              "total": 15.910897516
+            },
+            "process_cpu_seconds": {
+              "count": 20306,
+              "median": 0.0009756195,
+              "p95": 0.0014733020000000001,
+              "max": 0.008973498,
+              "total": 21.193469557
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.0007853764999999999,
+              "p95": 2.64643006445,
+              "max": 3.393042621,
+              "total": 15.9381272
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.0011908835,
+              "p95": 4.4915725886499995,
+              "max": 5.451249335,
+              "total": 26.86302775
+            }
+          },
+          "opponent": {
+            "wall_seconds": {
+              "count": 20306,
+              "median": 0.0104129505,
+              "p95": 0.018309616,
+              "max": 0.050795753,
+              "total": 241.863960492
+            },
+            "process_cpu_seconds": {
+              "count": 20306,
+              "median": 0.0103777845,
+              "p95": 0.01816561075,
+              "max": 0.050726099,
+              "total": 240.6397648
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.0107762575,
+              "p95": 0.01567218075,
+              "max": 0.017365676,
+              "total": 0.367435787
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.010830658,
+              "p95": 0.015618598299999998,
+              "max": 0.017304338,
+              "total": 0.367094817
+            }
+          }
+        }
+      },
+      "v5": {
+        "counts": {
+          "candidate": {
+            "frames": 21072,
+            "invalid_actions": 0,
+            "malformed_commands": 0
+          },
+          "opponent": {
+            "frames": 21072,
+            "invalid_actions": 422,
+            "malformed_commands": 0
+          }
+        },
+        "timings": {
+          "candidate": {
+            "wall_seconds": {
+              "count": 21040,
+              "median": 0.000892215,
+              "p95": 0.00220818305,
+              "max": 0.009323936,
+              "total": 23.673213201
+            },
+            "process_cpu_seconds": {
+              "count": 21040,
+              "median": 0.0013772975,
+              "p95": 0.002387753149999999,
+              "max": 0.007099052,
+              "total": 31.75164975
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.0010987495000000002,
+              "p95": 5.7301407483,
+              "max": 7.969363363,
+              "total": 35.278193231
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.001660874,
+              "p95": 9.7370084287,
+              "max": 12.495555733,
+              "total": 58.841552168
+            }
+          },
+          "opponent": {
+            "wall_seconds": {
+              "count": 21040,
+              "median": 0.0107101635,
+              "p95": 0.018288892549999998,
+              "max": 0.051423019,
+              "total": 254.272979765
+            },
+            "process_cpu_seconds": {
+              "count": 21040,
+              "median": 0.01067131,
+              "p95": 0.01817030615,
+              "max": 0.031519162,
+              "total": 252.800443937
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.011163147,
+              "p95": 0.01829958535,
+              "max": 0.019600998,
+              "total": 0.388921839
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.011122140999999999,
+              "p95": 0.01819618765,
+              "max": 0.019510584,
+              "total": 0.38804008
+            }
+          }
+        }
+      }
+    },
+    "adapter_parity": {
+      "histories": 18,
+      "frames": 1528,
+      "complete": true,
+      "recorded_histories": 2,
+      "synthetic_shapes": 16
+    },
+    "limitations": [
+      "Consumed development maps; eight independent map clusters, not 32 independent samples.",
+      "Synchronous calls apply every returned action; no timing fallback or deadline claim.",
+      "Warm timings exclude the first call of every game; first-call values include compilation when needed.",
+      "Process CPU can exceed wall time because JAX uses multiple threads; shared-host CPU affinities differ."
+    ]
+  },
+  "juraj": {
+    "34": {
+      "paired": {
+        "maps": 4,
+        "games_per_candidate": 16,
+        "control_score": 0.71875,
+        "candidate_score": 0.9375,
+        "paired_score_difference": 0.21875,
+        "paired_score_difference_ci95": [
+          0.0625,
+          0.34375
+        ],
+        "counts": {
+          "control": {
+            "win": 11,
+            "loss": 4,
+            "draw": 1
+          },
+          "candidate": {
+            "win": 15,
+            "loss": 1,
+            "draw": 0
+          }
+        },
+        "board_score_differences": {
+          "0": 0.0,
+          "1": 0.25,
+          "2": 0.375,
+          "3": 0.25
+        }
+      },
+      "diagnostics": {
+        "v2": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 11271,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 11271,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 0.9236795320175588,
+                "median": 1.0662681615067413,
+                "p95": 1.2740042712612194,
+                "p99": 1.2744323406615876,
+                "max": 1.2745393580116797
+              },
+              "all_warm": {
+                "count": 11255,
+                "min": 0.002626147004775703,
+                "median": 0.0043525020009838045,
+                "p95": 0.005417356500402092,
+                "p99": 0.007128331462154145,
+                "max": 0.02394352201372385
+              },
+              "accepted_warm": {
+                "count": 11255,
+                "min": 0.002626147004775703,
+                "median": 0.0043525020009838045,
+                "p95": 0.005417356500402092,
+                "p99": 0.007128331462154145,
+                "max": 0.02394352201372385
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.011100618983618915,
+                "median": 0.01774866200867109,
+                "p95": 0.02437589774490334,
+                "p99": 0.025539688329445198,
+                "max": 0.025830635975580662
+              },
+              "all_warm": {
+                "count": 11255,
+                "min": 0.00017668199143372476,
+                "median": 0.0005388240097090602,
+                "p95": 0.0017649625922786063,
+                "p99": 0.0031224266538629284,
+                "max": 0.007928564999019727
+              },
+              "accepted_warm": {
+                "count": 11255,
+                "min": 0.00017668199143372476,
+                "median": 0.0005388240097090602,
+                "p95": 0.0017649625922786063,
+                "p99": 0.0031224266538629284,
+                "max": 0.007928564999019727
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 229539840.0,
+                "median": 229550080.0,
+                "p95": 229792768.0,
+                "p99": 229908275.2,
+                "max": 229937152.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 229539840.0,
+                "median": 229550080.0,
+                "p95": 229792768.0,
+                "p99": 229908275.2,
+                "max": 229937152.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 5111808.0,
+                "median": 7569408.0,
+                "p95": 10027008.0,
+                "p99": 10027008.0,
+                "max": 10027008.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 5111808.0,
+                "median": 7569408.0,
+                "p95": 10027008.0,
+                "p99": 10027008.0,
+                "max": 10027008.0
+              }
+            }
+          }
+        },
+        "v5": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 11582,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 11582,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 1.384908775013173,
+                "median": 1.4872987605049275,
+                "p95": 2.0863500062550884,
+                "p99": 2.3051819684391375,
+                "max": 2.35988995898515
+              },
+              "all_warm": {
+                "count": 11566,
+                "min": 0.002797238004859537,
+                "median": 0.00402751199726481,
+                "p95": 0.005346719262888655,
+                "p99": 0.006421293593302837,
+                "max": 0.011760615016100928
+              },
+              "accepted_warm": {
+                "count": 11566,
+                "min": 0.002797238004859537,
+                "median": 0.00402751199726481,
+                "p95": 0.005346719262888655,
+                "p99": 0.006421293593302837,
+                "max": 0.011760615016100928
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.010940075007965788,
+                "median": 0.01440534699941054,
+                "p95": 0.02292446648789337,
+                "p99": 0.023442087687726598,
+                "max": 0.023571492987684906
+              },
+              "all_warm": {
+                "count": 11566,
+                "min": 0.00017947799642570317,
+                "median": 0.0005140035063959658,
+                "p95": 0.001566349994391203,
+                "p99": 0.0027762086436268893,
+                "max": 0.007571047986857593
+              },
+              "accepted_warm": {
+                "count": 11566,
+                "min": 0.00017947799642570317,
+                "median": 0.0005140035063959658,
+                "p95": 0.001566349994391203,
+                "p99": 0.0027762086436268893,
+                "max": 0.007571047986857593
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 259760128.0,
+                "median": 259989504.0,
+                "p95": 260044800.0,
+                "p99": 260049715.2,
+                "max": 260050944.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 259760128.0,
+                "median": 259989504.0,
+                "p95": 260044800.0,
+                "p99": 260049715.2,
+                "max": 260050944.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 6094848.0,
+                "median": 7864320.0,
+                "p95": 9732096.0,
+                "p99": 9968025.6,
+                "max": 10027008.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 6094848.0,
+                "median": 7864320.0,
+                "p95": 9732096.0,
+                "p99": 9968025.6,
+                "max": 10027008.0
+              }
+            }
+          }
+        }
+      },
+      "limitations": [
+        "Four independent development maps, not 16 independent maps; seed83000 is consumed development.",
+        "Original V3.4 defaults to entropy/clock RNG and reads JURAJ_* environment knobs. Pairing map/seat/spawn cases does not pair its internal random draws; launch-environment attestation records all four JURAJ variables explicitly unset; no matched RNG seed.",
+        "Partially overlapping baseline/candidate on different CPU lanes with concurrent unrelated workloads; observed latency is not isolated inference performance.",
+        "All games retained including runtime faults. No universal dominance or official leaderboard rank inference."
+      ]
+    },
+    "35": {
+      "paired": {
+        "maps": 4,
+        "games_per_candidate": 16,
+        "control_score": 0.125,
+        "candidate_score": 0.375,
+        "paired_score_difference": 0.25,
+        "paired_score_difference_ci95": [
+          0.0,
+          0.5
+        ],
+        "counts": {
+          "control": {
+            "win": 2,
+            "loss": 14,
+            "draw": 0
+          },
+          "candidate": {
+            "win": 6,
+            "loss": 10,
+            "draw": 0
+          }
+        },
+        "board_score_differences": {
+          "0": 0.5,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 0.5
+        }
+      },
+      "diagnostics": {
+        "v2": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 11390,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 11390,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 0.9315551530016819,
+                "median": 1.043324135003786,
+                "p95": 1.1760944612506137,
+                "p99": 1.1859497642530186,
+                "max": 1.18841359000362
+              },
+              "all_warm": {
+                "count": 11374,
+                "min": 0.0022253579954849556,
+                "median": 0.0036737695045303553,
+                "p95": 0.005454174051556038,
+                "p99": 0.007280818511790147,
+                "max": 0.015481018999707885
+              },
+              "accepted_warm": {
+                "count": 11374,
+                "min": 0.0022253579954849556,
+                "median": 0.0036737695045303553,
+                "p95": 0.005454174051556038,
+                "p99": 0.007280818511790147,
+                "max": 0.015481018999707885
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.016821979996166192,
+                "median": 0.02243347599869594,
+                "p95": 0.03178458299225895,
+                "p99": 0.032057208601327145,
+                "max": 0.0321253650035942
+              },
+              "all_warm": {
+                "count": 11374,
+                "min": 0.0002010509924730286,
+                "median": 0.0007282359947566874,
+                "p95": 0.0011815588448371274,
+                "p99": 0.002976041571091628,
+                "max": 0.01370694900106173
+              },
+              "accepted_warm": {
+                "count": 11374,
+                "min": 0.0002010509924730286,
+                "median": 0.0007282359947566874,
+                "p95": 0.0011815588448371274,
+                "p99": 0.002976041571091628,
+                "max": 0.01370694900106173
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 227577856.0,
+                "median": 227780608.0,
+                "p95": 227975168.0,
+                "p99": 227975168.0,
+                "max": 227975168.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 227577856.0,
+                "median": 227780608.0,
+                "p95": 227975168.0,
+                "p99": 227975168.0,
+                "max": 227975168.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4718592.0,
+                "p95": 4915200.0,
+                "p99": 4915200.0,
+                "max": 4915200.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4718592.0,
+                "p95": 4964352.0,
+                "p99": 5082316.8,
+                "max": 5111808.0
+              }
+            }
+          }
+        },
+        "v5": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 13250,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 13250,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 1.416719901986653,
+                "median": 1.8799294750060653,
+                "p95": 2.7726337352360133,
+                "p99": 3.037198364647338,
+                "max": 3.1033395220001694
+              },
+              "all_warm": {
+                "count": 13234,
+                "min": 0.002791312988847494,
+                "median": 0.005071280989795923,
+                "p95": 0.00779281155846547,
+                "p99": 0.009699116186529865,
+                "max": 0.09554817198659293
+              },
+              "accepted_warm": {
+                "count": 13234,
+                "min": 0.002791312988847494,
+                "median": 0.005071280989795923,
+                "p95": 0.00779281155846547,
+                "p99": 0.009699116186529865,
+                "max": 0.09554817198659293
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.017921588994795457,
+                "median": 0.02922000750550069,
+                "p95": 0.06503402548696613,
+                "p99": 0.07095803549018455,
+                "max": 0.07243903799098916
+              },
+              "all_warm": {
+                "count": 13234,
+                "min": 0.0002183699980378151,
+                "median": 0.0007606334984302521,
+                "p95": 0.0026855969001189786,
+                "p99": 0.004275838038593066,
+                "max": 0.035397806990658864
+              },
+              "accepted_warm": {
+                "count": 13234,
+                "min": 0.0002183699980378151,
+                "median": 0.0007606334984302521,
+                "p95": 0.0026855969001189786,
+                "p99": 0.004275838038593066,
+                "max": 0.035397806990658864
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 259637248.0,
+                "median": 259897344.0,
+                "p95": 260028416.0,
+                "p99": 260043161.6,
+                "max": 260046848.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 259637248.0,
+                "median": 259897344.0,
+                "p95": 260028416.0,
+                "p99": 260043161.6,
+                "max": 260046848.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4718592.0,
+                "p95": 4915200.0,
+                "p99": 4915200.0,
+                "max": 4915200.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4718592.0,
+                "p95": 4964352.0,
+                "p99": 5082316.8,
+                "max": 5111808.0
+              }
+            }
+          }
+        }
+      },
+      "limitations": [
+        "Four independent development maps, not 16 independent maps; seed83000 is consumed development.",
+        "Pinned V3.5 has no RNG or policy environment reads; deterministic source and unchanged binary, no universal strength claim.",
+        "Sequential baseline/candidate on different CPU lanes with concurrent unrelated workloads; observed latency is not isolated inference performance.",
+        "All games retained including runtime faults. No universal dominance or official leaderboard rank inference."
+      ]
+    }
+  },
+  "policy_action_audit": {
+    "complete": true,
+    "matched_frames": 21072,
+    "defense_frame_counts": {
+      "intercept_override": 334,
+      "intercept_guard": 42,
+      "intercept_feasible": 330
+    },
+    "limitations": "Recomputes policy on retained public inputs; no engine/opponent replay or outcome-causality proof."
+  },
+  "runtime_qualification": {
+    "bundle_sha256": "e5770991c08685ff595568ae5796b65045f33b899471d8eb8b8d13217c36dd25",
+    "shapes": 16,
+    "frames": 480,
+    "faults": 0,
+    "all_deadlines_met": true,
+    "first_seconds": {
+      "min": 1.7331255299795885,
+      "median": 2.5687068510014797,
+      "max": 8.356235760002164
+    },
+    "warm_seconds": {
+      "samples": 464,
+      "median": 0.0061415669915732,
+      "p95": 0.008406820353411604,
+      "max": 0.013735290995100513
+    },
+    "peak_sampled_rss_bytes": 260120576,
+    "qualification": "16 fresh processes,30syntheticframes each, existing disk cache, pinned official Python/packages, CPU4 affinity on shared host. RSS sampled, not hard cgroup peak. Earlier uncached and build-time18x21 probes excluded from480frame aggregate. Concurrent evaluations/training were active; worst21x19 startup8.356s retained, no causal attribution to cache or host contention.",
+    "same_input_18x21_action_parity": {
+      "frames": 30,
+      "uncached_build_and_reused": true
+    },
+    "concurrent_match_directory_identity_verified": {
+      "metadata": ".cache/runs/sentinel-v5/juraj-v35-development/v5/metadata.json",
+      "directory_sha256": "39a653d87aa5397f139504915b9738d51bc97ce496600a67e68585a132c721cf",
+      "exact_recorded_identity_equal": true,
+      "qualification": "Compared after all16 probes; no recorded source/cache bytes changed and no new identity-scanned files. __pycache__ excluded by runner identity as designed."
+    }
+  },
+  "tables": {
+    "map-scores": {
+      "file": "docs/agent-development/v5-development-map-scores.csv",
+      "sha256": "32e4285abeb9ddc4c6237eb411f66c596d8788164963b4b3fbb42a356f11ca04",
+      "rows": 32
+    },
+    "cases": {
+      "file": "docs/agent-development/v5-development-cases.csv",
+      "sha256": "7c6ae08c691470e75413d2e8a06905c1690513831a866d42f4f8d9a03a3478b2",
+      "rows": 128
+    }
+  },
+  "bootstrap_reproduction": {
+    "unit": "whole map within opponent, preserving four paired seat/spawn cases",
+    "resamples": 100000,
+    "seed": 19983,
+    "rng_scope": "numpy.random.default_rng(19983) independently reset for each opponent",
+    "formula": "sort numeric board_id; d=v5_score-v2_score; quantile(d[rng.integers(0,len(d),size=(100000,len(d)))].mean(axis=1),[0.025,0.975])"
+  },
+  "input_sha256": {
+    ".cache/runs/sentinel-v5/source-freeze.json": "765e3b404869de6d52ecc2dc01f00e6a1c03bb22275c447d402cc5b858f1154a",
+    ".cache/runs/sentinel-v5/bundle.json": "266d36613fe2c6b8a1550a1e897a018d0f6857f7bb296f732342a86a9942cf52",
+    ".cache/runs/sentinel-v5/local-development/paired-analysis.json": "4a5aaf67d9b91c3e8a89ccca3fc1c81550bb908f47955479800f69fc8eb353a2",
+    ".cache/runs/sentinel-v5/amin-strategy-development/paired-analysis.json": "9b76d2229de31d96e8c9440212fbe28404836a791cc90c9875749274307668d1",
+    ".cache/runs/sentinel-v5/juraj-v34-development/paired-analysis.json": "6da59f359e5db537ff47b822619843968d381c9f80f54d66493492f23b578a3d",
+    ".cache/runs/sentinel-v5/juraj-v35-development/paired-analysis.json": "f0268909c0291ddbfdf465a4db1f5ea4b809b2868e6bab77dd60d5b3b290344b",
+    ".cache/runs/sentinel-v5/qualification-summary.json": "8a55516c4d3203b6a62258483cb5e4debf9f7f5b139c42ead475d864ad28b1b1",
+    ".cache/runs/sentinel-v5/amin-adapter-parity/parity.json": "8b1e77f74efc5896bfc64ebe6fa480a060002920e30c12065efe19443aa25a53",
+    ".cache/runs/sentinel-v5/amin-policy-audit/report.json": "356e1d4112fdc23a0302060bcb234c77b348afb908275b3d442b213bd1e34277",
+    ".cache/runs/sentinel-v5/game5-failure-diagnosis.json": "ef887f4e503e54a394c647480a5d4163a92075aa71ef934339aa89c2212eca54",
+    ".cache/runs/sentinel-v5/juraj-v34-environment.json": "4736f72bb99ca3529f46f9089d0fd38d4f0d23c5adaa66a847a82a3d75699be1",
+    ".cache/runs/sentinel-v5/local-development/v2/metadata.json": "4b4593a0b0d4f058d5d962d9afb7d768f770014af1577ab1a528c934111b7f3f",
+    ".cache/runs/sentinel-v5/local-development/v2/games.csv": "2fcfbb2d1902c81c7ad66daa3e135ee613e488d40612d0b02176ca4ecc9bb939",
+    ".cache/runs/sentinel-v5/local-development/v5/metadata.json": "e3c1e8ecc2e451dfc41ad6a2461c80cf814982c933d4b84fc081fe603334f356",
+    ".cache/runs/sentinel-v5/local-development/v5/games.csv": "2acda3d29187a5aeddcd7f468c2e3c8483586ae6a75f2b30354a4cdd30f06d74",
+    ".cache/runs/sentinel-v5/amin-strategy-development/v2/metadata.json": "647a82a309fd375ab0f786b2050b0171fcdf8bf4e8028afc7355e243d5b86869",
+    ".cache/runs/sentinel-v5/amin-strategy-development/v2/games.csv": "46f5bd3461d6eb3c2a7e651f8182db7c3188d8f3622f344b26f9433fd605d0e6",
+    ".cache/runs/sentinel-v5/amin-strategy-development/v5/metadata.json": "a6b6a40f7497fa926494ab97727fca8caa30c13355bb09bcf72c4350e1d524a0",
+    ".cache/runs/sentinel-v5/amin-strategy-development/v5/games.csv": "c5bb3249812b416bb03d1af7cd3d575679ad01822fac577537c480bff52b89e3",
+    ".cache/runs/sentinel-v5/juraj-v34-development/v2/metadata.json": "951f111675279a84c4ae374f2d298670f444fa089913764573e19f2b306f72b5",
+    ".cache/runs/sentinel-v5/juraj-v34-development/v2/games.csv": "a76a46d0153e7d8cc5bafae396bdb04643292ee6e560f04da9d19b40fa409492",
+    ".cache/runs/sentinel-v5/juraj-v34-development/v5/metadata.json": "230c183e6b1c889c0964498bcb26ee119ef723a0c31e01795bc7394ae4561525",
+    ".cache/runs/sentinel-v5/juraj-v34-development/v5/games.csv": "239f595e4f384ae8e77e07740495bad494e6ff719e34ad26ffa4f640a03f3d3a",
+    ".cache/runs/sentinel-v5/juraj-v35-development/v2/metadata.json": "706ba997bf2537f1ac0d8921dc228c11584f83530cc3fd9d8c3221ec29097194",
+    ".cache/runs/sentinel-v5/juraj-v35-development/v2/games.csv": "f73b932c273cc0a9432056bbd201de8ef822cc4e71e7a9204aa904ceb3291d87",
+    ".cache/runs/sentinel-v5/juraj-v35-development/v5/metadata.json": "22492ec55732a1d4ee79a47c6eaa6b41b6cb9468166e03161a17ee0ef0e50c90",
+    ".cache/runs/sentinel-v5/juraj-v35-development/v5/games.csv": "2a95503995cf7cbde40f68950d3447be2e061881b7c09ea8f2de23ee99589fd1"
+  },
+  "validation": {
+    "distinct_focused_tests_passed": 66,
+    "ruff": "passed",
+    "ci": "Local verification only; no GitHub Actions result claimed."
+  },
+  "limits": [
+    "Previously consumed development maps; no fresh promotion evidence.",
+    "Juraj V3.4 default entropy/clock RNG is unmatched; only maps/seats/spawn labels paired.",
+    "Juraj V3.5 deterministic source is a distinct rewrite, not the V3.4 reference.",
+    "Amin synchronous strategy outcomes exclude deadline substitution and cannot qualify deployment.",
+    "Synthetic runtime qualification does not guarantee future startup deadlines or official tournament acceptance.",
+    "Official tournament leaders remain untested; no universal strength or rank claim."
+  ]
+}

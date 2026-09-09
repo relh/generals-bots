@@ -19,7 +19,7 @@ import numpy as np
 from generals.core import game
 
 from .arena import Rules, action_counters, initial_memory, policy_step, transition
-from .cli import V3_OPTIONS, V4_OPTIONS, agent
+from .cli import V3_OPTIONS, V4_OPTIONS, V5_OPTIONS, agent
 
 ROOT = Path(__file__).resolve().parents[2]
 METRICS = ("passes", "splits", "build_attempts", "builds", "invalid_moves", "malformed_commands")
@@ -78,23 +78,24 @@ def rules_for(metadata, suite):
 
 def make_policy(name, rules, checkpoint=None, source=None, *, options=None):
     if source:
-        if name != "sentinel" and name not in V3_OPTIONS and name not in V4_OPTIONS:
+        if name != "sentinel" and name not in V3_OPTIONS and name not in V4_OPTIONS and name not in V5_OPTIONS:
             raise ValueError("--candidate-source currently supports Sentinel snapshots only")
         spec = importlib.util.spec_from_file_location("generals.agents._sentinel_snapshot", source)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        player_class = (
-            module.SentinelV3Agent
-            if name in V3_OPTIONS
-            else module.SentinelV4Agent
-            if name in V4_OPTIONS
-            else module.SentinelAgent
-        )
+        if name in V5_OPTIONS:
+            player_class = module.SentinelV5Agent
+        elif name in V4_OPTIONS:
+            player_class = module.SentinelV4Agent
+        elif name in V3_OPTIONS:
+            player_class = module.SentinelV3Agent
+        else:
+            player_class = module.SentinelAgent
         player = player_class(
             build_castles=rules.build_castles,
             deathtouch_turn=rules.deathtouch_turn,
             max_turns=rules.max_turns,
-            **(V3_OPTIONS.get(name, V4_OPTIONS.get(name, {})) | (options or {})),
+            **((V3_OPTIONS | V4_OPTIONS | V5_OPTIONS).get(name, {}) | (options or {})),
         )
         if name in V3_OPTIONS:
             return player, None
@@ -335,17 +336,16 @@ def source_provenance(metadata, row, candidate_source=None):
         "old-ppo": None,
         "learned": None,
     }.get(row["candidate"], f"{row['candidate']}_agent")
-    if row["candidate"] in V3_OPTIONS:
-        candidate_module = "sentinel_v3_agent"
-    if row["candidate"] in V4_OPTIONS:
-        candidate_module = "sentinel_v4_agent"
-    opponent_module = (
-        "sentinel_v4_agent"
-        if row["opponent"] in V4_OPTIONS
-        else "sentinel_v3_agent"
-        if row["opponent"] in V3_OPTIONS
-        else f"{row['opponent']}_agent"
-    )
+    opponent_module = f"{row['opponent']}_agent"
+    for options, module_name in (
+        (V3_OPTIONS, "sentinel_v3_agent"),
+        (V4_OPTIONS, "sentinel_v4_agent"),
+        (V5_OPTIONS, "sentinel_v5_agent"),
+    ):
+        if row["candidate"] in options:
+            candidate_module = module_name
+        if row["opponent"] in options:
+            opponent_module = module_name
     critical = [
         name
         for name in changed
@@ -353,11 +353,11 @@ def source_provenance(metadata, row, candidate_source=None):
         or name in ("generals/evaluation/arena.py", "generals/evaluation/scenarios.py", "generals/evaluation/cli.py")
         or name == f"generals/agents/{opponent_module}.py"
         or (
-            any(policy in V3_OPTIONS or policy in V4_OPTIONS for policy in (row["candidate"], row["opponent"]))
+            any(policy in V3_OPTIONS | V4_OPTIONS | V5_OPTIONS for policy in (row["candidate"], row["opponent"]))
             and name == "generals/agents/sentinel_agent.py"
         )
         or (
-            any(policy in V4_OPTIONS for policy in (row["candidate"], row["opponent"]))
+            any(policy in V4_OPTIONS | V5_OPTIONS for policy in (row["candidate"], row["opponent"]))
             and name == "generals/agents/sentinel_v3_agent.py"
         )
         or (candidate_module and name == f"generals/agents/{candidate_module}.py" and not candidate_source)

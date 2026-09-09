@@ -29,10 +29,25 @@ V4_OPTIONS = {
     "sentinel-v4": {"build_threat_horizon": 2},
     "sentinel-v4-adjacent": {"build_threat_horizon": 1},
 }
+V5_OPTIONS = {
+    "sentinel-v5": {"intercept_threats": True},
+    "sentinel-v5-disabled": {"intercept_threats": False},
+}
 
 
 def agent(name, rules, checkpoint=None, *, options=None):
     options = options or {}
+    if name in V5_OPTIONS:
+        from generals.agents.sentinel_v5_agent import SentinelV5Agent
+
+        if set(options) - {"intercept_threats"}:
+            raise ValueError(f"Unsupported policy options for {name}: {options}")
+        return SentinelV5Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V5_OPTIONS[name] | options),
+        ).act
     if name in V4_OPTIONS:
         from generals.agents.sentinel_v4_agent import SentinelV4Agent
 
@@ -112,6 +127,7 @@ def main():
             "sentinel",
             *V3_OPTIONS,
             *V4_OPTIONS,
+            *V5_OPTIONS,
             "learned",
             "old-ppo",
             "random",
@@ -140,6 +156,8 @@ def main():
         metadata["candidate_options"] = V3_OPTIONS[args.candidate]
     if args.candidate in V4_OPTIONS:
         metadata["candidate_options"] = V4_OPTIONS[args.candidate]
+    if args.candidate in V5_OPTIONS:
+        metadata["candidate_options"] = V5_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p

@@ -128,6 +128,28 @@ def test_rejects_changed_or_missing_local_identity(tmp_path, field):
         compare(a, b)
 
 
+@pytest.mark.parametrize("dependency", ["sentinel_agent.py", "sentinel_v3_agent.py"])
+def test_v5_opponent_requires_frozen_scoring_dependencies(tmp_path, dependency):
+    a, b = tmp_path / "a", tmp_path / "b"
+    for path in (a, b):
+        write_run(path, "win", local=True)
+        metadata_path = path / "metadata.json"
+        metadata = json.loads(metadata_path.read_text())
+        metadata["opponents"] = ["sentinel-v5-disabled"]
+        for name in ("sentinel_agent.py", "sentinel_v3_agent.py", "sentinel_v5_agent.py"):
+            metadata["source_hashes"][f"generals/agents/{name}"] = "fixture-sha"
+        metadata_path.write_text(json.dumps(metadata))
+        csv_path = path / "games.csv"
+        csv_path.write_text(csv_path.read_text().replace("hunter", "sentinel-v5-disabled"))
+    assert compare(a, b, resamples=10)["matchups"]
+    path = b / "metadata.json"
+    metadata = json.loads(path.read_text())
+    del metadata["source_hashes"][f"generals/agents/{dependency}"]
+    path.write_text(json.dumps(metadata))
+    with pytest.raises(ValueError, match="missing"):
+        compare(a, b, resamples=10)
+
+
 @pytest.mark.parametrize("mutation", ["missing", "source", "exception"])
 def test_external_segment_cannot_hide_different_execution(tmp_path, mutation):
     a, b = tmp_path / "a", tmp_path / "b"

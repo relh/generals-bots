@@ -17,7 +17,7 @@ those frozen tournament policies and cannot infer a rank against them.
 | Expander Python/C++/Rust | Three upstream stdio implementations of the expansion baseline. | Useful protocol/runtime coverage; not three independently strong strategies. |
 | Amin PPO | `main8_iter160` is reviewed, runnable, and evaluated. The same public repository also provides `main7_iter79` and `main7_iter308` archives. | Additional checkpoints broaden policy coverage within one author's family; neither their relative strength nor leaderboard identity is established here. |
 | Juraj V3.4 reference | Distinct stateful C++ competition agent, reviewed and evaluated in 16 games per candidate on four development maps. | V2: 11W/5L; v4: 13W/2L/1D, zero runtime faults for either player. Small consumed-map sample with unmatched internal RNG; fresh evaluation remains necessary. |
-| Juraj V3.5 | Separate deterministic rewrite available in the same historical commit. | Not downloaded or executed. Do not substitute it for the V3.4 reference. |
+| Juraj V3.5 | Separate deterministic rewrite from the same pinned commit, reviewed and evaluated unchanged. | Frozen v2: 2W/14L; v5: 6W/10L, each in 16 games on four consumed maps, zero faults/invalid actions for either bot. The observed gap remains; see the v5 evidence. |
 | CodeBoy2006 heuristic pool | Public JAX source includes city-rush, general-hunter, defensive-expander, balanced, and mixed policies. | Older original-game interface/rules; no released trained checkpoint found in inspected tree. Requires API/rules review before competition use. |
 | Flobot | Public Apache-2.0 JavaScript source; historical original-game results reported by its author. | Requires an offline stdio adapter, queue semantics review, and competition-rules qualification. No current competition strength established. |
 | AverageJoe | Public training/network source and reported strong original-game results. | No checkpoint or license file found in inspected public tree; no ready competition-native opponent. |
@@ -82,3 +82,42 @@ alter behavior or logging, so any chosen values must be recorded, and unset
 values should remain unset for the original default policy. All four variables
 were unset in these runs. First-response and all-turn timing, faults, memory,
 raw actions, and paired-map outcomes are retained with the development evidence.
+
+## Additional opponent: Juraj V3.5
+
+The [separate V3.5 rewrite](https://github.com/Klincent/generals-bots/tree/e50123cee7d924f0d643acd372a5300971f93917/competition/agents/juraj_v35_cpp)
+is pinned to the same commit and MIT license. Its executable closure is
+`main.cpp` plus `core.hpp`, with the original build/run launchers. README, DESIGN,
+and license are retained. Static review found standard input/output/error,
+deterministic action selection, and a clock used only for telemetry; no policy
+environment variables, network, file I/O, or process launches occur in that closure.
+This does not prove memory safety or playing strength.
+
+The unmodified source compiled cleanly in 4.624 seconds on CPUs 0/12 with local
+g++ 13.2.0. The previously documented official compiler is g++ 12.2, so official
+build-environment equivalence remains unestablished. Artifacts are under
+`.cache/runs/external-opponents/juraj-v35/`:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `submission-source.zip` | `cfd612d313da65e0ae775f067996a32fc118d89d3543bc5ef765a1e3e943051a` |
+| Compiled `agent/agent` (112,744 bytes) | `4126a3b3c514632e189866935e06e84093d20e9a7be622f2c528204954b55fbb` |
+
+`provenance.json`, `source-inventory.json`, and `build-report.json` record exact
+source bytes, Git modes, compiler command, and review limitations. The V3.4
+reference remains unchanged and separately identified.
+
+The first four-map development baseline (seed 83000, both seats and spawn labels)
+finished with **v2 2W/14L/0D**, score **12.5%**. Every one of the 16 complete games
+and 22,780 replies was audited: both bots had zero faults, invalid actions, stale
+replies, or forfeits, and all 32 child processes were reaped. Raw evidence and
+`baseline-analysis.json` are in `.cache/runs/sentinel-v5/juraj-v35-development/`.
+The four map scores are [0, 0, 0.5, 0]; this consumed development sample is not an
+official rank or fresh promotion evidence. It establishes a concrete additional
+strength gap that the active competitive goal must address.
+
+The completed [v5 comparison](v5-development.md) improved to **6W/10L/0D**,
+score **37.5%**, on those same paired maps. Its +25 percentage-point difference
+has a four-map interval [0, +50]. Both complete runs passed the raw-action,
+deadline and cleanup audit with zero faults or invalid actions. V5 still lacks
+a winning advantage, and this small development result does not close the goal.
