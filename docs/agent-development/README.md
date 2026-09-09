@@ -40,6 +40,16 @@ not promoted. Use `--candidate sentinel-v8` or `--variant v8`; `v8-cheap` and
 wrapper. Full plan audits distinguish actually issued
 routes and observed captures from available alternatives.
 
+The [v9 remembered-general experiment](v9-development.md) completes 432 games
+against six opponents. It improves Amin, Hunter and original my_bot9 over V8 but
+still fails stronger-control preservation; it is not promoted. Use
+`--candidate sentinel-v9` or `--variant v9`; the disabled aliases preserve V8.
+Its 19-leaf memory retains only a publicly revealed stationary general location.
+Telemetry distinguishes proposed V8 decisions from actually issued actions.
+The built cache passes all 16 shapes and an entire active-memory wire history.
+The [full-episode diagnosis](v9-diagnosis.md) records remaining defense failures
+for the next bounded experiment.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

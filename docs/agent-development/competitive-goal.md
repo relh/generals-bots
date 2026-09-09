@@ -2,11 +2,12 @@
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v8 experiments have not established competitive superiority.
-V2 remains the default control. The [v8 action-cost experiment](v8-development.md)
-raises the small Amin development score but fails Hunter preservation. Its selected
-combination is diagnostic only; a favorable development score against one opponent
-does not establish superiority over every opponent or justify promotion.
+The v3 through v9 experiments have not established competitive superiority.
+V2 remains the default control. The [v9 remembered-general experiment](v9-development.md)
+improves Amin, Hunter and original my_bot9 over V8, but still fails preservation
+against stronger V6 controls and scores only 18.75% against Juraj V3.5.
+A favorable development score against some opponents does not establish
+superiority over every opponent or justify promotion.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
@@ -16,16 +17,15 @@ opponent. Preserve the existing local strength gates and validate deployment
 under the actual runtime limits. Report untested or unavailable policies instead
 of extending a measured result to all public entrants.
 
-The next strategy work must explain the remaining Hunter failures and distinguish
-when collection earns a useful attack from when it interrupts stronger play.
-V8 executes shorter gathering routes and ready-army attacks, yet regresses against
-Hunter, both Juraj versions and the newly measured my_bot9 control. Use complete
-successful and failed plans to choose the next bounded change, preserving stronger
-controls and counterexamples such as V8's new Amin win in case 1. Compare immediately
-productive campaign actions with new multi-step territory plans as a separate
-hypothesis. Search persistence, retention of a revealed stationary general and
-economic retuning require separate ablations. Greater stack size, fewer reversals
-or more captured tiles alone are not success.
+The next strategy work should use the [completed failure diagnosis](v9-diagnosis.md)
+to test inherited defense under visible merging and changes caused by its own
+donation moves. A force certificate can become stale immediately when a source is
+vacated; rejecting that move alone does not establish a safe alternative. V9's
+known-general pursuit repairs the selected late Hunter pair, while its unseen-general
+pair remains unchanged. Search, force deployment and economic retuning remain
+separate hypotheses. Preserve stronger controls and useful successful plans while
+testing actual alternative trajectories. Greater stack size, fewer reversals or
+more captured tiles alone are not success.
 
 Previously consumed seeds, including 83000, 93000 and 113000, may support
 explicitly labeled development experiments. They are never fresh holdouts again.
