@@ -136,6 +136,10 @@ def test_rejects_changed_or_missing_local_identity(tmp_path, field):
         (6, "sentinel_agent.py"),
         (6, "sentinel_v3_agent.py"),
         (6, "sentinel_v5_agent.py"),
+        (7, "sentinel_agent.py"),
+        (7, "sentinel_v3_agent.py"),
+        (7, "sentinel_v5_agent.py"),
+        (7, "sentinel_v6_agent.py"),
     ],
 )
 def test_opponent_requires_frozen_scoring_dependencies(tmp_path, version, dependency):
@@ -145,7 +149,13 @@ def test_opponent_requires_frozen_scoring_dependencies(tmp_path, version, depend
         metadata_path = path / "metadata.json"
         metadata = json.loads(metadata_path.read_text())
         metadata["opponents"] = [f"sentinel-v{version}-disabled"]
-        for name in ("sentinel_agent.py", "sentinel_v3_agent.py", "sentinel_v5_agent.py", "sentinel_v6_agent.py"):
+        for name in (
+            "sentinel_agent.py",
+            "sentinel_v3_agent.py",
+            "sentinel_v5_agent.py",
+            "sentinel_v6_agent.py",
+            "sentinel_v7_agent.py",
+        ):
             metadata["source_hashes"][f"generals/agents/{name}"] = "fixture-sha"
         metadata_path.write_text(json.dumps(metadata))
         csv_path = path / "games.csv"

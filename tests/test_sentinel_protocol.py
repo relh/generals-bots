@@ -1,7 +1,9 @@
 import io
 
+import jax
 import jax.numpy as jnp
 import numpy as np
+import pytest
 
 from competition.agents.sentinel_python import main as adapter
 from competition.agents.sentinel_python.main import make_agent, read_observation
@@ -87,7 +89,8 @@ def test_stdio_carries_memory_between_frames_and_resets_on_new_handshake(monkeyp
         assert capsys.readouterr().out.splitlines() == ["1 0 0 0 0", "1 1 0 0 0"]
 
 
-def test_v6_factories_preserve_stateful_interface_and_rule_options(monkeypatch):
+@pytest.mark.parametrize("version,option", [(6, "commit_defense"), (7, "concentrate_armies")])
+def test_factories_preserve_stateful_interface_and_rule_options(monkeypatch, version, option):
     from pathlib import Path
 
     from generals.evaluation.arena import Rules
@@ -97,16 +100,23 @@ def test_v6_factories_preserve_stateful_interface_and_rule_options(monkeypatch):
 
     rules = Rules(1200, True, 800)
     monkeypatch.setenv("SENTINEL_MODE", "competition")
-    source = Path(__file__).resolve().parents[1] / "generals/agents/sentinel_v6_agent.py"
-    for variant, enabled in (("v6", True), ("v6-disabled", False)):
+    source = Path(__file__).resolve().parents[1] / f"generals/agents/sentinel_v{version}_agent.py"
+    for variant, enabled in ((f"v{version}", True), (f"v{version}-disabled", False)):
         monkeypatch.setenv("SENTINEL_VARIANT", variant)
         alias = "sentinel-" + variant
         snapshot, decision = make_policy(alias, rules, source=source)
         assert decision is None
         policies = (make_agent(), make_arena_agent(alias, rules), candidate(alias, rules), snapshot)
         for policy in policies:
-            assert policy.commit_defense is enabled
+            assert getattr(policy, option) is enabled
             assert (policy.max_turns, policy.build_castles, policy.deathtouch_turn) == (1200, True, 800)
             assert callable(policy.step)
             memory = policy.initial_memory((18, 21))
-            assert int(memory.defender) == -1 and int(memory.last_turn) == -1
+            if version == 6:
+                assert int(memory.defender) == -1 and int(memory.last_turn) == -1
+            expected = policies[0].initial_memory((18, 21))
+            actual_leaves, expected_leaves = jax.tree.leaves(memory), jax.tree.leaves(expected)
+            assert len(actual_leaves) == len(expected_leaves)
+            for actual, reference in zip(actual_leaves, expected_leaves):
+                assert actual.dtype == reference.dtype
+                np.testing.assert_array_equal(actual, reference)

@@ -19,7 +19,7 @@ import numpy as np
 from generals.core import game
 
 from .arena import Rules, action_counters, initial_memory, policy_step, transition
-from .cli import V3_OPTIONS, V4_OPTIONS, V5_OPTIONS, V6_OPTIONS, agent
+from .cli import V3_OPTIONS, V4_OPTIONS, V5_OPTIONS, V6_OPTIONS, V7_OPTIONS, agent
 
 ROOT = Path(__file__).resolve().parents[2]
 METRICS = ("passes", "splits", "build_attempts", "builds", "invalid_moves", "malformed_commands")
@@ -78,12 +78,14 @@ def rules_for(metadata, suite):
 
 def make_policy(name, rules, checkpoint=None, source=None, *, options=None):
     if source:
-        if name != "sentinel" and name not in V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS:
+        if name != "sentinel" and name not in V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS | V7_OPTIONS:
             raise ValueError("--candidate-source currently supports Sentinel snapshots only")
         spec = importlib.util.spec_from_file_location("generals.agents._sentinel_snapshot", source)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        if name in V6_OPTIONS:
+        if name in V7_OPTIONS:
+            player_class = module.SentinelV7Agent
+        elif name in V6_OPTIONS:
             player_class = module.SentinelV6Agent
         elif name in V5_OPTIONS:
             player_class = module.SentinelV5Agent
@@ -97,9 +99,9 @@ def make_policy(name, rules, checkpoint=None, source=None, *, options=None):
             build_castles=rules.build_castles,
             deathtouch_turn=rules.deathtouch_turn,
             max_turns=rules.max_turns,
-            **((V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS).get(name, {}) | (options or {})),
+            **((V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS | V7_OPTIONS).get(name, {}) | (options or {})),
         )
-        if name in V3_OPTIONS | V6_OPTIONS:
+        if name in V3_OPTIONS | V6_OPTIONS | V7_OPTIONS:
             return player, None
         return player.act, player.decision
     policy = agent(name, rules, checkpoint, options=options)
@@ -344,6 +346,7 @@ def source_provenance(metadata, row, candidate_source=None):
         (V4_OPTIONS, "sentinel_v4_agent"),
         (V5_OPTIONS, "sentinel_v5_agent"),
         (V6_OPTIONS, "sentinel_v6_agent"),
+        (V7_OPTIONS, "sentinel_v7_agent"),
     ):
         if row["candidate"] in options:
             candidate_module = module_name
@@ -357,18 +360,25 @@ def source_provenance(metadata, row, candidate_source=None):
         or name == f"generals/agents/{opponent_module}.py"
         or (
             any(
-                policy in V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS
+                policy in V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS | V7_OPTIONS
                 for policy in (row["candidate"], row["opponent"])
             )
             and name == "generals/agents/sentinel_agent.py"
         )
         or (
-            any(policy in V4_OPTIONS | V5_OPTIONS | V6_OPTIONS for policy in (row["candidate"], row["opponent"]))
+            any(
+                policy in V4_OPTIONS | V5_OPTIONS | V6_OPTIONS | V7_OPTIONS
+                for policy in (row["candidate"], row["opponent"])
+            )
             and name == "generals/agents/sentinel_v3_agent.py"
         )
         or (
-            any(policy in V6_OPTIONS for policy in (row["candidate"], row["opponent"]))
+            any(policy in V6_OPTIONS | V7_OPTIONS for policy in (row["candidate"], row["opponent"]))
             and name == "generals/agents/sentinel_v5_agent.py"
+        )
+        or (
+            any(policy in V7_OPTIONS for policy in (row["candidate"], row["opponent"]))
+            and name == "generals/agents/sentinel_v6_agent.py"
         )
         or (candidate_module and name == f"generals/agents/{candidate_module}.py" and not candidate_source)
         or (row["candidate"] == "learned" and name.startswith("generals/training/"))

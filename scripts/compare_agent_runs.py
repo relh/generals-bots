@@ -148,16 +148,18 @@ def compare(control, candidate, resamples=100000):
         required.add("generals/agents/agent.py")
         for name in {key[1] for key in left}:
             module = name
-            for version in (3, 4, 5, 6):
+            for version in (3, 4, 5, 6, 7):
                 if name.startswith(f"sentinel-v{version}"):
                     module = f"sentinel_v{version}"
             required.add(f"generals/agents/{module}_agent.py")
-            if module in ("sentinel_v3", "sentinel_v4", "sentinel_v5", "sentinel_v6"):
+            if module in ("sentinel_v3", "sentinel_v4", "sentinel_v5", "sentinel_v6", "sentinel_v7"):
                 required.add("generals/agents/sentinel_agent.py")
-            if module in ("sentinel_v4", "sentinel_v5", "sentinel_v6"):
+            if module in ("sentinel_v4", "sentinel_v5", "sentinel_v6", "sentinel_v7"):
                 required.add("generals/agents/sentinel_v3_agent.py")
-            if module == "sentinel_v6":
+            if module in ("sentinel_v6", "sentinel_v7"):
                 required.add("generals/agents/sentinel_v5_agent.py")
+            if module == "sentinel_v7":
+                required.add("generals/agents/sentinel_v6_agent.py")
     if any(not required <= source.keys() or any(not source[k] for k in required) for source in sources):
         raise ValueError("missing simulator, runner, or opponent source identity")
     physics = [

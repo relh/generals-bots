@@ -1,0 +1,1810 @@
+{
+  "decision": "Do not promote v7; frozen v2 remains default. Full competitive goal remains active and unachieved.",
+  "total_completed_games": 256,
+  "fresh_holdout_used": false,
+  "reserved_seed_unused": 143000,
+  "source_freeze": {
+    "policy_sha256": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+    "base_commit": "f0cc167db4e3a48015e59cb2e98c31dfa89c32d7",
+    "candidate": "sentinel-v7",
+    "control": "sentinel-v6",
+    "default": "sentinel v2 unchanged",
+    "development_seeds": [
+      83000,
+      93000
+    ],
+    "reserved_seed_unused": 143000,
+    "focused_tests_passed": 81,
+    "source_sha256": {
+      "competition/agents/sentinel_python/main.py": "b7b60226e8833c21914fab3eefdd0effccb3a1ef0a3e95539641cc700e858fcf",
+      "competition/agents/sentinel_python/warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790",
+      "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+      "generals/agents/__init__.py": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190",
+      "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+      "generals/agents/expander_agent.py": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75",
+      "generals/agents/harvester_agent.py": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d",
+      "generals/agents/hunter_agent.py": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8",
+      "generals/agents/random_agent.py": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e",
+      "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+      "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+      "generals/agents/sentinel_v4_agent.py": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744",
+      "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+      "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+      "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+      "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+      "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+      "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+      "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+      "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+      "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+      "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+      "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+      "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+      "generals/evaluation/__init__.py": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09",
+      "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+      "generals/evaluation/cli.py": "2563e1134f5eeb36bf86f1b43d1cafc91145bc90dae02df1218f089e9b56e27d",
+      "generals/evaluation/replay.py": "218ea61feefe5bccbfb31765770eae3328edf52a643c6743ac636e49bfb4b7e6",
+      "generals/evaluation/report.py": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f",
+      "generals/evaluation/scenarios.py": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd",
+      "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+      "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+      "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+      "scripts/build_sentinel_bundle.py": "bf80670dc6c9e55f397df99854b078be241553718d99d9d1f2e6da44cf39ce0e",
+      "scripts/compare_agent_runs.py": "f9a953463155137736c6e991a75bf5af5153de73d00a4d2b5c158cf4cc0559ac",
+      "scripts/probe_sentinel_bundle.py": "ff0d60c9ebde2b07087f8c9ca7e4be57c7a7ea3c888684510296dd1173db7910",
+      "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+      "scripts/strategy_arena.py": "8ee96adc1dabadd6e6fc4cc2c642b40f522feb7efcb51ca92ff2bd817234f531"
+    }
+  },
+  "local": {
+    "competition/expander": {
+      "maps": 8,
+      "games_per_candidate": 32,
+      "control_score": 1.0,
+      "candidate_score": 1.0,
+      "paired_score_difference": 0.0,
+      "paired_score_difference_ci95": [
+        0.0,
+        0.0
+      ],
+      "counts": {
+        "control": {
+          "win": 32,
+          "loss": 0,
+          "draw": 0
+        },
+        "candidate": {
+          "win": 32,
+          "loss": 0,
+          "draw": 0
+        }
+      },
+      "board_score_differences": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+      }
+    },
+    "competition/hunter": {
+      "maps": 8,
+      "games_per_candidate": 32,
+      "control_score": 1.0,
+      "candidate_score": 0.875,
+      "paired_score_difference": -0.125,
+      "paired_score_difference_ci95": [
+        -0.375,
+        0.0
+      ],
+      "counts": {
+        "control": {
+          "win": 32,
+          "loss": 0,
+          "draw": 0
+        },
+        "candidate": {
+          "win": 28,
+          "loss": 4,
+          "draw": 0
+        }
+      },
+      "board_score_differences": {
+        "0": -1.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+      }
+    }
+  },
+  "amin_strategy": {
+    "kind": "synchronous-strategy-development-paired/1",
+    "seed": 83000,
+    "maps": 8,
+    "games_per_candidate": 32,
+    "counts": {
+      "v6": {
+        "win": 12,
+        "loss": 14,
+        "draw": 6
+      },
+      "v7": {
+        "loss": 16,
+        "win": 12,
+        "draw": 4
+      }
+    },
+    "v6_score": 0.46875,
+    "v7_score": 0.4375,
+    "paired_score_difference": -0.03125,
+    "paired_score_difference_ci95": [
+      -0.28125,
+      0.1875
+    ],
+    "bootstrap": {
+      "unit": "whole map with all four paired seat/spawn cases",
+      "resamples": 100000,
+      "seed": 19983
+    },
+    "diagnostics": {
+      "v6": {
+        "counts": {
+          "candidate": {
+            "frames": 21140,
+            "invalid_actions": 0,
+            "malformed_commands": 0
+          },
+          "opponent": {
+            "frames": 21140,
+            "invalid_actions": 396,
+            "malformed_commands": 0
+          }
+        },
+        "timings": {
+          "candidate": {
+            "wall_seconds": {
+              "count": 21108,
+              "median": 0.001286207,
+              "p95": 0.00191417815,
+              "max": 0.005230556,
+              "total": 29.064137413
+            },
+            "process_cpu_seconds": {
+              "count": 21108,
+              "median": 0.0019195545000000001,
+              "p95": 0.002589986249999997,
+              "max": 0.005372166,
+              "total": 42.576193151
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.001364168,
+              "p95": 8.24609568985,
+              "max": 8.476942597,
+              "total": 48.675255756
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.00200982,
+              "p95": 14.0165107708,
+              "max": 14.377614233,
+              "total": 82.729311668
+            }
+          },
+          "opponent": {
+            "wall_seconds": {
+              "count": 21108,
+              "median": 0.0095127145,
+              "p95": 0.010890933799999995,
+              "max": 0.027516884,
+              "total": 204.931953396
+            },
+            "process_cpu_seconds": {
+              "count": 21108,
+              "median": 0.0094882975,
+              "p95": 0.010850439799999998,
+              "max": 0.017740676,
+              "total": 204.353852593
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.0095512085,
+              "p95": 0.0110317653,
+              "max": 0.011652057,
+              "total": 0.30773486
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.009552567,
+              "p95": 0.01096876735,
+              "max": 0.011633925,
+              "total": 0.30739834
+            }
+          }
+        }
+      },
+      "v7": {
+        "counts": {
+          "candidate": {
+            "frames": 18010,
+            "invalid_actions": 0,
+            "malformed_commands": 0
+          },
+          "opponent": {
+            "frames": 18010,
+            "invalid_actions": 716,
+            "malformed_commands": 0
+          }
+        },
+        "timings": {
+          "candidate": {
+            "wall_seconds": {
+              "count": 17978,
+              "median": 0.001659943,
+              "p95": 0.0029043116499999984,
+              "max": 0.019962002,
+              "total": 31.910908881
+            },
+            "process_cpu_seconds": {
+              "count": 17978,
+              "median": 0.0024424705,
+              "p95": 0.0034151251499999996,
+              "max": 0.023883214,
+              "total": 45.826898246
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.0018127065,
+              "p95": 10.7496236164,
+              "max": 11.09302221,
+              "total": 64.024355723
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.002739586,
+              "p95": 18.115278194600002,
+              "max": 18.680065785,
+              "total": 108.07267882800001
+            }
+          },
+          "opponent": {
+            "wall_seconds": {
+              "count": 17978,
+              "median": 0.0100473245,
+              "p95": 0.011915412799999999,
+              "max": 0.027738726,
+              "total": 185.564792679
+            },
+            "process_cpu_seconds": {
+              "count": 17978,
+              "median": 0.0100184765,
+              "p95": 0.011874955249999992,
+              "max": 0.022586893,
+              "total": 184.976432436
+            },
+            "first_wall_seconds": {
+              "count": 32,
+              "median": 0.010404449,
+              "p95": 0.013343994649999998,
+              "max": 0.01833453,
+              "total": 0.345961499
+            },
+            "first_process_cpu_seconds": {
+              "count": 32,
+              "median": 0.0104706535,
+              "p95": 0.013316675749999998,
+              "max": 0.018252885,
+              "total": 0.345411461
+            }
+          }
+        }
+      }
+    },
+    "adapter_parity": {
+      "histories": 18,
+      "frames": 1528,
+      "complete": true,
+      "recorded_histories": 2,
+      "synthetic_shapes": 16
+    },
+    "limitations": [
+      "Consumed development maps; eight independent map clusters, not 32 independent samples.",
+      "Synchronous calls apply every returned action; no timing fallback or deadline claim.",
+      "Warm timings exclude the first call of every game; first-call values include compilation when needed.",
+      "Process CPU can exceed wall time because JAX uses multiple threads; shared-host CPU affinities differ."
+    ]
+  },
+  "juraj": {
+    "34": {
+      "paired": {
+        "maps": 4,
+        "games_per_candidate": 16,
+        "control_score": 0.8125,
+        "candidate_score": 0.46875,
+        "paired_score_difference": -0.34375,
+        "paired_score_difference_ci95": [
+          -0.6875,
+          0.0
+        ],
+        "counts": {
+          "control": {
+            "win": 13,
+            "loss": 3,
+            "draw": 0
+          },
+          "candidate": {
+            "win": 6,
+            "loss": 7,
+            "draw": 3
+          }
+        },
+        "board_score_differences": {
+          "0": -0.875,
+          "1": 0.125,
+          "2": -0.5,
+          "3": -0.125
+        }
+      },
+      "diagnostics": {
+        "v6": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 11177,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 11177,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 1.8109312700107694,
+                "median": 1.8968900940089952,
+                "p95": 2.0695572352415184,
+                "p99": 2.156318923042272,
+                "max": 2.1780093449924607
+              },
+              "all_warm": {
+                "count": 11161,
+                "min": 0.003339332004543394,
+                "median": 0.005092652980238199,
+                "p95": 0.006070176023058593,
+                "p99": 0.00738168220850639,
+                "max": 0.015316589997382835
+              },
+              "accepted_warm": {
+                "count": 11161,
+                "min": 0.003339332004543394,
+                "median": 0.005092652980238199,
+                "p95": 0.006070176023058593,
+                "p99": 0.00738168220850639,
+                "max": 0.015316589997382835
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.010964174987748265,
+                "median": 0.016525472005014308,
+                "p95": 0.02512371900229482,
+                "p99": 0.02551780380163109,
+                "max": 0.025616325001465157
+              },
+              "all_warm": {
+                "count": 11161,
+                "min": 0.00019111100118607283,
+                "median": 0.0005238590238150209,
+                "p95": 0.0017419180076103657,
+                "p99": 0.0026296392024960343,
+                "max": 0.006363280990626663
+              },
+              "accepted_warm": {
+                "count": 11161,
+                "min": 0.00019111100118607283,
+                "median": 0.0005238590238150209,
+                "p95": 0.0017419180076103657,
+                "p99": 0.0026296392024960343,
+                "max": 0.006363280990626663
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 293683200.0,
+                "median": 294004736.0,
+                "p95": 294185984.0,
+                "p99": 294301491.2,
+                "max": 294330368.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 293683200.0,
+                "median": 294004736.0,
+                "p95": 294185984.0,
+                "p99": 294301491.2,
+                "max": 294330368.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 5111808.0,
+                "median": 7667712.0,
+                "p95": 9732096.0,
+                "p99": 9968025.6,
+                "max": 10027008.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 5111808.0,
+                "median": 7667712.0,
+                "p95": 9732096.0,
+                "p99": 9968025.6,
+                "max": 10027008.0
+              }
+            }
+          }
+        },
+        "v7": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 12610,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 12610,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 1.893099673994584,
+                "median": 2.1882315529946936,
+                "p95": 2.582174267510709,
+                "p99": 3.0842744935085644,
+                "max": 3.2097995500080287
+              },
+              "all_warm": {
+                "count": 12594,
+                "min": 0.0031612789898645133,
+                "median": 0.0052393365040188655,
+                "p95": 0.006782135495450347,
+                "p99": 0.008526815297955181,
+                "max": 0.01637494601891376
+              },
+              "accepted_warm": {
+                "count": 12594,
+                "min": 0.0031612789898645133,
+                "median": 0.0052393365040188655,
+                "p95": 0.006782135495450347,
+                "p99": 0.008526815297955181,
+                "max": 0.01637494601891376
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.010944312991341576,
+                "median": 0.01629884200519882,
+                "p95": 0.02267974849382881,
+                "p99": 0.023006574509781785,
+                "max": 0.02308828101377003
+              },
+              "all_warm": {
+                "count": 12594,
+                "min": 0.00018234399612993002,
+                "median": 0.0005407660064520314,
+                "p95": 0.001912568343686871,
+                "p99": 0.002885014214261896,
+                "max": 0.007582096004625782
+              },
+              "accepted_warm": {
+                "count": 12594,
+                "min": 0.00018234399612993002,
+                "median": 0.0005407660064520314,
+                "p95": 0.001912568343686871,
+                "p99": 0.002885014214261896,
+                "max": 0.007582096004625782
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 317067264.0,
+                "median": 317288448.0,
+                "p95": 317691904.0,
+                "p99": 317696819.2,
+                "max": 317698048.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 317067264.0,
+                "median": 317288448.0,
+                "p95": 317691904.0,
+                "p99": 317696819.2,
+                "max": 317698048.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 5111808.0,
+                "median": 8257536.0,
+                "p95": 10223616.0,
+                "p99": 10223616.0,
+                "max": 10223616.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 5111808.0,
+                "median": 8257536.0,
+                "p95": 10223616.0,
+                "p99": 10223616.0,
+                "max": 10223616.0
+              }
+            }
+          }
+        }
+      },
+      "limitations": [
+        "Four independent development maps, not 16 independent maps; seed83000 is consumed development.",
+        "Original V3.4 defaults to entropy/clock RNG and reads JURAJ_* environment knobs. Pairing map/seat/spawn cases does not pair its internal random draws; launch-environment attestation records all four JURAJ variables explicitly unset; no matched RNG seed.",
+        "Sequential baseline/candidate on the same CPU lane with concurrent unrelated workloads; observed latency is not isolated inference performance.",
+        "All games retained including runtime faults. No universal dominance or official leaderboard rank inference."
+      ]
+    },
+    "35": {
+      "paired": {
+        "maps": 4,
+        "games_per_candidate": 16,
+        "control_score": 0.375,
+        "candidate_score": 0.1875,
+        "paired_score_difference": -0.1875,
+        "paired_score_difference_ci95": [
+          -0.375,
+          0.0
+        ],
+        "counts": {
+          "control": {
+            "win": 6,
+            "loss": 10,
+            "draw": 0
+          },
+          "candidate": {
+            "win": 2,
+            "loss": 12,
+            "draw": 2
+          }
+        },
+        "board_score_differences": {
+          "0": -0.25,
+          "1": 0.0,
+          "2": 0.0,
+          "3": -0.5
+        }
+      },
+      "diagnostics": {
+        "v6": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 13422,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 13422,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 1.7879343979875557,
+                "median": 1.8829910250060493,
+                "p95": 2.4001652482475038,
+                "p99": 2.7243375640464365,
+                "max": 2.8053806429961696
+              },
+              "all_warm": {
+                "count": 13406,
+                "min": 0.003268196975113824,
+                "median": 0.005004793492844328,
+                "p95": 0.006282398266193923,
+                "p99": 0.007627569849137219,
+                "max": 0.015466014010598883
+              },
+              "accepted_warm": {
+                "count": 13406,
+                "min": 0.003268196975113824,
+                "median": 0.005004793492844328,
+                "p95": 0.006282398266193923,
+                "p99": 0.007627569849137219,
+                "max": 0.015466014010598883
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.01652915999875404,
+                "median": 0.022423717498895712,
+                "p95": 0.030089998494077008,
+                "p99": 0.03289300768956309,
+                "max": 0.03359375998843461
+              },
+              "all_warm": {
+                "count": 13406,
+                "min": 0.00021278101485222578,
+                "median": 0.0007191519980551675,
+                "p95": 0.0011101299969595857,
+                "p99": 0.0023625349538633645,
+                "max": 0.00817921498673968
+              },
+              "accepted_warm": {
+                "count": 13406,
+                "min": 0.00021278101485222578,
+                "median": 0.0007191519980551675,
+                "p95": 0.0011101299969595857,
+                "p99": 0.0023625349538633645,
+                "max": 0.00817921498673968
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 293699584.0,
+                "median": 293896192.0,
+                "p95": 294102016.0,
+                "p99": 294114304.0,
+                "max": 294117376.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 293699584.0,
+                "median": 293896192.0,
+                "p95": 294102016.0,
+                "p99": 294114304.0,
+                "max": 294117376.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4718592.0,
+                "p95": 4915200.0,
+                "p99": 4915200.0,
+                "max": 4915200.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4816896.0,
+                "p95": 4964352.0,
+                "p99": 5082316.8,
+                "max": 5111808.0
+              }
+            }
+          }
+        },
+        "v7": {
+          "games": 16,
+          "counts": {
+            "candidate": {
+              "reply_frames": 14588,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            },
+            "opponent": {
+              "reply_frames": 14588,
+              "budget_faults": 0,
+              "fatal_replies": 0,
+              "invalid_actions": 0,
+              "skipped_observations": 0,
+              "unanswered_at_match_end": 0,
+              "missing_latency": 0,
+              "accepted_at_or_over_deadline": 0,
+              "stale_lines": 0,
+              "process_forfeits": 0,
+              "fault_budget_exhausted": 0
+            }
+          },
+          "latency_seconds": {
+            "candidate": {
+              "first": {
+                "count": 16,
+                "min": 2.031558410002617,
+                "median": 2.294693751988234,
+                "p95": 2.990892454996356,
+                "p99": 2.997780963804689,
+                "max": 2.9995030910067726
+              },
+              "all_warm": {
+                "count": 14572,
+                "min": 0.003264703002059832,
+                "median": 0.005424841016065329,
+                "p95": 0.007295159802015404,
+                "p99": 0.009002541938680221,
+                "max": 0.020599506999133155
+              },
+              "accepted_warm": {
+                "count": 14572,
+                "min": 0.003264703002059832,
+                "median": 0.005424841016065329,
+                "p95": 0.007295159802015404,
+                "p99": 0.009002541938680221,
+                "max": 0.020599506999133155
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            },
+            "opponent": {
+              "first": {
+                "count": 16,
+                "min": 0.017893851007102057,
+                "median": 0.023525572003563866,
+                "p95": 0.029560940252849832,
+                "p99": 0.031209028052398936,
+                "max": 0.03162105000228621
+              },
+              "all_warm": {
+                "count": 14572,
+                "min": 0.00022813101531937718,
+                "median": 0.0008230185048887506,
+                "p95": 0.001201784942531958,
+                "p99": 0.003001285185746363,
+                "max": 0.00886303000152111
+              },
+              "accepted_warm": {
+                "count": 14572,
+                "min": 0.00022813101531937718,
+                "median": 0.0008230185048887506,
+                "p95": 0.001201784942531958,
+                "p99": 0.003001285185746363,
+                "max": 0.00886303000152111
+              },
+              "faulted": {
+                "count": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null
+              }
+            }
+          },
+          "peak_sampled_rss_bytes": {
+            "candidate": {
+              "process": {
+                "count": 16,
+                "min": 317050880.0,
+                "median": 317298688.0,
+                "p95": 317541376.0,
+                "p99": 317647052.8,
+                "max": 317673472.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 317050880.0,
+                "median": 317298688.0,
+                "p95": 317541376.0,
+                "p99": 317647052.8,
+                "max": 317673472.0
+              }
+            },
+            "opponent": {
+              "process": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4816896.0,
+                "p95": 4915200.0,
+                "p99": 4915200.0,
+                "max": 4915200.0
+              },
+              "tree": {
+                "count": 16,
+                "min": 4521984.0,
+                "median": 4816896.0,
+                "p95": 4915200.0,
+                "p99": 4915200.0,
+                "max": 4915200.0
+              }
+            }
+          }
+        }
+      },
+      "limitations": [
+        "Four independent development maps, not 16 independent maps; seed83000 is consumed development.",
+        "Pinned V3.5 has no RNG or policy environment reads; deterministic source and unchanged binary, no universal strength claim.",
+        "Sequential baseline/candidate on the same CPU lane with concurrent unrelated workloads; observed latency is not isolated inference performance.",
+        "All games retained including runtime faults. No universal dominance or official leaderboard rank inference."
+      ]
+    }
+  },
+  "policy_action_audit": {
+    "complete": true,
+    "matched_frames": 18010,
+    "defense_frame_counts": {
+      "intercept_override": 160,
+      "intercept_guard": 60,
+      "intercept_feasible": 116
+    },
+    "commitment_flags": {
+      "commitment_continued": 64,
+      "commitment_expired": 0,
+      "commitment_held": 28,
+      "commitment_observation_gap": 0,
+      "commitment_observation_inconsistent": 18,
+      "commitment_override": 52,
+      "commitment_released": 50,
+      "commitment_reverse_blocked": 6,
+      "commitment_started": 50
+    },
+    "offense_flags": {
+      "offense_attack_issued": 792,
+      "offense_collecting": 4500,
+      "offense_continued": 5284,
+      "offense_defense_priority": 534,
+      "offense_deploying": 1778,
+      "offense_feasible": 6480,
+      "offense_home_coverage_safe": 17998,
+      "offense_override": 5488,
+      "offense_released": 202,
+      "offense_started": 994
+    },
+    "limitations": "Recomputes policy on retained public inputs; no engine/opponent replay or outcome-causality proof."
+  },
+  "concentration_diagnosis": {
+    "counts": {
+      "starts": 994,
+      "rally_transition_issued": 822,
+      "rally_owned_and_force_consistent": 822,
+      "plans_with_deployment_action": 804,
+      "offensive_attack_issued": 792,
+      "verified_objective_capture": 800,
+      "verified_capture_via_v6_handoff": 12,
+      "objective_not_owned_after_issued_attack": 8,
+      "unverified_terminal_attack": 0,
+      "released": 202
+    },
+    "release_reason_counts": {
+      "objective_not_current_visible_enemy": 10,
+      "route_force_or_legality_gate_unresolved": 154,
+      "v6_defense_or_winning_priority": 36,
+      "fixed_deadline_expired": 2
+    },
+    "confirmed_capture_distribution": {
+      "confirmed_normal_captures": 788,
+      "normal_target_army_quantiles": {
+        "min": 1.0,
+        "p25": 2.0,
+        "median": 2.0,
+        "p75": 3.0,
+        "p90": 5.0,
+        "max": 16.0
+      },
+      "normal_collection_length_counts": {
+        "6": 426,
+        "5": 148,
+        "3": 54,
+        "4": 116,
+        "2": 30,
+        "1": 14
+      },
+      "normal_deployment_length_counts": {
+        "2": 622,
+        "3": 162,
+        "5": 4
+      },
+      "normal_target_kinds": {
+        "1": 756,
+        "3": 32
+      },
+      "handoff_target_kinds": {
+        "3": 6,
+        "1": 6
+      },
+      "normal_target_1to3": 606,
+      "normal_target_1to3_collection4plus": 520,
+      "normal_retained_atleast25": 634,
+      "normal_lost_within25": 138,
+      "normal_censored_before25": 16
+    },
+    "scope": "All32 completed paired development histories, audited policy actions. No new inference/matches. Mirrored games are not independent. Public observations verify arrivals/captures; issued actions alone do not. Causes not exposed by telemetry remain grouped, not guessed."
+  },
+  "active_memory_history": {
+    "exact_action_parity": true,
+    "faults": 0,
+    "cleanup": {
+      "pid": 2744812,
+      "waits": [
+        {
+          "stage": "eof",
+          "timed_out": false
+        }
+      ],
+      "errors": [],
+      "reaped": true,
+      "returncode": 0,
+      "final_reap_timeout": false
+    },
+    "bundle_identity_unchanged": true,
+    "runtime": {
+      "python": "3.12.10",
+      "packages": {
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "numpy": "2.4.6",
+        "scipy": "1.18.0"
+      }
+    },
+    "peak_rss_bytes": 317485056
+  },
+  "cold_and_warm_inference": {
+    "status": "measurement_complete",
+    "command": [
+      ".cache/runs/sentinel-v7/prototype/benchmark_frozen.py",
+      "--policy-sha256",
+      "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544"
+    ],
+    "affinity": [
+      5
+    ],
+    "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+    "python": "3.12.10",
+    "jax": "0.11.0",
+    "numpy": "2.4.6",
+    "backend": "cpu",
+    "devices": [
+      "cpu:0"
+    ],
+    "environment": {
+      "JAX_PLATFORMS": "cpu",
+      "JAX_ENABLE_COMPILATION_CACHE": "false",
+      "LD_LIBRARY_PATH": null,
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "source_sha256": {
+      "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+      "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+      "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+      "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+      "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+      "competition/agents/sentinel_python/main.py": "b7b60226e8833c21914fab3eefdd0effccb3a1ef0a3e95539641cc700e858fcf",
+      ".cache/runs/sentinel-v7/prototype/benchmark_frozen.py": "2b2daafd2a0579695353eaf6cf4b639ea231987d273229721fb8cab38e14c7a9"
+    },
+    "scope": "Synchronized complete step/telemetry/memory CPU timing after imports and observation preparation. First call per shape includes compile. Shared host; no stdio/startup or all-shape qualification claim. Exact public snapshots use fresh memory, not historical V7 memory. Advancing observations are explicitly constructed owned transfers without enemy, growth or visibility updates.",
+    "fixtures": [
+      {
+        "game_id": 8,
+        "turn": 200,
+        "shape": [
+          19,
+          18
+        ],
+        "wire_sha256": "2f35eb3e4ec7a381a5bbffacc3f9c2ad8907656e828e1e3145f4cdd67c1f6eb6",
+        "trace_sha256": "89a202f38e88dad65601f6e27dec5bda7ab1f200fca45f3f03b4a50754f76efe",
+        "first_call_for_shape": true,
+        "first_call_seconds": 13.660020632989472,
+        "cache_size_before": 0,
+        "cache_size_after": 1,
+        "memory_signature": {
+          "structure": "PyTreeDef(CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]))",
+          "leaves": [
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            }
+          ]
+        },
+        "action": [
+          0,
+          4,
+          3,
+          1,
+          0
+        ],
+        "offense_started": true,
+        "advancing": [
+          {
+            "index": 1,
+            "constructed_turn": 201,
+            "seconds": 0.001665289979428053,
+            "action": [
+              0,
+              5,
+              3,
+              3,
+              0
+            ],
+            "cache_size_before": 1,
+            "cache_size_after": 1,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 2,
+            "constructed_turn": 202,
+            "seconds": 0.001643489027628675,
+            "action": [
+              0,
+              5,
+              4,
+              1,
+              0
+            ],
+            "cache_size_before": 1,
+            "cache_size_after": 1,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 3,
+            "constructed_turn": 203,
+            "seconds": 0.0015350350004155189,
+            "action": [
+              0,
+              6,
+              4,
+              1,
+              0
+            ],
+            "cache_size_before": 1,
+            "cache_size_after": 1,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 4,
+            "constructed_turn": 204,
+            "seconds": 0.0017616010154597461,
+            "action": [
+              0,
+              7,
+              4,
+              1,
+              0
+            ],
+            "cache_size_before": 1,
+            "cache_size_after": 1,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 5,
+            "constructed_turn": 205,
+            "seconds": 0.0016352430102415383,
+            "action": [
+              0,
+              8,
+              4,
+              3,
+              0
+            ],
+            "cache_size_before": 1,
+            "cache_size_after": 1,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 2
+          },
+          {
+            "index": 6,
+            "constructed_turn": 206,
+            "seconds": 0.0014566459867637604,
+            "action": [
+              0,
+              8,
+              5,
+              3,
+              0
+            ],
+            "cache_size_before": 1,
+            "cache_size_after": 1,
+            "offense_continued": true,
+            "offense_deploying": true,
+            "memory_phase": 2
+          }
+        ],
+        "warm_fixed_snapshot": {
+          "samples": 100,
+          "median_seconds": 0.001358842506306246,
+          "p95_seconds": 0.0015478220549994149,
+          "max_seconds": 0.001648748992010951
+        }
+      },
+      {
+        "game_id": 1,
+        "turn": 200,
+        "shape": [
+          21,
+          18
+        ],
+        "wire_sha256": "99bb2ec6e87e40bdeb7186d7ee56609dd80c7daf1e7f86d4b5377f8be5a91cdd",
+        "trace_sha256": "47bf79c23731492850c4a0b2070612adf76234c7810f58e7ea9762a58d26595f",
+        "first_call_for_shape": true,
+        "first_call_seconds": 13.478431541007012,
+        "cache_size_before": 1,
+        "cache_size_after": 2,
+        "memory_signature": {
+          "structure": "PyTreeDef(CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]))",
+          "leaves": [
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            }
+          ]
+        },
+        "action": [
+          0,
+          16,
+          0,
+          3,
+          0
+        ],
+        "offense_started": true,
+        "advancing": [
+          {
+            "index": 1,
+            "constructed_turn": 201,
+            "seconds": 0.0015846180031076074,
+            "action": [
+              0,
+              16,
+              1,
+              0,
+              0
+            ],
+            "cache_size_before": 2,
+            "cache_size_after": 2,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 2,
+            "constructed_turn": 202,
+            "seconds": 0.0015691890148445964,
+            "action": [
+              0,
+              15,
+              1,
+              0,
+              0
+            ],
+            "cache_size_before": 2,
+            "cache_size_after": 2,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 3,
+            "constructed_turn": 203,
+            "seconds": 0.001345406984910369,
+            "action": [
+              0,
+              14,
+              1,
+              3,
+              0
+            ],
+            "cache_size_before": 2,
+            "cache_size_after": 2,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 4,
+            "constructed_turn": 204,
+            "seconds": 0.001572334993397817,
+            "action": [
+              0,
+              14,
+              2,
+              0,
+              0
+            ],
+            "cache_size_before": 2,
+            "cache_size_after": 2,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 5,
+            "constructed_turn": 205,
+            "seconds": 0.001634551997995004,
+            "action": [
+              0,
+              13,
+              2,
+              0,
+              0
+            ],
+            "cache_size_before": 2,
+            "cache_size_after": 2,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 2
+          },
+          {
+            "index": 6,
+            "constructed_turn": 206,
+            "seconds": 0.001482394989579916,
+            "action": [
+              0,
+              12,
+              2,
+              3,
+              0
+            ],
+            "cache_size_before": 2,
+            "cache_size_after": 2,
+            "offense_continued": true,
+            "offense_deploying": true,
+            "memory_phase": 2
+          }
+        ],
+        "warm_fixed_snapshot": {
+          "samples": 100,
+          "median_seconds": 0.0014111960044829175,
+          "p95_seconds": 0.0016335057021933607,
+          "max_seconds": 0.0017751269915606827
+        }
+      },
+      {
+        "game_id": 28,
+        "turn": 200,
+        "shape": [
+          18,
+          19
+        ],
+        "wire_sha256": "8c60795c5aa3230fb81d886f14ab8aa40d9952d8965b4fdd66f1269b84f79d20",
+        "trace_sha256": "00f5706f600ac26ed2270ca8975b77eeba2b27bcbad3ef95cb4dda84c636909a",
+        "first_call_for_shape": true,
+        "first_call_seconds": 13.62349789601285,
+        "cache_size_before": 2,
+        "cache_size_after": 3,
+        "memory_signature": {
+          "structure": "PyTreeDef(CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]))",
+          "leaves": [
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            },
+            {
+              "shape": [],
+              "dtype": "int32"
+            }
+          ]
+        },
+        "action": [
+          0,
+          13,
+          12,
+          3,
+          0
+        ],
+        "offense_started": true,
+        "advancing": [
+          {
+            "index": 1,
+            "constructed_turn": 201,
+            "seconds": 0.0015102479956112802,
+            "action": [
+              0,
+              13,
+              13,
+              0,
+              0
+            ],
+            "cache_size_before": 3,
+            "cache_size_after": 3,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 2,
+            "constructed_turn": 202,
+            "seconds": 0.0016791369998827577,
+            "action": [
+              0,
+              12,
+              13,
+              0,
+              0
+            ],
+            "cache_size_before": 3,
+            "cache_size_after": 3,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 3,
+            "constructed_turn": 203,
+            "seconds": 0.00155466198339127,
+            "action": [
+              0,
+              11,
+              13,
+              3,
+              0
+            ],
+            "cache_size_before": 3,
+            "cache_size_after": 3,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 1
+          },
+          {
+            "index": 4,
+            "constructed_turn": 204,
+            "seconds": 0.0014793089940212667,
+            "action": [
+              0,
+              11,
+              14,
+              0,
+              0
+            ],
+            "cache_size_before": 3,
+            "cache_size_after": 3,
+            "offense_continued": true,
+            "offense_deploying": false,
+            "memory_phase": 2
+          },
+          {
+            "index": 5,
+            "constructed_turn": 205,
+            "seconds": 0.0015374890062958002,
+            "action": [
+              0,
+              10,
+              14,
+              3,
+              0
+            ],
+            "cache_size_before": 3,
+            "cache_size_after": 3,
+            "offense_continued": true,
+            "offense_deploying": true,
+            "memory_phase": 2
+          },
+          {
+            "index": 6,
+            "constructed_turn": 206,
+            "seconds": 0.0014432019961532205,
+            "action": [
+              0,
+              10,
+              15,
+              0,
+              0
+            ],
+            "cache_size_before": 3,
+            "cache_size_after": 3,
+            "offense_continued": true,
+            "offense_deploying": true,
+            "memory_phase": 2
+          }
+        ],
+        "warm_fixed_snapshot": {
+          "samples": 100,
+          "median_seconds": 0.001290387983317487,
+          "p95_seconds": 0.0014020793561940082,
+          "max_seconds": 0.001569309999467805
+        }
+      }
+    ],
+    "failures": []
+  },
+  "runtime_qualification": {
+    "bundle_sha256": "b2b842dcbe602bb24ae965cfd50547d6aa6ad087e10f466b1056f4a1dc0d8bff",
+    "shapes": 16,
+    "frames": 480,
+    "faults": 0,
+    "all_deadlines_met": true,
+    "first_seconds": {
+      "min": 2.1466134040092584,
+      "median": 2.2753691639954923,
+      "max": 2.3883563599956688
+    },
+    "warm_seconds": {
+      "samples": 464,
+      "median": 0.0042757354967761785,
+      "p95": 0.005107573354325723,
+      "max": 0.006730484979925677
+    },
+    "peak_sampled_rss_bytes": 317779968,
+    "qualification": "16 fresh processes,30syntheticframes each, existing disk cache, pinned official Python/packages, CPU4 affinity on shared host. RSS sampled, not hard cgroup peak. Build-time18x21 probe excluded from480frame aggregate. Stateful memory is carried across30frames by unchanged stdio adapter; synthetic probes do not guarantee commitment activation.",
+    "same_input_18x21_action_parity": {
+      "frames": 30,
+      "built_and_reused": true
+    },
+    "directory_identity_unchanged": true,
+    "status": "measured_pass"
+  },
+  "tables": {
+    "map-scores": {
+      "file": "docs/agent-development/v7-development-map-scores.csv",
+      "sha256": "a2e9e62fe2d164fabc1f843d338d7a56903429c15e19f7e074e8fa62df8ee22a",
+      "rows": 32
+    },
+    "cases": {
+      "file": "docs/agent-development/v7-development-cases.csv",
+      "sha256": "f3fdc3d4bc926f1fc2e4a41d68afaa3db7635f929a3b1b8859dac045e892b9f3",
+      "rows": 128
+    }
+  },
+  "bootstrap_reproduction": {
+    "unit": "whole map within opponent, preserving four paired seat/spawn cases",
+    "resamples": 100000,
+    "seed": 19983,
+    "rng_scope": "Amin and each Juraj comparison initialize a separate numpy.random.default_rng(19983); local compare initializes one stream and consumes it for Expander then Hunter in sorted matchup order",
+    "formula": "sort numeric board_id within matchup; d=v7_score-v6_score; quantile(rng.choice(d,(100000,len(d)),replace=True).mean(axis=1),[0.025,0.975])"
+  },
+  "input_sha256": {
+    ".cache/runs/sentinel-v7/source-freeze.json": "7e41ef38ebbf83976d255da4bcb001658035325f06018cf51a7e049cc2a14e9a",
+    ".cache/runs/sentinel-v7/bundle.json": "afad1a3afc0386cac92f5fd4691dd1be81056a8936d2e78349fc4d2de71c0618",
+    ".cache/runs/sentinel-v7/local-development/paired-analysis.json": "9646c0148e1780ea5e35b2571049815fdcf15dc76ef3d9dfcbe47d84bbc8c788",
+    ".cache/runs/sentinel-v7/amin-strategy-development/paired-analysis.json": "1400609696c1108d70f7ea52c0f655c79d23b9e8fc8a3e1b50a586e9827cd517",
+    ".cache/runs/sentinel-v7/juraj-v34-development/paired-analysis.json": "bb7c362e81dab3252822f7f411731b78c2dcdd7ff842e65f7f590e74d44cc048",
+    ".cache/runs/sentinel-v7/juraj-v35-development/paired-analysis.json": "e1fdf63a87bebc8e7c2f7cd34e38a02efa520827a001d6aaa8a62638a846b5d1",
+    ".cache/runs/sentinel-v7/qualification-summary.json": "e4757eae46e79b55f46f71d919866a7e8cd6315605fda9ae5ca3c79a441d9354",
+    ".cache/runs/sentinel-v7/amin-adapter-parity/parity.json": "8b1e77f74efc5896bfc64ebe6fa480a060002920e30c12065efe19443aa25a53",
+    ".cache/runs/sentinel-v7/amin-policy-audit/report.json": "132f7aedac7b65975a2647e07be1f3d279e6b2109e3a9813a0e3b334d4840e3b",
+    ".cache/runs/sentinel-v7/juraj-environment.json": "aa925b9cd10b6d40c2655bac4287027036db40d23ae02d97bec33f98416e3a12",
+    ".cache/runs/sentinel-v7/prototype/frozen-inference.json": "d3cdd689b3058333afa61ef3cc437449bb43028b393db2c8fa5191f26ab5ed03",
+    ".cache/runs/sentinel-v7/qualification/active-history.json": "809777ee2b798fbb564cefb8f1a055325cd5a43158900953882ccc4f596dc1d4",
+    ".cache/runs/sentinel-v7/qualification/active-trace-check.json": "9660ac04ef17af03fcfe6d9ea37c89506df156694669a1b453073aadeae673dc",
+    ".cache/runs/sentinel-v7/validation.json": "13b6a429a9a160976c430e281882aa4eb0a40a1fcf9bcf48a55c139546c0dc41",
+    ".cache/runs/sentinel-v7/v6-historical-action-parity.json": "57e9e680338dd147beb02eb79f5d39a984ff9c129f31dfcd640e82f20145af5e",
+    ".cache/runs/sentinel-v7/selected-fixtures/report.json": "6b395e2226ba0e9bd6a29371a51643ccca9813fe6cdaaa601d3837766191ffa1",
+    ".cache/runs/sentinel-v7/collection-feasibility/REPORT.md": "f95d2f929077bb570ff1bc7d7245ae602b891dcb55c6668c5b070069606543a9",
+    ".cache/runs/sentinel-v7/collection-feasibility/input-hashes.json": "8121deef816649b25bb9f72e09d389b5fa5bc08c195af3ca1b941b8165042910",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/report.json": "ec80f6a992a34773769417babe5213e46acedcef51a074bac05b041e63055e7d",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/REPORT.md": "02e1911921f3de4ca236d63a4f77a569828235c705e0b6a00b754717e4976cef",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/distributions.json": "18e64268b6cc76fae80e646c82498f62eae6764374505c73d9b31b7e8989c502",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/summary-statistics.json": "3302451907a445615792faeaf31f8030a3e8ded6899c4f7eb57de33cdb8fa737",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/game5-early/analysis.json": "dda742b9178a132c7d0debcdd7223fa66b7d249de5b67c6e2a99e7425d087401",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/game5-early/timeline.json": "72c14971e5d219eab0e24420165185aede987cbbfb3067b5743915454954a9ec",
+    ".cache/runs/sentinel-v7/concentration-diagnosis/game5-early/REPORT.md": "c909dc88275263e8ffc8f6aa9fa353c778b8d6cdfee4fe476b3b457931b53afa",
+    ".cache/runs/sentinel-v7/local-development/v6/metadata.json": "c3853bb5e62c9550c24b796748ebb60c4ce8f502beb04eb7a0a172d274522de4",
+    ".cache/runs/sentinel-v7/local-development/v6/games.csv": "ec553d4c34f17b0cc7634eeed089f5ad3b48356df940fb64a6b2e7fe8107a80f",
+    ".cache/runs/sentinel-v7/local-development/v7/metadata.json": "796f9a08d6180c3f1b60bcc1f3504e29851fbd6a6d6e99bc59c6ce4cc0e46808",
+    ".cache/runs/sentinel-v7/local-development/v7/games.csv": "6c8e473b8a5eed6658f3e28d0b71f7caaf713829ffa3a999effd3d296053b181",
+    ".cache/runs/sentinel-v7/amin-strategy-development/v6/metadata.json": "2c1fc9bf5ac3eaf3913d04198f79d872822a8fbb2e41239aba3327c58d3e98e1",
+    ".cache/runs/sentinel-v7/amin-strategy-development/v6/games.csv": "0b6d097d58aa4f7b1e4c0238cc64a098d5d806b151e7309ed36d3561cd12a039",
+    ".cache/runs/sentinel-v7/amin-strategy-development/v7/metadata.json": "2d5246edecb2d4217e0344810167719e5ff6659af976bf2a8e72d564c103adda",
+    ".cache/runs/sentinel-v7/amin-strategy-development/v7/games.csv": "2fd25997eacfa9c3679471b1cb913741b0af4983116bf0c6b0633148f07ccaf1",
+    ".cache/runs/sentinel-v7/juraj-v34-development/v6/metadata.json": "dc1a82bb1b051c0ad58f31340d0b2a150bf82d84c171cadd437e4fc64c0d0e28",
+    ".cache/runs/sentinel-v7/juraj-v34-development/v6/games.csv": "5aa0bfb4c41bae3aabdb866dbc8f0b962adc732fc1a4baf9a530a77f0613a4f3",
+    ".cache/runs/sentinel-v7/juraj-v34-development/v7/metadata.json": "03eea02920de347be0825464ec31ba2a293a755515cc0ee476509d9d151c8d6c",
+    ".cache/runs/sentinel-v7/juraj-v34-development/v7/games.csv": "a75701ab99f97e15785ed17fa3492f2815cbab9505c62f69b10cb64c63d25760",
+    ".cache/runs/sentinel-v7/juraj-v35-development/v6/metadata.json": "9aef7a87b64c8a5f9987bbca81cf1947339d24e4149d07417ffb4fc0e01e12d1",
+    ".cache/runs/sentinel-v7/juraj-v35-development/v6/games.csv": "f8960482952e77c4455c5900a70d798a4448dfd504d22a04088b8e19621097fa",
+    ".cache/runs/sentinel-v7/juraj-v35-development/v7/metadata.json": "284a71512eeda43805241566665474966bb94b2852e98900f7ac781235325568",
+    ".cache/runs/sentinel-v7/juraj-v35-development/v7/games.csv": "335246a7af7d84f501e042efe474636d7983dbace6464df41467a6e25b584b76"
+  },
+  "validation": {
+    "distinct_focused_tests_passed": 81,
+    "ruff": "passed",
+    "ci": "Local verification only; no GitHub Actions result claimed."
+  },
+  "limits": [
+    "Previously consumed development maps; no fresh promotion evidence.",
+    "Juraj V3.4 default entropy/clock RNG is unmatched; only maps/seats/spawn labels paired.",
+    "Juraj V3.5 deterministic source is a distinct rewrite, not the V3.4 reference.",
+    "Amin synchronous strategy outcomes exclude deadline substitution and cannot qualify deployment.",
+    "Synthetic runtime qualification does not guarantee future startup deadlines or official tournament acceptance.",
+    "Official tournament leaders remain untested; no universal strength or rank claim."
+  ]
+}

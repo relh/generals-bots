@@ -84,6 +84,11 @@ def make_agent():
 
         agent_type = SentinelV6Agent
         options = dict(commit_defense=variant == "v6")
+    elif variant in ("v7", "v7-disabled"):
+        from generals.agents.sentinel_v7_agent import SentinelV7Agent
+
+        agent_type = SentinelV7Agent
+        options = dict(concentrate_armies=variant == "v7")
     elif variant != "v2":
         raise ValueError(f"unsupported SENTINEL_VARIANT={variant!r}")
     return agent_type(

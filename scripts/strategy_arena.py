@@ -155,6 +155,15 @@ def candidate(name, rules):
             max_turns=rules.max_turns,
             commit_defense=name == "sentinel-v6",
         )
+    elif name in ("sentinel-v7", "sentinel-v7-disabled"):
+        from generals.agents.sentinel_v7_agent import SentinelV7Agent
+
+        return SentinelV7Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            concentrate_armies=name == "sentinel-v7",
+        )
     else:
         raise ValueError(f"Unknown strategy candidate: {name}")
     return cls(build_castles=rules.build_castles, deathtouch_turn=rules.deathtouch_turn, max_turns=rules.max_turns)
@@ -315,6 +324,8 @@ def main():
             "sentinel-v5-disabled",
             "sentinel-v6",
             "sentinel-v6-disabled",
+            "sentinel-v7",
+            "sentinel-v7-disabled",
         ],
         default="sentinel",
     )

@@ -39,9 +39,25 @@ V6_OPTIONS = {
     "sentinel-v6-disabled": {"commit_defense": False},
 }
 
+V7_OPTIONS = {
+    "sentinel-v7": {"concentrate_armies": True},
+    "sentinel-v7-disabled": {"concentrate_armies": False},
+}
+
 
 def agent(name, rules, checkpoint=None, *, options=None):
     options = options or {}
+    if name in V7_OPTIONS:
+        from generals.agents.sentinel_v7_agent import SentinelV7Agent
+
+        if set(options) - {"concentrate_armies"}:
+            raise ValueError(f"Unsupported policy options for {name}: {options}")
+        return SentinelV7Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V7_OPTIONS[name] | options),
+        )
     if name in V6_OPTIONS:
         from generals.agents.sentinel_v6_agent import SentinelV6Agent
 
@@ -145,6 +161,7 @@ def main():
             *V4_OPTIONS,
             *V5_OPTIONS,
             *V6_OPTIONS,
+            *V7_OPTIONS,
             "learned",
             "old-ppo",
             "random",
@@ -177,6 +194,8 @@ def main():
         metadata["candidate_options"] = V5_OPTIONS[args.candidate]
     if args.candidate in V6_OPTIONS:
         metadata["candidate_options"] = V6_OPTIONS[args.candidate]
+    if args.candidate in V7_OPTIONS:
+        metadata["candidate_options"] = V7_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p

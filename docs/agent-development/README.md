@@ -19,8 +19,17 @@ measured gain against Juraj V3.5. It is not promoted. Use `--candidate sentinel-
 for local evaluation or `--variant v6` for a standalone archive;
 `sentinel-v6-disabled` / `v6-disabled` reproduce V5. Its stateful memory is carried
 through local, replay, reference and stdio execution. The actual prebuilt cache
-passed all 16 shapes; uncached startup exceeded the limit. Persistent offensive
-concentration and search remain the next measured strategy hypotheses.
+passed all 16 shapes; uncached startup exceeded the limit.
+
+The [v7 concentration experiment](v7-development.md) completes 256 paired
+development games and is not promoted. It gathers and deploys real armies, but
+regresses against Hunter, Amin and both Juraj versions. Many successful captures
+spend several collection actions against small garrisons. Use
+`--candidate sentinel-v7` or `--variant v7`; `sentinel-v7-disabled` / `v7-disabled`
+preserve exact V6 actions, telemetry and defender memory. The built cache passes
+all 16 shapes and a complete active-memory wire history; uncached startup exceeds
+the limit. The next experiments must test when gathering is worth its action
+cost and compare the least costly sufficient routes with existing field forces.
 
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
