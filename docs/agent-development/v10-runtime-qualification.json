@@ -417,7 +417,10 @@
     "Cold uncached full-step V10 exceeds10s; this evidence qualifies explicitly built caches.",
     "Probe RSS is single-process sampled VmRSS/VmHWM; actual-history RSS is sampled process-tree RSS; neither is a cgroup bound.",
     "Original complete game predates factory integration; old/current hashes retained, parser AST equality plus exact source/action/memory replay validates deployment against original public inputs.",
-    "Parent6 original synchronous traces retain public wires/actions but no independent internal-memory oracle; seven-field memory values are reconstructed sequentially and schema checked, with every action matched. Standalone stdio does not expose memory."
+    "Parent6 original synchronous traces retain public wires/actions but no independent internal-memory oracle; seven-field memory values are reconstructed sequentially and schema checked, with every action matched. Standalone stdio does not expose memory.",
+    "GPU measurements use coordinator JAX0.11.1 on RTX2080Ti with CPU7 and synchronized whole-step dispatch/output handling, distinct from official-version CPU actor startup.",
+    "GPU batch32 repeats one public input/key/memory32times; it does not measure diverse rollout or training throughput.",
+    "GPU passed50% minimum throughput retention while adding active-path latency; this is not a speedup or optimization claim."
   ],
   "artifact_sha256": {
     ".cache/runs/sentinel-v10/standalone-qualification/source-freeze.json": "ee2a785da807f22b85ac21020a0af19b2bd1030da1fe0e18bd0b973b7b4614ed",
@@ -457,6 +460,301 @@
     ".cache/runs/sentinel-v10/standalone-qualification/parent6-source-history-v2.log": "6e9e54e1715ecf345a89ba53220c42a4d3a2596fbcf4830d43310fbaa5f11363",
     ".cache/runs/sentinel-v10/standalone-qualification/parent6_wire_history_v2.py": "7642d5db3423b1dadff3825912cfcbe5115f05d41c6f292b5754af59e4d77ce8",
     ".cache/runs/sentinel-v10/standalone-qualification/parent6-wire-history-v2/report.json": "42fbe6785cc7ab9ad2255f1c440e028e8bc1075b4757cbaa8e97534dd9fbf1d2",
-    ".cache/runs/sentinel-v10/standalone-qualification/parent6-wire-history-v2.log": "02307855d0ffb40af4c61452c864dcd1b251eb7de4f496aebfce6d605b136b3a"
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-wire-history-v2.log": "02307855d0ffb40af4c61452c864dcd1b251eb7de4f496aebfce6d605b136b3a",
+    ".cache/runs/sentinel-v10/development/runtime-evidence.json": "a99c0a33e01293702d8411ee1fe5aa91f89c2a8e11d930ad450ddb10c6ee20df",
+    ".cache/runs/sentinel-v10/gpu-warm-profile/report.json": "91d45c0f0299e753146efca10991ca88f34dc12b7ac5dd6455d54f6a0a994b8a",
+    ".cache/runs/sentinel-v10/gpu-warm-profile/benchmark.py": "c1a2498826c148c49aa029a0937e52613e8fa2247ca1a3498d33ff8c2d6c8f0d",
+    ".cache/runs/sentinel-v10/gpu-warm-profile/benchmark.log": "448a7f4cad60585c20f9d168d06052a644a5cf7619fb2d872f8ce99183fc8e60",
+    ".cache/runs/sentinel-v10/development/build_runtime_evidence.py": "4394cd022a44bf2c10ecbb6c21a82a2083c36b7d4e31454a9ea896156831861e",
+    ".cache/runs/sentinel-v10/development/runtime-evidence-build.log": "8a27dfe3ca9e51e69f3a68e80be10a987b411fd9019bc7f2237cb5bfce6a6eff"
+  },
+  "gpu_warm_profile": {
+    "report_sha256": "91d45c0f0299e753146efca10991ca88f34dc12b7ac5dd6455d54f6a0a994b8a",
+    "runtime": {
+      "python": "3.12.11 (main, Oct  7 2025, 15:34:39) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.venv/bin/python",
+      "packages": {
+        "jax": "0.11.1",
+        "jaxlib": "0.11.1",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1"
+      },
+      "affinity": [
+        7
+      ],
+      "imports_seconds": 1.9477957669878379,
+      "devices": [
+        "cuda:0"
+      ],
+      "device_kinds": [
+        "NVIDIA GeForce RTX 2080 Ti"
+      ]
+    },
+    "matched_parent_throughput_ratios": {
+      "scalar/mobilization": {
+        "v10-parent6": 0.6692636820311265,
+        "v10-parent9": 0.7399369468326736
+      },
+      "scalar/inactive_initial_history": {
+        "v10-parent6": 0.9856537089961837,
+        "v10-parent9": 0.986358461966032
+      },
+      "batch32/mobilization": {
+        "v10-parent6": 0.7658820192071625,
+        "v10-parent9": 0.8023778812707134
+      },
+      "batch32/inactive_initial_history": {
+        "v10-parent6": 0.9067182198150733,
+        "v10-parent9": 0.9114908862938228
+      }
+    },
+    "cold": {
+      "v6/scalar": {
+        "cold_step_seconds": 23.29763385601109,
+        "memory_leaves": 7,
+        "active_action": [
+          0,
+          10,
+          9,
+          1,
+          0
+        ]
+      },
+      "v9/scalar": {
+        "cold_step_seconds": 26.87648231998901,
+        "memory_leaves": 19,
+        "active_action": [
+          0,
+          10,
+          9,
+          1,
+          0
+        ]
+      },
+      "v10-parent6/scalar": {
+        "cold_step_seconds": 24.56401210601325,
+        "memory_leaves": 7,
+        "active_action": [
+          0,
+          14,
+          5,
+          0,
+          0
+        ]
+      },
+      "v10-parent9/scalar": {
+        "cold_step_seconds": 27.140221740002744,
+        "memory_leaves": 19,
+        "active_action": [
+          0,
+          14,
+          5,
+          0,
+          0
+        ]
+      },
+      "v6/batch32": {
+        "cold_step_seconds": 13.77879833697807,
+        "memory_leaves": 7,
+        "active_action": [
+          0,
+          10,
+          9,
+          1,
+          0
+        ]
+      },
+      "v9/batch32": {
+        "cold_step_seconds": 18.051061831007246,
+        "memory_leaves": 19,
+        "active_action": [
+          0,
+          10,
+          9,
+          1,
+          0
+        ]
+      },
+      "v10-parent6/batch32": {
+        "cold_step_seconds": 15.544991242000833,
+        "memory_leaves": 7,
+        "active_action": [
+          0,
+          14,
+          5,
+          0,
+          0
+        ]
+      },
+      "v10-parent9/batch32": {
+        "cold_step_seconds": 21.596227736008586,
+        "memory_leaves": 19,
+        "active_action": [
+          0,
+          14,
+          5,
+          0,
+          0
+        ]
+      }
+    },
+    "case_timings": {
+      "scalar/mobilization": {
+        "v6": {
+          "n": 500,
+          "median_seconds": 0.008571521990234032,
+          "p95_seconds": 0.00902346149086952,
+          "min_seconds": 0.008378511993214488,
+          "max_seconds": 0.019388462009374052
+        },
+        "v9": {
+          "n": 500,
+          "median_seconds": 0.011773724996601231,
+          "p95_seconds": 0.012311822576157283,
+          "min_seconds": 0.00975390398525633,
+          "max_seconds": 0.013902003003749996
+        },
+        "v10-parent6": {
+          "n": 500,
+          "median_seconds": 0.012807391496608034,
+          "p95_seconds": 0.013374358840519561,
+          "min_seconds": 0.01244981400668621,
+          "max_seconds": 0.01423401097417809
+        },
+        "v10-parent9": {
+          "n": 500,
+          "median_seconds": 0.01591179498063866,
+          "p95_seconds": 0.016539934495813213,
+          "min_seconds": 0.015488031989661977,
+          "max_seconds": 0.02250228400225751
+        }
+      },
+      "scalar/inactive_initial_history": {
+        "v6": {
+          "n": 500,
+          "median_seconds": 0.006704109502607025,
+          "p95_seconds": 0.0070888821370317595,
+          "min_seconds": 0.006087797984946519,
+          "max_seconds": 0.0077387019991874695
+        },
+        "v9": {
+          "n": 500,
+          "median_seconds": 0.008594560989877209,
+          "p95_seconds": 0.00913491125102155,
+          "min_seconds": 0.008224691002396867,
+          "max_seconds": 0.010169109998969361
+        },
+        "v10-parent6": {
+          "n": 500,
+          "median_seconds": 0.006801688505220227,
+          "p95_seconds": 0.007202587400388438,
+          "min_seconds": 0.006339384010061622,
+          "max_seconds": 0.008804087003227323
+        },
+        "v10-parent9": {
+          "n": 500,
+          "median_seconds": 0.0087134255154524,
+          "p95_seconds": 0.009088785586936866,
+          "min_seconds": 0.0078972109768074,
+          "max_seconds": 0.010764867009129375
+        }
+      },
+      "batch32/mobilization": {
+        "v6": {
+          "n": 500,
+          "median_seconds": 0.011830830000690185,
+          "p95_seconds": 0.013620412109594327,
+          "min_seconds": 0.011353570997016504,
+          "max_seconds": 0.015480230009416118
+        },
+        "v9": {
+          "n": 500,
+          "median_seconds": 0.01582224149024114,
+          "p95_seconds": 0.018032427009893583,
+          "min_seconds": 0.014880445000017062,
+          "max_seconds": 0.02004636899800971
+        },
+        "v10-parent6": {
+          "n": 500,
+          "median_seconds": 0.015447327008587308,
+          "p95_seconds": 0.017697275712271216,
+          "min_seconds": 0.014473484014160931,
+          "max_seconds": 0.03236924498924054
+        },
+        "v10-parent9": {
+          "n": 500,
+          "median_seconds": 0.01971918949857354,
+          "p95_seconds": 0.02219829975219909,
+          "min_seconds": 0.01835580001352355,
+          "max_seconds": 0.033902405004482716
+        }
+      },
+      "batch32/inactive_initial_history": {
+        "v6": {
+          "n": 500,
+          "median_seconds": 0.013056002484518103,
+          "p95_seconds": 0.014118537110334728,
+          "min_seconds": 0.012317354994593188,
+          "max_seconds": 0.016236730996752158
+        },
+        "v9": {
+          "n": 500,
+          "median_seconds": 0.01568366000719834,
+          "p95_seconds": 0.017490174456906968,
+          "min_seconds": 0.014898989989887923,
+          "max_seconds": 0.021318306011380628
+        },
+        "v10-parent6": {
+          "n": 500,
+          "median_seconds": 0.014399184001376852,
+          "p95_seconds": 0.016738140796951483,
+          "min_seconds": 0.01365191099466756,
+          "max_seconds": 0.018769262998830527
+        },
+        "v10-parent9": {
+          "n": 500,
+          "median_seconds": 0.01720660101273097,
+          "p95_seconds": 0.01960552078089677,
+          "min_seconds": 0.01641007899888791,
+          "max_seconds": 0.024468546005664393
+        }
+      }
+    },
+    "scope": "Same18x21 real public snapshot and parent-memory inputs as CPU profile. Scalar and batch32 full compiledsteps, all outputs synchronized. Batch duplicates one observation/memory/key32times; measures layout/graph throughput, not diverse rollout or learning. Cold includes compile afterimports, no independent fresh-process cold comparison. Cache disabled, shared host; no actions enacted.",
+    "status": "measured_pass",
+    "repeats": 5,
+    "samples_per_repeat": 100,
+    "median_latency_increase_over_corresponding_parent": {
+      "scalar/mobilization": {
+        "v10-parent6": 0.4941793897513349,
+        "v10-parent9": 0.35146650573475946
+      },
+      "scalar/inactive_initial_history": {
+        "v10-parent6": 0.014555102743363024,
+        "v10-parent9": 0.013830203278002218
+      },
+      "batch32/mobilization": {
+        "v10-parent6": 0.30568413270126826,
+        "v10-parent9": 0.24629557137880664
+      },
+      "batch32/inactive_initial_history": {
+        "v10-parent6": 0.10287846670154233,
+        "v10-parent9": 0.09710367381297758
+      }
+    }
+  },
+  "strict_combined_runtime_validation": {
+    "complete": true,
+    "runtime_evidence_sha256": "a99c0a33e01293702d8411ee1fe5aa91f89c2a8e11d930ad450ddb10c6ee20df",
+    "input_bindings": 261,
+    "gates": [
+      "both16shape cached startup proofs",
+      "default19-field recorded-memory source replay and1076-frame actual stdio actions",
+      "parent6all32seven-field reconstruction and1408 selected actual stdio actions including mobilization",
+      "CPU mobilization/inactive/existing-commitment warm ratios >=0.5",
+      "GPU scalar/batch32 mobilization/inactive warm ratios >=0.5 versus each corresponding parent",
+      "frozen policy/source/helper/prerequisite and raw artifact hash verification"
+    ],
+    "scope": "Runtime gates only; no official submission or strength/promotion conclusion."
   }
 }

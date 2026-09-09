@@ -12,8 +12,12 @@ superiority over every opponent or justify promotion.
 The [v10 home-mobilization experiment](v10-development.md) turns both selected
 my_bot9 losses into wins in complete games from turn zero. These are mirrored
 cases from one consumed position, not independent fresh strength evidence.
-It remains experimental; broader opponent preservation and deployment
-qualification are still required.
+Its [completed 576-game comparison](v10-development-gate.md) passes deployment
+and runtime checks and improves several V9 development results, but still
+fails stronger-control preservation. Default V10 scores 25% against Juraj V3.5
+(two wins, ten losses, four draws), while V6 scores 37.5%. V10 over V6 matches
+V6's aggregate scores without improving them. Neither candidate establishes
+the required winning advantage against every opponent; both remain experimental.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
@@ -23,14 +27,18 @@ opponent. Preserve the existing local strength gates and validate deployment
 under the actual runtime limits. Report untested or unavailable policies instead
 of extending a measured result to all public entrants.
 
-The next strategy work should use the [completed failure diagnosis](v9-diagnosis.md)
-to test inherited defense under visible merging and changes caused by its own
-donation moves. A force certificate can become stale immediately when a source is
-vacated; rejecting that move alone does not establish a safe alternative. V9's
-known-general pursuit repairs the selected late Hunter pair, while its unseen-general
-pair remains unchanged. Search, force deployment and economic retuning remain
-separate hypotheses. Preserve stronger controls and useful successful plans while
-testing actual alternative trajectories. Greater stack size, fewer reversals or
+The next strategy work must address the opening economy and field-force gap
+while preserving successful Amin plans and the recovered my_bot9 wins. The
+completed V10 diagnosis retains a Juraj V3.5 case where V9 and V10 lose at turn
+422 with identical complete actions while V6 wins. Its recovered Amin and Juraj
+draws also end economically behind without ever seeing the enemy general.
+General discovery and attack remain separate hypotheses from late home defense.
+
+The [earlier failure diagnosis](v9-diagnosis.md) still identifies limitations in
+defense under enemy merges and our own donation moves. A force certificate can
+become stale when a source is vacated; rejecting that move alone does not establish
+a safe alternative. Preserve stronger controls and useful successful plans while
+testing complete alternative trajectories. Greater stack size, fewer reversals or
 more captured tiles alone are not success.
 
 Previously consumed seeds, including 83000, 93000 and 113000, may support

@@ -52,13 +52,16 @@ for the next bounded experiment.
 
 The [v10 home-mobilization experiment](v10-development.md) lets a real home army
 join a newly selected interception after deathtouch activates. It repairs one
-known my_bot9 failure in both mirrored complete games, but has not passed a
-broad strength or deployment gate. Use `--candidate sentinel-v10` or
+known my_bot9 failure in both mirrored complete games. Its [completed 576-game
+comparison](v10-development-gate.md) confirms 16/16 my_bot9 wins and converts
+two losses each into draws against Amin and Juraj V3.5, but fails preservation
+against stronger controls. Deployment and runtime checks pass; it is not
+promoted. Use `--candidate sentinel-v10` or
 `--variant v10`; `v10-v6` selects the stronger V6 parent for a separate ablation.
 The corresponding `-disabled` aliases reproduce their selected parent exactly.
 The default remains V2 and the competitive goal remains active.
 
-The [four-arm development plan](v10-plan.md) compares both V10 parent choices
+The [four-arm development plan](v10-plan.md) compared both V10 parent choices
 with V6 and V9 across 576 fixed games. The [runtime qualification](v10-runtime-qualification.md)
 records cached startup checks and complete-history coverage separately.
 The [expanded public-opponent census](v10-opponent-coverage.md) identifies and
