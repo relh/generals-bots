@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
-VARIANTS = ("v2", "v3", "v3-memory", "v3-defense", "v3-disabled")
+VARIANTS = ("v2", "v3", "v3-memory", "v3-defense", "v3-disabled", "v4", "v4-adjacent")
 
 
 def build(output, prewarm_cache=True, variant="v2"):
@@ -31,6 +31,9 @@ def build(output, prewarm_cache=True, variant="v2"):
     files["main.py"] = (ROOT / "competition/agents/sentinel_python/main.py").read_bytes()
     if variant != "v2":
         name = "generals/agents/sentinel_v3_agent.py"
+        files[name] = (ROOT / name).read_bytes()
+    if variant.startswith("v4"):
+        name = "generals/agents/sentinel_v4_agent.py"
         files[name] = (ROOT / name).read_bytes()
     bootstrap = b"""#!/usr/bin/env bash
 set -euo pipefail
@@ -81,7 +84,11 @@ export JAX_PERSISTENT_CACHE_MIN_ENTRY_SIZE_BYTES=0
         "unpacked_bytes": sum(map(len, files.values())),
         "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
         "policy_sha256": manifest["source_sha256"][
-            "generals/agents/sentinel_agent.py" if variant == "v2" else "generals/agents/sentinel_v3_agent.py"
+            "generals/agents/sentinel_agent.py"
+            if variant == "v2"
+            else "generals/agents/sentinel_v4_agent.py"
+            if variant.startswith("v4")
+            else "generals/agents/sentinel_v3_agent.py"
         ],
     }
 

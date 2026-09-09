@@ -69,6 +69,11 @@ def make_agent():
             remember_threats=variant in ("v3", "v3-memory"),
             sustained_defense=variant in ("v3", "v3-defense"),
         )
+    elif variant in ("v4", "v4-adjacent"):
+        from generals.agents.sentinel_v4_agent import SentinelV4Agent
+
+        agent_type = SentinelV4Agent
+        options = dict(build_threat_horizon=2 if variant == "v4" else 1)
     elif variant != "v2":
         raise ValueError(f"unsupported SENTINEL_VARIANT={variant!r}")
     return agent_type(

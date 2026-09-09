@@ -37,6 +37,20 @@ def test_adapter_variants_keep_v2_default_and_separate_ablations(monkeypatch):
         assert agent.build_castles and agent.deathtouch_turn == 800
 
 
+def test_v4_adapter_matches_arena_rules_and_explicit_horizon(monkeypatch):
+    from generals.evaluation.arena import Rules
+    from generals.evaluation.cli import agent as make_arena_agent
+
+    monkeypatch.setenv("SENTINEL_MODE", "competition")
+    for variant, horizon in (("v4", 2), ("v4-adjacent", 1)):
+        monkeypatch.setenv("SENTINEL_VARIANT", variant)
+        wire_agent = make_agent()
+        arena_agent = make_arena_agent("sentinel-" + variant, Rules(1200, True, 800)).__self__
+        assert wire_agent.build_threat_horizon == arena_agent.build_threat_horizon == horizon
+        assert wire_agent.build_castles and wire_agent.deathtouch_turn == 800
+        assert not hasattr(wire_agent, "initial_memory")
+
+
 def test_stdio_carries_memory_between_frames_and_resets_on_new_handshake(monkeypatch, capsys):
     class CounterPolicy:
         def initial_memory(self, shape):

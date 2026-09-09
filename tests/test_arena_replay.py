@@ -93,3 +93,26 @@ def test_v3_snapshot_guard_checks_base_dependency_cli_and_snapshot_identity(tmp_
         dict(source_hashes=recorded), dict(candidate=alias, opponent="hunter"), snapshot
     )
     assert "candidate_source_sha256" in provenance["critical_changed_sources"]
+
+
+def test_v4_snapshot_guard_checks_both_frozen_scoring_dependencies(tmp_path, monkeypatch):
+    monkeypatch.setattr(replay, "ROOT", tmp_path)
+    names = [
+        "generals/agents/sentinel_v4_agent.py",
+        "generals/agents/sentinel_v3_agent.py",
+        "generals/agents/sentinel_agent.py",
+    ]
+    recorded = {}
+    for name in names:
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("historical " + name)
+        recorded[name] = replay.file_hash(path)
+    snapshot = tmp_path / "v4_snapshot.py"
+    snapshot.write_bytes((tmp_path / names[0]).read_bytes())
+    for name in names:
+        (tmp_path / name).write_text("changed " + name)
+    provenance = replay.source_provenance(
+        dict(source_hashes=recorded), dict(candidate="sentinel-v4", opponent="hunter"), snapshot
+    )
+    assert set(provenance["critical_changed_sources"]) == set(names[1:])

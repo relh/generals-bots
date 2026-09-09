@@ -2,9 +2,11 @@
 
 Our fork: https://github.com/relh/generals-bots/tree/main.
 
-Start with the [measured results](results.md). Sentinel passed the first local
-holdout gate; the learned policy and external opponent comparisons are reported
-separately.
+Our [competitive objective](competitive-goal.md) is to beat every available
+distinct opponent. **That goal is not achieved.** See the [opponent coverage
+census](opponent-coverage.md), [v4 development evidence](v4-development.md), and
+[earlier measured results](results.md). Completing an experiment does not close
+the competitive goal.
 
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
@@ -18,6 +20,9 @@ the prototype, use `--candidate sentinel-v3`; the `sentinel-v3-memory` and
 `sentinel-v3-defense` aliases isolate its two changes. Replays include each
 player's memory and decision telemetry. Standalone builds select the same variants
 with `scripts/build_sentinel_bundle.py --variant v3 --output PATH`.
+The experimental `sentinel-v4` candidate adds a visible two-step threat check
+before building a castle; `sentinel-v4-adjacent` is its frozen-v2-equivalent
+one-step ablation. Build its standalone archive with `--variant v4`.
 Use `scripts/compare_agent_runs.py CONTROL_DIR CANDIDATE_DIR --output PATH` for
 paired score differences; it verifies actual boards, rules, and complete cases.
 

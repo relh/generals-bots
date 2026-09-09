@@ -25,10 +25,25 @@ V3_OPTIONS = {
     "sentinel-v3-defense": {"remember_threats": False, "sustained_defense": True},
     "sentinel-v3-disabled": {"remember_threats": False, "sustained_defense": False},
 }
+V4_OPTIONS = {
+    "sentinel-v4": {"build_threat_horizon": 2},
+    "sentinel-v4-adjacent": {"build_threat_horizon": 1},
+}
 
 
 def agent(name, rules, checkpoint=None, *, options=None):
     options = options or {}
+    if name in V4_OPTIONS:
+        from generals.agents.sentinel_v4_agent import SentinelV4Agent
+
+        if set(options) - {"build_threat_horizon"}:
+            raise ValueError(f"Unsupported policy options for {name}: {options}")
+        return SentinelV4Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V4_OPTIONS[name] | options),
+        ).act
     if options and (name not in V3_OPTIONS or set(options) - {"remember_threats", "sustained_defense"}):
         raise ValueError(f"Unsupported policy options for {name}: {options}")
     if name in V3_OPTIONS:
@@ -93,7 +108,17 @@ def main():
     parser.add_argument(
         "--candidate",
         default="sentinel",
-        choices=["sentinel", *V3_OPTIONS, "learned", "old-ppo", "random", "expander", "hunter", "harvester"],
+        choices=[
+            "sentinel",
+            *V3_OPTIONS,
+            *V4_OPTIONS,
+            "learned",
+            "old-ppo",
+            "random",
+            "expander",
+            "hunter",
+            "harvester",
+        ],
     )
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--opponents", nargs="+", default=["random", "expander", "hunter", "harvester"])
@@ -113,6 +138,8 @@ def main():
     metadata.update(devices=[str(d) for d in jax.devices()], jax_version=jax.__version__)
     if args.candidate in V3_OPTIONS:
         metadata["candidate_options"] = V3_OPTIONS[args.candidate]
+    if args.candidate in V4_OPTIONS:
+        metadata["candidate_options"] = V4_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p
