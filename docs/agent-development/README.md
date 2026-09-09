@@ -50,6 +50,14 @@ The built cache passes all 16 shapes and an entire active-memory wire history.
 The [full-episode diagnosis](v9-diagnosis.md) records remaining defense failures
 for the next bounded experiment.
 
+The [v10 home-mobilization experiment](v10-development.md) lets a real home army
+join a newly selected interception after deathtouch activates. It repairs one
+known my_bot9 failure in both mirrored complete games, but has not passed a
+broad strength or deployment gate. Use `--candidate sentinel-v10` or
+`--variant v10`; `v10-v6` selects the stronger V6 parent for a separate ablation.
+The corresponding `-disabled` aliases reproduce their selected parent exactly.
+The default remains V2 and the competitive goal remains active.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

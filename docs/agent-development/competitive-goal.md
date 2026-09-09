@@ -2,12 +2,18 @@
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v9 experiments have not established competitive superiority.
+The v3 through v10 experiments have not established competitive superiority.
 V2 remains the default control. The [v9 remembered-general experiment](v9-development.md)
 improves Amin, Hunter and original my_bot9 over V8, but still fails preservation
 against stronger V6 controls and scores only 18.75% against Juraj V3.5.
 A favorable development score against some opponents does not establish
 superiority over every opponent or justify promotion.
+
+The [v10 home-mobilization experiment](v10-development.md) turns both selected
+my_bot9 losses into wins in complete games from turn zero. These are mirrored
+cases from one consumed position, not independent fresh strength evidence.
+It remains experimental; broader opponent preservation and deployment
+qualification are still required.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use

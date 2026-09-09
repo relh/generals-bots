@@ -1,0 +1,2025 @@
+{
+  "schema_version": 1,
+  "status": "selected-development-feasibility-complete; broader-strength-and-deployment-pending",
+  "parent_commit": "df9067ea23ee533471f5f1867683d12d5592ed2f",
+  "policy_sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+  "default_policy": "Sentinel V2 unchanged",
+  "competitive_goal_achieved": false,
+  "promotion": false,
+  "training_launched": false,
+  "reserved_seed143000_used": false,
+  "hypothesis": "Allow a timely home-army donor after deathtouch for the same field-interception target; not a donation-accounting repair.",
+  "interface": {
+    "parent_version": [
+      6,
+      9
+    ],
+    "mobilize_home": true,
+    "disabled": "exact selected parent action, memory and original telemetry",
+    "memory_leaves": {
+      "v6": 7,
+      "v9": 19
+    }
+  },
+  "full_cases": {
+    "complete": true,
+    "kind": "actual-home-donor-selected-full-case/1",
+    "planned_games": 4,
+    "cut_before_turn": 0,
+    "games": [
+      {
+        "game_id": 4,
+        "arm": "control",
+        "prefix_opponent_replies_verified": 0,
+        "suffix_turns": 1037,
+        "interventions": 0,
+        "terminal_turn": 1037,
+        "winner": 1,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": true,
+        "mobilization_issued": 0,
+        "output_sha256": {
+          "control-game-0004-prefix.json": "0da9ed40c8e14770c55bc288272866ff9002125e62eb60aaa1b363db66446ed9",
+          "control-game-0004-suffix.jsonl": "60a720a1f3e9747a215c030ac707c823a9d5364433ea964cebcba1889b232510",
+          "control-game-0004-states.npz": "447750bc5f97c3a6fac254de00c57e0ffbee3464cd25df1e7a81ea3517d10a3f"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "control",
+        "prefix_opponent_replies_verified": 0,
+        "suffix_turns": 1037,
+        "interventions": 0,
+        "terminal_turn": 1037,
+        "winner": 0,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": true,
+        "mobilization_issued": 0,
+        "output_sha256": {
+          "control-game-0007-suffix.jsonl": "a7ca7b869bba69af6f09b42c8fe0905005b70a0de6fee8d6ed30e633673400d4",
+          "control-game-0007-states.npz": "f203624eb275cf7226392521ea67ac762ca84010b793ced3c9c6e880ca3db9c2",
+          "control-game-0007-prefix.json": "946a7e78f4b496def3a4486dadb1a31e949d653919388050a0c0f29fded1cd4c"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "candidate",
+        "prefix_opponent_replies_verified": 0,
+        "suffix_turns": 1076,
+        "interventions": 0,
+        "terminal_turn": 1076,
+        "winner": 0,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "mobilization_issued": 1,
+        "output_sha256": {
+          "candidate-game-0004-suffix.jsonl": "9a175069a48d6c2e9436472e616d4a0838f154a802113b03062b4988ce32a528",
+          "candidate-game-0004-prefix.json": "59bac8e57edff98807e6611ffec0848e0799df745684bc35413b175cea5af94d",
+          "candidate-game-0004-states.npz": "f9516fd37a5638c2f1005592556c84d6c2a338617d37f1677054564ab335f331"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "candidate",
+        "prefix_opponent_replies_verified": 0,
+        "suffix_turns": 1076,
+        "interventions": 0,
+        "terminal_turn": 1076,
+        "winner": 1,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "mobilization_issued": 1,
+        "output_sha256": {
+          "candidate-game-0007-suffix.jsonl": "2d668b2425e0fc4dd523bc88b7b100f5fe85d2885412c689c9495b5eadac5388",
+          "candidate-game-0007-states.npz": "5436aa3705b3c61d86c12ff1c158b5196ba99022a7a79b0f02d634571419fb01",
+          "candidate-game-0007-prefix.json": "72962f75a677066b9b7a82fdf675abab42db48d8851d2d0ecfbdbb6c17a05558"
+        }
+      }
+    ],
+    "actor_runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "numpy": "2.4.6",
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "scipy": "1.18.0"
+      }
+    },
+    "coordinator_runtime": {
+      "python": "3.12.11 (main, Oct  7 2025, 15:34:39) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.venv/bin/python",
+      "packages": {
+        "jax": "0.11.1",
+        "jaxlib": "0.11.1",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1"
+      }
+    },
+    "affinity": [
+      2,
+      14
+    ],
+    "actor_returncode": 0,
+    "cleanup": {
+      "actor_returncode": 0,
+      "reaped": true,
+      "errors": []
+    },
+    "plan_sha256": "644899ce68c44d61e16e62185f2f897bd61e4fd8a283882980f99a970b1891af"
+  },
+  "actual_policy_suffixes": {
+    "complete": true,
+    "kind": "actual-home-donor-policy-adaptive-suffix/1",
+    "planned_suffixes": 4,
+    "cut_before_turn": 1027,
+    "games": [
+      {
+        "game_id": 4,
+        "arm": "control",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 10,
+        "interventions": 0,
+        "terminal_turn": 1037,
+        "winner": 1,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": true,
+        "mobilization_issued": 0,
+        "output_sha256": {
+          "control-game-0004-prefix.json": "9b26690c0cba274985fec13f7f6d58f6754d86b825fdb92b0808238c64ffab72",
+          "control-game-0004-suffix.jsonl": "5a4c67bbeb0a7cceaab21a3d118b4f7d9a1efb022f5b439d5579f4391aab7ed5",
+          "control-game-0004-states.npz": "b7d76ce025f6cd025e6125b734474725a4e14a48909b0ee6bf8959bc9b6199a8"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "control",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 10,
+        "interventions": 0,
+        "terminal_turn": 1037,
+        "winner": 0,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": true,
+        "mobilization_issued": 0,
+        "output_sha256": {
+          "control-game-0007-suffix.jsonl": "11e52e314deff441a8bb01fad5166f384a38a200fbf40ea47c3ef4019fac32c9",
+          "control-game-0007-states.npz": "d22eeadd32da626b522d225cb0bfca50eda8e5df40f862aa0f4c850cee166401",
+          "control-game-0007-prefix.json": "706189bd654cc4348284f74e33e5a2ad3b09d3ba63b75007be8c892932ff7653"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "candidate",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 49,
+        "interventions": 0,
+        "terminal_turn": 1076,
+        "winner": 0,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "mobilization_issued": 1,
+        "output_sha256": {
+          "candidate-game-0004-suffix.jsonl": "ca5dcec91ec12db651b17bfbd528c43971d7f72a5d77752ae449d17630aff083",
+          "candidate-game-0004-prefix.json": "452bb3336f85067c306c9b0c6b5b71d059d330c34a14cc043732fa6801245606",
+          "candidate-game-0004-states.npz": "be5fc3425b87a599c7065c9cac955bfce6099e0ef33b770b04a0d1d74bf93d10"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "candidate",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 49,
+        "interventions": 0,
+        "terminal_turn": 1076,
+        "winner": 1,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "mobilization_issued": 1,
+        "output_sha256": {
+          "candidate-game-0007-suffix.jsonl": "162ecb42b453f5e5ffc0c9f6c713e9d3a5888e7b2bb75af91726aaba5422ad19",
+          "candidate-game-0007-states.npz": "fc1f2c0341830725cfca2ceb24f9aa7a55a1604d08227e0b7dd6fae4306d479e",
+          "candidate-game-0007-prefix.json": "fad75039e5620bf8318a9f617559ecc1360107b2132c1aead978914f5ce22ebb"
+        }
+      }
+    ],
+    "actor_runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "numpy": "2.4.6",
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "scipy": "1.18.0"
+      }
+    },
+    "coordinator_runtime": {
+      "python": "3.12.11 (main, Oct  7 2025, 15:34:39) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.venv/bin/python",
+      "packages": {
+        "jax": "0.11.1",
+        "jaxlib": "0.11.1",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1"
+      }
+    },
+    "affinity": [
+      2,
+      14
+    ],
+    "actor_returncode": 0,
+    "cleanup": {
+      "actor_returncode": 0,
+      "reaped": true,
+      "errors": []
+    },
+    "plan_sha256": "0f58b55197051c06c6aa89c099193a54597d368ca92a084b840389461cc45fe6"
+  },
+  "manual_interventions": {
+    "complete": true,
+    "kind": "preregistered-one-action-adaptive-intervention/1",
+    "planned_suffixes": 14,
+    "cut_before_turn": 1027,
+    "games": [
+      {
+        "game_id": 4,
+        "arm": "control",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 10,
+        "interventions": 0,
+        "terminal_turn": 1037,
+        "winner": 1,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": true,
+        "output_sha256": {
+          "control-game-0004-prefix.json": "9b26690c0cba274985fec13f7f6d58f6754d86b825fdb92b0808238c64ffab72",
+          "control-game-0004-suffix.jsonl": "5a4c67bbeb0a7cceaab21a3d118b4f7d9a1efb022f5b439d5579f4391aab7ed5",
+          "control-game-0004-states.npz": "b7d76ce025f6cd025e6125b734474725a4e14a48909b0ee6bf8959bc9b6199a8"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "control",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 10,
+        "interventions": 0,
+        "terminal_turn": 1037,
+        "winner": 0,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": true,
+        "output_sha256": {
+          "control-game-0007-suffix.jsonl": "11e52e314deff441a8bb01fad5166f384a38a200fbf40ea47c3ef4019fac32c9",
+          "control-game-0007-states.npz": "d22eeadd32da626b522d225cb0bfca50eda8e5df40f862aa0f4c850cee166401",
+          "control-game-0007-prefix.json": "706189bd654cc4348284f74e33e5a2ad3b09d3ba63b75007be8c892932ff7653"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "north-full",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 49,
+        "interventions": 1,
+        "terminal_turn": 1076,
+        "winner": 0,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "north-full-game-0004-suffix.jsonl": "648c0209e2bfeaeb4c490bbaa29487a816f821555eccb99862430d8f9d643b08",
+          "north-full-game-0004-prefix.json": "817346e0a7101d82acaa5c2f3cab618d56b478c9c537e983f4fa1dbfa6432812",
+          "north-full-game-0004-states.npz": "be5fc3425b87a599c7065c9cac955bfce6099e0ef33b770b04a0d1d74bf93d10"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "north-full",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 49,
+        "interventions": 1,
+        "terminal_turn": 1076,
+        "winner": 1,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "north-full-game-0007-prefix.json": "ecbca024b0a17b870d2a92b6487b17c7651711ff3980af7d91613932f912ac98",
+          "north-full-game-0007-states.npz": "fc1f2c0341830725cfca2ceb24f9aa7a55a1604d08227e0b7dd6fae4306d479e",
+          "north-full-game-0007-suffix.jsonl": "e54d7f7807aee709c097bd11f900a0059a63829f4a2676638d658c4cfb7e4b1e"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "north-half",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 24,
+        "interventions": 1,
+        "terminal_turn": 1051,
+        "winner": 1,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "north-half-game-0004-states.npz": "385828774ec08a2fe65cbfc78487e0eef76d4ea4c6c955a853cc3fee2655bd7f",
+          "north-half-game-0004-suffix.jsonl": "279374da5e35c42339461f46821b9b5dca43c1c1263ae11b0a38649a69886cb6",
+          "north-half-game-0004-prefix.json": "7d842d0100b3b0fdfbb2a3a07a0e2b42d5aab5b508af59e9c40abfb101dff22d"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "north-half",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 24,
+        "interventions": 1,
+        "terminal_turn": 1051,
+        "winner": 0,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "north-half-game-0007-suffix.jsonl": "4c0f54625db6ff6b51984780dd1daf01b95797453e4021e795a53e7e9377677c",
+          "north-half-game-0007-states.npz": "f0aad0e38a898ae2a1acdf3b59a802f918e45af730c6e07bddf15caf732cb6dd",
+          "north-half-game-0007-prefix.json": "56bc78e60dc48c12f24cb97930aea27c8172b063a16ae397ac06e1fa19ffd826"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "west-full",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 51,
+        "interventions": 1,
+        "terminal_turn": 1078,
+        "winner": 0,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "west-full-game-0004-states.npz": "8c173caafc257ebe5e0b842e4f59662a1d1a07a7c8d3aec96b49cf4ee8d69393",
+          "west-full-game-0004-prefix.json": "18d131ffc048319a6544fa9741c875e3d182f178fe9abe8e8c27c36c9e8c19a8",
+          "west-full-game-0004-suffix.jsonl": "5daaf51554bbbdf00f1d529c2ff59ec7a706ccc02f8c0aebd55e822488cf67a9"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "west-full",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 51,
+        "interventions": 1,
+        "terminal_turn": 1078,
+        "winner": 1,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "west-full-game-0007-prefix.json": "45e70c4a901f18c0676068a41c7165294f6bbd2d05fb4d39f3205e209db80714",
+          "west-full-game-0007-suffix.jsonl": "4409a247bce90ec1ebd0d4496be56d82a954831e907c8e573a1141ba44a03b0d",
+          "west-full-game-0007-states.npz": "d50c49d35a455de9969d4bfbb7985d0abb91091aa3d12d7d56e4481484a81d75"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "west-half",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 74,
+        "interventions": 1,
+        "terminal_turn": 1101,
+        "winner": 0,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "west-half-game-0004-suffix.jsonl": "a5ad58fab4dccaae27ef1fd945399d0d9e2907fa78a8ac42807266ff66548649",
+          "west-half-game-0004-states.npz": "6be67c7ff5cd9707427609b254757931aba1776e9228c2c8465dc7b24d01ebd1",
+          "west-half-game-0004-prefix.json": "89f2aa5f0f2d6dddf7d08fce24c7e40fccd2ccb55f9bb5efa43a599780f010a9"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "west-half",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 74,
+        "interventions": 1,
+        "terminal_turn": 1101,
+        "winner": 1,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "west-half-game-0007-prefix.json": "cd3dcc7b87ebd074f8163a2b696ebb48d1cf433e37e23721df72833184f3e9c4",
+          "west-half-game-0007-states.npz": "c42be6cd1ec612df1211612d72114c4120bd35f3ea6aee9008103d51d598896d",
+          "west-half-game-0007-suffix.jsonl": "87bebff5d2cfab47934e8ce64db18d833dd71c53f2abe50ff2dcd54418dea859"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "east-full",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 35,
+        "interventions": 1,
+        "terminal_turn": 1062,
+        "winner": 1,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "east-full-game-0004-prefix.json": "8c8bded7dc1c42a05dd1d85685ecc7e3c5a61d0adc172cc7b2e11172d3dff26f",
+          "east-full-game-0004-suffix.jsonl": "e73ed742e405d6a169fe7224333dbe429d64439e8aab546855f038c02b379b03",
+          "east-full-game-0004-states.npz": "08df85925a484c7f3e4f06eacb1d9f2e6c5ed64faa38ea836b1e250cd5e6ca23"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "east-full",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 35,
+        "interventions": 1,
+        "terminal_turn": 1062,
+        "winner": 0,
+        "result": "loss",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "east-full-game-0007-suffix.jsonl": "dbeb4215f40959d4e410e4b1ca805c64c73a57ae0c6dc1b68b762120efcdb6fc",
+          "east-full-game-0007-states.npz": "1bc3adf4af8f8ceee707b30ed8574e8091ab39620f658c93dd119cd66bea7a8c",
+          "east-full-game-0007-prefix.json": "5005b1ff66a9593f39a16f22b8053b0c8fcb64612746bc135da3ac1de5d9ad1b"
+        }
+      },
+      {
+        "game_id": 4,
+        "arm": "east-half",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 57,
+        "interventions": 1,
+        "terminal_turn": 1084,
+        "winner": 0,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "east-half-game-0004-suffix.jsonl": "2bfe8f8940b2ce0a7cf84b4b368346c72688b3a1d6157d30db8c05b9feee9c5d",
+          "east-half-game-0004-prefix.json": "eeb380ea364709c7eb7e8d2be549be673d60b48639fe023445a57d1f844e0d72",
+          "east-half-game-0004-states.npz": "a3b214fc3e41ed2307230eac201555f8c8cf0115fad01e32b2d43512d9559c47"
+        }
+      },
+      {
+        "game_id": 7,
+        "arm": "east-half",
+        "prefix_opponent_replies_verified": 1027,
+        "suffix_turns": 57,
+        "interventions": 1,
+        "terminal_turn": 1084,
+        "winner": 1,
+        "result": "win",
+        "end_reason": "terminal",
+        "invalid_actions": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "malformed_commands": {
+          "candidate": 0,
+          "opponent": 0
+        },
+        "control_exact": false,
+        "output_sha256": {
+          "east-half-game-0007-states.npz": "25d52bbcd62107315b2e0017f949f4d1aadd564787f5a85c360f0395e6ec0fed",
+          "east-half-game-0007-suffix.jsonl": "de4e3d6b96ca7a499be1e6737e261ea613afd52e2711fa529f14866c75c4a2f7",
+          "east-half-game-0007-prefix.json": "07dd514a6fdf1c11e000558837d66a72d6e17ca6702c23f62a90d138bb2727d2"
+        }
+      }
+    ],
+    "actor_runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "numpy": "2.4.6",
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "scipy": "1.18.0"
+      }
+    },
+    "coordinator_runtime": {
+      "python": "3.12.11 (main, Oct  7 2025, 15:34:39) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.venv/bin/python",
+      "packages": {
+        "jax": "0.11.1",
+        "jaxlib": "0.11.1",
+        "numpy": "2.5.3",
+        "scipy": "1.18.1"
+      }
+    },
+    "affinity": [
+      0,
+      12
+    ],
+    "actor_returncode": 0,
+    "cleanup": {
+      "actor_returncode": 0,
+      "reaped": true,
+      "errors": []
+    },
+    "plan_sha256": "5e1a275c7428996a8e5ea362a5deb912c218f193c3b484d6dac1a4f073cb9f2f"
+  },
+  "counts": {
+    "selected_physical_maps": 1,
+    "mirrored_case_ids": [
+      4,
+      7
+    ],
+    "complete_strategy_games": 4,
+    "complete_strategy_transitions": 4226,
+    "manual_intervention_suffixes": 14,
+    "manual_intervention_transitions": 600,
+    "actual_policy_suffixes": 4,
+    "actual_policy_suffix_transitions": 118
+  },
+  "policy_tests": {
+    "passed": 11,
+    "logs": [
+      ".cache/runs/sentinel-v10/policy-tests.log",
+      ".cache/runs/sentinel-v10/policy-extra-tests.log"
+    ],
+    "inference": "9 tests plus2 newly added tests; no repeated test counted"
+  },
+  "pending": {
+    "runtime": "Full deployment deadline qualification remains pending; bounded warmed inference measured separately.",
+    "broader_strength": "not run across six opponents"
+  },
+  "sessions": {
+    "failed_suffix_attempt": {
+      "session": 13300,
+      "complete": false,
+      "cause": "cache helper ModuleNotFoundError: memory; failure report and stderr retained"
+    },
+    "completed_suffix": {
+      "session": 88960,
+      "exit_code": 0
+    },
+    "completed_full_case": {
+      "session": 31977,
+      "exit_code": 0
+    }
+  },
+  "mechanism": {
+    "mirror_parity": [
+      {
+        "arm": "control",
+        "frames": 10,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      },
+      {
+        "arm": "north-full",
+        "frames": 49,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      },
+      {
+        "arm": "north-half",
+        "frames": 24,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      },
+      {
+        "arm": "west-full",
+        "frames": 51,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      },
+      {
+        "arm": "west-half",
+        "frames": 74,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      },
+      {
+        "arm": "east-full",
+        "frames": 35,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      },
+      {
+        "arm": "east-half",
+        "frames": 57,
+        "both_public_wires_actions_all19_memory_parent_telemetry_and_label_mapped_states_exact": true
+      }
+    ],
+    "states_checked": 614,
+    "transitions_checked": 600,
+    "north_full": "New home packet absorbs first wave; later castle attack removes second wave at its source; separate campaign army captures general.",
+    "east_full": "Stops first wave but chip attacks and second wave defeat depleted screen. Immediate minimum-cost improvement alone did not predict survival.",
+    "north_half": "Leaves visible enemy1 beside home; subsequent growth to2 enables fatal deathtouch."
+  },
+  "static_diagnosis": {
+    "old_weighted_home_cost": 45,
+    "after_first_field_transfer_cost": 34,
+    "old_required_defense": 50,
+    "new_required_defense": 61,
+    "same_visible_enemy_army": 95,
+    "scope": "Public-state route-certificate defect; static family certificate failure was not proof of impossible adaptive rescue."
+  },
+  "j35_residual": {
+    "case": 12,
+    "v6_terminal": 1075,
+    "v6_outcome": "win",
+    "v9_terminal": 422,
+    "v9_outcome": "loss",
+    "reconstructed_transitions": 1497,
+    "scope": "Earlier economic/force-distribution gap and ordinary-combat invasion; no adaptive alternative tested. V8/V9 full histories identical."
+  },
+  "limitations": [
+    "Consumed selected map with mirrored labels, not independent samples; no population interval or superiority claim.",
+    "Original my_bot9 unchanged with build-cost10 versus actual14 mismatch; these complete cases and suffixes had zero invalid/malformed actions for both policies.",
+    "Pre-cut public wires/states reconstructed from retained board and applied actions; original stdio wires not archived.",
+    "Manual interventions and actual-policy suffixes are continuations, not additional full matches.",
+    "Runtime split is actor Python3.12.10/JAX0.11.0 and engine Python3.12.11/JAX0.11.1; synchronous strategy execution does not establish official response deadlines.",
+    "Input hashes in original run reports describe execution-time snapshots; integration files may subsequently change. Bound reports preserve those historical hashes."
+  ],
+  "artifact_sha256": {
+    ".cache/runs/sentinel-v10/mobilization-intervention-plan.json": "5e1a275c7428996a8e5ea362a5deb912c218f193c3b484d6dac1a4f073cb9f2f",
+    ".cache/runs/sentinel-v10/home-donor-policy-suffix-plan.json": "0f58b55197051c06c6aa89c099193a54597d368ca92a084b840389461cc45fe6",
+    ".cache/runs/sentinel-v10/home-donor-full-case-plan.json": "644899ce68c44d61e16e62185f2f897bd61e4fd8a283882980f99a970b1891af",
+    ".cache/runs/sentinel-v10/opponent-prefix/verified/report.json": "5409b3e6bf4f532a835874e70a38b0ea1e4980c806b4ce41a0168ec9b6c357f6",
+    ".cache/runs/sentinel-v10/opponent-prefix/verify_prefix.py": "ac871b4d6637672f98322837c4c1aa0cddb9bbe83a5bd32b863fbd9cb1a418b9",
+    ".cache/runs/sentinel-v10/mybot-v9-policy/report.json": "cad05a7c6bf6789171e3598a521dfd67c7ec2e7f9c309e918e278d1e7a804a7d",
+    ".cache/runs/sentinel-v10/v8-v9-mybot-prefix.json": "43c2f9a1348955f94ad9599fff27285b22fcdf14c6ce672c82cbeedc73a053d7",
+    ".cache/runs/sentinel-v10/adaptive-continuation/baseline-control/report.json": "9b818c9ad649f58d2edf4b2be5bd418bcda34e3159392073f67999570c863803",
+    ".cache/runs/sentinel-v10/adaptive-continuation/actor.py": "2b9ddf30149358ca20a140e2d77c3d06b8e78f2340d93859d3b026770c8e3987",
+    ".cache/runs/sentinel-v10/adaptive-continuation/coordinator.py": "c60ce16467e32de84f182efadec6a7b7da88036de1a0d11e43ca8a43a2024eb2",
+    ".cache/runs/sentinel-v10/adaptive-continuation/shared.py": "005be7f1993e81c0544eb1174f2c8d8ddc88de8fe40c4060b98c9ebb9619d5d1",
+    ".cache/runs/sentinel-v10/mobilization/results/report.json": "4416f07e5f546919f585f00fe6bb7e6b48cf299deea695a881c8301b0031935c",
+    ".cache/runs/sentinel-v10/mobilization/helper-freeze.json": "c90dd98aa1509fca9ce56b2442a1f013d91a4236b77d1c870055aa161fb9a442",
+    ".cache/runs/sentinel-v10/mobilization/outcome-evidence.json": "a50573c1a645a058dc5a87c72078b7c356d7ec2c62d031d23398a2d33e8f2ae7",
+    ".cache/runs/sentinel-v10/mobilization/execution-manifest.json": "3475d53b8ae8e2c84b338e2f0304f125301b11df0bfe3c287e19b7393d947efe",
+    ".cache/runs/sentinel-v10/mobilization/actor.py": "020d63deeda973dde20109fd4708d8cc0d66ca64f1c8f02d8fff2d5efd7f4365",
+    ".cache/runs/sentinel-v10/mobilization/coordinator.py": "81870cf85c3c9da880323824c4cfe07e41b8d4a3fdd1668a862355c69c8c5d42",
+    ".cache/runs/sentinel-v10/mobilization/shared.py": "6c2937f8e219f3b4d04dcb4ee41f7ca82c6d51d3f8875dfc8d7419ecd72e5e67",
+    ".cache/runs/sentinel-v10/mobilization/memory.py": "16f0e692b15c8f8510255652bff64ad1a5e896867e05509ee95dd3514f8f96f9",
+    ".cache/runs/sentinel-v10/mobilization/mechanism/report.json": "a07073b70b5782a4ab0640e3c9dda54ff2d45215e44467cf11a96880a5ec80ae",
+    ".cache/runs/sentinel-v10/mobilization/mechanism/REPORT.md": "2259e5c683f80c23771472bf2601c40326db71be1748e3e849f35970d5dbaa69",
+    ".cache/runs/sentinel-v10/mobilization/mechanism/bindings.json": "5bf65b089aa29329b6aeffd6da800fa8b055008faff4692fed8e17dca02ed263",
+    ".cache/runs/sentinel-v10/mobilization/mechanism/audit.py": "d86ca66d0ec4b74e317f106ce9f5bda9bf3f14d546fb99ad20a107ec81eb7bb7",
+    ".cache/runs/sentinel-v10/design/accounting.json": "2834f8e555b0de949be5631ceead7297c49ac1377c0f96c9443ca717e9a2b6e2",
+    ".cache/runs/sentinel-v10/design/broader.json": "fad8e3e815612bd704f0d2f5b8a23308758afbc8973e5554eecf1ae9ed6d11a4",
+    ".cache/runs/sentinel-v10/design/time-profiles.json": "d7943878e0f00b970d05ec8dcadc44c18a5195ed9ee92ee43881fc718d432298",
+    ".cache/runs/sentinel-v10/design/rank-time.json": "101131e16dc4e0b9366af47e516620e80bef0ba3a5de7a7c2ffb564578f77525",
+    ".cache/runs/sentinel-v10/design/REPORT.md": "678eb61e97911de7f92e7d503bad0d4b45e37b4415994ffccf018f90c06dc4c9",
+    ".cache/runs/sentinel-v10/design/bindings.json": "26cc3b75e2984361a1491210a7523b1ea7ab3b58a1d4b73abb273a47bbc30c1d",
+    ".cache/runs/sentinel-v10/j35-gap/report.json": "71fed5f4280318c1ff65aa135cd56dd66da2b28fe86c0b2943d1a19a2970c77e",
+    ".cache/runs/sentinel-v10/j35-gap/case12-reconstruction/report.json": "e631fef6aeaca121ed14b0236e052d94e930010c08d8e6ec6a0aa9aa978564c3",
+    ".cache/runs/sentinel-v10/j35-gap/case12-reconstruction/analysis.json": "1cb3a314df813e75e0bfebd3868b5c2a9bd971a0a5818dace32ec4c70aa8b2a1",
+    ".cache/runs/sentinel-v10/j35-gap/case12-reconstruction/REPORT.md": "82670fcb84ffc2cc8dc0fc46c5351071ea8cbea4928b308eca46594589c9738e",
+    ".cache/runs/sentinel-v10/j35-gap/case12-reconstruction/artifact-hashes.json": "4f6e0f67429a5c52307ee4193ede2bf43cf89d4c09d3b80fbe84cf1b911cbf0e",
+    ".cache/runs/sentinel-v10/policy-suffix/results/report.json": "977df9a674d52b8240cf725fcba9b21d24683eb32176300f06625ad4ef9e4d63",
+    ".cache/runs/sentinel-v10/policy-suffix/results/actor.stderr.log": "4029de737b79cb4f6fa1a21a7842ebafd0f4a0dee38d0b720f9061af13a1cab6",
+    ".cache/runs/sentinel-v10/policy-suffix/helper-freeze.json": "a803bb7155df0ee06494ec8fce75b68b2cf2686df6588657f6527c3fb0f1d668",
+    ".cache/runs/sentinel-v10/policy-suffix/helper-freeze-attempt2.json": "6fec702826df46bc8d5d49d0590730b0c136664f7e8077f1b6d4ddfb2c252567",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/report.json": "ad6c2d79489df632621016435a5744194ef8545b4a25fa24b73ed4246306d412",
+    ".cache/runs/sentinel-v10/policy-suffix/run.log": "679b91b58c2b6421b57fefc1c00a0b6b36e7050e9014f1fd0a47d0b79e5f211f",
+    ".cache/runs/sentinel-v10/policy-suffix/run-attempt2.log": "5c96c43fae77207aa2ea73a107215a5aa5e02416b569ee533b35f2267c5f4bd3",
+    ".cache/runs/sentinel-v10/policy-suffix/actor.py": "5256c626b4dcde1a590c38486f91f84c44ce267f88547cccd22695a55572ad56",
+    ".cache/runs/sentinel-v10/policy-suffix/shared.py": "dc1115e0f4218e60e05fc8ddc055ebd2a8363a280c21bbf3186a18dd1161f1da",
+    ".cache/runs/sentinel-v10/policy-suffix/coordinator.py": "588338b64bf6e83a23a307aab8b8e31cbf0e4f16021fcf91e75dd64f3db4ba51",
+    ".cache/runs/sentinel-v10/policy-full-case/results/report.json": "5fa92ef0c47014adcd477b673ef847227e5c2fc778ab9747206671ff7fe4dbbf",
+    ".cache/runs/sentinel-v10/policy-full-case/helper-freeze.json": "53ad85dde422bbc847569118625d2f82948d4421a7aeb5c859c083fa210ba972",
+    ".cache/runs/sentinel-v10/policy-full-case/run.log": "5c96c43fae77207aa2ea73a107215a5aa5e02416b569ee533b35f2267c5f4bd3",
+    ".cache/runs/sentinel-v10/policy-full-case/actor.py": "7d4dec3b3252d06ea1331785ae41b3e31c6ea3aba86d8480ffc3ea39ec17054b",
+    ".cache/runs/sentinel-v10/policy-full-case/coordinator.py": "0f7c3061afad365b0a0849975de6b2997dd2fdfb15dec3274ddab868c612c893",
+    ".cache/runs/sentinel-v10/policy-full-case/shared.py": "b5cdf17f5e7d8b286c83de8c59a33aa39ba25dd37cf0bde70ad6e6628b9d89a8",
+    ".cache/runs/sentinel-v10/policy-tests.log": "1c6b73b6307b0d71235122e10e6d70903a0b76d0a8c54d0b7f92405c48f9bcba",
+    ".cache/runs/sentinel-v10/policy-extra-tests.log": "bc923857abdf0f364afabd24fea6080013cd1d401fe3bca26a9b181bbaf7a9e9",
+    "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+    "tests/test_sentinel_v10_agent.py": "a634009a3e650aee0b81ea0607b3e6cf927d5254df9cdf09d6f67bb74d170ec6",
+    ".cache/runs/sentinel-v10/policy-full-case/results/control-game-0004-prefix.json": "0da9ed40c8e14770c55bc288272866ff9002125e62eb60aaa1b363db66446ed9",
+    ".cache/runs/sentinel-v10/policy-full-case/results/control-game-0004-suffix.jsonl": "60a720a1f3e9747a215c030ac707c823a9d5364433ea964cebcba1889b232510",
+    ".cache/runs/sentinel-v10/policy-full-case/results/control-game-0004-states.npz": "447750bc5f97c3a6fac254de00c57e0ffbee3464cd25df1e7a81ea3517d10a3f",
+    ".cache/runs/sentinel-v10/policy-full-case/results/control-game-0007-suffix.jsonl": "a7ca7b869bba69af6f09b42c8fe0905005b70a0de6fee8d6ed30e633673400d4",
+    ".cache/runs/sentinel-v10/policy-full-case/results/control-game-0007-states.npz": "f203624eb275cf7226392521ea67ac762ca84010b793ced3c9c6e880ca3db9c2",
+    ".cache/runs/sentinel-v10/policy-full-case/results/control-game-0007-prefix.json": "946a7e78f4b496def3a4486dadb1a31e949d653919388050a0c0f29fded1cd4c",
+    ".cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0004-suffix.jsonl": "9a175069a48d6c2e9436472e616d4a0838f154a802113b03062b4988ce32a528",
+    ".cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0004-prefix.json": "59bac8e57edff98807e6611ffec0848e0799df745684bc35413b175cea5af94d",
+    ".cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0004-states.npz": "f9516fd37a5638c2f1005592556c84d6c2a338617d37f1677054564ab335f331",
+    ".cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0007-suffix.jsonl": "2d668b2425e0fc4dd523bc88b7b100f5fe85d2885412c689c9495b5eadac5388",
+    ".cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0007-states.npz": "5436aa3705b3c61d86c12ff1c158b5196ba99022a7a79b0f02d634571419fb01",
+    ".cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0007-prefix.json": "72962f75a677066b9b7a82fdf675abab42db48d8851d2d0ecfbdbb6c17a05558",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/control-game-0004-prefix.json": "9b26690c0cba274985fec13f7f6d58f6754d86b825fdb92b0808238c64ffab72",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/control-game-0004-suffix.jsonl": "5a4c67bbeb0a7cceaab21a3d118b4f7d9a1efb022f5b439d5579f4391aab7ed5",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/control-game-0004-states.npz": "b7d76ce025f6cd025e6125b734474725a4e14a48909b0ee6bf8959bc9b6199a8",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/control-game-0007-suffix.jsonl": "11e52e314deff441a8bb01fad5166f384a38a200fbf40ea47c3ef4019fac32c9",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/control-game-0007-states.npz": "d22eeadd32da626b522d225cb0bfca50eda8e5df40f862aa0f4c850cee166401",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/control-game-0007-prefix.json": "706189bd654cc4348284f74e33e5a2ad3b09d3ba63b75007be8c892932ff7653",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/candidate-game-0004-suffix.jsonl": "ca5dcec91ec12db651b17bfbd528c43971d7f72a5d77752ae449d17630aff083",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/candidate-game-0004-prefix.json": "452bb3336f85067c306c9b0c6b5b71d059d330c34a14cc043732fa6801245606",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/candidate-game-0004-states.npz": "be5fc3425b87a599c7065c9cac955bfce6099e0ef33b770b04a0d1d74bf93d10",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/candidate-game-0007-suffix.jsonl": "162ecb42b453f5e5ffc0c9f6c713e9d3a5888e7b2bb75af91726aaba5422ad19",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/candidate-game-0007-states.npz": "fc1f2c0341830725cfca2ceb24f9aa7a55a1604d08227e0b7dd6fae4306d479e",
+    ".cache/runs/sentinel-v10/policy-suffix/results-attempt2/candidate-game-0007-prefix.json": "fad75039e5620bf8318a9f617559ecc1360107b2132c1aead978914f5ce22ebb",
+    ".cache/runs/sentinel-v10/mobilization/results/control-game-0004-prefix.json": "9b26690c0cba274985fec13f7f6d58f6754d86b825fdb92b0808238c64ffab72",
+    ".cache/runs/sentinel-v10/mobilization/results/control-game-0004-suffix.jsonl": "5a4c67bbeb0a7cceaab21a3d118b4f7d9a1efb022f5b439d5579f4391aab7ed5",
+    ".cache/runs/sentinel-v10/mobilization/results/control-game-0004-states.npz": "b7d76ce025f6cd025e6125b734474725a4e14a48909b0ee6bf8959bc9b6199a8",
+    ".cache/runs/sentinel-v10/mobilization/results/control-game-0007-suffix.jsonl": "11e52e314deff441a8bb01fad5166f384a38a200fbf40ea47c3ef4019fac32c9",
+    ".cache/runs/sentinel-v10/mobilization/results/control-game-0007-states.npz": "d22eeadd32da626b522d225cb0bfca50eda8e5df40f862aa0f4c850cee166401",
+    ".cache/runs/sentinel-v10/mobilization/results/control-game-0007-prefix.json": "706189bd654cc4348284f74e33e5a2ad3b09d3ba63b75007be8c892932ff7653",
+    ".cache/runs/sentinel-v10/mobilization/results/north-full-game-0004-suffix.jsonl": "648c0209e2bfeaeb4c490bbaa29487a816f821555eccb99862430d8f9d643b08",
+    ".cache/runs/sentinel-v10/mobilization/results/north-full-game-0004-prefix.json": "817346e0a7101d82acaa5c2f3cab618d56b478c9c537e983f4fa1dbfa6432812",
+    ".cache/runs/sentinel-v10/mobilization/results/north-full-game-0004-states.npz": "be5fc3425b87a599c7065c9cac955bfce6099e0ef33b770b04a0d1d74bf93d10",
+    ".cache/runs/sentinel-v10/mobilization/results/north-full-game-0007-prefix.json": "ecbca024b0a17b870d2a92b6487b17c7651711ff3980af7d91613932f912ac98",
+    ".cache/runs/sentinel-v10/mobilization/results/north-full-game-0007-states.npz": "fc1f2c0341830725cfca2ceb24f9aa7a55a1604d08227e0b7dd6fae4306d479e",
+    ".cache/runs/sentinel-v10/mobilization/results/north-full-game-0007-suffix.jsonl": "e54d7f7807aee709c097bd11f900a0059a63829f4a2676638d658c4cfb7e4b1e",
+    ".cache/runs/sentinel-v10/mobilization/results/north-half-game-0004-states.npz": "385828774ec08a2fe65cbfc78487e0eef76d4ea4c6c955a853cc3fee2655bd7f",
+    ".cache/runs/sentinel-v10/mobilization/results/north-half-game-0004-suffix.jsonl": "279374da5e35c42339461f46821b9b5dca43c1c1263ae11b0a38649a69886cb6",
+    ".cache/runs/sentinel-v10/mobilization/results/north-half-game-0004-prefix.json": "7d842d0100b3b0fdfbb2a3a07a0e2b42d5aab5b508af59e9c40abfb101dff22d",
+    ".cache/runs/sentinel-v10/mobilization/results/north-half-game-0007-suffix.jsonl": "4c0f54625db6ff6b51984780dd1daf01b95797453e4021e795a53e7e9377677c",
+    ".cache/runs/sentinel-v10/mobilization/results/north-half-game-0007-states.npz": "f0aad0e38a898ae2a1acdf3b59a802f918e45af730c6e07bddf15caf732cb6dd",
+    ".cache/runs/sentinel-v10/mobilization/results/north-half-game-0007-prefix.json": "56bc78e60dc48c12f24cb97930aea27c8172b063a16ae397ac06e1fa19ffd826",
+    ".cache/runs/sentinel-v10/mobilization/results/west-full-game-0004-states.npz": "8c173caafc257ebe5e0b842e4f59662a1d1a07a7c8d3aec96b49cf4ee8d69393",
+    ".cache/runs/sentinel-v10/mobilization/results/west-full-game-0004-prefix.json": "18d131ffc048319a6544fa9741c875e3d182f178fe9abe8e8c27c36c9e8c19a8",
+    ".cache/runs/sentinel-v10/mobilization/results/west-full-game-0004-suffix.jsonl": "5daaf51554bbbdf00f1d529c2ff59ec7a706ccc02f8c0aebd55e822488cf67a9",
+    ".cache/runs/sentinel-v10/mobilization/results/west-full-game-0007-prefix.json": "45e70c4a901f18c0676068a41c7165294f6bbd2d05fb4d39f3205e209db80714",
+    ".cache/runs/sentinel-v10/mobilization/results/west-full-game-0007-suffix.jsonl": "4409a247bce90ec1ebd0d4496be56d82a954831e907c8e573a1141ba44a03b0d",
+    ".cache/runs/sentinel-v10/mobilization/results/west-full-game-0007-states.npz": "d50c49d35a455de9969d4bfbb7985d0abb91091aa3d12d7d56e4481484a81d75",
+    ".cache/runs/sentinel-v10/mobilization/results/west-half-game-0004-suffix.jsonl": "a5ad58fab4dccaae27ef1fd945399d0d9e2907fa78a8ac42807266ff66548649",
+    ".cache/runs/sentinel-v10/mobilization/results/west-half-game-0004-states.npz": "6be67c7ff5cd9707427609b254757931aba1776e9228c2c8465dc7b24d01ebd1",
+    ".cache/runs/sentinel-v10/mobilization/results/west-half-game-0004-prefix.json": "89f2aa5f0f2d6dddf7d08fce24c7e40fccd2ccb55f9bb5efa43a599780f010a9",
+    ".cache/runs/sentinel-v10/mobilization/results/west-half-game-0007-prefix.json": "cd3dcc7b87ebd074f8163a2b696ebb48d1cf433e37e23721df72833184f3e9c4",
+    ".cache/runs/sentinel-v10/mobilization/results/west-half-game-0007-states.npz": "c42be6cd1ec612df1211612d72114c4120bd35f3ea6aee9008103d51d598896d",
+    ".cache/runs/sentinel-v10/mobilization/results/west-half-game-0007-suffix.jsonl": "87bebff5d2cfab47934e8ce64db18d833dd71c53f2abe50ff2dcd54418dea859",
+    ".cache/runs/sentinel-v10/mobilization/results/east-full-game-0004-prefix.json": "8c8bded7dc1c42a05dd1d85685ecc7e3c5a61d0adc172cc7b2e11172d3dff26f",
+    ".cache/runs/sentinel-v10/mobilization/results/east-full-game-0004-suffix.jsonl": "e73ed742e405d6a169fe7224333dbe429d64439e8aab546855f038c02b379b03",
+    ".cache/runs/sentinel-v10/mobilization/results/east-full-game-0004-states.npz": "08df85925a484c7f3e4f06eacb1d9f2e6c5ed64faa38ea836b1e250cd5e6ca23",
+    ".cache/runs/sentinel-v10/mobilization/results/east-full-game-0007-suffix.jsonl": "dbeb4215f40959d4e410e4b1ca805c64c73a57ae0c6dc1b68b762120efcdb6fc",
+    ".cache/runs/sentinel-v10/mobilization/results/east-full-game-0007-states.npz": "1bc3adf4af8f8ceee707b30ed8574e8091ab39620f658c93dd119cd66bea7a8c",
+    ".cache/runs/sentinel-v10/mobilization/results/east-full-game-0007-prefix.json": "5005b1ff66a9593f39a16f22b8053b0c8fcb64612746bc135da3ac1de5d9ad1b",
+    ".cache/runs/sentinel-v10/mobilization/results/east-half-game-0004-suffix.jsonl": "2bfe8f8940b2ce0a7cf84b4b368346c72688b3a1d6157d30db8c05b9feee9c5d",
+    ".cache/runs/sentinel-v10/mobilization/results/east-half-game-0004-prefix.json": "eeb380ea364709c7eb7e8d2be549be673d60b48639fe023445a57d1f844e0d72",
+    ".cache/runs/sentinel-v10/mobilization/results/east-half-game-0004-states.npz": "a3b214fc3e41ed2307230eac201555f8c8cf0115fad01e32b2d43512d9559c47",
+    ".cache/runs/sentinel-v10/mobilization/results/east-half-game-0007-states.npz": "25d52bbcd62107315b2e0017f949f4d1aadd564787f5a85c360f0395e6ec0fed",
+    ".cache/runs/sentinel-v10/mobilization/results/east-half-game-0007-suffix.jsonl": "de4e3d6b96ca7a499be1e6737e261ea613afd52e2711fa529f14866c75c4a2f7",
+    ".cache/runs/sentinel-v10/mobilization/results/east-half-game-0007-prefix.json": "07dd514a6fdf1c11e000558837d66a72d6e17ca6702c23f62a90d138bb2727d2",
+    ".cache/runs/sentinel-v10/integration-tests.log": "20a1bc973bd6f4be0152b15e48a9591f06c904585f2369cf6c84f0d1f8904c71",
+    ".cache/runs/sentinel-v10/root-verification.json": "beed0422ba686b3c305808dad62d42384ada4ad6a652fccd1eb9e0614628321b",
+    ".cache/runs/sentinel-v10/warm-profile/report.json": "cffa91f6a382fef47398e0e4601ae095a777ad79e6afaf6d645db545a951fe12",
+    ".cache/runs/sentinel-v10/warm-profile/benchmark.py": "a262ae8778876c794b5ba9781894e41b86a1c09fc90e0083bd4781a8afaddfc1",
+    ".cache/runs/sentinel-v10/warm-profile/benchmark.log": "3344812c66ca9033640c3dbe70c89c1c6e0f8d18b46bb29e17e1e72ee203456a",
+    ".cache/runs/sentinel-v10/candidate.zip": "b1ec212d268f5a0f2bdab728980aaaaf8edf6f89f5635ab068876d338dcd8d13",
+    "tests/fixtures/mobilization-public-1027.json": "e04343296e7bda566706aebb8fe3d3d934d0c9db362066a7e52fe1463ffa8a5e",
+    "tests/test_v10_integration.py": "6d7c9c225c5c9b27a19c68d8ce46a9bedf15d92edd1a77484ce293a43dcbae8b",
+    ".cache/runs/sentinel-v10/warm-profile/existing-commitment/report.json": "4ef87898b8523b9aa36ea1bce9a9c138bb6520de14063f2056c525cd6c80987b",
+    ".cache/runs/sentinel-v10/warm-profile/benchmark_existing_commitment.py": "69ca73c0aa1d22cd4c21f9cd6e7666ee326e35a9a4b566b0c05c93a9ae9a4fa5",
+    ".cache/runs/sentinel-v10/warm-profile/existing-commitment.log": "674f6bfe5fc368fb6d958651fb4c3a6530832f3b27e691f99ede902c838eb43e"
+  },
+  "integration_tests": {
+    "passed": 105,
+    "session": 18342,
+    "exit_code": 0,
+    "total_distinct_with_policy": 116,
+    "log": ".cache/runs/sentinel-v10/integration-tests.log"
+  },
+  "source_commit": "24836bd97a8f767cc8e4f7b1619ebcb7ebe71c39",
+  "warm_profile": {
+    "status": "measured_pass",
+    "runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "numpy": "2.4.6",
+        "scipy": "1.18.0"
+      },
+      "affinity": [
+        4
+      ],
+      "imports_seconds": 0.4146839530149009
+    },
+    "config": {
+      "build_castles": true,
+      "deathtouch_turn": 800,
+      "max_turns": 1200
+    },
+    "cases": {
+      "mobilization": {
+        "variants": {
+          "v6": {
+            "raw_action": [
+              0,
+              10,
+              9,
+              1,
+              0
+            ],
+            "first_warm_seconds": 0.003034146997379139,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+              "leaves": 7,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.0023748769890516996,
+                "p95_seconds": 0.0024959079557447693,
+                "min_seconds": 0.0022301859862636775,
+                "max_seconds": 0.0026241460000164807
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0026684705080697313,
+                "p95_seconds": 0.004020024760393426,
+                "min_seconds": 0.002319625986274332,
+                "max_seconds": 0.00442378202569671
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0027348165021976456,
+                "p95_seconds": 0.003385187008825596,
+                "min_seconds": 0.0023442730016540736,
+                "max_seconds": 0.0039582660247106105
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0027554210100788623,
+                "p95_seconds": 0.004376837948802858,
+                "min_seconds": 0.0023461869859602302,
+                "max_seconds": 0.005030578002333641
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0027913539961446077,
+                "p95_seconds": 0.004327761536114849,
+                "min_seconds": 0.0023428799759130925,
+                "max_seconds": 0.0048427000001538545
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0026458780048415065,
+              "p95_seconds": 0.004066106746904551,
+              "min_seconds": 0.0022301859862636775,
+              "max_seconds": 0.005030578002333641
+            }
+          },
+          "v9": {
+            "raw_action": [
+              0,
+              10,
+              9,
+              1,
+              0
+            ],
+            "first_warm_seconds": 0.003728758980287239,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+              "leaves": 19,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.003033104498172179,
+                "p95_seconds": 0.0033531280889292246,
+                "min_seconds": 0.0028092490101698786,
+                "max_seconds": 0.004021596017992124
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.003021928496309556,
+                "p95_seconds": 0.0033347272867104037,
+                "min_seconds": 0.0027814150089398026,
+                "max_seconds": 0.0036372049944475293
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0036540720029734075,
+                "p95_seconds": 0.005591676908079535,
+                "min_seconds": 0.0030015849915798753,
+                "max_seconds": 0.006013639009324834
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.003477095000562258,
+                "p95_seconds": 0.005019064122461714,
+                "min_seconds": 0.0028935579757671803,
+                "max_seconds": 0.00602088199229911
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.003325245503219776,
+                "p95_seconds": 0.004032652903697453,
+                "min_seconds": 0.002895793004427105,
+                "max_seconds": 0.004967507004039362
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.003242818493163213,
+              "p95_seconds": 0.004686433702590872,
+              "min_seconds": 0.0027814150089398026,
+              "max_seconds": 0.00602088199229911
+            }
+          },
+          "v10-parent6": {
+            "raw_action": [
+              0,
+              14,
+              5,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0032040700025390834,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+              "leaves": 7,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": true,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.0028092879947507754,
+                "p95_seconds": 0.002937302051577717,
+                "min_seconds": 0.00264571700245142,
+                "max_seconds": 0.0030311399896163493
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.002807665994623676,
+                "p95_seconds": 0.0029425781802274284,
+                "min_seconds": 0.002598907973151654,
+                "max_seconds": 0.00307683800929226
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0031690934993093833,
+                "p95_seconds": 0.0045024686973192726,
+                "min_seconds": 0.0027551460079848766,
+                "max_seconds": 0.004961396014550701
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0030966305057518184,
+                "p95_seconds": 0.0037972437086864373,
+                "min_seconds": 0.002699108998058364,
+                "max_seconds": 0.004415205999976024
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0029403679945971817,
+                "p95_seconds": 0.0036969551132642665,
+                "min_seconds": 0.0025933470169547945,
+                "max_seconds": 0.0039275170129258186
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0029031519952695817,
+              "p95_seconds": 0.003676764354167971,
+              "min_seconds": 0.0025933470169547945,
+              "max_seconds": 0.004961396014550701
+            }
+          },
+          "v10-parent9": {
+            "raw_action": [
+              0,
+              14,
+              5,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0036094009992666543,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+              "leaves": 19,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": true,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.00341795249551069,
+                "p95_seconds": 0.003933513291121926,
+                "min_seconds": 0.0032218139967881143,
+                "max_seconds": 0.00606979601434432
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.003400910019990988,
+                "p95_seconds": 0.0036032070725923403,
+                "min_seconds": 0.0031902039772830904,
+                "max_seconds": 0.003708720993017778
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.004096989505342208,
+                "p95_seconds": 0.004916911649343092,
+                "min_seconds": 0.0034698960080277175,
+                "max_seconds": 0.0055251389858312905
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.003953642008127645,
+                "p95_seconds": 0.005032215017126873,
+                "min_seconds": 0.0034084999933838844,
+                "max_seconds": 0.005700081994291395
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0034173210005974397,
+                "p95_seconds": 0.00377789240446873,
+                "min_seconds": 0.0031508380197919905,
+                "max_seconds": 0.004006386996479705
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.003537424505339004,
+              "p95_seconds": 0.004546890049823559,
+              "min_seconds": 0.0031508380197919905,
+              "max_seconds": 0.00606979601434432
+            }
+          }
+        },
+        "matched_parent_throughput_ratios": {
+          "v10-parent6": 0.9113811502645127,
+          "v10-parent9": 0.9167173711463963
+        },
+        "v10_default_throughput_vs_v6": 0.747967342016234
+      },
+      "inactive_initial_history": {
+        "variants": {
+          "v6": {
+            "raw_action": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0010622919944580644,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+              "leaves": 7,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.0009009155037347227,
+                "p95_seconds": 0.0009601841011317447,
+                "min_seconds": 0.0008162239973898977,
+                "max_seconds": 0.0010643969872035086
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0009135289874393493,
+                "p95_seconds": 0.0009893697439110837,
+                "min_seconds": 0.000823868002044037,
+                "max_seconds": 0.001119722001021728
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0009210084972437471,
+                "p95_seconds": 0.0009887514941510744,
+                "min_seconds": 0.0008205120102502406,
+                "max_seconds": 0.001072601997293532
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0009116604924201965,
+                "p95_seconds": 0.0010452015863847918,
+                "min_seconds": 0.0008565809985157102,
+                "max_seconds": 0.0013008159876335412
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0008934310026234016,
+                "p95_seconds": 0.0009671299005276523,
+                "min_seconds": 0.000833737023640424,
+                "max_seconds": 0.001059906993759796
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.000908634508959949,
+              "p95_seconds": 0.0009952157488442024,
+              "min_seconds": 0.0008162239973898977,
+              "max_seconds": 0.0013008159876335412
+            }
+          },
+          "v9": {
+            "raw_action": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0015621540078427643,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+              "leaves": 19,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.001337130495812744,
+                "p95_seconds": 0.0014638449400081299,
+                "min_seconds": 0.0012139910249970853,
+                "max_seconds": 0.001594234985532239
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.00136526400456205,
+                "p95_seconds": 0.0015416341615491545,
+                "min_seconds": 0.0012491079978644848,
+                "max_seconds": 0.0017426570120733231
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0013617475051432848,
+                "p95_seconds": 0.0014559097413439303,
+                "min_seconds": 0.0012199519842397422,
+                "max_seconds": 0.0015517339925281703
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.001345832017250359,
+                "p95_seconds": 0.0014779687509872018,
+                "min_seconds": 0.001195396005641669,
+                "max_seconds": 0.0015438900154549628
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0013462075003189966,
+                "p95_seconds": 0.0014751987619092688,
+                "min_seconds": 0.0011583550076466054,
+                "max_seconds": 0.0017587680194992572
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0013498400076059625,
+              "p95_seconds": 0.0014972830380429512,
+              "min_seconds": 0.0011583550076466054,
+              "max_seconds": 0.0017587680194992572
+            }
+          },
+          "v10-parent6": {
+            "raw_action": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0010883119830396026,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+              "leaves": 7,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.0009526884969091043,
+                "p95_seconds": 0.001038680064084474,
+                "min_seconds": 0.0008875300118234009,
+                "max_seconds": 0.0010747360065579414
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0009546719957143068,
+                "p95_seconds": 0.0010525674180826173,
+                "min_seconds": 0.0008903150155674666,
+                "max_seconds": 0.0011628039937932044
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0009811429918045178,
+                "p95_seconds": 0.0011425562537624502,
+                "min_seconds": 0.0008224360062740743,
+                "max_seconds": 0.0015086019993759692
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0009517314902041107,
+                "p95_seconds": 0.0010482145051355473,
+                "min_seconds": 0.0008592960075475276,
+                "max_seconds": 0.001097610016586259
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0010238139948341995,
+                "p95_seconds": 0.0011862805491546168,
+                "min_seconds": 0.0009269849979318678,
+                "max_seconds": 0.0013182789843995124
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0009647619881434366,
+              "p95_seconds": 0.0011090102430898695,
+              "min_seconds": 0.0008224360062740743,
+              "max_seconds": 0.0015086019993759692
+            }
+          },
+          "v10-parent9": {
+            "raw_action": [
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0017467559955548495,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+              "leaves": 19,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.0014005810080561787,
+                "p95_seconds": 0.0015338751953095197,
+                "min_seconds": 0.0011802070075646043,
+                "max_seconds": 0.0015474859974347055
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0014078550011618063,
+                "p95_seconds": 0.0015914884643279947,
+                "min_seconds": 0.0012586360098794103,
+                "max_seconds": 0.001700017019174993
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0015109820087673143,
+                "p95_seconds": 0.0017539585925987918,
+                "min_seconds": 0.0012667010014411062,
+                "max_seconds": 0.002357157994993031
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.001406493000104092,
+                "p95_seconds": 0.001586362355737947,
+                "min_seconds": 0.0012289989972487092,
+                "max_seconds": 0.0016478369943797588
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0014133304939605296,
+                "p95_seconds": 0.001732709497446194,
+                "min_seconds": 0.0012828519975300878,
+                "max_seconds": 0.0032335960131604224
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0014229889929993078,
+              "p95_seconds": 0.0016580757554038427,
+              "min_seconds": 0.0011802070075646043,
+              "max_seconds": 0.0032335960131604224
+            }
+          }
+        },
+        "matched_parent_throughput_ratios": {
+          "v10-parent6": 0.9418224599711915,
+          "v10-parent9": 0.9485948340055916
+        },
+        "v10_default_throughput_vs_v6": 0.6385393797353083
+      }
+    },
+    "compile": {
+      "v6": {
+        "cold_step_seconds": 9.778190868004458,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+          "leaves": 7,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          10,
+          9,
+          1,
+          0
+        ]
+      },
+      "v9": {
+        "cold_step_seconds": 13.495773053989979,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+          "leaves": 19,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          10,
+          9,
+          1,
+          0
+        ]
+      },
+      "v10-parent6": {
+        "cold_step_seconds": 10.54968182198354,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+          "leaves": 7,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          14,
+          5,
+          0,
+          0
+        ]
+      },
+      "v10-parent9": {
+        "cold_step_seconds": 14.714438764989609,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+          "leaves": 19,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          14,
+          5,
+          0,
+          0
+        ]
+      }
+    },
+    "repeats": 5,
+    "samples_per_repeat": 100,
+    "scope": "Same18x21 public observations and parent-state inputs. Repeated fixed snapshots are timings, not enacted trajectories or carried V10 game histories. Cache disabled. Cold includes full step compilation, excludes imports/preparation; not stdio startup. Shared host, one physical CPU4. V10-parent9 is V10 default; parent6 also measured as its independently configured ablation.",
+    "session": 75842,
+    "exit_code": 0
+  },
+  "bundle": {
+    "path": ".cache/runs/sentinel-v10/candidate.zip",
+    "sha256": "b1ec212d268f5a0f2bdab728980aaaaf8edf6f89f5635ab068876d338dcd8d13",
+    "manifest": {
+      "entrypoint": "run.sh",
+      "kind": "sentinel-standalone/1",
+      "notes": "No wheels, editable repository install, model weights, or network access required. Package initializers minimized; policy and adapter sources copied unchanged.",
+      "official_environment": "https://www.generals.bot/docs#environment",
+      "preinstalled_dependencies": {
+        "jax": "0.11.0",
+        "numpy": "2.4.6"
+      },
+      "prewarm_cache": true,
+      "prewarm_shapes": [
+        [
+          18,
+          18
+        ],
+        [
+          18,
+          19
+        ],
+        [
+          18,
+          20
+        ],
+        [
+          18,
+          21
+        ],
+        [
+          19,
+          18
+        ],
+        [
+          19,
+          19
+        ],
+        [
+          19,
+          20
+        ],
+        [
+          19,
+          21
+        ],
+        [
+          20,
+          18
+        ],
+        [
+          20,
+          19
+        ],
+        [
+          20,
+          20
+        ],
+        [
+          20,
+          21
+        ],
+        [
+          21,
+          18
+        ],
+        [
+          21,
+          19
+        ],
+        [
+          21,
+          20
+        ],
+        [
+          21,
+          21
+        ]
+      ],
+      "python": "3.12.10",
+      "rules": "competition",
+      "source_sha256": {
+        "LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+        "build.sh": "68ae3d3934c86d8c880f0e3e4d1700ab8c87f288058e5d265e56fd091952ad38",
+        "generals/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+        "generals/agents/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+        "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+        "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+        "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+        "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+        "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+        "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+        "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+        "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+        "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+        "generals/core/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+        "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+        "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+        "main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+        "run.sh": "bfa696bfec9d7ed18129789db7ce9525f14b7733baa8f3156540a63582a57339",
+        "warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790"
+      },
+      "variant": "v10"
+    },
+    "deployment_qualified": false
+  },
+  "delivery_census": {
+    "base": "df9067ea23ee533471f5f1867683d12d5592ed2f",
+    "fork_open_prs": 0,
+    "upstream_open_pr": 138,
+    "upstream_head": "f624c741ad5084be63fc17bacd3961599b8dcc82",
+    "upstream_files": 43,
+    "owned_overlap": [],
+    "ci": "No GitHub Actions runs returned; local checks only."
+  },
+  "existing_commitment_warm_profile": {
+    "status": "measured_pass",
+    "runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "numpy": "2.4.6",
+        "scipy": "1.18.0"
+      },
+      "affinity": [
+        4
+      ],
+      "imports_seconds": 0.4046692179981619
+    },
+    "config": {
+      "build_castles": true,
+      "deathtouch_turn": 800,
+      "max_turns": 1200
+    },
+    "cases": {
+      "existing_parent_commitment": {
+        "variants": {
+          "v6": {
+            "raw_action": [
+              0,
+              6,
+              4,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.003110204008407891,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+              "leaves": 7,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.002378993507591076,
+                "p95_seconds": 0.0027945220499532297,
+                "min_seconds": 0.0022809569782111794,
+                "max_seconds": 0.0034880019957199693
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0023581734858453274,
+                "p95_seconds": 0.002844123201793991,
+                "min_seconds": 0.002281858993228525,
+                "max_seconds": 0.0030811280012130737
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.002638165999087505,
+                "p95_seconds": 0.004043883108533919,
+                "min_seconds": 0.002302427979884669,
+                "max_seconds": 0.0045867909793742
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0025878055166685954,
+                "p95_seconds": 0.003026331099681556,
+                "min_seconds": 0.002304822002770379,
+                "max_seconds": 0.0031617709901183844
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.002359335499932058,
+                "p95_seconds": 0.002532832002907526,
+                "min_seconds": 0.0022304309823084623,
+                "max_seconds": 0.0026018770004156977
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.002412261499557644,
+              "p95_seconds": 0.0030611029491410583,
+              "min_seconds": 0.0022304309823084623,
+              "max_seconds": 0.0045867909793742
+            }
+          },
+          "v9": {
+            "raw_action": [
+              0,
+              6,
+              4,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.003715514001669362,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+              "leaves": 19,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.0030397399968933314,
+                "p95_seconds": 0.0037037741596577687,
+                "min_seconds": 0.002829349017702043,
+                "max_seconds": 0.0047846370143815875
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0030108299979474396,
+                "p95_seconds": 0.003502520656911656,
+                "min_seconds": 0.002811386017128825,
+                "max_seconds": 0.004337557009421289
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0033220815093955025,
+                "p95_seconds": 0.005328842755989171,
+                "min_seconds": 0.0028632339963223785,
+                "max_seconds": 0.005915196001296863
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.00323141849366948,
+                "p95_seconds": 0.0037900045499554835,
+                "min_seconds": 0.002876900020055473,
+                "max_seconds": 0.004356082004960626
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0029384920053416863,
+                "p95_seconds": 0.003157440631184727,
+                "min_seconds": 0.0027190999826416373,
+                "max_seconds": 0.003462804015725851
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0030930155044188723,
+              "p95_seconds": 0.004242804957902985,
+              "min_seconds": 0.0027190999826416373,
+              "max_seconds": 0.005915196001296863
+            }
+          },
+          "v10-parent6": {
+            "raw_action": [
+              0,
+              6,
+              4,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.002912587980972603,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+              "leaves": 7,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.002527104996261187,
+                "p95_seconds": 0.002980324006057344,
+                "min_seconds": 0.0023276759893633425,
+                "max_seconds": 0.0038374360010493547
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.002461875497829169,
+                "p95_seconds": 0.0027303603550535628,
+                "min_seconds": 0.002331622992642224,
+                "max_seconds": 0.0030545470071956515
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.00255551899317652,
+                "p95_seconds": 0.0028694158158032224,
+                "min_seconds": 0.002337204001378268,
+                "max_seconds": 0.003654137981357053
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0025526035024086013,
+                "p95_seconds": 0.0030106188089121127,
+                "min_seconds": 0.002297788014402613,
+                "max_seconds": 0.004109182016691193
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.002443000004859641,
+                "p95_seconds": 0.002603741998609621,
+                "min_seconds": 0.0022946230019442737,
+                "max_seconds": 0.0027773610199801624
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0024914620007621124,
+              "p95_seconds": 0.002880655783519614,
+              "min_seconds": 0.0022946230019442737,
+              "max_seconds": 0.004109182016691193
+            }
+          },
+          "v10-parent9": {
+            "raw_action": [
+              0,
+              6,
+              4,
+              0,
+              0
+            ],
+            "first_warm_seconds": 0.0035131990152876824,
+            "memory_signature": {
+              "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+              "leaves": 19,
+              "dtype": "int32",
+              "shape": []
+            },
+            "mobilization_issued": false,
+            "no_new_jit_signature": true,
+            "repeats": [
+              {
+                "n": 100,
+                "median_seconds": 0.003064190997974947,
+                "p95_seconds": 0.003638048277935013,
+                "min_seconds": 0.002859436994185671,
+                "max_seconds": 0.004453919013030827
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0031435970158781856,
+                "p95_seconds": 0.0036188903934089465,
+                "min_seconds": 0.002876298996852711,
+                "max_seconds": 0.004276351013686508
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.003410604505916126,
+                "p95_seconds": 0.004501012641412672,
+                "min_seconds": 0.0029231879743747413,
+                "max_seconds": 0.005376201996114105
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0033556199923623353,
+                "p95_seconds": 0.004344462904555257,
+                "min_seconds": 0.002886839007260278,
+                "max_seconds": 0.005206409026868641
+              },
+              {
+                "n": 100,
+                "median_seconds": 0.0032997484813677147,
+                "p95_seconds": 0.00387029594858177,
+                "min_seconds": 0.0028534250159282237,
+                "max_seconds": 0.0042042740096803755
+              }
+            ],
+            "pooled": {
+              "n": 500,
+              "median_seconds": 0.0032316495053237304,
+              "p95_seconds": 0.003956008495879358,
+              "min_seconds": 0.0028534250159282237,
+              "max_seconds": 0.005376201996114105
+            }
+          }
+        },
+        "matched_parent_throughput_ratios": {
+          "v10-parent6": 0.9682112345360909,
+          "v10-parent9": 0.9571011643816953
+        },
+        "v10_default_throughput_vs_v6": 0.7464489869906222
+      }
+    },
+    "compile": {
+      "v6": {
+        "cold_step_seconds": 9.804269666987238,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+          "leaves": 7,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          6,
+          4,
+          0,
+          0
+        ]
+      },
+      "v9": {
+        "cold_step_seconds": 13.45696370099904,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+          "leaves": 19,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          6,
+          4,
+          0,
+          0
+        ]
+      },
+      "v10-parent6": {
+        "cold_step_seconds": 10.425445901986677,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]))",
+          "leaves": 7,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          6,
+          4,
+          0,
+          0
+        ]
+      },
+      "v10-parent9": {
+        "cold_step_seconds": 14.300363287999062,
+        "memory_signature": {
+          "tree": "PyTreeDef(CustomNode(namedtuple[StrategicMemory], [CustomNode(namedtuple[OffensiveMemory], [CustomNode(namedtuple[DefenderMemory], [*, *, *, *, *, *, *]), *, *, *, *, *, *, *, *]), *, *, *, *]))",
+          "leaves": 19,
+          "dtype": "int32",
+          "shape": []
+        },
+        "active_action": [
+          0,
+          6,
+          4,
+          0,
+          0
+        ]
+      }
+    },
+    "repeats": 5,
+    "samples_per_repeat": 100,
+    "scope": "Supplement: original case4 turn1028 with active incoming defender240,target280,expires1037,expected_army29. Original policy releases this commitment at1028; this measures the active-memory revalidation/release path, not successful continued transport. Same18x21 public observations and parent-state inputs. Repeated fixed snapshots are timings, not enacted trajectories or carried V10 game histories. Cache disabled. Cold includes full step compilation, excludes imports/preparation; not stdio startup. Shared host, one physical CPU4. V10-parent9 is V10 default; parent6 also measured as its independently configured ablation.",
+    "session": 63969,
+    "exit_code": 0
+  }
+}
