@@ -1,0 +1,385 @@
+{
+  "schema": "v10-runtime-qualification/1",
+  "scope": "Offline cache qualification and complete recorded-history deployment equivalence; no new match, no official submission, no strength or promotion claim.",
+  "policy_sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+  "qualification_source_commit": "2d6acd04ad85a74629254fb2a12187793252ede6",
+  "source_sha256": {
+    "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+    "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+    "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+    "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+    "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+    "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+    "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+    "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+    "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+    "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+    "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+    "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+    "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+    "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+    "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+    "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+    "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+    "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+    "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+    "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+    "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+    "competition/agents/sentinel_python/main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+    "competition/agents/sentinel_python/warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790",
+    "scripts/probe_sentinel_bundle.py": "ff0d60c9ebde2b07087f8c9ca7e4be57c7a7ea3c888684510296dd1173db7910",
+    "scripts/build_sentinel_bundle.py": "8818d4ca48fbf90f1ab18bb944acd067dce1a8f6b9a9b30996258c1a70290765",
+    "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+    "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+    "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+    "LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1"
+  },
+  "synthetic_qualification": {
+    "variant_shapes": 32,
+    "unique_board_shapes": 16,
+    "responses": 960,
+    "faults": 0,
+    "extra_built_probe_responses_excluded": 60,
+    "variants": {
+      "v10": {
+        "status": "measured_pass",
+        "variant": "v10",
+        "bundle_sha256": "b1ec212d268f5a0f2bdab728980aaaaf8edf6f89f5635ab068876d338dcd8d13",
+        "runtime": {
+          "python": "3.12.10",
+          "packages": {
+            "jax": "0.11.0",
+            "jaxlib": "0.11.0",
+            "numpy": "2.4.6",
+            "scipy": "1.18.0"
+          }
+        },
+        "cpu": 4,
+        "shapes": 16,
+        "frames": 480,
+        "faults": 0,
+        "built_probe_faults": 0,
+        "all_deadlines_met": true,
+        "first_seconds": {
+          "min": 2.8234974229999352,
+          "median": 2.997216837015003,
+          "max": 3.5571924630203284
+        },
+        "warm_seconds": {
+          "samples": 464,
+          "median": 0.004753084504045546,
+          "p95": 0.006646656538941897,
+          "max": 0.007874895993154496
+        },
+        "peak_sampled_process_rss_bytes": 358367232,
+        "rss_scope": "single process sampled /proc VmRSS/VmHWM; not process tree or cgroup",
+        "directory_identity_unchanged": true,
+        "built_vs_reused_18x21_action_parity": 30,
+        "build": {
+          "internal_seconds": 271.23738774700905,
+          "outer_wall_seconds": 273.389235330018,
+          "exit_code": 0,
+          "artifact_bytes": 9212253,
+          "artifact_files": 140
+        },
+        "qualified_directory_sha256": "5c0def9c72ad44aa5379f0ed371694f070aee701b9a7baacb75b8429276ea736",
+        "source_report_sha256": "e151fc1d63af05b801cc4e3de0856d573a6b172c38b207f24dd19c4e72b22e88",
+        "probe_report_sha256": {
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/probe-built-18x21.json": "16b3f47545138eb3de7cd41b10bdfcb00b65c1a0ed0af9920c8cdd08f3bf8ca2",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-18x18.json": "29813137a83454bf51092742eb75c047fe8af376500e6e5ed5b4669ee0d83cf3",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-18x19.json": "046ef6237b042414b8ee0aebc83a2f6a47bee688f2d2f55dc25e1a2badd11879",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-18x20.json": "50f50341e7bc093cf0f1e655a8921f28c5c4de7ad90462389ee039972d942150",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-18x21.json": "9c59f68c33e9def9fb61300789c7a725104200d4ebdaf6f82d85be08b15cd580",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-19x18.json": "334d3422d7d11f1343d1834031e28fc701e9dc490fd5351b32c84e65a391fca7",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-19x19.json": "f298799dd73ef75fee3e2a41202c23be44a8289adb48e97a3e349b89aca8f8d0",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-19x20.json": "224533c75d20d12d34857bce1de97c90ba8c9c6184307fd325e940b1adfe7d63",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-19x21.json": "00a1079f3562a79b32f5d7bd3649443179ac89e88a10d26da9c49b39d1a21b5a",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-20x18.json": "3de764530c288c158849cfffc8a2cfec713830aff24a1344dea9678c9933e525",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-20x19.json": "20c8886c6161a8fdf463aeada780c9440fe822af915a670c7fa7a2b97b897a3e",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-20x20.json": "36496ff195b2e0c8957a32cae457f20f7db2dbd2f1526efbb83d7b2940d57f5c",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-20x21.json": "7b24858d18105a03ddcf4a14652cb72b3f34beb13b186d9197fd56c7194e44e0",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-21x18.json": "6a8fe63b5b01f9740f4dd53beee9c9bcddd9e17017b24d46019d2dd57ab14d73",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-21x19.json": "146fbf92330db136a3de364866accf1e4598466de648e0be07c3fa9029866fcb",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-21x20.json": "3bf92150aa02feec81b8e0f621398a803f88aac5c5d1fc4990367339db7c00dc",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10/reused-21x21.json": "f8a25d81e8186cf8c4d22a2bce06654f8363672df8bff03995587bf27a8b1715"
+        },
+        "manifest_source_sha256": {
+          "LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+          "build.sh": "68ae3d3934c86d8c880f0e3e4d1700ab8c87f288058e5d265e56fd091952ad38",
+          "generals/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+          "generals/agents/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+          "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+          "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+          "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+          "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+          "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+          "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+          "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+          "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+          "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+          "generals/core/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+          "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+          "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+          "main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+          "run.sh": "bfa696bfec9d7ed18129789db7ce9525f14b7733baa8f3156540a63582a57339",
+          "warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790"
+        }
+      },
+      "v10-v6": {
+        "status": "measured_pass",
+        "variant": "v10-v6",
+        "bundle_sha256": "1b1a436ec5c1e46e24c5d1905dda14c8aed64249779700632ea8402afa6a8b70",
+        "runtime": {
+          "python": "3.12.10",
+          "packages": {
+            "jax": "0.11.0",
+            "jaxlib": "0.11.0",
+            "numpy": "2.4.6",
+            "scipy": "1.18.0"
+          }
+        },
+        "cpu": 4,
+        "shapes": 16,
+        "frames": 480,
+        "faults": 0,
+        "built_probe_faults": 0,
+        "all_deadlines_met": true,
+        "first_seconds": {
+          "min": 2.314356963004684,
+          "median": 2.400985367508838,
+          "max": 2.7122000780072995
+        },
+        "warm_seconds": {
+          "samples": 464,
+          "median": 0.004421776000526734,
+          "p95": 0.005585926749336066,
+          "max": 0.008507817023200914
+        },
+        "peak_sampled_process_rss_bytes": 313397248,
+        "rss_scope": "single process sampled /proc VmRSS/VmHWM; not process tree or cgroup",
+        "directory_identity_unchanged": true,
+        "built_vs_reused_18x21_action_parity": 30,
+        "build": {
+          "internal_seconds": 205.36539712100057,
+          "outer_wall_seconds": 207.38296996397548,
+          "exit_code": 0,
+          "artifact_bytes": 6682756,
+          "artifact_files": 140
+        },
+        "qualified_directory_sha256": "9915b44ff8f32750d5bd4c64818b41fc010809f7c2a3c5f10145dab85baede25",
+        "source_report_sha256": "7b5240511a7a0de9cd2963e386ad1c47c65500ea66ab7f7c5b06818955f02481",
+        "probe_report_sha256": {
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/probe-built-18x21.json": "0fbd716decdcb9d82a4aead93902e45130b8026e80dbd13260aa755364f252bf",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-18x18.json": "35a6a18dc31e764665232d3cd77207a8b63d7d74b9dc0aaab03d0a6f66a988cb",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-18x19.json": "9daf2754fa83abd1d4c081f0dfb5c2242db42b51f54de2a70e479eda63c4d232",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-18x20.json": "f2f06c9ace08191acdaf4be79cde93e79956e5121e79bc0892d4ead7f965d22d",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-18x21.json": "9447d7bc299e92095d95790d16aaac4ed241d5397861d8fbc80831b5f5b23517",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-19x18.json": "bbe592ec87af0b71de0f6c5caf7ffb7d22da281a052829c3846dafea0fa770c7",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-19x19.json": "ef089903a1509f4eddef1f7fe76cc6d98e2081f98546660b0deeaecb98634e1c",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-19x20.json": "989356bc6726f56a49ea850f24174685f811889d140407cf86d3cdec6dec281d",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-19x21.json": "23ce916eff6a5e6b1f3d2f6f3f388150fc4aae2bce08ebd294f3c52b3b4d1791",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-20x18.json": "7c42fe432d166ea64f61d3c8e10b8d132d1557069f5ba907156db5cf0e149ac5",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-20x19.json": "faf7ed264b43d06de5bc307d7f9b5fa7258934d57078cd568dbd048c964912f8",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-20x20.json": "37cdc2f564223b1e639dcfe737db006074082364ad27209d89d650d533d27468",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-20x21.json": "695ff8c2f97fc6ac5aa4cbe7728d4f476f08e200b8f9a35b659f2bf08c09836c",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-21x18.json": "6cb0579fe7743dd74100778169042b765548fdf67e9024684925fbee02ad54eb",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-21x19.json": "a5e4aa95d45d29269f2e12c938fd9c538b93b976285efdb765e46bc3c4c195f0",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-21x20.json": "a09781d70dae417c1fa7094cf729599c9cd0033c9450a8f6244ea758ab2fafa2",
+          ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/reused-21x21.json": "b1cef694765256ba41084f92698c0e9185e745baafe4cbc38b96caf5d4ae1f82"
+        },
+        "manifest_source_sha256": {
+          "LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+          "build.sh": "07aba5a2e2196631c98fbf223c4f00993b3f475c1702e0bc65a4707c361d4c12",
+          "generals/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+          "generals/agents/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+          "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+          "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+          "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+          "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+          "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+          "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+          "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+          "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+          "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+          "generals/core/__init__.py": "774691b21202a96e39e4cf949661d8bd45fe45ade28a7f4a67b852616162c6f5",
+          "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+          "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+          "main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+          "run.sh": "b06fc95aaed3a7b612c79203f5dac5fff91f54299766c76614746ab37a7cabb6",
+          "warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790"
+        }
+      }
+    }
+  },
+  "default_actual_history": {
+    "source_replay": {
+      "complete": true,
+      "frames": 1076,
+      "memory_leaves": 19,
+      "actual_mobilization_turns": [
+        1027
+      ],
+      "active_incoming_defender_frames": 13,
+      "continued_defender_frames": 1,
+      "runtime": {
+        "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+        "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+        "packages": {
+          "jax": "0.11.0",
+          "jaxlib": "0.11.0",
+          "numpy": "2.4.6",
+          "scipy": "1.18.0"
+        }
+      },
+      "scope": "Exact source replay of every raw action and19-field before/after memory using built parser/policy over complete actual game inputs; not a stdio-internal-memory observation."
+    },
+    "standalone_wire": {
+      "complete": true,
+      "frames": 1076,
+      "exact_raw_action_parity": true,
+      "exact_normalized_action_parity": true,
+      "faults": 0,
+      "stale_lines": 0,
+      "skipped_observations": 0,
+      "first_seconds": 2.895557476003887,
+      "warm_seconds": {
+        "samples": 1075,
+        "median": 0.004390500980662182,
+        "max": 0.011527265014592558
+      },
+      "peak_sampled_process_tree_rss_bytes": 358035456,
+      "cleanup": {
+        "pid": 3372249,
+        "waits": [
+          {
+            "stage": "eof",
+            "timed_out": false
+          }
+        ],
+        "errors": [],
+        "reaped": true,
+        "returncode": 0,
+        "final_reap_timeout": false
+      },
+      "directory_identity_unchanged": true,
+      "memory_scope": "Actual stdio exposes actions only;19-field before/after memory parity is separately verified by the bound source replay."
+    },
+    "input_provenance": {
+      "trace": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/policy-full-case/results/candidate-game-0004-suffix.jsonl",
+      "trace_sha256": "9a175069a48d6c2e9436472e616d4a0838f154a802113b03062b4988ce32a528",
+      "original_report_sha256": "5fa92ef0c47014adcd477b673ef847227e5c2fc778ab9747206671ff7fe4dbbf",
+      "original_runtime": {
+        "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+        "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+        "packages": {
+          "numpy": "2.4.6",
+          "jax": "0.11.0",
+          "jaxlib": "0.11.0",
+          "scipy": "1.18.0"
+        }
+      },
+      "integration_source_changes": [
+        {
+          "path": "/home/relh/Code/generals-bots/competition/agents/sentinel_python/main.py",
+          "original_sha256": "5747a2701535cb17f8e83a16888172c08af76949c34ca47a04a0829c67796eea",
+          "current_sha256": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e"
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/generals/evaluation/cli.py",
+          "original_sha256": "4e8d5222ca3dfe994c016213f9e7aab180de174d97d5ce317cdee0817a8fda52",
+          "current_sha256": "497d3fdcfb57df1ddb008f1a4d688f3ca59126c1397ebdfb170342204886a577"
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/generals/evaluation/replay.py",
+          "original_sha256": "ecaa0c305d35b28baf7be001cccadae744269ab14faa9e4fde04dfb8225bedf0",
+          "current_sha256": "0bae47b6592fc6333ebc6db9375d1c5f33489759433418453eb0f57b6444176d"
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/scripts/build_sentinel_bundle.py",
+          "original_sha256": "7e26b52bd104186bdf6eea6ad7e43c28cb831b39bcb32d9bedfbefb740b8cc91",
+          "current_sha256": "8818d4ca48fbf90f1ab18bb944acd067dce1a8f6b9a9b30996258c1a70290765"
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/scripts/compare_agent_runs.py",
+          "original_sha256": "5c7ae600a0384c723952bcdecb2c050fe906ae45072d4af7d99a72461afc9db3",
+          "current_sha256": "cd0781b71668c72a47f2f1800d8c9c71009a58d9c77821e06f25539a878d0b52"
+        },
+        {
+          "path": "/home/relh/Code/generals-bots/scripts/strategy_arena.py",
+          "original_sha256": "ede4378e2b53cd36f48cd455e4e2aa946527aba4cf7bb877b7466fc4db07a87e",
+          "current_sha256": "330144c0965f445cfe10071410ac1c231a4a3ca5d615ebaae2badb2ce63e8cc6"
+        }
+      ],
+      "parser_function_ast_equal": true,
+      "parser_original_git_commit": "8b1ef755ea6dfc8b3f43e0f5aeeff0f5a4ad387d"
+    }
+  },
+  "preserved_checker_attempts": {
+    "source_first_attempt": {
+      "completed": false,
+      "frames_before_failure": 2,
+      "failed_turn": 2,
+      "reason": "Checker incorrectly equated raw PASS coordinates with normalized PASS; actual raw action and memory matched. Separate successful checker uses frozen runner parse_action."
+    },
+    "wire_first_preflight": {
+      "bot_spawned": false,
+      "reason": "Refused directory identity mismatch from one new jit_greater_equal diagnostic cache entry."
+    },
+    "cache_restoration": {
+      "reason": "Source audit host-side defender>=0 diagnostic generated one additional JIT cache entry; standalone policy cache unchanged. Preserve diagnostic entry outside deployable directory, restore exact qualified identity before actual wire replay.",
+      "existing_qualified_files_changed": false,
+      "moved_entries": {
+        ".jax_cache/jit_greater_equal-853ceb35a1446ea26e3fe1ad33c98ad060f999532e5befbfcf328ec848dbabc0-cache": "02069bb5e3ebde2d17d2bbce27ebb409030598263157d828bb4ba3496f20a53f"
+      },
+      "directory_before": "adc01e3308179f877d1ab5fff5a7fefb5e47891416fbaf5dac56d88c144e756e",
+      "restored_directory_sha256": "5c0def9c72ad44aa5379f0ed371694f070aee701b9a7baacb75b8429276ea736",
+      "restored_exact_qualified_identity": true
+    }
+  },
+  "parent6_actual_history": {
+    "status": "pending",
+    "required_memory_leaves": 7,
+    "input_expected": ".cache/runs/sentinel-v10/development/amin-development/v10-v6",
+    "selection": "First numeric complete actual game with active incoming defender memory, no outcome preference.",
+    "prepared_helper": ".cache/runs/sentinel-v10/standalone-qualification/parent6_history_audit.py",
+    "execution": "Not run; requires actual complete input and root CPU release. Default19-field history does not substitute."
+  },
+  "limitations": [
+    "Single CPU4 on shared host, official Python/package versions but not an official sandbox or submission.",
+    "Synthetic shape probes carry memory but do not guarantee tactical activation.",
+    "Cold uncached full-step V10 exceeds10s; this evidence qualifies explicitly built caches.",
+    "Probe RSS is single-process sampled VmRSS/VmHWM; actual-history RSS is sampled process-tree RSS; neither is a cgroup bound.",
+    "Original complete game predates factory integration; old/current hashes retained, parser AST equality plus exact source/action/memory replay validates deployment against original public inputs."
+  ],
+  "artifact_sha256": {
+    ".cache/runs/sentinel-v10/standalone-qualification/source-freeze.json": "ee2a785da807f22b85ac21020a0af19b2bd1030da1fe0e18bd0b973b7b4614ed",
+    ".cache/runs/sentinel-v10/standalone-qualification/history-input.json": "7ee45563a602c1f8a50115cc8dc256829ad32dd000b4c61d0fa3e58428339cba",
+    ".cache/runs/sentinel-v10/standalone-qualification/source-history.json": "221e48afbba2fc71021036fe45d6ff5e98e937ed8e229b28347a6b94c0bceabe",
+    ".cache/runs/sentinel-v10/standalone-qualification/source_history.py": "237d0823b9bf1b178431d1f8a2192226525f7b800243e30841aea4f035413a41",
+    ".cache/runs/sentinel-v10/standalone-qualification/source-history.log": "5c8987dcd214626ac87a3d6f57c1baf13c9c954e59410ec480ba34a4fba61505",
+    ".cache/runs/sentinel-v10/standalone-qualification/source-history-normalized.json": "5a364034f9d582d893bdb1174d2ea86eb83dac803599b205ba8b91144b6a6285",
+    ".cache/runs/sentinel-v10/standalone-qualification/source_history_normalized.py": "3dd6d0006d83e7e249c58a435ce915b35ce1adf550b08ff150255730ce485f2b",
+    ".cache/runs/sentinel-v10/standalone-qualification/source-history-normalized.log": "1f7f755c588fd312ed1cf4396ca52f15aa5a54d3cbff1a98fc79b5626173b789",
+    ".cache/runs/sentinel-v10/standalone-qualification/wire_history.py": "6dc6a42eec1677b1d9730a3bc3b2fe52ffbcb80676ac541baa24f50224af3eae",
+    ".cache/runs/sentinel-v10/standalone-qualification/wire-history.log": "d9cb41fc0dfa067941e04109f9a6fdfd4e5a5e9a26131c4f50a72f90511b0730",
+    ".cache/runs/sentinel-v10/standalone-qualification/wire-history-restored.json": "f3d662108046bc684756ea71af23bddbeaf1d0d0d418f7d6b4656c4f10e1ee62",
+    ".cache/runs/sentinel-v10/standalone-qualification/wire_history_restored.py": "64eb06e689c177bd9632bfcd868a50b4abcfbe596d99151236f17ceb5d81c216",
+    ".cache/runs/sentinel-v10/standalone-qualification/wire-history-restored.log": "0f7ab9991f9a44148b5fc48e7908a3e9d70425777434fb94a34e551bb83e1cc8",
+    ".cache/runs/sentinel-v10/standalone-qualification/cache-restoration.json": "5b691892f03d4bde1a13dd36227d057db41dcdf1d5eb72d2298dbf11156d5e7f",
+    ".cache/runs/sentinel-v10/standalone-qualification/run.py": "41563886890590d29bb3fa3ec12c827f7f867498fa7bcadb603728cb5241d612",
+    ".cache/runs/sentinel-v10/standalone-qualification/prepare_history.py": "dae062ef86d785b950906db926b9215991617c964a9f4a93f8b1cdf1906bc4e3",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6_history_audit.py": "aab88fb7456174ec494b8fe7a240f404159df154d0c2bd0e26ce694b2a52bff2",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10/summary.json": "e151fc1d63af05b801cc4e3de0856d573a6b172c38b207f24dd19c4e72b22e88",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10/candidate.zip": "b1ec212d268f5a0f2bdab728980aaaaf8edf6f89f5635ab068876d338dcd8d13",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10/candidate-repeat.zip": "b1ec212d268f5a0f2bdab728980aaaaf8edf6f89f5635ab068876d338dcd8d13",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10/deterministic-build.json": "d7cd160eeb5e14a64b14204838b1167889de9247e3b6364d957cd04103d4ee58",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10/probe-built-18x21.json": "16b3f47545138eb3de7cd41b10bdfcb00b65c1a0ed0af9920c8cdd08f3bf8ca2",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10/cache-built/bundle/build-report.json": "8566bf899902e51a675618bfde120d6b475995e21fb35b693464768684c0d1c5",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/summary.json": "7b5240511a7a0de9cd2963e386ad1c47c65500ea66ab7f7c5b06818955f02481",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/candidate.zip": "1b1a436ec5c1e46e24c5d1905dda14c8aed64249779700632ea8402afa6a8b70",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/candidate-repeat.zip": "1b1a436ec5c1e46e24c5d1905dda14c8aed64249779700632ea8402afa6a8b70",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/deterministic-build.json": "0b1cbc77d51ce8bbc5de62e732ae7886281fd4ce0b755f9d7736b6acd47311c4",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/probe-built-18x21.json": "0fbd716decdcb9d82a4aead93902e45130b8026e80dbd13260aa755364f252bf",
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/cache-built/bundle/build-report.json": "8dc288ccf53e25fcae1655f6e21ed59f1c85462970ef7ad4d909eb059c5c75a4"
+  }
+}

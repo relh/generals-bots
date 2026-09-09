@@ -58,6 +58,13 @@ broad strength or deployment gate. Use `--candidate sentinel-v10` or
 The corresponding `-disabled` aliases reproduce their selected parent exactly.
 The default remains V2 and the competitive goal remains active.
 
+The [four-arm development plan](v10-plan.md) compares both V10 parent choices
+with V6 and V9 across 576 fixed games. The [runtime qualification](v10-runtime-qualification.md)
+records cached startup checks and complete-history coverage separately.
+The [expanded public-opponent census](v10-opponent-coverage.md) identifies and
+checks additional implementations beyond those six opponents; synthetic protocol
+checks do not establish their playing strength.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
