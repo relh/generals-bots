@@ -148,7 +148,7 @@ def compare(control, candidate, resamples=100000):
         required.add("generals/agents/agent.py")
         for name in {key[1] for key in left}:
             module = name
-            for version in (3, 4, 5, 6, 7, 8, 9):
+            for version in (3, 4, 5, 6, 7, 8, 9, 10):
                 if name.startswith(f"sentinel-v{version}"):
                     module = f"sentinel_v{version}"
             required.add(f"generals/agents/{module}_agent.py")
@@ -160,18 +160,29 @@ def compare(control, candidate, resamples=100000):
                 "sentinel_v7",
                 "sentinel_v8",
                 "sentinel_v9",
+                "sentinel_v10",
             ):
                 required.add("generals/agents/sentinel_agent.py")
-            if module in ("sentinel_v4", "sentinel_v5", "sentinel_v6", "sentinel_v7", "sentinel_v8", "sentinel_v9"):
+            if module in (
+                "sentinel_v4",
+                "sentinel_v5",
+                "sentinel_v6",
+                "sentinel_v7",
+                "sentinel_v8",
+                "sentinel_v9",
+                "sentinel_v10",
+            ):
                 required.add("generals/agents/sentinel_v3_agent.py")
-            if module in ("sentinel_v6", "sentinel_v7", "sentinel_v8", "sentinel_v9"):
+            if module in ("sentinel_v6", "sentinel_v7", "sentinel_v8", "sentinel_v9", "sentinel_v10"):
                 required.add("generals/agents/sentinel_v5_agent.py")
-            if module in ("sentinel_v7", "sentinel_v8", "sentinel_v9"):
+            if module in ("sentinel_v7", "sentinel_v8", "sentinel_v9", "sentinel_v10"):
                 required.add("generals/agents/sentinel_v6_agent.py")
-            if module in ("sentinel_v8", "sentinel_v9"):
+            if module in ("sentinel_v8", "sentinel_v9", "sentinel_v10"):
                 required.add("generals/agents/sentinel_v7_agent.py")
-            if module == "sentinel_v9":
+            if module in ("sentinel_v9", "sentinel_v10"):
                 required.add("generals/agents/sentinel_v8_agent.py")
+            if module == "sentinel_v10":
+                required.add("generals/agents/sentinel_v9_agent.py")
     if any(not required <= source.keys() or any(not source[k] for k in required) for source in sources):
         raise ValueError("missing simulator, runner, or opponent source identity")
     physics = [

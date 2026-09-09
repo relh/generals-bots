@@ -155,6 +155,16 @@ def candidate(name, rules):
             max_turns=rules.max_turns,
             commit_defense=name == "sentinel-v6",
         )
+    elif name in ("sentinel-v10", "sentinel-v10-disabled", "sentinel-v10-v6", "sentinel-v10-v6-disabled"):
+        from generals.agents.sentinel_v10_agent import SentinelV10Agent
+
+        return SentinelV10Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            parent_version=6 if "-v6" in name else 9,
+            mobilize_home=not name.endswith("-disabled"),
+        )
     elif name in ("sentinel-v9", "sentinel-v9-disabled"):
         from generals.agents.sentinel_v9_agent import SentinelV9Agent
 
@@ -359,6 +369,10 @@ def main():
             "sentinel-v8-no-concentration",
             "sentinel-v9",
             "sentinel-v9-disabled",
+            "sentinel-v10",
+            "sentinel-v10-disabled",
+            "sentinel-v10-v6",
+            "sentinel-v10-v6-disabled",
         ],
         default="sentinel",
     )

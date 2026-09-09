@@ -64,8 +64,27 @@ V9_OPTIONS = {
 }
 
 
+V10_OPTIONS = {
+    "sentinel-v10": {"parent_version": 9, "mobilize_home": True},
+    "sentinel-v10-disabled": {"parent_version": 9, "mobilize_home": False},
+    "sentinel-v10-v6": {"parent_version": 6, "mobilize_home": True},
+    "sentinel-v10-v6-disabled": {"parent_version": 6, "mobilize_home": False},
+}
+
+
 def agent(name, rules, checkpoint=None, *, options=None):
     options = options or {}
+    if name in V10_OPTIONS:
+        from generals.agents.sentinel_v10_agent import SentinelV10Agent
+
+        if set(options) - {"parent_version", "mobilize_home"}:
+            raise ValueError(f"Unsupported policy options for {name}: {options}")
+        return SentinelV10Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V10_OPTIONS[name] | options),
+        )
     if name in V9_OPTIONS:
         from generals.agents.sentinel_v9_agent import SentinelV9Agent
 
@@ -205,6 +224,7 @@ def main():
             *V7_OPTIONS,
             *V8_OPTIONS,
             *V9_OPTIONS,
+            *V10_OPTIONS,
             "learned",
             "old-ppo",
             "random",
@@ -243,6 +263,8 @@ def main():
         metadata["candidate_options"] = V8_OPTIONS[args.candidate]
     if args.candidate in V9_OPTIONS:
         metadata["candidate_options"] = V9_OPTIONS[args.candidate]
+    if args.candidate in V10_OPTIONS:
+        metadata["candidate_options"] = V10_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p

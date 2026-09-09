@@ -103,6 +103,14 @@ def make_agent():
 
         agent_type = SentinelV9Agent
         options = dict(remember_enemy_general=variant == "v9")
+    elif variant in ("v10", "v10-disabled", "v10-v6", "v10-v6-disabled"):
+        from generals.agents.sentinel_v10_agent import SentinelV10Agent
+
+        agent_type = SentinelV10Agent
+        options = dict(
+            parent_version=6 if "-v6" in variant else 9,
+            mobilize_home=not variant.endswith("-disabled"),
+        )
     elif variant != "v2":
         raise ValueError(f"unsupported SENTINEL_VARIANT={variant!r}")
     return agent_type(
