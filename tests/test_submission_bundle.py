@@ -96,7 +96,7 @@ def test_v3_bundle_pins_variant_for_build_and_runtime(tmp_path):
             assert b"export SENTINEL_MODE=competition\n" in archive.read(script)
 
 
-@pytest.mark.parametrize("version", [4, 5, 6, 7])
+@pytest.mark.parametrize("version", [4, 5, 6, 7, 8])
 def test_bundle_retains_scoring_dependencies_and_variant(tmp_path, version):
     variant = f"v{version}"
     path = tmp_path / f"{variant}.zip"
@@ -106,8 +106,10 @@ def test_bundle_retains_scoring_dependencies_and_variant(tmp_path, version):
         modules = ["sentinel", "sentinel_v3", f"sentinel_{variant}"]
         if version >= 6:
             modules.append("sentinel_v5")
-        if version == 7:
+        if version >= 7:
             modules.append("sentinel_v6")
+        if version >= 8:
+            modules.append("sentinel_v7")
         for module in modules:
             name = f"generals/agents/{module}_agent.py"
             assert archive.read(name) == (ROOT / name).read_bytes()

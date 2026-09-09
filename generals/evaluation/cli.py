@@ -45,8 +45,32 @@ V7_OPTIONS = {
 }
 
 
+V8_OPTIONS = {
+    "sentinel-v8": {"concentrate_armies": True, "cheapest_collection": True, "direct_deployment": True},
+    "sentinel-v8-cheap": {"concentrate_armies": True, "cheapest_collection": True, "direct_deployment": False},
+    "sentinel-v8-direct": {"concentrate_armies": True, "cheapest_collection": False, "direct_deployment": True},
+    "sentinel-v8-disabled": {"concentrate_armies": True, "cheapest_collection": False, "direct_deployment": False},
+    "sentinel-v8-no-concentration": {
+        "concentrate_armies": False,
+        "cheapest_collection": True,
+        "direct_deployment": True,
+    },
+}
+
+
 def agent(name, rules, checkpoint=None, *, options=None):
     options = options or {}
+    if name in V8_OPTIONS:
+        from generals.agents.sentinel_v8_agent import SentinelV8Agent
+
+        if set(options) - {"concentrate_armies", "cheapest_collection", "direct_deployment"}:
+            raise ValueError(f"Unsupported policy options for {name}: {options}")
+        return SentinelV8Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            **(V8_OPTIONS[name] | options),
+        )
     if name in V7_OPTIONS:
         from generals.agents.sentinel_v7_agent import SentinelV7Agent
 
@@ -162,6 +186,7 @@ def main():
             *V5_OPTIONS,
             *V6_OPTIONS,
             *V7_OPTIONS,
+            *V8_OPTIONS,
             "learned",
             "old-ppo",
             "random",
@@ -196,6 +221,8 @@ def main():
         metadata["candidate_options"] = V6_OPTIONS[args.candidate]
     if args.candidate in V7_OPTIONS:
         metadata["candidate_options"] = V7_OPTIONS[args.candidate]
+    if args.candidate in V8_OPTIONS:
+        metadata["candidate_options"] = V8_OPTIONS[args.candidate]
     root = Path(__file__).resolve().parents[2]
     paths = [
         p

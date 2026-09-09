@@ -89,6 +89,15 @@ def make_agent():
 
         agent_type = SentinelV7Agent
         options = dict(concentrate_armies=variant == "v7")
+    elif variant in ("v8", "v8-cheap", "v8-direct", "v8-disabled", "v8-no-concentration"):
+        from generals.agents.sentinel_v8_agent import SentinelV8Agent
+
+        agent_type = SentinelV8Agent
+        options = dict(
+            concentrate_armies=variant != "v8-no-concentration",
+            cheapest_collection=variant in ("v8", "v8-cheap", "v8-no-concentration"),
+            direct_deployment=variant in ("v8", "v8-direct", "v8-no-concentration"),
+        )
     elif variant != "v2":
         raise ValueError(f"unsupported SENTINEL_VARIANT={variant!r}")
     return agent_type(

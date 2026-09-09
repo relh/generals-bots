@@ -95,7 +95,7 @@ def test_v3_snapshot_guard_checks_base_dependency_cli_and_snapshot_identity(tmp_
     assert "candidate_source_sha256" in provenance["critical_changed_sources"]
 
 
-@pytest.mark.parametrize("version", [4, 5, 6, 7])
+@pytest.mark.parametrize("version", [4, 5, 6, 7, 8])
 def test_snapshot_guard_checks_frozen_scoring_dependencies(tmp_path, monkeypatch, version):
     monkeypatch.setattr(replay, "ROOT", tmp_path)
     names = [
@@ -105,8 +105,10 @@ def test_snapshot_guard_checks_frozen_scoring_dependencies(tmp_path, monkeypatch
     ]
     if version >= 6:
         names.append("generals/agents/sentinel_v5_agent.py")
-    if version == 7:
+    if version >= 7:
         names.append("generals/agents/sentinel_v6_agent.py")
+    if version >= 8:
+        names.append("generals/agents/sentinel_v7_agent.py")
     recorded = {}
     for name in names:
         path = tmp_path / name

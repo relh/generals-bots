@@ -2,10 +2,11 @@
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v7 experiments have not established competitive superiority.
-V2 remains the default control. The [v7 concentration experiment](v7-development.md)
-turns some Amin losses into wins but regresses its aggregate score and the Hunter
-preservation gate. Useful tactical behavior does not justify promotion.
+The v3 through v8 experiments have not established competitive superiority.
+V2 remains the default control. The [v8 action-cost experiment](v8-development.md)
+raises the small Amin development score but fails Hunter preservation. Its selected
+combination is diagnostic only; a favorable development score against one opponent
+does not establish superiority over every opponent or justify promotion.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
@@ -15,13 +16,16 @@ opponent. Preserve the existing local strength gates and validate deployment
 under the actual runtime limits. Report untested or unavailable policies instead
 of extending a measured result to all public entrants.
 
-The next strategy work must distinguish when collection earns a useful attack
-from when it interrupts stronger play. V7 can collect real donors and deploy them,
-but its current visible-threat checks do not establish safety against enemies
-approaching through fog. Use complete successful and failed plans to choose the
-next bounded change, preserving stronger controls. Measure search persistence
-and retention of a publicly revealed stationary general as separate ablations.
-Greater stack size, fewer reversals or more buildings alone are not success.
+The next strategy work must explain the remaining Hunter failures and distinguish
+when collection earns a useful attack from when it interrupts stronger play.
+V8 executes shorter gathering routes and ready-army attacks, yet regresses against
+Hunter, both Juraj versions and the newly measured my_bot9 control. Use complete
+successful and failed plans to choose the next bounded change, preserving stronger
+controls and counterexamples such as V8's new Amin win in case 1. Compare immediately
+productive campaign actions with new multi-step territory plans as a separate
+hypothesis. Search persistence, retention of a revealed stationary general and
+economic retuning require separate ablations. Greater stack size, fewer reversals
+or more captured tiles alone are not success.
 
 Previously consumed seeds, including 83000, 93000 and 113000, may support
 explicitly labeled development experiments. They are never fresh holdouts again.

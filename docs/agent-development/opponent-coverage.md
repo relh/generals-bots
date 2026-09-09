@@ -18,6 +18,7 @@ those frozen tournament policies and cannot infer a rank against them.
 | Amin PPO | `main8_iter160` is reviewed, runnable, and evaluated. The same public repository also provides `main7_iter79` and `main7_iter308` archives. | Additional checkpoints broaden policy coverage within one author's family; neither their relative strength nor leaderboard identity is established here. |
 | Juraj V3.4 reference | Distinct stateful C++ competition agent, reviewed and evaluated in 16 games per candidate on four development maps. | V2: 11W/5L; v4: 13W/2L/1D, zero runtime faults for either player. Small consumed-map sample with unmatched internal RNG; fresh evaluation remains necessary. |
 | Juraj V3.5 | Separate deterministic rewrite from the same pinned commit, reviewed and evaluated unchanged. | Frozen v2: 2W/14L; v5: 6W/10L, each in 16 games on four consumed maps, zero faults/invalid actions for either bot. The observed gap remains; see the v5 evidence. |
+| Public `my_bot` family | Nine source variants in upstream PR 138, pinned and reviewed; standard-library Python with compatible wire format. | Original my_bot9 measured in the V8 cycle: V6 16W/0L, V8 12W/4L. Older castle prices cause invalid builds; other eight variants and the strongest variant remain unestablished. |
 | CodeBoy2006 heuristic pool | Public JAX source includes city-rush, general-hunter, defensive-expander, balanced, and mixed policies. | Older original-game interface/rules; no released trained checkpoint found in inspected tree. Requires API/rules review before competition use. |
 | Flobot | Public Apache-2.0 JavaScript source; historical original-game results reported by its author. | Requires an offline stdio adapter, queue semantics review, and competition-rules qualification. No current competition strength established. |
 | AverageJoe | Public training/network source and reported strong original-game results. | No checkpoint or license file found in inspected public tree; no ready competition-native opponent. |
@@ -121,3 +122,57 @@ score **37.5%**, on those same paired maps. Its +25 percentage-point difference
 has a four-map interval [0, +50]. Both complete runs passed the raw-action,
 deadline and cleanup audit with zero faults or invalid actions. V5 still lacks
 a winning advantage, and this small development result does not close the goal.
+
+## Newly inspected public family: `my_bot` through `my_bot9`
+
+[Upstream PR 138](https://github.com/strakam/generals-bots/pull/138) exposes nine
+variants at pinned head
+[`f624c741ad5084be63fc17bacd3961599b8dcc82`](https://github.com/mrinmoy2developer/gio-competition-tooling/tree/f624c741ad5084be63fc17bacd3961599b8dcc82).
+All nine policy ASTs differ, but they are versions of one evolving design. An
+unmerged source PR establishes neither official participation nor a leaderboard
+rank. No author-published release archive was found in the inspected repository.
+
+The retained closure is original `agent.py`, shared `main.py` and `run.sh`, plus
+the unchanged repository MIT notice. The sources use only Python's standard
+library, match the wire format, and carry object memory across frames. Inspection
+found no policy network, subprocess, filesystem, dynamic import or environment
+access. The launcher expects its working directory to be the bot directory, as
+the existing stdio arena supplies. No bot was executed during source intake;
+subsequent complete measurements are recorded below.
+
+All variants use a castle proximity penalty of 10, matching their pinned older
+modifier; our frozen competition engine uses 14. Original-bot comparisons must
+retain that assumption and disclose invalid builds or insufficient reserves.
+Changing the constant would create an adapted policy, not an unchanged original.
+The latest inspected version, `my_bot9`, is the first measured baseline;
+that choice is not a strength ranking. The other eight variants remain unmeasured.
+
+Reviewed mechanisms include remembered stationary generals, scouting behind
+previously seen enemy territory, castle funding, gathering for an understrength
+general attack and nearest-stack deathtouch routing. Concrete limitations include
+reselecting a largest-stack rally each turn, unpriced donor travel, stale enemy
+memory, and an own-general deathtouch counterchase that can lose immediately.
+These are source findings, not measured matchup outcomes.
+
+Verified original Git blobs, source hashes, all nine deterministic local bundles,
+and the detailed source/line audit are retained under
+`.cache/runs/sentinel-v8/opponent-coverage/`. The first runnable artifact is
+`prepared/my_bot9/run.sh`. Its locally packaged source ZIP,
+`my_bot9-f624c741.zip`, has SHA256
+`46febea1ef6ffbf1d110c48de9ae742d04c422562cd339627da1b72caa80737b`.
+The policy source SHA256 is
+`60fe7d02b05af0a7c0b3c06cbb1df0e62ef04673d2b340df080cc2c887d88e6d`.
+These are locally assembled archives of unchanged source, not author releases.
+
+The completed [V8 development comparison](v8-development.md) contains 16 games
+per candidate on four consumed maps: frozen V6 wins all 16; V8 wins 12 and loses
+four, all on map 1. Neither bot has runtime faults; our candidates have zero
+invalid actions. Original my_bot9 issues 288 invalid builds against V6 and 960
+against V8; none occurs in the four V8 losses. Full frozen-engine replay of all
+32 games reproduces 15,856 transitions
+and terminal winners. Every invalid build is affordable under its original price
+assumption and unaffordable under the actual rule, on owned nonstructure land.
+The replay reconstructs public observations from stored boards and applied actions;
+the stdio runner retains replies, not original observation wires. This establishes
+the cause of invalidity, not the outcome of matches against an adapted opponent.
+All nine original policies and their price constants remain unchanged.

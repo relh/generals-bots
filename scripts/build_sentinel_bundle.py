@@ -23,6 +23,11 @@ VARIANTS = (
     "v6-disabled",
     "v7",
     "v7-disabled",
+    "v8",
+    "v8-cheap",
+    "v8-direct",
+    "v8-disabled",
+    "v8-no-concentration",
 )
 
 
@@ -49,14 +54,17 @@ def build(output, prewarm_cache=True, variant="v2"):
     if variant.startswith("v4"):
         name = "generals/agents/sentinel_v4_agent.py"
         files[name] = (ROOT / name).read_bytes()
-    if variant.startswith(("v5", "v6", "v7")):
+    if variant.startswith(("v5", "v6", "v7", "v8")):
         name = "generals/agents/sentinel_v5_agent.py"
         files[name] = (ROOT / name).read_bytes()
-    if variant.startswith(("v6", "v7")):
+    if variant.startswith(("v6", "v7", "v8")):
         name = "generals/agents/sentinel_v6_agent.py"
         files[name] = (ROOT / name).read_bytes()
-    if variant.startswith("v7"):
+    if variant.startswith(("v7", "v8")):
         name = "generals/agents/sentinel_v7_agent.py"
+        files[name] = (ROOT / name).read_bytes()
+    if variant.startswith("v8"):
+        name = "generals/agents/sentinel_v8_agent.py"
         files[name] = (ROOT / name).read_bytes()
     bootstrap = b"""#!/usr/bin/env bash
 set -euo pipefail
@@ -109,6 +117,8 @@ export JAX_PERSISTENT_CACHE_MIN_ENTRY_SIZE_BYTES=0
         "policy_sha256": manifest["source_sha256"][
             "generals/agents/sentinel_agent.py"
             if variant == "v2"
+            else "generals/agents/sentinel_v8_agent.py"
+            if variant.startswith("v8")
             else "generals/agents/sentinel_v7_agent.py"
             if variant.startswith("v7")
             else "generals/agents/sentinel_v6_agent.py"

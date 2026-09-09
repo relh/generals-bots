@@ -31,6 +31,15 @@ all 16 shapes and a complete active-memory wire history; uncached startup exceed
 the limit. The next experiments must test when gathering is worth its action
 cost and compare the least costly sufficient routes with existing field forces.
 
+The [v8 action-cost experiment](v8-development.md) tests cheaper sufficient
+collection and direct deployment separately and together. The combined variant
+improves the small Amin development score but fails Hunter preservation; it is
+not promoted. Use `--candidate sentinel-v8` or `--variant v8`; `v8-cheap` and
+`v8-direct` isolate the options. `v8-disabled` preserves V7 and
+`v8-no-concentration` preserves V6 actions and telemetry inside the 15-leaf
+wrapper. Full plan audits distinguish actually issued
+routes and observed captures from available alternatives.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

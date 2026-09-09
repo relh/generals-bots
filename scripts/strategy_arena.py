@@ -155,6 +155,23 @@ def candidate(name, rules):
             max_turns=rules.max_turns,
             commit_defense=name == "sentinel-v6",
         )
+    elif name in (
+        "sentinel-v8",
+        "sentinel-v8-cheap",
+        "sentinel-v8-direct",
+        "sentinel-v8-disabled",
+        "sentinel-v8-no-concentration",
+    ):
+        from generals.agents.sentinel_v8_agent import SentinelV8Agent
+
+        return SentinelV8Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            concentrate_armies=name != "sentinel-v8-no-concentration",
+            cheapest_collection=name in ("sentinel-v8", "sentinel-v8-cheap", "sentinel-v8-no-concentration"),
+            direct_deployment=name in ("sentinel-v8", "sentinel-v8-direct", "sentinel-v8-no-concentration"),
+        )
     elif name in ("sentinel-v7", "sentinel-v7-disabled"):
         from generals.agents.sentinel_v7_agent import SentinelV7Agent
 
@@ -326,6 +343,11 @@ def main():
             "sentinel-v6-disabled",
             "sentinel-v7",
             "sentinel-v7-disabled",
+            "sentinel-v8",
+            "sentinel-v8-cheap",
+            "sentinel-v8-direct",
+            "sentinel-v8-disabled",
+            "sentinel-v8-no-concentration",
         ],
         default="sentinel",
     )

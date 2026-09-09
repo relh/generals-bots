@@ -120,3 +120,46 @@ def test_factories_preserve_stateful_interface_and_rule_options(monkeypatch, ver
             for actual, reference in zip(actual_leaves, expected_leaves):
                 assert actual.dtype == reference.dtype
                 np.testing.assert_array_equal(actual, reference)
+
+
+@pytest.mark.parametrize("competition", [True, False])
+@pytest.mark.parametrize(
+    "variant,flags",
+    [
+        ("v8", (True, True, True)),
+        ("v8-cheap", (True, True, False)),
+        ("v8-direct", (True, False, True)),
+        ("v8-disabled", (True, False, False)),
+        ("v8-no-concentration", (False, True, True)),
+    ],
+)
+def test_v8_cost_ablations_agree_across_factories(monkeypatch, competition, variant, flags):
+    from pathlib import Path
+
+    from generals.evaluation.arena import Rules
+    from generals.evaluation.cli import agent as make_arena_agent
+    from generals.evaluation.replay import make_policy
+    from scripts.strategy_arena import candidate
+
+    rules = Rules(1200, True, 800) if competition else Rules(800, False, None)
+    monkeypatch.setenv("SENTINEL_MODE", "competition" if competition else "classic")
+    monkeypatch.setenv("SENTINEL_VARIANT", variant)
+    alias = "sentinel-" + variant
+    source = Path(__file__).resolve().parents[1] / "generals/agents/sentinel_v8_agent.py"
+    snapshot, decision = make_policy(alias, rules, source=source)
+    assert decision is None
+    policies = (make_agent(), make_arena_agent(alias, rules), candidate(alias, rules), snapshot)
+    for policy in policies:
+        assert (policy.concentrate_armies, policy.cheapest_collection, policy.direct_deployment) == flags
+        assert (policy.max_turns, policy.build_castles, policy.deathtouch_turn) == (
+            rules.max_turns,
+            rules.build_castles,
+            rules.deathtouch_turn,
+        )
+        assert callable(policy.step)
+        leaves = jax.tree.leaves(policy.initial_memory((18, 21)))
+        reference = jax.tree.leaves(policies[0].initial_memory((18, 21)))
+        assert len(leaves) == len(reference) == 15
+        for actual, expected in zip(leaves, reference):
+            assert actual.dtype == expected.dtype == jnp.int32
+            np.testing.assert_array_equal(actual, expected)
