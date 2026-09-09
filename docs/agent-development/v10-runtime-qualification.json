@@ -337,19 +337,87 @@
     }
   },
   "parent6_actual_history": {
-    "status": "pending",
-    "required_memory_leaves": 7,
-    "input_expected": ".cache/runs/sentinel-v10/development/amin-development/v10-v6",
-    "selection": "First numeric complete actual game with active incoming defender memory, no outcome preference.",
-    "prepared_helper": ".cache/runs/sentinel-v10/standalone-qualification/parent6_history_audit.py",
-    "execution": "Not run; requires actual complete input and root CPU release. Default19-field history does not substitute."
+    "status": "complete",
+    "previous_status": "Previously pending actual complete input and root CPU release; completed on CPU5 after explicit release.",
+    "source_games": 32,
+    "source_frames": 21242,
+    "memory_leaves": 7,
+    "memory_scope": "Sequential source-reconstructed before/after values with seven-leaf scalar int32 enforcement; original synchronous runner stores no independent internal-memory oracle. Every raw/applied action exactly matches recorded complete public history.",
+    "active_incoming_defender_frames": 368,
+    "actual_mobilization_frames": 2,
+    "selection": "First numeric active-memory case1; first numeric actual-mobilization case17; no outcome preference.",
+    "wire_games": [
+      {
+        "game_id": 1,
+        "frames": 370,
+        "first_seconds": 2.7681616879999638,
+        "warm_median_seconds": 0.004593977995682508,
+        "warm_max_seconds": 0.01153676799731329,
+        "faults": 0,
+        "peak_sampled_process_tree_rss_bytes": 312807424,
+        "cleanup": {
+          "pid": 3416959,
+          "waits": [
+            {
+              "stage": "eof",
+              "timed_out": false
+            }
+          ],
+          "errors": [],
+          "reaped": true,
+          "returncode": 0,
+          "final_reap_timeout": false
+        }
+      },
+      {
+        "game_id": 17,
+        "frames": 1038,
+        "first_seconds": 2.6980726500041783,
+        "warm_median_seconds": 0.003974296007072553,
+        "warm_max_seconds": 0.012360756983980536,
+        "faults": 0,
+        "peak_sampled_process_tree_rss_bytes": 312741888,
+        "cleanup": {
+          "pid": 3417028,
+          "waits": [
+            {
+              "stage": "eof",
+              "timed_out": false
+            }
+          ],
+          "errors": [],
+          "reaped": true,
+          "returncode": 0,
+          "final_reap_timeout": false
+        }
+      }
+    ],
+    "wire_frames": 1408,
+    "wire_faults": 0,
+    "qualified_directory_identity_unchanged": true,
+    "private_source_audit_cache": true,
+    "runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "numpy": "2.4.6",
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "scipy": "1.18.0"
+      }
+    },
+    "cpu": 5,
+    "scope": "Deployment/runtime history qualification only; no aggregate outcomes inspected, no new matches.",
+    "preserved_preflight_failure": "Original prepared helper expected main.py in synchronous runner metadata. It was absent because that runner consumes core Observation directly. Preflight stopped before inference. Separate v2 binds current parser using qualification source freeze, original core/protocol/strategy sources using run metadata, and exact public-wire action replay verifies adapter equivalence. No original source, input or qualified cache changed.",
+    "completion_summary_sha256": "bc9629bb0a1ecd74e64d60f517eb13d161577634ec5d454ce45b744b3b62b749"
   },
   "limitations": [
     "Single CPU4 on shared host, official Python/package versions but not an official sandbox or submission.",
     "Synthetic shape probes carry memory but do not guarantee tactical activation.",
     "Cold uncached full-step V10 exceeds10s; this evidence qualifies explicitly built caches.",
     "Probe RSS is single-process sampled VmRSS/VmHWM; actual-history RSS is sampled process-tree RSS; neither is a cgroup bound.",
-    "Original complete game predates factory integration; old/current hashes retained, parser AST equality plus exact source/action/memory replay validates deployment against original public inputs."
+    "Original complete game predates factory integration; old/current hashes retained, parser AST equality plus exact source/action/memory replay validates deployment against original public inputs.",
+    "Parent6 original synchronous traces retain public wires/actions but no independent internal-memory oracle; seven-field memory values are reconstructed sequentially and schema checked, with every action matched. Standalone stdio does not expose memory."
   ],
   "artifact_sha256": {
     ".cache/runs/sentinel-v10/standalone-qualification/source-freeze.json": "ee2a785da807f22b85ac21020a0af19b2bd1030da1fe0e18bd0b973b7b4614ed",
@@ -380,6 +448,15 @@
     ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/candidate-repeat.zip": "1b1a436ec5c1e46e24c5d1905dda14c8aed64249779700632ea8402afa6a8b70",
     ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/deterministic-build.json": "0b1cbc77d51ce8bbc5de62e732ae7886281fd4ce0b755f9d7736b6acd47311c4",
     ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/probe-built-18x21.json": "0fbd716decdcb9d82a4aead93902e45130b8026e80dbd13260aa755364f252bf",
-    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/cache-built/bundle/build-report.json": "8dc288ccf53e25fcae1655f6e21ed59f1c85462970ef7ad4d909eb059c5c75a4"
+    ".cache/runs/sentinel-v10/standalone-qualification/v10-v6/cache-built/bundle/build-report.json": "8dc288ccf53e25fcae1655f6e21ed59f1c85462970ef7ad4d909eb059c5c75a4",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-completed-summary.json": "bc9629bb0a1ecd74e64d60f517eb13d161577634ec5d454ce45b744b3b62b749",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-source-history.log": "14c27e65a6e65d66f1e25a26bfb8d76e556bd5afdd3412082c2f735af747f317",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6_history_audit_complete.py": "bb1f6d10a720078b8f97638f661f867202c97d72771764a893c563438728918a",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6_history_audit_complete_v2.py": "922dc60bd01b273cd2f0336ba8d51ddaeca4f66d5a6530a539b3488f2cdc3bf4",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-source-history-v2/report.json": "5a2e9a01edaad056d0729688691c2f5f1c2729b1df296e08df481276a5367fa2",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-source-history-v2.log": "6e9e54e1715ecf345a89ba53220c42a4d3a2596fbcf4830d43310fbaa5f11363",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6_wire_history_v2.py": "7642d5db3423b1dadff3825912cfcbe5115f05d41c6f292b5754af59e4d77ce8",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-wire-history-v2/report.json": "42fbe6785cc7ab9ad2255f1c440e028e8bc1075b4757cbaa8e97534dd9fbf1d2",
+    ".cache/runs/sentinel-v10/standalone-qualification/parent6-wire-history-v2.log": "02307855d0ffb40af4c61452c864dcd1b251eb7de4f496aebfce6d605b136b3a"
   }
 }

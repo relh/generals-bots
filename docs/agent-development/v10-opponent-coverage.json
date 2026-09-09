@@ -910,7 +910,179 @@
     "competition/agents/expander_cpp/agent.hpp": "3dd893007cb6311988417423b5a64f9aeda917b4c0ee6a7c4145209e8c820c7c",
     "competition/agents/expander_python/agent.py": "4634a14128940e1eb0b7a6305f25b6ba709467e495aa6a3cb2dbec642a1dccf6",
     "competition/agents/expander_rust/src/agent.rs": "323f045b172637d35946c63aa07b6deb0df68372c4af0090b4fe5928a2a90a05",
-    ".cache/runs/sentinel-v10/development/local-policy-census.json": "4b7b21653bb78f50e8ae17e3df89da8d768d3dd8d6b21e137466478007078833"
+    ".cache/runs/sentinel-v10/development/local-policy-census.json": "4b7b21653bb78f50e8ae17e3df89da8d768d3dd8d6b21e137466478007078833",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/prepare.py": "a3a8067bbfc995fd5e83d5d081d7900632496387493fd1621617bfe5d30e19e5",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualify_ports.py": "640318283a1473af58783123a6176958447c92a74a29ce56910104a56bde57cd",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/summarize.py": "ff1088ef58360bb3cdebdd5c14df2de408bb43fcaad573431406d6a69de3d09a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source-manifest.json": "a79bd448526f05d01d16ed6d1aa6a4bae9c46561a6ab87827aa3492f4d9f8006",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/driver.log": "ef88d9fbb75ea2785037793f094a230203d30db92a2c4071b65bfde61426bd59",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x18.wires.json": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x21.json": "585f69a6faca8766b4032ecd6b4b87bcd34a42021d6ea16b28e3b0bc3a538e33",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x20.wires.json": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x21.json": "2cf4aae044f3280dc0fd9288adec7677f9f2b8f876f02af8a161d1b68b62a619",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x21.json": "7c677ff29b87e05e2f44ac7db8a652e95ff5ddb902e409c3b9861048e706f5d5",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x18.json": "d2c57d8ecd815f17a3d85a1dcc22ed3826842c00d004dd84b25f41450ec501a5",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x19.wires.json": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x21.json": "3b052251c821152da32d433105c6d29c02bb7ba525b2d83ada5afb0eeba4bb96",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x20.wires.json": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x18.json": "625015ebd6278bb141621ad8c8c8049d5a382bf2269cc2a2f95ea01262b7ed5b",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x20.wires.json": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x21.json": "b83429b5a75caf4000d6cb845cad456b4c61dcf1b018592bcc65a4849e67ff51",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x19.json": "b5dd6c15cdba43429d3f8028d339ab93f8727a2d03ce7fa029e7567938b8dd93",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x20.json": "7e63251f58f6caa45bcb6dfd5d61a91a0faa5ab179ee6f7790dc6e298545d91e",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x20.wires.json": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x21.json": "77323ba073f94972faab900de7753e93222d09b14e193ea3169630341a05f90d",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x18.wires.json": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x18.json": "569ebcdb25b0b27d086c7a4e0057cfaf0c160d74c742f4b05c07a1609437562e",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x19.wires.json": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x19.wires.json": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x18.wires.json": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x20.wires.json": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x19.json": "4eaefa938df35999ebaf1ca4b118e8d1d51b9dc118b7b15e873379ead5ecc332",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x21.wires.json": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x21.wires.json": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x18.json": "4258b2f6dde365c1d96c6c1c16f8dbef8d618bb3c1661eb08e9c47779fe9c970",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x19.wires.json": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x18.json": "c1c2c91a68a9a5b0945a6e5ec38737b66c3d5731086a774729e688ae986b631b",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x20.wires.json": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x21.wires.json": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x20.json": "180a750315587c3afcffa53f13f935b0a3ab3ae65b4d9d07ef32b63551229800",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x18.json": "d8e85e5d0b9c671df8c1ec8e34302b6c58e0a1d2370def319a4b575a30350a56",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x20.json": "3d144c340ef9fb4e5604d86165316cfaaf6b1289c2a06a6c19e2ee7135a27049",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x18.json": "0d69da4817fdb51ea88d60c9bca74815f704a3a90bd9808cf7092d2274111419",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x20.wires.json": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x20.wires.json": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x20.json": "3e1088cb7a7dbd84395789c44ca7baf7076b44f50b7b41bf5ebce5782b146e32",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x18.json": "65c3a433c28631f881e167b921351f6730f2df82aec3b746399f1352ff97a298",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x19.wires.json": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x19.wires.json": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x21.wires.json": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x19.wires.json": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-build.log": "b9dff70ed63096bb77a51ccbc2617f727ce0ffa6c55b644e4105d9b794c90385",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x21.json": "11d66cd99d1ad37a4c2b394a461dbaccf015baa666a3a1b7d967ab1a607e49b7",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x18.json": "fea14e8d595d4659a680732ec2d9f795c7a9ff91eefb4f50c13d550f3df93e5e",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x21.json": "8c1be5d7c2288441dd37504124fc547c6633aeae75c552e615ae3fd5420f5f76",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x19.json": "d66a9b39a03dfa74711b2ecfb7a342b8d9037817b32f83bc81e4c871a042612f",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x18.json": "e1a4ec44338779089b88c7656f4e753cc36b93a53f74694167bf8a391e49186d",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x18.wires.json": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x21.json": "df86ebd1288dbda8cf5e43eda5fb068da58c8a7eca1802e9094a394bcaba1dc8",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x19.json": "ca0bf4a5923fecb69f76fa3392bd0bcfdd9c9f1b053cae4ae5527628542d0a11",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x21.wires.json": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x21.wires.json": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x21.wires.json": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x18.wires.json": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x20.json": "6dbd8ae9f2d86825cce624217fdf373b2ce6e87d414763023803d3e8ff471fb7",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x19.json": "8c3484d77c85e3c281bdd5e89ecc30500ae46d677de4031a9db14ffa3d79cdc5",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x18.wires.json": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x20.json": "5b9089db8266b6d70e996b875a29d86566b5dd1cc67f7a2ff80bb2b9b61f3b7a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-build.log": "f71c05a1509ba53d6ca6bd36683844d4cbf356fa77967121a3e0190a87f4308b",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x18.wires.json": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x18.wires.json": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x19.json": "972b1d73d4915ab6038b30004f9b2a747b5498c673043b332b0dcc3831d52d12",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x19.wires.json": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x19.wires.json": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x20.wires.json": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x18.wires.json": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x21.json": "d10440719a21864501ae4d9b7112cef47b43202c7272fab66e6e9e294eb5fd4e",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x21.wires.json": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x21.wires.json": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x21.wires.json": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x19.json": "6e6d009700a52381c54ca40816c7712889ff8d87bd18b1f75d825b425dc4bfeb",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x21.wires.json": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x20.json": "539a3e0a1232643885d9f58602f31e99f31d9722d49a77e3f70297f95cda8b46",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x19.json": "4670e98f54443628e9097bca4ed4935d5a2d0d3a3a4a69481c31623909b44848",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x18.wires.json": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x18.wires.json": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/report.json": "41c71c98b05a187b490058faefb81c347e3464052bcc950a9e90304286661408",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x20.json": "43695ea28167e29b513ace672c54007e320c2b0ef20b60bc213379fb77c4c7db",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x19.wires.json": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-19x19.json": "1a4ae05f046c36c0e0cdd3bef95c8c486bad8f54fa61fbdb07eb7790764506ca",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x19.json": "7e6069f53bfd6088c237756793f7e8e274cb9ae0986d1babc704adb11c630bc9",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x19.json": "de82fc5516177b1889520135abe8167dc0d2d73b51e43dce06d38fe790df5e36",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x20.json": "e4da012e5aa5ce200e0433be3d94200a2adde05f473dd7dac2fa969e2b2c6fb1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x20.json": "12bd5cc27544d5d4dbe559f9dd9014999424c559d99d20daca60c0f8ad408ab4",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-21x20.json": "1d58a60bd00692b2b2c744f93b7efe81d7786ccda11592e149132c7fd4bdf976",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-20x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x18.json": "d98d9d26fdec98f4aa062f7a32c107cb59e68e889d1bdf7607cb49c5f960343b",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-20x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-19x21.wires.json": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x18.json": "0b543d460d421f7589ba946eb124cefbfaee96a2ad7663d66342bac6d4734364",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x20.json": "39a001549aa0f580933aa6822815a11a3d9888fe324cac10103c3131bdbd0d6e",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x18.wires.json": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x20.wires.json": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x19.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x20.wires.json": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-18x21.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x21.json": "b1f385133856d6552fa6bcd4d12b42ce77f14fc548c3db3bfba3101db2746a7a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-21x19.wires.json": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-21x18.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-18x20.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_rust-19x19.wires.json": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x19.json": "cdb55570f384ac032b276b43eb940398f85c789c63b2e613a24b56bdcddcb95b",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_cpp-18x21.json": "7d1533bb9bea266020bb4a9f2c80b253701ca2bccfb7a4570a3eaf4c4aff2129",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/qualification/expander_python-20x20.wires.json": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/agent.hpp": "3dd893007cb6311988417423b5a64f9aeda917b4c0ee6a7c4145209e8c820c7c",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/build.sh": "e7b99601ad3acc82006a358ed793363ca1aa15d8d5c58b6b5e3a045a3fd48d96",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/main.cpp": "742aaa209a31d3707c4ffca11627c5a33d177096d8df4127ddfb49067601e63e",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/run.sh": "2a215b6a36a1bec6329946510cbb203104f8927b5b2cf37223f74ed18b35d4e1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/agent.py": "4634a14128940e1eb0b7a6305f25b6ba709467e495aa6a3cb2dbec642a1dccf6",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/Cargo.toml": "3d1600279c1f26a092f214842b6ba23ea42492c0a201680dd7573f03ee9411ec",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/build.sh": "5ec27b3fad7fb14cecdbfd02c1e0f20f4293208f7d9db0dd4c9db3d51e6ec1c4",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/run.sh": "61532d48917f5a68a44d3523a6104ed4d51baf80cbb26be975152b572e2bfdfb",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/src/agent.rs": "323f045b172637d35946c63aa07b6deb0df68372c4af0090b4fe5928a2a90a05",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/src/main.rs": "5a1c650ebe93579e2135053c2ee97470e81684f82b6b2e622be6003c58c6b45f",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/agent": "19bf62fa30a39f6f0dcda9a30dafccb2d43a68f9fddbbd05c8a610dc1a96bc55",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/target/release/agent": "7c306015b8650f0b3b5baae7b0282fab4fd91957f0c8eecd15d43f449aa75531",
+    "LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/report.json": "e452692c7c4e7fcea277611ce3409e9121af62c5b42121999a624a6dfdef1898",
+    ".cache/runs/sentinel-v10/development/local-port-qualification/REPORT.md": "e0b8493cc3f30a5988c976d16c49b3fca4a3313e81caca1ad49a8c7c0f7dead5"
   },
   "runner_contract": {
     "source": "scripts/stdio_arena.py",
@@ -1238,7 +1410,7 @@
     ],
     "additional_local_control_gaps": {
       "expander": "JAX Expander samples jrandom.choice from normalized positive scores. Stdio Python/C++/Rust Expander use deterministic argmax with row-major/direction ties; on an unobstructed owned home3 with four equal capturable neighbors, the JAX weights are equal while the deterministic ports choose UP. No inference was run for this source-derived distinction; JAX results do not establish stdio Expander results.",
-      "ports": "The three stdio Expander ports implement matching source algorithms; empirical cross-port action parity is unmeasured here.",
+      "ports": "All three stdio Expander ports were subsequently built/probed unchanged: exact raw and validity-normalized parity on480 shared synthetic public snapshots across16shapes. This bounded observed parity does not prove universal action equivalence or strategic strength; qualification is recorded in local_expander_port_qualification.",
       "harvester": "Harvester reduces to Hunter only in the no-neutral-castles regime. Current competition starts with no neutral castles and neither scripted bot builds; this is conditional identity, not generic equivalence on all maps.",
       "remaining": [
         "Deterministic stdio Expander",
@@ -1251,5 +1423,801 @@
         "sha256": "4b7b21653bb78f50e8ae17e3df89da8d768d3dd8d6b21e137466478007078833"
       }
     }
+  },
+  "local_expander_port_qualification": {
+    "kind": "local-expander-cross-port-contract/1",
+    "complete": true,
+    "scope": "Offline untouched builds and matched public synthetic frames. No strategy matches, no engine simulation, no JAX inference.",
+    "source_commit": "c8d84456a1b0404f5b34863bc57289b5b5ddcbe3",
+    "source_manifest": {
+      "expander_cpp": {
+        "files": {
+          "competition/agents/expander_cpp/agent.hpp": {
+            "sha256": "3dd893007cb6311988417423b5a64f9aeda917b4c0ee6a7c4145209e8c820c7c",
+            "git_blob_sha1": "eae23707f07d95d2fc0741426a59cab57481da06",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/agent.hpp",
+            "mode": "0o664"
+          },
+          "competition/agents/expander_cpp/build.sh": {
+            "sha256": "e7b99601ad3acc82006a358ed793363ca1aa15d8d5c58b6b5e3a045a3fd48d96",
+            "git_blob_sha1": "c3e474bdd097b31aa1a19938fab9ec7b1c05fec3",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/build.sh",
+            "mode": "0o775"
+          },
+          "competition/agents/expander_cpp/main.cpp": {
+            "sha256": "742aaa209a31d3707c4ffca11627c5a33d177096d8df4127ddfb49067601e63e",
+            "git_blob_sha1": "52e9d395a2178e7b32ef3de18316437fe6305929",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/main.cpp",
+            "mode": "0o664"
+          },
+          "competition/agents/expander_cpp/run.sh": {
+            "sha256": "2a215b6a36a1bec6329946510cbb203104f8927b5b2cf37223f74ed18b35d4e1",
+            "git_blob_sha1": "7dd63636838cdde40e64d4be736d4cb4bde21a73",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/run.sh",
+            "mode": "0o775"
+          },
+          "LICENSE": {
+            "sha256": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/LICENSE"
+          }
+        },
+        "run_sh": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/run.sh",
+        "source_commit": "c8d84456a1b0404f5b34863bc57289b5b5ddcbe3"
+      },
+      "expander_python": {
+        "files": {
+          "competition/agents/expander_python/agent.py": {
+            "sha256": "4634a14128940e1eb0b7a6305f25b6ba709467e495aa6a3cb2dbec642a1dccf6",
+            "git_blob_sha1": "297cb8d5c9b6ecbcc9946682df9d6d56e5c99518",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/agent.py",
+            "mode": "0o664"
+          },
+          "competition/agents/expander_python/main.py": {
+            "sha256": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+            "git_blob_sha1": "97780ed90b85bdf122ba7a70a708283347b01f4b",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/main.py",
+            "mode": "0o664"
+          },
+          "competition/agents/expander_python/run.sh": {
+            "sha256": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+            "git_blob_sha1": "f6e45eb16083a66ee6f2bf3c7746bb3e7f6cd477",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/run.sh",
+            "mode": "0o775"
+          },
+          "LICENSE": {
+            "sha256": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/LICENSE"
+          }
+        },
+        "run_sh": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_python/run.sh",
+        "source_commit": "c8d84456a1b0404f5b34863bc57289b5b5ddcbe3"
+      },
+      "expander_rust": {
+        "files": {
+          "competition/agents/expander_rust/Cargo.toml": {
+            "sha256": "3d1600279c1f26a092f214842b6ba23ea42492c0a201680dd7573f03ee9411ec",
+            "git_blob_sha1": "965a83641981eff189ff7c3c1fb40cf4a42b74a0",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/Cargo.toml",
+            "mode": "0o664"
+          },
+          "competition/agents/expander_rust/build.sh": {
+            "sha256": "5ec27b3fad7fb14cecdbfd02c1e0f20f4293208f7d9db0dd4c9db3d51e6ec1c4",
+            "git_blob_sha1": "a190d448ad5f6d9cbdf90295fccc16016c29082d",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/build.sh",
+            "mode": "0o775"
+          },
+          "competition/agents/expander_rust/run.sh": {
+            "sha256": "61532d48917f5a68a44d3523a6104ed4d51baf80cbb26be975152b572e2bfdfb",
+            "git_blob_sha1": "4c153cae1dbf63c141d4f18cb599b2daf100501c",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/run.sh",
+            "mode": "0o775"
+          },
+          "competition/agents/expander_rust/src/agent.rs": {
+            "sha256": "323f045b172637d35946c63aa07b6deb0df68372c4af0090b4fe5928a2a90a05",
+            "git_blob_sha1": "4a69d7a47efb7ae47092b7b0a22501823f843d83",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/src/agent.rs",
+            "mode": "0o664"
+          },
+          "competition/agents/expander_rust/src/main.rs": {
+            "sha256": "5a1c650ebe93579e2135053c2ee97470e81684f82b6b2e622be6003c58c6b45f",
+            "git_blob_sha1": "589fe848d2f61cf4337465b6c129cf3e4cc3c55d",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/src/main.rs",
+            "mode": "0o664"
+          },
+          "LICENSE": {
+            "sha256": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+            "copied_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/LICENSE"
+          }
+        },
+        "run_sh": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/run.sh",
+        "source_commit": "c8d84456a1b0404f5b34863bc57289b5b5ddcbe3"
+      }
+    },
+    "summary": {
+      "expander_cpp": {
+        "shapes": 16,
+        "frames": 480,
+        "faults": 0,
+        "invalid": 0,
+        "malformed": 0,
+        "normal_EOF_exits": 16,
+        "first_min_s": 0.008634427009383217,
+        "first_max_s": 0.01005046398495324,
+        "warm_median_s": 0.00013966401456855237,
+        "warm_p95_s": 0.00018359519308432917,
+        "warm_max_s": 0.000250943994615227,
+        "rss_sampled_peak_bytes": 3342336
+      },
+      "expander_python": {
+        "shapes": 16,
+        "frames": 480,
+        "faults": 0,
+        "invalid": 0,
+        "malformed": 0,
+        "normal_EOF_exits": 16,
+        "first_min_s": 0.04280836501857266,
+        "first_max_s": 0.10036898701218888,
+        "warm_median_s": 0.0005540929996641353,
+        "warm_p95_s": 0.0019831669080303915,
+        "warm_max_s": 0.0033000099938362837,
+        "rss_sampled_peak_bytes": 15335424
+      },
+      "expander_rust": {
+        "shapes": 16,
+        "frames": 480,
+        "faults": 0,
+        "invalid": 0,
+        "malformed": 0,
+        "normal_EOF_exits": 16,
+        "first_min_s": 0.008186971012037247,
+        "first_max_s": 0.013433210988296196,
+        "warm_median_s": 6.845949974376708e-05,
+        "warm_p95_s": 0.00011136451794300228,
+        "warm_max_s": 0.00017837699851952493,
+        "rss_sampled_peak_bytes": 1769472
+      }
+    },
+    "pairwise_parity": [
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          18,
+          18
+        ],
+        "wire_sha256": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          18,
+          19
+        ],
+        "wire_sha256": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          18,
+          20
+        ],
+        "wire_sha256": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          18,
+          21
+        ],
+        "wire_sha256": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          19,
+          18
+        ],
+        "wire_sha256": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          19,
+          19
+        ],
+        "wire_sha256": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          19,
+          20
+        ],
+        "wire_sha256": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          19,
+          21
+        ],
+        "wire_sha256": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          20,
+          18
+        ],
+        "wire_sha256": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          20,
+          19
+        ],
+        "wire_sha256": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          20,
+          20
+        ],
+        "wire_sha256": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          20,
+          21
+        ],
+        "wire_sha256": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          21,
+          18
+        ],
+        "wire_sha256": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          21,
+          19
+        ],
+        "wire_sha256": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          21,
+          20
+        ],
+        "wire_sha256": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_python",
+        "shape": [
+          21,
+          21
+        ],
+        "wire_sha256": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          18
+        ],
+        "wire_sha256": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          19
+        ],
+        "wire_sha256": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          20
+        ],
+        "wire_sha256": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          21
+        ],
+        "wire_sha256": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          18
+        ],
+        "wire_sha256": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          19
+        ],
+        "wire_sha256": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          20
+        ],
+        "wire_sha256": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          21
+        ],
+        "wire_sha256": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          18
+        ],
+        "wire_sha256": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          19
+        ],
+        "wire_sha256": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          20
+        ],
+        "wire_sha256": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          21
+        ],
+        "wire_sha256": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          18
+        ],
+        "wire_sha256": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          19
+        ],
+        "wire_sha256": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          20
+        ],
+        "wire_sha256": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_cpp",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          21
+        ],
+        "wire_sha256": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          18
+        ],
+        "wire_sha256": "433296362f1df673e5d75401dbe57cea29c3da936faebf581ffc30d43bc43619",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          19
+        ],
+        "wire_sha256": "0184980e6585ccf4cda748e035d44c5202c3848a567211d81b819180d1bb2860",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          20
+        ],
+        "wire_sha256": "151bb94e92a98ddc5961e98ccf701618278c14e02971f0c8b97b24d2cdaf0174",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          18,
+          21
+        ],
+        "wire_sha256": "7aad12abb4b2051cf7f8673d2aef2841f9704150f8b2270cf77fa4e381214a86",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          18
+        ],
+        "wire_sha256": "0071d6bc290009f05aa4211a99f019f1a384c3a800bfcda15eec32c4f5af7ff6",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          19
+        ],
+        "wire_sha256": "727523421b229e8008131e58945c11c436eaa13d4c399725606b14acb8305377",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          20
+        ],
+        "wire_sha256": "1eacf7b380727204e6e6dba91e72f499cb2d854be584c41d2ce73452122a149a",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          19,
+          21
+        ],
+        "wire_sha256": "f23e0db119f944a5cd59a4832e3629d5bc06d12871e784858507537a99d180cd",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          18
+        ],
+        "wire_sha256": "a02f7e0d1273b2d132a8dd051ee956e5a2036dffdd1bd11030b426eceddba4f1",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          19
+        ],
+        "wire_sha256": "519bbc5c4d3810613bed8f7751e1acefd563aecbbfe5c079e6a34bccb3db2097",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          20
+        ],
+        "wire_sha256": "58273a28da614d14a847aa94fa473f6f63801c5a2bcfb65b62f2cd6171ccad89",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          20,
+          21
+        ],
+        "wire_sha256": "a586e2d9757c59eb0eb2c914b73e3f27d2d4f36810046085234b7345cf642501",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          18
+        ],
+        "wire_sha256": "3f8e180efa76cbbe870eb3cfe0081f3e897f6e90459f75666200db387fb660bc",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          19
+        ],
+        "wire_sha256": "c446294fd5ecb69b5fd428fb43a0515b86f16d8e37c9483aed613e686eb8a8ca",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          20
+        ],
+        "wire_sha256": "0e3b99d541b63c4658ce305969d076fa22aa11ec2d46cb6bf2bfe367e65ec3a0",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      },
+      {
+        "left": "expander_python",
+        "right": "expander_rust",
+        "shape": [
+          21,
+          21
+        ],
+        "wire_sha256": "33d05b5a5ca1e8ac098f77a204e56d2eb105e8f859db5bba2d268e5f1ad888f0",
+        "raw_equal": 30,
+        "applied_equal": 30,
+        "frames": 30
+      }
+    ],
+    "all_three_shared_observations": 480,
+    "all_three_raw_equal": 480,
+    "all_three_applied_equal": 480,
+    "pairwise_comparisons": 1440,
+    "applied_semantics": "Physical-validity normalized command (pass on invalid/fault). All observed commands valid and within deadline, hence applied equals raw; no transition-engine effects or outcomes tested.",
+    "builds": {
+      "expander_cpp": {
+        "available": true,
+        "seconds": 0.775705744017614,
+        "returncode": 0,
+        "binary": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_cpp/agent",
+        "binary_sha256": "19bf62fa30a39f6f0dcda9a30dafccb2d43a68f9fddbbd05c8a610dc1a96bc55",
+        "offline": true
+      },
+      "expander_rust": {
+        "available": true,
+        "seconds": 1.2314407249796204,
+        "returncode": 0,
+        "binary": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/local-port-qualification/source/expander_rust/target/release/agent",
+        "binary_sha256": "7c306015b8650f0b3b5baae7b0282fab4fd91957f0c8eecd15d43f449aa75531",
+        "offline": true
+      }
+    },
+    "runtime": {
+      "python": "Python 3.12.10",
+      "compiler": "g++ (Ubuntu 13.2.0-23ubuntu4) 13.2.0",
+      "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+      "cargo": "cargo 1.97.1 (c980f4866 2026-06-30)",
+      "host": "Linux-6.8.0-41-generic-x86_64-with-glibc2.39",
+      "cpu": 6,
+      "environment": {
+        "CARGO_NET_OFFLINE": "true",
+        "LD_LIBRARY_PATH": null,
+        "PYTHONPATH": null,
+        "thread_count": 1,
+        "policy_modes": "none"
+      },
+      "limits": {
+        "first_seconds": 10,
+        "later_seconds": 0.15,
+        "address_space_bytes": 2147483648
+      }
+    },
+    "security_review": {
+      "builds": "Original C++ g++ -O2 -std=c++17 and Rust cargo build --release scripts read local sources/write local binaries. Rust Cargo.toml has no dependencies/build.rs. CARGO_NET_OFFLINE=true; no package installation or network build occurred. Python has no build step.",
+      "runtime": "Entire three policies and all protocol entrypoints reviewed; standard library only, stdin/stdout, EOF exit, no network/filesystem mutation/environment policy options/dynamic execution. Shell run.sh execs relative originalbinary/Python; launcher bash and cwd=source directory.",
+      "source_unchanged": true,
+      "license": "Original root MIT license copied byte-identically into each cache-only source directory.",
+      "existing_outputs": "Only git-tracked source files copied. Pre-existing repository binaries/target/pycache were excluded and never modified."
+    },
+    "limits": [
+      "Only480 shared synthetic snapshots across16shapes, not action-consistent histories or whole games. Exact observed parity is not all-input equivalence proof.",
+      "No build/capture/strategy strength or worst-case runtime/memory guarantee. These Expander policies only issue full moves/pass, never build/half.",
+      "C++13.2 host versus official12.2 compiler and host Rust1.97.1 not exact official image qualification; Python3.12.10 matches pinned interpreter.",
+      "Shared host; sampled RSS and2GiB address-space ceiling are not continuous official container memory instrumentation.",
+      "Distinct from stochastic JAX Expander; existing JAX matchup scores do not establish deterministic stdio strength. No optional JAX witness inference performed."
+    ],
+    "terminal_proof": {
+      "session_id": 67922,
+      "exit_code": 0,
+      "driver_final_line": "ALL_COMPLETE"
+    },
+    "report_path": ".cache/runs/sentinel-v10/development/local-port-qualification/report.json",
+    "report_sha256": "e452692c7c4e7fcea277611ce3409e9121af62c5b42121999a624a6dfdef1898"
   }
 }
