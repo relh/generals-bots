@@ -128,19 +128,28 @@ def test_rejects_changed_or_missing_local_identity(tmp_path, field):
         compare(a, b)
 
 
-@pytest.mark.parametrize("dependency", ["sentinel_agent.py", "sentinel_v3_agent.py"])
-def test_v5_opponent_requires_frozen_scoring_dependencies(tmp_path, dependency):
+@pytest.mark.parametrize(
+    "version,dependency",
+    [
+        (5, "sentinel_agent.py"),
+        (5, "sentinel_v3_agent.py"),
+        (6, "sentinel_agent.py"),
+        (6, "sentinel_v3_agent.py"),
+        (6, "sentinel_v5_agent.py"),
+    ],
+)
+def test_opponent_requires_frozen_scoring_dependencies(tmp_path, version, dependency):
     a, b = tmp_path / "a", tmp_path / "b"
     for path in (a, b):
         write_run(path, "win", local=True)
         metadata_path = path / "metadata.json"
         metadata = json.loads(metadata_path.read_text())
-        metadata["opponents"] = ["sentinel-v5-disabled"]
-        for name in ("sentinel_agent.py", "sentinel_v3_agent.py", "sentinel_v5_agent.py"):
+        metadata["opponents"] = [f"sentinel-v{version}-disabled"]
+        for name in ("sentinel_agent.py", "sentinel_v3_agent.py", "sentinel_v5_agent.py", "sentinel_v6_agent.py"):
             metadata["source_hashes"][f"generals/agents/{name}"] = "fixture-sha"
         metadata_path.write_text(json.dumps(metadata))
         csv_path = path / "games.csv"
-        csv_path.write_text(csv_path.read_text().replace("hunter", "sentinel-v5-disabled"))
+        csv_path.write_text(csv_path.read_text().replace("hunter", f"sentinel-v{version}-disabled"))
     assert compare(a, b, resamples=10)["matchups"]
     path = b / "metadata.json"
     metadata = json.loads(path.read_text())

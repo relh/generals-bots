@@ -13,6 +13,15 @@ small Juraj V3.5 sample but regresses on Amin; it is not promoted. Its complete
 episode diagnostics identify repeated defensive relocation and lost construction
 windows as targets for the next experiment. The default remains frozen v2.
 
+The [v6 commitment experiment](v6-development.md) reduces defensive backtracking
+and raises the small Amin development score from 43.75% to 46.875%, with no
+measured gain against Juraj V3.5. It is not promoted. Use `--candidate sentinel-v6`
+for local evaluation or `--variant v6` for a standalone archive;
+`sentinel-v6-disabled` / `v6-disabled` reproduce V5. Its stateful memory is carried
+through local, replay, reference and stdio execution. The actual prebuilt cache
+passed all 16 shapes; uncached startup exceeded the limit. Persistent offensive
+concentration and search remain the next measured strategy hypotheses.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

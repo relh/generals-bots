@@ -146,6 +146,15 @@ def candidate(name, rules):
             max_turns=rules.max_turns,
             intercept_threats=name == "sentinel-v5",
         )
+    elif name in ("sentinel-v6", "sentinel-v6-disabled"):
+        from generals.agents.sentinel_v6_agent import SentinelV6Agent
+
+        return SentinelV6Agent(
+            build_castles=rules.build_castles,
+            deathtouch_turn=rules.deathtouch_turn,
+            max_turns=rules.max_turns,
+            commit_defense=name == "sentinel-v6",
+        )
     else:
         raise ValueError(f"Unknown strategy candidate: {name}")
     return cls(build_castles=rules.build_castles, deathtouch_turn=rules.deathtouch_turn, max_turns=rules.max_turns)
@@ -298,7 +307,16 @@ def main():
     parser.add_argument("--external-archive", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
-        "--candidate", choices=["sentinel", "sentinel-v4", "sentinel-v5", "sentinel-v5-disabled"], default="sentinel"
+        "--candidate",
+        choices=[
+            "sentinel",
+            "sentinel-v4",
+            "sentinel-v5",
+            "sentinel-v5-disabled",
+            "sentinel-v6",
+            "sentinel-v6-disabled",
+        ],
+        default="sentinel",
     )
     parser.add_argument("--boards", type=int, default=8)
     parser.add_argument("--seed", type=int, default=83000)

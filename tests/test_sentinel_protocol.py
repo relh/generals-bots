@@ -85,3 +85,28 @@ def test_stdio_carries_memory_between_frames_and_resets_on_new_handshake(monkeyp
         monkeypatch.setattr(adapter.sys, "stdin", io.StringIO("0 3 4\n" + frame + frame))
         adapter.main()
         assert capsys.readouterr().out.splitlines() == ["1 0 0 0 0", "1 1 0 0 0"]
+
+
+def test_v6_factories_preserve_stateful_interface_and_rule_options(monkeypatch):
+    from pathlib import Path
+
+    from generals.evaluation.arena import Rules
+    from generals.evaluation.cli import agent as make_arena_agent
+    from generals.evaluation.replay import make_policy
+    from scripts.strategy_arena import candidate
+
+    rules = Rules(1200, True, 800)
+    monkeypatch.setenv("SENTINEL_MODE", "competition")
+    source = Path(__file__).resolve().parents[1] / "generals/agents/sentinel_v6_agent.py"
+    for variant, enabled in (("v6", True), ("v6-disabled", False)):
+        monkeypatch.setenv("SENTINEL_VARIANT", variant)
+        alias = "sentinel-" + variant
+        snapshot, decision = make_policy(alias, rules, source=source)
+        assert decision is None
+        policies = (make_agent(), make_arena_agent(alias, rules), candidate(alias, rules), snapshot)
+        for policy in policies:
+            assert policy.commit_defense is enabled
+            assert (policy.max_turns, policy.build_castles, policy.deathtouch_turn) == (1200, True, 800)
+            assert callable(policy.step)
+            memory = policy.initial_memory((18, 21))
+            assert int(memory.defender) == -1 and int(memory.last_turn) == -1

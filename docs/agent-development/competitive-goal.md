@@ -2,8 +2,9 @@
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The completed v3 experiment was a rejected candidate, not completion of the
-competitive objective. V2 remains the default control.
+The v3 through v6 experiments have not established competitive superiority.
+V2 remains the default control; [v6 evidence](v6-development.md) records a small
+Amin gain over v5 while significant external strength gaps remain.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
@@ -13,11 +14,14 @@ opponent. Preserve the existing local strength gates and validate deployment
 under the actual runtime limits. Report untested or unavailable policies instead
 of extending a measured result to all public entrants.
 
-The next candidate, v4, starts from frozen v2. Its first hypothesis is narrow:
-avoid building a castle that a visible enemy can capture within two steps after
-construction consumes its defenders. Retain the unchanged scored move/pass
-fallback and compare a one-step building-safety ablation with the two-step
-candidate. Do not restore v3's stale-threat memory without independent evidence.
+The next primary hypothesis is persistent offensive concentration toward a useful
+destination. Complete losing games show substantial total resources split across
+small field stacks. Build a bounded plan from actual owned donors, verify its
+progress and preserve credible home defense. Measure search persistence and
+retention of a publicly revealed stationary general as separate ablations; most
+observed losses never discovered the enemy general at all. The
+[v6 complete-episode evidence](v6-development.md) motivates this direction.
+Greater stack size, fewer reversals or more buildings alone are not success.
 
 Previously consumed seeds, including 83000, 93000 and 113000, may support
 explicitly labeled development experiments. They are never fresh holdouts again.

@@ -84,7 +84,7 @@ def test_three_step_owned_collection_matches_actual_transfers_without_counting_s
     # The target's pre-existing seven already contribute stationary attrition.
     assert telemetry["intercept_new_defense"] == 14
     assert telemetry["intercept_arrival_army"] == 21
-    grid = jnp.where(obs.mountains, -1, 0).at[6, 3].set(1).at[0, 3].set(2)
+    grid = jnp.where(obs.mountains, -2, 0).at[6, 3].set(1).at[0, 3].set(2)
     state = game.create_initial_state(grid)._replace(
         armies=obs.armies,
         ownership=jnp.stack((obs.owned_cells, obs.opponent_cells)),
