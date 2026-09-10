@@ -1,8 +1,14 @@
 # Competitive objective
 
+The [playing doctrine](playing-doctrine.md) is the owner's strategic direction:
+castle acquisition appropriate to the rules, compact growth around land ticks,
+contact-dependent FFA play and a concealed 1v1 approach. Construction remains in
+scope for competition mode. Evaluate modes explicitly; construction/deathtouch
+1v1 results do not establish classic or FFA performance.
+
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v13 experiments have not established competitive superiority.
+The v3 through v14 experiments have not established competitive superiority.
 V2 remains the default control. The [v9 remembered-general experiment](v9-development.md)
 improves Amin, Hunter and original my_bot9 over V8, but still fails preservation
 against stronger V6 controls and scores only 18.75% against Juraj V3.5.
@@ -31,10 +37,16 @@ It remains experimental; the full goal remains active.
 
 The [V13 collection-only comparison](v13-development.md) preserves ready direct
 deployments but still turns the selected Amin wins into losses and fails to beat
-Juraj. Its earlier my_bot9 wins do not compensate for those gaps. The next
-discriminating comparison should isolate remembered-general pursuit over the
-stronger V6 campaign without the later concentration layer; existing V10-v6
-removes both concentration and pursuit together. That candidate is untested.
+Juraj. Its earlier my_bot9 wins do not compensate for those gaps.
+
+The [V14 preflight and eighteen-game comparison](v14-development.md) first rule
+out pursuit-only composition as a preservation candidate: V6 loses the selected
+Amin position without ever seeing an enemy general. V14 instead tests service
+between collections and campaign moves, with both V10 and V10-v6 controls. Its
+ledger is correct, but it still loses Amin and Juraj. Next work must distinguish
+actual frontier/economic progress from generic serviced transfers and preserve
+useful concentration. Explicit expansion selection and productive packet
+completion remain hypotheses, not established improvements.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use

@@ -1,5 +1,9 @@
 # Sentinel strategic agent
 
+The [playing doctrine](playing-doctrine.md) defines how our bot should play and
+guides new work. This page describes the older frozen V2 implementation, including
+construction behavior used only when that competition modifier is enabled.
+
 Sentinel v2 is the fork's deterministic strategic reference agent. It is separate
 from the learned PPO policy: its wins demonstrate the scripted strategy's
 strength, not a training gain. Its source is frozen before held-out evaluation.

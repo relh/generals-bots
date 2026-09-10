@@ -19,6 +19,13 @@ resumable checkpoints. The [development runbook](docs/agent-development/README.m
 covers running the bot, training, paired evaluation, profiling, and measured
 results. Local baseline results do not establish an external leaderboard rank.
 
+**How our bot should play:** the [Sentinel playing doctrine](docs/agent-development/playing-doctrine.md)
+is the central strategy guide: acquire castles according to the game mode,
+grow compact local territory
+before land ticks, gather and attack after one FFA contact, avoid a dangerous
+second front, and establish a concealed approach in 1v1. It states intended
+behavior; the current bot has not yet demonstrated superiority over all opponents.
+
 **Highlights:**
 * ⚡ **10M+ steps/second** — fully JIT-compiled JAX simulator with vectorized `vmap` for massive parallelism
 * 🎯 **Pure functional design** — immutable state, reproducible trajectories

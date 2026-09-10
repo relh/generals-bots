@@ -2,6 +2,12 @@
 
 Our fork: https://github.com/relh/generals-bots/tree/main.
 
+Start with our [playing doctrine](playing-doctrine.md): the owner's direction for
+castle capture or construction according to the rules, tick-aware local growth,
+contact-dependent FFA strategy, and a purposeful but concealed 1v1 approach.
+It is the strategy contract for new work. Construction/deathtouch experiments
+below use the competition variant and do not establish classic or FFA strength.
+
 Our [competitive objective](competitive-goal.md) is to beat every available
 distinct opponent. **That goal is not achieved.** See the [opponent coverage
 census](opponent-coverage.md), [v4 development evidence](v4-development.md), and
@@ -84,6 +90,11 @@ The [V13 collection-only comparison](v13-development.md) preserves ready direct
 attacks but still regresses Amin and loses to Juraj. Its eight tests and runtime
 checks pass; the twelve full games reject the strategy hypothesis. Earlier
 packet allocation remains unresolved, and V13 is not promoted.
+
+The [V14 service-ledger comparison](v14-development.md) adds a persistent action
+budget and live V6-based controls. All eighteen games and ledger checks complete,
+but Amin and Juraj remain losses. Serviced transfers do not establish frontier
+progress or economic advantage; V14 remains experimental.
 
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
