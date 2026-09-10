@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install engine, training, and test dependencies
-        run: |
-          pip install -e '.[dev,train]'
+      - name: Install engine, training, Softmax, and test dependencies
+        run: pip install -e '.[dev,train,softmax]'
+      - run: python -m integrations.softmax.tools.manifest --check
       - run: pytest -q
