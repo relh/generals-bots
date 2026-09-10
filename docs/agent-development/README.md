@@ -74,6 +74,12 @@ loss, and my_bot9 wins are preserved. Warm throughput and focused correctness
 checks pass, but the strategy gate fails. The [preregistered plan](v11-plan.md)
 keeps this prototype separate from deployment and broader strength claims.
 
+The [V12 public-route guard](v12-development.md) also fails its twelve-game
+screen: independent checks confirm every replacement preserves the static route
+deficits, yet Amin wins become losses and Juraj remains a loss. Thirteen focused
+tests and matched warm-runtime checks pass; no promotion follows. This separates
+a valid local certificate from a useful complete-game strategy.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
