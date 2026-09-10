@@ -2,7 +2,7 @@
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v12 experiments have not established competitive superiority.
+The v3 through v13 experiments have not established competitive superiority.
 V2 remains the default control. The [v9 remembered-general experiment](v9-development.md)
 improves Amin, Hunter and original my_bot9 over V8, but still fails preservation
 against stronger V6 controls and scores only 18.75% against Juraj V3.5.
@@ -28,6 +28,13 @@ The [V12 route-guard comparison](v12-development.md) confirms that preserving
 static defensive deficits is also insufficient: its replacements pass an
 independent certificate check but regress Amin and do not change the Juraj losses.
 It remains experimental; the full goal remains active.
+
+The [V13 collection-only comparison](v13-development.md) preserves ready direct
+deployments but still turns the selected Amin wins into losses and fails to beat
+Juraj. Its earlier my_bot9 wins do not compensate for those gaps. The next
+discriminating comparison should isolate remembered-general pursuit over the
+stronger V6 campaign without the later concentration layer; existing V10-v6
+removes both concentration and pursuit together. That candidate is untested.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use

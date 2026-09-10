@@ -80,6 +80,11 @@ deficits, yet Amin wins become losses and Juraj remains a loss. Thirteen focused
 tests and matched warm-runtime checks pass; no promotion follows. This separates
 a valid local certificate from a useful complete-game strategy.
 
+The [V13 collection-only comparison](v13-development.md) preserves ready direct
+attacks but still regresses Amin and loses to Juraj. Its eight tests and runtime
+checks pass; the twelve full games reject the strategy hypothesis. Earlier
+packet allocation remains unresolved, and V13 is not promoted.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
