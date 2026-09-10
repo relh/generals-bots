@@ -8,7 +8,7 @@ scope for competition mode. Evaluate modes explicitly; construction/deathtouch
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v14 experiments have not established competitive superiority.
+The v3 through v15 experiments have not established competitive superiority.
 V2 remains the default control. The [v9 remembered-general experiment](v9-development.md)
 improves Amin, Hunter and original my_bot9 over V8, but still fails preservation
 against stronger V6 controls and scores only 18.75% against Juraj V3.5.
@@ -47,6 +47,13 @@ ledger is correct, but it still loses Amin and Juraj. Next work must distinguish
 actual frontier/economic progress from generic serviced transfers and preserve
 useful concentration. Explicit expansion selection and productive packet
 completion remain hypotheses, not established improvements.
+
+The [V15 complete opening screen](v15-development.md) rejects both precontact
+expansion modes: each loses all six selected games despite retained tile income.
+Additional territory and aggregate armies do not ensure that force reaches home
+or a useful attack route. Next work must follow complete packet progress,
+capital-search/disclosure and defensive releases during temporary threat fog.
+The user's full FFA/1v1 doctrine remains only partially implemented and unproven.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
