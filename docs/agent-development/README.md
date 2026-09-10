@@ -68,6 +68,12 @@ The [expanded public-opponent census](v10-opponent-coverage.md) identifies and
 checks additional implementations beyond those six opponents; synthetic protocol
 checks do not establish their playing strength.
 
+The [V11 immediate-capture screen](v11-development.md) completes twelve fixed
+games and rejects the candidate: Amin wins regress to losses, Juraj remains a
+loss, and my_bot9 wins are preserved. Warm throughput and focused correctness
+checks pass, but the strategy gate fails. The [preregistered plan](v11-plan.md)
+keeps this prototype separate from deployment and broader strength claims.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

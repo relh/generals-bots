@@ -2,7 +2,7 @@
 
 The goal is to develop our own agent that beats every available distinct opponent,
 not merely to complete an audit or training run. This goal is **not achieved**.
-The v3 through v10 experiments have not established competitive superiority.
+The v3 through v11 experiments have not established competitive superiority.
 V2 remains the default control. The [v9 remembered-general experiment](v9-development.md)
 improves Amin, Hunter and original my_bot9 over V8, but still fails preservation
 against stronger V6 controls and scores only 18.75% against Juraj V3.5.
@@ -18,6 +18,11 @@ fails stronger-control preservation. Default V10 scores 25% against Juraj V3.5
 (two wins, ten losses, four draws), while V6 scores 37.5%. V10 over V6 matches
 V6's aggregate scores without improving them. Neither candidate establishes
 the required winning advantage against every opponent; both remain experimental.
+
+The [V11 selected comparison](v11-development.md) also fails: immediate enemy
+capture arbitration preserves the selected my_bot9 wins but regresses both Amin
+wins and still loses to Juraj V3.5. A local action-cost improvement or longer
+survival does not meet the competitive objective. V11 is not promoted.
 
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use

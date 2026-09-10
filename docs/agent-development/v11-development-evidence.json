@@ -1,0 +1,2335 @@
+{
+  "status": "selected_screen_rejected",
+  "competitive_goal_achieved": false,
+  "promoted": false,
+  "default": "sentinel-v2",
+  "candidate_commit": "7105a06db600c7df94e09561068f1c721af306c4",
+  "rules": {
+    "max_turns": 1200,
+    "build_castles": true,
+    "deathtouch_turn": 800
+  },
+  "consumed_seed": 83000,
+  "untouched_reserve_seed": 143000,
+  "physical_placements": 3,
+  "games": 12,
+  "candidate_decisions_recorded": 8886,
+  "selected": {
+    "complete": true,
+    "scope": "Twelve fixed games on three consumed mirrored placements; no independent strength claim.",
+    "rows": [
+      {
+        "opponent": "amin",
+        "variant": "v10",
+        "game_id": 1,
+        "seat": 1,
+        "result": "win",
+        "turns": 1033,
+        "control_exact": true,
+        "candidate_invalid": 0,
+        "opponent_invalid": 58,
+        "malformed": 0
+      },
+      {
+        "opponent": "amin",
+        "variant": "v10",
+        "game_id": 2,
+        "seat": 0,
+        "result": "win",
+        "turns": 1033,
+        "control_exact": true,
+        "candidate_invalid": 0,
+        "opponent_invalid": 58,
+        "malformed": 0
+      },
+      {
+        "opponent": "amin",
+        "variant": "v11",
+        "game_id": 1,
+        "seat": 1,
+        "result": "loss",
+        "turns": 554,
+        "control_exact": false,
+        "candidate_invalid": 0,
+        "opponent_invalid": 11,
+        "malformed": 0
+      },
+      {
+        "opponent": "amin",
+        "variant": "v11",
+        "game_id": 2,
+        "seat": 0,
+        "result": "loss",
+        "turns": 554,
+        "control_exact": false,
+        "candidate_invalid": 0,
+        "opponent_invalid": 11,
+        "malformed": 0
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v10",
+        "game_id": 12,
+        "seat": 0,
+        "result": "loss",
+        "turns": 422,
+        "control_exact": true,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v10",
+        "game_id": 15,
+        "seat": 1,
+        "result": "loss",
+        "turns": 422,
+        "control_exact": true,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v10",
+        "game_id": 4,
+        "seat": 0,
+        "result": "win",
+        "turns": 1076,
+        "control_exact": true,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v10",
+        "game_id": 7,
+        "seat": 1,
+        "result": "win",
+        "turns": 1076,
+        "control_exact": true,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v11",
+        "game_id": 12,
+        "seat": 0,
+        "result": "loss",
+        "turns": 887,
+        "control_exact": false,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v11",
+        "game_id": 15,
+        "seat": 1,
+        "result": "loss",
+        "turns": 887,
+        "control_exact": false,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v11",
+        "game_id": 4,
+        "seat": 0,
+        "result": "win",
+        "turns": 471,
+        "control_exact": false,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v11",
+        "game_id": 7,
+        "seat": 1,
+        "result": "win",
+        "turns": 471,
+        "control_exact": false,
+        "candidate_invalid": 0,
+        "opponent_invalid": 0,
+        "malformed": 0
+      }
+    ],
+    "pairs": [
+      {
+        "opponent": "amin",
+        "game_id": 1,
+        "first_candidate_action_difference": 163,
+        "first_opponent_action_difference": 173,
+        "first_public_observation_difference": 164,
+        "overrides": [
+          {
+            "turn": 163,
+            "action": [
+              0,
+              9,
+              9,
+              0,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 164,
+            "action": [
+              0,
+              8,
+              9,
+              0,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 285,
+            "action": [
+              0,
+              8,
+              9,
+              0,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 1,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 286,
+            "action": [
+              0,
+              7,
+              9,
+              0,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 1,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 297,
+            "action": [
+              0,
+              13,
+              9,
+              0,
+              0
+            ],
+            "eta": 6.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 327,
+            "action": [
+              0,
+              9,
+              8,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 328,
+            "action": [
+              0,
+              9,
+              7,
+              1,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 329,
+            "action": [
+              0,
+              10,
+              7,
+              1,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 331,
+            "action": [
+              0,
+              11,
+              7,
+              1,
+              0
+            ],
+            "eta": 8.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 402,
+            "action": [
+              0,
+              10,
+              16,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 403,
+            "action": [
+              0,
+              10,
+              15,
+              2,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 404,
+            "action": [
+              0,
+              10,
+              14,
+              2,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 405,
+            "action": [
+              0,
+              10,
+              13,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 406,
+            "action": [
+              0,
+              10,
+              12,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 407,
+            "action": [
+              0,
+              10,
+              11,
+              0,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 408,
+            "action": [
+              0,
+              9,
+              11,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          }
+        ],
+        "results": {
+          "v10": "win",
+          "v11": "loss"
+        }
+      },
+      {
+        "opponent": "amin",
+        "game_id": 2,
+        "first_candidate_action_difference": 163,
+        "first_opponent_action_difference": 173,
+        "first_public_observation_difference": 164,
+        "overrides": [
+          {
+            "turn": 163,
+            "action": [
+              0,
+              9,
+              9,
+              0,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 164,
+            "action": [
+              0,
+              8,
+              9,
+              0,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 285,
+            "action": [
+              0,
+              8,
+              9,
+              0,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 1,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 286,
+            "action": [
+              0,
+              7,
+              9,
+              0,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 1,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 297,
+            "action": [
+              0,
+              13,
+              9,
+              0,
+              0
+            ],
+            "eta": 6.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 327,
+            "action": [
+              0,
+              9,
+              8,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 328,
+            "action": [
+              0,
+              9,
+              7,
+              1,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 329,
+            "action": [
+              0,
+              10,
+              7,
+              1,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 331,
+            "action": [
+              0,
+              11,
+              7,
+              1,
+              0
+            ],
+            "eta": 8.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 402,
+            "action": [
+              0,
+              10,
+              16,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 403,
+            "action": [
+              0,
+              10,
+              15,
+              2,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 404,
+            "action": [
+              0,
+              10,
+              14,
+              2,
+              0
+            ],
+            "eta": 4.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 405,
+            "action": [
+              0,
+              10,
+              13,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 406,
+            "action": [
+              0,
+              10,
+              12,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 407,
+            "action": [
+              0,
+              10,
+              11,
+              0,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 408,
+            "action": [
+              0,
+              9,
+              11,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          }
+        ],
+        "results": {
+          "v10": "win",
+          "v11": "loss"
+        }
+      },
+      {
+        "opponent": "juraj-v35",
+        "game_id": 12,
+        "first_candidate_action_difference": 129,
+        "first_opponent_action_difference": 130,
+        "first_public_observation_difference": 130,
+        "overrides": [
+          {
+            "turn": 129,
+            "action": [
+              0,
+              8,
+              8,
+              0,
+              0
+            ],
+            "eta": 8.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 164,
+            "action": [
+              0,
+              11,
+              9,
+              1,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 178,
+            "action": [
+              0,
+              5,
+              13,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 214,
+            "action": [
+              0,
+              10,
+              8,
+              1,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 215,
+            "action": [
+              0,
+              7,
+              13,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 218,
+            "action": [
+              0,
+              11,
+              7,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 240,
+            "action": [
+              0,
+              4,
+              12,
+              0,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 510,
+            "action": [
+              0,
+              6,
+              10,
+              2,
+              0
+            ],
+            "eta": 6.0,
+            "target_defenders": 4,
+            "immediate_defenders": 11
+          }
+        ],
+        "results": {
+          "v10": "loss",
+          "v11": "loss"
+        }
+      },
+      {
+        "opponent": "juraj-v35",
+        "game_id": 15,
+        "first_candidate_action_difference": 129,
+        "first_opponent_action_difference": 130,
+        "first_public_observation_difference": 130,
+        "overrides": [
+          {
+            "turn": 129,
+            "action": [
+              0,
+              8,
+              8,
+              0,
+              0
+            ],
+            "eta": 8.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 164,
+            "action": [
+              0,
+              11,
+              9,
+              1,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 178,
+            "action": [
+              0,
+              5,
+              13,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 214,
+            "action": [
+              0,
+              10,
+              8,
+              1,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 215,
+            "action": [
+              0,
+              7,
+              13,
+              2,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 218,
+            "action": [
+              0,
+              11,
+              7,
+              2,
+              0
+            ],
+            "eta": 5.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 240,
+            "action": [
+              0,
+              4,
+              12,
+              0,
+              0
+            ],
+            "eta": 3.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 510,
+            "action": [
+              0,
+              6,
+              10,
+              2,
+              0
+            ],
+            "eta": 6.0,
+            "target_defenders": 4,
+            "immediate_defenders": 11
+          }
+        ],
+        "results": {
+          "v10": "loss",
+          "v11": "loss"
+        }
+      },
+      {
+        "opponent": "my-bot9",
+        "game_id": 4,
+        "first_candidate_action_difference": 80,
+        "first_opponent_action_difference": 85,
+        "first_public_observation_difference": 81,
+        "overrides": [
+          {
+            "turn": 80,
+            "action": [
+              0,
+              2,
+              7,
+              0,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 125,
+            "action": [
+              0,
+              3,
+              7,
+              0,
+              0
+            ],
+            "eta": 6.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 145,
+            "action": [
+              0,
+              1,
+              7,
+              0,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 305,
+            "action": [
+              0,
+              7,
+              9,
+              0,
+              0
+            ],
+            "eta": 7.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 330,
+            "action": [
+              0,
+              9,
+              12,
+              0,
+              0
+            ],
+            "eta": 7.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          }
+        ],
+        "results": {
+          "v10": "win",
+          "v11": "win"
+        }
+      },
+      {
+        "opponent": "my-bot9",
+        "game_id": 7,
+        "first_candidate_action_difference": 80,
+        "first_opponent_action_difference": 85,
+        "first_public_observation_difference": 81,
+        "overrides": [
+          {
+            "turn": 80,
+            "action": [
+              0,
+              2,
+              7,
+              0,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 125,
+            "action": [
+              0,
+              3,
+              7,
+              0,
+              0
+            ],
+            "eta": 6.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 145,
+            "action": [
+              0,
+              1,
+              7,
+              0,
+              0
+            ],
+            "eta": 2.0,
+            "target_defenders": 1,
+            "immediate_defenders": 1
+          },
+          {
+            "turn": 305,
+            "action": [
+              0,
+              7,
+              9,
+              0,
+              0
+            ],
+            "eta": 7.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          },
+          {
+            "turn": 330,
+            "action": [
+              0,
+              9,
+              12,
+              0,
+              0
+            ],
+            "eta": 7.0,
+            "target_defenders": 2,
+            "immediate_defenders": 2
+          }
+        ],
+        "results": {
+          "v10": "win",
+          "v11": "win"
+        }
+      }
+    ],
+    "all_candidate_actions_valid": true,
+    "original_opponent_invalid_retained": 138,
+    "six_exact_controls": true,
+    "original_candidate_memory_continuity": true,
+    "input_sha256": {
+      ".cache/runs/sentinel-v11/amin-selected/results/report.json": "5080304bece53cdf1c19f8fa8fcf319c4f004a0e2e7d19637101644e9b7ba698",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/report.json": "daac8dfa09e84498a8555a7b21ad064f1caf62765180f23a8db36a309bc644a4",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0001.json": "7bed4586d7b813345a4593d4918bc7b62cda34212a102da11b1b9341f1be9fea",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0001-policy.jsonl": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0002.json": "d130b5d75181b5e7b244af6cbf346c66c6c27aad8fef8a4d3527c8aae9e18b45",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0002-policy.jsonl": "7c97bf8b22bf8833ef9f53765fddd563f6e33f2496085d6d81e7c1dbc175106a",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0001.json": "a6fb41d09e4bf8e4aebb3c9913c6e1dc522c970e501e0e1505a92996f5821f8d",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0001-policy.jsonl": "d1e7f2406a7010e4ac698da0a57e49ff80ec89e91165b43d488a30ef3876d832",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0002.json": "80cf60c7526642525a67e9c884e725880f763f3926faf4947a2e2bdaa5febf3b",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0002-policy.jsonl": "5db936cc47308c4a1c39422f34726caf473dda8f13e72e86a65f54814be46834",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0012-frames.jsonl": "4c60abe2a5d871408f661fa13e53c867c5e5b16766e2d5801f6b3efaa719515a",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0015-frames.jsonl": "d83de9cf6ba67139a283197dddf442f927ba65ae1fc7c0c86b3e39e1ed7fa57f",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0004-frames.jsonl": "82e87715afa8e4ce62c3765a347b5409afb6d43676c55014425edda00ceb2cd3",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0007-frames.jsonl": "1158e04f5c8b87898d13265a20f25203d9207b382fcec71ee293b5f71da91737",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0012-frames.jsonl": "5bfa2bc538385f000657e29f30b656efdb13ad3451b41092ff890180fed8d00b",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0015-frames.jsonl": "c9d7d2830d1f86d4c8ae7377034d864dd2a29bce35cc43f764e14af1ae98e326",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0004-frames.jsonl": "621fdca041e1421a6f593d23ff18516036514cb246969424e04ebf1d859f5d0f",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0007-frames.jsonl": "da906ef19197e9fde4e34b4080a08db9a3786f05b1cfb24300492f16d401f17d",
+      ".cache/runs/sentinel-v11/amin-selected/source-freeze.json": "aa35b9f77e1ad0c99e777914a50aa48a0246ed15377ca81668e0c9562f526462",
+      "competition/agents/sentinel_python/main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+      "competition/agents/sentinel_python/warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790",
+      "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+      "generals/agents/__init__.py": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190",
+      "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+      "generals/agents/expander_agent.py": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75",
+      "generals/agents/harvester_agent.py": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d",
+      "generals/agents/hunter_agent.py": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8",
+      "generals/agents/random_agent.py": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e",
+      "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+      "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+      "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+      "generals/agents/sentinel_v4_agent.py": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744",
+      "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+      "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+      "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+      "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+      "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+      "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+      "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+      "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+      "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+      "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+      "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+      "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+      "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+      "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+      "generals/evaluation/__init__.py": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09",
+      "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+      "generals/evaluation/cli.py": "497d3fdcfb57df1ddb008f1a4d688f3ca59126c1397ebdfb170342204886a577",
+      "generals/evaluation/replay.py": "0bae47b6592fc6333ebc6db9375d1c5f33489759433418453eb0f57b6444176d",
+      "generals/evaluation/report.py": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f",
+      "generals/evaluation/scenarios.py": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd",
+      "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+      "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+      "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+      "scripts/build_sentinel_bundle.py": "8818d4ca48fbf90f1ab18bb944acd067dce1a8f6b9a9b30996258c1a70290765",
+      "scripts/compare_agent_runs.py": "cd0781b71668c72a47f2f1800d8c9c71009a58d9c77821e06f25539a878d0b52",
+      "scripts/probe_sentinel_bundle.py": "ff0d60c9ebde2b07087f8c9ca7e4be57c7a7ea3c888684510296dd1173db7910",
+      "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+      "scripts/strategy_arena.py": "330144c0965f445cfe10071410ac1c231a4a3ca5d615ebaae2badb2ce63e8cc6",
+      "generals/agents/sentinel_v11_agent.py": "0806fb408d4ad2639f9187fb5b979bdeb79793fb6fd8201d3319901fb7c46503",
+      ".cache/runs/sentinel-v11/amin-selected/run.py": "4ba47f1e445266800a3d2a590fd360f33e0aa791fe9e276d2425e74e09894971",
+      "docs/agent-development/v11-plan.md": "7f1849c76eb686217b712666db61b49752d36a13daa7aeec7465dd3b3fbd2af4",
+      "tests/test_sentinel_v11_agent.py": "aad40eeed07eeb6b881c11b4e7a46b69aac32c7f8c088f0672333408ed4dbb15",
+      "tests/fixtures/capture-priority-amin-129.json": "4888dab34aaea590e111d8f37b44f4a3224ffc91ad14526adbd687b5edf99fb4",
+      "tests/fixtures/capture-priority-juraj-129.json": "0ffb270fe5ed7ae4ecf2c3ba28ff9cd0d70b773c0e0f4c85ceda93ddb5aba64a",
+      "tests/fixtures/capture-priority-juraj-130.json": "cd4446741382fee113a0be7eadeab0d427f37c26ab46d26ab3a542d6e43767ed",
+      ".cache/runs/sentinel-v11/policy-tests-attempt1.log": "cd7435eb334a5851cd5aafb01769ed08525b8cf71b29a8aabf538b0691f47b90",
+      ".cache/runs/sentinel-v11/continuation-test.log": "bdd052506caebe708d4de227fc7464b973e6789fb6a0ad21650e10fa83c63292",
+      ".cache/runs/sentinel-v11/warm-profile/report.json": "8860ba618d8ac9dece5a2b84ab398add59b9627763cb965a7377d6e48a8e87bb",
+      ".cache/runs/sentinel-v11/warm-profile/benchmark.py": "6971fa23b87a3966a20279cab2e21bb22486d2e10dc5cda256e14ec4b6d8a9f3",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/metadata.json": "bfdfeaf2916e20efaac6aacd1fb7da0b7ae2ab96cdba09a02474a405cf20b074",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/status.json": "29acb3a5279fdebf4101a292ac54d5e17ef7c474e6a0e192c4f0c7df6c7d9373",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/boards.npz": "cc1d87328867c67ec995bdb6d1308c9297139c35350fa2cb2a934ee156bd19eb",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/game-0001.json": "2e934a022cf3293c8197270492504db6f98418a4aae2ba429069a49d58dd8d0c",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/game-0002.json": "57258cf6d664f617264803087ef09df9cb575054ddc4cbe51cf7afd637f3f624",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/metadata.json": "8a8146cfafe44b5f9f2681fced0cdc82472d18afec0fe6349e8dc9d30c4661c6",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/status.json": "6f530b1dcc31c6040158df9984381b65fcc0958785744922c53bd199d01a7456",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/parity.json": "8b1e77f74efc5896bfc64ebe6fa480a060002920e30c12065efe19443aa25a53",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0000.json": "703286c9df3094d3d77b9e1d4570b3db98b2ca0f01e521e1965a60e08160aae2",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0001.json": "1b529158c0f439aa0a9c83d961aa3772c9cf42de94108e25043a240c5bb287f1",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0002.json": "3639fdcc280a6cad081b94b8ee8ae242f39fafb445da533a8cd9bd463521ec22",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0003.json": "a6f79459d66923f02d60bd490bd282c42515f0482ab13e51f81438ceb2aa9124",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0004.json": "3ac1aa3233fef9a3b1a63d7dbf6c1620bae30a72e3e4d0463cf89021a9d46b24",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0005.json": "3982f330924a5c9fc1d7cfe89fc5886c9c85c6e0895c54110088da1f2b67d6b1",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0006.json": "a68630d0fecd4df2ce8bcf79c89968cab292eb641444fc561cab3dde0e5802c1",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0007.json": "f06af9e00d807dd34bb758a201a5dce1c7db87c3728fbe22d6c49a4ecacb828b",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0008.json": "b7b11ee6b0aa12ab6fa044c2092b0f362e4bac1f5c41effdd33f9ba1bf81c5c4",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0009.json": "f52330d8002323f5775d020a5dcd748b655f5c5fbf300ef1a2fe5acdb63b7ba6",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0010.json": "bf123fd4ebac2fdeca14796bc0c40754b0e00f34a68668741e78a34620f393b7",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0011.json": "5a79b6b01d55b6e4ef823b391f24f80ccf6d3e2a01059a9b32c52b95b6e09eea",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0012.json": "e33ac59dabfd548a70e6a90f1703904d22cb66e9502afaaf98d1745a0bf2d89f",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0013.json": "406fbb28d89e302eea22984a117290633978b3d0616a9e7be0a52e66ec537e39",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0014.json": "c5069e93b31cab4d45030fc87a24fe574f21dc8f1a89963dd32239ee9cb98ef9",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0015.json": "291b1d9cace631b29053ffa9ed47db227b4597546ec8d7f124c46362d37f3b29",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0016.json": "a7701670269e4dd03d59a679a075aeb919bd944453c8d6f54fdbb65c3df5b493",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0017.json": "b75a26a59f2ccc638620744b9698921cc64e590367e12021bd380c0ffc4a3ca7",
+      ".cache/runs/sentinel-v4/parity-histories/v2-game0.json": "afe25fa96fbf6fe338500d086bda685a2ea9a7321ce82eaf712174fe0bf3bb50",
+      ".cache/runs/sentinel-v4/parity-histories/r2-game0.json": "8e9bbe0e8e509366e6f7a3dc29dd0f4ae104eca9bcb44ee521b30a09f92e0573",
+      ".cache/runs/external-opponents/amin-main8-iter160/submission.zip": "d69cc5d28e4805faf629c5c072a6d23011c727ca4a3b3da9f5e890ea82b78755",
+      ".cache/runs/sentinel-v11/amin-selected/check_recording.py": "9f87deccffe2b032abcf76991de0309baa0bb19118027c890ca62d571689638d",
+      ".cache/runs/sentinel-v11/amin-selected/recording-check.log": "81ed5616b24fc46e7bfb8cacdef7caf9e5182c65062b5e4d37f3bd660e70b08b",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/weights.npz": "2f83d9ce5dd69905838eb05979c4c814fdde7b768dbb1733702384a3082b10f4",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/numpy_infer.py": "2f68efed6ac37e837a0c2852c31148fb1d01d406be31b436e3e4d695e4ef2117",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/agent.py": "8dce9df95fc1c45be6ee7f4387dd2be07c79db8bcede5b412d67959c0367cfe6",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/weights_meta.json": "e9c65e62a6f03664b839c2d28e912a9399332a0df73d53c20f532568d18e5789",
+      ".cache/runs/sentinel-v11/external-selected/source-freeze-r2.json": "dac7ab4dc352794808ecba50b9b7d2c7f6e8940cff877e8adfa9f94c8998efbb",
+      ".cache/runs/sentinel-v11/external-selected/shared.py": "8af6481ad2a8f42778ecb44e5876b0da05662ab881343533b8b520b6c5352ef4",
+      ".cache/runs/sentinel-v11/external-selected/actor.py": "3ebdb693f0d00ac81da5aa68fa6098fed7c14dacf8e1c2124522b3319543bf83",
+      ".cache/runs/sentinel-v11/external-selected/coordinator.py": "4f97fc519763c1540550f1dbb6bd01dfd9d197e8928439f18a1308e0f02f7ace",
+      ".cache/runs/sentinel-v11/external-selected/coordinator-r2.py": "44ebad3ec2251279a025055792eaeadd65c6b144a3f670eb70a0a888771d014f",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/metadata.json": "e71dc5084b77aaacc1cc814e436de294696ec152bb002f57e977a0db27208ece",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/boards.npz": "96700b60728c67853929d292804568d9c52904cef92b9fb04d097e6257a94655",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/game-0012.json": "78aae23c03177f57e207bd083daf5dbd0f621fef222d59b73800cfef97cc99bb",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/game-0015.json": "83e8864d3dfa3a8fc5192e29d7f2a1291f2d59fcea1eeb0c9373c7165cd8c4b7",
+      ".cache/runs/external-opponents/juraj-v35/agent/DESIGN.md": "1ebb8b79693a63f5a0a616aed58925031b15be814443d87cb269331d80a0b649",
+      ".cache/runs/external-opponents/juraj-v35/agent/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+      ".cache/runs/external-opponents/juraj-v35/agent/README.md": "12a70815506278d201d5f174f2609876704277e6dca6c26377066a7092aea0bd",
+      ".cache/runs/external-opponents/juraj-v35/agent/agent": "4126a3b3c514632e189866935e06e84093d20e9a7be622f2c528204954b55fbb",
+      ".cache/runs/external-opponents/juraj-v35/agent/build.sh": "7e022c2c59996406b18c4221c2ceb3cb3980aeb6b2446bb5d5d6a127d0dfaa64",
+      ".cache/runs/external-opponents/juraj-v35/agent/core.hpp": "2935560a2360ec9ac510befeae7fb0a57988767d1faefccaa94fef9f05cd9a07",
+      ".cache/runs/external-opponents/juraj-v35/agent/main.cpp": "5d8cf45be4d81861c92b5241e4e6e0446454046d75290f55b69024320579c912",
+      ".cache/runs/external-opponents/juraj-v35/agent/run.sh": "ac272996e744283df3042ad61cb0de34de945fcb2bf40fcee14d87afa7e1e0ae",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/metadata.json": "ee40387a61f382e41612ed4edffc28be9fa7d3ef48cf0348b46bb19e07158029",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/boards.npz": "96700b60728c67853929d292804568d9c52904cef92b9fb04d097e6257a94655",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/game-0004.json": "00bfffc5bfc2027fe12fda1998200d0c634d4f7313629a69870d03d53dc10967",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/game-0007.json": "a9d37add825f024536049c5d8c68230300308f840867d2c6bbe956dc5b9d37b6",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/agent.py": "60fe7d02b05af0a7c0b3c06cbb1df0e62ef04673d2b340df080cc2c887d88e6d",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+      ".cache/runs/external-opponents/juraj-v35/submission-source.zip": "cfd612d313da65e0ae775f067996a32fc118d89d3543bc5ef765a1e3e943051a",
+      ".cache/runs/sentinel-v8/opponent-coverage/my_bot9-f624c741.zip": "46febea1ef6ffbf1d110c48de9ae742d04c422562cd339627da1b72caa80737b"
+    }
+  },
+  "runtime_tests_review": {
+    "complete": true,
+    "scope": "Completed implementation review, six CPU tests and two-fixture CPU warm gate only. Selected12 match outcomes intentionally unread; no strength or deployment qualification.",
+    "commit": "7105a06db600c7df94e09561068f1c721af306c4",
+    "policy_sha256": "0806fb408d4ad2639f9187fb5b979bdeb79793fb6fd8201d3319901fb7c46503",
+    "parent_sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+    "review": {
+      "verdict": "No implementation blocker found",
+      "coverage": [
+        "Private candidate-owned V8-to-V6 instrumentation before JIT tracing; one parent solve, no frozen-class or shared-instance mutation.",
+        "Override requires actually issued V8 start, with no V9 or V10 replacement; existing plan continuation and structures retain parent decisions.",
+        "Unissued offense memory cleared while returned V6 defender state and stationary-general knowledge retained; 19 int32 scalar memory leaves.",
+        "Disabled variant delegates exact V10. Inherited parent proposal events require capture_parent_action_issued mask."
+      ],
+      "limitations": [
+        "Read-only correctness review does not prove strategy superiority or absence of untested bugs."
+      ]
+    },
+    "tests": {
+      "unique_cases_passed": 6,
+      "executions": [
+        {
+          "log": ".cache/runs/sentinel-v11/policy-tests-attempt1.log",
+          "passed": 5,
+          "seconds": 142.96,
+          "source_revision_note": "Five cases before adding the later continuation regression; policy bytes unchanged."
+        },
+        {
+          "log": ".cache/runs/sentinel-v11/continuation-test.log",
+          "passed": 1,
+          "deselected": 5,
+          "seconds": 26.95
+        }
+      ],
+      "cases": [
+        "Juraj immediate capture override and cleared unissued plan; observation unchanged",
+        "Disabled exact action/memory/telemetry on Juraj",
+        "Disabled exact action/memory/telemetry on Amin",
+        "Known Amin neutral expansion does not veto parent plan",
+        "Existing Juraj plan continues despite immediate enemy capture",
+        "Batched structure priority and 19-leaf memory schema"
+      ],
+      "verification": "Existing root logs inspected; no test rerun by this packaging pass."
+    },
+    "benchmark": {
+      "runtime": {
+        "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+        "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+        "packages": {
+          "jax": "0.11.0",
+          "jaxlib": "0.11.0",
+          "numpy": "2.4.6",
+          "scipy": "1.18.0"
+        },
+        "affinity": [
+          5
+        ],
+        "devices": [
+          "cpu:0"
+        ],
+        "imports_seconds": 0.3869023150182329
+      },
+      "config": {
+        "build_castles": true,
+        "deathtouch_turn": 800,
+        "max_turns": 1200
+      },
+      "affinity": [
+        5
+      ],
+      "cache_enabled": false,
+      "repeats": 5,
+      "calls_per_repeat": 100,
+      "warmups": 10,
+      "synchronization": "jax.block_until_ready on complete action/memory/telemetry output each call",
+      "order": "Alternate V10,V11 and V11,V10 across five repeats",
+      "threshold_parent_throughput_ratio": 0.5,
+      "passed": true,
+      "cases": {
+        "juraj": {
+          "shape": [
+            20,
+            19
+          ],
+          "wire_sha256": "ef51c5f2da88df50a41391a0e8bd77a667b7f7cec03743e94293cceef774b041",
+          "throughput_retained": 0.9541723773303299,
+          "median_latency_overhead_fraction": 0.04802866207245571,
+          "correctness_passed": true,
+          "variants": {
+            "v10": {
+              "cold_step_seconds": 13.281457984005101,
+              "raw_action": [
+                0,
+                15,
+                10,
+                3,
+                0
+              ],
+              "pooled": {
+                "n": 500,
+                "median_seconds": 0.0011794830061262473,
+                "p95_seconds": 0.0013889075562474318,
+                "min_seconds": 0.0010478879848960787,
+                "max_seconds": 0.0019849119998980314
+              },
+              "repeat_medians_seconds": [
+                0.0012163605133537203,
+                0.0012928805081173778,
+                0.0011768230033339933,
+                0.0011702365009114146,
+                0.0011638894793577492
+              ],
+              "capture_priority_issued": false,
+              "memory_leaves": 19
+            },
+            "v11": {
+              "cold_step_seconds": 12.930277922016103,
+              "raw_action": [
+                0,
+                8,
+                8,
+                0,
+                0
+              ],
+              "pooled": {
+                "n": 500,
+                "median_seconds": 0.0012361319968476892,
+                "p95_seconds": 0.0014985803180024959,
+                "min_seconds": 0.0010796949791256338,
+                "max_seconds": 0.0017592590011190623
+              },
+              "repeat_medians_seconds": [
+                0.0013045769883319736,
+                0.0012252015003468841,
+                0.0012142170016886666,
+                0.0012139365135226399,
+                0.0013666915037902072
+              ],
+              "capture_priority_issued": true,
+              "memory_leaves": 19
+            }
+          }
+        },
+        "amin": {
+          "shape": [
+            21,
+            18
+          ],
+          "wire_sha256": "ac63ba0113a796989c2c5b7fd1836c9ea671352f71daef264393878ae33c289c",
+          "throughput_retained": 0.97236631092791,
+          "median_latency_overhead_fraction": 0.02841901119108048,
+          "correctness_passed": true,
+          "variants": {
+            "v10": {
+              "cold_step_seconds": 13.49802786798682,
+              "raw_action": [
+                0,
+                15,
+                13,
+                2,
+                0
+              ],
+              "pooled": {
+                "n": 500,
+                "median_seconds": 0.001338874499197118,
+                "p95_seconds": 0.0015231565863359716,
+                "min_seconds": 0.0011895909847225994,
+                "max_seconds": 0.0021754780027549714
+              },
+              "repeat_medians_seconds": [
+                0.001327318008407019,
+                0.0013476755120791495,
+                0.001424446512828581,
+                0.001331491002929397,
+                0.0013250240008346736
+              ],
+              "capture_priority_issued": false,
+              "memory_leaves": 19
+            },
+            "v11": {
+              "cold_step_seconds": 13.62694861998898,
+              "raw_action": [
+                0,
+                15,
+                13,
+                2,
+                0
+              ],
+              "pooled": {
+                "n": 500,
+                "median_seconds": 0.0013769239885732532,
+                "p95_seconds": 0.0015817132996744476,
+                "min_seconds": 0.0012195049785077572,
+                "max_seconds": 0.0018501319864299148
+              },
+              "repeat_medians_seconds": [
+                0.001371765014482662,
+                0.0013783320027869195,
+                0.0013880000042263418,
+                0.0013792835088679567,
+                0.0013697759859496728
+              ],
+              "capture_priority_issued": false,
+              "memory_leaves": 19
+            }
+          }
+        }
+      },
+      "command": "env -u LD_LIBRARY_PATH JAX_PLATFORMS=cpu JAX_ENABLE_COMPILATION_CACHE=false OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .cache/runs/competition-runtime-venv/bin/python .cache/runs/sentinel-v11/warm-profile/benchmark.py",
+      "terminal_exit_code": 0,
+      "execution_session": 57013
+    },
+    "fixture_sha256": {
+      "tests/fixtures/capture-priority-amin-129.json": "4888dab34aaea590e111d8f37b44f4a3224ffc91ad14526adbd687b5edf99fb4",
+      "tests/fixtures/capture-priority-juraj-129.json": "0ffb270fe5ed7ae4ecf2c3ba28ff9cd0d70b773c0e0f4c85ceda93ddb5aba64a",
+      "tests/fixtures/capture-priority-juraj-130.json": "cd4446741382fee113a0be7eadeab0d427f37c26ab46d26ab3a542d6e43767ed"
+    },
+    "selected_freeze_checks": {
+      "amin-selected": {
+        "source_freeze_sha256": "aa35b9f77e1ad0c99e777914a50aa48a0246ed15377ca81668e0c9562f526462",
+        "plan_sha256": "5522610173afae64f060959c1c06dade3e9526e98bf0c2ae8748ada08cca5b3e",
+        "verified_binding_counts": {
+          "source_sha256": 42,
+          "prerequisite_sha256": 46,
+          "helper_sha256": 1,
+          "input_sha256": 0
+        },
+        "base_commit": "7105a06db600c7df94e09561068f1c721af306c4",
+        "planned_games": 4,
+        "current_hashes_match": true,
+        "committed_source_matches": true,
+        "match_outcomes_read": false
+      },
+      "external-selected": {
+        "source_freeze_sha256": "7dd510df0e352ee61a77f1997da90e99ac70f4fc2cd841330d81d9307f4f0cf3",
+        "plan_sha256": "69953d531e09c118e48d5f66a6143ed920b1f0ed220489b0366c408fbce83895",
+        "verified_binding_counts": {
+          "source_sha256": 42,
+          "prerequisite_sha256": 9,
+          "helper_sha256": 3,
+          "input_sha256": 20
+        },
+        "base_commit": "7105a06db600c7df94e09561068f1c721af306c4",
+        "planned_games": 8,
+        "current_hashes_match": true,
+        "committed_source_matches": true,
+        "match_outcomes_read": false
+      }
+    },
+    "artifact_sha256": {
+      ".cache/runs/sentinel-v11/warm-profile/report.json": "8860ba618d8ac9dece5a2b84ab398add59b9627763cb965a7377d6e48a8e87bb",
+      ".cache/runs/sentinel-v11/warm-profile/freeze.json": "d30cd9b4d848b154b7fb40f085a78df816e7a050b8fee59a67d3523ebc91dc50",
+      ".cache/runs/sentinel-v11/warm-profile/benchmark.py": "6971fa23b87a3966a20279cab2e21bb22486d2e10dc5cda256e14ec4b6d8a9f3",
+      ".cache/runs/sentinel-v11/warm-profile/benchmark.log": "28c6ca1694761285c34a18a1552e0b1c0bc394ea9565541c24f9982e0af8bb59",
+      ".cache/runs/sentinel-v11/warm-profile/benchmark-attempt1.py": "9a6837c151f416bb88fa08ef3ec5229fe9b6992ec5b99dd5917d698e4eddad2e",
+      ".cache/runs/sentinel-v11/warm-profile/benchmark-attempt1.log": "799b9344da15b4272b04d91132c7c58488b497c7072bca3918f822d236164eda",
+      ".cache/runs/sentinel-v11/policy-tests-attempt1.log": "cd7435eb334a5851cd5aafb01769ed08525b8cf71b29a8aabf538b0691f47b90",
+      ".cache/runs/sentinel-v11/continuation-test.log": "bdd052506caebe708d4de227fc7464b973e6789fb6a0ad21650e10fa83c63292",
+      "tests/test_sentinel_v11_agent.py": "aad40eeed07eeb6b881c11b4e7a46b69aac32c7f8c088f0672333408ed4dbb15"
+    },
+    "limitations": [
+      "One CPU5, shared host, official Python/library versions, cache disabled. Repeated fixed public observations and recorded incoming memories; no enacted trajectory. Full output tree synchronized. Cold step includes compilation but excludes imports and input preparation; not an official container or first-stdio-reply qualification. No process memory measurement.",
+      "Both fixtures are turn129: mobilization after deathtouch and active carried-commitment performance are not measured here.",
+      "Two shapes only, no GPU/batched throughput, no full-episode throughput, no RSS or official cgroup measurement.",
+      "Median overhead is positive; passing the 50% regression floor is not an optimization or speedup claim.",
+      "Cold compilation excludes imports and preprocessing, exceeds10seconds for both policies; no uncached first-reply qualification.",
+      "Initial optional-field preflight failed before policy imports; original helper/log preserved; corrected helper frozen before the successful run."
+    ]
+  },
+  "independent_result_review": {
+    "complete": true,
+    "verdict": "Aggregation correct; selected preservation failure is established, no broader strength inference.",
+    "games": 12,
+    "full_frames_checked": 8886,
+    "unique_consumed_opponent_placements": 3,
+    "counts": {
+      "amin": {
+        "v10": {
+          "win": 2
+        },
+        "v11": {
+          "loss": 2
+        }
+      },
+      "juraj-v35": {
+        "v10": {
+          "loss": 2
+        },
+        "v11": {
+          "loss": 2
+        }
+      },
+      "my-bot9": {
+        "v10": {
+          "win": 2
+        },
+        "v11": {
+          "win": 2
+        }
+      }
+    },
+    "exact_control_checks": [
+      {
+        "opponent": "amin",
+        "game_id": 1,
+        "turns": 1033,
+        "exact": "Both public wires, raw/applied joint actions, invalid/malformed flags and complete game row"
+      },
+      {
+        "opponent": "amin",
+        "game_id": 2,
+        "turns": 1033,
+        "exact": "Both public wires, raw/applied joint actions, invalid/malformed flags and complete game row"
+      },
+      {
+        "opponent": "juraj-v35",
+        "game_id": 12,
+        "turns": 422,
+        "exact": "Both original reply strings, applied joint actions and terminal turn/winner; original stdio traces lack public wires"
+      },
+      {
+        "opponent": "juraj-v35",
+        "game_id": 15,
+        "turns": 422,
+        "exact": "Both original reply strings, applied joint actions and terminal turn/winner; original stdio traces lack public wires"
+      },
+      {
+        "opponent": "my-bot9",
+        "game_id": 4,
+        "turns": 1076,
+        "exact": "Both original reply strings, applied joint actions and terminal turn/winner; original stdio traces lack public wires"
+      },
+      {
+        "opponent": "my-bot9",
+        "game_id": 7,
+        "turns": 1076,
+        "exact": "Both original reply strings, applied joint actions and terminal turn/winner; original stdio traces lack public wires"
+      }
+    ],
+    "mirrors": [
+      {
+        "opponent": "amin",
+        "variant": "v10",
+        "games": [
+          1,
+          2
+        ],
+        "frames_each": 1033,
+        "candidate_relative_public_raw_applied_exact": true,
+        "memory_values_exact": true
+      },
+      {
+        "opponent": "amin",
+        "variant": "v11",
+        "games": [
+          1,
+          2
+        ],
+        "frames_each": 554,
+        "candidate_relative_public_raw_applied_exact": true,
+        "memory_values_exact": true
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v10",
+        "games": [
+          12,
+          15
+        ],
+        "frames_each": 422,
+        "candidate_relative_public_raw_applied_exact": true,
+        "memory_values_exact": true
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v11",
+        "games": [
+          12,
+          15
+        ],
+        "frames_each": 887,
+        "candidate_relative_public_raw_applied_exact": true,
+        "memory_values_exact": true
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v10",
+        "games": [
+          4,
+          7
+        ],
+        "frames_each": 1076,
+        "candidate_relative_public_raw_applied_exact": true,
+        "memory_values_exact": true
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v11",
+        "games": [
+          4,
+          7
+        ],
+        "frames_each": 471,
+        "candidate_relative_public_raw_applied_exact": true,
+        "memory_values_exact": true
+      }
+    ],
+    "external_cleanups": [
+      {
+        "opponent": "juraj-v35",
+        "variant": "v10",
+        "game_id": 12,
+        "clean_eof": true
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v10",
+        "game_id": 15,
+        "clean_eof": true
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v10",
+        "game_id": 4,
+        "clean_eof": true
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v10",
+        "game_id": 7,
+        "clean_eof": true
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v11",
+        "game_id": 12,
+        "clean_eof": true
+      },
+      {
+        "opponent": "juraj-v35",
+        "variant": "v11",
+        "game_id": 15,
+        "clean_eof": true
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v11",
+        "game_id": 4,
+        "clean_eof": true
+      },
+      {
+        "opponent": "my-bot9",
+        "variant": "v11",
+        "game_id": 7,
+        "clean_eof": true
+      }
+    ],
+    "amin_original_invalid_actions": 138,
+    "review_notes": [
+      "Reducer control_exact flags were independently checked against every original joint action and terminal result; all six pass.",
+      "Reducer trusts external output_sha256/cleanup details and winner records more narrowly than this review; independent checks verify all saved output hashes, terminal state-array winner/time, per-reply faults/skips/stales and clean EOF.",
+      "Full source-policy replay is not part of the reducer: recorded memory continuity/schema and action association are verified; changed-trajectory source audits remain separate.",
+      "Only three consumed placements, each mirrored per variant. Equal complete candidate-relative wires/actions/memory confirm mirrors are duplicates rather than independent samples. No bootstrap or general-strength estimate is justified.",
+      "Candidate calls are synchronous and exempt from deadlines; only original external opponents used the deadline path. Warm fixed-input profiling is a separate gate, not deployment qualification.",
+      "Longer Juraj survival remains a loss; faster my_bot9 wins are not increased win score; Amin wins becoming losses fails the selected preservation gate.",
+      "The earlier external infrastructure attempt and revised freeze are retained separately; successful attempt2 is not presented as evidence of a policy improvement or an erased losing game."
+    ],
+    "input_sha256": {
+      ".cache/runs/sentinel-v11/selected-summary.json": "9aa446e4c9b8ea43c151cf92a1414059717e8694fdb14f7498145782ff46e48a",
+      ".cache/runs/sentinel-v11/summarize-selected.py": "fffa4930fdddfe556168327656cbbcbffda437a53b09a96daad6228b683d0fcd",
+      ".cache/runs/sentinel-v11/amin-selected/results/report.json": "5080304bece53cdf1c19f8fa8fcf319c4f004a0e2e7d19637101644e9b7ba698",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/report.json": "daac8dfa09e84498a8555a7b21ad064f1caf62765180f23a8db36a309bc644a4",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0001.json": "7bed4586d7b813345a4593d4918bc7b62cda34212a102da11b1b9341f1be9fea",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0001-policy.jsonl": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0002.json": "d130b5d75181b5e7b244af6cbf346c66c6c27aad8fef8a4d3527c8aae9e18b45",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0002-policy.jsonl": "7c97bf8b22bf8833ef9f53765fddd563f6e33f2496085d6d81e7c1dbc175106a",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0001.json": "a6fb41d09e4bf8e4aebb3c9913c6e1dc522c970e501e0e1505a92996f5821f8d",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0001-policy.jsonl": "d1e7f2406a7010e4ac698da0a57e49ff80ec89e91165b43d488a30ef3876d832",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0002.json": "80cf60c7526642525a67e9c884e725880f763f3926faf4947a2e2bdaa5febf3b",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0002-policy.jsonl": "5db936cc47308c4a1c39422f34726caf473dda8f13e72e86a65f54814be46834",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0012-frames.jsonl": "4c60abe2a5d871408f661fa13e53c867c5e5b16766e2d5801f6b3efaa719515a",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0015-frames.jsonl": "d83de9cf6ba67139a283197dddf442f927ba65ae1fc7c0c86b3e39e1ed7fa57f",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0004-frames.jsonl": "82e87715afa8e4ce62c3765a347b5409afb6d43676c55014425edda00ceb2cd3",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0007-frames.jsonl": "1158e04f5c8b87898d13265a20f25203d9207b382fcec71ee293b5f71da91737",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0012-frames.jsonl": "5bfa2bc538385f000657e29f30b656efdb13ad3451b41092ff890180fed8d00b",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0015-frames.jsonl": "c9d7d2830d1f86d4c8ae7377034d864dd2a29bce35cc43f764e14af1ae98e326",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0004-frames.jsonl": "621fdca041e1421a6f593d23ff18516036514cb246969424e04ebf1d859f5d0f",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0007-frames.jsonl": "da906ef19197e9fde4e34b4080a08db9a3786f05b1cfb24300492f16d401f17d",
+      ".cache/runs/sentinel-v11/amin-selected/source-freeze.json": "aa35b9f77e1ad0c99e777914a50aa48a0246ed15377ca81668e0c9562f526462",
+      "competition/agents/sentinel_python/main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+      "competition/agents/sentinel_python/warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790",
+      "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+      "generals/agents/__init__.py": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190",
+      "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+      "generals/agents/expander_agent.py": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75",
+      "generals/agents/harvester_agent.py": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d",
+      "generals/agents/hunter_agent.py": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8",
+      "generals/agents/random_agent.py": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e",
+      "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+      "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+      "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+      "generals/agents/sentinel_v4_agent.py": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744",
+      "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+      "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+      "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+      "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+      "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+      "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+      "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+      "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+      "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+      "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+      "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+      "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+      "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+      "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+      "generals/evaluation/__init__.py": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09",
+      "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+      "generals/evaluation/cli.py": "497d3fdcfb57df1ddb008f1a4d688f3ca59126c1397ebdfb170342204886a577",
+      "generals/evaluation/replay.py": "0bae47b6592fc6333ebc6db9375d1c5f33489759433418453eb0f57b6444176d",
+      "generals/evaluation/report.py": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f",
+      "generals/evaluation/scenarios.py": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd",
+      "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+      "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+      "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+      "scripts/build_sentinel_bundle.py": "8818d4ca48fbf90f1ab18bb944acd067dce1a8f6b9a9b30996258c1a70290765",
+      "scripts/compare_agent_runs.py": "cd0781b71668c72a47f2f1800d8c9c71009a58d9c77821e06f25539a878d0b52",
+      "scripts/probe_sentinel_bundle.py": "ff0d60c9ebde2b07087f8c9ca7e4be57c7a7ea3c888684510296dd1173db7910",
+      "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+      "scripts/strategy_arena.py": "330144c0965f445cfe10071410ac1c231a4a3ca5d615ebaae2badb2ce63e8cc6",
+      "generals/agents/sentinel_v11_agent.py": "0806fb408d4ad2639f9187fb5b979bdeb79793fb6fd8201d3319901fb7c46503",
+      ".cache/runs/sentinel-v11/amin-selected/run.py": "4ba47f1e445266800a3d2a590fd360f33e0aa791fe9e276d2425e74e09894971",
+      "docs/agent-development/v11-plan.md": "7f1849c76eb686217b712666db61b49752d36a13daa7aeec7465dd3b3fbd2af4",
+      "tests/test_sentinel_v11_agent.py": "aad40eeed07eeb6b881c11b4e7a46b69aac32c7f8c088f0672333408ed4dbb15",
+      "tests/fixtures/capture-priority-amin-129.json": "4888dab34aaea590e111d8f37b44f4a3224ffc91ad14526adbd687b5edf99fb4",
+      "tests/fixtures/capture-priority-juraj-129.json": "0ffb270fe5ed7ae4ecf2c3ba28ff9cd0d70b773c0e0f4c85ceda93ddb5aba64a",
+      "tests/fixtures/capture-priority-juraj-130.json": "cd4446741382fee113a0be7eadeab0d427f37c26ab46d26ab3a542d6e43767ed",
+      ".cache/runs/sentinel-v11/policy-tests-attempt1.log": "cd7435eb334a5851cd5aafb01769ed08525b8cf71b29a8aabf538b0691f47b90",
+      ".cache/runs/sentinel-v11/continuation-test.log": "bdd052506caebe708d4de227fc7464b973e6789fb6a0ad21650e10fa83c63292",
+      ".cache/runs/sentinel-v11/warm-profile/report.json": "8860ba618d8ac9dece5a2b84ab398add59b9627763cb965a7377d6e48a8e87bb",
+      ".cache/runs/sentinel-v11/warm-profile/benchmark.py": "6971fa23b87a3966a20279cab2e21bb22486d2e10dc5cda256e14ec4b6d8a9f3",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/metadata.json": "bfdfeaf2916e20efaac6aacd1fb7da0b7ae2ab96cdba09a02474a405cf20b074",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/status.json": "29acb3a5279fdebf4101a292ac54d5e17ef7c474e6a0e192c4f0c7df6c7d9373",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/boards.npz": "cc1d87328867c67ec995bdb6d1308c9297139c35350fa2cb2a934ee156bd19eb",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/game-0001.json": "2e934a022cf3293c8197270492504db6f98418a4aae2ba429069a49d58dd8d0c",
+      ".cache/runs/sentinel-v10/development/amin-development/v10/game-0002.json": "57258cf6d664f617264803087ef09df9cb575054ddc4cbe51cf7afd637f3f624",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/metadata.json": "8a8146cfafe44b5f9f2681fced0cdc82472d18afec0fe6349e8dc9d30c4661c6",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/status.json": "6f530b1dcc31c6040158df9984381b65fcc0958785744922c53bd199d01a7456",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/parity.json": "8b1e77f74efc5896bfc64ebe6fa480a060002920e30c12065efe19443aa25a53",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0000.json": "703286c9df3094d3d77b9e1d4570b3db98b2ca0f01e521e1965a60e08160aae2",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0001.json": "1b529158c0f439aa0a9c83d961aa3772c9cf42de94108e25043a240c5bb287f1",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0002.json": "3639fdcc280a6cad081b94b8ee8ae242f39fafb445da533a8cd9bd463521ec22",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0003.json": "a6f79459d66923f02d60bd490bd282c42515f0482ab13e51f81438ceb2aa9124",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0004.json": "3ac1aa3233fef9a3b1a63d7dbf6c1620bae30a72e3e4d0463cf89021a9d46b24",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0005.json": "3982f330924a5c9fc1d7cfe89fc5886c9c85c6e0895c54110088da1f2b67d6b1",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0006.json": "a68630d0fecd4df2ce8bcf79c89968cab292eb641444fc561cab3dde0e5802c1",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0007.json": "f06af9e00d807dd34bb758a201a5dce1c7db87c3728fbe22d6c49a4ecacb828b",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0008.json": "b7b11ee6b0aa12ab6fa044c2092b0f362e4bac1f5c41effdd33f9ba1bf81c5c4",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0009.json": "f52330d8002323f5775d020a5dcd748b655f5c5fbf300ef1a2fe5acdb63b7ba6",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0010.json": "bf123fd4ebac2fdeca14796bc0c40754b0e00f34a68668741e78a34620f393b7",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0011.json": "5a79b6b01d55b6e4ef823b391f24f80ccf6d3e2a01059a9b32c52b95b6e09eea",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0012.json": "e33ac59dabfd548a70e6a90f1703904d22cb66e9502afaaf98d1745a0bf2d89f",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0013.json": "406fbb28d89e302eea22984a117290633978b3d0616a9e7be0a52e66ec537e39",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0014.json": "c5069e93b31cab4d45030fc87a24fe574f21dc8f1a89963dd32239ee9cb98ef9",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0015.json": "291b1d9cace631b29053ffa9ed47db227b4597546ec8d7f124c46362d37f3b29",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0016.json": "a7701670269e4dd03d59a679a075aeb919bd944453c8d6f54fdbb65c3df5b493",
+      ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0017.json": "b75a26a59f2ccc638620744b9698921cc64e590367e12021bd380c0ffc4a3ca7",
+      ".cache/runs/sentinel-v4/parity-histories/v2-game0.json": "afe25fa96fbf6fe338500d086bda685a2ea9a7321ce82eaf712174fe0bf3bb50",
+      ".cache/runs/sentinel-v4/parity-histories/r2-game0.json": "8e9bbe0e8e509366e6f7a3dc29dd0f4ae104eca9bcb44ee521b30a09f92e0573",
+      ".cache/runs/external-opponents/amin-main8-iter160/submission.zip": "d69cc5d28e4805faf629c5c072a6d23011c727ca4a3b3da9f5e890ea82b78755",
+      ".cache/runs/sentinel-v11/amin-selected/check_recording.py": "9f87deccffe2b032abcf76991de0309baa0bb19118027c890ca62d571689638d",
+      ".cache/runs/sentinel-v11/amin-selected/recording-check.log": "81ed5616b24fc46e7bfb8cacdef7caf9e5182c65062b5e4d37f3bd660e70b08b",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/weights.npz": "2f83d9ce5dd69905838eb05979c4c814fdde7b768dbb1733702384a3082b10f4",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/numpy_infer.py": "2f68efed6ac37e837a0c2852c31148fb1d01d406be31b436e3e4d695e4ef2117",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/agent.py": "8dce9df95fc1c45be6ee7f4387dd2be07c79db8bcede5b412d67959c0367cfe6",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+      ".cache/runs/external-opponents/amin-main8-iter160/agent/weights_meta.json": "e9c65e62a6f03664b839c2d28e912a9399332a0df73d53c20f532568d18e5789",
+      ".cache/runs/sentinel-v11/external-selected/source-freeze-r2.json": "dac7ab4dc352794808ecba50b9b7d2c7f6e8940cff877e8adfa9f94c8998efbb",
+      ".cache/runs/sentinel-v11/external-selected/shared.py": "8af6481ad2a8f42778ecb44e5876b0da05662ab881343533b8b520b6c5352ef4",
+      ".cache/runs/sentinel-v11/external-selected/actor.py": "3ebdb693f0d00ac81da5aa68fa6098fed7c14dacf8e1c2124522b3319543bf83",
+      ".cache/runs/sentinel-v11/external-selected/coordinator.py": "4f97fc519763c1540550f1dbb6bd01dfd9d197e8928439f18a1308e0f02f7ace",
+      ".cache/runs/sentinel-v11/external-selected/coordinator-r2.py": "44ebad3ec2251279a025055792eaeadd65c6b144a3f670eb70a0a888771d014f",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/metadata.json": "e71dc5084b77aaacc1cc814e436de294696ec152bb002f57e977a0db27208ece",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/boards.npz": "96700b60728c67853929d292804568d9c52904cef92b9fb04d097e6257a94655",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/game-0012.json": "78aae23c03177f57e207bd083daf5dbd0f621fef222d59b73800cfef97cc99bb",
+      ".cache/runs/sentinel-v10/development/juraj-v35-development/v10/game-0015.json": "83e8864d3dfa3a8fc5192e29d7f2a1291f2d59fcea1eeb0c9373c7165cd8c4b7",
+      ".cache/runs/external-opponents/juraj-v35/agent/DESIGN.md": "1ebb8b79693a63f5a0a616aed58925031b15be814443d87cb269331d80a0b649",
+      ".cache/runs/external-opponents/juraj-v35/agent/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+      ".cache/runs/external-opponents/juraj-v35/agent/README.md": "12a70815506278d201d5f174f2609876704277e6dca6c26377066a7092aea0bd",
+      ".cache/runs/external-opponents/juraj-v35/agent/agent": "4126a3b3c514632e189866935e06e84093d20e9a7be622f2c528204954b55fbb",
+      ".cache/runs/external-opponents/juraj-v35/agent/build.sh": "7e022c2c59996406b18c4221c2ceb3cb3980aeb6b2446bb5d5d6a127d0dfaa64",
+      ".cache/runs/external-opponents/juraj-v35/agent/core.hpp": "2935560a2360ec9ac510befeae7fb0a57988767d1faefccaa94fef9f05cd9a07",
+      ".cache/runs/external-opponents/juraj-v35/agent/main.cpp": "5d8cf45be4d81861c92b5241e4e6e0446454046d75290f55b69024320579c912",
+      ".cache/runs/external-opponents/juraj-v35/agent/run.sh": "ac272996e744283df3042ad61cb0de34de945fcb2bf40fcee14d87afa7e1e0ae",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/metadata.json": "ee40387a61f382e41612ed4edffc28be9fa7d3ef48cf0348b46bb19e07158029",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/boards.npz": "96700b60728c67853929d292804568d9c52904cef92b9fb04d097e6257a94655",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/game-0004.json": "00bfffc5bfc2027fe12fda1998200d0c634d4f7313629a69870d03d53dc10967",
+      ".cache/runs/sentinel-v10/development/my-bot9-development/v10/game-0007.json": "a9d37add825f024536049c5d8c68230300308f840867d2c6bbe956dc5b9d37b6",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/agent.py": "60fe7d02b05af0a7c0b3c06cbb1df0e62ef04673d2b340df080cc2c887d88e6d",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+      ".cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+      ".cache/runs/external-opponents/juraj-v35/submission-source.zip": "cfd612d313da65e0ae775f067996a32fc118d89d3543bc5ef765a1e3e943051a",
+      ".cache/runs/sentinel-v8/opponent-coverage/my_bot9-f624c741.zip": "46febea1ef6ffbf1d110c48de9ae742d04c422562cd339627da1b72caa80737b",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0012-start.json": "391806299182a76c75b00375c53aac44134a147b5bdce9da6d8a8b9b65d2afdd",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0012-states.npz": "ff30857f1d6d6d33e27f278911979c5b23171faa57306c627c2d8f49924f1281",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0012-opponent.stderr.log": "a9102dbbe74e1b25f73399e31b8715de7cc9447017863b8958ad25e75f202600",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0015-start.json": "b7579d71b37ca797db9da8aa6d028062afd1671942021d340b0543b5431ab2d6",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0015-opponent.stderr.log": "4b524fe3c40094f9bb71b02668faece00d8c7c1c9341c147dd8c6962f248ea1a",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-juraj-v35-game-0015-states.npz": "ba81a41e47acb1b30cb74a5220dac29565e51cd382df5b6237e9628dfefa3798",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0004-start.json": "0edd5c9e10f13bc15b45aa594063e33060e83eed35a3ca15cebb95298dca8245",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0004-opponent.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0004-states.npz": "f9516fd37a5638c2f1005592556c84d6c2a338617d37f1677054564ab335f331",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0007-opponent.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0007-states.npz": "5436aa3705b3c61d86c12ff1c158b5196ba99022a7a79b0f02d634571419fb01",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v10-my-bot9-game-0007-start.json": "85ffd4f88db65a0bb3c197352e83afdc7029963fa6f619016c8479284c55f0df",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0012-start.json": "391806299182a76c75b00375c53aac44134a147b5bdce9da6d8a8b9b65d2afdd",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0012-opponent.stderr.log": "f86e92f9ad85b8b84ba1e0a2df2ff2baf1d6fd6dc85edecaef768a1207f58723",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0012-states.npz": "8e81ceda98247924b1b85ced0d4e200061c9322d1d22409cfec103ead784150f",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0015-opponent.stderr.log": "147ac2e71ae87b6ffa86713f57b3faa6f2cc8f107068a19653e905a982ee657f",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0015-states.npz": "ddd9151335beb874afbb71157c0ba0043ed8a2f0c64b7880e0cad8f79899f1e8",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-juraj-v35-game-0015-start.json": "b7579d71b37ca797db9da8aa6d028062afd1671942021d340b0543b5431ab2d6",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0004-opponent.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0004-start.json": "0edd5c9e10f13bc15b45aa594063e33060e83eed35a3ca15cebb95298dca8245",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0004-states.npz": "176675e9fe26ec30931484c51ca022ba22ff719002fc3b267e9c2613ba81d2a7",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0007-states.npz": "db54cc53d7f0c8344572a4a3d56bae6c39e56bb66d6e940ef6a379b87cb12718",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0007-opponent.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      ".cache/runs/sentinel-v11/external-selected/results-attempt2/v11-my-bot9-game-0007-start.json": "85ffd4f88db65a0bb3c197352e83afdc7029963fa6f619016c8479284c55f0df",
+      ".cache/runs/sentinel-v11/independent-review/review_selected.py": "97ac5c3bf42cde737a865fabcf30d60c8984dea3b55028cbfb0e96c8b8da9bcf"
+    }
+  },
+  "amin_postcheck": {
+    "complete": true,
+    "session": 30597,
+    "terminal_exit_code": 0,
+    "source_and_prerequisite_inputs_verified": 91,
+    "games": [
+      {
+        "variant": "v10",
+        "game_id": 1,
+        "frames": 1033,
+        "raw_policy_trace_exact": true,
+        "memory_fields": 19,
+        "original_memory_continuous": true,
+        "control_exact": true
+      },
+      {
+        "variant": "v10",
+        "game_id": 2,
+        "frames": 1033,
+        "raw_policy_trace_exact": true,
+        "memory_fields": 19,
+        "original_memory_continuous": true,
+        "control_exact": true
+      },
+      {
+        "variant": "v11",
+        "game_id": 1,
+        "frames": 554,
+        "raw_policy_trace_exact": true,
+        "memory_fields": 19,
+        "original_memory_continuous": true,
+        "control_exact": false
+      },
+      {
+        "variant": "v11",
+        "game_id": 2,
+        "frames": 554,
+        "raw_policy_trace_exact": true,
+        "memory_fields": 19,
+        "original_memory_continuous": true,
+        "control_exact": false
+      }
+    ],
+    "total_candidate_invalid": 0,
+    "total_candidate_malformed": 0,
+    "total_opponent_invalid": 138,
+    "total_opponent_malformed": 0,
+    "input_sha256": {
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/amin-selected/results/report.json": "5080304bece53cdf1c19f8fa8fcf319c4f004a0e2e7d19637101644e9b7ba698",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/amin-selected/results/v10/game-0001.json": "7bed4586d7b813345a4593d4918bc7b62cda34212a102da11b1b9341f1be9fea",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0001-policy.jsonl": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/amin-selected/results/v10/game-0002.json": "d130b5d75181b5e7b244af6cbf346c66c6c27aad8fef8a4d3527c8aae9e18b45",
+      ".cache/runs/sentinel-v11/amin-selected/results/v10/game-0002-policy.jsonl": "7c97bf8b22bf8833ef9f53765fddd563f6e33f2496085d6d81e7c1dbc175106a",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/amin-selected/results/v11/game-0001.json": "a6fb41d09e4bf8e4aebb3c9913c6e1dc522c970e501e0e1505a92996f5821f8d",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0001-policy.jsonl": "d1e7f2406a7010e4ac698da0a57e49ff80ec89e91165b43d488a30ef3876d832",
+      "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/amin-selected/results/v11/game-0002.json": "80cf60c7526642525a67e9c884e725880f763f3926faf4947a2e2bdaa5febf3b",
+      ".cache/runs/sentinel-v11/amin-selected/results/v11/game-0002-policy.jsonl": "5db936cc47308c4a1c39422f34726caf473dda8f13e72e86a65f54814be46834"
+    },
+    "scope": "Integrity/completion only; candidate outcomes not interpreted. Opponent invalids retained with original normalization."
+  },
+  "external_postcheck_summary": {
+    "complete": true,
+    "games": 8,
+    "frames": 5712,
+    "control_frames_exact": 2996,
+    "zero_invalid_malformed_opponent_faults": true,
+    "all_children_clean": true,
+    "qualified_bundle_identities_unchanged": {
+      "juraj-v35": "5c0def9c72ad44aa5379f0ed371694f070aee701b9a7baacb75b8429276ea736",
+      "my-bot9": "5c0def9c72ad44aa5379f0ed371694f070aee701b9a7baacb75b8429276ea736"
+    },
+    "mirrors": [
+      {
+        "variant": "v10",
+        "opponent": "juraj-v35",
+        "games": [
+          12,
+          15
+        ],
+        "frames": 422,
+        "exact_normalized": true
+      },
+      {
+        "variant": "v10",
+        "opponent": "my-bot9",
+        "games": [
+          4,
+          7
+        ],
+        "frames": 1076,
+        "exact_normalized": true
+      },
+      {
+        "variant": "v11",
+        "opponent": "juraj-v35",
+        "games": [
+          12,
+          15
+        ],
+        "frames": 887,
+        "exact_normalized": true
+      },
+      {
+        "variant": "v11",
+        "opponent": "my-bot9",
+        "games": [
+          4,
+          7
+        ],
+        "frames": 471,
+        "exact_normalized": true
+      }
+    ],
+    "limitations": [
+      "Candidate synchronous timing is not stdio qualification.",
+      "These are selected consumed placements; mirror games are not independent samples.",
+      "Public counts and wire-visible tiles support policy-relevant analysis; complete engine arrays verify mechanics only.",
+      "Paired adaptive trajectories establish effects of whole policies, not causal attribution of each later individual gate."
+    ],
+    "episodes": [
+      {
+        "variant": "v10",
+        "opponent": "juraj-v35",
+        "game_id": 12,
+        "turns": 422,
+        "result": "loss",
+        "gate_count": 0,
+        "build_turns": [],
+        "pass_count": 12,
+        "moves": 410,
+        "first_general_reveal": null,
+        "last_public_economy": {
+          "turn": 421,
+          "land": 88,
+          "army": 291,
+          "opponent_land": 121,
+          "opponent_army": 454,
+          "home_army": 10,
+          "castles": 0,
+          "largest_field": 16
+        }
+      },
+      {
+        "variant": "v10",
+        "opponent": "juraj-v35",
+        "game_id": 15,
+        "turns": 422,
+        "result": "loss",
+        "gate_count": 0,
+        "build_turns": [],
+        "pass_count": 12,
+        "moves": 410,
+        "first_general_reveal": null,
+        "last_public_economy": {
+          "turn": 421,
+          "land": 88,
+          "army": 291,
+          "opponent_land": 121,
+          "opponent_army": 454,
+          "home_army": 10,
+          "castles": 0,
+          "largest_field": 16
+        }
+      },
+      {
+        "variant": "v10",
+        "opponent": "my-bot9",
+        "game_id": 4,
+        "turns": 1076,
+        "result": "win",
+        "gate_count": 0,
+        "build_turns": [
+          362,
+          479,
+          865,
+          955,
+          969,
+          1011
+        ],
+        "pass_count": 12,
+        "moves": 1058,
+        "first_general_reveal": 1045,
+        "last_public_economy": {
+          "turn": 1075,
+          "land": 107,
+          "army": 658,
+          "opponent_land": 29,
+          "opponent_army": 432,
+          "home_army": 26,
+          "castles": 7,
+          "largest_field": 130
+        }
+      },
+      {
+        "variant": "v10",
+        "opponent": "my-bot9",
+        "game_id": 7,
+        "turns": 1076,
+        "result": "win",
+        "gate_count": 0,
+        "build_turns": [
+          362,
+          479,
+          865,
+          955,
+          969,
+          1011
+        ],
+        "pass_count": 12,
+        "moves": 1058,
+        "first_general_reveal": 1045,
+        "last_public_economy": {
+          "turn": 1075,
+          "land": 107,
+          "army": 658,
+          "opponent_land": 29,
+          "opponent_army": 432,
+          "home_army": 26,
+          "castles": 7,
+          "largest_field": 130
+        }
+      },
+      {
+        "variant": "v11",
+        "opponent": "juraj-v35",
+        "game_id": 12,
+        "turns": 887,
+        "result": "loss",
+        "gate_count": 8,
+        "build_turns": [
+          765,
+          861
+        ],
+        "pass_count": 12,
+        "moves": 873,
+        "first_general_reveal": null,
+        "last_public_economy": {
+          "turn": 886,
+          "land": 106,
+          "army": 476,
+          "opponent_land": 155,
+          "opponent_army": 965,
+          "home_army": 25,
+          "castles": 1,
+          "largest_field": 24
+        }
+      },
+      {
+        "variant": "v11",
+        "opponent": "juraj-v35",
+        "game_id": 15,
+        "turns": 887,
+        "result": "loss",
+        "gate_count": 8,
+        "build_turns": [
+          765,
+          861
+        ],
+        "pass_count": 12,
+        "moves": 873,
+        "first_general_reveal": null,
+        "last_public_economy": {
+          "turn": 886,
+          "land": 106,
+          "army": 476,
+          "opponent_land": 155,
+          "opponent_army": 965,
+          "home_army": 25,
+          "castles": 1,
+          "largest_field": 24
+        }
+      },
+      {
+        "variant": "v11",
+        "opponent": "my-bot9",
+        "game_id": 4,
+        "turns": 471,
+        "result": "win",
+        "gate_count": 5,
+        "build_turns": [
+          450
+        ],
+        "pass_count": 12,
+        "moves": 458,
+        "first_general_reveal": 250,
+        "last_public_economy": {
+          "turn": 470,
+          "land": 63,
+          "army": 194,
+          "opponent_land": 44,
+          "opponent_army": 113,
+          "home_army": 41,
+          "castles": 0,
+          "largest_field": 22
+        }
+      },
+      {
+        "variant": "v11",
+        "opponent": "my-bot9",
+        "game_id": 7,
+        "turns": 471,
+        "result": "win",
+        "gate_count": 5,
+        "build_turns": [
+          450
+        ],
+        "pass_count": 12,
+        "moves": 458,
+        "first_general_reveal": 250,
+        "last_public_economy": {
+          "turn": 470,
+          "land": 63,
+          "army": 194,
+          "opponent_land": 44,
+          "opponent_army": 113,
+          "home_army": 41,
+          "castles": 0,
+          "largest_field": 22
+        }
+      }
+    ]
+  },
+  "external_preflight_correction": {
+    "first_attempt_exit_code": 1,
+    "games_started": 0,
+    "actor_or_opponent_spawned": false,
+    "first_failure": "Pre-spawn identity() excludes archive metadata fields; original source/binary hashes unchanged.",
+    "first_log_sha256": "fcf3b676549cf93c4dff18e0afd8d16c09abaeb72f7abad1c30401e6bacea806",
+    "original_freeze_sha256": "7dd510df0e352ee61a77f1997da90e99ac70f4fc2cd841330d81d9307f4f0cf3",
+    "original_helper_sha256": "4f97fc519763c1540550f1dbb6bd01dfd9d197e8928439f18a1308e0f02f7ace",
+    "corrected_helper_sha256": "44ebad3ec2251279a025055792eaeadd65c6b144a3f670eb70a0a888771d014f",
+    "corrected_freeze_sha256": "dac7ab4dc352794808ecba50b9b7d2c7f6e8940cff877e8adfa9f94c8998efbb",
+    "diff_sha256": "325a267f9f8aa60ddb82fc386271205a9a37f22d216cd041c715dd9daf982078",
+    "preflight_bound_files": 79,
+    "plan_source_prerequisites_unchanged": true,
+    "root_authorized": true
+  },
+  "runner_freezes": {
+    "amin": {
+      "base_commit": "7105a06db600c7df94e09561068f1c721af306c4",
+      "source_sha256": {
+        "competition/agents/sentinel_python/main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+        "competition/agents/sentinel_python/warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790",
+        "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+        "generals/agents/__init__.py": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190",
+        "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+        "generals/agents/expander_agent.py": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75",
+        "generals/agents/harvester_agent.py": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d",
+        "generals/agents/hunter_agent.py": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8",
+        "generals/agents/random_agent.py": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e",
+        "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+        "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+        "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+        "generals/agents/sentinel_v4_agent.py": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744",
+        "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+        "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+        "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+        "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+        "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+        "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+        "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+        "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+        "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+        "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+        "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+        "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+        "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+        "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+        "generals/evaluation/__init__.py": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09",
+        "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+        "generals/evaluation/cli.py": "497d3fdcfb57df1ddb008f1a4d688f3ca59126c1397ebdfb170342204886a577",
+        "generals/evaluation/replay.py": "0bae47b6592fc6333ebc6db9375d1c5f33489759433418453eb0f57b6444176d",
+        "generals/evaluation/report.py": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f",
+        "generals/evaluation/scenarios.py": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd",
+        "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+        "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+        "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+        "scripts/build_sentinel_bundle.py": "8818d4ca48fbf90f1ab18bb944acd067dce1a8f6b9a9b30996258c1a70290765",
+        "scripts/compare_agent_runs.py": "cd0781b71668c72a47f2f1800d8c9c71009a58d9c77821e06f25539a878d0b52",
+        "scripts/probe_sentinel_bundle.py": "ff0d60c9ebde2b07087f8c9ca7e4be57c7a7ea3c888684510296dd1173db7910",
+        "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+        "scripts/strategy_arena.py": "330144c0965f445cfe10071410ac1c231a4a3ca5d615ebaae2badb2ce63e8cc6",
+        "generals/agents/sentinel_v11_agent.py": "0806fb408d4ad2639f9187fb5b979bdeb79793fb6fd8201d3319901fb7c46503"
+      },
+      "prerequisite_sha256": {
+        "docs/agent-development/v11-plan.md": "7f1849c76eb686217b712666db61b49752d36a13daa7aeec7465dd3b3fbd2af4",
+        "tests/test_sentinel_v11_agent.py": "aad40eeed07eeb6b881c11b4e7a46b69aac32c7f8c088f0672333408ed4dbb15",
+        "tests/fixtures/capture-priority-amin-129.json": "4888dab34aaea590e111d8f37b44f4a3224ffc91ad14526adbd687b5edf99fb4",
+        "tests/fixtures/capture-priority-juraj-129.json": "0ffb270fe5ed7ae4ecf2c3ba28ff9cd0d70b773c0e0f4c85ceda93ddb5aba64a",
+        "tests/fixtures/capture-priority-juraj-130.json": "cd4446741382fee113a0be7eadeab0d427f37c26ab46d26ab3a542d6e43767ed",
+        ".cache/runs/sentinel-v11/policy-tests-attempt1.log": "cd7435eb334a5851cd5aafb01769ed08525b8cf71b29a8aabf538b0691f47b90",
+        ".cache/runs/sentinel-v11/continuation-test.log": "bdd052506caebe708d4de227fc7464b973e6789fb6a0ad21650e10fa83c63292",
+        ".cache/runs/sentinel-v11/warm-profile/report.json": "8860ba618d8ac9dece5a2b84ab398add59b9627763cb965a7377d6e48a8e87bb",
+        ".cache/runs/sentinel-v11/warm-profile/benchmark.py": "6971fa23b87a3966a20279cab2e21bb22486d2e10dc5cda256e14ec4b6d8a9f3",
+        ".cache/runs/sentinel-v10/development/amin-development/v10/metadata.json": "bfdfeaf2916e20efaac6aacd1fb7da0b7ae2ab96cdba09a02474a405cf20b074",
+        ".cache/runs/sentinel-v10/development/amin-development/v10/status.json": "29acb3a5279fdebf4101a292ac54d5e17ef7c474e6a0e192c4f0c7df6c7d9373",
+        ".cache/runs/sentinel-v10/development/amin-development/v10/boards.npz": "cc1d87328867c67ec995bdb6d1308c9297139c35350fa2cb2a934ee156bd19eb",
+        ".cache/runs/sentinel-v10/development/amin-development/v10/game-0001.json": "2e934a022cf3293c8197270492504db6f98418a4aae2ba429069a49d58dd8d0c",
+        ".cache/runs/sentinel-v10/development/amin-development/v10/game-0002.json": "57258cf6d664f617264803087ef09df9cb575054ddc4cbe51cf7afd637f3f624",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/metadata.json": "8a8146cfafe44b5f9f2681fced0cdc82472d18afec0fe6349e8dc9d30c4661c6",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/status.json": "6f530b1dcc31c6040158df9984381b65fcc0958785744922c53bd199d01a7456",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/parity.json": "8b1e77f74efc5896bfc64ebe6fa480a060002920e30c12065efe19443aa25a53",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0000.json": "703286c9df3094d3d77b9e1d4570b3db98b2ca0f01e521e1965a60e08160aae2",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0001.json": "1b529158c0f439aa0a9c83d961aa3772c9cf42de94108e25043a240c5bb287f1",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0002.json": "3639fdcc280a6cad081b94b8ee8ae242f39fafb445da533a8cd9bd463521ec22",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0003.json": "a6f79459d66923f02d60bd490bd282c42515f0482ab13e51f81438ceb2aa9124",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0004.json": "3ac1aa3233fef9a3b1a63d7dbf6c1620bae30a72e3e4d0463cf89021a9d46b24",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0005.json": "3982f330924a5c9fc1d7cfe89fc5886c9c85c6e0895c54110088da1f2b67d6b1",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0006.json": "a68630d0fecd4df2ce8bcf79c89968cab292eb641444fc561cab3dde0e5802c1",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0007.json": "f06af9e00d807dd34bb758a201a5dce1c7db87c3728fbe22d6c49a4ecacb828b",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0008.json": "b7b11ee6b0aa12ab6fa044c2092b0f362e4bac1f5c41effdd33f9ba1bf81c5c4",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0009.json": "f52330d8002323f5775d020a5dcd748b655f5c5fbf300ef1a2fe5acdb63b7ba6",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0010.json": "bf123fd4ebac2fdeca14796bc0c40754b0e00f34a68668741e78a34620f393b7",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0011.json": "5a79b6b01d55b6e4ef823b391f24f80ccf6d3e2a01059a9b32c52b95b6e09eea",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0012.json": "e33ac59dabfd548a70e6a90f1703904d22cb66e9502afaaf98d1745a0bf2d89f",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0013.json": "406fbb28d89e302eea22984a117290633978b3d0616a9e7be0a52e66ec537e39",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0014.json": "c5069e93b31cab4d45030fc87a24fe574f21dc8f1a89963dd32239ee9cb98ef9",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0015.json": "291b1d9cace631b29053ffa9ed47db227b4597546ec8d7f124c46362d37f3b29",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0016.json": "a7701670269e4dd03d59a679a075aeb919bd944453c8d6f54fdbb65c3df5b493",
+        ".cache/runs/sentinel-v10/development/amin-adapter-parity/history-0017.json": "b75a26a59f2ccc638620744b9698921cc64e590367e12021bd380c0ffc4a3ca7",
+        ".cache/runs/sentinel-v4/parity-histories/v2-game0.json": "afe25fa96fbf6fe338500d086bda685a2ea9a7321ce82eaf712174fe0bf3bb50",
+        ".cache/runs/sentinel-v4/parity-histories/r2-game0.json": "8e9bbe0e8e509366e6f7a3dc29dd0f4ae104eca9bcb44ee521b30a09f92e0573",
+        ".cache/runs/external-opponents/amin-main8-iter160/submission.zip": "d69cc5d28e4805faf629c5c072a6d23011c727ca4a3b3da9f5e890ea82b78755",
+        ".cache/runs/sentinel-v11/amin-selected/check_recording.py": "9f87deccffe2b032abcf76991de0309baa0bb19118027c890ca62d571689638d",
+        ".cache/runs/sentinel-v11/amin-selected/recording-check.log": "81ed5616b24fc46e7bfb8cacdef7caf9e5182c65062b5e4d37f3bd660e70b08b",
+        ".cache/runs/external-opponents/amin-main8-iter160/agent/weights.npz": "2f83d9ce5dd69905838eb05979c4c814fdde7b768dbb1733702384a3082b10f4",
+        ".cache/runs/external-opponents/amin-main8-iter160/agent/numpy_infer.py": "2f68efed6ac37e837a0c2852c31148fb1d01d406be31b436e3e4d695e4ef2117",
+        ".cache/runs/external-opponents/amin-main8-iter160/agent/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+        ".cache/runs/external-opponents/amin-main8-iter160/agent/agent.py": "8dce9df95fc1c45be6ee7f4387dd2be07c79db8bcede5b412d67959c0367cfe6",
+        ".cache/runs/external-opponents/amin-main8-iter160/agent/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+        ".cache/runs/external-opponents/amin-main8-iter160/agent/weights_meta.json": "e9c65e62a6f03664b839c2d28e912a9399332a0df73d53c20f532568d18e5789"
+      },
+      "focused_tests_passed": 6,
+      "reserved_seed_unused": 143000,
+      "plan_sha256": "5522610173afae64f060959c1c06dade3e9526e98bf0c2ae8748ada08cca5b3e",
+      "helper_sha256": {
+        ".cache/runs/sentinel-v11/amin-selected/run.py": "4ba47f1e445266800a3d2a590fd360f33e0aa791fe9e276d2425e74e09894971"
+      }
+    },
+    "external": {
+      "base_commit": "7105a06db600c7df94e09561068f1c721af306c4",
+      "source_sha256": {
+        "competition/agents/sentinel_python/main.py": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e",
+        "competition/agents/sentinel_python/warm_cache.py": "e56fa7db8445546d5b8215b6ad0b42bc47bcf83f342a2e2b3cb0b2978f85c790",
+        "competition/protocol.py": "f57c6464fde6b51dec9face6cf18c44a4d92f97c05ee58728b6fedaf48906ecb",
+        "generals/agents/__init__.py": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190",
+        "generals/agents/agent.py": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930",
+        "generals/agents/expander_agent.py": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75",
+        "generals/agents/harvester_agent.py": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d",
+        "generals/agents/hunter_agent.py": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8",
+        "generals/agents/random_agent.py": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e",
+        "generals/agents/sentinel_agent.py": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e",
+        "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+        "generals/agents/sentinel_v3_agent.py": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896",
+        "generals/agents/sentinel_v4_agent.py": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744",
+        "generals/agents/sentinel_v5_agent.py": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b",
+        "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+        "generals/agents/sentinel_v7_agent.py": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544",
+        "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+        "generals/agents/sentinel_v9_agent.py": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b",
+        "generals/core/__init__.py": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef",
+        "generals/core/action.py": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757",
+        "generals/core/config.py": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e",
+        "generals/core/env.py": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab",
+        "generals/core/game.py": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f",
+        "generals/core/grid.py": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4",
+        "generals/core/observation.py": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593",
+        "generals/core/rendering.py": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6",
+        "generals/core/rewards.py": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072",
+        "generals/evaluation/__init__.py": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09",
+        "generals/evaluation/arena.py": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8",
+        "generals/evaluation/cli.py": "497d3fdcfb57df1ddb008f1a4d688f3ca59126c1397ebdfb170342204886a577",
+        "generals/evaluation/replay.py": "0bae47b6592fc6333ebc6db9375d1c5f33489759433418453eb0f57b6444176d",
+        "generals/evaluation/report.py": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f",
+        "generals/evaluation/scenarios.py": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd",
+        "generals/modifiers/__init__.py": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9",
+        "generals/modifiers/build_castles.py": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b",
+        "generals/modifiers/deathtouch.py": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800",
+        "scripts/build_sentinel_bundle.py": "8818d4ca48fbf90f1ab18bb944acd067dce1a8f6b9a9b30996258c1a70290765",
+        "scripts/compare_agent_runs.py": "cd0781b71668c72a47f2f1800d8c9c71009a58d9c77821e06f25539a878d0b52",
+        "scripts/probe_sentinel_bundle.py": "ff0d60c9ebde2b07087f8c9ca7e4be57c7a7ea3c888684510296dd1173db7910",
+        "scripts/stdio_arena.py": "cc5f8df6d6e74302ca920cbdefeb6d6beddee204cc028f45dad080b867421a1b",
+        "scripts/strategy_arena.py": "330144c0965f445cfe10071410ac1c231a4a3ca5d615ebaae2badb2ce63e8cc6",
+        "generals/agents/sentinel_v11_agent.py": "0806fb408d4ad2639f9187fb5b979bdeb79793fb6fd8201d3319901fb7c46503"
+      },
+      "prerequisite_sha256": {
+        "docs/agent-development/v11-plan.md": "7f1849c76eb686217b712666db61b49752d36a13daa7aeec7465dd3b3fbd2af4",
+        "tests/test_sentinel_v11_agent.py": "aad40eeed07eeb6b881c11b4e7a46b69aac32c7f8c088f0672333408ed4dbb15",
+        "tests/fixtures/capture-priority-amin-129.json": "4888dab34aaea590e111d8f37b44f4a3224ffc91ad14526adbd687b5edf99fb4",
+        "tests/fixtures/capture-priority-juraj-129.json": "0ffb270fe5ed7ae4ecf2c3ba28ff9cd0d70b773c0e0f4c85ceda93ddb5aba64a",
+        "tests/fixtures/capture-priority-juraj-130.json": "cd4446741382fee113a0be7eadeab0d427f37c26ab46d26ab3a542d6e43767ed",
+        ".cache/runs/sentinel-v11/policy-tests-attempt1.log": "cd7435eb334a5851cd5aafb01769ed08525b8cf71b29a8aabf538b0691f47b90",
+        ".cache/runs/sentinel-v11/continuation-test.log": "bdd052506caebe708d4de227fc7464b973e6789fb6a0ad21650e10fa83c63292",
+        ".cache/runs/sentinel-v11/warm-profile/report.json": "8860ba618d8ac9dece5a2b84ab398add59b9627763cb965a7377d6e48a8e87bb",
+        ".cache/runs/sentinel-v11/warm-profile/benchmark.py": "6971fa23b87a3966a20279cab2e21bb22486d2e10dc5cda256e14ec4b6d8a9f3"
+      },
+      "focused_tests_passed": 6,
+      "reserved_seed_unused": 143000,
+      "plan_sha256": "69953d531e09c118e48d5f66a6143ed920b1f0ed220489b0366c408fbce83895",
+      "helper_sha256": {
+        ".cache/runs/sentinel-v11/external-selected/shared.py": "8af6481ad2a8f42778ecb44e5876b0da05662ab881343533b8b520b6c5352ef4",
+        ".cache/runs/sentinel-v11/external-selected/actor.py": "3ebdb693f0d00ac81da5aa68fa6098fed7c14dacf8e1c2124522b3319543bf83",
+        ".cache/runs/sentinel-v11/external-selected/coordinator.py": "4f97fc519763c1540550f1dbb6bd01dfd9d197e8928439f18a1308e0f02f7ace",
+        ".cache/runs/sentinel-v11/external-selected/coordinator-r2.py": "44ebad3ec2251279a025055792eaeadd65c6b144a3f670eb70a0a888771d014f"
+      },
+      "input_sha256": {
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/juraj-v35-development/v10/metadata.json": "e71dc5084b77aaacc1cc814e436de294696ec152bb002f57e977a0db27208ece",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/juraj-v35-development/v10/boards.npz": "96700b60728c67853929d292804568d9c52904cef92b9fb04d097e6257a94655",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/juraj-v35-development/v10/game-0012.json": "78aae23c03177f57e207bd083daf5dbd0f621fef222d59b73800cfef97cc99bb",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/juraj-v35-development/v10/game-0015.json": "83e8864d3dfa3a8fc5192e29d7f2a1291f2d59fcea1eeb0c9373c7165cd8c4b7",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/DESIGN.md": "1ebb8b79693a63f5a0a616aed58925031b15be814443d87cb269331d80a0b649",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/README.md": "12a70815506278d201d5f174f2609876704277e6dca6c26377066a7092aea0bd",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/agent": "4126a3b3c514632e189866935e06e84093d20e9a7be622f2c528204954b55fbb",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/build.sh": "7e022c2c59996406b18c4221c2ceb3cb3980aeb6b2446bb5d5d6a127d0dfaa64",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/core.hpp": "2935560a2360ec9ac510befeae7fb0a57988767d1faefccaa94fef9f05cd9a07",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/main.cpp": "5d8cf45be4d81861c92b5241e4e6e0446454046d75290f55b69024320579c912",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/agent/run.sh": "ac272996e744283df3042ad61cb0de34de945fcb2bf40fcee14d87afa7e1e0ae",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/my-bot9-development/v10/metadata.json": "ee40387a61f382e41612ed4edffc28be9fa7d3ef48cf0348b46bb19e07158029",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/my-bot9-development/v10/boards.npz": "96700b60728c67853929d292804568d9c52904cef92b9fb04d097e6257a94655",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/my-bot9-development/v10/game-0004.json": "00bfffc5bfc2027fe12fda1998200d0c634d4f7313629a69870d03d53dc10967",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v10/development/my-bot9-development/v10/game-0007.json": "a9d37add825f024536049c5d8c68230300308f840867d2c6bbe956dc5b9d37b6",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/LICENSE": "71d16a9ff9535844b4a2b398906440e78c5a412b16dd5fdebad940eabbcbf7c1",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/agent.py": "60fe7d02b05af0a7c0b3c06cbb1df0e62ef04673d2b340df080cc2c887d88e6d",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/main.py": "f6d40b823538f810abcb2444758239462d5ce4a87a2937f6a28ee156851e802a",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/prepared/my_bot9/run.sh": "1818ea7b9fc4811ab01f31a195fb813a2910c2cdb59369a144b5a0e990112c75",
+        "/home/relh/Code/generals-bots/.cache/runs/external-opponents/juraj-v35/submission-source.zip": "cfd612d313da65e0ae775f067996a32fc118d89d3543bc5ef765a1e3e943051a",
+        "/home/relh/Code/generals-bots/.cache/runs/sentinel-v8/opponent-coverage/my_bot9-f624c741.zip": "46febea1ef6ffbf1d110c48de9ae742d04c422562cd339627da1b72caa80737b"
+      }
+    }
+  },
+  "artifact_sha256": {
+    ".cache/runs/sentinel-v11/build-delivery.py": "67018fc1de2848b97419b9cc14fc50a17c54bf91972757385382a64e653240ad",
+    ".cache/runs/sentinel-v11/selected-summary.json": "9aa446e4c9b8ea43c151cf92a1414059717e8694fdb14f7498145782ff46e48a",
+    ".cache/runs/sentinel-v11/summarize-selected.py": "fffa4930fdddfe556168327656cbbcbffda437a53b09a96daad6228b683d0fcd",
+    ".cache/runs/sentinel-v11/selected-summary.log": "ee07d4d469311cdbf4b01c8810c90f8a0f64332db77dac1dc73d043ebbf40252",
+    ".cache/runs/sentinel-v11/amin-selected/postchecks.json": "f2eb03bb31db7c3ad9b0917069b45bb77eca324a2ac0a912e7c43ff045969e9d",
+    ".cache/runs/sentinel-v11/amin-selected/results/report.json": "5080304bece53cdf1c19f8fa8fcf319c4f004a0e2e7d19637101644e9b7ba698",
+    ".cache/runs/sentinel-v11/external-selected/postcheck-and-trajectories.json": "45bb3379e961c8cc50c2aff8129ab17a79ee5f26d79f9dc2107ba9ab74d83df0",
+    ".cache/runs/sentinel-v11/external-selected/results-attempt2/report.json": "daac8dfa09e84498a8555a7b21ad064f1caf62765180f23a8db36a309bc644a4",
+    ".cache/runs/sentinel-v11/external-selected/attempt1-failure-and-r2-correction.json": "8657bf7ea9afdec95539e6260797423d410aeddf930a67f5cf5f27dc2758c5e4",
+    ".cache/runs/sentinel-v11/external-selected/coordinator-r2.patch": "325a267f9f8aa60ddb82fc386271205a9a37f22d216cd041c715dd9daf982078",
+    ".cache/runs/sentinel-v11/warm-profile/delivery-evidence.json": "3678b427721f904a9a8dd08f4e8bbd63bd869902f7fef6838046c595b6a849cb",
+    ".cache/runs/sentinel-v11/independent-review/selected-review.json": "b28486e0e008524a8b0ca1f209e09028a4f737c29b8d881239326b1e3271dfc7",
+    ".cache/runs/sentinel-v11/independent-review/review_selected.py": "97ac5c3bf42cde737a865fabcf30d60c8984dea3b55028cbfb0e96c8b8da9bcf",
+    ".cache/runs/sentinel-v11/amin-selected/plan.json": "5522610173afae64f060959c1c06dade3e9526e98bf0c2ae8748ada08cca5b3e",
+    ".cache/runs/sentinel-v11/amin-selected/source-freeze.json": "aa35b9f77e1ad0c99e777914a50aa48a0246ed15377ca81668e0c9562f526462",
+    ".cache/runs/sentinel-v11/external-selected/plan.json": "69953d531e09c118e48d5f66a6143ed920b1f0ed220489b0366c408fbce83895",
+    ".cache/runs/sentinel-v11/external-selected/source-freeze-r2.json": "dac7ab4dc352794808ecba50b9b7d2c7f6e8940cff877e8adfa9f94c8998efbb",
+    ".cache/runs/sentinel-v11/amin-selected/analysis-v2.json": "0200af2021e9320018c3bdc60b462240e5e5561ea785a6c494e98b4ea4bd537a",
+    ".cache/runs/sentinel-v11/amin-selected/delivery-manifest.json": "2b2484d67f50ba6137a8aa9cfce67cb17e1df0c2ebc97a58e6626e5d56794927",
+    ".cache/runs/sentinel-v11/amin-selected/REPORT.md": "8516335edeb7d695af9887c6667c68cbd9dac76d0c2d1216783bbdc57ef40e97",
+    ".cache/runs/sentinel-v11/external-selected/REPORT.md": "b9831a3dc2a57893d2865d689cb2758b6760b353f1e73db2863a1859cfa62340",
+    ".cache/runs/sentinel-v11/external-selected/mechanism-bindings.json": "9098f5eef5dca71f229681992a941f621a499b8eb4e52247faeafb01251d3a26"
+  },
+  "limits": [
+    "Selected consumed mirrored positions do not establish fresh opponent strength.",
+    "No candidate deployment deadline or all-shape qualification.",
+    "Source and engine inference were not independently replayed by the aggregate reviewer; actual recorded actions, memory continuity, controls, terminal state and hashes were checked.",
+    "Full histories and helpers are local ignored cache artifacts; this committed file contains summaries and identities, not those complete archives."
+  ]
+}
