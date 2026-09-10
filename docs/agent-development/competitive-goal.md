@@ -68,6 +68,14 @@ after capture and timely local defense remain unresolved. Total army, completed
 routes and delayed capital exposure do not establish strength. V16 is not
 promoted; the default and stronger controls remain intact.
 
+The [V17 capture-chain screen](v17-results.md) also fails preservation: all 24
+games complete, but V17 loses both Amin games at 235 and both Juraj games at 790,
+while winning my_bot9 at 961. All 214 chain captures are confirmed; they do not
+repair earlier force allocation or defensive releases during threat fog.
+The original my_bot9 makes 590 invalid builds in the V17 games; those failures
+remain part of the results. Host qualification and corrected integrity checks
+pass, without promotion or a claim of broad strength.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;
