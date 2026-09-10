@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "name": "amin-productive-collection-counterexample",
+  "game_id": 1,
+  "turn": 193,
+  "player_id": 1,
+  "shape": [
+    21,
+    18
+  ],
+  "rules": {
+    "max_turns": 1200,
+    "build_castles": true,
+    "deathtouch_turn": 800
+  },
+  "public_wire": "193 74 158 66 152\n5 0 0 0 5 5 5 0 0 0 0 0 0 5 0 0 0 0\n0 0 0 5 0 0 0 0 0 0 0 0 0 0 5 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0\n0 0 5 5 0 0 0 0 0 5 0 0 0 0 0 0 5 0\n0 5 0 0 5 0 0 5 0 0 0 0 5 0 0 0 0 0\n0 5 0 0 0 0 0 0 0 0 0 5 0 5 0 5 0 5\n0 0 0 0 0 5 0 0 1 1 2 0 0 0 0 0 5 0\n0 0 0 0 0 0 0 0 1 1 1 0 2 1 2 1 2 1\n0 0 0 0 0 0 2 1 1 1 2 1 1 1 1 1 1 4\n0 0 0 0 0 5 2 1 1 1 1 1 1 1 2 2 1 1\n5 0 5 0 0 0 2 1 2 1 2 1 1 1 1 1 1 1\n0 2 1 1 1 1 1 1 2 1 1 1 1 1 1 2 1 1\n5 2 1 1 1 1 1 1 1 1 1 2 1 2 1 2 2 1\n1 2 1 1 1 1 1 1 2 1 1 5 0 1 1 1 2 1\n1 1 1 1 0 0 0 5 1 2 1 5 5 1 1 2 1 1\n2 1 1 1 0 5 0 0 0 5 0 1 1 1 1 1 1 2\n1 1 1 5 0 5 0 0 0 0 1 2 1 1 1 1 1 1\n1 2 1 0 5 0 0 1 2 2 2 1 1 1 1 2 2 1\n1 1 1 1 1 1 1 2 1 1 1 1 2 1 2 1 0 0\n1 1 1 1 1 1 1 1 1 1 2 1 1 0 0 5 0 0\n1 1 2 1 1 1 2 1 1 1 1 5 5 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 1\n0 0 0 0 0 0 0 1 0 1 1 1 1 1 0 0 1 1\n0 0 0 0 0 0 0 1 0 2 0 0 0 1 1 1 1 1\n0 0 0 0 0 0 0 1 0 2 1 1 1 1 1 0 0 1\n0 0 1 1 1 1 1 1 0 2 2 0 0 0 1 0 0 1\n0 0 1 0 0 0 0 0 0 1 2 0 0 0 1 0 0 1\n0 1 1 0 0 0 0 0 0 0 2 0 0 0 1 0 1 1\n0 1 0 0 0 0 0 0 0 0 0 2 2 2 2 2 1 0\n1 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0\n1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0\n1 1 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0\n0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 25\n0 0 0 0 0 0 0 11 0 1 1 1 1 1 0 0 3 1\n0 0 0 0 0 0 0 1 0 1 0 0 0 1 1 1 1 1\n0 0 0 0 0 0 0 1 0 1 1 1 1 1 1 0 0 1\n0 0 2 2 2 2 2 1 0 1 1 0 0 0 1 0 0 1\n0 0 2 0 0 0 0 0 0 1 1 0 0 0 2 0 0 1\n0 2 2 0 0 0 0 0 0 0 1 0 0 0 2 0 1 1\n0 2 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0\n2 2 0 0 0 0 0 0 0 0 0 0 3 3 2 2 2 0\n2 0 0 0 0 0 0 0 0 0 0 2 2 2 2 0 0 0\n2 2 0 0 0 0 0 0 2 2 2 2 0 0 0 0 0 0\n0 2 2 2 2 2 2 2 2 3 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+  "wire_observation": "193 74 158 66 152\n5 0 0 0 5 5 5 0 0 0 0 0 0 5 0 0 0 0\n0 0 0 5 0 0 0 0 0 0 0 0 0 0 5 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0\n0 0 5 5 0 0 0 0 0 5 0 0 0 0 0 0 5 0\n0 5 0 0 5 0 0 5 0 0 0 0 5 0 0 0 0 0\n0 5 0 0 0 0 0 0 0 0 0 5 0 5 0 5 0 5\n0 0 0 0 0 5 0 0 1 1 2 0 0 0 0 0 5 0\n0 0 0 0 0 0 0 0 1 1 1 0 2 1 2 1 2 1\n0 0 0 0 0 0 2 1 1 1 2 1 1 1 1 1 1 4\n0 0 0 0 0 5 2 1 1 1 1 1 1 1 2 2 1 1\n5 0 5 0 0 0 2 1 2 1 2 1 1 1 1 1 1 1\n0 2 1 1 1 1 1 1 2 1 1 1 1 1 1 2 1 1\n5 2 1 1 1 1 1 1 1 1 1 2 1 2 1 2 2 1\n1 2 1 1 1 1 1 1 2 1 1 5 0 1 1 1 2 1\n1 1 1 1 0 0 0 5 1 2 1 5 5 1 1 2 1 1\n2 1 1 1 0 5 0 0 0 5 0 1 1 1 1 1 1 2\n1 1 1 5 0 5 0 0 0 0 1 2 1 1 1 1 1 1\n1 2 1 0 5 0 0 1 2 2 2 1 1 1 1 2 2 1\n1 1 1 1 1 1 1 2 1 1 1 1 2 1 2 1 0 0\n1 1 1 1 1 1 1 1 1 1 2 1 1 0 0 5 0 0\n1 1 2 1 1 1 2 1 1 1 1 5 5 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 1\n0 0 0 0 0 0 0 1 0 1 1 1 1 1 0 0 1 1\n0 0 0 0 0 0 0 1 0 2 0 0 0 1 1 1 1 1\n0 0 0 0 0 0 0 1 0 2 1 1 1 1 1 0 0 1\n0 0 1 1 1 1 1 1 0 2 2 0 0 0 1 0 0 1\n0 0 1 0 0 0 0 0 0 1 2 0 0 0 1 0 0 1\n0 1 1 0 0 0 0 0 0 0 2 0 0 0 1 0 1 1\n0 1 0 0 0 0 0 0 0 0 0 2 2 2 2 2 1 0\n1 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0\n1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0\n1 1 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0\n0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 1 0 0 0 1 1 1 1 25\n0 0 0 0 0 0 0 11 0 1 1 1 1 1 0 0 3 1\n0 0 0 0 0 0 0 1 0 1 0 0 0 1 1 1 1 1\n0 0 0 0 0 0 0 1 0 1 1 1 1 1 1 0 0 1\n0 0 2 2 2 2 2 1 0 1 1 0 0 0 1 0 0 1\n0 0 2 0 0 0 0 0 0 1 1 0 0 0 2 0 0 1\n0 2 2 0 0 0 0 0 0 0 1 0 0 0 2 0 1 1\n0 2 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 0\n2 2 0 0 0 0 0 0 0 0 0 0 3 3 2 2 2 0\n2 0 0 0 0 0 0 0 0 0 0 2 2 2 2 0 0 0\n2 2 0 0 0 0 0 0 2 2 2 2 0 0 0 0 0 0\n0 2 2 2 2 2 2 2 2 3 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+  "incoming_memory": {
+    "base": {
+      "defense": {
+        "defender": -1,
+        "target": -1,
+        "previous": -1,
+        "distance": 0,
+        "expires": -1,
+        "last_turn": 192,
+        "expected_army": 0
+      },
+      "packet": -1,
+      "rally": -1,
+      "objective": -1,
+      "phase": 0,
+      "remaining": 0,
+      "expires": -1,
+      "last_turn": 192,
+      "expected_army": 0
+    },
+    "enemy_general": -1,
+    "last_turn": 192,
+    "height": 21,
+    "width": 18
+  },
+  "memory_before": {
+    "base": {
+      "defense": {
+        "defender": -1,
+        "target": -1,
+        "previous": -1,
+        "distance": 0,
+        "expires": -1,
+        "last_turn": 192,
+        "expected_army": 0
+      },
+      "packet": -1,
+      "rally": -1,
+      "objective": -1,
+      "phase": 0,
+      "remaining": 0,
+      "expires": -1,
+      "last_turn": 192,
+      "expected_army": 0
+    },
+    "enemy_general": -1,
+    "last_turn": 192,
+    "height": 21,
+    "width": 18
+  },
+  "action_key": [
+    3909104073,
+    3245597736
+  ],
+  "expected_parent_action": [
+    0,
+    16,
+    12,
+    3,
+    0
+  ],
+  "expected_v10_action": [
+    0,
+    16,
+    12,
+    3,
+    0
+  ],
+  "original_returned_memory": {
+    "base": {
+      "defense": {
+        "defender": -1,
+        "target": -1,
+        "previous": -1,
+        "distance": 0,
+        "expires": -1,
+        "last_turn": 193,
+        "expected_army": 0
+      },
+      "packet": 301,
+      "rally": 302,
+      "objective": 285,
+      "phase": 1,
+      "remaining": 1,
+      "expires": 198,
+      "last_turn": 193,
+      "expected_army": 5
+    },
+    "enemy_general": -1,
+    "last_turn": 193,
+    "height": 21,
+    "width": 18
+  },
+  "original_scalar_telemetry": {
+    "actual_v8_action_issued": true,
+    "adjacent_threat": 0,
+    "building": false,
+    "candidate_count": 262,
+    "commitment_arrival_army": 0.0,
+    "commitment_continued": false,
+    "commitment_expired": false,
+    "commitment_held": false,
+    "commitment_observation_gap": false,
+    "commitment_observation_inconsistent": false,
+    "commitment_override": false,
+    "commitment_released": false,
+    "commitment_remaining": 0.0,
+    "commitment_required": 0.0,
+    "commitment_reverse_blocked": false,
+    "commitment_started": false,
+    "deathtouch_active": false,
+    "general_army": 25,
+    "general_reserve": 3.0,
+    "goal_city": false,
+    "goal_visible_general": false,
+    "intercept_arrival_army": 0.0,
+    "intercept_enemy_eta": 0.0,
+    "intercept_feasible": false,
+    "intercept_friendly_eta": 0.0,
+    "intercept_guard": false,
+    "intercept_home_deficit": 0.0,
+    "intercept_new_defense": 0.0,
+    "intercept_override": false,
+    "intercept_projected_deathtouch": false,
+    "intercept_required_defense": 0.0,
+    "intercept_target_index": -1,
+    "intercept_threat_index": -1,
+    "mobilization_arrival_army": 0.0,
+    "mobilization_donation": 0.0,
+    "mobilization_eligible": false,
+    "mobilization_home_coverage_safe": false,
+    "mobilization_home_eta": 0.0,
+    "mobilization_issued": false,
+    "mobilization_parent_action_issued": true,
+    "offense_attack_issued": false,
+    "offense_cheapest_collection": true,
+    "offense_collecting": true,
+    "offense_collection_eta": 4.0,
+    "offense_continued": false,
+    "offense_defense_priority": false,
+    "offense_delivered": 6.0,
+    "offense_deploying": false,
+    "offense_direct_available": false,
+    "offense_direct_chosen": false,
+    "offense_direct_eta": -1.0,
+    "offense_direct_started": false,
+    "offense_feasible": true,
+    "offense_home_coverage_safe": true,
+    "offense_objective": 285,
+    "offense_override": true,
+    "offense_rally": 302,
+    "offense_released": false,
+    "offense_remaining": 2.0,
+    "offense_required": 4.0,
+    "offense_started": true,
+    "pursuit_available": false,
+    "pursuit_base_column": 12,
+    "pursuit_base_direction": 3,
+    "pursuit_base_kind": 0,
+    "pursuit_base_row": 16,
+    "pursuit_base_split": 0,
+    "pursuit_home_safe": true,
+    "pursuit_issued": false,
+    "pursuit_override": false,
+    "pursuit_priority_blocked": false,
+    "remembered_general_available": false,
+    "remembered_general_hidden": false,
+    "remembered_general_index": -1,
+    "remembered_general_invalidated": false,
+    "remembered_general_visible": false,
+    "score": 15.430000305175781,
+    "strategic_map_reset": false,
+    "strategic_observation_gap": false
+  },
+  "same_observation_v6_proposal": {
+    "action": [
+      0,
+      7,
+      9,
+      0,
+      0
+    ],
+    "legal": true,
+    "capture": true,
+    "build": false,
+    "type": "move",
+    "reason": null,
+    "source": [
+      7,
+      9
+    ],
+    "source_army": 8,
+    "source_type": 1,
+    "source_owner": 1,
+    "destination": [
+      6,
+      9
+    ],
+    "split": false,
+    "moving_army": 7,
+    "target_army": 1,
+    "target_owner": 2,
+    "target_kind": "plain",
+    "target_affiliation": "enemy",
+    "deathtouch": false,
+    "stationary_capture_survivors": 6
+  },
+  "plan_observed_outcome": {
+    "start": 193,
+    "mode": "collection",
+    "estimated_actions": 4.0,
+    "actual_actions": 4,
+    "target": [
+      15,
+      15
+    ],
+    "target_type": 1,
+    "target_army": 1,
+    "target_owner": 2,
+    "start_economy": {
+      "turn": 193,
+      "land": 74,
+      "army": 158,
+      "enemy_land": 66,
+      "enemy_army": 152,
+      "largest_field_army": 11,
+      "owned_castles": 0
+    },
+    "base_proposal": {
+      "action": [
+        0,
+        7,
+        9,
+        0,
+        0
+      ],
+      "legal": true,
+      "capture": true,
+      "build": false,
+      "type": "move",
+      "reason": null,
+      "source": [
+        7,
+        9
+      ],
+      "source_army": 8,
+      "source_type": 1,
+      "source_owner": 1,
+      "destination": [
+        6,
+        9
+      ],
+      "split": false,
+      "moving_army": 7,
+      "target_army": 1,
+      "target_owner": 2,
+      "target_kind": "plain",
+      "target_affiliation": "enemy",
+      "deathtouch": false,
+      "stationary_capture_survivors": 6
+    },
+    "enemy_plain_veto": true,
+    "behindland_neutral_veto": false,
+    "end_kind": "offensive_attack_issued",
+    "capture": {
+      "issued_at_objective": true,
+      "turn": 196,
+      "target": [
+        15,
+        15
+      ],
+      "target_army_before": 1,
+      "verification": "next_public_ownership",
+      "captured": true,
+      "army_after": 5,
+      "owner_after": 1,
+      "consecutive_owned_observations_after_capture": 63,
+      "target_kind_before": 1,
+      "retention_right_censored": false
+    }
+  },
+  "classification": "A NEW COLLECTION-only gate intentionally rejects this actually productive original plan; do not assert guaranteed preservation of useful concentration.",
+  "provenance": {
+    "runtime": {
+      "python": "3.12.10 (main, May 30 2025, 05:37:37) [Clang 20.1.4 ]",
+      "executable": "/home/relh/Code/generals-bots/.cache/runs/competition-runtime-venv/bin/python",
+      "packages": {
+        "numpy": "2.4.6",
+        "jax": "0.11.0",
+        "jaxlib": "0.11.0",
+        "scipy": "1.18.0"
+      }
+    },
+    "raw_trace": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v12/amin-selected/results/v10/game-0001.json",
+    "raw_sha256": "b31a4024626a3f462c7f4d0b9058079cc6a11900404d9e58549f189894f4bd61",
+    "original_memory_trace": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v12/amin-selected/results/v10/game-0001-policy.jsonl",
+    "original_memory_sha256": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24",
+    "frozen_policy_sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+    "same_observation_v6_report": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/amin-offense-preservation/gate-checks.json",
+    "same_observation_v6_report_sha256": "ab8436b863feb4d1dcc7df5640b0a1933b0a3e6c0f21b2bf188cd352ae7bc787",
+    "memory_origin": "Original recorded V10 step, not reconstructed memory or a counterfactual replay; V6 alternative from earlier full verified same-observation audit."
+  }
+}
