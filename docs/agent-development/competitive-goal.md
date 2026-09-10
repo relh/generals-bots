@@ -61,6 +61,13 @@ out an affordable-build veto as the explanation for the early Juraj loss. These
 findings motivate investigating connected force and productive campaign or
 investment objectives; they select no policy and establish no winning advantage.
 
+The subsequent [V16 route experiment](v16-results.md) completes eighteen games
+and fails preservation: its six games yield two my_bot9 wins and four Amin/Juraj
+losses. The intended routes gather and capture correctly, yet useful movement
+after capture and timely local defense remain unresolved. Total army, completed
+routes and delayed capital exposure do not establish strength. V16 is not
+promoted; the default and stronger controls remain intact.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;
