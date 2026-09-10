@@ -1,0 +1,70 @@
+{
+  "turn": 130,
+  "shape": [
+    20,
+    19
+  ],
+  "player": 0,
+  "wire_path": "/home/relh/Code/generals-bots/.cache/runs/sentinel-v11/j35-admission-audit/turn130-public-wire.txt",
+  "wire_sha256": "6fd5d081fceaa8ac57b5c515d972e9b93d09b7bcb9b8cc30e3f49a9d5a27b277",
+  "action_key": [
+    2444938842,
+    2149161918
+  ],
+  "memory_before": {
+    "base": {
+      "defense": {
+        "defender": -1,
+        "target": -1,
+        "previous": -1,
+        "distance": 0,
+        "expires": -1,
+        "last_turn": 129,
+        "expected_army": 0
+      },
+      "packet": 296,
+      "rally": 239,
+      "objective": 219,
+      "phase": 1,
+      "remaining": 5,
+      "expires": 138,
+      "last_turn": 129,
+      "expected_army": 3
+    },
+    "enemy_general": -1,
+    "last_turn": 129,
+    "height": 20,
+    "width": 19
+  },
+  "expected_V9_action": [
+    0,
+    15,
+    11,
+    3,
+    0
+  ],
+  "expected_V6_proposal": [
+    0,
+    8,
+    8,
+    0,
+    0
+  ],
+  "expected_target": {
+    "position": [
+      11,
+      10
+    ],
+    "army": 1,
+    "owned": false,
+    "enemy": true,
+    "castle": false,
+    "general": false,
+    "visible": true
+  },
+  "source_inference": "Exact frozenV9 source replay. V10 is an inactive pre800 wrapper preserving this V9 memory/action; original V9/V10 joint raw histories422frames independently matched. No independent archived internal-memory oracle exists.",
+  "source_report_sha256": "6dd821247fef0772da7f2b28a6cc05ec26a20a0746fb681fa1c3161362d3bf8d",
+  "v10_source_sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+  "wire": "130 43 86 50 90\n0 0 5 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0 0\n5 5 0 5 0 5 0 5 0 0 5 5 0 0 0 0 0 5 0\n0 0 5 0 0 0 5 5 0 0 5 0 0 5 5 5 5 0 0\n0 0 0 0 0 0 0 0 5 0 0 0 0 0 5 0 0 0 0\n5 0 5 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 5 0 0 5 0 0 5 0 0 0 2 1 2 0 0\n0 0 0 0 5 0 0 0 5 0 0 0 0 0 1 1 2 1 1\n0 5 5 0 0 5 5 1 1 1 0 0 0 0 2 1 1 1 2\n0 0 0 0 0 0 0 1 1 2 0 5 0 5 2 1 1 4 1\n0 0 0 0 0 0 0 2 1 1 0 0 0 0 5 2 1 1 1\n5 5 0 5 0 0 0 1 1 1 1 2 1 1 1 2 1 1 1\n0 0 0 0 5 5 0 0 0 1 1 1 1 1 1 1 1 2 2\n0 5 0 0 0 5 5 5 5 1 1 1 1 1 2 1 1 2 0\n5 0 0 0 1 1 1 0 0 1 1 1 1 1 1 5 5 0 0\n0 0 0 1 2 1 2 0 5 1 1 1 1 1 1 0 0 0 5\n0 5 0 1 1 1 1 5 5 2 1 1 1 1 1 0 0 0 0\n0 0 0 1 1 1 1 1 1 1 1 2 2 1 1 0 0 0 0\n0 0 0 1 1 1 1 1 1 1 1 1 0 5 0 0 0 5 0\n0 0 0 2 1 1 2 1 1 1 1 2 0 0 0 5 0 5 5\n0 5 0 0 0 0 0 0 0 5 5 0 0 5 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0\n0 0 0 0 0 0 0 2 2 2 0 0 0 0 0 1 1 1 0\n0 0 0 0 0 0 0 2 1 0 0 0 0 0 0 0 1 1 0\n0 0 0 0 0 0 0 0 1 2 0 0 0 0 0 0 1 1 0\n0 0 0 0 0 0 0 2 2 2 2 0 0 0 0 0 1 1 0\n0 0 0 0 0 0 0 0 0 2 2 1 1 1 1 1 1 0 0\n0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0\n0 0 0 0 0 1 0 0 0 0 0 0 1 1 0 0 0 0 0\n0 0 0 0 1 1 0 0 0 0 1 1 1 1 0 0 0 0 0\n0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0\n0 0 0 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0\n0 0 0 0 0 0 0 1 1 2 0 0 0 0 0 1 1 1 0\n0 0 0 0 0 0 0 1 5 0 0 0 0 0 0 0 2 17 0\n0 0 0 0 0 0 0 0 1 1 0 0 0 0 0 0 2 1 0\n0 0 0 0 0 0 0 1 7 1 1 0 0 0 0 0 1 1 0\n0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 0 0\n0 0 0 0 0 0 0 0 0 0 2 1 1 1 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0\n0 0 0 0 0 3 0 0 0 0 0 0 1 2 0 0 0 0 0\n0 0 0 0 2 2 0 0 0 0 1 3 2 2 0 0 0 0 0\n0 0 0 0 2 0 0 0 0 0 2 0 0 0 0 0 0 0 0\n0 0 0 0 2 2 2 2 2 2 2 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+  "fixture_source_sha256": "6ddc4f0b07f7535432d94d1046cb64bb2d15c2abf986562971ba7474abc09bdc"
+}
