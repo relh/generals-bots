@@ -115,6 +115,13 @@ choice after capture and timely local defense remain unresolved. The nineteen
 tests and [matched warm preflight](v16-development.md) pass, without establishing
 strength. The competitive goal remains active.
 
+The [V17 prerequisites](v17-audit.md) distinguish costly capture choices from
+earlier force dispersion. At the selected Amin loss's first visible large
+attack, even optimistic gathering cannot supply timely defense. The
+[next experiment](v17-plan.md) tests useful capture continuations from the same
+packet; implementation and qualification are pending. Earlier force allocation
+remains unresolved, and there is no new strength result.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
