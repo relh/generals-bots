@@ -1,0 +1,68 @@
+{
+  "scope": "Nine original full outer calls. V10-v6 is not a default V10 oracle.",
+  "fixtures": {
+    "v10-amin-348.json": {
+      "sha256": "87e64986a07b312f0eb5a9fd2afe74263eeaa522bad59912a47bb07bcde0f283",
+      "variant": "v10",
+      "turn": 348,
+      "wire_sha256": "6e16492ffa096a14aa297c557bf82d00878858d4799d897db542ed23c50de1a8",
+      "source_export_sha256": "b109c6ea83f67f29f7caf5a6f897c0fd49b8b3c8c484f8f7d8ea21e02de49a99"
+    },
+    "v10-amin-352.json": {
+      "sha256": "f317d11918796bc0e48f167faffc7050d2d72209376910a9655877dc8d53297c",
+      "variant": "v10",
+      "turn": 352,
+      "wire_sha256": "a16501c9045f87560dd5cc0200a75e7b9c05da5845a96a653c2d44f1264559c7",
+      "source_export_sha256": "66a0a33988ba66106f8a107db2caa996dd554a1d8325aa44f01ddd2054333b4c"
+    },
+    "v10-amin-359.json": {
+      "sha256": "f3004903f4a17b7b411879df2c295c91120790fb8b27f3fd8a4480bd79f8865b",
+      "variant": "v10",
+      "turn": 359,
+      "wire_sha256": "f6b95a5e2b3269c40e8747bddc76ecf17d1ba5d7417d7e76c131743715fd73b2",
+      "source_export_sha256": "1c3153a933958db7d5bd85456470051acb1d9c263d7bd88e41370cc93b775d9e"
+    },
+    "v10-amin-362.json": {
+      "sha256": "292547ef0a3834737c6be49fa6df48fcad273fab155aaaccb6a3353590548da9",
+      "variant": "v10",
+      "turn": 362,
+      "wire_sha256": "a7fd78f6b6113cf0a2e0786eb8c90cd80d0c5bc96bf6876314ff5c9ba4e1f8c7",
+      "source_export_sha256": "907b5bde16774263fb8eabd66779b01d14bf3d49f42d67bc405adc6e8161dae1"
+    },
+    "v10-juraj-348.json": {
+      "sha256": "f479b6f290bee4d96e17a67533905882280683bda50d2a5908148a3747d7e727",
+      "variant": "v10",
+      "turn": 348,
+      "wire_sha256": "1edad928360c08fea525451e79a23408b0f5187d49ac1c191d055e1738d6a4b7",
+      "source_export_sha256": "ece881d43471a13687435ff46a431ca6d3c00174f8ab8b19941ddc1a1a743ca6"
+    },
+    "v10-juraj-420.json": {
+      "sha256": "487b06e25fb8a64e8f6905a7f2a81cce47633a9f007a4689fbaee1c637b4d979",
+      "variant": "v10",
+      "turn": 420,
+      "wire_sha256": "57eb18d2420daa28948e0f9ff22848f819017acdce0caf909e115c5cbd6f6af1",
+      "source_export_sha256": "3cfbc3f996da9115ded5bc86fc363886236aba1e320bc87a0aff5e4adee22a23"
+    },
+    "v10-v6-juraj-477.json": {
+      "sha256": "56bca71c88be575d2a7a67bb9a86e3881becb460aaeddbb204b28931fadcb5bf",
+      "variant": "v10-v6",
+      "turn": 477,
+      "wire_sha256": "f98b64756411d977b46ebc3cec72d247429d9a6c3f4bd5408d2202a14cfd7abd",
+      "source_export_sha256": "27ea9736dfd47d344d1415e216339b2f1f65819902087013a25b5d8c2cb3520b"
+    },
+    "v10-v6-juraj-805.json": {
+      "sha256": "51bd50791cb8e634854a004ef6be26c665b5a324fe18b4f1be11c2687adc32ba",
+      "variant": "v10-v6",
+      "turn": 805,
+      "wire_sha256": "9791c9b82e10fc4c85ea242af35fc12f3fe3e268b462cf913f6246dfb34069df",
+      "source_export_sha256": "ff72954d7d56c812a053510089b093021bfb451188dd2606dc38df6ae90fee70"
+    },
+    "v10-v6-juraj-948.json": {
+      "sha256": "a1aacbc5b5f5df856901b55636c952cc9b67790f3fe7ee24945fdf3beae3de01",
+      "variant": "v10-v6",
+      "turn": 948,
+      "wire_sha256": "9c9aec9a4e71b854c015e4b42286be7dd936bf7e2606759e6de0401f364e977d",
+      "source_export_sha256": "3672529e13b861e0e7940d90fae3e00c5afe4f093b350720a989ebae8976b670"
+    }
+  }
+}

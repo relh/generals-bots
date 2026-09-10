@@ -144,6 +144,12 @@ recipient army can preserve route resistance while home shrinks. Late partial
 reinforcement leaves substantial modeled deficits, and V12 already rejected a
 broad coverage-preserving veto. No V20 policy or new strength result is selected.
 
+The subsequent [V20 branching collector](v20-development.md) implements owned
+subtree collection under a shared six-action budget. Forty tests and nine
+full-call runtime contexts pass; an original-state census finds new admissions
+on the failing Juraj history while preserving the original Amin trajectory.
+Its complete-game screen has not run, so it remains experimental and unpromoted.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

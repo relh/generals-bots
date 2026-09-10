@@ -1,0 +1,97 @@
+{
+  "name": "v10-v6-juraj-948",
+  "scope": "Original winning Juraj preservation fixture from completed V19 cycle",
+  "parent_variant": "v10-v6",
+  "turn": 948,
+  "shape": [
+    20,
+    19
+  ],
+  "public_wire": "948 157 1306 77 434\n0 0 5 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0 0\n5 5 0 5 0 5 0 5 0 0 5 2 1 1 0 0 0 5 0\n0 0 5 0 0 0 5 5 0 0 2 1 1 2 2 5 5 0 0\n0 0 0 0 0 1 1 1 5 0 1 1 1 1 2 1 1 1 0\n5 0 5 0 0 1 1 1 2 1 1 1 1 1 1 1 1 1 0\n0 0 0 0 5 1 1 2 1 1 2 1 1 1 2 1 2 3 1\n1 1 0 0 5 1 1 1 2 1 3 1 1 1 1 1 2 1 1\n1 2 2 1 1 2 2 1 1 1 3 1 1 1 2 3 1 1 2\n1 1 1 1 1 1 1 1 1 2 1 2 1 2 2 1 1 4 1\n3 1 1 1 1 1 1 2 1 1 1 1 1 1 2 2 1 1 1\n2 2 1 2 1 1 1 1 3 1 1 2 1 1 1 2 1 1 1\n1 1 3 1 2 2 1 1 1 1 1 1 1 3 3 1 1 2 2\n1 2 3 1 1 2 2 2 2 1 3 1 1 1 2 1 1 2 0\n2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 0 0\n1 1 1 1 2 1 2 1 2 1 1 1 1 1 1 1 1 1 2\n1 2 1 1 1 3 1 2 2 2 1 1 1 1 1 1 1 1 1\n0 1 1 1 1 1 1 1 1 1 3 2 2 1 1 1 1 1 1\n0 0 1 1 1 1 1 1 1 1 1 1 1 2 1 1 1 2 0\n0 0 1 2 1 1 2 1 1 1 1 2 0 0 0 5 0 5 5\n0 5 0 0 0 0 0 0 0 5 5 0 0 5 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 2 2 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 2 1 0 0 0 0 0 0\n0 0 0 0 0 2 2 2 0 0 2 1 1 1 0 0 2 2 0\n0 0 0 0 0 2 1 2 0 2 2 1 1 1 1 1 1 2 0\n0 0 0 0 0 2 1 0 1 1 0 1 1 1 0 1 0 2 0\n2 2 0 0 0 2 1 1 0 1 1 1 1 1 1 1 0 1 0\n1 0 0 2 2 0 0 1 1 1 1 1 1 1 0 1 1 1 0\n1 1 1 2 1 1 1 2 1 0 1 0 1 0 0 1 1 1 0\n1 1 1 2 2 2 1 0 1 1 1 1 1 1 0 0 1 1 0\n0 0 1 0 2 2 1 1 1 1 1 0 1 1 1 0 1 1 0\n1 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 1 0 0\n1 0 1 1 1 0 0 0 0 1 1 1 1 1 0 0 0 0 0\n0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0\n1 1 1 1 0 1 0 0 0 1 1 1 1 1 1 1 0 0 0\n0 0 1 1 1 1 1 0 0 0 1 1 1 1 1 1 1 1 0\n0 0 0 1 1 1 1 1 1 1 1 0 0 1 1 1 1 0 0\n0 0 0 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 26 1 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 7 14 0 0 0 0 0 0\n0 0 0 0 0 8 2 9 0 0 5 13 26 3 0 0 1 1 0\n0 0 0 0 0 3 28 9 0 9 11 5 12 3 3 3 14 1 0\n0 0 0 0 0 2 1 0 5 5 0 1 12 21 0 3 0 27 0\n5 5 0 0 0 2 1 1 0 1 10 1 23 2 2 2 0 42 0\n21 0 0 5 5 0 0 1 1 1 7 1 1 26 0 38 3 2 0\n2 2 2 5 2 21 29 2 1 0 1 0 26 0 0 6 3 67 0\n40 1 2 2 11 3 1 0 1 1 1 2 2 5 0 0 3 4 0\n0 0 2 0 6 6 1 1 5 1 1 0 2 2 5 0 4 4 0\n6 6 29 2 0 0 11 11 10 1 1 1 1 16 16 4 4 0 0\n18 0 29 2 2 0 0 0 0 1 9 5 12 6 0 0 0 0 0\n0 7 3 5 2 2 4 4 4 1 3 5 6 6 9 0 0 0 0\n7 7 3 5 0 2 0 0 0 1 1 5 6 9 9 9 0 0 0\n0 0 3 3 3 32 7 0 0 0 1 5 6 9 14 9 9 18 0\n0 0 0 12 17 11 7 7 7 7 24 0 0 9 9 9 9 0 0\n0 0 0 12 12 11 17 17 16 16 18 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+  "action_key": [
+    2357401112,
+    2737177755
+  ],
+  "incoming_memory": {
+    "defender": -1,
+    "target": -1,
+    "previous": -1,
+    "distance": 0,
+    "expires": -1,
+    "last_turn": 947,
+    "expected_army": 0
+  },
+  "expected_parent_action": [
+    0,
+    6,
+    17,
+    0,
+    0
+  ],
+  "expected_parent_memory": {
+    "defender": -1,
+    "target": -1,
+    "previous": -1,
+    "distance": 0,
+    "expires": -1,
+    "last_turn": 948,
+    "expected_army": 0
+  },
+  "expected_parent_telemetry": {
+    "adjacent_threat": 0,
+    "building": false,
+    "candidate_count": 789,
+    "commitment_arrival_army": 0.0,
+    "commitment_continued": false,
+    "commitment_expired": false,
+    "commitment_held": false,
+    "commitment_observation_gap": false,
+    "commitment_observation_inconsistent": false,
+    "commitment_override": false,
+    "commitment_released": false,
+    "commitment_remaining": 0.0,
+    "commitment_required": 0.0,
+    "commitment_reverse_blocked": false,
+    "commitment_started": false,
+    "deathtouch_active": true,
+    "general_army": 67,
+    "general_reserve": 9.0,
+    "goal_city": false,
+    "goal_visible_general": false,
+    "intercept_arrival_army": 0.0,
+    "intercept_enemy_eta": 0.0,
+    "intercept_feasible": false,
+    "intercept_friendly_eta": 0.0,
+    "intercept_guard": false,
+    "intercept_home_deficit": 0.0,
+    "intercept_new_defense": 0.0,
+    "intercept_override": false,
+    "intercept_projected_deathtouch": false,
+    "intercept_required_defense": 0.0,
+    "intercept_target_index": -1,
+    "intercept_threat_index": -1,
+    "mobilization_arrival_army": 0.0,
+    "mobilization_donation": 0.0,
+    "mobilization_eligible": false,
+    "mobilization_home_coverage_safe": false,
+    "mobilization_home_eta": 0.0,
+    "mobilization_issued": false,
+    "mobilization_parent_action_issued": true,
+    "score": 52.40999984741211
+  },
+  "rules": {
+    "build_castles": true,
+    "deathtouch_turn": 800,
+    "max_turns": 1200
+  },
+  "wire_sha256": "9c9aec9a4e71b854c015e4b42286be7dd936bf7e2606759e6de0401f364e977d",
+  "provenance": {
+    "cycle": "sentinel-v19",
+    "game_id": 12,
+    "source_export_sha256": "3672529e13b861e0e7940d90fae3e00c5afe4f093b350720a989ebae8976b670",
+    "raw_input_sha256": {
+      ".cache/runs/sentinel-v19/external-selected/results/v10-v6-juraj-v35-game-0012-frames.jsonl": "9a0e5ef50682ada82698e856df6ee48cbdab751574e1e10e583c836aaec9b9e7"
+    },
+    "original_inner_output_recorded": false
+  }
+}

@@ -1,0 +1,1924 @@
+{
+  "complete": true,
+  "phase": "implementation and preflight only",
+  "source_main": "939a2521f846e6a6e2ef759bccaaa59774c39cb9",
+  "new_complete_games": 0,
+  "fresh_holdout_used": false,
+  "promoted": false,
+  "goal_achieved": false,
+  "source_sha256": {
+    "generals/agents/branch_collection.py": "789cf890b36cead97d1ef0a2ab61f110e945696b5a90d7ece304891550d428e7",
+    "generals/agents/sentinel_v20_agent.py": "f68a2cb8650e1d3984ef77f5c50a12dd56c805056382f10f538a0ed7ccca0f46"
+  },
+  "qualification": {
+    "unique_tests": 40,
+    "pinned_jax": "0.11.0",
+    "attempts": [
+      {
+        "name": "initial full-call synthetic probe",
+        "session_id": 56711,
+        "exit_code": 0
+      },
+      {
+        "name": "initial wrapper8tests",
+        "session_id": 87682,
+        "exit_code": 1,
+        "passed": 6,
+        "failed": 2,
+        "reason": "Wrong assertions: parent collection ratio prevents immediate takeover after first donation; reset telemetry correctly differs from fresh input. Tests corrected, policy unchanged."
+      },
+      {
+        "name": "combined38tests",
+        "session_id": 62940,
+        "exit_code": 0,
+        "passed": 38
+      },
+      {
+        "name": "engine2tests",
+        "session_id": 55006,
+        "exit_code": 0,
+        "passed": 2
+      },
+      {
+        "name": "initial lint",
+        "session_id": 68502,
+        "exit_code": 1,
+        "reason": "Three long planner lines and lambda assignment; corrected after live jobs ended, preserving original source."
+      },
+      {
+        "name": "final40tests and lint",
+        "session_id": 2855,
+        "exit_code": 0,
+        "passed": 40
+      }
+    ]
+  },
+  "admission_census": {
+    "frames": 2531,
+    "amin_starts": 0,
+    "juraj_starts": 6,
+    "mybot_starts": 22,
+    "scope": "Independent original-state calls with native parent memory and original key; no changed-trajectory carry."
+  },
+  "profile": {
+    "contexts": 9,
+    "warmups": 10,
+    "repeats": 5,
+    "calls_per_repeat": 100,
+    "ratio_definition": "V10 total measured time divided by variant total measured time across500 complete synchronized calls per context",
+    "minimum_enabled_ratio": 0.532395231704452,
+    "cases": {
+      "fork-start": {
+        "shape": [
+          7,
+          7
+        ],
+        "turn": 100,
+        "actual_branch_flags": {
+          "branch_action_issued": true,
+          "branch_attack_issued": false,
+          "branch_available": true,
+          "branch_collecting": true,
+          "branch_continued": false,
+          "branch_delivered": 11.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": true,
+          "branch_objective": 34,
+          "branch_override": true,
+          "branch_parent_action_issued": false,
+          "branch_priority": false,
+          "branch_rally": 32,
+          "branch_released": false,
+          "branch_required": 10.0,
+          "branch_selected_budget": 2,
+          "branch_single_path_sufficient": false,
+          "branch_started": true
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 8.602261551190168,
+            "median_seconds": 0.0003354400396347046,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 11.045931584667414,
+            "median_seconds": 0.0005670830141752958,
+            "parent_throughput_ratio": 0.5692599755230046
+          },
+          "v20-disabled": {
+            "first_call_seconds": 9.167617628350854,
+            "median_seconds": 0.000334759010002017,
+            "parent_throughput_ratio": 0.9859126311299417
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "fork-after-first": {
+        "shape": [
+          7,
+          7
+        ],
+        "turn": 101,
+        "actual_branch_flags": {
+          "branch_action_issued": true,
+          "branch_attack_issued": false,
+          "branch_available": true,
+          "branch_collecting": true,
+          "branch_continued": true,
+          "branch_delivered": 11.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": true,
+          "branch_objective": 34,
+          "branch_override": true,
+          "branch_parent_action_issued": false,
+          "branch_priority": false,
+          "branch_rally": 32,
+          "branch_released": false,
+          "branch_required": 10.0,
+          "branch_selected_budget": 1,
+          "branch_single_path_sufficient": true,
+          "branch_started": false
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 0.0018940279260277748,
+            "median_seconds": 0.0003525759093463421,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 0.0010559852235019207,
+            "median_seconds": 0.0005857420619577169,
+            "parent_throughput_ratio": 0.6049114002420958
+          },
+          "v20-disabled": {
+            "first_call_seconds": 0.000620019156485796,
+            "median_seconds": 0.000357374781742692,
+            "parent_throughput_ratio": 0.956140122110917
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "fork-after-second-parent-handoff": {
+        "shape": [
+          7,
+          7
+        ],
+        "turn": 102,
+        "actual_branch_flags": {
+          "branch_action_issued": false,
+          "branch_attack_issued": false,
+          "branch_available": false,
+          "branch_collecting": false,
+          "branch_continued": false,
+          "branch_delivered": 0.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": false,
+          "branch_objective": -1,
+          "branch_override": false,
+          "branch_parent_action_issued": true,
+          "branch_priority": true,
+          "branch_rally": -1,
+          "branch_released": true,
+          "branch_required": 0.0,
+          "branch_selected_budget": -1,
+          "branch_single_path_sufficient": false,
+          "branch_started": false
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 0.0011863498948514462,
+            "median_seconds": 0.000355907017365098,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 0.0008449149318039417,
+            "median_seconds": 0.00044270954094827175,
+            "parent_throughput_ratio": 0.8200914782339931
+          },
+          "v20-disabled": {
+            "first_call_seconds": 0.0006178650073707104,
+            "median_seconds": 0.0003590730484575033,
+            "parent_throughput_ratio": 1.0041820509566743
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "manual-phase2-parent-reset": {
+        "shape": [
+          7,
+          7
+        ],
+        "turn": 102,
+        "actual_branch_flags": {
+          "branch_action_issued": false,
+          "branch_attack_issued": false,
+          "branch_available": false,
+          "branch_collecting": false,
+          "branch_continued": false,
+          "branch_delivered": 0.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": false,
+          "branch_objective": -1,
+          "branch_override": false,
+          "branch_parent_action_issued": true,
+          "branch_priority": true,
+          "branch_rally": -1,
+          "branch_released": true,
+          "branch_required": 0.0,
+          "branch_selected_budget": -1,
+          "branch_single_path_sufficient": false,
+          "branch_started": false
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 0.0010681580752134323,
+            "median_seconds": 0.0003632109146565199,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 0.000921652652323246,
+            "median_seconds": 0.00048313685692846775,
+            "parent_throughput_ratio": 0.7286414220772446
+          },
+          "v20-disabled": {
+            "first_call_seconds": 0.0005982602015137672,
+            "median_seconds": 0.0003636761102825403,
+            "parent_throughput_ratio": 1.006667111567809
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "amin348-defense": {
+        "shape": [
+          21,
+          18
+        ],
+        "turn": 348,
+        "actual_branch_flags": {
+          "branch_action_issued": false,
+          "branch_attack_issued": false,
+          "branch_available": false,
+          "branch_collecting": false,
+          "branch_continued": false,
+          "branch_delivered": 0.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": false,
+          "branch_objective": -1,
+          "branch_override": false,
+          "branch_parent_action_issued": true,
+          "branch_priority": true,
+          "branch_rally": -1,
+          "branch_released": false,
+          "branch_required": 0.0,
+          "branch_selected_budget": -1,
+          "branch_single_path_sufficient": false,
+          "branch_started": false
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 10.122270037885755,
+            "median_seconds": 0.0025252264458686113,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 12.651193498633802,
+            "median_seconds": 0.002875145059078932,
+            "parent_throughput_ratio": 0.8642020375625309
+          },
+          "v20-disabled": {
+            "first_call_seconds": 10.732960641849786,
+            "median_seconds": 0.0024949214421212673,
+            "parent_throughput_ratio": 1.009144354309379
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "juraj420-inspect": {
+        "shape": [
+          20,
+          19
+        ],
+        "turn": 420,
+        "actual_branch_flags": {
+          "branch_action_issued": false,
+          "branch_attack_issued": false,
+          "branch_available": false,
+          "branch_collecting": false,
+          "branch_continued": false,
+          "branch_delivered": 0.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": false,
+          "branch_objective": -1,
+          "branch_override": false,
+          "branch_parent_action_issued": true,
+          "branch_priority": true,
+          "branch_rally": -1,
+          "branch_released": false,
+          "branch_required": 0.0,
+          "branch_selected_budget": -1,
+          "branch_single_path_sufficient": false,
+          "branch_started": false
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 10.16823803493753,
+            "median_seconds": 0.0026086384896188974,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 13.309025989845395,
+            "median_seconds": 0.0028745054733008146,
+            "parent_throughput_ratio": 0.9238319130700641
+          },
+          "v20-disabled": {
+            "first_call_seconds": 10.61959856795147,
+            "median_seconds": 0.0026108273304998875,
+            "parent_throughput_ratio": 1.0192533384897144
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "largest-archived-juraj348": {
+        "shape": [
+          20,
+          19
+        ],
+        "turn": 348,
+        "actual_branch_flags": {
+          "branch_action_issued": false,
+          "branch_attack_issued": false,
+          "branch_available": false,
+          "branch_collecting": false,
+          "branch_continued": false,
+          "branch_delivered": 0.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": true,
+          "branch_objective": -1,
+          "branch_override": false,
+          "branch_parent_action_issued": true,
+          "branch_priority": false,
+          "branch_rally": -1,
+          "branch_released": false,
+          "branch_required": 1000022.0,
+          "branch_selected_budget": -1,
+          "branch_single_path_sufficient": false,
+          "branch_started": false
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 9.625794454943389,
+            "median_seconds": 0.0009562412742525339,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 11.650524796918035,
+            "median_seconds": 0.0016878589522093534,
+            "parent_throughput_ratio": 0.5653642987375386
+          },
+          "v20-disabled": {
+            "first_call_seconds": 9.458635565824807,
+            "median_seconds": 0.0009538617450743914,
+            "parent_throughput_ratio": 0.9979089273005073
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "active-juraj183": {
+        "shape": [
+          20,
+          19
+        ],
+        "turn": 183,
+        "actual_branch_flags": {
+          "branch_action_issued": true,
+          "branch_attack_issued": false,
+          "branch_available": true,
+          "branch_collecting": true,
+          "branch_continued": false,
+          "branch_delivered": 7.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": true,
+          "branch_objective": 223,
+          "branch_override": true,
+          "branch_parent_action_issued": false,
+          "branch_priority": false,
+          "branch_rally": 225,
+          "branch_released": false,
+          "branch_required": 7.0,
+          "branch_selected_budget": 5,
+          "branch_single_path_sufficient": false,
+          "branch_started": true
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 9.307844091206789,
+            "median_seconds": 0.0010653433855623007,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 11.795167067088187,
+            "median_seconds": 0.002269878052175045,
+            "parent_throughput_ratio": 0.532395231704452
+          },
+          "v20-disabled": {
+            "first_call_seconds": 9.472959131002426,
+            "median_seconds": 0.0009628459811210632,
+            "parent_throughput_ratio": 1.0219210305178215
+          }
+        },
+        "exact_disabled_tuple": true
+      },
+      "active-mybot221": {
+        "shape": [
+          18,
+          21
+        ],
+        "turn": 221,
+        "actual_branch_flags": {
+          "branch_action_issued": true,
+          "branch_attack_issued": false,
+          "branch_available": true,
+          "branch_collecting": true,
+          "branch_continued": false,
+          "branch_delivered": 4.0,
+          "branch_deploying": false,
+          "branch_home_coverage_safe": true,
+          "branch_objective": 29,
+          "branch_override": true,
+          "branch_parent_action_issued": false,
+          "branch_priority": false,
+          "branch_rally": 27,
+          "branch_released": false,
+          "branch_required": 4.0,
+          "branch_selected_budget": 6,
+          "branch_single_path_sufficient": false,
+          "branch_started": true
+        },
+        "variants": {
+          "v10": {
+            "first_call_seconds": 12.490142012014985,
+            "median_seconds": 0.0010717930272221565,
+            "parent_throughput_ratio": 1.0
+          },
+          "v20": {
+            "first_call_seconds": 12.665860984940082,
+            "median_seconds": 0.0018416657112538815,
+            "parent_throughput_ratio": 0.5757188216022111
+          },
+          "v20-disabled": {
+            "first_call_seconds": 9.829253055155277,
+            "median_seconds": 0.0010695236269384623,
+            "parent_throughput_ratio": 0.9955312692988965
+          }
+        },
+        "exact_disabled_tuple": true
+      }
+    },
+    "attempts": [
+      {
+        "terminal": "first-terminal.json",
+        "exit_code": 1,
+        "completed_contexts": 0
+      },
+      {
+        "terminal": "second-terminal.json",
+        "session_id": 33710,
+        "exit_code": 1,
+        "completed_contexts": 6
+      },
+      {
+        "terminal": "continuation-terminal.json",
+        "session_id": 5445,
+        "exit_code": 0,
+        "completed_contexts": 1
+      },
+      {
+        "terminal": "active-terminal.json",
+        "session_id": 98373,
+        "exit_code": 0,
+        "completed_contexts": 2
+      }
+    ],
+    "optional_excluded": [
+      {
+        "context": "synthetic9x9",
+        "reason": "Original fixture contains flattened layer lines; standard reader rejected incorrect width before any calls. User condition ifparseworks applied; fixture not modified."
+      }
+    ],
+    "no_active_deployment_witness": true
+  },
+  "checker": {
+    "requirements_complete": true,
+    "implementation_complete": false,
+    "fresh_reference_inputs_sufficient": true,
+    "archived_inner_oracle": false
+  },
+  "collision_census": {
+    "fork_open_prs": 0,
+    "upstream": [
+      {
+        "number": 138,
+        "head": "f624c741ad5084be63fc17bacd3961599b8dcc82",
+        "files": 43
+      }
+    ],
+    "owned_collisions": []
+  },
+  "historical_input_snapshots": [
+    {
+      "original": "/home/relh/Code/generals-bots/generals/agents/branch_collection.py",
+      "snapshot": ".cache/runs/sentinel-v20/qualification/branch_collection-before-lint.py",
+      "sha256": "97b8ade844ff744b54b3d0c40704743de80de3a5df20324a18821c23cea1c2af"
+    },
+    {
+      "original": "/home/relh/Code/generals-bots/generals/agents/branch_collection.py",
+      "snapshot": ".cache/runs/sentinel-v20/qualification/branch_collection-before-lint.py",
+      "sha256": "97b8ade844ff744b54b3d0c40704743de80de3a5df20324a18821c23cea1c2af"
+    }
+  ],
+  "verified_bindings": 345,
+  "bindings": [
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/terminal.json",
+      "sha256": "aa57958befec71c8659e9711f7153248a728358a6f1b671a74b61b6011597b1f"
+    },
+    {
+      "path": "generals/agents/branch_collection.py",
+      "sha256": "789cf890b36cead97d1ef0a2ab61f110e945696b5a90d7ece304891550d428e7"
+    },
+    {
+      "path": "generals/agents/sentinel_v20_agent.py",
+      "sha256": "f68a2cb8650e1d3984ef77f5c50a12dd56c805056382f10f538a0ed7ccca0f46"
+    },
+    {
+      "path": "tests/test_branch_collection.py",
+      "sha256": "f48abb7c44532950be80024efac84455f67611a2621b34c361cade570d7fae09"
+    },
+    {
+      "path": "tests/test_sentinel_v20_agent.py",
+      "sha256": "6dfa01ea9e67267d79d38567bf56cb5e259c6f4c79f7da39a09a1fd021951163"
+    },
+    {
+      "path": "tests/test_sentinel_v20_archives.py",
+      "sha256": "15e4b3e5afafe537c87c877355feb03cad4d2d40f38089415f8ac637f95c9725"
+    },
+    {
+      "path": "tests/test_sentinel_v20_engine.py",
+      "sha256": "ff11f1f3545da2f5ef43bc0e90d7b3a04de21ff0dcf18003f53e3eb3585695d5"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/manifest.json",
+      "sha256": "f033e7ba43c61be88542166cd04b3b13babeefe3f4931253d9b6e545be2a9790"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-amin-348.json",
+      "sha256": "87e64986a07b312f0eb5a9fd2afe74263eeaa522bad59912a47bb07bcde0f283"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-amin-352.json",
+      "sha256": "f317d11918796bc0e48f167faffc7050d2d72209376910a9655877dc8d53297c"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-amin-359.json",
+      "sha256": "f3004903f4a17b7b411879df2c295c91120790fb8b27f3fd8a4480bd79f8865b"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-amin-362.json",
+      "sha256": "292547ef0a3834737c6be49fa6df48fcad273fab155aaaccb6a3353590548da9"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-juraj-348.json",
+      "sha256": "f479b6f290bee4d96e17a67533905882280683bda50d2a5908148a3747d7e727"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-juraj-420.json",
+      "sha256": "487b06e25fb8a64e8f6905a7f2a81cce47633a9f007a4689fbaee1c637b4d979"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-v6-juraj-477.json",
+      "sha256": "56bca71c88be575d2a7a67bb9a86e3881becb460aaeddbb204b28931fadcb5bf"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-v6-juraj-805.json",
+      "sha256": "51bd50791cb8e634854a004ef6be26c665b5a324fe18b4f1be11c2687adc32ba"
+    },
+    {
+      "path": "tests/fixtures/branch_collection/v10-v6-juraj-948.json",
+      "sha256": "a1aacbc5b5f5df856901b55636c952cc9b67790f3fe7ee24945fdf3beae3de01"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/run-tests.py",
+      "sha256": "a5532a08b263a406ba86b4378520898307c70f512385b1a3f56faf09eb6849d6"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/combined-tests-final.log",
+      "sha256": "440cc76138a36cf4ed43d3cf499a9ae2a64001442161ed2ca2f03cb7fa4d6a86"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/lint-final.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/wrapper-tests-first.log",
+      "sha256": "0d376e7c768b6dbc16c1cf3093bc28b2353dd0c5bbc28e220c00ee6c8837218c"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/wrapper-tests-attempt1.py",
+      "sha256": "861ec69f6e42a1da02a94595848fe17b89fa81e32381b3029eed70f8073cd157"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/combined-tests-first.log",
+      "sha256": "dd343f7bbeaf25c24dbf6c07ae6fcd24817559714b6a5544d5c29e26c4b82a5f"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/engine-tests-first.log",
+      "sha256": "f0d7f772a206c409e766589fc8942f6b5948ecfa45deb1d8bd5f182e9d588cd4"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/branch_collection-before-lint.py",
+      "sha256": "97b8ade844ff744b54b3d0c40704743de80de3a5df20324a18821c23cea1c2af"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/lint-first.log",
+      "sha256": "68656f013b937c254e36bc64baa67296be5a7ea58ae7a88bdd1a6e553d49554a"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/run-tests-attempt1.py",
+      "sha256": "affb715499248060044f80fdfc52e2ea691aa27addba58f2f8473d36c86bfa5d"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/run-tests-combined-attempt1.py",
+      "sha256": "38079895fea664898e7781605208c4ab3aa9eaf0c4834af06b4d6c3b7b43d90f"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/probe.py",
+      "sha256": "40e0bf73ded218465ad2e20126fe5283abb3656a8063d27aa430beefbc7e260c"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/probe-first.log",
+      "sha256": "27f1cec45894df684acc0de5561bcb52bb7b302cbd7d0a9c955b6d4addedd049"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/planner/terminal.json",
+      "sha256": "d6dca133942ea463e4eb541cda14b724e4a56304af54a2c6c391b5284fcc49a6"
+    },
+    {
+      "path": "generals/agents/branch_collection.py",
+      "sha256": "97b8ade844ff744b54b3d0c40704743de80de3a5df20324a18821c23cea1c2af",
+      "snapshot": ".cache/runs/sentinel-v20/qualification/branch_collection-before-lint.py"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/planner/prior-attempts.json",
+      "sha256": "7f8114601f711462f76ef23ad76d58bcbeeab59a602636a9892fb4f28002f107"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/qualification/planner/pinned-first.log",
+      "sha256": "d7924478f618d9d18d3137c4e76d11ac72a36603c3345b7a607f72aa727f46f2"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/manifest.json",
+      "sha256": "c75a86f60557c1b5740969ae0b7a09ccfdc09d342abf788960dfad0743bcd482"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/amin-selected/results/v10/game-0001.json",
+      "sha256": "2266254eb04a7892f1aef6446642c0ddce9c5ab20caf1bb902de720bd7cd6445"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/amin-selected/results/v10/game-0001-policy.jsonl",
+      "sha256": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/external-selected/results/v10-v6-juraj-v35-game-0012-frames.jsonl",
+      "sha256": "9a0e5ef50682ada82698e856df6ee48cbdab751574e1e10e583c836aaec9b9e7"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/external-selected/results/v10-juraj-v35-game-0012-frames.jsonl",
+      "sha256": "546c5db5967302e5070ffe50499e84a99f7a4a460e61812c2e0b93b39efba3c1"
+    },
+    {
+      "path": "generals/agents/sentinel_v8_agent.py",
+      "sha256": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767"
+    },
+    {
+      "path": "generals/agents/sentinel_v7_agent.py",
+      "sha256": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/prepare.py",
+      "sha256": "c6a88d28366eb701d556b31c6987fd688f3a066ca00003578513ccf3884b4265"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-amin-348.json",
+      "sha256": "b109c6ea83f67f29f7caf5a6f897c0fd49b8b3c8c484f8f7d8ea21e02de49a99"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/input-bindings.json",
+      "sha256": "0d0771f0138ab33352aed5a0275d955617f71e543d85890bf65d31992cf870c2"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-amin-359.json",
+      "sha256": "1c3153a933958db7d5bd85456470051acb1d9c263d7bd88e41370cc93b775d9e"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-v6-juraj-805.json",
+      "sha256": "ff72954d7d56c812a053510089b093021bfb451188dd2606dc38df6ae90fee70"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/supplement.py",
+      "sha256": "675b35d076a23bd660fd93686af83bb0dcf6a4749e7f65f7bee2e8d07b24080b"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-amin-362.json",
+      "sha256": "907b5bde16774263fb8eabd66779b01d14bf3d49f42d67bc405adc6e8161dae1"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-v6-juraj-948.json",
+      "sha256": "3672529e13b861e0e7940d90fae3e00c5afe4f093b350720a989ebae8976b670"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-juraj-348.json",
+      "sha256": "ece881d43471a13687435ff46a431ca6d3c00174f8ab8b19941ddc1a1a743ca6"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-amin-352.json",
+      "sha256": "66a0a33988ba66106f8a107db2caa996dd554a1d8325aa44f01ddd2054333b4c"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/attempt1.log",
+      "sha256": "8724f6f396cf5c0b870c14814317239fadd5cec2a3012d9ee294f8181375a3f6"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-juraj-420.json",
+      "sha256": "3cfbc3f996da9115ded5bc86fc363886236aba1e320bc87a0aff5e4adee22a23"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/supplement-attempt1.log",
+      "sha256": "7719539a773f94e6ce2fd594af285ff968313357fabb84ae7be1dcc9527a0d5c"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/README.md",
+      "sha256": "c7368150b60a168546dd9997ae8f97073e544b77a6a12d45e81d0b468d289470"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/contexts.json",
+      "sha256": "1891867be3fef909249166a0c760f65e57932b3108600afec4079540178fc06f"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/synthetic-three-branch-six-edge.json",
+      "sha256": "75f4dfa7447a6e27088685bfe677ee3a3d1d991a774783cdb68fef48c90c3319"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-fixtures/v10-v6-juraj-477.json",
+      "sha256": "27ea9736dfd47d344d1415e216339b2f1f65819902087013a25b5d8c2cb3520b"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-gather-design/source-review-manifest.json",
+      "sha256": "a3fe2ba4a3b5f82b48d200248e481ed36b172fd45d7e6833283842fb30c351a8"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/checker-design/manifest.json",
+      "sha256": "16c88f200b3be7389c120fb0f09254a0176da45a8052ad56f5d62df87cd59e9c"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/independent-review/check_rear.py",
+      "sha256": "2bebc7b26a468fce1e28b805ed6f6bdaf9eaca33efed6e68e121cfbe3cbd419b"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/independent-review/check_retained.py",
+      "sha256": "3d6335f42c3cfec536b853cf0404f399beffd434e3cda965f2b4f41548a6f1a7"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/full-review/review.py",
+      "sha256": "f8c4dad2f8d425cda5cafefc3b5b36fecc2a42d8d826f237a1dcda65cc6b58e1"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/manifest.json",
+      "sha256": "c9c1fc784a6a6847c5dbecd539a77057a11d4b52b25cf2f9517561cdff41c301"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/run.py",
+      "sha256": "d858e8bee6a3a1329f264a748dbd409e98e2300bd737a74b3580585970b93c2d"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/prepared-inputs.json",
+      "sha256": "584d8ef199223c08548abb398fb1dfc59b2baed4804a9e71f33ce7bcb0db2756"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/external-selected/results/v10-my-bot9-game-0004-frames.jsonl",
+      "sha256": "42720d67624a792a409b9e78f2a9ce9db4c933d32fb37210a006ea383139567f"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/all24-audit-release.json",
+      "sha256": "5e6cc6550a546e255043a25967d81bdc338366e171ff940be02e6569a2cc2463"
+    },
+    {
+      "path": ".cache/runs/sentinel-v19/full-review/results/report.json",
+      "sha256": "8190327a24569590c5424aeb099c12d4dfe84561a119693708e969b4d747b80e"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/report.json",
+      "sha256": "798030710bdc3d71b3212655974dfae004511f71b82c1a5a4ebf2fa558eb68e4"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/attempt1.log",
+      "sha256": "785ded550263a8b6e449740e87cf0b79f87fd902ec42267230b106899bfcf749"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/actual-calls.jsonl",
+      "sha256": "717e950a6523a65593ada02af62cc9041283aaad91667550dc933a84c9f1de09"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/findings.md",
+      "sha256": "555aecc7a45cd6a99ec3326165a179b0e82e22e66386ae0cb0df77b1811908e8"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/terminal.json",
+      "sha256": "960c41dbf7a90439a1db588f38ee0fc0094165e3ebacdb7b0a34fed4d262c085"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/source-freeze.json",
+      "sha256": "49d07ed7f93e3e295750039943e335c4820056d908ab7b6d4527bd4cc1986ee2"
+    },
+    {
+      "path": "/home/relh/.local/share/uv/python/cpython-3.12.10-linux-x86_64-gnu/bin/python3.12",
+      "sha256": "bb51835a056505237a67178912a78185ce18a378d65cc3a97f2bc1ed1629010c"
+    },
+    {
+      "path": "competition/agents/sentinel_python/main.py",
+      "sha256": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e"
+    },
+    {
+      "path": "generals/__init__.py",
+      "sha256": "38e98fec293a7b61652267883fe81a3616310e9062fa4f0ecce31eada6b052ec"
+    },
+    {
+      "path": "generals/agents/__init__.py",
+      "sha256": "a87f467b7dd0e67c5d4d98e7954e5b57f047c61ed87f394379f585c26eee2190"
+    },
+    {
+      "path": "generals/agents/agent.py",
+      "sha256": "a378f5700e18ec8b1ebc01efe68749988eeb299310c0e392da6714cf13396930"
+    },
+    {
+      "path": "generals/agents/expander_agent.py",
+      "sha256": "4fdc3f631b638ea1af61081b74005a3a67f455b4761794c98edde5a2585e3c75"
+    },
+    {
+      "path": "generals/agents/harvester_agent.py",
+      "sha256": "6d6d4f44e5f10ee0ec08c93bb539808a4cdb68e08d08f2df4f130e62508faf8d"
+    },
+    {
+      "path": "generals/agents/hunter_agent.py",
+      "sha256": "5cfbd7ba29c4d9ff7116a1a1de3559bba3298f2fb5422939c54631d5cb6fb1d8"
+    },
+    {
+      "path": "generals/agents/random_agent.py",
+      "sha256": "279a26b5cf8d27a86bfacbf78aeb575212ffefeca105736f6544565c3e2dd07e"
+    },
+    {
+      "path": "generals/agents/sentinel_agent.py",
+      "sha256": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e"
+    },
+    {
+      "path": "generals/agents/sentinel_v10_agent.py",
+      "sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c"
+    },
+    {
+      "path": "generals/agents/sentinel_v11_agent.py",
+      "sha256": "0806fb408d4ad2639f9187fb5b979bdeb79793fb6fd8201d3319901fb7c46503"
+    },
+    {
+      "path": "generals/agents/sentinel_v12_agent.py",
+      "sha256": "94273202982e5ab1964b88896f7a496f47e0e4ef29c8c8178baf685537474eda"
+    },
+    {
+      "path": "generals/agents/sentinel_v13_agent.py",
+      "sha256": "06cf82cc374d6e6eabf501bd3ad2319eab9348e876b66a9ec99295e13669687e"
+    },
+    {
+      "path": "generals/agents/sentinel_v14_agent.py",
+      "sha256": "a915aed1b773bd1fe01eca5ed21ae0ad0e47663317571b8539a0e61d129b6761"
+    },
+    {
+      "path": "generals/agents/sentinel_v15_agent.py",
+      "sha256": "c711c9f5284a62791f67aed179dfee95e1eee9de86b507abbd526d0e0236ef03"
+    },
+    {
+      "path": "generals/agents/sentinel_v16_agent.py",
+      "sha256": "fae23bc99caa2b9bdbebe3723ddcc0459278f437e0e62a880bf3d56016024c62"
+    },
+    {
+      "path": "generals/agents/sentinel_v17_agent.py",
+      "sha256": "e1112069da66b52c29c508da33972917f21f20672b166fb03c89da1cc1f87044"
+    },
+    {
+      "path": "generals/agents/sentinel_v18_agent.py",
+      "sha256": "6683d290e255ff5a54c90610b05755195b28422c45109c73aa89550b8b6c6c93"
+    },
+    {
+      "path": "generals/agents/sentinel_v19_agent.py",
+      "sha256": "9322e207c9f02c46856692b9c544b3e53920b07e5d0ace927d588f94794a2a72"
+    },
+    {
+      "path": "generals/agents/sentinel_v3_agent.py",
+      "sha256": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896"
+    },
+    {
+      "path": "generals/agents/sentinel_v4_agent.py",
+      "sha256": "2de5694638e6461df08d27a8b31c04d2ccdd9ececc6fe0f4a9b0b0fa89c22744"
+    },
+    {
+      "path": "generals/agents/sentinel_v5_agent.py",
+      "sha256": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b"
+    },
+    {
+      "path": "generals/agents/sentinel_v6_agent.py",
+      "sha256": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa"
+    },
+    {
+      "path": "generals/agents/sentinel_v9_agent.py",
+      "sha256": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b"
+    },
+    {
+      "path": "generals/assets/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "generals/assets/fonts/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "generals/assets/images/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "generals/core/__init__.py",
+      "sha256": "eb1847700e976be737837131a1c08c739b3df6198dc53fcb62d196e16394c9ef"
+    },
+    {
+      "path": "generals/core/action.py",
+      "sha256": "3b6ff68a543ed8e313441f9beef8691a4df02fc16f05807ce3af7fe573058757"
+    },
+    {
+      "path": "generals/core/config.py",
+      "sha256": "0de9c9190516bfc3f282dd1ab1d1b1a18fe539f7c9f78720457cb206f35a1e0e"
+    },
+    {
+      "path": "generals/core/env.py",
+      "sha256": "b7378f0891621d3e402d7a166ae2aec8c6b97dfea3fba1f3740be820dcd6c0ab"
+    },
+    {
+      "path": "generals/core/game.py",
+      "sha256": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f"
+    },
+    {
+      "path": "generals/core/grid.py",
+      "sha256": "ab0196291ebb1cff58f68b4798142cf4496f4e668608c8551c1f915bd1cd42c4"
+    },
+    {
+      "path": "generals/core/observation.py",
+      "sha256": "38461fc23361fe6396cb81b72a33a4a2f2ec1d21da9ee8e7229460843b6a2593"
+    },
+    {
+      "path": "generals/core/rendering.py",
+      "sha256": "e49d3fc8814d9ac50670c3bcd361029ff097b4fdc95cc1651d3df908e22d33a6"
+    },
+    {
+      "path": "generals/core/rewards.py",
+      "sha256": "6891e99ce9b5f5278c4f0c648c2d9e8ef75694216310b405483f86f9347c5072"
+    },
+    {
+      "path": "generals/evaluation/__init__.py",
+      "sha256": "619fed8075606d2ba14bf04050a1cac8eb3f7d90d4954bebd10cde7607e05d09"
+    },
+    {
+      "path": "generals/evaluation/arena.py",
+      "sha256": "d1e3335b5b625098b250dd7b6c3a1ec0a7b69b36d9e592234ff5b263f7d060b8"
+    },
+    {
+      "path": "generals/evaluation/cli.py",
+      "sha256": "497d3fdcfb57df1ddb008f1a4d688f3ca59126c1397ebdfb170342204886a577"
+    },
+    {
+      "path": "generals/evaluation/replay.py",
+      "sha256": "0bae47b6592fc6333ebc6db9375d1c5f33489759433418453eb0f57b6444176d"
+    },
+    {
+      "path": "generals/evaluation/report.py",
+      "sha256": "4f3755ed40965c900f1955d0784e542567df53088b5f76b9aac4ac8841dbdf7f"
+    },
+    {
+      "path": "generals/evaluation/scenarios.py",
+      "sha256": "0b916fc6d7ea795ac84403c5e4d0089807a7a30f6cae0a08e47dc775e82e75fd"
+    },
+    {
+      "path": "generals/gui/__init__.py",
+      "sha256": "1780da942cc4ed3ebe956030bd81822212a8647f94607ae49e35b99f0ecdca62"
+    },
+    {
+      "path": "generals/gui/event_handler.py",
+      "sha256": "21d252da4f1e1e38a9cb0c0e318282580b9cafe7ffa0b1042c6ef98e83565726"
+    },
+    {
+      "path": "generals/gui/gui.py",
+      "sha256": "1a6796332ae8300c34b51887239d9cf328ff5b08f1637cc863f617d0fcb12716"
+    },
+    {
+      "path": "generals/gui/properties.py",
+      "sha256": "06c790c9c8ccc44c856b7e9f244ea7e6e276d10844e4bb108d30a3ba261c4b84"
+    },
+    {
+      "path": "generals/gui/rendering.py",
+      "sha256": "77a57b2f31ebc4ba04179664abca0b829daffe31f4a35ccb381da1d9c54d8db3"
+    },
+    {
+      "path": "generals/gui/replay_gui.py",
+      "sha256": "f49d86731b27cf63c92670ec553c31f3cdb1ab9af9fbad1ebe47d9a298220a2a"
+    },
+    {
+      "path": "generals/modifiers/__init__.py",
+      "sha256": "552d1c52cc5a9a5680d44e6a345f98b6ec98452c75c0ea74a08ca391023413a9"
+    },
+    {
+      "path": "generals/modifiers/build_castles.py",
+      "sha256": "c651a7f03f46756009950049ed4f2c9fcf7e614cd7484fdcf3097bb78cbe0d8b"
+    },
+    {
+      "path": "generals/modifiers/deathtouch.py",
+      "sha256": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800"
+    },
+    {
+      "path": "generals/remote/__init__.py",
+      "sha256": "6a59ef85351d085fefefcf1b26542d0e4f9061148b38bde55abc30fa4a702882"
+    },
+    {
+      "path": "generals/remote/generalsio_client.py",
+      "sha256": "89ba1f522e8b67df4a39de840a0d381c27bacb610cd325a0379390e807d6e1ff"
+    },
+    {
+      "path": "generals/remote/generalsio_state.py",
+      "sha256": "ebe522991dd9eb2ac339f1fb6e10d93a4ec80b6c86dd5ca5b445f7fa96746d44"
+    },
+    {
+      "path": "generals/training/__init__.py",
+      "sha256": "62a4bdf5e61c8c68e2a5578582a658e4cc7780ee6df0b30705a8600d3a472708"
+    },
+    {
+      "path": "generals/training/checkpoint.py",
+      "sha256": "14bcbaa217dd715ec8f1e787d050c2875ac84fa3981e52d405bc1201ba121157"
+    },
+    {
+      "path": "generals/training/network.py",
+      "sha256": "a8b31d9c1d558b5f5b516bd6fa10ef21042223ab65c93ae7c10d6de756cfdd54"
+    },
+    {
+      "path": "generals/training/optimization.py",
+      "sha256": "65b1aaa7450bc7ef92f3d37f8d5c0ff3eac8aa5b47538c2d592414e127b40eef"
+    },
+    {
+      "path": "generals/training/ppo.py",
+      "sha256": "0f8aca657cc40632d3ebeef279008212c017879c2d1b41b70dbcfa65b42497f1"
+    },
+    {
+      "path": "generals/training/rewards.py",
+      "sha256": "55b996aaa86b01e8657e2d633c2b3f79a9cc11ea8f65a268b13a2363767504ad"
+    },
+    {
+      "path": "generals/training/train.py",
+      "sha256": "82a48fc332a4bf26c917bc8e77b06922ba721c8234b6af1ed835ffba69a69756"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/admission-census/admissions.json",
+      "sha256": "a9434c249de0283c765ad20ab968779150165e42283124e4c58531bb5ffa539f"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/completion.json",
+      "sha256": "7f5e7b003861875fff86c9d55ee844b4e9e3a6cf9930c07673e35785f2d92913"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/continuation-report.json",
+      "sha256": "a4bbdbe1e9d0bf3a986d970db155e6b5b63318d9b521eef79a497e49305f72f1"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/continuation.py",
+      "sha256": "6674b7020201d3682d5222153cc396c92256b3f3ef98b132508abf1bf635b92b"
+    },
+    {
+      "path": "tests/test_sentinel_agent.py",
+      "sha256": "82abfa4fd03056e10d7594ba5a63af13c623d7dfae7e801dd997e44a953c4867"
+    },
+    {
+      "path": "tests/test_sentinel_v8_agent.py",
+      "sha256": "da901b9b85447ccff8fbcc5a3cf03f5461a770325be0bbf60759759af4deab30"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jax/__init__.py",
+      "sha256": "1298a9c3253f21f4c7c6c553991c171c76de90eb87733676ec6f0b641c7391dd"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/review.md",
+      "sha256": "866863832e77fe2bb09afaf7e7f0c3a0f6368b7ec79d4a400697901522f89ccb"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/first-run.log",
+      "sha256": "872d1f44bd2af4b0563d5b04d17cab0bb5fe41162dfa0f6e68d96a1124f116f8"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/first-terminal.json",
+      "sha256": "5a27551ca4e88f0a4e5d6c4588d9f1d2fe6f187005fb8eca17ee1e5fd5c58410"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/second-benchmark.py",
+      "sha256": "7026ea08fa6f87ffef86682ba2cb68cbb41919c1d85e1f00569a75a97a75c2b4"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/second-terminal.json",
+      "sha256": "5ed9820fa4a426211c4568168f6978566a8867ecfaee9c8cd2034bf125d479c3"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/second-run.log",
+      "sha256": "9dc72e3db53367590dba5d683effbe5b6b48d90c4ca6c92d7fe49f6991f1fc62"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/final-report.json",
+      "sha256": "4e6941c2b45662d2ed0f20e2db1675d19c50ec20147a06486c85b0601b0a1c95"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/benchmark.py",
+      "sha256": "7026ea08fa6f87ffef86682ba2cb68cbb41919c1d85e1f00569a75a97a75c2b4"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/first-benchmark.py",
+      "sha256": "29c78ac8b4899c959e171f17ee699fadeb1eea7bab7eebbc0f029e5a3c160a40"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/report.json",
+      "sha256": "d83e21db26bbed3554e538546d8a8f29eec2dfc38cd4cc41f03167f3a06b7176"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/runtime-providers.json",
+      "sha256": "62cf9b4ab67a801e6c4babf0fac891d8bfc1023e2ac7a4acfb50125dff58adc7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jax-0.11.0.dist-info/METADATA",
+      "sha256": "6dc7bd492285a3d0edd0b91c841d92330de177cc586859393e97680688fb127c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jax-0.11.0.dist-info/RECORD",
+      "sha256": "c077f9f90259816655818c4dade74b0469025e59150308776aa79c36214f9594"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib-0.11.0.dist-info/METADATA",
+      "sha256": "079396c32938c513a8e1f40408ba35e71799c876785c9dbb752ac3260260384c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib-0.11.0.dist-info/RECORD",
+      "sha256": "a6ac7f8cc692594ac167e6de2014fdec932189bd0e5b56003930c92459891751"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_hlo.so",
+      "sha256": "473341d9f9920bab08579c55a22ed3685aa27c66832ed74b94dab6889d76319c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_ifrt_proxy.so",
+      "sha256": "723ee74d8e0e6c8683790fff020b119ff12c644d0e99d99687380bbc6a760cbc"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_jax.so",
+      "sha256": "1b8ba599253bddc480606ab30d6a47731ac9fe3be4e6082dec7a85e82778857f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_pathways.so",
+      "sha256": "2550f72b8cd383278ba6238ca6d4a0dbceeb76d2d2d1a2bc8a02b2fa9b537ada"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_pretty_printer.so",
+      "sha256": "8537c42ac508a1dd9ad86abdf17309a965038870cebc3f4c3bce11291d54f6af"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_profile_data.so",
+      "sha256": "3e4ea925c368c2c3ca2b4f9a0ac592151f6861b09d972e7ad2f668e3268e0d06"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_profiler.so",
+      "sha256": "ac96310a006b06b0fda9805b5405473e672ccdad1202152de3ab9ceb614c55b7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_sdy_mpmd.so",
+      "sha256": "beb93455e44a8123d4a5d14da2c1bd70b3f08e511514e0efc66c3ba89c29ef5c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/_xla.so",
+      "sha256": "778c71a86d99db76d28581832090fb0bbab672df52d7ade5ab5387982ccf5922"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/cpu/_lapack.so",
+      "sha256": "406652df89ae9adfed8d1aac8099cf519bf1441a35e76e3000aa674caf5cbf49"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/cpu/_sparse.so",
+      "sha256": "abfd3ce418924f26b01de7ac9a10a3914c3e8492aabeb9a6e9ff91076294bd59"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/cpu_feature_guard.so",
+      "sha256": "bd5828eeb31ac47ff7ed6be9bc11dfa15f9dc022726e793c952fe6e55ff841d3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/libjax_common.so",
+      "sha256": "8c82008d8ac1f8edf3d4e51c350be91f05203c439d60605e84f2106781f4a25a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_chlo.so",
+      "sha256": "b45ae0ea65dcbaa8bb4942371746d2eb192d663c350297905fb10c49b2491b7e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_jax_mlir_ext.so",
+      "sha256": "3faceccdafb4c9ccc1cef2a389514c51b262e876cc1042f2d391b3feae404c11"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlir.so",
+      "sha256": "1848fc206571069622e2e60276dd9d2925eec464e382d8bc2d35cdf3d0fd7a3e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirDialectsGPU.so",
+      "sha256": "626752eca570b4ec40d9e3b513b2520aef1e12fd22332d4fdd513aad4a488e65"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirDialectsLLVM.so",
+      "sha256": "95bde0a42dcfb2cf35b9f7e99bb7c3cd7e6e8ef1f60fd45b3d599d017376db5d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirDialectsNVGPU.so",
+      "sha256": "3cafc5b49ef84c38951b7d51fffcb6eccf7248d30f9696a72a037019ae3450a2"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirDialectsSparseTensor.so",
+      "sha256": "8bcc36d4757a100ebbf84ec5e9571787665e176e4d298b1438c0b4da867ba921"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirGPUPasses.so",
+      "sha256": "3af6b70af30defe0990ba3bcdb29e5e471c392dca7fa178314d210265de10e2b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirHlo.so",
+      "sha256": "f9e3c418d7f8f973aaee39890568804a9bb31d880f84b67366470fe36f90e2f2"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mlirSparseTensorPasses.so",
+      "sha256": "932ffa1f9b76930221879ab8d7d81db26263152119facc3fa27beb540b8cd9fa"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_mosaic_gpu_ext.so",
+      "sha256": "ea8668a8db694ce2eb177ba840fdecd5e65f026e2761ef385817a2182bb27af8"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_sdy.so",
+      "sha256": "64aefc94462b77c289bc9876994178d3a296776747647071d362c589d94187ea"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_sdyMpmd.so",
+      "sha256": "61abc8ab286098fd57983bef1adbc1321422b100346fe3a36f6d38ec05ebc152"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_stablehlo.so",
+      "sha256": "4e442434d9853e738cf3ea3a02f1c5f71078de94e9e2283c9b9fdf70878daaed"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_tpu_ext.so",
+      "sha256": "bd6c712e0ac782595ed0700bead9ac15cd931a2c3171e86b027595acb8956863"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/mlir/_mlir_libs/_triton_ext.so",
+      "sha256": "d417a255316edbbc8dbde46fe423d471b899e4a608e0a76213c053d92185c766"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/utils.so",
+      "sha256": "f65cc48f2a2a9a128d15f8736d38f93169faffc8fb70216c2952c620de74c3d9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/jaxlib/weakref_lru_cache.so",
+      "sha256": "b66bdd345f96602dd2ccd9a87339c523baa4d1507918ea951dc4e41e20a677e1"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy-2.4.6.dist-info/METADATA",
+      "sha256": "b082c52ccbe3b880bae177c35171b52ed6c947f3ad71e3762f2723f60a411de0"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy-2.4.6.dist-info/RECORD",
+      "sha256": "dcafa2f44aa31d4cf115d505fcb8774df0ea75ec737f25f49fbe387fc0fc5ea9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy.libs/libscipy_openblas64_-32a4b2a6.so",
+      "sha256": "05c9f9eb89ee68a4b9d673184fa91c99587e736392c0c2d49180a8aa5303d080"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "5e1acdbc2bd842e6cdb8df031709f5a3d062cbac743c6b33423d85661a85111b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "2bd8ea4ada756eb29d34bcb5049df8d48710721b57c2c23cbdd87d77cdf5fa77"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_operand_flag_tests.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "362199e29eed0dc5fd00171b76ef77cae97e6c8726a9ee8f0c2a5f06c34b12d8"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_rational_tests.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "015bc612af94cb631f5283489bf98e8b3181aeb286a0602f40ed0af116cc3a86"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_simd.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "515e45afdec0bac5ae85bcf7013b0977acc8a345cfc86cb77f31c2b26863d7c2"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_struct_ufunc_tests.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "463159caaae0e3c1c618937e9558930f0681d6aa3a3af47c5a4d81357549827f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/_core/_umath_tests.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "2f8da6dbadba693c0f489839347d69eb48cab6bd0e099c3708905e1e4e55be6d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/fft/_pocketfft_umath.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "76d21c7aa5df953f38e1ce25c75aeb0a2816ee01082eb8a83c6bb48695c90fe3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "d826c92d6a98bda58ddb2f5a6f086d9581937538c2c2aef5b8879ed43282b995"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/linalg/lapack_lite.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "3e3e01c53370b95aad87ae4b0175ad390fc6b532479c70901a5696ebdea5cd36"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "caad7426c528b281d09db4a22feda5b22b5329ae34b84407494a674dad0fd61f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9be2b66ae0012c6d27840d0c9e17b79793371d559375d2e9133f9f49107f9427"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ed8b6189ef166c39ec222110070ff1f79e3822d3caa7f753950460ff10450a1a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "97bf4cb1a6f646fff688f63450ea337609a7cd27aa001c377f061b5bf9876a1a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b0056b5b520e494b48484d8fd90aa466693df82bee0c08373351cb8c88e14d41"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "d52f1233efca7707a410806ae64487d207945728e08c75b65e7228646afad882"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "149ab8e8d110caa6e708009b3f0503bb5a7af8a2473a415ccfb7a3dd7fb18dd7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "69362a3f6c0bd7ce400c2544fe9246716fa4da8590f83006a16340b444480ed1"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "cf9de76997b88647ceacd687890b20bcc120e2f601ec8532de36f63b7c55c33e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy-1.18.0.dist-info/METADATA",
+      "sha256": "157bd150af3af33b40ec61489be8153752b269fb10c4b45b8cea5104f3235420"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy-1.18.0.dist-info/RECORD",
+      "sha256": "3f44238e1f1f7d763363bccf3e4d09e7aaa42842469bc1191bb588ccface47ab"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-5f890258.so",
+      "sha256": "2a5b4c1a6311873c59132b2ceaaf3c26258a17350b7cd27ea8782a47e3322981"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_cyutility.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ea8548c593ec88036409e14e8940e84adf27b0c72f942240c3527b4e6b193e7c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/_ccallback_c.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "1fcb0dee747e2cd6e0db04f7ffa29c23d848fbd1ab5cda491c46eb5088af899b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/_fpumode.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "4289aae89227eef1998a05715da4ecf835fb37cdf8a6da22941083c425b0a9ed"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/_test_ccallback.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "1ede4895971c5028d8887880136d8fa6db6eb882be5f2ca8d28558e885e44bd4"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/_test_deprecation_call.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e2d413ffee6e7bb62ba3810b0823c6734aae16d5c71df1bb1dddb5bc125a173b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/_test_deprecation_def.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "08185979df2225a7f6ca39d04be706506553b13d0332c5c8484bf081e14c4efb"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/_uarray/_uarray.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ca83664f94c09db3b054260ec762112b16fc6543d259b3477f26fa6f6639c7c0"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/_lib/messagestream.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "91efe5c00a13e7fa9a7ff63576870906a012b131506068363e099cbab8cf51b8"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/cluster/hierarchy/_hierarchy.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "0e86dde705c33cf95299c22c3a2e1fd7cf98aa6e4b8132f6683fa350b309c72e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/cluster/hierarchy/_optimal_leaf_ordering.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "833ceec3eb0edef7a63cbccfbafb9f32307dc319b06c15a52b90ce734013a3ba"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/cluster/vq/_vq.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "c96e8bd6b5eaccdf137eec6f94fb0af5f36b97178687ce3254d098527ddcef87"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/fft/_duccfft/pyduccfft.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "37411194f8151a3535904980eefcb60a3a2a3b0a240d1cbda3f73e7a86ff5904"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/fftpack/convolve.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "582a77bfc1e7c2b80cae70d75334d217803c583cdc2f991ddafd2aa922204ded"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/integrate/_dop.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "d04d3a40899ba636d95126f2b1f5c63cdfe894fc7750c37b091beb08e09015c3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/integrate/_odepack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "072c9a9323d62ded5356d6a1a4f8b6982c543c56f8dd4098764bd73d1406b4a5"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/integrate/_quadpack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9777d8fac32133bf9369b64084046c2a93197303e1018d9357ef4c57b18c8c6f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/integrate/_test_multivariate.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "d8421941f02d2e7dd188d887d7240be1b77e1822682f625687bf9c3931d13ba7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/integrate/_vode.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "dc07aea1b34807245527dd40138f3f759d33f1622742db48cd1476057a3f81e1"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/interpolate/_dierckx.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f12288427c95652fa11f44e91883ba04d1c07c38794eb21b81e3e5a84f1c069a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/interpolate/_fitpack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "4863b270a2e8b734bf3225b31102fc685383f57a242b8f253f1bbaad4887a2cb"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/interpolate/_interpnd.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "94dc0c440b19b1afdd17abd2c14edff7ce1ce2e91a0f282997cd50123139509f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/interpolate/_ppoly.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "633fb8a3631e40b081db6b68dfef272ff94e4a867baca303db8ade20731d4e96"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/interpolate/_rbfinterp_pythran.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "6a2def5b4d31f205d9182cb55cbc8421c805dde3d512469a2a441b64849f212e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/interpolate/_rgi_cython.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8643a9533a9560402c0dd2bdac12b5a88536f3ca701e712660996ae85248bbf9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/io/_fast_matrix_market/_fmm_core.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "120a09a04f988fcf2ba5d67dc27c60b24cd7ea5b8847915d5944eba05f5e22a3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/io/matlab/_mio5_utils.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "92ac2ab2fd8fc70926e0689841a2d8c90ce02712ee571f7063971061911e21fc"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/io/matlab/_mio_utils.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "907fffdca2ed76b5c1d0897c3f2f80ed4111edebfb7384f3b619fa560c84228f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/io/matlab/_streams.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "6b6043674fb9c19de307b422c19735d9d0d6b3e8c8bd8cdfafda603fab41fa2a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_batched_linalg.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "325de462569dbacb15483dddbc94a58f76871b01ed1b3fc90894b12e19a528a9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_cythonized_array_utils.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "71dc0b9524da3f0b4e31c92a98cbb0d51c648fea593fd42e674923a656b95f8b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_decomp_interpolative.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "22f7d2f452213261468fbc3660e59b8044f946c26a63483e3cd63f3305fb5c61"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_decomp_update.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "eab716fba55479b68e0c77ebd638aed5c4cbd7c7bd9394cef8a886815c0ed5a2"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_fblas.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "86699b9965da581ab481d87e5551db3648853e844063ae94f0a18d42440b65c1"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_flapack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b9ce95bbb3147685fbc40d211a237c42c5d2594e2ea769401cc2b3d8a61d055d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_internal_matfuncs.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b44c66052f410baa95e46c61c8128132226e92a47f050e8e69b50c5bc8740fd1"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_linalg_pythran.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8f0585967356cb4bb1084b6b575dcccf6e73ecf2157b059abbf8a8e5700c199d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_matfuncs_sqrtm_triu.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "251ac67dd0781d621d0808accb3c30c591db9611dea46be1fa6b39dee03a158b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/_solve_toeplitz.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "bea444b6cd69593c62acce6797e27d82c153303715ae69ffd006504e0b95f289"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/cython_blas.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "09ecadd580b91ef2d9282c80205b802c4b4bfa9a9f610876773c95885ff1817c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/linalg/cython_lapack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b6b592c84cf5a434f4e06ffccb276b4c0a08a92179dac79697dca6786d3d6583"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/ndimage/_ctest.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "08b9335fc4a54482cc66c73279d59e3a84176f4e9c070ce3cb47bc730617afc2"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/ndimage/_cytest.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "05a88130ab223b490ad52f8a96182bb92ab9f4bc367a06069e49fbe83194dcf4"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/ndimage/_nd_image.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "cdd1e83e2258cefd5927dd452e797a555919cda97b7bda337ca8671896ed5c10"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/ndimage/_ni_label.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "c2d8784a463e188965f9d97b2d3e1cfb6ffe9fc10d750a675d075c8e9fe67819"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/ndimage/_rank_filter_1d.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "d8e4fb13a9203cb15c819b37d5a3a74076a3feb84f90bb6b94d5829227db1b50"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/odr/__odrpack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e639e371a00b487c7c260506ed24dd3df36d9bd09bb08400f1f57fd791d2860f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_bglu_dense.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "bda26c8783f1033c6786ec31b698701a5a1944531984049024c68835f900cd5f"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_direct.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "78c3da24464d6099ac8bf84952020c0a0e7a27e4cd251de9b8d8ed53840ef622"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_group_columns.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "6960dfaac421b3a8b3ce085ae24a3dd98e03e83f5854f4454ad6dee45a90784d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_highspy/_core.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "33fb5a6a86b8fb914b26e69f8f046274b0b043d202511109365d3fde180c540d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_highspy/_highs_options.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "116ed72be9accceafcdeb58d5d02308e5023b9bc98118303a79d3bc24fe171d6"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_lbfgsb.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b64a96406e91c0f7b080dd28daed879485322224ac7c3e10d325808aef0cce15"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_lsap.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9e9602ef6d54be544b8a1d697f1f6038ca2bd3e2ad8e40f0440c5bc70f6f8b12"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_lsq/givens_elimination.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ed0b4c05891e94a5a960417746949bb93c86e78b585044c0b4e26a0e06982517"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_minpack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "054d0cbb081cd893030699df20e56d969b68afd99603bfee5000b0b9e03121ad"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_moduleTNC.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "4a3112ad28b58a26948c1c4f78726cf0479e79fe5827237b92db6b21da9cc2f8"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_pava_pybind.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "add5e4713a3f47b43f804f342b0eea87e4c1907237ee1706ed14a50f5285ebfb"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_slsqplib.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9aeb671ad4d2e8784bf9315312226cb3a9ba4bbc139b9469e59ca4904d54daf7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_trlib/_trlib.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "407a1299a892caa9617f70d83ce7f079d9f32e026913dbd1e1cb1cc34c2ce593"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/_zeros.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "53e48a69c5cfae5a592f436faa15f2dff22a88a8ea084e3142cd03407992b26a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/optimize/cython_optimize/_zeros.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b113504b745cafc6710ff2692b17da70ab30e70d8a2583f0b3f2c957128370a7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/signal/_max_len_seq_inner.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "41c4f890ccf6da5e84558b6d8f2cae19dc28279e32271fc266dc12e13cf210f7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/signal/_peak_finding_utils.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "7f547534a9c3f5608284cf93e189e2f4036adcdf0e73989f2d004812e4d25fc3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/signal/_sigtools.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b95d8dd95b8ceb6cc99e59cf2672a0f98fa516c48cdc4c9a8b6ef30ae9f12c42"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/signal/_sosfilt.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "dc395d746cc9879aa41dcfd1144613525a44e561a11d5f34b651c20c8a3bba08"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/signal/_spline.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ee5359f23f76e84e91e2e3408b7b3fd4bbd0dfe8ea4cbbaa3546c63e351c8c49"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/signal/_upfirdn_apply.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b44aba30d7c5b8efe4d7220439e2f05ece000a1cbd2d66bac7156f90089d64e5"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/_csparsetools.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b7ca396a0686f87c2767e5bbeddf2eb5d6d40894d0283774584aed7cde87b19d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/_sparsetools.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "cc0a6897bae0bc9e0b8be15e38a3d9d15dcb34e3acf1b22656171117af71fcc5"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_flow.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e916fb4555f097547989807d6e4e23978d195ba9f3ff8a60b6117bc5d9032e02"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_matching.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "57636d89fcb29cdf654ffa5b6d0120ff25d1fb8d0d608b68e7aaaf5b2cf6c919"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_min_spanning_tree.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "9fb7f1e07981da2d631105c0a83adaec1afc44b03e0238f645f35e26188a1c72"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_reordering.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "1354563644ee9209f297761697bc215cdb22c79b718cd57c916926037ac1c9e9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_shortest_path.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "432679757ec4e8c34a4c0903d1e1aaceec6d0232043e2014f1de436a0094a088"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_tools.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e1ec508d60f12cc7d38621513c0fa994593a0ff3dda89ab806fa9e9bb2de4b16"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/csgraph/_traversal.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8a110bc9b246c65b4290a529e4f5f87667da30781dcbd690e0833b7f25bf1abb"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/linalg/_dsolve/_superlu.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b7cc362fe1b3a25a1f1c0fa36b5350869901273c79b8692392cc2f8ef273dc54"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/linalg/_eigen/arpack/_arpacklib.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "be1f166a30bc7ab506a81922430d82b16ad2013cb0dfb7917ea15510106b46c3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/sparse/linalg/_propack.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b0fc98a02b3367027b9f22f2afacca2e5ae57b656077e216946398bfc5eb028e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/_ckdtree.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "3d2b0626f25c41939ecd57a8f9f99b4ed7f2f074f39e9af41f63c39946244099"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/_distance_pybind.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "5ef008015ebba788b98c647047afa9a46b0cccc4340c8dc4a880e2587e4b5bc9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/_distance_wrap.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "4a25a65e63e8fad64206d75d8f085f1f87489c453dc4065ed93457596f12900c"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/_hausdorff.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8bbe6c5dce440c42a16c9f0d3af34d12d8b499cc7aa055355cd8fb471f0129ba"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/_qhull.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f0ece0e7838e9d1ee5c3126292fed225e740734d99280b0faa3ff1cf726b531a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/_voronoi.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "e8baae25d565c44aa6fef18e08b67e3a2db32d01023a1e48a42501fb084f6e1e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/transform/_rigid_transform_cy.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "8d025603d3b079716af5331e0b4cf7a3fa3020d56ec106200d9258e07960c862"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/spatial/transform/_rotation_cy.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "bdb2a72c5d97e35e0a3cbf64d20c86c9fa7e81bcb1ddf8208cd7832daa3e9b39"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_comb.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "680064f6d2ccce29c1b3937562cdb898560c94af434c3a6a429394858e4915fb"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_ellip_harm_2.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "b4748cee5d175467c3a2c68fca886cf607bd0a58096472dd0beba2f2f4687da0"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_gufuncs.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "19efbca6732a4489ac6ae872640b407bc83974a668fa4b7d4b55e3606cab301e"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_specfun.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "2c27f344e2f8d3e97e3b070ee440592ba90324ae4263524ff4e85168388d6924"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_special_ufuncs.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "5aa5984456082656fa66012b11e4eebff25e1e993cf6d50460a083086f0679d3"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_test_internal.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f1dd3dd1977a0cbc94f36f210dd68eba145c7aba3f2c27956f426d91020fdf3d"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_ufuncs.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "d68fb91d24c37818f6c2de52b63c8257c29617d62a58d1aabdc51dc9d055d4b5"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/_ufuncs_cxx.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "28dd61ac417abb7d4b9917d787d87146ba5ce6df1ce7e42f5a993e7aea66c9d7"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/special/cython_special.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ebd81a54547f57694319ac176a50b7a148e1f41c1dae687a65e2347454b9e699"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_ansari_swilk_statistics.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "5612c6f57a8e97a467d88019f5428314e8b8bc7907dec7028671f1629d08db7a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_biasedurn.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "5de2fd26b29b90c9e3090f1b0b738782f601b92222ba94d9cb6a4b1a898b46c5"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_levy_stable/levyst.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "415a779f77d26003a24a2b6da0ce971ed18d597c80a6bdec7bd00347f58a05ec"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_qmc_cy.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "13d71387da10a610c119621119f26a981474737dc105153d24248ba566285fda"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_qmvnt_cy.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f24c941ac05f683264bbc14ff0cc4da1468bb75a2d788f40b5fc68c484e7aec9"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_rcont/rcont.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "cac8d420bff9e2bf24fd12b85bd3ab6d123a8fe13af3aa475cef7ce775205154"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_sobol.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f26c7d98b4befa24ddfdf90406b3d7b33cff94f60b473d33a0af82ee329c9a77"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_stats.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "ae458e9e7341aa4b88d2bb2225def5108b5fecc6092a9dee86634f8504d89d3a"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_stats_pythran.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "14320c5a7e42ed3a39a3606acdeb108aae23f0038307e35ae28090808239c530"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/scipy/stats/_unuran/unuran_wrapper.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f6fc277c78c018ca5d7ef03d0ae46357e6af4aebc3137a3d0c005f9fe8c09f1b"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/ml_dtypes-0.6.0.dist-info/METADATA",
+      "sha256": "363d582174259be78c619e314216fc8979e5a5ec245337ee236b244945df3f01"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/ml_dtypes-0.6.0.dist-info/RECORD",
+      "sha256": "d1792ba03ef9332d994c75befb51bd82cbe74938714461f9e5d2b3c2a867a3fe"
+    },
+    {
+      "path": ".cache/runs/competition-runtime-venv/lib/python3.12/site-packages/ml_dtypes/_ml_dtypes_ext.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "c993e0daf62ea45b3270b29bcb6dd590c3a05161a7d572a9c6c41754f725f656"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/second-report.json",
+      "sha256": "d83e21db26bbed3554e538546d8a8f29eec2dfc38cd4cc41f03167f3a06b7176"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/continuation-terminal.json",
+      "sha256": "833ff886dc71b6865631ae2f5ef567a90317aff24bec89cf7da2f03523b6f4a8"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/continuation-first.log",
+      "sha256": "761ed017127963f538a6194171d87b77e9a7524d51134b8984221e7e97d9e45b"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-completion.json",
+      "sha256": "d413668aeaa30a3d5d76d6e0509ba059bd3814d27d889d67a385031418e977fb"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/final-nine-report.json",
+      "sha256": "6b56d062b27d60bc34474e25f65c381c20e0d52df937e1938d23ce572cca8cf3"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-report.json",
+      "sha256": "39795edd9d2741265ff08fa159b843fcc1c0f577bd28f8ca0b23c000561e9438"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-benchmark.py",
+      "sha256": "b6ff148958f4e9deaed9afec4de03fe2c9da41d376a0202a0e5f97cbafbf19ad"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-juraj183.json",
+      "sha256": "0f9e9c1b786f339d7d4a7a5268369e75d0db9a1a8127325e8778c144217900fc"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-mybot221.json",
+      "sha256": "c4d0cf892a537b9619d191c3d4d0b3199157aaddbe6e54b52406803f8aa50f74"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-terminal.json",
+      "sha256": "e408a1090d68a0e194eaf34ef637fcc0a87894aed80d8582c9faa29774743bf2"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-first.log",
+      "sha256": "90a954a008f2193d9a1650967fc621025b75280217d116eb2de4282c9249f2e8"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/profile/active-review.md",
+      "sha256": "f8566459eacd4c8d5c83156fb54a885a8aa11f5fc674807369d931c5a9e15184"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/branch-gather-design/source-review.md",
+      "sha256": "39c4c3151574997d7b3605b64458aa469b75177c46ff4d168d136a0bd2c1855e"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/checker-design/review.md",
+      "sha256": "ff590d53d60a0439ca24e7d50367f14679efc39afbd6c2e0301d1589862adc29"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/origin-main.txt",
+      "sha256": "f4acd4ad95fd2bba3bdf000751631ea8ed77e44889b57b4124cfb365498940f7"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/collect.py",
+      "sha256": "7b940ba6f2dfd6c1b80eac4aabf472dde19f0aee486187a2eeec78fec2cd0ad7"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/collector-attempts.json",
+      "sha256": "973578859a30956c132509a78d60c22fbb6aa47c9e70dffb189bd7e7104ff85c"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/collect-attempt2.log",
+      "sha256": "e1aff6598a6e8eb8feb194fdcb4b364e688e69199074cfc20fd85f7c0eda5fa1"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/upstream-prs.json",
+      "sha256": "f77d0b9e4a2dd429e7b2edc6bfd9808b9d1348610c3cdac6a9cc539f7c6dc790"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/fork-prs.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": ".cache/runs/sentinel-v20/preflight-delivery/collect-attempt1.py",
+      "sha256": "0aaf33384c8bac600a6379f42e5a0de42ca490fb407d4c457d4a27fb894982f4"
+    }
+  ],
+  "collection_note": "Collector attempt1 failed before writing evidence by traversing older release versions as current source. Attempt2 verified current V20 closure and historical leaf inputs; its own output log hash was finalized after the process exited. No policy, test, game or timing data changed."
+}

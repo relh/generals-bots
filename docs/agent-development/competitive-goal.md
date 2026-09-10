@@ -97,6 +97,11 @@ search still leaves large deficits; winning controls also make coverage-worsenin
 moves. V12 already tested broad final-action coverage preservation and failed.
 These findings select no V20 policy and establish no additional playing strength.
 
+The subsequent [V20 implementation](v20-development.md) tests a new ability to
+combine owned donor branches under one action budget. Correctness and measured
+runtime checks pass, and it can activate on the losing Juraj control. No V20
+complete games have run; this preflight does not establish a winning advantage.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;
