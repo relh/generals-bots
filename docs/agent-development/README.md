@@ -96,6 +96,14 @@ budget and live V6-based controls. All eighteen games and ledger checks complete
 but Amin and Juraj remain losses. Serviced transfers do not establish frontier
 progress or economic advantage; V14 remains experimental.
 
+The [V15 opening experiment](v15-plan.md) tests a local capture immediately before
+land production against broader fanout before first contact. The [opening audit](v15-opening-evidence.json)
+identifies both missed tick opportunities and productive transfers to preserve.
+Eighteen focused tests and matched warm profiling pass; both modes retain
+87.7–91.1% of V10 throughput on the selected fixtures. The [preflight evidence](v15-preflight-evidence.json)
+does not establish strength or qualify cold startup. Complete-game comparison,
+broader opponent coverage and deployment qualification remain required.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
