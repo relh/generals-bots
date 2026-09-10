@@ -1,6 +1,6 @@
 # V17: productive capture continuation
 
-**Preregistered experiment; implementation and qualification pending.** V16's
+**Preregistered experiment; implementation and qualification in progress.** V16's
 completed routes did not preserve the stronger controls. The preceding
 [public-state audits](v17-audit.md) identify costly objective choices and a
 separate failure to concentrate defensive force early enough. This experiment
@@ -12,14 +12,15 @@ V2 remains the default.
 
 When V16 starts an immediate direct attack on an ordinary visible enemy tile,
 compare capture chains from that same selected packet. Consider at most three
-consecutive captures of currently visible ordinary tiles, with no owned
+consecutive captures of currently visible ordinary tiles, starting with an
+enemy tile and permitting enemy or neutral continuations, with no owned
 transfers, revisits, structures or assumed empty fog. Charge every departure
 and defender once. Rank feasible chains by captured tile count, then surviving
 force, preserving the original first action on exact ties. This uses an explicit
 short route's material value; it does not globally prefer weak opponents or
 cancel useful collections because another packet can expand elsewhere.
 
-Commit the selected remaining destinations so the policy can actually execute
+Commit a selected chain of at least two captures so the policy can execute
 the valued continuation. Revalidate ownership, current army, visible
 counterforce, home coverage, observation continuity and a fixed expiry before
 each action. Defense, construction, general opportunities and outer pursuit or
@@ -27,11 +28,33 @@ mobilization retain priority. Preserve collection and feeder admission when
 the immediate direct-capture trigger does not apply. Disabled operation must
 return the complete frozen V16 tuple, including memory and telemetry.
 
-The implementation owner must finalize the memory encoding, priority and abort
-contract before source freeze. Retain both the original inner proposal and the
-capture-chain proposal. Distinguish actual issued starts/continuations from
-proposals overridden by either outer layer; discard unissued route memory.
-Static residual estimates do not predict growth or adaptive opponent replies.
+`SentinelV17Agent(capture_chains=True)` places this arbitration inside the frozen
+V16 campaign. Disabled `capture_chains=False` preserves V16. Both retain native
+nineteen-field memory. Offensive phase 4 stores the current packet, at most two
+pending destinations in `rally`/`objective`, remaining count, expected postcapture
+army and expiry fixed to the final planned action. Phase 4 is cleared before the
+single frozen-parent call, retaining its real defender state. Completion returns
+to ordinary selection; no extra postcapture marker extends commitment.
+
+Each remaining suffix must still be visible, distinct, adjacent and affordable
+with residual force strictly greater than the largest current neighboring enemy
+surplus after removing earlier projected captures. This does not model enemy
+mergers. Only the selected next action receives the inherited radius-ten home
+coverage check; if it fails, conservatively use the parent rather than searching
+for a different safe alternative. Home safety of future moves is rechecked when
+those observations arrive, not certified for the entire route at admission.
+
+Retain the original inner proposal and the capture-chain proposal. Inherited
+V16 events require `chain_parent_action_issued` and both unchanged outer masks
+`actual_v8_action_issued` / `mobilization_parent_action_issued`. Chain events
+require both outer masks. The parent mask compares actual action equality:
+starting a chain with the same first move can change commitment while still
+issuing the parent action. Distinguish this from a changed move and discard
+unissued route memory. `chain_available` reports enumeration availability;
+original comparison scores require `chain_comparison_available` and are -1
+outside a new admitted comparison. Static residual estimates do not predict growth or
+adaptive opponent replies. Freeze the finalized tested implementation before
+running the budget; no mid-run predicate changes are permitted.
 
 The Juraj 109 and Amin 214 recorded states motivate alternative captures.
 Amin 223 and 163 are scope/preservation checks. Earlier Juraj 100 and Amin
