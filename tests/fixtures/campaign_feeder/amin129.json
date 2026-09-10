@@ -1,0 +1,228 @@
+{
+  "name": "amin129",
+  "turn": 129,
+  "rules": {
+    "build_castles": true,
+    "deathtouch_turn": 800,
+    "max_turns": 1200
+  },
+  "shape": [
+    21,
+    18
+  ],
+  "public_wire": "129 53 118 57 121\n5 0 0 0 5 5 5 0 0 0 0 0 0 5 0 0 0 0\n0 0 0 5 0 0 0 0 0 0 0 0 0 0 5 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 0 0\n0 0 5 5 0 0 0 0 0 5 0 0 0 0 0 0 5 0\n0 5 0 0 5 0 0 5 0 0 0 0 5 0 0 0 0 0\n0 5 0 0 0 0 0 0 0 0 0 5 0 5 0 5 0 5\n0 0 0 0 0 5 0 0 0 0 5 0 0 0 0 0 5 0\n0 0 0 0 0 0 0 0 0 0 0 0 5 0 2 1 2 1\n0 0 0 0 0 0 5 0 0 0 5 0 0 0 1 1 1 4\n0 0 0 0 0 5 5 0 0 0 0 0 0 1 2 2 1 1\n5 0 5 0 0 0 5 0 5 0 5 0 0 1 1 1 1 1\n0 5 0 0 0 0 0 0 5 0 0 0 0 1 1 2 1 1\n5 5 0 0 0 0 0 0 0 0 0 5 0 2 1 2 2 1\n0 5 0 0 0 0 0 0 5 0 0 5 0 1 1 1 2 1\n1 1 1 0 0 0 0 5 0 2 1 2 2 1 1 2 1 1\n2 1 1 0 0 5 0 0 0 2 1 1 1 1 1 1 1 2\n1 1 1 5 0 5 0 0 0 1 1 2 1 1 1 1 1 1\n1 2 1 0 5 0 0 1 2 2 2 1 1 1 1 2 2 1\n1 1 1 1 1 1 1 2 1 1 1 1 2 1 2 1 0 0\n1 1 1 1 1 1 1 1 1 1 2 1 1 0 0 5 0 0\n1 1 2 1 1 1 2 1 1 1 1 5 5 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1\n0 0 0 0 0 0 0 0 0 0 2 0 0 0 1 0 1 1\n0 1 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0\n1 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 0\n1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0\n1 1 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0\n0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 25\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 2\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 1\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 1\n0 0 0 0 0 0 0 0 0 0 1 0 0 0 2 0 1 1\n0 22 0 0 0 0 0 0 0 0 0 2 2 2 2 2 1 0\n1 1 0 0 0 0 0 0 0 0 0 0 2 2 1 1 1 0\n1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0\n1 1 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0\n0 1 1 1 1 1 1 1 1 2 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+  "wire_sha256": "ac63ba0113a796989c2c5b7fd1836c9ea671352f71daef264393878ae33c289c",
+  "incoming_memory": {
+    "base": {
+      "defense": {
+        "defender": -1,
+        "target": -1,
+        "previous": -1,
+        "distance": 0,
+        "expires": -1,
+        "last_turn": 128,
+        "expected_army": 0
+      },
+      "packet": -1,
+      "rally": -1,
+      "objective": -1,
+      "phase": 0,
+      "remaining": 0,
+      "expires": -1,
+      "last_turn": 128,
+      "expected_army": 0
+    },
+    "enemy_general": -1,
+    "last_turn": 128,
+    "height": 21,
+    "width": 18
+  },
+  "action_key": [
+    2423593866,
+    493695348
+  ],
+  "expected_parent_action": [
+    0,
+    15,
+    13,
+    2,
+    0
+  ],
+  "expected_reference_action": [
+    0,
+    15,
+    1,
+    0,
+    0
+  ],
+  "expected_returned_memory": {
+    "base": {
+      "defense": {
+        "defender": -1,
+        "target": -1,
+        "previous": -1,
+        "distance": 0,
+        "expires": -1,
+        "last_turn": 129,
+        "expected_army": 0
+      },
+      "packet": 282,
+      "rally": 281,
+      "objective": 262,
+      "phase": 1,
+      "remaining": 1,
+      "expires": 134,
+      "last_turn": 129,
+      "expected_army": 3
+    },
+    "enemy_general": -1,
+    "last_turn": 129,
+    "height": 21,
+    "width": 18
+  },
+  "scalar_telemetry": {
+    "actual_v8_action_issued": true,
+    "adjacent_threat": 0,
+    "building": false,
+    "candidate_count": 142,
+    "commitment_arrival_army": 0.0,
+    "commitment_continued": false,
+    "commitment_expired": false,
+    "commitment_held": false,
+    "commitment_observation_gap": false,
+    "commitment_observation_inconsistent": false,
+    "commitment_override": false,
+    "commitment_released": false,
+    "commitment_remaining": 0.0,
+    "commitment_required": 0.0,
+    "commitment_reverse_blocked": false,
+    "commitment_started": false,
+    "deathtouch_active": false,
+    "general_army": 25,
+    "general_reserve": 3.0,
+    "goal_city": false,
+    "goal_visible_general": false,
+    "intercept_arrival_army": 0.0,
+    "intercept_enemy_eta": 0.0,
+    "intercept_feasible": false,
+    "intercept_friendly_eta": 0.0,
+    "intercept_guard": false,
+    "intercept_home_deficit": 0.0,
+    "intercept_new_defense": 0.0,
+    "intercept_override": false,
+    "intercept_projected_deathtouch": false,
+    "intercept_required_defense": 0.0,
+    "intercept_target_index": -1,
+    "intercept_threat_index": -1,
+    "mobilization_arrival_army": 0.0,
+    "mobilization_donation": 0.0,
+    "mobilization_eligible": false,
+    "mobilization_home_coverage_safe": false,
+    "mobilization_home_eta": 0.0,
+    "mobilization_issued": false,
+    "mobilization_parent_action_issued": true,
+    "offense_attack_issued": false,
+    "offense_cheapest_collection": true,
+    "offense_collecting": true,
+    "offense_collection_eta": 4.0,
+    "offense_continued": false,
+    "offense_defense_priority": false,
+    "offense_delivered": 4.0,
+    "offense_deploying": false,
+    "offense_direct_available": false,
+    "offense_direct_chosen": false,
+    "offense_direct_eta": -1.0,
+    "offense_direct_started": false,
+    "offense_feasible": true,
+    "offense_home_coverage_safe": true,
+    "offense_objective": 262,
+    "offense_override": true,
+    "offense_rally": 281,
+    "offense_released": false,
+    "offense_remaining": 2.0,
+    "offense_required": 4.0,
+    "offense_started": true,
+    "pursuit_available": false,
+    "pursuit_base_column": 13,
+    "pursuit_base_direction": 2,
+    "pursuit_base_kind": 0,
+    "pursuit_base_row": 15,
+    "pursuit_base_split": 0,
+    "pursuit_home_safe": true,
+    "pursuit_issued": false,
+    "pursuit_override": false,
+    "pursuit_priority_blocked": false,
+    "remembered_general_available": false,
+    "remembered_general_hidden": false,
+    "remembered_general_index": -1,
+    "remembered_general_invalidated": false,
+    "remembered_general_visible": false,
+    "score": 21.649999618530273,
+    "strategic_map_reset": false,
+    "strategic_observation_gap": false
+  },
+  "feature": {
+    "shape": [
+      21,
+      18
+    ],
+    "objective": [
+      14,
+      10
+    ],
+    "objective_army": 1,
+    "archived_concentration_eta": 4.0,
+    "stronger_existing_same_objective_feed": false,
+    "options": {
+      "concentration": {
+        "action": [
+          0,
+          15,
+          13,
+          2,
+          0
+        ],
+        "source": [
+          15,
+          13
+        ],
+        "source_army": 2,
+        "moving": 1,
+        "destination_owned": true,
+        "owned_distance_to_same_objective": 4,
+        "proposed_destination_distance": 3,
+        "advances_same_owned_objective": true,
+        "static_shortest_route_delivered_army": 1
+      },
+      "reference": {
+        "action": [
+          0,
+          15,
+          1,
+          0,
+          0
+        ],
+        "source": [
+          15,
+          1
+        ],
+        "source_army": 22,
+        "moving": 21,
+        "destination_owned": false,
+        "owned_distance_to_same_objective": 24,
+        "proposed_destination_distance": null,
+        "advances_same_owned_objective": false,
+        "static_shortest_route_delivered_army": null
+      }
+    }
+  },
+  "reference_provenance": "Archived V14 single-call V6 proposal; exact public wire, original incoming Strategic19 memory and key equal current V10 control. No new proposal inference.",
+  "input_sha256": {
+    ".cache/runs/sentinel-v15/external-selected/results/v10-juraj-v35-game-0012-frames.jsonl": "0d8f795f8b0f7fe08674853fca2622c91d0be314f5615d1eb6f19ecde5b2c7a1",
+    ".cache/runs/sentinel-v15/external-selected/results/v10-v6-juraj-v35-game-0012-frames.jsonl": "7ea8e3b1f89dca6068ae7e9909b1d1615051530ee90b3e0201226405c623c155",
+    ".cache/runs/sentinel-v15/amin-selected/results/v10/game-0001.json": "204dba8ce1058a7d6f4e407de2087c21ea4b90a39279ed089700aef48a16434f",
+    ".cache/runs/sentinel-v15/amin-selected/results/v10/game-0001-policy.jsonl": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24",
+    ".cache/runs/sentinel-v14/amin-selected/results/v14/game-0001.json": "631f5959b17cad788bd08f15abdad78f7eff233221217b69276efa94729765aa",
+    ".cache/runs/sentinel-v14/amin-selected/results/v14/game-0001-policy.jsonl": "266112388bfcce5391a1e1991577c4c6946ff75298f104db67646b605526658a"
+  }
+}
