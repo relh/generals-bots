@@ -132,6 +132,13 @@ and is rejected: two wins and four losses despite 522 confirmed rear captures,
 checks pass. Its economic gains remain dispersed and do not preserve the
 winning Amin/Juraj controls. V18 remains unpromoted and V2 remains the default.
 
+The [V19 defender-retention experiment](v19-results.md) also completes all 24
+games and is rejected: Amin losses at 431, Juraj losses at 575 and my_bot9 wins
+at 888. Ten retained transits execute, including two home arrivals, but no new
+field hold occurs. All eighteen controls match before candidate play; complete
+integrity checks and failure audits pass. Delivery and longer survival do not
+establish the required wins. V19 remains unpromoted.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

@@ -83,6 +83,14 @@ land tick, but greater economy does not become timely concentrated defense.
 The unchanged original my_bot9 makes 34 invalid builds in the V18 games.
 Correctness, runtime and complete integrity checks pass; V18 is not promoted.
 
+The [V19 bounded-retention screen](v19-results.md) completes all 24 games and
+fails the six-win gate: Amin losses at 431, Juraj losses at 575 and my_bot9 wins
+at 888. Existing routes complete correctly, and one memory continuation changes
+a later capture and defense, but no new retained field hold executes. Later
+attacks still find insufficient concentrated defense despite greater total army.
+All eighteen controls match before candidate play and complete checks pass.
+V19 is not promoted; no fresh holdout has been consumed.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;
