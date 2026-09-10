@@ -1,0 +1,711 @@
+{
+  "complete": true,
+  "audit_only": true,
+  "policy_selected": false,
+  "new_games": 0,
+  "new_policy_inference": false,
+  "reserved_seed_143000_used": false,
+  "goal_achieved": false,
+  "source_main": "4851bb7219389b70da55bee05f86d0338e1abde9",
+  "manifests": {
+    "amin-visible-defense-audit/manifest.json": "db00914260728165fcab31cae9c525f09daa3b05be8f8ab57b5442fcc20d8507",
+    "juraj-delivery-audit/completion.json": "2c4febf62915fcba4932e2ea6eceb020a9263b47bdb0a29f73f033ec5b0cdb65",
+    "defense-contract-audit/manifest.json": "ca8b838c03e314c9c67101a335a293ef370b33095f45ce7f8b8f67bcebd3c3a4",
+    "mobile-force-history/manifest.json": "707a400c855ca190563d51ed053c00100af9c521b91c6103f1d2c0a139ab74a6"
+  },
+  "amin": {
+    "mirrored_frames": 4020,
+    "first_mirror_home_departures": 88,
+    "positive_deficit_infeasible_departures": 4,
+    "queried_frames": 35,
+    "action_encodings": 20338,
+    "independent_arithmetic_checks": 144,
+    "records": [
+      {
+        "arm": "v19",
+        "turn": 415,
+        "before": -32,
+        "actual_after": -32,
+        "best_one_step": -31,
+        "alternative_encodings": 773
+      },
+      {
+        "arm": "v19",
+        "turn": 416,
+        "before": -32,
+        "actual_after": -32,
+        "best_one_step": -31,
+        "alternative_encodings": 771
+      },
+      {
+        "arm": "v19",
+        "turn": 417,
+        "before": -32,
+        "actual_after": -32,
+        "best_one_step": -31,
+        "alternative_encodings": 767
+      },
+      {
+        "arm": "v19",
+        "turn": 418,
+        "before": -32,
+        "actual_after": -32,
+        "best_one_step": -31,
+        "alternative_encodings": 763
+      },
+      {
+        "arm": "v19",
+        "turn": 419,
+        "before": -32,
+        "actual_after": -32,
+        "best_one_step": -31,
+        "alternative_encodings": 766
+      },
+      {
+        "arm": "v19",
+        "turn": 420,
+        "before": -28,
+        "actual_after": -28,
+        "best_one_step": -27,
+        "alternative_encodings": 765
+      },
+      {
+        "arm": "v19",
+        "turn": 421,
+        "before": -23,
+        "actual_after": -23,
+        "best_one_step": -22,
+        "alternative_encodings": 767
+      },
+      {
+        "arm": "v19",
+        "turn": 422,
+        "before": -23,
+        "actual_after": -33,
+        "best_one_step": -22,
+        "alternative_encodings": 755
+      },
+      {
+        "arm": "v19",
+        "turn": 423,
+        "before": -28,
+        "actual_after": -28,
+        "best_one_step": -19,
+        "alternative_encodings": 745
+      },
+      {
+        "arm": "v19",
+        "turn": 424,
+        "before": -23,
+        "actual_after": -23,
+        "best_one_step": -22,
+        "alternative_encodings": 733
+      },
+      {
+        "arm": "v19",
+        "turn": 425,
+        "before": -19,
+        "actual_after": -19,
+        "best_one_step": -18,
+        "alternative_encodings": 729
+      },
+      {
+        "arm": "v19",
+        "turn": 426,
+        "before": -18,
+        "actual_after": -18,
+        "best_one_step": -15,
+        "alternative_encodings": 724
+      },
+      {
+        "arm": "v19",
+        "turn": 427,
+        "before": -18,
+        "actual_after": -18,
+        "best_one_step": -17,
+        "alternative_encodings": 713
+      },
+      {
+        "arm": "v19",
+        "turn": 428,
+        "before": -17,
+        "actual_after": -17,
+        "best_one_step": -16,
+        "alternative_encodings": 703
+      },
+      {
+        "arm": "v19",
+        "turn": 429,
+        "before": -16,
+        "actual_after": -16,
+        "best_one_step": -15,
+        "alternative_encodings": 697
+      },
+      {
+        "arm": "v19",
+        "turn": 430,
+        "before": -16,
+        "actual_after": -16,
+        "best_one_step": -16,
+        "alternative_encodings": 685
+      },
+      {
+        "arm": "v18",
+        "turn": 419,
+        "before": -18,
+        "actual_after": -18,
+        "best_one_step": -17,
+        "alternative_encodings": 761
+      },
+      {
+        "arm": "v10",
+        "turn": 247,
+        "before": -17,
+        "actual_after": -17,
+        "best_one_step": -17,
+        "alternative_encodings": 317
+      },
+      {
+        "arm": "v10",
+        "turn": 348,
+        "before": -21,
+        "actual_after": -22,
+        "best_one_step": -19,
+        "alternative_encodings": 333
+      },
+      {
+        "arm": "v10",
+        "turn": 349,
+        "before": 46,
+        "actual_after": 49,
+        "best_one_step": 49,
+        "alternative_encodings": 333
+      },
+      {
+        "arm": "v10",
+        "turn": 350,
+        "before": -11,
+        "actual_after": -14,
+        "best_one_step": -9,
+        "alternative_encodings": 509
+      },
+      {
+        "arm": "v10",
+        "turn": 351,
+        "before": -11,
+        "actual_after": -11,
+        "best_one_step": -9,
+        "alternative_encodings": 499
+      },
+      {
+        "arm": "v10",
+        "turn": 352,
+        "before": -9,
+        "actual_after": -24,
+        "best_one_step": -7,
+        "alternative_encodings": 485
+      },
+      {
+        "arm": "v10",
+        "turn": 353,
+        "before": -22,
+        "actual_after": -22,
+        "best_one_step": -5,
+        "alternative_encodings": 477
+      },
+      {
+        "arm": "v10",
+        "turn": 354,
+        "before": -22,
+        "actual_after": -22,
+        "best_one_step": -5,
+        "alternative_encodings": 463
+      },
+      {
+        "arm": "v10",
+        "turn": 355,
+        "before": -22,
+        "actual_after": -22,
+        "best_one_step": -5,
+        "alternative_encodings": 450
+      },
+      {
+        "arm": "v10",
+        "turn": 356,
+        "before": -22,
+        "actual_after": -24,
+        "best_one_step": -2,
+        "alternative_encodings": 440
+      },
+      {
+        "arm": "v10",
+        "turn": 357,
+        "before": -24,
+        "actual_after": -24,
+        "best_one_step": -12,
+        "alternative_encodings": 426
+      },
+      {
+        "arm": "v10",
+        "turn": 358,
+        "before": -24,
+        "actual_after": -21,
+        "best_one_step": -12,
+        "alternative_encodings": 422
+      },
+      {
+        "arm": "v10",
+        "turn": 359,
+        "before": -20,
+        "actual_after": -20,
+        "best_one_step": 1,
+        "alternative_encodings": 420
+      },
+      {
+        "arm": "v10",
+        "turn": 360,
+        "before": 1,
+        "actual_after": 1,
+        "best_one_step": 1,
+        "alternative_encodings": 406
+      },
+      {
+        "arm": "v10",
+        "turn": 361,
+        "before": 1,
+        "actual_after": 1,
+        "best_one_step": 1,
+        "alternative_encodings": 398
+      },
+      {
+        "arm": "v10",
+        "turn": 362,
+        "before": 2,
+        "actual_after": 31,
+        "best_one_step": 31,
+        "alternative_encodings": 402
+      },
+      {
+        "arm": "v10",
+        "turn": 363,
+        "before": 31,
+        "actual_after": 21,
+        "best_one_step": 31,
+        "alternative_encodings": 398
+      },
+      {
+        "arm": "v10",
+        "turn": 626,
+        "before": -115,
+        "actual_after": -127,
+        "best_one_step": -112,
+        "alternative_encodings": 543
+      }
+    ]
+  },
+  "juraj": {
+    "queried_frames": 17,
+    "independently_verified_owned_transfer_pass_costs": 12183,
+    "late_records": [
+      {
+        "turn": 566,
+        "initial_deficit": 36,
+        "best_one_step_deficit": 34,
+        "best_schedule_deficit": 27,
+        "schedule_actions": 6
+      },
+      {
+        "turn": 570,
+        "initial_deficit": 44,
+        "best_one_step_deficit": 42,
+        "best_schedule_deficit": 35,
+        "schedule_actions": 5
+      },
+      {
+        "turn": 571,
+        "initial_deficit": 44,
+        "best_one_step_deficit": 42,
+        "best_schedule_deficit": 36,
+        "schedule_actions": 4
+      },
+      {
+        "turn": 572,
+        "initial_deficit": 44,
+        "best_one_step_deficit": 43,
+        "best_schedule_deficit": 38,
+        "schedule_actions": 3
+      },
+      {
+        "turn": 573,
+        "initial_deficit": 44,
+        "best_one_step_deficit": 43,
+        "best_schedule_deficit": 40,
+        "schedule_actions": 2
+      },
+      {
+        "turn": 574,
+        "initial_deficit": 44,
+        "best_one_step_deficit": 41,
+        "best_schedule_deficit": 41,
+        "schedule_actions": 1
+      }
+    ]
+  },
+  "findings": {
+    "home_420_recipient_credit_preserves_margin": true,
+    "field_422_worsens_margin_by": 10,
+    "winning_controls_also_worsen_static_coverage": true,
+    "v12_final_action_nonincrease_already_failed": true,
+    "bounded_mobile_history_new_discriminating_hypothesis": false
+  },
+  "limits": [
+    "Consumed complete histories, not fresh strength evidence.",
+    "Amin alternatives exclude builds, unknown destinations and equal/losing attacks.",
+    "Juraj schedules cover <=2 serial full-transfer simple owned routes of <=3 edges; no adaptive opponent simulation or global optimality.",
+    "Ten-step visible-threat horizon can clear while a larger visible army remains farther away.",
+    "Historical document input is preserved as exact source-commit snapshot where this documentation update changes its original path."
+  ],
+  "collision_census": {
+    "fork_open_prs": 0,
+    "upstream_pr": 138,
+    "head": "f624c741ad5084be63fc17bacd3961599b8dcc82",
+    "files": 43,
+    "owned_path_collisions": []
+  },
+  "verified_bindings": 110,
+  "artifact_and_input_bindings": {
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/manifest.json": {
+      "sha256": "db00914260728165fcab31cae9c525f09daa3b05be8f8ab57b5442fcc20d8507"
+    },
+    ".cache/runs/sentinel-v19/all24-audit-release.json": {
+      "sha256": "5e6cc6550a546e255043a25967d81bdc338366e171ff940be02e6569a2cc2463"
+    },
+    ".cache/runs/sentinel-v19/full-review/results/report.json": {
+      "sha256": "8190327a24569590c5424aeb099c12d4dfe84561a119693708e969b4d747b80e"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v19/game-0001.json": {
+      "sha256": "edb83893f7829d82336e1a1781bba715953afb429ab3dc99a1f6d09ff02fa1f0"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v19/game-0001-policy.jsonl": {
+      "sha256": "1cb1eb740e9fcb9feea2b2a6ff9b017d7976d9dff7ae6bca3a66577d08d413c5"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v19/game-0002.json": {
+      "sha256": "c30172e1661e7ac1d0b0c922ada60b85c2767e256d02a1b796124ba8d495141b"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v19/game-0002-policy.jsonl": {
+      "sha256": "cf3a5691522500ed37df1bc1ede218305bed54e5d26090c63b65c1e0decce0b4"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v18/game-0001.json": {
+      "sha256": "7e6f73d9a7364ee4397dc38e5d34783d5ab9fb9e59270a40ca32cec3ff84ca21"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v18/game-0001-policy.jsonl": {
+      "sha256": "ee72c7025b585c0012d5db4ebeb3ed485af8024c837bf04a1ee287227a1b6b30"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v18/game-0002.json": {
+      "sha256": "fb8dd765bcb64468befbf4388902cb762fdf9b6038d3e7b68f08254520ca37dc"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v18/game-0002-policy.jsonl": {
+      "sha256": "12446d4ed76567925a2dee8cf770607bfb2141a1992fe1abec9c5ff4b6c56297"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v10/game-0001.json": {
+      "sha256": "2266254eb04a7892f1aef6446642c0ddce9c5ab20caf1bb902de720bd7cd6445"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v10/game-0001-policy.jsonl": {
+      "sha256": "eea82f39ccca1323af313fc6b6226da51a2f8c1874d3b2f6c631e70f24693e24"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v10/game-0002.json": {
+      "sha256": "668b7212e30c300e44e1f983b969bf21b960c8182fb9099170306d5bbbd55672"
+    },
+    ".cache/runs/sentinel-v19/amin-selected/results/v10/game-0002-policy.jsonl": {
+      "sha256": "7c97bf8b22bf8833ef9f53765fddd563f6e33f2496085d6d81e7c1dbc175106a"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/audit.py": {
+      "sha256": "deac9ec6968d6b32758d2339b0a08be06964d00e275fdc0437f65bc44bafcc28"
+    },
+    "generals/agents/sentinel_v7_agent.py": {
+      "sha256": "90041ca03463acfb5fcece918e1559e88d0ed6b2ba78f92df21028a72d0ac544"
+    },
+    "generals/agents/sentinel_v5_agent.py": {
+      "sha256": "d8e7f41421095607bc53a7f4372eba32ea7a9e5e74614fdee8e270d78698941b"
+    },
+    "generals/agents/sentinel_agent.py": {
+      "sha256": "be909e6fa3d5b46a3dd2454eaff8a030a8e7d7158f90d484044c36fa06e4650e"
+    },
+    "competition/agents/sentinel_python/main.py": {
+      "sha256": "c076a942a13ae16b1e57e1fc51a435563b4d4639ab2dee5f3da779b2771c401e"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/attempt1.log": {
+      "sha256": "c2d0510f423ef2d3187c146497fe7d1e378ff51b16a6547ce6eb22e4d39061a3"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/results.json": {
+      "sha256": "f6069ec960fba619ecfba32f21d09622beb4e57b630f3f3893676434f1bce6e0"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/verify.py": {
+      "sha256": "c22be2f53a65d480db3dec022c10a8d2ae3cfa435c7cafcffcf01720c7d152ca"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/verify-attempt1.log": {
+      "sha256": "d5bcf993fcd1848f3f3e60e5a08b8a77ba76a283481666a14bb3675dfee0f923"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/verification.json": {
+      "sha256": "538d09b1605673b570ff945ce009841e6b3ef4655549d4e4064a762839c359fd"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/context.py": {
+      "sha256": "04ccd2c4b0f4aa918c5127757cc53d646cd4433e4ec61b9cd494c8a69d7f78e0"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/context-attempt1.log": {
+      "sha256": "26ce2f2f01c9f36383cc82153a75bfecfcced3e37b445696bc14c3e7d973f1cf"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/context.json": {
+      "sha256": "51cc0f4a7a03737071fc58f621035c0ddce0c91ec7f0b7cb57a1914529e7b62c"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/findings.md": {
+      "sha256": "f229d299c78182048b47b08f144a0bd1cd47c4b47d865f4b92a28a12c20e20cd"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/finalize.py": {
+      "sha256": "780fd875d4cd5aa625ac5c7c9828217603d9c7a76baa656be9d42149101a1f23"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/finalize-attempt1.log": {
+      "sha256": "bd0038f7ca3c70639e141540076968f3aef09b11dc9e4c101c4b412c476212cd"
+    },
+    ".cache/runs/sentinel-v20/amin-visible-defense-audit/finalize-attempt2.log": {
+      "sha256": "ebdd9187027a3aa420176a2e966a969c405f1532caea6761a74d6b7efe628757"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/completion.json": {
+      "sha256": "2c4febf62915fcba4932e2ea6eceb020a9263b47bdb0a29f73f033ec5b0cdb65"
+    },
+    ".cache/runs/sentinel-v19/external-selected/results/report.json": {
+      "sha256": "4ac628db7c3cc525709ddf9409dd0b96c208aac74ef3acfcd4425051a47bf820"
+    },
+    ".cache/runs/sentinel-v19/external-selected/results/v19-juraj-v35-game-0012-frames.jsonl": {
+      "sha256": "6e55ab94726a555cabd28cf825c997b95e0e52e99795e109fd9b8c5500f9739f"
+    },
+    ".cache/runs/sentinel-v19/external-selected/results/v19-juraj-v35-game-0015-frames.jsonl": {
+      "sha256": "e9eebd28e8be96dd82cd748fef81cedc355df9b25de4d7a6a9482e4344071279"
+    },
+    ".cache/runs/sentinel-v19/external-selected/results/v10-v6-juraj-v35-game-0012-frames.jsonl": {
+      "sha256": "9a0e5ef50682ada82698e856df6ee48cbdab751574e1e10e583c836aaec9b9e7"
+    },
+    ".cache/runs/sentinel-v19/external-selected/results/v10-v6-juraj-v35-game-0015-frames.jsonl": {
+      "sha256": "90bfd535883c56c1b9b5ebad3c1aba15bd499583bb5b4f546ee000a9cfa45934"
+    },
+    "generals/core/game.py": {
+      "sha256": "33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f"
+    },
+    "generals/modifiers/deathtouch.py": {
+      "sha256": "1d930ea8b7d1a82e38aab1653ee16a12d5355b19a86606c2ec61f065d9407800"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/audit.py": {
+      "sha256": "64e9fb6fd0ee605cd1c42c9a55b428eec61907bff283a879f6530845bbe19092"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/review.md": {
+      "sha256": "8bc72ccddbe11583d3a0745ee3b9bd56c2a7c6b5386448a9f37b32109cdfb22e"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/first-run.log": {
+      "sha256": "e89cdb4928c0211a6fb7146e6e6f961e0a743b04e5236c428fb732c9f231663a"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/evidence.json": {
+      "sha256": "a246328d0e803912b153900769b841c229df83843e9dbd2e5c6379b6a0698cfe"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/telemetry-check.log": {
+      "sha256": "136a140ae5ee9f14dc76ba3608f200124b34d9ecd63a235638e77d1276ec29e4"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/verify.py": {
+      "sha256": "808879a799581e269f4100a05322dccf97e6b705aeacb5285a9c446e85f10c11"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/telemetry-check.py": {
+      "sha256": "8d8cbd2f3c92348e5e42270dc527f1260869e7eed29871cf61e0da443986ecef"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/verification.log": {
+      "sha256": "c02f9b0f6b6b1e549f75c68fe9189fe34a22e0b2b7ec0c9cb986616dc5b65ab6"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/verification.json": {
+      "sha256": "c02f9b0f6b6b1e549f75c68fe9189fe34a22e0b2b7ec0c9cb986616dc5b65ab6"
+    },
+    ".cache/runs/sentinel-v20/juraj-delivery-audit/telemetry-check.json": {
+      "sha256": "8dc71c1acff69d8cbc0a2912747288099251fcc04929596b865fc17a31198d1a"
+    },
+    ".cache/runs/sentinel-v20/defense-contract-audit/manifest.json": {
+      "sha256": "ca8b838c03e314c9c67101a335a293ef370b33095f45ce7f8b8f67bcebd3c3a4"
+    },
+    "generals/agents/sentinel_v3_agent.py": {
+      "sha256": "01efd251c426f1c928b9416a26ebc493fde4529219c5980aa155604ca40dc896"
+    },
+    "generals/agents/sentinel_v6_agent.py": {
+      "sha256": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa"
+    },
+    "generals/agents/sentinel_v8_agent.py": {
+      "sha256": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767"
+    },
+    "generals/agents/sentinel_v9_agent.py": {
+      "sha256": "38a9b5f884d4523048a01482fe60b2b2b1a4860cd9e86a0c9422cfcd00ae868b"
+    },
+    "generals/agents/sentinel_v10_agent.py": {
+      "sha256": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c"
+    },
+    "generals/agents/sentinel_v12_agent.py": {
+      "sha256": "94273202982e5ab1964b88896f7a496f47e0e4ef29c8c8178baf685537474eda"
+    },
+    "generals/agents/sentinel_v14_agent.py": {
+      "sha256": "a915aed1b773bd1fe01eca5ed21ae0ad0e47663317571b8539a0e61d129b6761"
+    },
+    "generals/agents/sentinel_v18_agent.py": {
+      "sha256": "6683d290e255ff5a54c90610b05755195b28422c45109c73aa89550b8b6c6c93"
+    },
+    "generals/agents/sentinel_v19_agent.py": {
+      "sha256": "9322e207c9f02c46856692b9c544b3e53920b07e5d0ace927d588f94794a2a72"
+    },
+    "docs/agent-development/v3-development.md": {
+      "sha256": "5d58722d6fa6e7a705cf8acd5745d2cb2790196517aec6908d1a4c353972cefd"
+    },
+    "docs/agent-development/v5-development.md": {
+      "sha256": "9062c457fe9a5c5e51abb743e89c45b6e8e3cd197c4d74633becc2f3e1b8e434"
+    },
+    "docs/agent-development/v6-development.md": {
+      "sha256": "d6d342a617ae05a225efcf0b40a69d0efae02fbaa769bd5e5f11986795de15aa"
+    },
+    "docs/agent-development/v7-development.md": {
+      "sha256": "ea18a5341b8dd84d73da03f2d3f8c2e0076cc758889e6ad5c1162b1593348404"
+    },
+    "docs/agent-development/v8-plan.md": {
+      "sha256": "8029b8237eb9c1a91daa45be3dabd32a8b653d65b159260259c50eab1726ec40"
+    },
+    "docs/agent-development/v10-development.md": {
+      "sha256": "6c57b8536eac387733e0674ebffb37747e2b34b2b7e60cf108150ddc06b33be3"
+    },
+    "docs/agent-development/v11-development.md": {
+      "sha256": "cba3f0bd34361d818ea11852916eb8d09fe94287600b8e4d1d1a6bb4255fe948"
+    },
+    "docs/agent-development/v12-development.md": {
+      "sha256": "671404f17a17e74cb3455718439afd15bd8dbfc6762a140d973839aafc629585"
+    },
+    "docs/agent-development/v14-development.md": {
+      "sha256": "1e121e0b82c6d4ef77b39aa39f6433ff9b310e3a1887b678fc431e48381dc7b3"
+    },
+    "docs/agent-development/v18-audit.md": {
+      "sha256": "ba2a0aa0af4ee519be7aac1eca6ab6e5b639e03fe420036445ba876a970af1a7"
+    },
+    "docs/agent-development/v19-audit.md": {
+      "sha256": "3676b24b86709eb18fffde3903ba664e4c02a1d783b211602195418e9887342e"
+    },
+    "docs/agent-development/v19-results.md": {
+      "sha256": "da3e7e8d10cab874cae91379dbd3ab0abf69ebbbe2a329f795187da03fb80f26"
+    },
+    "docs/agent-development/competitive-goal.md": {
+      "sha256": "c833c6301b67dbe64527df0f4a917a65b9f6a5fa2603f0f3c6e7113b0d72670e",
+      "snapshot": ".cache/runs/sentinel-v20/root-review/historical-docs-agent-development-competitive-goal.md",
+      "source_commit": "4851bb7219389b70da55bee05f86d0338e1abde9"
+    },
+    ".cache/runs/sentinel-v19/interception-audit/review.md": {
+      "sha256": "4f6c0c18791b68489c49abd06066123efa4fbef8d3fe7e3163eb6e5b3691097d"
+    },
+    ".cache/runs/sentinel-v19/interception-audit/evidence.json": {
+      "sha256": "c7f9dfa4c492aa9bcf0fc019fca447c0145f1cbebc3a8cc8ff290b16d8b3e57c"
+    },
+    ".cache/runs/sentinel-v18/prepolicy-juraj/review.md": {
+      "sha256": "a1fd0694117dc16298b63ff229f1d339caa09e7a70f9da425f6a515bae43266f"
+    },
+    ".cache/runs/sentinel-v20/mobile-force-history/manifest.json": {
+      "sha256": "707a400c855ca190563d51ed053c00100af9c521b91c6103f1d2c0a139ab74a6"
+    },
+    "docs/agent-development/v11-plan.md": {
+      "sha256": "7f1849c76eb686217b712666db61b49752d36a13daa7aeec7465dd3b3fbd2af4"
+    },
+    "docs/agent-development/v12-plan.md": {
+      "sha256": "2f1d64888be52dfb07b68667829736dfb6530fc8eadf3957b0f44155e855303c"
+    },
+    "docs/agent-development/v13-plan.md": {
+      "sha256": "5d32563eb166b4ec848d091637cb0946019e16bd3c6302da7317d8ab8dbc6e57"
+    },
+    "docs/agent-development/v14-plan.md": {
+      "sha256": "db147488f5c84d3e03fd235da1d36a3f6be9ccf5ef1d5e53e85f55bd4767cf95"
+    },
+    "docs/agent-development/v15-plan.md": {
+      "sha256": "ca8f939b5f63ce8e0532c1c2714298f0b86ad4f55014f56d5f0a211f34bab8ab"
+    },
+    "docs/agent-development/v16-plan.md": {
+      "sha256": "dfaeff33647efbf7f90b0001facf300364c7beba465cf4fa7e387335a4be6d41"
+    },
+    "docs/agent-development/v17-plan.md": {
+      "sha256": "f454e199bfa9c6722ec3e43858b2c9b089bd1c1cbe8a1baf7e5e817c419e5883"
+    },
+    "docs/agent-development/v18-plan.md": {
+      "sha256": "ecfde780d422702be8f6008d353541ada8dbbaa6c5bb995fcd471bdd382f5146"
+    },
+    "docs/agent-development/v19-plan.md": {
+      "sha256": "03f830c07e8c4fdab1e4761ef28458e9f9050abb08210c3101f9d69e1a6c1ab1"
+    },
+    "docs/agent-development/v13-development.md": {
+      "sha256": "c548886f1ecdfe6b149d1808e5d53a54f23cc6cbba0e1177f0f5002c19b26ae1"
+    },
+    "docs/agent-development/v15-development.md": {
+      "sha256": "b798a8d98ece7c1d6836f6f43952064d15a3fcd93040cebfc9ec4bce0e48c5c4"
+    },
+    "docs/agent-development/v16-development.md": {
+      "sha256": "c0cf657029515dbcbb2690ecb3aea7ca1bfcfc30744d6b8365e6171c1870d26c"
+    },
+    "docs/agent-development/v17-development.md": {
+      "sha256": "4996766bed1be2adf9f6699729e283e19d544d1908bb81949c1cdbde30aaf718"
+    },
+    "docs/agent-development/v18-development.md": {
+      "sha256": "1eeed72dd6f96cef6766a4a85bc9a5fce35f79af24f67724228ec0f77cc2e593"
+    },
+    "docs/agent-development/v19-development.md": {
+      "sha256": "83856262b6727e9162cb9996c38b1f3eebb2f832658d031f442638b8d6c22369"
+    },
+    "docs/agent-development/v16-results.md": {
+      "sha256": "79508251dc5c423fb176172d01aba2c8d36e046ca3763422ea07455776a43c77"
+    },
+    "docs/agent-development/v17-results.md": {
+      "sha256": "f3f7ff1efcd1059aaec4f0ae408fa6d963c32fbfaa499231ac6c549c4ad2461c"
+    },
+    "docs/agent-development/v18-results.md": {
+      "sha256": "58f79ecf63c65052d115660cba7eb7cc023b35d5343d78b74a5a3631f567c745"
+    },
+    "docs/agent-development/playing-doctrine.md": {
+      "sha256": "0f3423f2f4b4121edd523cbc932065262f7cb86209a05e10b2c8eae2bc78c2c8"
+    },
+    "docs/agent-development/competitive-goal.md@e67f42d9c4eaa99dc93877b160b59f9a70e9aa73c97afd00929d4bfa764d768d": {
+      "sha256": "e67f42d9c4eaa99dc93877b160b59f9a70e9aa73c97afd00929d4bfa764d768d",
+      "original_path": "docs/agent-development/competitive-goal.md"
+    },
+    "docs/agent-development/v16-audit.md": {
+      "sha256": "aa2472195536e9c988c56bfc403343e7b32f27c59bb05be3fa42578a45508b89"
+    },
+    ".cache/runs/sentinel-v19/amin-audit/complete-audit.md": {
+      "sha256": "80c1242e42206672557f358f246a83cf40f9fa27566d4619ea18955c7c07a39a"
+    },
+    ".cache/runs/sentinel-v16/packet-audit/selection-fixtures/REPORT.md": {
+      "sha256": "4959a287c57ec68b79496787af7f08712f3f36de734873bcd2f39877c0435c56"
+    },
+    ".cache/runs/sentinel-v19/juraj-audit/review.md": {
+      "sha256": "eaffa38fe58a2185acf02c0a5ecba77f2e975f889d8569f811ab6d69bdba3a6b"
+    },
+    ".cache/runs/sentinel-v20/root-review/origin-main.txt": {
+      "sha256": "d75815022b88b45b19687864e6348b8a9cf3e12e139083863506304ff529f372"
+    },
+    ".cache/runs/sentinel-v20/root-review/collect.py": {
+      "sha256": "e62772b67f1b43d35187cdaf3ad5a8866bd08747bf0cdff926650b598f63265e"
+    },
+    ".cache/runs/sentinel-v20/root-review/upstream-pr138.json": {
+      "sha256": "e090d16d76c7ec7e3c73f2d6249e0ddd84d984e206d4f70992618444ccf94712"
+    },
+    ".cache/runs/sentinel-v20/root-review/collector-attempts.json": {
+      "sha256": "ac94b5602376fe625fc095030f49496cd640c48699f09badbfb46f4f6fb984c5"
+    },
+    ".cache/runs/sentinel-v20/root-review/fork-open-prs.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    ".cache/runs/sentinel-v20/root-review/verification-attempts.json": {
+      "sha256": "7e3ddb9b3ed1ce743f3ee965958c24a2baee33e7a1674900f33e7984b5a83cb8"
+    },
+    ".cache/runs/sentinel-v20/root-review/historical-docs-agent-development-competitive-goal.md": {
+      "sha256": "c833c6301b67dbe64527df0f4a917a65b9f6a5fa2603f0f3c6e7113b0d72670e"
+    },
+    ".cache/runs/sentinel-v20/root-review/historical-inputs.json": {
+      "sha256": "6766dc93d12dd92c261cb5cf80016988f11ad1add21f887a3ecd487dd8552a3f"
+    },
+    ".cache/runs/sentinel-v20/root-review/collect-attempt1.py": {
+      "sha256": "f1aa583e2278796e466035c5b1071515c747b961880582c970fc2bcaeb40c9bf"
+    }
+  }
+}

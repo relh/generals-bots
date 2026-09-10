@@ -91,6 +91,12 @@ attacks still find insufficient concentrated defense despite greater total army.
 All eighteen controls match before candidate play and complete checks pass.
 V19 is not promoted; no fresh holdout has been consumed.
 
+The [post-V19 defense audit](v20-audit.md) finds that home donations can preserve
+visible route coverage through recipient credit. Its bounded late-delivery
+search still leaves large deficits; winning controls also make coverage-worsening
+moves. V12 already tested broad final-action coverage preservation and failed.
+These findings select no V20 policy and establish no additional playing strength.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;

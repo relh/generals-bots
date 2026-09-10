@@ -139,6 +139,11 @@ field hold occurs. All eighteen controls match before candidate play; complete
 integrity checks and failure audits pass. Delivery and longer survival do not
 establish the required wins. V19 remains unpromoted.
 
+The [post-V19 defense audit](v20-audit.md) corrects the home-donation diagnosis:
+recipient army can preserve route resistance while home shrinks. Late partial
+reinforcement leaves substantial modeled deficits, and V12 already rejected a
+broad coverage-preserving veto. No V20 policy or new strength result is selected.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.
