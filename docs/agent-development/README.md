@@ -104,6 +104,12 @@ pass; the [preflight](v15-preflight-evidence.json) does not qualify cold startup
 The [opening audit](v15-opening-evidence.json) and [fixed plan](v15-plan.md)
 separate the original opportunities from the completed negative results.
 
+The [V16 read-only audit](v16-audit.md) rejects defender-route completion as the
+next broad repair: it cannot activate in the two losing controls, while it can
+alter the winners. The early Juraj loss never has an affordable BUILD; connected
+force and productive objective choice remain unresolved. No V16 policy or new
+games were selected, and the competitive goal remains active.
+
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before
 promotion. Both receive only the engine's fogged observation and public scores.

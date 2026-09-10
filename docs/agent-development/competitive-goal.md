@@ -55,6 +55,12 @@ or a useful attack route. Next work must follow complete packet progress,
 capital-search/disclosure and defensive releases during temporary threat fog.
 The user's full FFA/1v1 doctrine remains only partially implemented and unproven.
 
+The [V16 read-only audit](v16-audit.md) rejects route completion as the next broad
+repair because it cannot activate in the audited losing controls. It also rules
+out an affordable-build veto as the explanation for the early Juraj loss. These
+findings motivate investigating connected force and productive campaign or
+investment objectives; they select no policy and establish no winning advantage.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;

@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "complete": true,
+  "kind": "read-only-design-audit",
+  "source_main_sha": "6be72ddfc80f8656404c634cca9e2c0ec1dbc1a7",
+  "policy_selected": false,
+  "promotion": false,
+  "goal_achieved": false,
+  "new_games": 0,
+  "policy_or_engine_inference": false,
+  "reserved_seed_143000_used": false,
+  "scope": "Overlapping audits of seven previously completed original episodes, three consumed placements with differing policies. Not fresh samples, not seven independent maps. Large raw histories remain in cache.",
+  "audits": {
+    "packet": {
+      "episodes": 4,
+      "candidate_decisions": 2900,
+      "source": ".cache/runs/sentinel-v16/packet-audit/report.json"
+    },
+    "fog_defense": {
+      "episodes": 3,
+      "candidate_decisions": 1772,
+      "counts": [
+        {
+          "variant": "v10",
+          "frames": 1033,
+          "commitment_started": 13,
+          "commitment_continued": 15,
+          "commitment_held": 2,
+          "commitment_released": 13,
+          "commitment_expired": 0,
+          "commitment_observation_gap": 0,
+          "commitment_observation_inconsistent": 2
+        },
+        {
+          "variant": "v10-v6",
+          "frames": 370,
+          "commitment_started": 1,
+          "commitment_continued": 0,
+          "commitment_held": 0,
+          "commitment_released": 1,
+          "commitment_expired": 0,
+          "commitment_observation_gap": 0,
+          "commitment_observation_inconsistent": 1
+        },
+        {
+          "variant": "v15-fanout",
+          "frames": 369,
+          "commitment_started": 6,
+          "commitment_continued": 5,
+          "commitment_held": 3,
+          "commitment_released": 6,
+          "commitment_expired": 0,
+          "commitment_observation_gap": 0,
+          "commitment_observation_inconsistent": 2
+        }
+      ]
+    },
+    "economic": {
+      "episodes": 4,
+      "candidate_decisions": 2869,
+      "cases": [
+        {
+          "variant": "v10",
+          "opponent": "juraj-v35",
+          "turns": 422,
+          "result": "loss",
+          "legal_build_frames": 0,
+          "actual_builds": 0,
+          "max_plain_packet": {
+            "army": 25,
+            "turn": 380
+          }
+        },
+        {
+          "variant": "v10-v6",
+          "opponent": "juraj-v35",
+          "turns": 1075,
+          "result": "win",
+          "legal_build_frames": 159,
+          "actual_builds": 16,
+          "max_plain_packet": {
+            "army": 309,
+            "turn": 1073
+          }
+        },
+        {
+          "variant": "v10",
+          "opponent": "my-bot9",
+          "turns": 1076,
+          "result": "win",
+          "legal_build_frames": 49,
+          "actual_builds": 6,
+          "max_plain_packet": {
+            "army": 138,
+            "turn": 1074
+          }
+        },
+        {
+          "variant": "v10-v6",
+          "opponent": "my-bot9",
+          "turns": 296,
+          "result": "win",
+          "legal_build_frames": 0,
+          "actual_builds": 0,
+          "max_plain_packet": {
+            "army": 26,
+            "turn": 256
+          }
+        }
+      ]
+    }
+  },
+  "route_completion_selection": {
+    "selected": false,
+    "reason": "Necessary activation fails in both losing controls; eligible events occur only in winning controls. The separate rejected-fanout fog case is not a whole-gap solution.",
+    "control_eligible_turns": {
+      "amin-v10": [
+        172,
+        457,
+        701,
+        703
+      ],
+      "amin-v10-v6": [],
+      "juraj-v35-v10": [],
+      "juraj-v35-v10-v6": [
+        477
+      ]
+    },
+    "contract": "Nonarrived owned defender and target, observed army/continuity valid, shortest owned route (home excluded unless target) no longer than stored distance, last remaining action no later than original expiry; conservative recorded build/win/pursuit/mobilization/new-commitment/guard/intercept exclusions.",
+    "scope_limit": "Own-route arithmetic supplies necessary activation only, not adaptive outcome evidence."
+  },
+  "fog_359_360": {
+    "variant": "v15-fanout",
+    "opponent": "Amin",
+    "game_id": 1,
+    "start_turn": 359,
+    "incoming_at_360": {
+      "defender": 304,
+      "target": 161,
+      "previous": 305,
+      "distance": 9,
+      "expires": 369,
+      "last_turn": 359,
+      "expected_army": 7
+    },
+    "source_owned_army": 7,
+    "last_seen_enemy": {
+      "turn": 359,
+      "cell": [
+        5,
+        16
+      ],
+      "army": 51
+    },
+    "last_cell_at_360": {
+      "type": "visible plain",
+      "owner": "opponent",
+      "army": 1
+    },
+    "next_compatible_large_sighting": {
+      "turn": 363,
+      "cell": [
+        5,
+        14
+      ],
+      "army": 56,
+      "same_unit_identity_proven": false
+    },
+    "actual_parent_action": [
+      0,
+      8,
+      17,
+      2,
+      1
+    ],
+    "static_owned_route_first_move": [
+      0,
+      16,
+      16,
+      0,
+      0
+    ],
+    "static_route_steps": 9,
+    "static_arrival_army_including_current_home": 34,
+    "rescue_demonstrated": false,
+    "v3_distinction": "V3 used a separate decaying max-envelope/TTL for possible threats, never fabricated observation cells. Proposed continuation would retain only an already-issued own route/deadline."
+  },
+  "retention_windows": [
+    {
+      "opponent": "Juraj V3.5",
+      "variant": "v10",
+      "window": [
+        100,
+        149
+      ],
+      "confirmed_capture_events": 17,
+      "held_to_next_tick": 8
+    },
+    {
+      "opponent": "Juraj V3.5",
+      "variant": "v10-v6",
+      "window": [
+        100,
+        149
+      ],
+      "confirmed_capture_events": 27,
+      "held_to_next_tick": 19
+    },
+    {
+      "opponent": "Juraj V3.5",
+      "variant": "v10",
+      "window": [
+        150,
+        199
+      ],
+      "confirmed_capture_events": 16,
+      "held_to_next_tick": 8
+    },
+    {
+      "opponent": "Juraj V3.5",
+      "variant": "v10-v6",
+      "window": [
+        150,
+        199
+      ],
+      "confirmed_capture_events": 21,
+      "held_to_next_tick": 14
+    },
+    {
+      "opponent": "Amin",
+      "variant": "v10",
+      "window": [
+        150,
+        199
+      ],
+      "confirmed_capture_events": 28,
+      "held_to_next_tick": 22
+    },
+    {
+      "opponent": "Amin",
+      "variant": "v10-v6",
+      "window": [
+        150,
+        199
+      ],
+      "confirmed_capture_events": 20,
+      "held_to_next_tick": 6
+    }
+  ],
+  "economic_limitations": [
+    "Losing Juraj V10 never has a legal BUILD; largest plain packet25 is below minimum35.",
+    "At200 its42land/147army occupy seven components; winning parent6 has connected67land/202army, before any castle.",
+    "First buffered static V10 Juraj route400 costs six transfers then35army; no adaptive rescue or payoff by the original422 terminal is established.",
+    "Parent6 route357 conflicts with an actual productive northbound packet.",
+    "Parent6 wins my_bot9 at296 without any affordable BUILD: construction is not a universal prerequisite."
+  ],
+  "artifact_sha256": {
+    ".cache/runs/sentinel-v16/packet-audit/REPORT.md": "7f5d6b5d732a7e3e753a4fb6755333d50855de129cd3720a78196805c79fbed0",
+    ".cache/runs/sentinel-v16/packet-audit/report.json": "e39efa33beeda132bc802ef8c8f24afcc57a50d006a57fab340100c00a65c24b",
+    ".cache/runs/sentinel-v16/packet-audit/derived.json": "11a94c9e14b9003a713e550755b9f62e42f4fe1b22420cb9c86a0488e908d0b4",
+    ".cache/runs/sentinel-v16/packet-audit/delivery-manifest.json": "0ee5a05da5dc494ecc8e58d96a6ca98a753aed36b7a3a859cea1d2b98bf44279",
+    ".cache/runs/sentinel-v16/packet-audit/freeze.json": "56f0a0ff9245d4ae358957c0bb4c9f5cc843b75e0a43333480020154f8c29f34",
+    ".cache/runs/sentinel-v16/packet-audit/route-completion-census.json": "68127d8c446c8d30ca39a7d707d5a0bcb750f2729af3b7b33ffbd1e73ab2feaa",
+    ".cache/runs/sentinel-v16/economic-planning/REPORT.md": "353d9646b7f9e6b6a2351e91dc1494cfc62faa8c5cd59e8cab7150ff187818f0",
+    ".cache/runs/sentinel-v16/economic-planning/bindings.json": "1cfef09178e36bff19f0a3475917dd249936d1453283419d9336d95f86e790a5",
+    ".cache/runs/sentinel-v16/economic-planning/report.json": "22bb128b0122f150d4f7854f04ca4f54ccf67aa126f7ab1c5563fd3f19c7cd8a",
+    ".cache/runs/sentinel-v16/economic-planning/summary.json": "97dd74d05505c0420668f4a109b27e96581f15c208eddac10d0a6cf2826f8a03",
+    ".cache/runs/sentinel-v16/fog-defense/REPORT.md": "babef4eb26026bf56bbb7b0b792cd0fa17fb735a62b94619094117a4c4b966fd",
+    ".cache/runs/sentinel-v16/fog-defense/manifest.json": "251da8934161b6d4d357851d0874b3cfc615402da64450dba036cc8a46c77e12",
+    ".cache/runs/sentinel-v16/fog-defense/results-v2/report.json": "f20d53e4c3dd4a9952c645561671a19c10db00b919d8a01cb3760ec5cab56efc",
+    ".cache/runs/sentinel-v16/fog-defense/continuation-census.json": "e6a9223337dac7f259a12dd29c5de52d52e67f46863f3ff0a8e5753daa9359a8",
+    ".cache/runs/sentinel-v16/fog-defense/owned-route360.json": "4779ad559a9bd94fc2f25dad7183f44bb4c14bc1e22e6db09cd917b95322f201"
+  },
+  "policy_source_sha256": {
+    "generals/agents/sentinel_v6_agent.py": "bc6764f3bf7ae64ea380e91e7821bfd2d3c66e1aaec8b45a5a8da3ddb8cf95fa",
+    "generals/agents/sentinel_v8_agent.py": "7b1f5b27f797caf267eccbb71f0415684c014ab1d99cc7d52295e1dc0a042767",
+    "generals/agents/sentinel_v10_agent.py": "7095167e547af5edbf55b528939e4fc7537c954b97ad7370c258ce8090209b2c",
+    "generals/agents/sentinel_v15_agent.py": "c711c9f5284a62791f67aed179dfee95e1eee9de86b507abbd526d0e0236ef03"
+  },
+  "verification": {
+    "referenced_distinct_input_artifact_hashes_checked": 453,
+    "mismatches": 0,
+    "verification_method": "SHA-256 bytes checked against authoritative cache manifests, report input maps and source freeze; nested manifests retain the complete bindings.",
+    "new_tests_or_runtime_qualification": false
+  },
+  "preserved_attempts": [
+    "Fog report v2 corrects prior-start linkage on simultaneous release/restart; original counts and fixture bytes unchanged.",
+    "Economic first helper syntax error occurred before analysis; corrected complete four-control report retained."
+  ],
+  "limitations": [
+    "Static public paths do not predict adaptive enemy response or certify wins.",
+    "A captured cell is counted only with a next observation; later recapture is not continuous retention.",
+    "Aggregate army is not deployable force; packet continuity is spatial/action continuity, not soldier identity.",
+    "Opponent visibility is retrospective recorder evidence, never a policy feature."
+  ],
+  "reusable_campaign_tool": {
+    "files": [
+      "scripts/audit_campaign.py",
+      "tests/test_audit_campaign.py"
+    ],
+    "focused_tests_passed": 8,
+    "test_command": ".venv/bin/python -m pytest -q tests/test_audit_campaign.py",
+    "lint": "ruff check scripts/audit_campaign.py passed",
+    "full_control_decisions": 2900,
+    "capture_events": 1330,
+    "review_session": 91568,
+    "review_terminal_exit": 0,
+    "independent_snapshot_validation": "union-find connectivity, total-land/army conservation, plain army order statistics",
+    "artifact_sha256": {
+      "scripts/audit_campaign.py": "18a47099a3051cac437176c3c06de37757a2d6de01e2f3f85fd296bb3b1f1603",
+      "tests/test_audit_campaign.py": "0f26976398a84895634a8bcefb3040451bc40c2f4779d9930d7cc3b5b3bf75fd",
+      ".cache/runs/sentinel-v16/generic-tool-review/r2/review.json": "03caadaff5519e507ff822f62d09f6ad9ffba19f4eb533cccc7c06d1cf89a23f",
+      ".cache/runs/sentinel-v16/generic-tool-review/review.json": "cbb86f4f6a3103ea7540377550daccdbc3b346e70b66da3159bc618f3bfbfa6c",
+      ".cache/runs/sentinel-v16/generic-tool-review/r2/juraj-v35-v10.json": "2efe5666c4dc989692a689757c41a4a810c4e1831236ba5861b6859f19d72161",
+      ".cache/runs/sentinel-v16/generic-tool-review/r2/amin-v10.json": "02e91753c4a8b4d0a88f4197acae509a170fb8bb7ad0e7a948f79ae57064c80c",
+      ".cache/runs/sentinel-v16/generic-tool-review/r2/juraj-v35-v10-v6.json": "08d8f369f9ed41c4f1055a0c2014a004e550d80ced263f8798dd7dbe86d60919",
+      ".cache/runs/sentinel-v16/generic-tool-review/r2/amin-v10-v6.json": "02752eeaed849b7e50d3300c3fb8694f0cdbd98372b06d027aade5e553f373d7",
+      ".cache/runs/sentinel-v16/generic-tool-review/r2/execution.json": "313f24901c6803eea0f0f56b641120af4a8595dc2c53225a8245d6d6dcf1e74e"
+    }
+  }
+}
