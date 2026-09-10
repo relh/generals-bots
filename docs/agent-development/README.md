@@ -126,11 +126,11 @@ allocation and threat-visibility gaps; all 590 original my_bot9 invalid builds
 remain recorded. A proven checker-rounding correction preserves its failed
 attempt and all games. V17 is unpromoted and the competitive goal remains active.
 
-The [V18 separate-garrison experiment](v18-development.md) passes 35 focused
-cases, six matched warm-runtime contexts and independent public-output checks.
-Its [pre-policy audits](v18-audit.md) explain why neither a broad remembered-force
-reserve nor an available neutral capture guarantees improvement. The fixed
-24-game screen is pending; V18 remains unpromoted and V2 remains the default.
+The [V18 separate-garrison experiment](v18-results.md) completes all 24 games
+and is rejected: two wins and four losses despite 522 confirmed rear captures,
+480 held through their next land tick. Correctness, runtime and full integrity
+checks pass. Its economic gains remain dispersed and do not preserve the
+winning Amin/Juraj controls. V18 remains unpromoted and V2 remains the default.
 
 Sentinel is the current strategic candidate. The spatial learned policy is a
 separate research candidate; its measured strength must be established before

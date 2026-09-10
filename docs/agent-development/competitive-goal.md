@@ -76,6 +76,13 @@ The original my_bot9 makes 590 invalid builds in the V17 games; those failures
 remain part of the results. Host qualification and corrected integrity checks
 pass, without promotion or a claim of broad strength.
 
+The [V18 rear-expansion screen](v18-results.md) completes all 24 games and also
+fails preservation: Amin losses at 546, Juraj losses at 447 and my_bot9 wins
+at 888. All 522 rear captures execute and 480 remain held through their next
+land tick, but greater economy does not become timely concentrated defense.
+The unchanged original my_bot9 makes 34 invalid builds in the V18 games.
+Correctness, runtime and complete integrity checks pass; V18 is not promoted.
+
 Success must name the tested opponent set and establish a winning advantage
 against each opponent on maps reserved before the final candidate freeze. Use
 paired seats/general labels, complete episodes, and map-cluster uncertainty;
