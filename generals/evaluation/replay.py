@@ -25,6 +25,26 @@ ROOT = Path(__file__).resolve().parents[2]
 METRICS = ("passes", "splits", "build_attempts", "builds", "invalid_moves", "malformed_commands")
 
 
+_SNAPSHOT_AGENT_OPTIONS = (
+    V3_OPTIONS | V4_OPTIONS | V5_OPTIONS | V6_OPTIONS | V7_OPTIONS | V8_OPTIONS | V9_OPTIONS | V10_OPTIONS
+)
+_SNAPSHOT_AGENT_CLASSES = (
+    (V3_OPTIONS, "SentinelV3Agent"),
+    (V10_OPTIONS, "SentinelV10Agent"),
+    (V9_OPTIONS, "SentinelV9Agent"),
+    (V8_OPTIONS, "SentinelV8Agent"),
+    (V7_OPTIONS, "SentinelV7Agent"),
+    (V6_OPTIONS, "SentinelV6Agent"),
+    (V5_OPTIONS, "SentinelV5Agent"),
+    (V4_OPTIONS, "SentinelV4Agent"),
+)
+
+
+def _policy_and_decision(policy):
+    owner = getattr(policy, "__self__", None)
+    return policy, getattr(owner, "decision", None)
+
+
 def file_hash(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -80,62 +100,29 @@ def make_policy(name, rules, checkpoint=None, source=None, *, options=None):
     if source:
         if (
             name != "sentinel"
-            and name
-            not in V3_OPTIONS
-            | V4_OPTIONS
-            | V5_OPTIONS
-            | V6_OPTIONS
-            | V7_OPTIONS
-            | V8_OPTIONS
-            | V9_OPTIONS
-            | V10_OPTIONS
+            and name not in _SNAPSHOT_AGENT_OPTIONS
         ):
             raise ValueError("--candidate-source currently supports Sentinel snapshots only")
         spec = importlib.util.spec_from_file_location("generals.agents._sentinel_snapshot", source)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        if name in V10_OPTIONS:
-            player_class = module.SentinelV10Agent
-        elif name in V9_OPTIONS:
-            player_class = module.SentinelV9Agent
-        elif name in V8_OPTIONS:
-            player_class = module.SentinelV8Agent
-        elif name in V7_OPTIONS:
-            player_class = module.SentinelV7Agent
-        elif name in V6_OPTIONS:
-            player_class = module.SentinelV6Agent
-        elif name in V5_OPTIONS:
-            player_class = module.SentinelV5Agent
-        elif name in V4_OPTIONS:
-            player_class = module.SentinelV4Agent
-        elif name in V3_OPTIONS:
-            player_class = module.SentinelV3Agent
+        for aliases, class_name in _SNAPSHOT_AGENT_CLASSES:
+            if name in aliases:
+                player_class = getattr(module, class_name)
+                break
         else:
             player_class = module.SentinelAgent
         player = player_class(
             build_castles=rules.build_castles,
             deathtouch_turn=rules.deathtouch_turn,
             max_turns=rules.max_turns,
-            **(
-                (
-                    V3_OPTIONS
-                    | V4_OPTIONS
-                    | V5_OPTIONS
-                    | V6_OPTIONS
-                    | V7_OPTIONS
-                    | V8_OPTIONS
-                    | V9_OPTIONS
-                    | V10_OPTIONS
-                ).get(name, {})
-                | (options or {})
-            ),
+            **(_SNAPSHOT_AGENT_OPTIONS.get(name, {}) | (options or {})),
         )
-        if name in V3_OPTIONS | V6_OPTIONS | V7_OPTIONS | V8_OPTIONS | V9_OPTIONS | V10_OPTIONS:
-            return player, None
-        return player.act, player.decision
+        if getattr(player, "step", None):
+            return _policy_and_decision(player)
+        return _policy_and_decision(player.act)
     policy = agent(name, rules, checkpoint, options=options)
-    owner = getattr(policy, "__self__", None)
-    return policy, getattr(owner, "decision", None)
+    return _policy_and_decision(policy)
 
 
 def store_tree_trace(arrays, prefix, snapshots):
