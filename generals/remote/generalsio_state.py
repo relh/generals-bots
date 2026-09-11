@@ -51,7 +51,6 @@ class GeneralsIOstate:
             if general != -1:
                 generals[general // width, general % width] = 1
 
-        army = armies
         owned_cells = np.where(terrain == self.player_index, 1, 0).astype(bool)
         opponent_cells = np.where(terrain == self.opponent_index, 1, 0).astype(bool)
         neutral_cells = np.where(terrain == -1, 1, 0).astype(bool)
@@ -66,7 +65,7 @@ class GeneralsIOstate:
         opponent_army_count = scores_by_player[self.opponent_index]["total"]
         timestep = self.turn - 1
         return Observation(
-            armies=army,
+            armies=armies,
             generals=generals,
             castles=castles,
             mountains=mountain_cells,
