@@ -31,7 +31,6 @@ import jax.random as jrandom
 
 from generals.core import game
 from generals.core.game import GameInfo, GameState, create_initial_state
-from generals.core.game import step as game_step
 from generals.core.grid import generate_grid
 from generals.core.observation import Observation
 from generals.modifiers import build_castles as _build_castles
@@ -362,7 +361,7 @@ class GeneralsEnv:
         if self.deathtouch_turn is not None:
             new_state, info = _deathtouch.step(state, actions, self.deathtouch_turn)
         else:
-            new_state, info = game_step(state, actions, legacy_move_priority=self.legacy_move_priority)
+            new_state, info = game.step(state, actions, legacy_move_priority=self.legacy_move_priority)
 
         # Win/lose reward: +1 to every player on the winning team, -1 to the
         # rest, 0 while the game is on (and on a draw).
