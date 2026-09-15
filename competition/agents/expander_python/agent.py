@@ -59,9 +59,10 @@ class Agent:
         self.W = W
 
     def act(self, obs):
-        best_score = -1.0
+        best_key = None
         best_move = None
-        first_valid = None
+        fallback_key = None
+        fallback_move = None
 
         # Scan every cell on the board. The expander only ever moves armies
         # *out* of cells it already owns, so we can skip everything else.
@@ -83,10 +84,21 @@ class Agent:
                         continue
 
                     move = (0, r, c, d, 0)
-                    # Remember any legal move as a fallback (used when no
-                    # cell has enough army to actually capture anything).
-                    if first_valid is None:
-                        first_valid = move
+                    # Prefer open, interior destinations for otherwise-equal
+                    # moves. Row-major/direction-order ties always chose UP,
+                    # which could funnel the main stack into the north wall.
+                    frontier = 0
+                    for ar, ac in DIRECTIONS:
+                        rr, cc = nr + ar, nc + ac
+                        if (0 <= rr < obs.H and 0 <= cc < obs.W
+                                and _is_passable(obs.type_grid[rr][cc])
+                                and obs.owner_grid[rr][cc] != 1):
+                            frontier += 1
+                    edge_clearance = min(nr, obs.H - 1 - nr, nc, obs.W - 1 - nc)
+                    geometry = (frontier, edge_clearance)
+                    if fallback_key is None or geometry > fallback_key:
+                        fallback_key = geometry
+                        fallback_move = move
 
                     dest_owner = obs.owner_grid[nr][nc]
                     dest_army = obs.army_grid[nr][nc]
@@ -98,9 +110,10 @@ class Agent:
                     # Expansion = claiming new visible territory (vs reinforcing
                     # one of our own cells).
                     is_opp = dest_owner == 2
-                    dest_type = obs.type_grid[nr][nc]
-                    is_visible_neutral = (dest_owner == 0) and dest_type not in (0, 5)
-                    is_expansion = is_opp or is_visible_neutral
+                    # Fog is prospective territory, not a friendly transfer.
+                    # Treating it as non-expansion made owned-cell shuffles tie
+                    # with scouting moves and amplified the north-first tie.
+                    is_expansion = dest_owner != 1
 
                     # Bigger army = stronger move. Expansion is much more
                     # valuable than reinforcing; capturing the opponent
@@ -111,13 +124,14 @@ class Agent:
                     if is_opp:
                         score *= 2.0
 
-                    if score > best_score:
-                        best_score = score
+                    key = (score, frontier, edge_clearance)
+                    if best_key is None or key > best_key:
+                        best_key = key
                         best_move = move
 
         # Prefer the best capture; else any legal move; else pass.
         if best_move is not None:
             return best_move
-        if first_valid is not None:
-            return first_valid
+        if fallback_move is not None:
+            return fallback_move
         return PASS

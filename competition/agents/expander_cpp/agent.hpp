@@ -18,6 +18,8 @@
 //     0=neutral/unknown, 1=me, 2=opp
 #pragma once
 
+#include <algorithm>
+#include <tuple>
 #include <vector>
 
 struct Observation {
@@ -47,9 +49,10 @@ public:
 
         const Action PASS{1, 0, 0, 0, 0};
         Action best = PASS;
-        Action first_valid = PASS;
+        Action fallback = PASS;
         bool has_valid = false;
-        double best_score = -1.0;
+        std::tuple<int, int, int> best_key{-1, -1, -1};
+        std::pair<int, int> fallback_key{-1, -1};
 
         for (int r = 0; r < obs.H; ++r) {
             for (int c = 0; c < obs.W; ++c) {
@@ -66,30 +69,46 @@ public:
                     if (dtype == 2 || dtype == 5) continue;   // impassable
 
                     Action move{0, r, c, d, 0};
-                    if (!has_valid) { first_valid = move; has_valid = true; }
+                    int frontier = 0;
+                    for (int nd = 0; nd < 4; ++nd) {
+                        int rr = nr + dr[nd], cc = nc + dc[nd];
+                        if (rr < 0 || rr >= obs.H || cc < 0 || cc >= obs.W) continue;
+                        int nidx = rr * obs.W + cc;
+                        int ntype = obs.type_grid[nidx];
+                        if (ntype != 2 && ntype != 5 && obs.owner_grid[nidx] != 1)
+                            ++frontier;
+                    }
+                    int edge_clearance = std::min(std::min(nr, obs.H - 1 - nr),
+                                                  std::min(nc, obs.W - 1 - nc));
+                    std::pair<int, int> geometry{frontier, edge_clearance};
+                    if (!has_valid || geometry > fallback_key) {
+                        fallback = move;
+                        fallback_key = geometry;
+                        has_valid = true;
+                    }
 
                     int dest_owner = obs.owner_grid[didx];
                     int dest_army = obs.army_grid[didx];
                     if (src_army <= dest_army + 1) continue;
 
                     bool is_opp = (dest_owner == 2);
-                    bool is_visible_neutral = (dest_owner == 0) && dtype != 0 && dtype != 5;
-                    bool is_expansion = is_opp || is_visible_neutral;
+                    bool is_expansion = dest_owner != 1;
 
-                    double score = static_cast<double>(src_army);
-                    if (is_expansion) score *= 10.0;
-                    if (is_opp)       score *= 2.0;
+                    int score = src_army;
+                    if (is_expansion) score *= 10;
+                    if (is_opp)       score *= 2;
 
-                    if (score > best_score) {
-                        best_score = score;
+                    std::tuple<int, int, int> key{score, frontier, edge_clearance};
+                    if (key > best_key) {
+                        best_key = key;
                         best = move;
                     }
                 }
             }
         }
 
-        if (best_score > 0) return best;
-        if (has_valid)      return first_valid;
+        if (std::get<0>(best_key) > 0) return best;
+        if (has_valid)                 return fallback;
         return PASS;
     }
 

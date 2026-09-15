@@ -64,8 +64,8 @@ impl Agent {
         let w = obs.w as i32;
 
         let mut best = PASS;
-        let mut best_score: f64 = -1.0;
-        let mut first_valid: Option<Action> = None;
+        let mut best_key = (-1, -1, -1);
+        let mut fallback: Option<(Action, (i32, i32))> = None;
 
         for r in 0..h {
             for c in 0..w {
@@ -83,8 +83,21 @@ impl Agent {
                     if dtype == 2 || dtype == 5 { continue; }   // impassable
 
                     let m = Action { pass: 0, row: r, col: c, dir: d as i32, split: 0 };
-                    if first_valid.is_none() {
-                        first_valid = Some(m);
+                    let mut frontier = 0;
+                    for nd in 0..4 {
+                        let rr = nr + DR[nd];
+                        let cc = nc + DC[nd];
+                        if rr < 0 || rr >= h || cc < 0 || cc >= w { continue; }
+                        let nidx = (rr * w + cc) as usize;
+                        let ntype = obs.type_grid[nidx];
+                        if ntype != 2 && ntype != 5 && obs.owner_grid[nidx] != 1 {
+                            frontier += 1;
+                        }
+                    }
+                    let edge_clearance = nr.min(h - 1 - nr).min(nc).min(w - 1 - nc);
+                    let geometry = (frontier, edge_clearance);
+                    if fallback.as_ref().map_or(true, |(_, key)| geometry > *key) {
+                        fallback = Some((m, geometry));
                     }
 
                     let dest_owner = obs.owner_grid[didx];
@@ -92,23 +105,23 @@ impl Agent {
                     if src_army <= dest_army + 1 { continue; }
 
                     let is_opp = dest_owner == 2;
-                    let is_visible_neutral = dest_owner == 0 && dtype != 0 && dtype != 5;
-                    let is_expansion = is_opp || is_visible_neutral;
+                    let is_expansion = dest_owner != 1;
 
-                    let mut score = src_army as f64;
-                    if is_expansion { score *= 10.0; }
-                    if is_opp       { score *= 2.0; }
+                    let mut score = src_army;
+                    if is_expansion { score *= 10; }
+                    if is_opp       { score *= 2; }
 
-                    if score > best_score {
-                        best_score = score;
+                    let key = (score, frontier, edge_clearance);
+                    if key > best_key {
+                        best_key = key;
                         best = m;
                     }
                 }
             }
         }
 
-        if best_score > 0.0 { best }
-        else if let Some(fv) = first_valid { fv }
+        if best_key.0 > 0 { best }
+        else if let Some((mv, _)) = fallback { mv }
         else { PASS }
     }
 }
