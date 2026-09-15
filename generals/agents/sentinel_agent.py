@@ -97,6 +97,14 @@ class SentinelAgent(Agent):
         affordable = obs.castles & obs.neutral_cells & (a + 6 < biggest)
         passable = ~(obs.mountains | obs.structures_in_fog | (obs.castles & obs.neutral_cells & ~affordable))
         home_distance = _distance(passable, gen)
+        # A castle should be taken by a nearby clump, rather than by repeatedly
+        # shuttling a single stack toward it.  The 5x5 mass is deliberately
+        # local: distant armies cannot be credited until they actually expand
+        # the corridor between them and the target.
+        local_friendly_mass = jax.lax.reduce_window(
+            jnp.where(mine, a, 0), 0, jax.lax.add, (5, 5), (1, 1), "SAME"
+        )
+        ready_city = affordable & (local_friendly_mass >= a + 8)
         enemy_force = jnp.where(obs.opponent_cells, jnp.maximum(a - 1, 0), 0)
         local_threat = jnp.max(_neighbors(enemy_force, 0), axis=-1)
         immediate = obs.opponent_cells & (home_distance == 1) & (a > 1)
@@ -115,10 +123,14 @@ class SentinelAgent(Agent):
         reserve = jnp.maximum(3.0, reserve_force + 1)
         # A city pays back its army investment over the remaining horizon. Avoid
         # detours while the home general is under attack.
-        city_value = jnp.where(affordable & (home_distance < 1e5), 50 - a * 0.4 - home_distance, -1e6)
+        city_value = jnp.where(
+            ready_city & (home_distance < 1e5),
+            90 + local_friendly_mass * 0.15 - a * 0.4 - home_distance,
+            jnp.where(affordable & (home_distance < 1e5), 35 - a * 0.4 - home_distance, -1e6),
+        )
         city_index = jnp.argmax(city_value)
         city_target = jnp.arange(h * w).reshape(h, w) == city_index
-        take_city = jnp.any(affordable) & (near_force < gen_army) & ~jnp.any(egen)
+        take_city = jnp.any(ready_city) & (near_force < gen_army) & ~jnp.any(egen)
         enemy = obs.opponent_cells & passable
         fog = obs.fog_cells & passable & (home_distance < 1e5)
         open_land = passable & ~friendly & (home_distance < 1e5)
@@ -138,6 +150,16 @@ class SentinelAgent(Agent):
         dest_egen = _neighbors(egen, False)[..., None]
         dest_castle = _neighbors(obs.castles, False)[..., None]
         dest_fog = _neighbors(obs.fog_cells, False)[..., None]
+        # Productive frontier moves are the primary tie-breaker when no attack
+        # is ready.  In particular, a 2-stack sending one troop into an open
+        # neighboring tile claims land while retaining a garrison behind.
+        dest_frontier = (
+            ~dest_mine
+            & ~dest_enemy
+            & ~dest_castle
+            & ~dest_fog
+            & _neighbors(friendly, False)[..., None]
+        )
         moved = jnp.stack((a - 1, a // 2), axis=-1)[..., None, :]
         remaining = a[..., None, None] - moved
         captures = ~dest_mine & (moved > dest_a)
@@ -153,6 +175,7 @@ class SentinelAgent(Agent):
         safety = surplus - _neighbors(local_threat, 0)[..., None]
         scores = (
             advances[..., None] * (5 + moved * 0.65)
+            + dest_frontier * (12 + (a[..., None, None] == 2) * (moved == 1) * 28)
             + captures * (3 + dest_enemy * 3 + dest_castle * 18)
             + dest_fog * 1.5
             + dest_mine * jnp.minimum(dest_a, moved) * 0.10
