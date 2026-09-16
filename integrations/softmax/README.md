@@ -254,5 +254,9 @@ Expander prioritizes captures over friendly transfers, including one-army
 frontier captures. It gathers reachable surplus within six owned steps of a
 city when that surplus exceeds the defenders plus a small margin. Reinforcement
 moves follow shortest owned paths; large gathering stacks advance before fresh
-one-army capital growth. This is a heuristic and does not establish competitive
-strength against other strategies.
+one-army capital growth. In the late game it advances the strongest viable
+border stack. A revealed enemy general becomes a persistent objective: the bot
+holds an understrength adjacent siege, routes connected surplus to it, ignores
+isolated one-army dead ends, and attacks as soon as the stack is sufficient.
+This is a heuristic and does not establish competitive strength against other
+strategies.
