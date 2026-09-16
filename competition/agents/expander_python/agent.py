@@ -43,95 +43,89 @@ def _is_passable(t):
 
 
 class Agent:
-    """Expander strategy.
-
-    Each turn pick the move that maximizes
-        score = src_army * (10 if expansion else 1) * (2 if opponent else 1)
-    among captures (src_army > dest_army + 1). If no capture is possible
-    but some legal move exists, take the first one. Otherwise pass.
-    """
+    """Capture territory, gather for cities, and route without idle shuffling."""
 
     def __init__(self, player_id, H, W):
-        # We get the static game info once at startup. You don't have to
-        # store any of it on the agent if you don't want to.
-        self.player_id = player_id
-        self.H = H
-        self.W = W
+        self.player_id, self.H, self.W = player_id, H, W
+        self.city = None
+
+    def neighbors(self, obs, cell):
+        r, c = cell
+        for d, (dr, dc) in enumerate(DIRECTIONS):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < obs.H and 0 <= nc < obs.W and _is_passable(obs.type_grid[nr][nc]):
+                yield d, (nr, nc)
+
+    def routes(self, obs, roots, limit=None):
+        from collections import deque
+        distance = {cell: 0 for cell in roots}
+        toward = {}
+        queue = deque(roots)
+        while queue:
+            cell = queue.popleft()
+            if limit is not None and distance[cell] >= limit:
+                continue
+            for _, nxt in self.neighbors(obs, cell):
+                if nxt in distance or obs.owner_grid[nxt[0]][nxt[1]] != 1:
+                    continue
+                distance[nxt] = distance[cell] + 1
+                toward[nxt] = cell
+                queue.append(nxt)
+        return distance, toward
+
+    def move(self, source, destination):
+        r, c = source
+        return (0, r, c, DIRECTIONS.index((destination[0]-r, destination[1]-c)), 0)
 
     def act(self, obs):
-        best_key = None
-        best_move = None
-        fallback_key = None
-        fallback_move = None
-
-        # Scan every cell on the board. The expander only ever moves armies
-        # *out* of cells it already owns, so we can skip everything else.
-        for r in range(obs.H):
-            for c in range(obs.W):
-                if obs.owner_grid[r][c] != 1:
+        owned = [(r, c) for r in range(obs.H) for c in range(obs.W) if obs.owner_grid[r][c] == 1]
+        captures, frontier, cities = [], set(), set()
+        for cell in owned:
+            r, c = cell
+            for _, nxt in self.neighbors(obs, cell):
+                nr, nc = nxt
+                if obs.owner_grid[nr][nc] == 1:
                     continue
-                src_army = obs.army_grid[r][c]
-                # Need at least 2 armies: one always stays behind on the source.
-                if src_army <= 1:
+                kind, defense = obs.type_grid[nr][nc], obs.army_grid[nr][nc]
+                if kind == 3:
+                    cities.add(nxt)
+                if kind in (0, 1) or obs.owner_grid[nr][nc] == 2:
+                    frontier.add(cell)
+                if obs.army_grid[r][c] <= defense + 1:
                     continue
+                openings = sum(obs.owner_grid[a][b] != 1 for _, (a, b) in self.neighbors(obs, nxt))
+                edge = min(nr, obs.H-1-nr, nc, obs.W-1-nc)
+                # All captures beat friendly transfers. Cheap single-army
+                # expansion uses distributed growth instead of wasting turns.
+                priority = 3 if kind == 4 else 2 if kind == 3 else 1 if obs.owner_grid[nr][nc] == 2 else 0
+                key = (priority, -defense, -obs.army_grid[r][c], openings, edge)
+                captures.append((key, self.move(cell, nxt)))
+        if captures and max(captures)[0][0] >= 2:
+            self.city = None
+            return max(captures)[1]
 
-                # Try each of the four neighbor cells.
-                for d, (dr, dc) in enumerate(DIRECTIONS):
-                    nr, nc = r + dr, c + dc
-                    if not (0 <= nr < obs.H and 0 <= nc < obs.W):
-                        continue
-                    if not _is_passable(obs.type_grid[nr][nc]):
-                        continue
-
-                    move = (0, r, c, d, 0)
-                    # Prefer open, interior destinations for otherwise-equal
-                    # moves. Row-major/direction-order ties always chose UP,
-                    # which could funnel the main stack into the north wall.
-                    frontier = 0
-                    for ar, ac in DIRECTIONS:
-                        rr, cc = nr + ar, nc + ac
-                        if (0 <= rr < obs.H and 0 <= cc < obs.W
-                                and _is_passable(obs.type_grid[rr][cc])
-                                and obs.owner_grid[rr][cc] != 1):
-                            frontier += 1
-                    edge_clearance = min(nr, obs.H - 1 - nr, nc, obs.W - 1 - nc)
-                    geometry = (frontier, edge_clearance)
-                    if fallback_key is None or geometry > fallback_key:
-                        fallback_key = geometry
-                        fallback_move = move
-
-                    dest_owner = obs.owner_grid[nr][nc]
-                    dest_army = obs.army_grid[nr][nc]
-                    # To capture, we need strictly more army than what's there
-                    # (since one must stay on the source).
-                    if src_army <= dest_army + 1:
-                        continue
-
-                    # Expansion = claiming new visible territory (vs reinforcing
-                    # one of our own cells).
-                    is_opp = dest_owner == 2
-                    # Fog is prospective territory, not a friendly transfer.
-                    # Treating it as non-expansion made owned-cell shuffles tie
-                    # with scouting moves and amplified the north-first tie.
-                    is_expansion = dest_owner != 1
-
-                    # Bigger army = stronger move. Expansion is much more
-                    # valuable than reinforcing; capturing the opponent
-                    # specifically is worth double again.
-                    score = float(src_army)
-                    if is_expansion:
-                        score *= 10.0
-                    if is_opp:
-                        score *= 2.0
-
-                    key = (score, frontier, edge_clearance)
-                    if best_key is None or key > best_key:
-                        best_key = key
-                        best_move = move
-
-        # Prefer the best capture; else any legal move; else pass.
-        if best_move is not None:
-            return best_move
-        if fallback_move is not None:
-            return fallback_move
+        # Commit only when an owned path connects enough nearby surplus to a
+        # staging square. Transfers strictly approach that square; no ping-pong.
+        candidates = sorted(cities, key=lambda cell: (cell != self.city, cell))
+        for city in candidates:
+            defense = obs.army_grid[city[0]][city[1]]
+            roots = [n for _, n in self.neighbors(obs, city) if obs.owner_grid[n[0]][n[1]] == 1]
+            for root in sorted(roots, key=lambda n: -obs.army_grid[n[0]][n[1]]):
+                distance, toward = self.routes(obs, [root], limit=6)
+                surplus = sum(max(0, obs.army_grid[r][c]-1) for r, c in distance)
+                if surplus <= defense + 2:
+                    continue
+                sources = [n for n in toward if obs.army_grid[n[0]][n[1]] > 1]
+                if sources:
+                    self.city = city
+                    source = max(sources, key=lambda n: (obs.army_grid[n[0]][n[1]] - 1, -distance[n]))
+                    return self.move(source, toward[source])
+        self.city = None
+        if captures:
+            return max(captures)[1]
+        distance, toward = self.routes(obs, sorted(frontier))
+        sources = [n for n in toward if obs.army_grid[n[0]][n[1]] > 1]
+        if sources:
+            source = max(sources, key=lambda n: (obs.army_grid[n[0]][n[1]], distance[n]))
+            return self.move(source, toward[source])
         return PASS

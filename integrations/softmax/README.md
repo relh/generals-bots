@@ -228,3 +228,31 @@ Keep the tile styling aligned with the competition site when updating it.
 Sprites stay owned by `generals/assets/images`, and the Quicksand font comes
 from `generals/assets/fonts`, including its license in the replay bundle. No
 copied source assets need to be synchronized manually.
+
+### Expander player debugging
+
+The `player` Docker target runs `integrations.softmax.expander_player` directly.
+It imports the dependency-free strategy before opening its WebSocket, so Python
+subprocess startup and JAX compilation cannot consume the first observation's
+500 ms deadline. The separate `integrations.softmax.player` entrypoint remains
+available for bridging arbitrary stdio programs; those programs must meet the
+first-turn deadline themselves.
+
+Build and exercise the actual submitted Linux image against the local classic
+rules server (requires the game dependencies in your Python environment):
+
+```sh
+docker build --platform linux/amd64 --target player -f integrations/softmax/Dockerfile -t generals-expander:local .
+python -m integrations.softmax.local --player-image generals-expander:local --seed 42
+```
+
+Check `results.json` for zero timeouts, inspect `replay.json` for captures, and
+check each player log for reply count and maximum reply time. An episode marked
+`completed` with `reason: double_forfeit` does not demonstrate working players.
+
+Expander prioritizes captures over friendly transfers, including one-army
+frontier captures. It gathers reachable surplus within six owned steps of a
+city when that surplus exceeds the defenders plus a small margin. Reinforcement
+moves follow shortest owned paths; large gathering stacks advance before fresh
+one-army capital growth. This is a heuristic and does not establish competitive
+strength against other strategies.

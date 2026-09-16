@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--player-image", help="Run this Docker player image through the real WebSocket game")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--port", type=int, default=8080)
     parser.add_argument("--max-turns", type=int, default=1200)
@@ -44,7 +45,7 @@ def main():
         **os.environ,
         "JAX_PLATFORMS": "cpu",
         "COGAME_CONFIG_URI": config_file.as_uri(),
-        "COGAME_HOST": "127.0.0.1",
+        "COGAME_HOST": "0.0.0.0" if args.player_image else "127.0.0.1",
         "COGAME_PORT": str(args.port),
         "GENERALS_KEEP_OPEN": "1",
         "COGAME_RESULTS_URI": (run_dir / "results.json").as_uri(),
@@ -74,9 +75,13 @@ def main():
                 print(f"Play: {base}/client/player?{query}", flush=True)
             else:
                 player_env = {**os.environ, "COWORLD_PLAYER_WS_URL": f"ws://127.0.0.1:{args.port}/player?{query}"}
-                processes.append(
-                    subprocess.Popen([sys.executable, "-m", "integrations.softmax.player"], env=player_env, cwd=ROOT)
-                )
+                command = [sys.executable, "-m", "integrations.softmax.expander_player"]
+                if args.player_image:
+                    player_env["COWORLD_PLAYER_WS_URL"] = player_env["COWORLD_PLAYER_WS_URL"].replace("127.0.0.1", "host.docker.internal")
+                    command = ["docker", "run", "--rm", "--platform", "linux/amd64",
+                               "--add-host", "host.docker.internal:host-gateway",
+                               "--env", "COWORLD_PLAYER_WS_URL", args.player_image]
+                processes.append(subprocess.Popen(command, env=player_env, cwd=ROOT))
         print(f"Watch: {base}/client/global", flush=True)
         print(f"Artifacts: {run_dir}", flush=True)
         deadline = time.monotonic() + 900

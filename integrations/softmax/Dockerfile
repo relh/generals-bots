@@ -3,11 +3,12 @@ ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
 RUN pip install --no-cache-dir websockets==16.0
 COPY integrations/__init__.py /app/integrations/__init__.py
-COPY integrations/softmax/__init__.py integrations/softmax/protocol.py integrations/softmax/player.py /app/integrations/softmax/
+COPY integrations/softmax/__init__.py integrations/softmax/protocol.py integrations/softmax/player.py integrations/softmax/expander_player.py /app/integrations/softmax/
 COPY competition/agents/expander_python /app/competition/agents/expander_python
+RUN chmod -R a+rX /app
 # The runner mounts /tmp destinations. Code and dependencies need no write access.
 USER 10001:10001
-CMD ["python", "-m", "integrations.softmax.player"]
+CMD ["python", "-m", "integrations.softmax.expander_player"]
 
 FROM python:3.12-slim AS game
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 JAX_PLATFORMS=cpu OMP_NUM_THREADS=1

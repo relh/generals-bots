@@ -55,3 +55,40 @@ def test_equal_expansions_prefer_interior_over_north_wall():
     move = MODULE.Agent(0, obs.H, obs.W).act(obs)
 
     assert move == (0, 1, 2, 1, 0), "equal frontier moves should move away from the edge"
+
+
+def test_single_army_capture_beats_large_friendly_shuffle():
+    obs = observation(owned={(1, 1), (1, 2), (3, 3)}, armies={(1, 1): 200, (1, 2): 1, (3, 3): 2})
+    for _, (dr, dc) in enumerate(MODULE.DIRECTIONS):
+        r, c = 1 + dr, 1 + dc
+        if (r, c) != (1, 2):
+            obs.type_grid[r][c] = 2
+    move = MODULE.Agent(0, 5, 5).act(obs)
+    assert move[1:3] == (3, 3)
+    assert move[0] == 0
+
+
+def test_nearby_surplus_gathers_and_captures_city():
+    obs = observation(owned={(2, 1), (2, 2)}, armies={(2, 1): 30, (2, 2): 25, (2, 3): 45})
+    obs.type_grid[2][1] = 4
+    obs.type_grid[2][3] = 3
+    agent = MODULE.Agent(0, 5, 5)
+    assert agent.act(obs) == (0, 2, 1, 3, 0)
+    obs.army_grid[2][1], obs.army_grid[2][2] = 1, 54
+    assert agent.act(obs) == (0, 2, 2, 3, 0)
+
+
+def test_enclosed_army_passes_instead_of_oscillating():
+    obs = observation(owned={(2, 1), (2, 2)}, armies={(2, 1): 50, (2, 2): 2})
+    for r in range(5):
+        for c in range(5):
+            if obs.owner_grid[r][c] != 1:
+                obs.type_grid[r][c] = 2
+    assert MODULE.Agent(0, 5, 5).act(obs) == MODULE.PASS
+
+
+def test_city_gathering_advances_large_stack_before_new_capital_growth():
+    obs = observation(owned={(2, 0), (2, 1), (2, 2)}, armies={(2, 0): 2, (2, 1): 60, (2, 2): 1, (2, 3): 45})
+    obs.type_grid[2][0] = 4
+    obs.type_grid[2][3] = 3
+    assert MODULE.Agent(0, 5, 5).act(obs) == (0, 2, 1, 3, 0)

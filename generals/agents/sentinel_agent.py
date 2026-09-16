@@ -158,7 +158,7 @@ class SentinelAgent(Agent):
             & ~dest_enemy
             & ~dest_castle
             & ~dest_fog
-            & _neighbors(friendly, False)[..., None]
+            & mine[..., None, None]
         )
         moved = jnp.stack((a - 1, a // 2), axis=-1)[..., None, :]
         remaining = a[..., None, None] - moved
