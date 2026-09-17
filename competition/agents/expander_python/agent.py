@@ -215,7 +215,11 @@ class Agent:
         """After the opening, explore with one reinforced column, not scattered probes."""
         if not frontier:
             return None
-        if self.spearhead not in owned:
+        # A captured frontier tile becomes interior on the following turn. If
+        # we keep it as the spearhead, gather() just shuttles armies back into
+        # that dead end forever -- the exact failure seen in FFA turn-limit
+        # draws after two opponents had already been eliminated.
+        if self.spearhead not in frontier:
             self.spearhead = max(frontier, key=lambda cell: obs.army_grid[cell[0]][cell[1]])
         source = self.spearhead
         destinations = [
@@ -238,8 +242,49 @@ class Agent:
             return self.move(source, destination)
         return self.gather(obs, source)
 
+    def castle_opening(self, obs, owned):
+        """Fund one early productive castle when the variant permits builds."""
+        costs = getattr(obs, "build_cost_grid", None)
+        if costs is None:
+            return None
+        if any(obs.type_grid[r][c] == 3 for r, c in owned):
+            return None
+
+        affordable = [
+            (costs[r][c], r, c)
+            for r, c in owned
+            if obs.type_grid[r][c] == 1
+            and costs[r][c] > 0
+            and obs.army_grid[r][c] >= costs[r][c]
+        ]
+        if affordable:
+            _, r, c = min(affordable)
+            return (2, r, c, 0, 0)
+
+        # The general reaches 50 armies around turn 98. Moving all but one to
+        # an adjacent plain leaves enough to pay the initial 47-army cost on
+        # the following turn, matching the source-published Builder baseline.
+        if obs.turn <= 102:
+            generals = [cell for cell in owned if obs.type_grid[cell[0]][cell[1]] == 4]
+            if generals:
+                general = generals[0]
+                if obs.army_grid[general[0]][general[1]] < 50:
+                    return PASS
+                destinations = [
+                    nxt for _, nxt in self.neighbors(obs, general)
+                    if obs.type_grid[nxt[0]][nxt[1]] == 1
+                    and obs.owner_grid[nxt[0]][nxt[1]] in (0, 1)
+                    and obs.army_grid[nxt[0]][nxt[1]] == 0
+                ]
+                if destinations:
+                    return self.move(general, destinations[0])
+        return None
+
     def act(self, obs):
         owned = [(r, c) for r in range(obs.H) for c in range(obs.W) if obs.owner_grid[r][c] == 1]
+        castle_move = self.castle_opening(obs, owned)
+        if castle_move is not None:
+            return castle_move
         visible_generals = [
             (r, c) for r in range(obs.H) for c in range(obs.W)
             if obs.type_grid[r][c] == 4 and obs.owner_grid[r][c] == 2
@@ -323,6 +368,10 @@ class Agent:
                     source = max(sources, key=lambda n: (obs.army_grid[n[0]][n[1]] - 1, -distance[n]))
                     return self.move(source, toward[source])
         self.city = None
+        if obs.turn >= self.PRESSURE_TURN and not enemy_cells:
+            late_move = self.late_explore(obs, owned, frontier)
+            if late_move is not None:
+                return late_move
         if captures:
             best = max(captures)
             if obs.turn >= self.PRESSURE_TURN and best[3] == 2:

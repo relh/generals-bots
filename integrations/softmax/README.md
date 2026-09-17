@@ -260,3 +260,8 @@ holds an understrength adjacent siege, routes connected surplus to it, ignores
 isolated one-army dead ends, and attacks as soon as the stack is sufficient.
 This is a heuristic and does not establish competitive strength against other
 strategies.
+
+For the 0.3.0 multi-format Coworld, Expander also resets a late spearhead once
+it becomes an interior tile, preventing the two-cell reinforcement loops seen
+after FFA eliminations. In the `build_castles` ruleset it funds and builds one
+opening castle before returning to the shared expansion and siege policy.

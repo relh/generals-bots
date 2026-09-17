@@ -12,7 +12,7 @@ assert SPEC.loader is not None
 SPEC.loader.exec_module(MODULE)
 
 
-def observation(*, owned, armies, fog=(), enemies=(), turn=0):
+def observation(*, owned, armies, fog=(), enemies=(), turn=0, build_costs=None):
     height = width = 5
     type_grid = [[1 for _ in range(width)] for _ in range(height)]
     owner_grid = [[0 for _ in range(width)] for _ in range(height)]
@@ -25,7 +25,7 @@ def observation(*, owned, armies, fog=(), enemies=(), turn=0):
         owner_grid[row][col] = 2
     for (row, col), army in armies.items():
         army_grid[row][col] = army
-    return SimpleNamespace(
+    values = dict(
         H=height,
         W=width,
         turn=turn,
@@ -33,6 +33,12 @@ def observation(*, owned, armies, fog=(), enemies=(), turn=0):
         owner_grid=owner_grid,
         army_grid=army_grid,
     )
+    if build_costs is not None:
+        costs = [[0 for _ in range(width)] for _ in range(height)]
+        for (row, col), cost in build_costs.items():
+            costs[row][col] = cost
+        values["build_cost_grid"] = costs
+    return SimpleNamespace(**values)
 
 
 def test_fog_capture_beats_friendly_north_transfer():
@@ -171,3 +177,42 @@ def test_blocked_spearhead_gathers_instead_of_taking_cheap_border_tile():
 
     assert agent.act(obs) == (0, 1, 0, 3, 0)
     assert agent.spearhead == (1, 2)
+
+
+def test_late_explore_replaces_an_interior_spearhead():
+    obs = observation(
+        owned={(0, 2), (1, 1), (1, 2), (1, 3), (2, 2), (3, 3)},
+        armies={(0, 2): 1, (1, 1): 60, (1, 2): 2, (1, 3): 1, (2, 2): 1, (3, 3): 20},
+        turn=900,
+    )
+    agent = MODULE.Agent(0, 5, 5)
+    agent.spearhead = (1, 2)
+
+    move = agent.act(obs)
+
+    assert move[:3] == (0, 1, 1)
+    assert agent.spearhead != (1, 2)
+
+
+def test_castle_variant_funds_and_builds_one_opening_castle():
+    waiting = observation(
+        owned={(2, 2)}, armies={(2, 2): 49}, turn=96, build_costs={}
+    )
+    waiting.type_grid[2][2] = 4
+    agent = MODULE.Agent(0, 5, 5)
+    assert agent.act(waiting) == MODULE.PASS
+
+    funded = observation(
+        owned={(2, 2)}, armies={(2, 2): 50}, turn=98, build_costs={}
+    )
+    funded.type_grid[2][2] = 4
+    assert agent.act(funded)[0:3] == (0, 2, 2)
+
+    affordable = observation(
+        owned={(2, 2), (2, 3)},
+        armies={(2, 2): 1, (2, 3): 49},
+        turn=99,
+        build_costs={(2, 3): 47},
+    )
+    affordable.type_grid[2][2] = 4
+    assert agent.act(affordable) == (2, 2, 3, 0, 0)

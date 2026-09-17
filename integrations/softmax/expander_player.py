@@ -22,6 +22,8 @@ async def play(url):
                     raise ValueError('unsupported protocol')
                 agent = Agent(message['slot'], message['height'], message['width'])
             elif message['type'] == 'observation':
+                if message.get('eliminated'):
+                    continue
                 if agent is None:
                     raise ValueError('observation before hello')
                 started = time.monotonic()
