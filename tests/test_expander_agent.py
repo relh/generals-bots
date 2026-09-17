@@ -152,6 +152,23 @@ def test_remembered_general_remains_the_objective_after_fog_returns():
     assert agent.spearhead == (2, 2)
 
 
+def test_captured_ffa_general_is_retired_as_siege_target():
+    obs = observation(
+        owned={(2, 1), (2, 2)}, armies={(2, 1): 20, (2, 2): 40}, turn=700,
+    )
+    obs.type_grid[2][2] = 3
+    obs.players = ["Red", "Blue", "Green", "Purple"]
+    agent = MODULE.Agent(0, 5, 5)
+    agent.enemy_general = (2, 2)
+    agent.spearhead = (2, 1)
+    agent.pressure_anchor = (2, 1)
+
+    assert agent.siege(obs, {(2, 1), (2, 2)}) is None
+    assert agent.enemy_general is None
+    assert agent.spearhead is None
+    assert agent.pressure_anchor is None
+
+
 def test_combat_uses_one_persistent_large_spearhead():
     obs = observation(
         owned={(1, 1), (1, 2), (3, 2)},

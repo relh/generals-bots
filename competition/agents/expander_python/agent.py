@@ -139,6 +139,14 @@ class Agent:
         target = self.enemy_general
         if target is None:
             return None
+        # In FFA a captured general becomes an ordinary castle and play
+        # continues. Retire that remembered crown; otherwise every later turn
+        # gathers into our captured castle and shuttles the same armies away.
+        if obs.type_grid[target[0]][target[1]] == 3:
+            self.enemy_general = None
+            self.spearhead = None
+            self.pressure_anchor = None
+            return None
 
         adjacent = [
             cell for cell in owned
