@@ -52,6 +52,7 @@ class Agent:
         self.city = None
         self.enemy_general = None
         self.spearhead = None
+        self.pressure_anchor = None
 
     def neighbors(self, obs, cell):
         r, c = cell
@@ -211,7 +212,7 @@ class Agent:
             return self.move(source, destination)
         return self.gather(obs, source) or PASS
 
-    def late_explore(self, obs, owned, frontier):
+    def late_explore(self, obs, owned, frontier, *, reset_interior=False):
         """After the opening, explore with one reinforced column, not scattered probes."""
         if not frontier:
             return None
@@ -219,7 +220,8 @@ class Agent:
         # we keep it as the spearhead, gather() just shuttles armies back into
         # that dead end forever -- the exact failure seen in FFA turn-limit
         # draws after two opponents had already been eliminated.
-        if self.spearhead not in frontier:
+        valid_spearheads = frontier if reset_interior else owned
+        if self.spearhead not in valid_spearheads:
             self.spearhead = max(frontier, key=lambda cell: obs.army_grid[cell[0]][cell[1]])
         source = self.spearhead
         destinations = [
@@ -241,6 +243,46 @@ class Agent:
             self.spearhead = destination
             return self.move(source, destination)
         return self.gather(obs, source)
+
+    def ffa_pressure(self, obs, owned, enemy_cells):
+        """Keep one endgame rally point until it breaks through enemy land."""
+        if obs.turn < self.PRESSURE_TURN or not enemy_cells:
+            return None
+        border = [
+            cell for cell in owned
+            if any(obs.owner_grid[n[0]][n[1]] == 2 for _, n in self.neighbors(obs, cell))
+        ]
+        if not border:
+            self.pressure_anchor = None
+            return None
+        if self.pressure_anchor not in border:
+            self.pressure_anchor = max(
+                border,
+                key=lambda cell: (obs.army_grid[cell[0]][cell[1]], -cell[0], -cell[1]),
+            )
+        source = self.pressure_anchor
+        blockers = [
+            nxt for _, nxt in self.neighbors(obs, source)
+            if obs.owner_grid[nxt[0]][nxt[1]] == 2
+        ]
+        capturable = [
+            cell for cell in blockers
+            if obs.army_grid[source[0]][source[1]] > obs.army_grid[cell[0]][cell[1]] + 1
+        ]
+        if capturable:
+            destination = max(
+                capturable,
+                key=lambda cell: (
+                    obs.type_grid[cell[0]][cell[1]] == 4,
+                    obs.type_grid[cell[0]][cell[1]] == 3,
+                    -obs.army_grid[cell[0]][cell[1]],
+                ),
+            )
+            self.pressure_anchor = destination
+            self.spearhead = destination
+            return self.move(source, destination)
+        self.spearhead = source
+        return self.gather(obs, source) or PASS
 
     def castle_opening(self, obs, owned):
         """Fund one early productive castle when the variant permits builds."""
@@ -282,6 +324,7 @@ class Agent:
 
     def act(self, obs):
         owned = [(r, c) for r in range(obs.H) for c in range(obs.W) if obs.owner_grid[r][c] == 1]
+        is_ffa = len(getattr(obs, "players", ())) == 4 or len(getattr(obs, "public_scores", ())) == 4
         castle_move = self.castle_opening(obs, owned)
         if castle_move is not None:
             return castle_move
@@ -299,6 +342,10 @@ class Agent:
             (r, c) for r in range(obs.H) for c in range(obs.W)
             if obs.owner_grid[r][c] == 2
         ]
+        if is_ffa:
+            pressure_move = self.ffa_pressure(obs, owned, enemy_cells)
+            if pressure_move is not None:
+                return pressure_move
         if enemy_cells and obs.turn >= self.PRESSURE_TURN:
             border = [
                 cell for cell in owned
@@ -368,8 +415,8 @@ class Agent:
                     source = max(sources, key=lambda n: (obs.army_grid[n[0]][n[1]] - 1, -distance[n]))
                     return self.move(source, toward[source])
         self.city = None
-        if obs.turn >= self.PRESSURE_TURN and not enemy_cells:
-            late_move = self.late_explore(obs, owned, frontier)
+        if is_ffa and obs.turn >= self.PRESSURE_TURN and not enemy_cells:
+            late_move = self.late_explore(obs, owned, frontier, reset_interior=True)
             if late_move is not None:
                 return late_move
         if captures:

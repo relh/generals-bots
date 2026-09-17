@@ -187,11 +187,40 @@ def test_late_explore_replaces_an_interior_spearhead():
     )
     agent = MODULE.Agent(0, 5, 5)
     agent.spearhead = (1, 2)
+    obs.players = ["Red", "Blue", "Green", "Purple"]
 
     move = agent.act(obs)
 
     assert move[:3] == (0, 1, 1)
     assert agent.spearhead != (1, 2)
+
+
+def test_ffa_pressure_keeps_one_rally_point_instead_of_switching_borders():
+    obs = observation(
+        owned={(1, 0), (1, 1), (1, 2), (3, 1), (3, 2)},
+        enemies={(1, 3), (3, 3)},
+        armies={(1, 0): 60, (1, 1): 2, (1, 2): 10, (1, 3): 30,
+                (3, 1): 45, (3, 2): 12, (3, 3): 30},
+        turn=900,
+    )
+    obs.players = ["Red", "Blue", "Green", "Purple"]
+    agent = MODULE.Agent(0, 5, 5)
+    agent.pressure_anchor = (1, 2)
+
+    assert agent.act(obs) == (0, 1, 0, 3, 0)
+    assert agent.pressure_anchor == (1, 2)
+
+
+def test_classic_keeps_original_late_capture_order():
+    obs = observation(
+        owned={(1, 1), (1, 2), (3, 3)},
+        armies={(1, 1): 50, (1, 2): 2, (3, 3): 3},
+        turn=900,
+    )
+    agent = MODULE.Agent(0, 5, 5)
+    agent.spearhead = (1, 1)
+
+    assert agent.act(obs)[1:3] == (1, 2)
 
 
 def test_castle_variant_funds_and_builds_one_opening_castle():
