@@ -228,6 +228,37 @@ def test_ffa_pressure_keeps_one_rally_point_instead_of_switching_borders():
     assert agent.pressure_anchor == (1, 2)
 
 
+def test_ffa_rallies_to_exposed_general_before_distant_siege():
+    obs = observation(
+        owned={(2, 1), (2, 2), (2, 3), (3, 2)},
+        enemies={(0, 2), (4, 3)},
+        armies={(2, 1): 22, (2, 2): 5, (2, 3): 2, (3, 2): 18,
+                (0, 2): 41, (4, 3): 1},
+        turn=320,
+    )
+    obs.type_grid[2][2] = 4
+    obs.type_grid[4][3] = 4
+    obs.players = ["Red", "Blue", "Green", "Purple"]
+    agent = MODULE.Agent(0, 5, 5)
+
+    assert agent.act(obs) == (0, 2, 1, 3, 0)
+    assert agent.enemy_general == (4, 3)
+
+
+def test_ffa_does_not_rally_for_weak_or_distant_enemy():
+    obs = observation(
+        owned={(2, 1), (2, 2), (3, 2)}, enemies={(0, 2)},
+        armies={(2, 1): 22, (2, 2): 5, (3, 2): 18, (0, 2): 1},
+        turn=320,
+    )
+    obs.type_grid[2][2] = 4
+    obs.players = ["Red", "Blue", "Green", "Purple"]
+
+    assert MODULE.Agent(0, 5, 5).ffa_home_defense(
+        obs, [(2, 1), (2, 2), (3, 2)], [(0, 2)]
+    ) is None
+
+
 def test_classic_keeps_original_late_capture_order():
     obs = observation(
         owned={(1, 1), (1, 2), (3, 3)},

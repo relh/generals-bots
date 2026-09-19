@@ -292,6 +292,51 @@ class Agent:
         self.spearhead = source
         return self.gather(obs, source) or PASS
 
+    def ffa_home_defense(self, obs, owned, enemy_cells):
+        """Rally nearby surplus before a visible stack can take our general.
+
+        In FFA a general capture eliminates only its owner, so a distant siege
+        is not worth leaving our own crown defended by a single army.  Use
+        visible armies only: fog and the public total do not locate a threat.
+        """
+        generals = [cell for cell in owned if obs.type_grid[cell[0]][cell[1]] == 4]
+        if not generals:
+            return None
+        general = generals[0]
+        garrison = obs.army_grid[general[0]][general[1]]
+        threats = [
+            (obs.army_grid[r][c], abs(r - general[0]) + abs(c - general[1]))
+            for r, c in enemy_cells
+            if abs(r - general[0]) + abs(c - general[1]) <= 8
+            and obs.army_grid[r][c] >= max(12, garrison + 4)
+        ]
+        if not threats:
+            return None
+        strongest = max(army for army, _ in threats)
+        if garrison > strongest + 1:
+            return None
+
+        distance, toward = self.routes(obs, [general], limit=8)
+        sources = [
+            cell for cell in toward
+            if obs.army_grid[cell[0]][cell[1]] > 1
+        ]
+        if sources:
+            # A large nearby stack reaches the crown sooner than scattered
+            # distant armies.  Re-evaluate every turn as the front moves.
+            source = max(
+                sources,
+                key=lambda cell: (
+                    obs.army_grid[cell[0]][cell[1]] - distance[cell],
+                    obs.army_grid[cell[0]][cell[1]],
+                    -distance[cell],
+                ),
+            )
+            return self.move(source, toward[source])
+        # Do not drain the last garrison for expansion while a stronger enemy
+        # is close.  It still grows naturally every other turn.
+        return PASS
+
     def castle_opening(self, obs, owned):
         """Fund one early productive castle when the variant permits builds."""
         costs = getattr(obs, "build_cost_grid", None)
@@ -342,14 +387,17 @@ class Agent:
         ]
         if visible_generals:
             self.enemy_general = visible_generals[0]
-        siege_move = self.siege(obs, owned)
-        if siege_move is not None:
-            return siege_move
-
         enemy_cells = [
             (r, c) for r in range(obs.H) for c in range(obs.W)
             if obs.owner_grid[r][c] == 2
         ]
+        if is_ffa:
+            defense_move = self.ffa_home_defense(obs, owned, enemy_cells)
+            if defense_move is not None:
+                return defense_move
+        siege_move = self.siege(obs, owned)
+        if siege_move is not None:
+            return siege_move
         if is_ffa:
             pressure_move = self.ffa_pressure(obs, owned, enemy_cells)
             if pressure_move is not None:
