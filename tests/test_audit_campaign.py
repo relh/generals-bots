@@ -2,7 +2,7 @@
 
 import pytest
 
-from scripts.audit_campaign import audit_frames, owned_components, parse_wire
+from scripts.audit_campaign import audit_frames, compact_summary, owned_components, parse_wire
 
 PASS = [1, 0, 0, 0, 0]
 EAST = [0, 0, 0, 3, 0]
@@ -76,3 +76,20 @@ def test_components_separate_stranded_army_from_home_and_do_not_wrap_rows():
         dict(first_cell=3, land=2, army=20, contains_general=False),
         dict(first_cell=2, land=1, army=2, contains_general=True),
     ]
+
+
+def test_compact_summary_retains_decision_facts_without_per_turn_actions():
+    report = audit_frames([
+        frame(49, False, EAST), frame(50, True), frame(51, True, EAST), frame(52, True)
+    ], 0)
+    summary = compact_summary(report)
+    assert summary["turns"] == [49, 52]
+    assert summary["decisions"] == 4
+    assert summary["action_counts"] == {"neutral_attempt": 1, "owned_transfer": 1, "pass": 2}
+    assert summary["captures"] == {
+        "confirmed": 1,
+        "next_tick_observed": 1,
+        "held_to_next_tick": 1,
+        "lost_by_next_tick": 0,
+    }
+    assert "actions" not in summary

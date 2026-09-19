@@ -14,6 +14,26 @@ census](opponent-coverage.md), [v4 development evidence](v4-development.md), and
 [earlier measured results](results.md). Completing an experiment does not close
 the competitive goal.
 
+## Compact investigation loop
+
+Keep raw games and full audit JSON as the evidence authority, but do not load
+either wholesale into an agent conversation. Start with the deterministic
+summary and open individual turns only after it identifies the failing window:
+
+```sh
+.venv/bin/python scripts/audit_campaign.py GAME.json \
+  --output .cache/audit-full.json \
+  --summary-output .cache/audit-summary.json
+```
+
+The summary retains turn bounds, contacts, action counts, periodic snapshots,
+capture retention, input hash, and limitations while omitting the per-turn
+action list. Give a reviewing agent the summary plus the preregistered plan;
+then retrieve only the relevant slice from the full report. Keep one hypothesis
+and one fixed case set per handoff. For a long arena run, inspect its existing
+`summary.json` and `games.csv` before opening traces, and resume with
+`--check-resume` once rather than repeatedly polling or restarting the run.
+
 The [v5 interception experiment](v5-development.md) improves local Hunter and the
 small Juraj V3.5 sample but regresses on Amin; it is not promoted. Its complete
 episode diagnostics identify repeated defensive relocation and lost construction

@@ -161,12 +161,45 @@ def audit_frames(frames, seat, *, land_period=50):
                 snapshots=snapshots, windows=windows, captures=captures, actions=actions)
 
 
+def compact_summary(report):
+    """Return the evidence-bearing campaign facts without per-turn payloads."""
+    actions = Counter(event["kind"] for event in report["actions"])
+    observed_next_tick = [
+        capture for capture in report["captures"]
+        if capture["retention"]["next_land_tick"]["endpoint_observed"]
+    ]
+    held_next_tick = sum(
+        capture["retention"]["next_land_tick"]["continuously_held"] is True
+        for capture in observed_next_tick
+    )
+    return {
+        "schema_version": 1,
+        "seat": report["seat"],
+        "shape": report["shape"],
+        "turns": [report["first_turn"], report["last_observation_turn"]],
+        "decisions": report["decisions"],
+        "first_observed_contact": report["first_observed_contact"],
+        "first_observed_enemy_general": report["first_observed_enemy_general"],
+        "action_counts": dict(sorted(actions.items())),
+        "captures": {
+            "confirmed": len(report["captures"]),
+            "next_tick_observed": len(observed_next_tick),
+            "held_to_next_tick": held_next_tick,
+            "lost_by_next_tick": len(observed_next_tick) - held_next_tick,
+        },
+        "snapshots": report["snapshots"],
+        "windows": report["windows"],
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path)
     parser.add_argument("--seat", type=int, choices=(0, 1))
     parser.add_argument("--land-period", type=int, default=50, help="whole-land production interval; default50")
     parser.add_argument("--output", type=Path, required=True, help="new output file; refuses replacement")
+    parser.add_argument("--summary-output", type=Path,
+                        help="optional compact JSON for routine agent inspection; refuses replacement")
     args = parser.parse_args()
     raw = args.input.read_bytes()
     if args.input.suffix == ".jsonl":
@@ -188,6 +221,13 @@ def main():
     ]
     with args.output.open("x") as stream:
         stream.write(json.dumps(report, indent=2) + "\n")
+    if args.summary_output:
+        summary = compact_summary(report)
+        summary["full_report"] = str(args.output)
+        summary["input"] = report["input"]
+        summary["limitations"] = report["limitations"]
+        with args.summary_output.open("x") as stream:
+            stream.write(json.dumps(summary, indent=2) + "\n")
     print(f"Audited {report['decisions']} recorded decisions; {len(report['captures'])} confirmed capture events")
 
 
