@@ -259,6 +259,34 @@ def test_ffa_does_not_rally_for_weak_or_distant_enemy():
     ) is None
 
 
+def test_ffa_preserves_opening_against_early_contact():
+    obs = observation(
+        owned={(2, 1), (2, 2), (3, 2)}, enemies={(0, 2)},
+        armies={(2, 1): 22, (2, 2): 5, (3, 2): 18, (0, 2): 100},
+        turn=120,
+    )
+    obs.type_grid[2][2] = 4
+    obs.players = ["Red", "Blue", "Green", "Purple"]
+
+    assert MODULE.Agent(0, 5, 5).ffa_home_defense(
+        obs, [(2, 1), (2, 2), (3, 2)], [(0, 2)]
+    ) is None
+
+
+def test_ffa_ignores_moderate_non_imminent_scout():
+    obs = observation(
+        owned={(2, 1), (2, 2), (3, 2)}, enemies={(0, 0)},
+        armies={(2, 1): 22, (2, 2): 5, (3, 2): 18, (0, 0): 12},
+        turn=320,
+    )
+    obs.type_grid[2][2] = 4
+    obs.players = ["Red", "Blue", "Green", "Purple"]
+
+    assert MODULE.Agent(0, 5, 5).ffa_home_defense(
+        obs, [(2, 1), (2, 2), (3, 2)], [(0, 0)]
+    ) is None
+
+
 def test_classic_keeps_original_late_capture_order():
     obs = observation(
         owned={(1, 1), (1, 2), (3, 3)},
