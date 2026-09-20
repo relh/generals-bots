@@ -46,7 +46,6 @@ class Agent:
     """Expand early, then concentrate one army into a persistent breakthrough."""
 
     PRESSURE_TURN = 800
-    FFA_DEFENSE_TURN = 240
 
     def __init__(self, player_id, H, W):
         self.player_id, self.H, self.W = player_id, H, W
@@ -303,26 +302,14 @@ class Agent:
         generals = [cell for cell in owned if obs.type_grid[cell[0]][cell[1]] == 4]
         if not generals:
             return None
-        # Early FFA contact is normal expansion.  The broad V5 trigger began
-        # retreating as early as turn 59 for twelve-army scouts eight cells
-        # away, sacrificing initiative to threats that were not yet capable
-        # of reaching the crown.  Preserve the opening and defend only once
-        # the board has matured enough for a general-capture run.
-        if obs.turn < self.FFA_DEFENSE_TURN:
-            return None
         general = generals[0]
         garrison = obs.army_grid[general[0]][general[1]]
-        threats = []
-        for r, c in enemy_cells:
-            distance = abs(r - general[0]) + abs(c - general[1])
-            army = obs.army_grid[r][c]
-            if distance > 8:
-                continue
-            imminent = distance <= 3 and army >= max(12, garrison + 4)
-            exposed = distance <= 5 and army >= max(20, 3 * garrison)
-            overwhelming = army >= max(100, 5 * garrison)
-            if imminent or exposed or overwhelming:
-                threats.append((army, distance))
+        threats = [
+            (obs.army_grid[r][c], abs(r - general[0]) + abs(c - general[1]))
+            for r, c in enemy_cells
+            if abs(r - general[0]) + abs(c - general[1]) <= 8
+            and obs.army_grid[r][c] >= max(12, garrison + 4)
+        ]
         if not threats:
             return None
         strongest = max(army for army, _ in threats)
