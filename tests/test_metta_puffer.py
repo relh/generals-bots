@@ -31,7 +31,7 @@ def test_fogged_observation_mask_and_finite_episode():
     env.close()
 
 
-@pytest.mark.parametrize("opponent", ["random", "hunter"])
+@pytest.mark.parametrize("opponent", ["random", "hunter", "mixed"])
 def test_other_opponents_keep_the_numeric_contract(opponent):
     context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))
     env = GeneralsPufferEnvironment(context=context, board_size=6, horizon=12, opponent=opponent)

@@ -37,7 +37,13 @@ def _decode(index, size):
 
 class GeneralsPufferEnvironment:
     def __init__(
-        self, *, context: EnvironmentContext, board_size: int = 10, horizon: int = 300, opponent: str = "expander"
+        self,
+        *,
+        context: EnvironmentContext,
+        board_size: int = 10,
+        horizon: int = 300,
+        opponent: str = "expander",
+        shaping_weight: float = 0.2,
     ):
         self.size = board_size
         self.env = GeneralsEnv(
@@ -51,14 +57,20 @@ class GeneralsPufferEnvironment:
         self.pool, _ = self.env.reset(jax.random.PRNGKey(context.seed + context.index))
         self._init_state = jax.jit(self.env.init_state)
         self._observe = jax.jit(lambda state, side: _encode(game.get_observation(state, side)))
-        opponents = {"expander": ExpanderAgent, "hunter": HunterAgent, "random": RandomAgent}
-        opponent_agent = opponents[opponent]()
+        opponent_types = {"expander": ExpanderAgent, "hunter": HunterAgent, "random": RandomAgent}
+        opponent_agents = (
+            (RandomAgent(), ExpanderAgent(), HunterAgent()) if opponent == "mixed" else (opponent_types[opponent](),)
+        )
+        self.num_opponents = len(opponent_agents)
+        opponent_branches = tuple(lambda args, agent=agent: agent.act(*args) for agent in opponent_agents)
         env = self.env
 
         @jax.jit
-        def advance(state, pool, side, index, key):
+        def advance(state, pool, side, opponent_id, index, key):
             opponent_key, next_key = jax.random.split(key)
-            enemy = opponent_agent.act(game.get_observation(state, 1 - side), opponent_key)
+            enemy = jax.lax.switch(
+                opponent_id, opponent_branches, (game.get_observation(state, 1 - side), opponent_key)
+            )
             ours = _decode(index, board_size)
             actions = jnp.where(side == 0, jnp.stack((ours, enemy)), jnp.stack((enemy, ours)))
             previous = game.get_observation(state, side)
@@ -78,7 +90,7 @@ class GeneralsPufferEnvironment:
             )
             done = timestep.terminated | timestep.truncated
             outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
-            reward = outcome + 0.2 * (
+            reward = outcome + shaping_weight * (
                 0.99 * (0.5 * new_army + 0.3 * new_land) * ~done - (0.5 * old_army + 0.3 * old_land)
             )
             values, mask = _encode(final)
@@ -94,12 +106,13 @@ class GeneralsPufferEnvironment:
         self.state = self._init_state(jax.random.PRNGKey(numeric_seed))
         self.key = jax.random.PRNGKey(numeric_seed ^ 0xA5A5A5A5)
         self.side = jnp.int32(numeric_seed % 2)
+        self.opponent_id = jnp.int32(numeric_seed % self.num_opponents)
         values, mask = self._observe(self.state, self.side)
         return self._observation(values, mask)
 
     def step(self, actions: list[list[int]]) -> NumericTransition:
         self.state, self.key, values, mask, reward, done, outcome = self._advance(
-            self.state, self.pool, self.side, actions[0][0], self.key
+            self.state, self.pool, self.side, self.opponent_id, actions[0][0], self.key
         )
         final = bool(done)
         score = float(outcome)
