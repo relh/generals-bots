@@ -2,7 +2,7 @@
 
 `integrations.metta_puffer:GeneralsPufferEnvironment` is a one-seat numeric
 environment for Metta's native PufferLib 5 runner. It trains against
-`ExpanderAgent` on 10×10 maps with fog of war, a 300-turn horizon, legal action
+`ExpanderAgent` by default on 10×10 maps with fog of war, a 300-turn horizon, legal action
 masks, and terminal win/loss reward plus bounded economic shaping. It uses the
 plain ruleset; it does not use the 18–21 tile competition preset.
 
@@ -37,3 +37,9 @@ build --output run`. Set `train.gamma` to `0.99` in the run overrides to match
 the shaping reward's discount. Keep training and held-out evaluation seeds
 distinct. An evaluation reports win as performance 1, draw as 0.5, and loss
 as 0.
+
+For a separate opponent evaluation build, set `options.opponent` to `hunter`
+or `random`. The observation and action dimensions remain the same, so a
+checkpoint can be evaluated against those opponents with a matching build
+manifest. Keep the original training source and build for the standard
+held-out Expander evaluation.

@@ -1,7 +1,7 @@
 """One-seat Generals environment for Metta's native PufferLib trainer.
 
 The policy sees the same fogged observation and legal moves as a live player.
-The other seat uses the repository's Expander agent. An episode ends on a win,
+The other seat uses a repository scripted agent. An episode ends on a win,
 loss, or the explicit finite game horizon.
 """
 
@@ -13,7 +13,7 @@ import numpy as np
 from metta_training.environment import EnvironmentContext, EnvironmentSpec, NumericObservation, NumericTransition
 
 from generals import GeneralsEnv
-from generals.agents import ExpanderAgent
+from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.core import game
 from generals.core.action import compute_valid_move_mask_obs
 
@@ -36,7 +36,9 @@ def _decode(index, size):
 
 
 class GeneralsPufferEnvironment:
-    def __init__(self, *, context: EnvironmentContext, board_size: int = 10, horizon: int = 300):
+    def __init__(
+        self, *, context: EnvironmentContext, board_size: int = 10, horizon: int = 300, opponent: str = "expander"
+    ):
         self.size = board_size
         self.env = GeneralsEnv(
             grid_dims=(board_size, board_size),
@@ -49,13 +51,14 @@ class GeneralsPufferEnvironment:
         self.pool, _ = self.env.reset(jax.random.PRNGKey(context.seed + context.index))
         self._init_state = jax.jit(self.env.init_state)
         self._observe = jax.jit(lambda state, side: _encode(game.get_observation(state, side)))
-        opponent = ExpanderAgent()
+        opponents = {"expander": ExpanderAgent, "hunter": HunterAgent, "random": RandomAgent}
+        opponent_agent = opponents[opponent]()
         env = self.env
 
         @jax.jit
         def advance(state, pool, side, index, key):
             opponent_key, next_key = jax.random.split(key)
-            enemy = opponent.act(game.get_observation(state, 1 - side), opponent_key)
+            enemy = opponent_agent.act(game.get_observation(state, 1 - side), opponent_key)
             ours = _decode(index, board_size)
             actions = jnp.where(side == 0, jnp.stack((ours, enemy)), jnp.stack((enemy, ours)))
             previous = game.get_observation(state, side)
