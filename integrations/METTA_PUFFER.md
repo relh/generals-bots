@@ -143,3 +143,11 @@ below 0.60. Stage this entire checkout under `source-recycle` in the GPU
 workspace before submitting it; the build, training, and evaluation JSON
 configs under `integrations/configs/` are required. The script checks those
 files before launching its GPU step.
+
+While a long run writes checkpoints on node-local storage, run
+[`archive_puffer_checkpoints.sh`](archive_puffer_checkpoints.sh) on the Slurm
+submit host with the running job ID, node-local run directory, and a durable
+destination directory. It polls every five minutes by default, uses GPU-bearing
+steps inside the existing allocation to copy new checkpoints, verifies each
+checkpoint's SHA-256 after transfer, and exits when the job stops. Pass `0` as
+the fourth argument for a single archive pass.
