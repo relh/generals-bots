@@ -16,24 +16,7 @@ from generals import GeneralsEnv
 from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.agents.harvester_agent import HarvesterAgent
 from generals.core import game
-from generals.core.action import compute_valid_move_mask_obs
-
-
-def _encode(obs):
-    planes = obs.as_tensor().astype(jnp.float32)
-    for channel in (0, 9, 10, 11, 12):
-        planes = planes.at[channel].set(jnp.log1p(jnp.maximum(planes[channel], 0)) / 8.0)
-    planes = planes.at[13].set(jnp.minimum(planes[13] / 1200.0, 2.0))
-    moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
-    mask = jnp.concatenate((moves, moves, jnp.ones((1,), dtype=bool)))
-    return planes.reshape(-1), mask
-
-
-def _decode(index, size):
-    cells = size * size
-    channel, position = index // cells, index % cells
-    move = jnp.array([0, position // size, position % size, channel % 4, channel // 4], dtype=jnp.int32)
-    return jnp.where(index == 8 * cells, jnp.array([1, 0, 0, 0, 0], dtype=jnp.int32), move)
+from integrations.puffer_codec import decode_action, encode_observation
 
 
 class GeneralsPufferEnvironment:
@@ -57,7 +40,7 @@ class GeneralsPufferEnvironment:
         self.spec = EnvironmentSpec(observation_size=14 * board_size * board_size, action_sizes=[8 * board_size**2 + 1])
         self.pool, _ = self.env.reset(jax.random.PRNGKey(context.seed + context.index))
         self._init_state = jax.jit(self.env.init_state)
-        self._observe = jax.jit(lambda state, side: _encode(game.get_observation(state, side)))
+        self._observe = jax.jit(lambda state, side: encode_observation(game.get_observation(state, side)))
         opponent_types = {
             "expander": ExpanderAgent,
             "hunter": HunterAgent,
@@ -77,7 +60,7 @@ class GeneralsPufferEnvironment:
             enemy = jax.lax.switch(
                 opponent_id, opponent_branches, (game.get_observation(state, 1 - side), opponent_key)
             )
-            ours = _decode(index, board_size)
+            ours = decode_action(index, board_size)
             actions = jnp.where(side == 0, jnp.stack((ours, enemy)), jnp.stack((enemy, ours)))
             previous = game.get_observation(state, side)
             timestep, next_state = env.step(state, actions, pool)
@@ -99,7 +82,7 @@ class GeneralsPufferEnvironment:
             reward = outcome + shaping_weight * (
                 0.99 * (0.5 * new_army + 0.3 * new_land) * ~done - (0.5 * old_army + 0.3 * old_land)
             )
-            values, mask = _encode(final)
+            values, mask = encode_observation(final)
             return next_state, next_key, values, mask, reward, done, outcome
 
         self._advance = advance

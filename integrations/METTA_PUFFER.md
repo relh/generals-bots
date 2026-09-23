@@ -45,3 +45,11 @@ observation and action dimensions remain the same, so a
 checkpoint can be evaluated against those opponents with a matching build
 manifest. Keep the original training source and build for the standard
 held-out Expander evaluation.
+
+`integrations.puffer_policy.NativePufferPolicy.from_run(run_directory)` loads a
+completed native checkpoint for one-game CPU inference. Call `reset()` before
+each game, then `act(observation, key, deterministic=True)` on each public
+observation. This loader supports the pinned Puffer revision and its default
+linear encoder, MinGRU network, and linear decoder; it rejects incompatible
+checkpoint dimensions. The native evaluator remains the source of held-out
+performance results.
