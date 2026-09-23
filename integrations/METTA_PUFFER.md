@@ -222,6 +222,9 @@ copy against the B300 source hash.
 Run `archive_puffer_pilot.sh <pilot-job-id> <durable-directory>` as well when
 the pilot may fail before the classic job starts. It refreshes a SHA-checked
 copy of the live GPU samples every two seconds inside the pilot allocation.
+The parallel evaluator also keeps a separate GPU CSV under each evaluation
+prefix, so the classic watcher preserves utilization for every validation
+checkpoint and the held-out pass.
 
 If the Harvester-supervised run misses the classic held-out target, use
 [`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)

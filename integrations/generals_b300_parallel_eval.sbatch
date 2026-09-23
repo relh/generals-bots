@@ -74,6 +74,10 @@ cleanup() {
     for container in "${containers[@]}"; do
         docker stop -t 2 "$container" >/dev/null 2>&1 || true
     done
+    gpu_samples="$workspace/parallel-eval-gpu-${SLURM_JOB_ID}.csv"
+    if [[ -s "$gpu_samples" ]]; then
+        cp "$gpu_samples" "$workspace/${EVAL_PREFIX}-gpu-${SLURM_JOB_ID}.csv"
+    fi
 }
 trap cleanup EXIT
 pids=()

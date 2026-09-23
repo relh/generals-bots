@@ -25,6 +25,7 @@ while true; do
         "${gpu_step[@]}" find "$workspace" -maxdepth 2 -type f \
             \( -name evaluation.json -o -name '*classic*-summary.json' -o -name '*classic*-proof.json' -o -name build.json \
                -o -name "parallel-eval-gpu-${pilot_job_id}.csv" \
+               -o -name 'gpu-batch-four-long-*-classic-*-gpu-*.csv' \
                -o -name "gpu-batch-four-long-${train_job_id}-validation-summary.json" \) \
             -print 2>/dev/null | sort
     )
@@ -32,6 +33,7 @@ while true; do
         relative=${file#"$workspace"/}
         case "$relative" in
             gpu-batch-four-long-*-classic-*/*|gpu-batch-four-long-*-classic-*-summary.json|gpu-batch-four-long-*-classic-proof.json|build-classic10-"$job_id"/build.json) ;;
+            gpu-batch-four-long-*-classic-*-gpu-*.csv) ;;
             parallel-eval-gpu-"$pilot_job_id".csv|gpu-batch-four-long-"$train_job_id"-validation-summary.json) ;;
             *) continue ;;
         esac
