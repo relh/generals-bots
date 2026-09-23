@@ -7,7 +7,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=96G
-#SBATCH --time=12:00:00
+#SBATCH --time=16:00:00
 #SBATCH --nice=100
 #SBATCH --chdir=/tmp
 #SBATCH --output=/tmp/relh-generals-gpu/recycle-%j.log
