@@ -76,17 +76,24 @@ def test_classic10_sentinel_teacher_targets_legal_actions():
         factorized_actions=True,
         classic_maps=True,
     )
+    saw_move = False
     for seed in ("901:0:0", "901:0:1", "901:0:2"):
         observation = env.reset(seed)
-        target = observation.teachers[0]
-        first, second = env.spec.action_sizes
-        assert target.weights[0] == 1.0
-        assert sum(target.probabilities[:first]) == 1.0
-        assert sum(target.probabilities[first : first + second]) in (0.0, 1.0)
-        assert all(
-            not probability or legal
-            for probability, legal in zip(target.probabilities, observation.action_masks[0])
-        )
+        for _ in range(16):
+            target = observation.teachers[0]
+            first, second = env.spec.action_sizes
+            assert target.weights[0] == 1.0
+            assert sum(target.probabilities[:first]) == 1.0
+            assert sum(target.probabilities[first : first + second]) in (0.0, 1.0)
+            assert all(
+                not probability or legal
+                for probability, legal in zip(target.probabilities, observation.action_masks[0])
+            )
+            action = int(np.argmax(target.probabilities[:first]))
+            split = int(np.argmax(target.probabilities[first:]))
+            saw_move |= action != first - 1
+            observation = env.step([[action, split]]).observation
+    assert saw_move
     env.close()
 
 
