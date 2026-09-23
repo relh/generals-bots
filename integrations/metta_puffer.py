@@ -195,6 +195,7 @@ class BatchedGeneralsPufferEnvironment:
         self.turn = 0
         self.finished = np.zeros(parallel_games, dtype=bool)
         self.outcomes = np.zeros(parallel_games, dtype=np.float32)
+        self.completed = np.zeros(parallel_games, dtype=np.int32)
         self._init_states = jax.jit(jax.vmap(self.base._init_state))
         self._observe_states = jax.jit(jax.vmap(self.base._observe))
         if self.base.supervise_teacher:
@@ -202,7 +203,20 @@ class BatchedGeneralsPufferEnvironment:
 
         def advance_one(state, pool, side, opponent_id, index, split, key, alive):
             def active(_):
-                return self.base._advance(state, pool, side, opponent_id, index, split, key)
+                next_state, next_key, values, mask, reward, done, outcome = self.base._advance(
+                    state, pool, side, opponent_id, index, split, key
+                )
+                if self.base.training:
+                    def recycle(_):
+                        reset_key, following_key = jax.random.split(next_key)
+                        reset_state = self.base._init_state(reset_key)
+                        reset_values, reset_mask = self.base._observe(reset_state, side)
+                        return reset_state, following_key, reset_values, reset_mask
+
+                    next_state, next_key, values, mask = jax.lax.cond(
+                        done, recycle, lambda _: (next_state, next_key, values, mask), operand=None
+                    )
+                return next_state, next_key, values, mask, reward, done, outcome
 
             def inactive(_):
                 values, mask = self.base._observe(state, side)
@@ -256,6 +270,7 @@ class BatchedGeneralsPufferEnvironment:
         self.turn = 0
         self.finished[:] = False
         self.outcomes[:] = 0
+        self.completed[:] = 0
         indices = np.arange(self.parallel_games, dtype=np.int64)
         self.sides = jnp.asarray((numeric_seed + indices) % 2, dtype=jnp.int32)
         self.opponent_ids = jnp.asarray((numeric_seed + indices) % self.base.num_opponents, dtype=jnp.int32)
@@ -284,11 +299,18 @@ class BatchedGeneralsPufferEnvironment:
             jnp.asarray(~was_finished),
         )
         newly_finished = np.asarray(done, dtype=bool)
-        self.finished |= newly_finished
+        if self.base.training:
+            self.completed += newly_finished
+        else:
+            self.finished |= newly_finished
         self.outcomes += np.asarray(outcomes, dtype=np.float32)
         self.turn += 1
-        episode_done = self.turn >= self.horizon or bool(self.finished.all())
-        score = float(self.outcomes.mean()) if episode_done else 0.0
+        episode_done = self.turn >= self.horizon or (not self.base.training and bool(self.finished.all()))
+        if episode_done and self.base.training:
+            games = int(self.completed.sum() + np.count_nonzero(~newly_finished))
+            score = float(self.outcomes.sum() / games)
+        else:
+            score = float(self.outcomes.mean()) if episode_done else 0.0
         return NumericTransition(
             observation=self._observation(values, masks),
             rewards=np.asarray(rewards).tolist(),
