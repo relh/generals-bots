@@ -18,6 +18,9 @@ source_root="$workspace/source-recycle"
 evaluation="$workspace/gpu-batch-30m-evaluation/evaluation.json"
 test -f "$evaluation"
 test -f "$source_root/integrations/metta_puffer.py"
+test -s "$source_root/integrations/configs/gpu-batch-build.json"
+test -s "$source_root/integrations/configs/gpu-batch-30m.json"
+test -s "$source_root/integrations/configs/gpu-batch-eval.json"
 test -f "$workspace/runtime/jax/__init__.py"
 
 # The dependency on the original held-out evaluation is set at submission.
