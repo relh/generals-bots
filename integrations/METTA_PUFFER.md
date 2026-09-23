@@ -219,6 +219,9 @@ Run `archive_puffer_evaluations.sh <classic-job-id> <durable-directory>
 the classic job is pending. It preserves the pilot's GPU utilization CSV and
 validation summary alongside the classic raw results and proof, checking each
 copy against the B300 source hash.
+Run `archive_puffer_pilot.sh <pilot-job-id> <durable-directory>` as well when
+the pilot may fail before the classic job starts. It refreshes a SHA-checked
+copy of the live GPU samples every two seconds inside the pilot allocation.
 
 If the Harvester-supervised run misses the classic held-out target, use
 [`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)
