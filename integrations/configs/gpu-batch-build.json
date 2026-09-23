@@ -1,0 +1,72 @@
+{
+  "environment": "metta_generals",
+  "python_environment": {
+    "factory": "integrations.metta_puffer:BatchedGeneralsPufferEnvironment",
+    "options": {
+      "board_size": 10,
+      "horizon": 300,
+      "opponent": "mixed",
+      "shaping_weight": 1.0,
+      "teacher": "harvester",
+      "supervise_teacher": true,
+      "factorized_actions": true,
+      "parallel_games": 16
+    },
+    "spec": {
+      "observation_size": 1400,
+      "action_sizes": [
+        401,
+        2
+      ],
+      "teacher": true,
+      "agents": 16
+    },
+    "source_modules": [
+      "generals",
+      "integrations.puffer_codec"
+    ]
+  },
+  "fabric": {
+    "observation_size": 1400,
+    "action_sizes": [
+      401,
+      2
+    ],
+    "factory": "metta_training.fabric:spatial_policy",
+    "options": {
+      "channels": 14,
+      "height": 10,
+      "width": 10,
+      "features_per_site": 8
+    },
+    "platform": "cuda",
+    "teacher": {
+      "phases": [
+        {
+          "agent_steps": 0,
+          "ppo_coefficient": 0.0,
+          "coefficient": 1.0,
+          "action_mix": 1.0
+        },
+        {
+          "agent_steps": 4194304,
+          "ppo_coefficient": 0.0,
+          "coefficient": 1.0,
+          "action_mix": 1.0
+        },
+        {
+          "agent_steps": 12582912,
+          "ppo_coefficient": 0.05,
+          "coefficient": 1.0,
+          "action_mix": 0.5
+        },
+        {
+          "agent_steps": 23068672,
+          "ppo_coefficient": 0.1,
+          "coefficient": 1.0,
+          "action_mix": 0.0
+        }
+      ]
+    }
+  }
+}
