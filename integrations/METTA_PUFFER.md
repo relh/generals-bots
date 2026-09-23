@@ -46,6 +46,12 @@ checkpoint can be evaluated against those opponents with a matching build
 manifest. Keep the original training source and build for the standard
 held-out Expander evaluation.
 
+For a curriculum run, `options.teacher` can name a scripted agent and
+`options.imitation_weight` can reward matching its non-pass action. This is
+disabled by default and does not alter the public observation or action
+contract. Keep the held-out win/performance metric separate from this training
+reward.
+
 `integrations.puffer_policy.NativePufferPolicy.from_run(run_directory)` loads a
 completed native checkpoint for one-game CPU inference. Call `reset()` before
 each game, then `act(observation, key, deterministic=True)` on each public

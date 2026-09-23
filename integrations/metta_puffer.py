@@ -28,7 +28,11 @@ class GeneralsPufferEnvironment:
         horizon: int = 300,
         opponent: str = "expander",
         shaping_weight: float = 0.2,
+        teacher: str | None = None,
+        imitation_weight: float = 0.0,
     ):
+        if imitation_weight < 0 or (imitation_weight and teacher is None):
+            raise ValueError("Positive imitation weight requires a teacher")
         self.size = board_size
         self.env = GeneralsEnv(
             grid_dims=(board_size, board_size),
@@ -47,6 +51,7 @@ class GeneralsPufferEnvironment:
             "random": RandomAgent,
             "harvester": HarvesterAgent,
         }
+        teacher_agent = opponent_types[teacher]() if teacher is not None else None
         opponent_agents = (
             (RandomAgent(), ExpanderAgent(), HunterAgent()) if opponent == "mixed" else (opponent_types[opponent](),)
         )
@@ -82,6 +87,9 @@ class GeneralsPufferEnvironment:
             reward = outcome + shaping_weight * (
                 0.99 * (0.5 * new_army + 0.3 * new_land) * ~done - (0.5 * old_army + 0.3 * old_land)
             )
+            if teacher_agent is not None:
+                suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
+                reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
             values, mask = encode_observation(final)
             return next_state, next_key, values, mask, reward, done, outcome
 

@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import jax
 import numpy as np
 import pytest
 
@@ -9,6 +10,8 @@ pytest.importorskip("metta_training")
 
 from metta_training.environment import EnvironmentContext
 
+from generals.agents import ExpanderAgent
+from generals.core import game
 from integrations.metta_puffer import GeneralsPufferEnvironment
 
 
@@ -42,3 +45,39 @@ def test_other_opponents_keep_the_numeric_contract(opponent):
     assert len(transition.observation.action_masks[0]) == env.spec.action_sizes[0]
     assert np.isfinite(transition.rewards).all()
     env.close()
+
+
+def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    coached = GeneralsPufferEnvironment(
+        context=context,
+        board_size=6,
+        horizon=30,
+        opponent="random",
+        shaping_weight=0,
+        teacher="expander",
+        imitation_weight=0.4,
+    )
+    baseline = GeneralsPufferEnvironment(context=context, board_size=6, horizon=30, opponent="random", shaping_weight=0)
+    coached.reset("73:0:0")
+    baseline.reset("73:0:0")
+    pass_index = coached.spec.action_sizes[0] - 1
+    teacher = ExpanderAgent()
+    for _ in range(20):
+        observation = game.get_observation(coached.state, coached.side)
+        opponent_key, _ = jax.random.split(coached.key)
+        suggestion = np.asarray(teacher.act(observation, jax.random.fold_in(opponent_key, 37)))
+        if suggestion[0] == 0:
+            break
+        assert not coached.step([[pass_index]]).episode_done
+        assert not baseline.step([[pass_index]]).episode_done
+    else:
+        pytest.fail("Teacher never suggested a move")
+    board_cells = coached.size**2
+    action_index = int(
+        suggestion[4] * 4 * board_cells + suggestion[3] * board_cells + suggestion[1] * coached.size + suggestion[2]
+    )
+    rewarded = coached.step([[action_index]])
+    unshaped = baseline.step([[action_index]])
+    assert rewarded.rewards[0] - unshaped.rewards[0] == pytest.approx(0.4)
+    assert rewarded.score == unshaped.score
