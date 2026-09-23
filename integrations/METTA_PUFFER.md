@@ -161,3 +161,26 @@ checkout under `source-wide` on the B300 node together with the tested
 `--dependency=afterok:<recycling-job-id> --export=ALL`. The job reads the
 recycling run's five-seed evaluation and starts training only if its mean
 performance is below 0.60. Both the job and its training step request one GPU.
+
+For the capacity-tested wider run, stage the 16-game wider build and
+`gpu-batch-30m.json` as `build-gpu-wide16x16-6021` and
+`gpu-batch-four-long-base.json` under `/tmp/relh-generals-gpu` on B300. Submit
+[`generals_b300_four_trainers.sbatch`](generals_b300_four_trainers.sbatch) from
+the mettabox. It starts four independent 31,457,280-step Puffer trainers on
+one GPU. The bounded pilot completed 65,536 steps for each trainer while the
+GPU stayed near 90–96% utilization in a steady four-trainer window. Launch
+[`archive_four_puffer_trainers.sh`](archive_four_puffer_trainers.sh) on the
+mettabox with the Slurm job ID and a durable archive directory; it checks the
+hash of each copied checkpoint. The training allocation waits 150 seconds
+after all four runs complete so the archiver can copy final checkpoints.
+
+After training, use [`generals_b300_parallel_eval.sbatch`](generals_b300_parallel_eval.sbatch)
+with `EVAL_RUN_JOB_ID=<training-job-id>`, `EVAL_INDEXES=0,1,2,3`,
+`EVAL_SEEDS=901,902,903,904,905`, and `EVAL_EPISODES=8` for validation.
+Select one policy using its validation summary, then rerun with that single
+index, `EVAL_SEEDS=1001,1002,1003,1004,1005`, and `EVAL_EPISODES=16` for
+held-out performance. Set a distinct `EVAL_PREFIX` for each evaluation. The
+launcher evaluates up to four seeds or policies concurrently on one GPU and
+writes a summary weighted by the number of completed games. It needs the
+node-local training runs and matching build; restore them from the mettabox
+archives if the B300 workspace has been recycled.
