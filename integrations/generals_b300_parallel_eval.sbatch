@@ -18,6 +18,7 @@ export EVAL_INDEXES=${EVAL_INDEXES:-0,1,2,3}
 export EVAL_SEEDS=${EVAL_SEEDS:-901,902,903,904,905}
 export EVAL_EPISODES=${EVAL_EPISODES:-8}
 export EVAL_PARALLELISM=${EVAL_PARALLELISM:-4}
+export EVAL_CHECKPOINT_STEP=${EVAL_CHECKPOINT_STEP:-0}
 export EVAL_PREFIX=${EVAL_PREFIX:-gpu-batch-four-long-${EVAL_RUN_JOB_ID}-validation}
 export EVAL_BUILD_NAME=${EVAL_BUILD_NAME:-build-gpu-wide16x16-6021}
 export EVAL_SOURCE_NAME=${EVAL_SOURCE_NAME:-source-gpu}
@@ -31,6 +32,7 @@ workspace=/tmp/relh-generals-gpu
 IFS=, read -ra indexes <<< "$EVAL_INDEXES"
 IFS=, read -ra seeds <<< "$EVAL_SEEDS"
 [[ "$EVAL_EPISODES" =~ ^[0-9]+$ && "$EVAL_EPISODES" -gt 0 ]]
+[[ "$EVAL_CHECKPOINT_STEP" =~ ^[0-9]+$ ]]
 [[ "$EVAL_PARALLELISM" =~ ^[0-9]+$ && "$EVAL_PARALLELISM" -ge 1 && "$EVAL_PARALLELISM" -le 16 ]]
 (( 64 % EVAL_PARALLELISM == 0 ))
 cpus_per_eval=$((64 / EVAL_PARALLELISM))
@@ -38,6 +40,10 @@ cpus_per_eval=$((64 / EVAL_PARALLELISM))
 for index in "${indexes[@]}"; do
     [[ "$index" =~ ^[0-3]$ ]]
     test -f "$workspace/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}/completed.json"
+    if (( EVAL_CHECKPOINT_STEP > 0 )); then
+        printf -v checkpoint_file '%016d.bin' "$EVAL_CHECKPOINT_STEP"
+        test -s "$workspace/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}/checkpoints/metta_generals/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}/$checkpoint_file"
+    fi
 done
 for seed in "${seeds[@]}"; do
     [[ "$seed" =~ ^[0-9]+$ ]]
@@ -75,6 +81,11 @@ for seed in "${seeds[@]}"; do
     for index in "${indexes[@]}"; do
         name="relh-generals-parallel-eval-${SLURM_JOB_ID}-${index}-${seed}"
         containers+=("$name")
+        checkpoint_args=()
+        if (( EVAL_CHECKPOINT_STEP > 0 )); then
+            printf -v checkpoint_file '%016d.bin' "$EVAL_CHECKPOINT_STEP"
+            checkpoint_args=("/work/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}/checkpoints/metta_generals/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}/$checkpoint_file")
+        fi
         (
             timeout -k 15s 15m docker run --rm --name "$name" \
                 --gpus "device=${SLURM_STEP_GPUS}" --cpus="$cpus_per_eval" \
@@ -86,6 +97,7 @@ for seed in "${seeds[@]}"; do
                 "/work/${EVAL_BUILD_NAME}" \
                 "/work/${EVAL_PREFIX}-policy${index}-seed${seed}" \
                 "/work/eval-parallel-${SLURM_JOB_ID}-seed${seed}.json" \
+                "${checkpoint_args[@]}" \
                 > "$workspace/${EVAL_PREFIX}-policy${index}-seed${seed}.log" 2>&1
         ) &
         pids+=("$!")
@@ -98,6 +110,7 @@ done
 for pid in "${pids[@]}"; do wait "$pid"; done
 python3 - <<'PY'
 import json
+import hashlib
 import os
 from pathlib import Path
 
@@ -107,6 +120,7 @@ seeds = [int(value) for value in os.environ["EVAL_SEEDS"].split(",")]
 episodes = int(os.environ["EVAL_EPISODES"])
 prefix = os.environ["EVAL_PREFIX"]
 summary = {"training_job_id": int(os.environ["EVAL_RUN_JOB_ID"]), "seeds": seeds, "policies": {}}
+checkpoint_step = int(os.environ["EVAL_CHECKPOINT_STEP"])
 for index in indexes:
     results = []
     hashes = set()
@@ -121,10 +135,20 @@ for index in indexes:
         hashes.add(evaluation["checkpoint_sha256"])
         results.append(result)
     assert len(hashes) == 1
+    run = workspace / f"gpu-batch-four-long-{os.environ['EVAL_RUN_JOB_ID']}-{index}"
+    checkpoint_relative = (
+        f"checkpoints/metta_generals/{run.name}/{checkpoint_step:016d}.bin"
+        if checkpoint_step
+        else json.loads((run / "completed.json").read_text())["final_checkpoint"]
+    )
+    checkpoint_hash = hashes.pop()
+    assert hashlib.sha256((run / checkpoint_relative).read_bytes()).hexdigest() == checkpoint_hash
     games = sum(result["games"] for result in results)
     perf = sum(result["perf"] * result["games"] for result in results) / games
     summary["policies"][str(index)] = {
-        "checkpoint_sha256": hashes.pop(),
+        "checkpoint_sha256": checkpoint_hash,
+        "checkpoint_step": checkpoint_step or None,
+        "checkpoint_relative_path": checkpoint_relative,
         "games": games,
         "perf": perf,
         "results": results,

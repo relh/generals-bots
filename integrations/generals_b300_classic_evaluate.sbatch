@@ -77,19 +77,39 @@ export EVAL_PARALLELISM=8
 export EVAL_INDEXES=0,1,2,3
 export EVAL_SEEDS=901,902,903,904,905
 export EVAL_EPISODES=8
-export EVAL_PREFIX="gpu-batch-four-long-${train_job_id}-classic-validation"
-bash "$source_root/integrations/generals_b300_parallel_eval.sbatch"
+for checkpoint in 20480000 25600000 final; do
+    case "$checkpoint" in
+        20480000) label=20; export EVAL_CHECKPOINT_STEP="$checkpoint" ;;
+        25600000) label=25; export EVAL_CHECKPOINT_STEP="$checkpoint" ;;
+        final) label=final; export EVAL_CHECKPOINT_STEP=0 ;;
+    esac
+    export EVAL_PREFIX="gpu-batch-four-long-${train_job_id}-classic-v${label}"
+    bash "$source_root/integrations/generals_b300_parallel_eval.sbatch"
+done
 
-selected=$(python3 - "$workspace/${EVAL_PREFIX}-summary.json" <<'PY'
+selection=$(python3 - "$workspace" "$train_job_id" <<'PY'
 import json
 import sys
+from pathlib import Path
 
-summary = json.load(open(sys.argv[1]))
-print(max(summary["policies"], key=lambda index: summary["policies"][index]["perf"]))
+workspace, job_id = Path(sys.argv[1]), sys.argv[2]
+candidates = []
+for label in ("20", "25", "final"):
+    path = workspace / f"gpu-batch-four-long-{job_id}-classic-v{label}-summary.json"
+    summary = json.loads(path.read_text())
+    assert summary["seeds"] == [901, 902, 903, 904, 905]
+    assert set(summary["policies"]) == {"0", "1", "2", "3"}
+    for index, policy in summary["policies"].items():
+        assert policy["games"] >= 40
+        candidates.append((policy["perf"], index, policy["checkpoint_step"] or 0))
+_, index, step = max(candidates, key=lambda item: (item[0], -int(item[1]), item[2]))
+print(index, step)
 PY
 )
-echo "Selected policy $selected from classic validation" 
+read -r selected checkpoint_step <<< "$selection"
+echo "Selected policy $selected at step ${checkpoint_step:-final} from classic validation"
 export EVAL_INDEXES="$selected"
+export EVAL_CHECKPOINT_STEP="$checkpoint_step"
 export EVAL_SEEDS=1001,1002,1003,1004,1005
 export EVAL_EPISODES=16
 export EVAL_PREFIX="gpu-batch-four-long-${train_job_id}-classic-heldout"

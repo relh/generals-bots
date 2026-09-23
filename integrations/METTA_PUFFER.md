@@ -180,7 +180,9 @@ with `EVAL_RUN_JOB_ID=<training-job-id>`, `EVAL_INDEXES=0,1,2,3`,
 Select one policy using its validation summary, then rerun with that single
 index, `EVAL_SEEDS=1001,1002,1003,1004,1005`, and `EVAL_EPISODES=16` for
 held-out performance. Set a distinct `EVAL_PREFIX` for each evaluation. The
-launcher evaluates four seeds or policies concurrently on one GPU by default.
+optional `EVAL_CHECKPOINT_STEP` selects a numbered checkpoint instead of the
+run's final checkpoint. The launcher evaluates four seeds or policies
+concurrently on one GPU by default.
 Set `EVAL_PARALLELISM=8` to fill the 64 CPU allocation with eight concurrent
 evaluators; each then receives eight CPUs. The launcher
 writes a summary weighted by the number of completed games. It needs the
@@ -198,6 +200,9 @@ and `EVAL_ALLOW_TRANSFER=true` to the parallel evaluator. Metta checks the
 training and evaluation model identities and records the source build in each
 result. Keep validation seeds 901–905 separate from the final held-out seeds
 1001–1005.
+The classic launcher validates each of the four policies at 20.48M, 25.6M,
+and final 31.46M steps, then tests the best validation checkpoint on the
+held-out seeds. Every candidate therefore has at least 20M training steps.
 
 If the Harvester-supervised run misses the classic held-out target, use
 [`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)

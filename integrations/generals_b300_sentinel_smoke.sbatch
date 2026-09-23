@@ -66,7 +66,8 @@ train_job_id, job_id = sys.argv[2:]
 summary = json.loads((workspace / f"gpu-batch-four-long-{train_job_id}-classic-heldout-summary.json").read_text())
 selected, policy = next(iter(summary["policies"].items()))
 run = workspace / f"gpu-batch-four-long-{train_job_id}-{selected}"
-checkpoint = run / json.loads((run / "completed.json").read_text())["final_checkpoint"]
+checkpoint = run / policy["checkpoint_relative_path"]
+assert checkpoint.is_relative_to(run / "checkpoints")
 assert hashlib.sha256(checkpoint.read_bytes()).hexdigest() == policy["checkpoint_sha256"]
 source_build = json.loads((run / "run.json").read_text())["build"]
 target_build = json.loads((workspace / f"build-sentinel-transfer-{job_id}" / "build.json").read_text())
