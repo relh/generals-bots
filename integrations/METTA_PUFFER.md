@@ -20,7 +20,7 @@ Build configuration:
     "factory": "integrations.metta_puffer:GeneralsPufferEnvironment",
     "options": {"board_size": 10, "horizon": 300},
     "spec": {"observation_size": 1400, "action_sizes": [801]},
-    "source_modules": ["generals"]
+    "source_modules": ["generals", "integrations.puffer_codec"]
   }
 }
 ```
