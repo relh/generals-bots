@@ -58,6 +58,7 @@ class NativePufferPolicy:
             for i in range(num_layers)
         ]
         self.state = np.zeros((num_layers, hidden_size), dtype=np.float32)
+        self._encode = jax.jit(encode_observation)
 
     @classmethod
     def from_run(cls, run: Path, checkpoint: Path | None = None) -> "NativePufferPolicy":
@@ -96,7 +97,7 @@ class NativePufferPolicy:
         self.state.fill(0)
 
     def predict(self, observation) -> tuple[np.ndarray, float]:
-        values, mask = encode_observation(observation)
+        values, mask = self._encode(observation)
         vector = np.asarray(values, dtype=np.float32)
         legal = np.asarray(mask, dtype=bool)
         if vector.shape != (self.encoder.shape[1],) or legal.shape != (self.action_size,):
