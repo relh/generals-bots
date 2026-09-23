@@ -19,13 +19,13 @@ while true; do
 
     mapfile -t files < <(
         "${gpu_step[@]}" find "$workspace" -maxdepth 2 -type f \
-            \( -name evaluation.json -o -name '*classic*-summary.json' -o -name build.json \) \
+            \( -name evaluation.json -o -name '*classic*-summary.json' -o -name '*classic*-proof.json' -o -name build.json \) \
             -print 2>/dev/null | sort
     )
     for file in "${files[@]}"; do
         relative=${file#"$workspace"/}
         case "$relative" in
-            gpu-batch-four-long-*-classic-*/*|gpu-batch-four-long-*-classic-*-summary.json|build-classic10-"$job_id"/build.json) ;;
+            gpu-batch-four-long-*-classic-*/*|gpu-batch-four-long-*-classic-*-summary.json|gpu-batch-four-long-*-classic-proof.json|build-classic10-"$job_id"/build.json) ;;
             *) continue ;;
         esac
         destination="$archive_directory/${relative//\//__}"

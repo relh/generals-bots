@@ -127,3 +127,14 @@ assert policy["games"] >= 80
 print(f"Classic held-out policy {selected}: {policy['perf']:.6f} "
       f"across {policy['games']} games; target >= 0.60", flush=True)
 PY
+
+proof="$workspace/gpu-batch-four-long-${train_job_id}-classic-proof.json"
+if python3 "$workspace/verify_classic_heldout.py" "$workspace" "$train_job_id" --output "$proof"; then
+    echo "Independent classic held-out audit passed."
+else
+    status=$?
+    [[ "$status" == 3 ]] || exit "$status"
+    echo "Independent audit confirmed a score below 0.60; Sentinel smoke may run."
+fi
+# Allow the mettabox watcher to copy the proof before this allocation exits.
+sleep 15

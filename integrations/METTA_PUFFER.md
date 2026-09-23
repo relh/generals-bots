@@ -207,7 +207,9 @@ Run `python integrations/verify_classic_heldout.py /tmp/relh-generals-gpu
 <training-job-id>` against the retained workspace before reporting success.
 The verifier recomputes the selection and held-out score from raw per-seed
 results and checks the checkpoint hash, training record, map options, and
-opponent mix.
+opponent mix. The classic Slurm launcher also runs this audit and writes a
+proof JSON before it exits. A valid score below 0.60 permits the bounded
+Sentinel smoke; invalid evidence stops the dependency chain.
 
 If the Harvester-supervised run misses the classic held-out target, use
 [`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)
