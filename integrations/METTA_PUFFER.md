@@ -136,3 +136,10 @@ The job and its `srun` step both request a GPU. Its environment adapter checks
 that JAX placed game state on CUDA. Use `evaluation.json` from the output
 directory for model-only held-out performance; training `perf` includes mixed
 teacher actions.
+
+The recycling fallback script reads the first run's full `evaluation.json` and
+starts a second 31,457,280-step GPU run only when mean held-out performance is
+below 0.60. Stage this entire checkout under `source-recycle` in the GPU
+workspace before submitting it; the build, training, and evaluation JSON
+configs under `integrations/configs/` are required. The script checks those
+files before launching its GPU step.
