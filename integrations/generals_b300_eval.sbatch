@@ -14,13 +14,21 @@
 set -euo pipefail
 
 workspace=/tmp/relh-generals-gpu
-run_name=${RUN_NAME:-gpu-batch-pilot-v3}
-test -f "$workspace/$run_name/completed.json"
+export RUN_NAME=${RUN_NAME:-gpu-batch-pilot-v3}
+export CHECKPOINT_PATH=${CHECKPOINT_PATH:-}
+export OUTPUT_NAME=${OUTPUT_NAME:-$RUN_NAME-evaluation}
+export EVAL_CONFIG=${EVAL_CONFIG:-gpu-batch-eval.json}
+test -f "$workspace/$RUN_NAME/run.json"
+if [[ -z "$CHECKPOINT_PATH" ]]; then
+    test -f "$workspace/$RUN_NAME/completed.json"
+else
+    [[ "$CHECKPOINT_PATH" == /work/* ]]
+    test -s "$workspace/${CHECKPOINT_PATH#/work/}"
+fi
 
 srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 --cpu-bind=cores bash -lc '
     set -euo pipefail
     workspace=/tmp/relh-generals-gpu
-    run_name=${RUN_NAME:-gpu-batch-pilot-v3}
     docker run --rm --gpus "device=${SLURM_STEP_GPUS}" \
         --user "$(id -u):$(id -g)" \
         -v "$workspace:/work" -w /work \
@@ -28,8 +36,9 @@ srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 --cpu-bind=cores bash -
         -e PYTHONPATH=/work/runtime:/work/source-gpu \
         relh-generals-b300:20260923b \
         bash /work/source-gpu/integrations/eval_puffer_gpu.sh \
-        "/work/$run_name" \
+        "/work/$RUN_NAME" \
         /work/build-gpu-batch-v5 \
-        "/work/$run_name-evaluation" \
-        /work/gpu-batch-eval.json
+        "/work/$OUTPUT_NAME" \
+        "/work/$EVAL_CONFIG" \
+        "$CHECKPOINT_PATH"
 '
