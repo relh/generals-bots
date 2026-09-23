@@ -184,3 +184,15 @@ launcher evaluates up to four seeds or policies concurrently on one GPU and
 writes a summary weighted by the number of completed games. It needs the
 node-local training runs and matching build; restore them from the mettabox
 archives if the B300 workspace has been recycled.
+
+For the named classic map distribution, build
+[`gpu-batch-classic10-build.json`](configs/gpu-batch-classic10-build.json)
+from a separate `source-classic10` checkout. It keeps the same 10×10 policy
+dimensions and mixed scripted opponents, but uses the classic scenario's
+minimum general distance (8), castle values (20–40), and 800-turn limit.
+Do not overwrite the source tree pinned by an active training run. Pass
+`EVAL_BUILD_NAME=<classic-build-directory>`, `EVAL_SOURCE_NAME=source-classic10`,
+and `EVAL_ALLOW_TRANSFER=true` to the parallel evaluator. Metta checks the
+training and evaluation model identities and records the source build in each
+result. Keep validation seeds 901–905 separate from the final held-out seeds
+1001–1005.

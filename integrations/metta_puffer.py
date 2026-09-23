@@ -38,6 +38,7 @@ class GeneralsPufferEnvironment:
         imitation_weight: float = 0.0,
         supervise_teacher: bool = False,
         factorized_actions: bool = False,
+        classic_maps: bool = False,
     ):
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
@@ -45,12 +46,16 @@ class GeneralsPufferEnvironment:
         self.supervise_teacher = supervise_teacher
         self.factorized_actions = factorized_actions
         self.training = context.mode == "train"
+        map_options = (
+            {"min_generals_distance": board_size - 2, "castle_val_range": (20, 41)} if classic_maps else {}
+        )
         self.env = GeneralsEnv(
             grid_dims=(board_size, board_size),
             truncation=horizon,
             pool_size=8,
             mountain_density_range=(0.18, 0.26),
             num_castles_range=(2, 5),
+            **map_options,
         )
         self.spec = EnvironmentSpec(
             observation_size=14 * board_size * board_size,

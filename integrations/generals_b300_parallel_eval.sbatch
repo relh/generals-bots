@@ -18,7 +18,11 @@ export EVAL_INDEXES=${EVAL_INDEXES:-0,1,2,3}
 export EVAL_SEEDS=${EVAL_SEEDS:-901,902,903,904,905}
 export EVAL_EPISODES=${EVAL_EPISODES:-8}
 export EVAL_PREFIX=${EVAL_PREFIX:-gpu-batch-four-long-${EVAL_RUN_JOB_ID}-validation}
-test -f /tmp/relh-generals-gpu/build-gpu-wide16x16-6021/build.json
+export EVAL_BUILD_NAME=${EVAL_BUILD_NAME:-build-gpu-wide16x16-6021}
+export EVAL_SOURCE_NAME=${EVAL_SOURCE_NAME:-source-gpu}
+export EVAL_ALLOW_TRANSFER=${EVAL_ALLOW_TRANSFER:-false}
+test -f "/tmp/relh-generals-gpu/$EVAL_BUILD_NAME/build.json"
+test -f "/tmp/relh-generals-gpu/$EVAL_SOURCE_NAME/integrations/eval_puffer_gpu.sh"
 
 srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=64 --cpu-bind=cores bash -s <<'RUN'
 set -euo pipefail
@@ -26,13 +30,14 @@ workspace=/tmp/relh-generals-gpu
 IFS=, read -ra indexes <<< "$EVAL_INDEXES"
 IFS=, read -ra seeds <<< "$EVAL_SEEDS"
 [[ "$EVAL_EPISODES" =~ ^[0-9]+$ && "$EVAL_EPISODES" -gt 0 ]]
+[[ "$EVAL_ALLOW_TRANSFER" == true || "$EVAL_ALLOW_TRANSFER" == false ]]
 for index in "${indexes[@]}"; do
     [[ "$index" =~ ^[0-3]$ ]]
     test -f "$workspace/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}/completed.json"
 done
 for seed in "${seeds[@]}"; do
     [[ "$seed" =~ ^[0-9]+$ ]]
-    python3 - "$workspace/eval-parallel-${SLURM_JOB_ID}-seed${seed}.json" "$seed" "$EVAL_EPISODES" <<'PY'
+    python3 - "$workspace/eval-parallel-${SLURM_JOB_ID}-seed${seed}.json" "$seed" "$EVAL_EPISODES" "$EVAL_ALLOW_TRANSFER" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -41,6 +46,7 @@ Path(sys.argv[1]).write_text(json.dumps({
     "seeds": [int(sys.argv[2])],
     "episodes_per_seed": int(sys.argv[3]),
     "timeout_seconds": 600,
+    "allow_environment_transfer": sys.argv[4] == "true",
 }))
 PY
 done
@@ -69,11 +75,11 @@ for seed in "${seeds[@]}"; do
             timeout -k 15s 15m docker run --rm --name "$name" \
                 --gpus "device=${SLURM_STEP_GPUS}" --cpus=8 \
                 --user "$(id -u):$(id -g)" -v "$workspace:/work" -w /work \
-                -e HOME=/work -e PYTHONPATH=/work/runtime:/work/source-gpu \
+                -e HOME=/work -e "PYTHONPATH=/work/runtime:/work/${EVAL_SOURCE_NAME}" \
                 relh-generals-b300:20260923b \
-                bash /work/source-gpu/integrations/eval_puffer_gpu.sh \
+                bash "/work/${EVAL_SOURCE_NAME}/integrations/eval_puffer_gpu.sh" \
                 "/work/gpu-batch-four-long-${EVAL_RUN_JOB_ID}-${index}" \
-                /work/build-gpu-wide16x16-6021 \
+                "/work/${EVAL_BUILD_NAME}" \
                 "/work/${EVAL_PREFIX}-policy${index}-seed${seed}" \
                 "/work/eval-parallel-${SLURM_JOB_ID}-seed${seed}.json" \
                 > "$workspace/${EVAL_PREFIX}-policy${index}-seed${seed}.log" 2>&1

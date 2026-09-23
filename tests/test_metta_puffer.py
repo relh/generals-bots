@@ -48,6 +48,22 @@ def test_other_opponents_keep_the_numeric_contract(opponent):
     env.close()
 
 
+def test_classic10_evaluation_maps_match_classic_scenario_parameters():
+    context = EnvironmentContext(seed=901, index=0, mode="evaluate", output=Path("/tmp"))
+    env = GeneralsPufferEnvironment(
+        context=context, board_size=10, horizon=800, opponent="mixed", classic_maps=True
+    )
+    assert env.env._fixed_dims == (10, 10)
+    assert env.env.num_players == 2
+    assert env.env.truncation == 800
+    assert env.env.min_generals_distance == 8
+    assert env.env.mountain_density_range == (0.18, 0.26)
+    assert env.env.num_castles_range == (2, 5)
+    assert env.env.castle_val_range == (20, 41)
+    assert env.num_opponents == 3
+    env.close()
+
+
 def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     coached = GeneralsPufferEnvironment(
