@@ -38,8 +38,8 @@ the shaping reward's discount. Keep training and held-out evaluation seeds
 distinct. An evaluation reports win as performance 1, draw as 0.5, and loss
 as 0.
 
-For a separate opponent evaluation build, set `options.opponent` to `hunter`
-or `random`. Set it to `mixed` to choose Random, Expander, or Hunter per episode.
+For a separate opponent evaluation build, set `options.opponent` to `hunter`,
+`harvester`, or `random`. Set it to `mixed` to choose Random, Expander, or Hunter per episode.
 `options.shaping_weight` sets the potential reward scale (default 0.2). The
 observation and action dimensions remain the same, so a
 checkpoint can be evaluated against those opponents with a matching build

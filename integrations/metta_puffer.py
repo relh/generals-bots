@@ -14,6 +14,7 @@ from metta_training.environment import EnvironmentContext, EnvironmentSpec, Nume
 
 from generals import GeneralsEnv
 from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
+from generals.agents.harvester_agent import HarvesterAgent
 from generals.core import game
 from generals.core.action import compute_valid_move_mask_obs
 
@@ -57,7 +58,12 @@ class GeneralsPufferEnvironment:
         self.pool, _ = self.env.reset(jax.random.PRNGKey(context.seed + context.index))
         self._init_state = jax.jit(self.env.init_state)
         self._observe = jax.jit(lambda state, side: _encode(game.get_observation(state, side)))
-        opponent_types = {"expander": ExpanderAgent, "hunter": HunterAgent, "random": RandomAgent}
+        opponent_types = {
+            "expander": ExpanderAgent,
+            "hunter": HunterAgent,
+            "random": RandomAgent,
+            "harvester": HarvesterAgent,
+        }
         opponent_agents = (
             (RandomAgent(), ExpanderAgent(), HunterAgent()) if opponent == "mixed" else (opponent_types[opponent](),)
         )
