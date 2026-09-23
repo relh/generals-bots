@@ -242,35 +242,27 @@ class BatchedGeneralsPufferEnvironment:
         if self.base.factorized_actions:
             legal[self.finished, self.spec.action_sizes[0] :] = True
 
-        teachers = []
+        probabilities = None
+        weights = None
         if self.base.supervise_teacher:
-            actions = None
+            probabilities = np.zeros((self.parallel_games, sum(self.spec.action_sizes)), dtype=np.float32)
+            weights = np.zeros((self.parallel_games, len(self.spec.action_sizes)), dtype=np.float32)
             if self.base.training:
                 teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
                 actions = np.asarray(self._teacher_actions(self.states, self.sides, teacher_keys))
-            for game_index in range(self.parallel_games):
-                probabilities = np.zeros(sum(self.spec.action_sizes), dtype=np.float32)
-                weights = [0.0] * len(self.spec.action_sizes)
-                if actions is not None and not self.finished[game_index]:
-                    action = actions[game_index]
-                    cells = self.base.size**2
-                    index = (
-                        (4 if self.base.factorized_actions else 8) * cells
-                        if action[0]
-                        else ((action[3] if self.base.factorized_actions else action[4] * 4 + action[3]) * cells)
-                        + action[1] * self.base.size
-                        + action[2]
-                    )
-                    if legal[game_index, index]:
-                        probabilities[index] = 1.0
-                        weights[0] = 1.0
-                        if self.base.factorized_actions and not action[0]:
-                            probabilities[self.spec.action_sizes[0] + action[4]] = 1.0
-                            weights[1] = 1.0
-                teachers.append(TeacherTargets(probabilities=probabilities.tolist(), weights=weights))
-        return NumericObservation(
-            values=public_values.tolist(), action_masks=legal.tolist(), teachers=teachers
-        )
+                cells = self.base.size**2
+                direction = actions[:, 3] if self.base.factorized_actions else actions[:, 4] * 4 + actions[:, 3]
+                move_index = direction * cells + actions[:, 1] * self.base.size + actions[:, 2]
+                index = np.where(actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move_index)
+                rows = np.arange(self.parallel_games)
+                labeled = (~self.finished) & legal[rows, index]
+                probabilities[rows[labeled], index[labeled]] = 1
+                weights[labeled, 0] = 1
+                if self.base.factorized_actions:
+                    moving = labeled & (actions[:, 0] == 0)
+                    probabilities[rows[moving], self.spec.action_sizes[0] + actions[moving, 4]] = 1
+                    weights[moving, 1] = 1
+        return NumericObservation.from_arrays(public_values, legal, probabilities, weights)
 
     def reset(self, seed: str) -> NumericObservation:
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")

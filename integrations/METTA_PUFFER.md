@@ -6,6 +6,10 @@ Long Generals training experiments require at least **30,000 sustained Puffer ag
 
 The four-trainer B300 configuration below sustained only about 3,200 aggregate SPS despite about 90% GPU utilization and 256 concurrent games. It is retained as a reproducible baseline and must be profiled and improved before another long experiment. Preserve its checkpoints. After clearing the throughput gate, train for tens of millions of steps and evaluate on held-out 10×10 classic maps against mixed scripted opponents; the target is at least 0.60 performance.
 
+The 2026-09-23 B300 rollout profile isolated the bottleneck: the original Python list and teacher-target construction peaked near 8,000 SPS even at 1,024 games per JAX batch. Vectorized observation construction plus array transport reached 31,031 SPS at 1,024 games **including native numeric encoding**, but this excludes policy inference and optimization. The bounded 1,048,576-step Puffer smoke, job 7092, produced zero steps after about three minutes with GPU utilization near 0%; it was canceled, and its detached container was stopped. This does not pass the training throughput gate. Profile native trainer startup and the first rollout before submitting another long run.
+
+The array transport path depends on [Metta PR #24777](https://app.graphite.dev/github/pr/Metta-AI/metta/24777). The bounded benchmark and full Puffer smoke launchers are [`generals_b300_rollout_bench.sbatch`](generals_b300_rollout_bench.sbatch) and [`generals_b300_throughput_smoke.sbatch`](generals_b300_throughput_smoke.sbatch).
+
 `integrations.metta_puffer:GeneralsPufferEnvironment` is a one-seat numeric
 environment for Metta's native PufferLib 5 runner. It trains against
 `ExpanderAgent` by default on 10×10 maps with fog of war, a 300-turn horizon, legal action
