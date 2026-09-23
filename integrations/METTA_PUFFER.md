@@ -203,6 +203,11 @@ result. Keep validation seeds 901–905 separate from the final held-out seeds
 The classic launcher validates each of the four policies at 20.48M, 25.6M,
 and final 31.46M steps, then tests the best validation checkpoint on the
 held-out seeds. Every candidate therefore has at least 20M training steps.
+Run `python integrations/verify_classic_heldout.py /tmp/relh-generals-gpu
+<training-job-id>` against the retained workspace before reporting success.
+The verifier recomputes the selection and held-out score from raw per-seed
+results and checks the checkpoint hash, training record, map options, and
+opponent mix.
 
 If the Harvester-supervised run misses the classic held-out target, use
 [`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)
