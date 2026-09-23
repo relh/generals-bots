@@ -208,3 +208,12 @@ observation. Its late curriculum continues to mix some teacher actions into
 rollouts while the learner acts independently on most turns. This is a new
 training build and requires its own checkpoints; the active Harvester run is
 unchanged.
+
+[`gpu-batch-sentinel-transfer-build.json`](configs/gpu-batch-sentinel-transfer-build.json)
+keeps the active run's Fabric model and teacher schedule exactly, changing
+only the Python environment to the Sentinel teacher and classic maps. Metta's
+checkpoint initialization can therefore verify and load an active-run
+checkpoint with `initialize.allow_environment_transfer=true`, provided its
+model hash and state size match the new build. The new run starts its own
+learner clock unless `restore_learner` is explicitly set. Its source run and
+checkpoint hash remain recorded in the training lineage.
