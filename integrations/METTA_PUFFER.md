@@ -214,6 +214,11 @@ results and checks the checkpoint hash, training record, map options, and
 opponent mix. The classic Slurm launcher also runs this audit and writes a
 proof JSON before it exits. A valid score below 0.60 permits the bounded
 Sentinel smoke; invalid evidence stops the dependency chain.
+Run `archive_puffer_evaluations.sh <classic-job-id> <durable-directory>
+/tmp/relh-generals-gpu <pilot-job-id> <training-job-id>` on the mettabox while
+the classic job is pending. It preserves the pilot's GPU utilization CSV and
+validation summary alongside the classic raw results and proof, checking each
+copy against the B300 source hash.
 
 If the Harvester-supervised run misses the classic held-out target, use
 [`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)
