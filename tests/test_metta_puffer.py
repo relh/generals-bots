@@ -81,3 +81,27 @@ def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
     unshaped = baseline.step([[action_index]])
     assert rewarded.rewards[0] - unshaped.rewards[0] == pytest.approx(0.4)
     assert rewarded.score == unshaped.score
+
+
+def test_supervised_teacher_provides_legal_targets_only_during_training():
+    training = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    evaluating = training.model_copy(update={"mode": "evaluate"})
+    train_env = GeneralsPufferEnvironment(
+        context=training, board_size=6, horizon=12, teacher="harvester", supervise_teacher=True
+    )
+    eval_env = GeneralsPufferEnvironment(
+        context=evaluating, board_size=6, horizon=12, teacher="harvester", supervise_teacher=True
+    )
+    for env, expected_weight in ((train_env, 1.0), (eval_env, 0.0)):
+        observation = env.reset("73:0:0")
+        assert env.spec.teacher
+        for _ in range(3):
+            target = observation.teachers[0]
+            assert target.weights == [expected_weight]
+            assert sum(target.probabilities) == expected_weight
+            assert all(
+                not probability or legal
+                for probability, legal in zip(target.probabilities, observation.action_masks[0])
+            )
+            observation = env.step([[env.spec.action_sizes[0] - 1]]).observation
+        env.close()

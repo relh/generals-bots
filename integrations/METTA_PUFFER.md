@@ -52,6 +52,15 @@ disabled by default and does not alter the public observation or action
 contract. Keep the held-out win/performance metric separate from this training
 reward.
 
+For direct imitation loss, set `options.teacher` to `harvester` and
+`options.supervise_teacher` to `true`. Set `python_environment.spec.teacher` to
+`true` and configure a matching Fabric policy with `fabric.observation_size`
+1400, `fabric.action_sizes` `[801]`, and `fabric.teacher` `{}`. Training
+observations carry a one-hot legal scripted action; evaluation observations
+carry zero-weight targets. This uses the trainer's teacher cross-entropy loss
+and requires a separate Fabric build and checkpoint from the native MinGRU
+policy above.
+
 `integrations.puffer_policy.NativePufferPolicy.from_run(run_directory)` loads a
 completed native checkpoint for one-game CPU inference. Call `reset()` before
 each game, then `act(observation, key, deterministic=True)` on each public
