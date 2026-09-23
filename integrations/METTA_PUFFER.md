@@ -100,3 +100,28 @@ first in the library path and checks that CUDA is the default JAX device while
 the CPU backend remains available for Fabric graph tracing. Stage the source,
 native build, and CUDA JAX runtime together on the GPU node; Metta verifies
 their source fingerprints when a run starts.
+
+The GPU evaluation job uses five held-out seeds. The full
+[`gpu-batch-eval.json`](configs/gpu-batch-eval.json) config runs 16 batched
+episodes per seed, or 1,280 underlying games at `parallel_games=16`. The
+[`gpu-batch-eval-short.json`](configs/gpu-batch-eval-short.json) config runs four
+episodes per seed, or 320 games. After staging this checkout as `source-gpu`
+under the GPU workspace, evaluate a completed run with:
+
+```bash
+sbatch --export=ALL,RUN_NAME=gpu-batch-30m,EVAL_CONFIG=gpu-batch-eval.json \
+  integrations/generals_b300_eval.sbatch
+```
+
+Set `CHECKPOINT_PATH` to a checkpoint path inside the container to evaluate an
+in-progress run. Give each evaluation its own `OUTPUT_NAME`:
+
+```bash
+sbatch --export=ALL,RUN_NAME=gpu-batch-30m,CHECKPOINT_PATH=/work/gpu-batch-30m/checkpoints/metta_generals/gpu-batch-30m/0000000010240000.bin,OUTPUT_NAME=gpu-batch-30m-eval-10m,EVAL_CONFIG=gpu-batch-eval-short.json \
+  integrations/generals_b300_eval.sbatch
+```
+
+The job and its `srun` step both request a GPU. Its environment adapter checks
+that JAX placed game state on CUDA. Use `evaluation.json` from the output
+directory for model-only held-out performance; training `perf` includes mixed
+teacher actions.

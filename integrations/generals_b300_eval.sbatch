@@ -19,6 +19,7 @@ export CHECKPOINT_PATH=${CHECKPOINT_PATH:-}
 export OUTPUT_NAME=${OUTPUT_NAME:-$RUN_NAME-evaluation}
 export EVAL_CONFIG=${EVAL_CONFIG:-gpu-batch-eval.json}
 test -f "$workspace/$RUN_NAME/run.json"
+test -f "$workspace/source-gpu/integrations/configs/$EVAL_CONFIG"
 if [[ -z "$CHECKPOINT_PATH" ]]; then
     test -f "$workspace/$RUN_NAME/completed.json"
 else
@@ -39,6 +40,6 @@ srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 --cpu-bind=cores bash -
         "/work/$RUN_NAME" \
         /work/build-gpu-batch-v5 \
         "/work/$OUTPUT_NAME" \
-        "/work/$EVAL_CONFIG" \
+        "/work/source-gpu/integrations/configs/$EVAL_CONFIG" \
         "$CHECKPOINT_PATH"
 '
