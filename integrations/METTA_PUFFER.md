@@ -101,6 +101,11 @@ the CPU backend remains available for Fabric graph tracing. Stage the source,
 native build, and CUDA JAX runtime together on the GPU node; Metta verifies
 their source fingerprints when a run starts.
 
+The launcher stores JAX compilations under `/work/jax-compile-cache`. Full
+evaluation starts a separate native process for each held-out seed, so later
+seeds can reuse compiled kernels. The cache is node-local and can be overridden
+with `JAX_COMPILATION_CACHE_DIR`.
+
 The GPU evaluation job uses five held-out seeds. The full
 [`gpu-batch-eval.json`](configs/gpu-batch-eval.json) config runs 16 batched
 episodes per seed, or 1,280 underlying games at `parallel_games=16`. The

@@ -3,6 +3,7 @@ set -euo pipefail
 
 export JAX_PLATFORMS=cuda,cpu
 export XLA_PYTHON_CLIENT_PREALLOCATE=false
+export JAX_COMPILATION_CACHE_DIR="${JAX_COMPILATION_CACHE_DIR:-/work/jax-compile-cache}"
 export LD_LIBRARY_PATH="/work/runtime/nvidia/cu13/lib:${LD_LIBRARY_PATH:-}"
 
 python - <<'PY'
