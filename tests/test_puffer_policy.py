@@ -67,3 +67,24 @@ def test_from_run_checks_contract_and_checkpoint_size(tmp_path: Path):
     (run / "run.json").write_text(json.dumps(record))
     with pytest.raises(ValueError, match="contract differs"):
         NativePufferPolicy.from_run(run)
+
+
+def test_pinned_mingru_checkpoint_layout_and_recurrent_update(tmp_path: Path):
+    board_size = 6
+    observation_size, action_size = 14 * board_size**2, 8 * board_size**2 + 1
+    parameters = np.zeros(observation_size + action_size + 1 + 3, dtype=np.float32)
+    parameters[observation_size + action_size - 1] = 2  # Pass logit from decoder.
+    parameters[observation_size + action_size] = 3  # Value from decoder.
+    checkpoint = tmp_path / "checkpoint.bin"
+    parameters.tofile(checkpoint)
+    policy = NativePufferPolicy(checkpoint, board_size=board_size, hidden_size=1, num_layers=1)
+    environment = GeneralsEnv(grid_dims=(board_size, board_size), truncation=20)
+    observation = game.get_observation(environment.init_state(jax.random.PRNGKey(3)), 0)
+    logits, value = policy.predict(observation)
+    assert logits[-1] == pytest.approx(0.25)  # z=.5, candidate=.5, shortcut=.5.
+    assert value == pytest.approx(0.375)
+    assert policy.state[0, 0] == pytest.approx(0.25)
+    logits, value = policy.predict(observation)
+    assert logits[-1] == pytest.approx(0.375)
+    assert value == pytest.approx(0.5625)
+    assert policy.state[0, 0] == pytest.approx(0.375)
