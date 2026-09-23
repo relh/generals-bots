@@ -109,7 +109,8 @@ episodes per seed, or 320 games. After staging this checkout as `source-gpu`
 under the GPU workspace, evaluate a completed run with:
 
 ```bash
-sbatch --export=ALL,RUN_NAME=gpu-batch-30m,EVAL_CONFIG=gpu-batch-eval.json \
+RUN_NAME=gpu-batch-30m EVAL_CONFIG=gpu-batch-eval.json \
+  sbatch --export=ALL \
   integrations/generals_b300_eval.sbatch
 ```
 
@@ -117,7 +118,10 @@ Set `CHECKPOINT_PATH` to a checkpoint path inside the container to evaluate an
 in-progress run. Give each evaluation its own `OUTPUT_NAME`:
 
 ```bash
-sbatch --export=ALL,RUN_NAME=gpu-batch-30m,CHECKPOINT_PATH=/work/gpu-batch-30m/checkpoints/metta_generals/gpu-batch-30m/0000000010240000.bin,OUTPUT_NAME=gpu-batch-30m-eval-10m,EVAL_CONFIG=gpu-batch-eval-short.json \
+RUN_NAME=gpu-batch-30m \
+  CHECKPOINT_PATH=/work/gpu-batch-30m/checkpoints/metta_generals/gpu-batch-30m/0000000010240000.bin \
+  OUTPUT_NAME=gpu-batch-30m-eval-10m EVAL_CONFIG=gpu-batch-eval-short.json \
+  sbatch --export=ALL \
   integrations/generals_b300_eval.sbatch
 ```
 
