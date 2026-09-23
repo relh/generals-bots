@@ -64,6 +64,32 @@ def test_classic10_evaluation_maps_match_classic_scenario_parameters():
     env.close()
 
 
+def test_classic10_sentinel_teacher_targets_legal_actions():
+    context = EnvironmentContext(seed=901, index=0, mode="train", output=Path("/tmp"))
+    env = GeneralsPufferEnvironment(
+        context=context,
+        board_size=10,
+        horizon=800,
+        opponent="mixed",
+        teacher="sentinel",
+        supervise_teacher=True,
+        factorized_actions=True,
+        classic_maps=True,
+    )
+    for seed in ("901:0:0", "901:0:1", "901:0:2"):
+        observation = env.reset(seed)
+        target = observation.teachers[0]
+        first, second = env.spec.action_sizes
+        assert target.weights[0] == 1.0
+        assert sum(target.probabilities[:first]) == 1.0
+        assert sum(target.probabilities[first : first + second]) in (0.0, 1.0)
+        assert all(
+            not probability or legal
+            for probability, legal in zip(target.probabilities, observation.action_masks[0])
+        )
+    env.close()
+
+
 def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     coached = GeneralsPufferEnvironment(

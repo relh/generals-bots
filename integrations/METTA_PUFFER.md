@@ -196,3 +196,13 @@ and `EVAL_ALLOW_TRANSFER=true` to the parallel evaluator. Metta checks the
 training and evaluation model identities and records the source build in each
 result. Keep validation seeds 901–905 separate from the final held-out seeds
 1001–1005.
+
+If the Harvester-supervised run misses the classic held-out target, use
+[`gpu-batch-sentinel-classic10-build.json`](configs/gpu-batch-sentinel-classic10-build.json)
+for a new run. It uses the stronger observation-only Sentinel as the teacher
+and trains on the same 800-turn classic 10×10 map distribution used for the
+held-out evaluation. The teacher is called only on the player's public
+observation. Its late curriculum continues to mix some teacher actions into
+rollouts while the learner acts independently on most turns. This is a new
+training build and requires its own checkpoints; the active Harvester run is
+unchanged.

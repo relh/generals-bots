@@ -21,6 +21,7 @@ from metta_training.environment import (
 from generals import GeneralsEnv
 from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.agents.harvester_agent import HarvesterAgent
+from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
 from integrations.puffer_codec import decode_action, encode_observation
 
@@ -74,6 +75,7 @@ class GeneralsPufferEnvironment:
             "hunter": HunterAgent,
             "random": RandomAgent,
             "harvester": HarvesterAgent,
+            "sentinel": SentinelAgent,
         }
         teacher_agent = opponent_types[teacher]() if teacher is not None else None
         if supervise_teacher:
