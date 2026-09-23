@@ -200,6 +200,10 @@ and `EVAL_ALLOW_TRANSFER=true` to the parallel evaluator. Metta checks the
 training and evaluation model identities and records the source build in each
 result. Keep validation seeds 901–905 separate from the final held-out seeds
 1001–1005.
+The staged evaluation and Sentinel fallback source trees use Metta's merged
+vectorized numeric encoder from commit `53baa67cf1`; the active trainer keeps
+its original pinned source. Rebuild the evaluation binary after staging that
+file so the environment fingerprint records the encoder used.
 The classic launcher validates each of the four policies at 20.48M, 25.6M,
 and final 31.46M steps, then tests the best validation checkpoint on the
 held-out seeds. Every candidate therefore has at least 20M training steps.
