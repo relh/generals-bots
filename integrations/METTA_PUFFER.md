@@ -217,3 +217,10 @@ checkpoint with `initialize.allow_environment_transfer=true`, provided its
 model hash and state size match the new build. The new run starts its own
 learner clock unless `restore_learner` is explicitly set. Its source run and
 checkpoint hash remain recorded in the training lineage.
+
+[`generals_b300_sentinel_smoke.sbatch`](generals_b300_sentinel_smoke.sbatch)
+is a bounded follow-on after classic held-out evaluation. It exits immediately
+if the selected policy scores at least 0.60. Otherwise it verifies the selected
+checkpoint, builds the Sentinel transfer environment, and trains four
+65,536-step policies on one GPU. Its utilization audit must pass before a
+long Sentinel continuation is scheduled.
