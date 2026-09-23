@@ -23,7 +23,7 @@ test -s "$pilot_summary"
 test -s "$pilot_gpu"
 test -s "$source_root/integrations/configs/gpu-batch-classic10-build.json"
 
-# The short pilot is run first. Stop here if four parallel evaluators still
+# The short pilot is run first. Stop here if eight parallel evaluators still
 # leave the GPU mostly idle; this job then releases its allocation immediately.
 python3 - "$pilot_summary" "$pilot_gpu" <<'PY'
 import json
@@ -73,6 +73,7 @@ export EVAL_RUN_JOB_ID="$train_job_id"
 export EVAL_BUILD_NAME="$build_name"
 export EVAL_SOURCE_NAME=source-classic10
 export EVAL_ALLOW_TRANSFER=true
+export EVAL_PARALLELISM=8
 export EVAL_INDEXES=0,1,2,3
 export EVAL_SEEDS=901,902,903,904,905
 export EVAL_EPISODES=8

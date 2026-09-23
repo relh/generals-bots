@@ -180,7 +180,9 @@ with `EVAL_RUN_JOB_ID=<training-job-id>`, `EVAL_INDEXES=0,1,2,3`,
 Select one policy using its validation summary, then rerun with that single
 index, `EVAL_SEEDS=1001,1002,1003,1004,1005`, and `EVAL_EPISODES=16` for
 held-out performance. Set a distinct `EVAL_PREFIX` for each evaluation. The
-launcher evaluates up to four seeds or policies concurrently on one GPU and
+launcher evaluates four seeds or policies concurrently on one GPU by default.
+Set `EVAL_PARALLELISM=8` to fill the 64 CPU allocation with eight concurrent
+evaluators; each then receives eight CPUs. The launcher
 writes a summary weighted by the number of completed games. It needs the
 node-local training runs and matching build; restore them from the mettabox
 archives if the B300 workspace has been recycled.

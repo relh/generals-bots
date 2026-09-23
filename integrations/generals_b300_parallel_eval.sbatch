@@ -17,6 +17,7 @@ export EVAL_RUN_JOB_ID=${EVAL_RUN_JOB_ID:?training Slurm job ID required}
 export EVAL_INDEXES=${EVAL_INDEXES:-0,1,2,3}
 export EVAL_SEEDS=${EVAL_SEEDS:-901,902,903,904,905}
 export EVAL_EPISODES=${EVAL_EPISODES:-8}
+export EVAL_PARALLELISM=${EVAL_PARALLELISM:-4}
 export EVAL_PREFIX=${EVAL_PREFIX:-gpu-batch-four-long-${EVAL_RUN_JOB_ID}-validation}
 export EVAL_BUILD_NAME=${EVAL_BUILD_NAME:-build-gpu-wide16x16-6021}
 export EVAL_SOURCE_NAME=${EVAL_SOURCE_NAME:-source-gpu}
@@ -30,6 +31,9 @@ workspace=/tmp/relh-generals-gpu
 IFS=, read -ra indexes <<< "$EVAL_INDEXES"
 IFS=, read -ra seeds <<< "$EVAL_SEEDS"
 [[ "$EVAL_EPISODES" =~ ^[0-9]+$ && "$EVAL_EPISODES" -gt 0 ]]
+[[ "$EVAL_PARALLELISM" =~ ^[0-9]+$ && "$EVAL_PARALLELISM" -ge 1 && "$EVAL_PARALLELISM" -le 16 ]]
+(( 64 % EVAL_PARALLELISM == 0 ))
+cpus_per_eval=$((64 / EVAL_PARALLELISM))
 [[ "$EVAL_ALLOW_TRANSFER" == true || "$EVAL_ALLOW_TRANSFER" == false ]]
 for index in "${indexes[@]}"; do
     [[ "$index" =~ ^[0-3]$ ]]
@@ -73,7 +77,7 @@ for seed in "${seeds[@]}"; do
         containers+=("$name")
         (
             timeout -k 15s 15m docker run --rm --name "$name" \
-                --gpus "device=${SLURM_STEP_GPUS}" --cpus=8 \
+                --gpus "device=${SLURM_STEP_GPUS}" --cpus="$cpus_per_eval" \
                 --user "$(id -u):$(id -g)" -v "$workspace:/work" -w /work \
                 -e HOME=/work -e "PYTHONPATH=/work/runtime:/work/${EVAL_SOURCE_NAME}" \
                 relh-generals-b300:20260923b \
@@ -85,7 +89,7 @@ for seed in "${seeds[@]}"; do
                 > "$workspace/${EVAL_PREFIX}-policy${index}-seed${seed}.log" 2>&1
         ) &
         pids+=("$!")
-        if (( ${#pids[@]} == 4 )); then
+        if (( ${#pids[@]} == EVAL_PARALLELISM )); then
             for pid in "${pids[@]}"; do wait "$pid"; done
             pids=()
         fi
