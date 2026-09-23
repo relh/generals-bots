@@ -22,7 +22,7 @@ test -f "$workspace/runtime/jax/__init__.py"
 
 # The dependency on the original held-out evaluation is set at submission.
 # Skip the second 30M-step run if that policy already reaches the target.
-if python - "$evaluation" <<'PY'
+if python3 - "$evaluation" <<'PY'
 import json
 import statistics
 import sys
