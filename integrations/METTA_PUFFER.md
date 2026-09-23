@@ -151,3 +151,12 @@ destination directory. It polls every five minutes by default, uses GPU-bearing
 steps inside the existing allocation to copy new checkpoints, verifies each
 checkpoint's SHA-256 after transfer, and exits when the job stops. Pass `0` as
 the fourth argument for a single archive pass.
+
+The optional wider follow-up changes `features_per_site` from 8 to 32 in
+[`gpu-batch-wide-build.json`](configs/gpu-batch-wide-build.json). It keeps the
+same 31,457,280 training steps and held-out evaluation protocol. Stage this
+checkout under `source-wide` on the B300 node, then submit
+[`generals_b300_wide_fallback.sbatch`](generals_b300_wide_fallback.sbatch) with
+`--dependency=afterok:<recycling-job-id> --export=ALL`. The job reads the
+recycling run's five-seed evaluation and starts training only if its mean
+performance is below 0.60. Both the job and its training step request one GPU.
