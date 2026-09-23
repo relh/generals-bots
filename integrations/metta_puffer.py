@@ -229,11 +229,18 @@ class BatchedGeneralsPufferEnvironment:
                 values, mask = self.base._observe(state, side)
                 return state, key, values, mask, jnp.float32(0), jnp.bool_(False), jnp.float32(0)
 
-            return jax.lax.cond(alive, active, inactive, operand=None)
+            next_state, next_key, values, mask, reward, done, outcome = jax.lax.cond(
+                alive, active, inactive, operand=None
+            )
+            teacher_action = None
+            if self.base.training and self.base.supervise_teacher:
+                teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
+                teacher_action = self.base._teacher(next_state, side, teacher_key)
+            return next_state, next_key, values, mask, reward, done, outcome, teacher_action
 
         self._advance_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0, 0, 0, 0)))
 
-    def _observation(self, values, masks):
+    def _observation(self, values, masks, teacher_actions=None):
         public_values = np.asarray(values).copy()
         public_values[self.finished] = 0
         legal = np.asarray(masks, dtype=bool).copy()
@@ -248,8 +255,10 @@ class BatchedGeneralsPufferEnvironment:
             probabilities = np.zeros((self.parallel_games, sum(self.spec.action_sizes)), dtype=np.float32)
             weights = np.zeros((self.parallel_games, len(self.spec.action_sizes)), dtype=np.float32)
             if self.base.training:
-                teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
-                actions = np.asarray(self._teacher_actions(self.states, self.sides, teacher_keys))
+                if teacher_actions is None:
+                    teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+                    teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+                actions = np.asarray(teacher_actions)
                 cells = self.base.size**2
                 direction = actions[:, 3] if self.base.factorized_actions else actions[:, 4] * 4 + actions[:, 3]
                 move_index = direction * cells + actions[:, 1] * self.base.size + actions[:, 2]
@@ -287,7 +296,7 @@ class BatchedGeneralsPufferEnvironment:
             [action[1] if self.base.factorized_actions else 0 for action in actions], dtype=jnp.int32
         )
         was_finished = self.finished.copy()
-        self.states, self.keys, values, masks, rewards, done, outcomes = self._advance_states(
+        self.states, self.keys, values, masks, rewards, done, outcomes, teacher_actions = self._advance_states(
             self.states,
             self.base.pool,
             self.sides,
@@ -311,7 +320,7 @@ class BatchedGeneralsPufferEnvironment:
         else:
             score = float(self.outcomes.mean()) if episode_done else 0.0
         return NumericTransition(
-            observation=self._observation(values, masks),
+            observation=self._observation(values, masks, teacher_actions),
             rewards=np.asarray(rewards).tolist(),
             terminated=[True] * self.parallel_games if episode_done else newly_finished.tolist(),
             episode_done=episode_done,
