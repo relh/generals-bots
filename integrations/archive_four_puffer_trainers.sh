@@ -5,7 +5,9 @@ set -euo pipefail
 job_id=${1:?Slurm job ID required}
 archive_directory=${2:?durable archive directory required}
 workspace=${3:-/tmp/relh-generals-gpu}
+run_prefix=${4:-gpu-batch-four-long}
 [[ "$job_id" =~ ^[0-9]+$ ]]
+[[ "$run_prefix" =~ ^[a-z0-9-]+$ ]]
 mkdir -p "$archive_directory"
 
 while true; do
@@ -19,7 +21,7 @@ done
 
 pids=()
 for index in 0 1 2 3; do
-    run_name="gpu-batch-four-long-${job_id}-${index}"
+    run_name="${run_prefix}-${job_id}-${index}"
     bash "$(dirname "$0")/archive_puffer_checkpoints.sh" \
         "$job_id" "$workspace/$run_name" "$archive_directory" 60 \
         > "$archive_directory/$run_name-archive.log" 2>&1 &

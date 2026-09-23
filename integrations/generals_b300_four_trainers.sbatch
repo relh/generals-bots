@@ -46,6 +46,8 @@ PY
         done
     }
     trap cleanup EXIT
+    trap "exit 143" TERM
+    trap "exit 130" INT
     pids=()
     for index in 0 1 2 3; do
         (

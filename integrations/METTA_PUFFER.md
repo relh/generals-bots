@@ -251,3 +251,13 @@ if the selected policy scores at least 0.60. Otherwise it verifies the selected
 checkpoint, builds the Sentinel transfer environment, and trains four
 65,536-step policies on one GPU. Its utilization audit must pass before a
 long Sentinel continuation is scheduled.
+
+After inspecting the smoke throughput, submit
+[`generals_b300_sentinel_long.sbatch`](generals_b300_sentinel_long.sbatch)
+with `TRAIN_JOB_ID` and `SMOKE_JOB_ID` if the classic score is below 0.60 and
+the smoke's median active GPU utilization is at least 50%. The launcher
+rechecks both gates and the source checkpoint before training four transferred
+policies for 31,457,280 additional steps each on one B300. It is not in the
+prequeued dependency chain. Start the mettabox checkpoint watcher as
+`archive_four_puffer_trainers.sh <sentinel-job-id> <durable-directory>
+/tmp/relh-generals-gpu sentinel-long` when the job starts.
