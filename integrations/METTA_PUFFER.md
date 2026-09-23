@@ -155,7 +155,8 @@ the fourth argument for a single archive pass.
 The optional wider follow-up changes `features_per_site` from 8 to 32 in
 [`gpu-batch-wide-build.json`](configs/gpu-batch-wide-build.json). It keeps the
 same 31,457,280 training steps and held-out evaluation protocol. Stage this
-checkout under `source-wide` on the B300 node, then submit
+checkout under `source-wide` on the B300 node together with the tested
+`metta_training` and `fabric` source directories, then submit
 [`generals_b300_wide_fallback.sbatch`](generals_b300_wide_fallback.sbatch) with
 `--dependency=afterok:<recycling-job-id> --export=ALL`. The job reads the
 recycling run's five-seed evaluation and starts training only if its mean
