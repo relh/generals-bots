@@ -86,9 +86,11 @@ of `parallel_games * vec.num_buffers`; the number of environment processes is
 `vec.total_agents / parallel_games`. This path needs a CUDA JAX installation
 and a Slurm GPU allocation. The launcher enables both CUDA and CPU JAX
 backends because Fabric traces part of the graph on CPU; the environment
-requires an actual CUDA device. An episode score is the mean outcome across the
-batched games, so multiply the evaluator's episode count by `parallel_games`
-to obtain the underlying number of games.
+requires an actual CUDA device. During training, a finished game starts a new
+map on that seat and ends its old agent life. Held-out evaluation keeps the
+finished seat absorbing until the batch ends. Its episode score is the mean
+outcome across the batched games, so multiply the evaluator's episode count
+by `parallel_games` to obtain the underlying number of games.
 
 The checked-in B300 pilot uses
 [`gpu-batch-build.json`](configs/gpu-batch-build.json),

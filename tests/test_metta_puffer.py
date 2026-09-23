@@ -200,3 +200,33 @@ def test_batched_games_step_together_and_obey_native_contract():
     assert transition.terminated == [True] * env.spec.agents
     assert -1 <= transition.score <= 1
     env.close()
+
+
+def test_training_restarts_a_finished_game_without_ending_the_batch():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context,
+        board_size=6,
+        horizon=160,
+        opponent="harvester",
+        teacher="harvester",
+        supervise_teacher=True,
+        factorized_actions=True,
+        parallel_games=1,
+        require_gpu=False,
+    )
+    env.reset("73:0:0")
+    for _ in range(160):
+        transition = env.step([[144, 0]])
+        if transition.terminated[0]:
+            break
+    else:
+        pytest.fail("Scripted opponent did not finish the game before the group horizon")
+
+    assert not transition.episode_done
+    assert env.completed[0] == 1
+    assert int(env.states.time[0]) == 0
+    assert transition.observation.teachers[0].weights[0] == 1.0
+    assert not env.step([[144, 0]]).terminated[0]
+    assert int(env.states.time[0]) == 1
+    env.close()
