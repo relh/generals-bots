@@ -1,5 +1,11 @@
 # Generals on native PufferLib
 
+## Throughput gate for long GPU runs
+
+Long Generals training experiments require at least **30,000 sustained Puffer agent steps per second** on the proposed one-GPU setup. Measure end-to-end training after JAX compilation, including rollouts, observation transfer, teacher labels, and optimizer updates. Record wall time, completed steps, B200/B300 model, GPU utilization, number of vector environments and games per JAX batch, and per-trainer and aggregate SPS. A short GPU profiling job can run below the gate to identify bottlenecks. Keep dependent long jobs held and do not submit another long run until the end-to-end gate passes. Do not use CPU-only Slurm jobs or metta4.
+
+The four-trainer B300 configuration below sustained only about 3,200 aggregate SPS despite about 90% GPU utilization and 256 concurrent games. It is retained as a reproducible baseline and must be profiled and improved before another long experiment. Preserve its checkpoints. After clearing the throughput gate, train for tens of millions of steps and evaluate on held-out 10×10 classic maps against mixed scripted opponents; the target is at least 0.60 performance.
+
 `integrations.metta_puffer:GeneralsPufferEnvironment` is a one-seat numeric
 environment for Metta's native PufferLib 5 runner. It trains against
 `ExpanderAgent` by default on 10×10 maps with fog of war, a 300-turn horizon, legal action
