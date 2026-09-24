@@ -8,6 +8,18 @@ The four-trainer B300 configuration below sustained only about 3,200 aggregate S
 
 The 2026-09-23 B300 rollout profile isolated the bottleneck: the original Python list and teacher-target construction peaked near 8,000 SPS even at 1,024 games per JAX batch. Vectorized observation construction plus array transport reached 31,031 SPS at 1,024 games **including native numeric encoding**, but this excludes policy inference and optimization. The bounded 1,048,576-step Puffer smoke, job 7092, produced zero steps after about three minutes with GPU utilization near 0%; it was canceled, and its detached container was stopped. This does not pass the training throughput gate. Profile native trainer startup and the first rollout before submitting another long run.
 
+The 2026-09-24 B300 probes now clear the end-to-end gate. Each trainer used 1,024 classic-map games per JAX batch, 4,096 Puffer agents, four vector threads and buffers, a 32-step horizon, and 8,192-sample minibatches. The rates below use completed steps from epochs 2–32 divided by elapsed training time, including checkpoints and optimizer updates. These are training SPS, not rollout-only estimates.
+
+| Classic-map policy and job | Steps per policy | Checkpoint-inclusive SPS | Validation performance, seeds 901 / 902 |
+| --- | ---: | ---: | ---: |
+| Memoryless MLP, 8368 | 4.19M | 38,302 | 0.231 / 0.233 |
+| Spatial recurrent, 8420 | 4.19M | 34,417 | 0.185 / 0.183 |
+| Memoryless spatial, 8453 | 4.19M | 37,265 | 0.214 / 0.212 |
+| Memoryless MLP with 50% student actions, 8475 | 4.19M | 41,903 | 0.271 / 0.268 |
+| Two parallel mixed-rollout MLPs, 8493 | 4.19M each | 36,601 + 37,570 = 74,171 aggregate | Throughput probe only |
+
+The two-trainer probe used one B300 and averaged 55.1% active-interval GPU utilization, versus roughly 27% for a single memoryless MLP. The scripted teacher scored 0.754 / 0.743 on the same validation seeds. These small policy probes do **not** establish the 0.60 target. Select models using validation seeds; reserve seeds 1001–1005 for one final held-out evaluation after choosing a credible trained policy. The Metta native bridge now discards disabled PPO cotangents instead of multiplying nonfinite values by zero; see [Metta PR #24777](https://app.graphite.dev/github/pr/Metta-AI/metta/24777).
+
 The array transport path depends on [Metta PR #24777](https://app.graphite.dev/github/pr/Metta-AI/metta/24777). The bounded benchmark and full Puffer smoke launchers are [`generals_b300_rollout_bench.sbatch`](generals_b300_rollout_bench.sbatch) and [`generals_b300_throughput_smoke.sbatch`](generals_b300_throughput_smoke.sbatch).
 
 `integrations.metta_puffer:GeneralsPufferEnvironment` is a one-seat numeric
