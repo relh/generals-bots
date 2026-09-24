@@ -88,6 +88,8 @@ def spatial_mlp_policy(
 
 
 def _local_kernel_key(source, target, context):
+    if source[0] != "sense" or target[0] != "core":
+        return ("unique", source, target)
     src_x, src_y = context.src.attr(source, "coord")
     dst_x, dst_y = context.dst.attr(target, "coord")
     return (
@@ -140,8 +142,6 @@ def tied_spatial_mlp_policy(
         (sense >> core).by(nn.rules.stencil(radius=2**0.5)),
         (core >> out).by(nn.rules.all_to_all()),
         nn.tie(core).by(nn.sharing.field("feature")).on("weight", "bias"),
-        nn.tie(graph).by(
-            nn.sharing.edge_key(_local_kernel_key, src=nn.select.input_atoms(), dst=nn.select.atoms().where(core=True))
-        ),
+        nn.tie(graph).by(nn.sharing.edge_key(_local_kernel_key)),
     )
     return PolicyGraph(graph, "sense", ("out",))
