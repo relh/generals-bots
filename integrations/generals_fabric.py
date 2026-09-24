@@ -139,7 +139,9 @@ def tied_spatial_mlp_policy(
     out = nn.cluster("out", nn.atoms.Output(), n=output_size)
     graph = nn.cluster("tied_spatial_mlp", {"sense": sense, "core": core, "out": out})
     graph.add(
-        (sense >> core).by(nn.rules.stencil(radius=2**0.5)).semantics(nn.couplings.ScalarWeighted()),
+        (sense >> core).by(nn.rules.stencil(radius=2**0.5)).semantics(
+            nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
+        ),
         (core >> out).by(nn.rules.all_to_all()),
         nn.tie(core).by(nn.sharing.field("feature")).on("weight", "bias"),
         nn.tie(graph).by(nn.sharing.edge_key(_local_kernel_key)),
