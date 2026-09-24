@@ -93,7 +93,7 @@ PY
     monitor_since=0
     while kill -0 "$runner" 2>/dev/null; do
         sleep 15
-        if grep -q 'NonFiniteGradsError' "$workspace"/recurrent8-two-horizon8-30m-"${SLURM_JOB_ID}"-{0,1}/console.log 2>/dev/null; then
+        if grep -q "NonFiniteGradsError" "$workspace"/recurrent8-two-horizon8-30m-"${SLURM_JOB_ID}"-{0,1}/console.log 2>/dev/null; then
             echo "Nonfinite recurrent gradient; releasing GPU and preserving checkpoints." >&2
             docker stop -t 5 "$name" >/dev/null 2>&1 || true
             wait "$runner" || true
