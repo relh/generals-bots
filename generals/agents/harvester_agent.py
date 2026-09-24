@@ -102,15 +102,34 @@ class SprintHarvesterAgent(HarvesterAgent):
         return sprint_harvester_action(key, observation)
 
 
+def _owned_six_hop_distances(owned, root):
+    """Bound a castle rally to the same six owned steps as the incumbent."""
+    height, width = owned.shape
+    far = jnp.int32(height * width + 5)
+    distance = jnp.where(root, jnp.int32(0), far)
+
+    def relax(_, field):
+        neighbors = jnp.minimum(
+            jnp.minimum(jnp.roll(field, 1, 0).at[0].set(far),
+                        jnp.roll(field, -1, 0).at[-1].set(far)),
+            jnp.minimum(jnp.roll(field, 1, 1).at[:, 0].set(far),
+                        jnp.roll(field, -1, 1).at[:, -1].set(far)),
+        )
+        return jnp.where(owned, jnp.minimum(field, neighbors + 1), far)
+
+    return jax.lax.fori_loop(0, 6, relax, distance)
+
+
 @jax.jit
 def expander_harvester_action(key, obs):
-    """Take affordable frontier cells first; use the sprint route between captures."""
+    """Expand cheaply, rally connected surplus for castles, and siege a seen general."""
     height, width = obs.armies.shape
     shifts = ((1, 0), (-1, 0), (0, 1), (0, -1))
     toward_army = jnp.stack([jnp.roll(obs.armies, shift, (0, 1)) for shift in shifts])
     toward_owned = jnp.stack([jnp.roll(obs.owned_cells, shift, (0, 1)) for shift in shifts])
     toward_enemy = jnp.stack([jnp.roll(obs.opponent_cells, shift, (0, 1)) for shift in shifts])
     toward_castle = jnp.stack([jnp.roll(obs.castles, shift, (0, 1)) for shift in shifts])
+    toward_neutral = jnp.stack([jnp.roll(obs.neutral_cells, shift, (0, 1)) for shift in shifts])
     toward_general = jnp.stack([jnp.roll(obs.generals, shift, (0, 1)) for shift in shifts])
     toward_blocked = jnp.stack([jnp.roll(obs.structures_in_fog, shift, (0, 1)) for shift in shifts])
     legal = compute_valid_move_mask_obs(obs).transpose(2, 0, 1)
@@ -128,8 +147,45 @@ def expander_harvester_action(key, obs):
     index = jnp.argmax(jnp.where(captures, score, -1000000000).reshape(-1))
     direction, cell = jnp.divmod(index, height * width)
     action = jnp.array([0, cell // width, cell % width, direction, 0], dtype=jnp.int32)
-    return jax.lax.cond(jnp.any(captures), lambda _: action,
-                        lambda _: sprint_harvester_action(key, obs), operand=None)
+
+    # A cheap land capture must not preempt a reachable city that the connected
+    # owned component can afford. Pick its staging tile, then transfer surplus
+    # along owned cells until that tile can take the defenders.
+    rr = jnp.broadcast_to(jnp.arange(height)[:, None], (height, width))
+    cc = jnp.broadcast_to(jnp.arange(width)[None, :], (height, width))
+    in_bounds = jnp.stack((rr > 0, rr < height - 1, cc > 0, cc < width - 1))
+    city_roots = (obs.owned_cells[None] & toward_castle & toward_neutral
+                  & ~toward_blocked & in_bounds)
+    city_rank = -toward_army * 1000 + obs.armies[None]
+    city_index = jnp.argmax(jnp.where(city_roots, city_rank, -1000000000).reshape(-1))
+    city_direction, root_cell = jnp.divmod(city_index, height * width)
+    root = jnp.arange(height * width).reshape(height, width) == root_cell
+    owned_distance = _owned_six_hop_distances(obs.owned_cells, root)
+    connected = obs.owned_cells & (owned_distance < height * width)
+    surplus = jnp.sum(jnp.where(connected, jnp.maximum(obs.armies - 1, 0), 0))
+    defense = toward_army.reshape(-1)[city_index]
+    root_army = obs.armies.reshape(-1)[root_cell]
+    gather_direction, neighbor_distance = _toward(owned_distance, obs.owned_cells)
+    feeders = connected & (owned_distance > 0) & (obs.armies > 1) & (neighbor_distance < owned_distance)
+    feeder = jnp.argmax(jnp.where(feeders, obs.armies * 1000 - owned_distance, -1).reshape(-1))
+    can_take_city = root_army > defense + 1
+    city_action = jnp.array([0, root_cell // width, root_cell % width, city_direction, 0], dtype=jnp.int32)
+    gather_action = jnp.array([0, feeder // width, feeder % width,
+                               gather_direction.reshape(-1)[feeder], 0], dtype=jnp.int32)
+    rally_action = jnp.where(can_take_city, city_action, gather_action)
+    can_rally = (jnp.any(city_roots) & (surplus > defense + 2)
+                 & (can_take_city | jnp.any(feeders)))
+
+    visible_general = jnp.any(obs.opponent_cells & obs.generals)
+    immediate_general_capture = jnp.any(captures & toward_enemy & toward_general)
+    immediate_city_capture = jnp.any(captures & toward_castle)
+    route_action = sprint_harvester_action(key, obs)
+    return jnp.where(
+        immediate_general_capture | immediate_city_capture, action,
+        jnp.where(visible_general, route_action,
+                  jnp.where(can_rally, rally_action,
+                            jnp.where(jnp.any(captures), action, route_action))),
+    )
 
 
 class ExpanderHarvesterAgent(HarvesterAgent):

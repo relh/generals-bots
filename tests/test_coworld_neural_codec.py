@@ -1,9 +1,12 @@
 """The hosted wire view must reproduce the neural policy's padded input."""
 
+import jax
 import jax.numpy as jnp
 import numpy as np
 
+from generals.agents.harvester_agent import expander_harvester_action
 from generals.core import game
+from generals.core.observation import Observation
 from integrations.puffer_codec import (
     encode_coworld_directional_observation,
     encode_coworld_hinted_observation,
@@ -106,4 +109,29 @@ def test_signed_hint_replay_metadata_covers_pass_and_move():
     np.testing.assert_array_equal(
         hinted_replay_indices(planes.reshape(2, -1), 21),
         np.asarray([[1764, -1], [441 + 123, 1]], dtype=np.int32),
+    )
+
+
+def test_capture_hint_rallies_surplus_for_reachable_castle():
+    armies = np.zeros((5, 5), dtype=np.int32)
+    armies[2, 0], armies[2, 1], armies[2, 2], armies[2, 3] = 3, 6, 2, 5
+    owned = np.zeros((5, 5), dtype=bool)
+    owned[2, :3] = True
+    general = np.zeros_like(owned)
+    general[2, 0] = True
+    castles = np.zeros_like(owned)
+    castles[2, 3] = True
+    neutral = ~owned
+    empty = np.zeros_like(owned)
+    observation = Observation(
+        armies=jnp.asarray(armies), generals=jnp.asarray(general), castles=jnp.asarray(castles),
+        mountains=jnp.asarray(empty), neutral_cells=jnp.asarray(neutral), owned_cells=jnp.asarray(owned),
+        opponent_cells=jnp.asarray(empty), fog_cells=jnp.asarray(empty), structures_in_fog=jnp.asarray(empty),
+        owned_land_count=jnp.int32(3), owned_army_count=jnp.int32(11),
+        opponent_land_count=jnp.int32(1), opponent_army_count=jnp.int32(1), timestep=jnp.int32(200),
+    )
+    # The root cannot yet take the five-army city; one connected source can feed it.
+    np.testing.assert_array_equal(
+        np.asarray(expander_harvester_action(jax.random.PRNGKey(0), observation)),
+        np.asarray([0, 2, 1, 3, 0]),
     )

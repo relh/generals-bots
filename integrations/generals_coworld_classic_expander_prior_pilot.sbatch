@@ -38,7 +38,7 @@ srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash 
     (
         while true; do
             date -u +%H:%M:%S
-            nvidia-smi -i "$SLURM_STEP_GPUS" --query-gpu=utilization.gpu,utilization.memory,memory.used \
+            nvidia-smi -i 0 --query-gpu=utilization.gpu,utilization.memory,memory.used \
                 --format=csv,noheader,nounits
             sleep 1
         done

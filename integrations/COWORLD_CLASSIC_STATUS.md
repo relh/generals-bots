@@ -298,10 +298,12 @@ falling back to the sprint route. Its exact signed hint also supplies sparse
 replay labels, avoiding a second JAX teacher search during each rollout.
 Bounded B300 pilot 12406 trained two independent 2,048-game Puffer policies
 for 1,048,576 steps each. The combined warm rate was about 37,000 SPS, but
-the final displayed rate was 14,200 + 13,700 = **27,900 SPS**. This fails the
-sustained 30,000-SPS gate, so do not launch a long capture-first run until
-late-rollout throughput is fixed. The checkpoints, exact build, logs, and GPU
-samples are archived as
+the final displayed rate was 14,200 + 13,700 = **27,900 SPS** during final
+checkpoint writing. Across epochs 10–15, 327,680 completed steps per trainer
+took 15.696 and 16.105 seconds respectively, or about **41,230 aggregate
+end-to-end SPS**. The pilot's GPU sampler used Slurm's physical GPU index,
+which `nvidia-smi` could not see inside the remapped allocation. The
+checkpoints, exact build, and logs are archived as
 `/home/metta/relh-generals-puffer/coworld-classic/relh-coworld-expander-prior-12406.tar.gz`
 (SHA-256 `ff774388e0c1cb37c9ff74327ccf8aa2933a3a2ebda34cee285b736c9c2ea047`).
 The first checkpoint scored **0.955322** and **0.960693** on held-out seeds
@@ -315,5 +317,67 @@ The evaluated checkpoint's SHA-256 is
 The neural readout follows the scripted public hint closely after short
 supervised training; the hint remains the main source of strength. The exact
 policy was uploaded as `richard-generals-classic-neural:v3`. Hosted request
-`xreq_9903abf6-324d-45d5-8b5f-4e3f788ee1ad` compares it with richard's
-incumbent before any champion change.
+`xreq_9903abf6-324d-45d5-8b5f-4e3f788ee1ad` compared it with richard's
+incumbent: **one win, three losses, and two draws**, with no timeouts or player
+failures. It was not submitted or made champion. The replays show early land
+expansion followed by weaker castle capture and army growth. In three losses,
+the neural player had zero castles at turn 400; the incumbent had two or three
+in two of them. In one draw it had 110 land to the incumbent's 53 at turn 200,
+then 98 to 183 at turn 1200. Cheap captures preempted connected-surplus rallies
+for neutral castles and visible-general siege. That is the next behavior change.
+
+The sampler was fixed to address GPU 0 inside the Slurm allocation. Bounded
+repeat job 12471 again completed 1,048,576 steps per trainer. Over epochs
+10–15, the 327,680-step intervals took 21.755 and 21.930 seconds, giving
+15,062 + 14,942 = **30,004 aggregate SPS**. Its 82 GPU samples after the
+first 60 seconds had 44.0% mean, 53% median, and 90% peak utilization,
+with about 15.3 GiB allocated. This is marginal and varies with contention;
+the next strategy and throughput pilots should clear 30K comfortably before a
+long run. No long capture-first experiment has started.
+
+The first city-rally implementation used a full owned-component BFS. Bounded
+B300 job 12490 reached only about 7,300 SPS per trainer at epoch 7 while
+using roughly 55 GiB of GPU memory; the GPU sampler reached 100% utilization.
+It was stopped after both 524,288-step checkpoints were written. The exact
+full-BFS source, build, both checkpoints, logs, and GPU samples are archived
+as `relh-coworld-city-rally-full-bfs-12490.tar.gz` on metta0 (SHA-256
+`82598c04681eb963ae4be78466d0f914ae17f8986b173dd12c9acff41fc58a50`).
+All named Docker containers and trainer processes were gone after cancellation.
+The next bounded pilot limits the rally search to six owned steps, matching
+the incumbent's local surplus search.
+
+The first six-hop B300 pilot (12498) finished 1,048,576 steps per trainer and
+preserved both final checkpoints, but an unrelated user's Python process held
+about 41 GiB on the **same physical GPU** during its run. Its throughput is
+therefore not valid gate evidence. The exact source, build, checkpoint samples,
+logs, and GPU readings are archived as
+`relh-coworld-city-rally-six-hop-contended-12498.tar.gz` (SHA-256
+`9c589e4681639be46fc4b8599728e37176c78252ad55dfc965f515d358059938`).
+After that process exited, a new B300 allocation reported 0 MiB used. The
+identical bounded pilot is being repeated on the free GPU as job 12517.
+
+Clean B300 repeat 12517 completed both 1,048,576-step trainers with no other
+process on its physical GPU. Across epochs 10–15, each trainer completed
+327,680 steps at **16,379** and **16,613 SPS**, or **32,992 aggregate
+end-to-end SPS** including rollout, transfer, inference, and updates. The 82
+one-second utilization samples after the first 60 seconds averaged 36.5%
+(median 43.5%, peak 91%); maximum observed memory use was 15.4 GiB. The
+final displayed SPS fell during checkpoint writing. This bounded configuration
+clears the 30K gate, though with limited margin. Its exact source, build,
+final checkpoints, logs, and GPU samples are archived as
+`relh-coworld-city-rally-six-hop-clean-12517.tar.gz` (SHA-256
+`46f97264f2eb6cd4ed9742510ea8df47adec352a86ab43b06507d90cd698aee8`).
+Held-out validation is queued on separate GPU jobs before any long run.
+
+GPU validation jobs 12542 and 12543 scored **0.935303** and **0.935547** on
+held-out seeds 901 and 902 against the mixed scripted pool. Both records name
+checkpoint SHA-256 `44f36daeb54296bf3c819784b47272892ab5706184735b8bfdf05255482ed5be`.
+Their archived JSON records are `relh-coworld-city-rally-eval-901-12542.json`
+(SHA-256 `4c3ad299fde5486d1779f99ed202384c2d66f33ef66415181fd1ea162a6a0a4e`)
+and `relh-coworld-city-rally-eval-902-12543.json` (SHA-256
+`4882180f4fbfadc79b6e9d231785e5d20f293338a1e56f284adf3fe8a78de438`).
+The local portable player returned a warm action in 8.7 ms after 26.5 seconds
+of cold startup. It was uploaded as `richard-generals-classic-neural:v4`.
+Hosted request `xreq_60f8aa59-afcc-4e98-9222-d8fad4e0aeb3` runs eight
+Classic 1v1 games against `co-gas-generals-siege-richard:v2`; this result is
+the next quality gate. No champion change has been made.
