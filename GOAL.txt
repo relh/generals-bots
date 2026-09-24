@@ -103,3 +103,38 @@ Exact next steps on resumption
      select a frozen checkpoint by held-out and hosted performance, recheck
      which eligible account is lower in current standings, upload for that
      account, submit to Classic 1v1 and verify it is champion.
+
+Update, 2026-09-24 after resumption
+  * Slurm 13087 was recovered from the B300 node. All four trainers completed
+    3,145,728 steps. Epochs 40-47 measured 37,453 aggregate end-to-end SPS;
+    B300 GPU utilization after minute one averaged 77.8%. All four final
+    checkpoints, source, build, logs, and GPU samples were verified in the
+    archive on metta0:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-quad-stability-v6-13087.tar.gz
+    SHA256 31a2775182c06c3664be4b69178d911892d4c4d681f91703e2051755c43085d6.
+    No job-13087 containers or trainers remained afterward.
+  * An extended four-trainer probe, Slurm 13144, targeted 4,194,304 steps per
+    trainer to cross the prior two-trainer slowdown at epochs 54-56. It stayed
+    above 37K aggregate monitor SPS through that range, but trainer 1 stopped
+    producing epochs at 58 while using CPU and nearly no GPU. Trainers 0, 2,
+    and 3 completed 4,194,304 steps; trainer 1's last checkpoint is at
+    3,145,728. The job was canceled after a verified archive was created:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-quad-stability-v6-extended-13144.tar.gz
+    SHA256 7a3b5a7d2af51fac3943f3349e3ebda73d0daa90d63565d5df005958667111bb.
+    Its containers and trainers were absent and the B300 was idle afterward.
+    This CPU-side stall blocks a long run. The archive is a snapshot taken
+    immediately before cancellation; the completed records for trainers 0, 2,
+    and 3 and all four latest checkpoints are in it.
+  * integrations/monitor_coworld_long.py now stops when an unfinished
+    trainer's console has not advanced for 90 seconds. A synthetic fresh/stale
+    check passed. New script SHA256:
+    35aed77fa70d0a68c237f84d183a50dc59fb238018ce9e57cccb756e56a0c6a3.
+    Any subsequent remote batch script must stage and verify this updated
+    source; the existing 13087/13144 scripts embed the prior hash.
+
+Current next step
+  Reproduce and profile the late trainer stall with a bounded B300 probe,
+  separating rollout/JAX synchronization from optimization and host conversion.
+  Keep the 30K end-to-end gate and do not submit long training until all
+  trainers can pass the failure range without a stall. No champion change or
+  new hosted evaluation was made in this continuation.

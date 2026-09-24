@@ -505,3 +505,43 @@ If a bounded candidate passes the 30,000 SPS gate and improves hosted play,
 crosses the earlier ~2.6M-step nonfinite-gradient failure point before the
 20.97M-step long script may be submitted. Both scripts retain the live SPS and
 GPU utilization guard and disable container core dumps.
+
+Four-trainer stability job 13087 completed all four 3,145,728-step trainers on
+one B300. Its final checkpoints and `completed.json` records are verified in
+`relh-coworld-quad-stability-v6-13087.tar.gz` on metta0 (SHA-256
+`31a2775182c06c3664be4b69178d911892d4c4d681f91703e2051755c43085d6`).
+The checkpoint SHA-256 values for trainers 0–3 are
+`d5e4257e981fcf9b53a7596cd12be7d7cb5fc12bbbf4a2ab8be0d3f58cb2fe91`,
+`4a6291ca2f100f921a76dd55b645508d32980dfc702218f942add5c7fcada932`,
+`7fff9133330dee5c40e7834abbc6e8a4ac92657c2ed8d0431916d17aef6cc220`,
+and `38d5adb60be39527fce96a5195443ed62b15ff7c88c5d46a338e066217fad547`.
+Across epochs 40–47, the trainers measured 8,834, 9,407, 9,551, and 9,662
+end-to-end SPS, or 37,453 aggregate SPS. The 404 one-second GPU samples
+averaged 77.8% utilization after the first minute (median 89%, peak 100%).
+The GPU was idle afterward; no job-13087 Docker containers remained. This
+probe ended at epoch 48, before the two-trainer long run's slowdown near
+epochs 54–56. An extended four-trainer probe through epoch 64 was submitted
+as Slurm job 13144 with the same 30K SPS guard and a 20-minute allocation cap.
+
+Job 13144 crossed the earlier slowdown window with monitor readings of
+37,000–37,300 aggregate SPS around epochs 53–59, but trainer 1 then stopped
+at epoch 58 while using CPU and almost no GPU. Trainer 0 also advanced slowly;
+trainers 2 and 3 finished all 4,194,304 steps. After preserving the run,
+job 13144 was canceled at 12 minutes. Its snapshot archive on metta0 is
+`relh-coworld-quad-stability-v6-extended-13144.tar.gz` (SHA-256
+`7a3b5a7d2af51fac3943f3349e3ebda73d0daa90d63565d5df005958667111bb`).
+The latest checkpoint hashes for trainers 0–3 are
+`49a264f604ac147c0d184b9c187a1e44513e4b5ace210afde477be7fae799971`
+(4,194,304 steps),
+`b5d176693dafcc097e93ff6496b3b9a1a3fe8c056303ba3af8850f9c71dc73e9`
+(3,145,728),
+`d3406e3fce938b034b78368a5a3b215b7b59391d04f68e42310b68cdb8f54c22`
+(4,194,304), and
+`0ca74e37120fdf31f040bb53f19b30791a58fbd61c01ae554208ba16cfa8ef96`
+(4,194,304). Trainer 0 completed just before cancellation; trainer 1 did not.
+The job's containers and trainer processes were gone and the B300 was idle
+afterward. The late CPU-side stall still blocks a long run; the monitor's
+historical median SPS did not catch it promptly once other trainers finished.
+The shared Classic monitor now fails if any unfinished trainer's console has
+made no progress for 90 seconds. Its synthetic fresh/stale check passes; any
+future batch script must stage this updated monitor and verify its new hash.
