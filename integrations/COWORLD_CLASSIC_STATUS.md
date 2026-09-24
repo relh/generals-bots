@@ -432,6 +432,73 @@ and castle rally behavior. A focused test checks the nearby-stack transfer;
 the variant still needs a measured GPU pilot and hosted evaluation before any
 long run or champion change.
 
+The first nominal dynamic-defense pilot (12811) actually used the previous
+source on the B300 node: the source staged on the login host was on a different
+`/tmp` filesystem. Both held-out scores exactly repeated the previous policy's
+scores. Those records are excluded from candidate selection. The subsequent
+node-staged pilot (12858) verified SHA-256
+`2261a533cdbc89d4111ddf9d108c74252da1cf74ed66cf92513c00683645995f`
+on the GPU node before building. Its two 2,048-environment Puffer trainers
+completed 1,048,576 steps each; warm epochs 10–15 averaged 19,167 and 19,217
+SPS, **38,383 aggregate end-to-end SPS** on one B300. Sampled GPU utilization
+after the first minute averaged 29.1%, with no co-tenant memory detected. The
+exact source, build, checkpoints, console logs, and samples are archived as
+`relh-coworld-dynamic-defense-real-12858.tar.gz` (SHA-256
+`2cf74ec5df1ff6a4b95e3b8d57bcc74c162e0edc03eb57a84b16496657a10154`).
+The first final checkpoint SHA-256 is
+`08e8a80b13b0dd550990b4f1ed7e7b1fc69253a44d9cbaaf019235b46f22961f`.
+GPU held-out seeds 901 and 902 scored **0.927979** and **0.929199** across 4,096
+games each. Their archived records are
+`relh-coworld-dynamic-defense-real-eval-901-12877.json` (SHA-256
+`063c09d0cb8aa11334955cb43fc16f73de32d4a81d7732cc7a50c2233a17253a`)
+and `relh-coworld-dynamic-defense-real-eval-902-12885.json` (SHA-256
+`e6e334fd4efe96b3e226fa104d19b90cc3b822191a3cd9ee619e366da7cf0dfb`).
+The frozen local player replied in about 7 ms warm. It was uploaded under
+richard's identity as `richard-generals-classic-neural:v5`, since richard had
+the lower league MMR at upload. Hosted eight-game requests against richard's
+incumbent (`xreq_39ef3983-c165-441e-abd5-f31d44d4b85d`), public leader
+(`xreq_4ba24134-be27-4cc4-aa17-a8948db3058a`), and relh's incumbent
+(`xreq_71fd88d0-ef0d-411d-a798-770bc2555207`) scored **3–5, 5–3, and
+5–3** respectively, with no failed episodes. Richard's incumbent remains
+champion because this candidate lost that direct comparison.
+
+The first 3,145,728-step-per-trainer stability attempt (12918) stopped around
+2.7–2.9M steps when its aggregate warmed SPS fell to 28,600. The dashboards
+showed environment work growing to about four seconds per epoch, without a
+nonfinite-gradient error. The last 1,572,864-step checkpoints and logs are
+archived as `relh-coworld-dynamic-defense-stability-stopped-12918.tar.gz`
+(SHA-256 `611557821173441ea2fc8ff15c4de39ed89f23d951f0604329c4c7519fa86423`).
+A second stability run (12950) at learning rate 0.001 completed both
+3,145,728-step trainers. Its late warmed aggregate SPS remained above 30,000,
+ending at 33,700; its exact artifact is
+`relh-coworld-dynamic-defense-stability-lr1e3-12950.tar.gz` (SHA-256
+`2ac48e399259a99c82263604043baeb5f3d26e648b921616d2a06`). The live
+monitor now uses completed SPS as the stop criterion and reports sampled GPU
+utilization separately. This stability checkpoint still needs held-out and
+hosted evaluation before a longer run.
+
+A four-trainer profiling pilot (12978) used four independent 2,048-game
+Puffer environments on the same B300. Each trainer completed 1,048,576 steps;
+warm epochs 8–14 averaged 9,329, 9,514, 10,200, and 9,929 SPS, or **38,971
+aggregate SPS**. Sampled utilization after the first minute averaged 70.7%,
+peaking at 100%, and memory peaked at 30.8 GiB. It consumed about twice the
+GPU memory of the two-trainer setup without materially increasing throughput.
+The build, four final checkpoints, logs, and samples are archived as
+`relh-coworld-dynamic-defense-quad-12978.tar.gz` (SHA-256
+`0c3db9d397b4ee5d8b9c39429513cad34a82b95318ab06a7272a0f208fa0e7a0`).
+
+The first 3.15M-step checkpoint (`12950` trainer 0, SHA-256
+`482b90fee6d6a7f64c4776a6f5ddcf40d15ef811933cbf89c5f609056c9a086b`)
+scored **0.933594** on held-out seed 901. It is uploaded as
+`richard-generals-classic-neural:v6`, with eight-game hosted requests against
+richard's incumbent (`xreq_57a78379-a6e5-42e1-b141-f00c7132edc1`), the
+public leader (`xreq_b5c6ff53-e236-4458-ad25-edb925bccc73`), and relh's
+incumbent (`xreq_e810c697-6115-4dac-b501-ff05bbedd777`) pending. The
+second held-out evaluation completed as Slurm job 12999; its record still needs
+to be collected from the B300 node. The guarded 20.97M-step run uses the
+stability-proven learning rate 0.001, verifies the exact teacher source hash on
+the GPU node, and is queued as Slurm job 13044.
+
 If a bounded candidate passes the 30,000 SPS gate and improves hosted play,
 `integrations/generals_coworld_classic_expander_stability.sbatch` probes
 3,145,728 steps per trainer with the same two-process GPU configuration. It

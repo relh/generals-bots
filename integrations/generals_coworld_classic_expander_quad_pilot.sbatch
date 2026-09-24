@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=relh-generals-coworld-expander-long
+#SBATCH --job-name=relh-generals-coworld-expander-quad
 #SBATCH --partition=b300
 #SBATCH --nodelist=metta-fabric-b300-1
 #SBATCH --nodes=1
@@ -7,20 +7,19 @@
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=96G
-#SBATCH --time=00:40:00
-#SBATCH --nice=100
+#SBATCH --time=00:12:00
+#SBATCH --nice=0
 #SBATCH --chdir=/tmp
-#SBATCH --output=/tmp/relh-generals-coworld/long-%j.log
+#SBATCH --output=/tmp/relh-generals-coworld/quad-%j.log
 set -euo pipefail
 
 workspace=/tmp/relh-generals-coworld
-printf '%s  %s\n' 2261a533cdbc89d4111ddf9d108c74252da1cf74ed66cf92513c00683645995f \
-    "$workspace/source/generals/agents/harvester_agent.py" | sha256sum -c -
+printf "%s  %s\n" 2261a533cdbc89d4111ddf9d108c74252da1cf74ed66cf92513c00683645995f "$workspace/source/generals/agents/harvester_agent.py" | sha256sum -c -
 test -s "$workspace/source/integrations/configs/gpu-coworld-classic-expander-prior-build.json"
 test -s "$workspace/source/integrations/configs/gpu-coworld-classic-sparse-dual-pilot.json"
-for index in 0 1; do
+for index in 0 1 2 3; do
     seed=$((601 + index))
-    config="$workspace/expander-long-pilot-${SLURM_JOB_ID}-${index}.json"
+    config="$workspace/expander-quad-pilot-${SLURM_JOB_ID}-${index}.json"
     python3 - "$workspace/source/integrations/configs/gpu-coworld-classic-sparse-dual-pilot.json" "$config" "$seed" <<'PY'
 import json
 import sys
@@ -28,9 +27,7 @@ from pathlib import Path
 source, destination, seed = sys.argv[1:]
 config = json.loads(Path(source).read_text())
 config["seed"] = int(seed)
-config["total_timesteps"] = 10_485_760
-config["overrides"]["train.learning_rate"] = 0.001
-config["overrides"]["base.checkpoint_interval"] = 64
+config["overrides"]["train.learning_rate"] = 0.003
 Path(destination).write_text(json.dumps(config) + "\n")
 PY
 done
@@ -38,7 +35,7 @@ done
 srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -lc '
     set -euo pipefail
     workspace=/tmp/relh-generals-coworld
-    prefix="relh-generals-coworld-expander-long-${SLURM_JOB_ID}"
+    prefix="relh-generals-coworld-expander-quad-${SLURM_JOB_ID}"
     (
         while true; do
             date -u +%H:%M:%S
@@ -46,11 +43,11 @@ srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash 
                 --format=csv,noheader,nounits
             sleep 1
         done
-    ) > "$workspace/expander-long-gpu-${SLURM_JOB_ID}.csv" 2>&1 &
+    ) > "$workspace/expander-quad-gpu-${SLURM_JOB_ID}.csv" 2>&1 &
     sampler=$!
     cleanup() {
         kill "$sampler" 2>/dev/null || true
-        docker stop -t 5 "${prefix}-build" "${prefix}-0" "${prefix}-1" >/dev/null 2>&1 || true
+        docker stop -t 5 "${prefix}-build" "${prefix}-0" "${prefix}-1" "${prefix}-2" "${prefix}-3" >/dev/null 2>&1 || true
     }
     trap cleanup EXIT
     trap "exit 143" TERM
@@ -62,26 +59,15 @@ srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash 
     timeout -k 30s 3m docker run "${common[@]}" --name "${prefix}-build" --cpus=16 \
         relh-generals-b300:20260923b bash /work/source/integrations/run_puffer_gpu.sh build \
         --config /work/source/integrations/configs/gpu-coworld-classic-expander-prior-build.json \
-        --output "/work/expander-long-build-${SLURM_JOB_ID}"
-    for index in 0 1; do
-        timeout -k 30s 35m docker run "${common[@]}" --name "${prefix}-${index}" --cpus=8 \
+        --output "/work/expander-quad-build-${SLURM_JOB_ID}"
+    for index in 0 1 2 3; do
+        timeout -k 30s 8m docker run "${common[@]}" --name "${prefix}-${index}" --cpus=4 \
             relh-generals-b300:20260923b bash /work/source/integrations/run_puffer_gpu.sh train \
-            --config "/work/expander-long-pilot-${SLURM_JOB_ID}-${index}.json" \
-            --build "/work/expander-long-build-${SLURM_JOB_ID}" \
-            --output "/work/expander-long-pilot-${SLURM_JOB_ID}-${index}" \
-            > "$workspace/expander-long-pilot-${SLURM_JOB_ID}-${index}.log" 2>&1 &
+            --config "/work/expander-quad-pilot-${SLURM_JOB_ID}-${index}.json" \
+            --build "/work/expander-quad-build-${SLURM_JOB_ID}" \
+            --output "/work/expander-quad-pilot-${SLURM_JOB_ID}-${index}" \
+            > "$workspace/expander-quad-pilot-${SLURM_JOB_ID}-${index}.log" 2>&1 &
         pids[$index]=$!
-    done
-    started=$(date +%s)
-    while kill -0 "${pids[0]}" 2>/dev/null || kill -0 "${pids[1]}" 2>/dev/null; do
-        sleep 15
-        if ! python3 "$workspace/source/integrations/monitor_coworld_long.py" \
-            "$workspace" "$SLURM_JOB_ID" "$(( $(date +%s) - started ))" expander-long; then
-            echo "Classic two-trainer guard stopped the run" >&2
-            cleanup
-            for pid in "${pids[@]}"; do wait "$pid" || true; done
-            exit 1
-        fi
     done
     status=0
     for pid in "${pids[@]}"; do
