@@ -29,6 +29,21 @@ class SiLU:
     publish = _silu_publish
 
 
+@fl.atom
+class GlobalSiLU:
+    """Separate current-tick population for the global projection."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(drive=fl.slot(1, merge=fl.monoids.sum))
+    params = fl.params(
+        weight=fl.local((1,), init=fl.inits.constant(1.0)),
+        bias=fl.local((1,), init=fl.inits.constant(0.0)),
+    )
+    step = _silu_step
+    publish = _silu_publish
+
+
 def memoryless_mlp_policy(*, observation_size: int, output_size: int, hidden: int = 64) -> PolicyGraph:
     if min(observation_size, output_size, hidden) < 1:
         raise ValueError("Policy dimensions must be positive")
@@ -187,7 +202,7 @@ def tied_local_action_policy(
             for i in range(cells * features_per_site)
         }),
     )
-    global_core = nn.cluster("global", SiLU(), n=global_features)
+    global_core = nn.cluster("global", GlobalSiLU(), n=global_features)
     out = nn.cluster(
         "out", nn.atoms.Output(), n=output_size,
         geometry=nn.geometry.fields(own={
