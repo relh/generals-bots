@@ -23,7 +23,7 @@ from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.agents.harvester_agent import HarvesterAgent
 from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
-from integrations.puffer_codec import decode_action, encode_observation
+from integrations.puffer_codec import decode_action, encode_coworld_observation, encode_observation
 
 
 class GeneralsPufferEnvironment:
@@ -40,38 +40,68 @@ class GeneralsPufferEnvironment:
         supervise_teacher: bool = False,
         factorized_actions: bool = False,
         classic_maps: bool = False,
+        coworld_classic: bool = False,
+        coworld_pool_size: int = 256,
+        compact_features: bool = False,
         goal_features: bool = False,
     ):
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
+        if coworld_classic and classic_maps:
+            raise ValueError("Choose one map distribution")
+        if coworld_classic and (coworld_pool_size < 16 or coworld_pool_size % 16):
+            raise ValueError("Coworld map pool must contain the 16 board sizes evenly")
+        if compact_features and (not coworld_classic or not factorized_actions or goal_features):
+            raise ValueError("Compact observations require Coworld Classic and factorized actions")
+        if coworld_classic:
+            board_size, horizon = 21, 1200
         self.size = board_size
         self.supervise_teacher = supervise_teacher
         self.factorized_actions = factorized_actions
         self.goal_features = goal_features
+        self.compact_features = compact_features
+        self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
-        map_options = (
-            {"min_generals_distance": board_size - 2, "castle_val_range": (20, 41)} if classic_maps else {}
-        )
-        self.env = GeneralsEnv(
-            grid_dims=(board_size, board_size),
-            truncation=horizon,
-            pool_size=8,
-            mountain_density_range=(0.18, 0.26),
-            num_castles_range=(2, 5),
-            **map_options,
-        )
+        if coworld_classic:
+            self.env = GeneralsEnv(
+                min_grid_size=18, max_grid_size=21, pad_to=21, truncation=1200,
+                mountain_density_range=(0.24, 0.26), min_generals_distance=17,
+                build_castles=False, deathtouch_turn=None, pool_size=coworld_pool_size, dynamic_pool=True,
+            )
+        else:
+            map_options = (
+                {"min_generals_distance": board_size - 2, "castle_val_range": (20, 41)} if classic_maps else {}
+            )
+            self.env = GeneralsEnv(
+                grid_dims=(board_size, board_size),
+                truncation=horizon,
+                pool_size=8,
+                mountain_density_range=(0.18, 0.26),
+                num_castles_range=(2, 5),
+                **map_options,
+            )
         self.spec = EnvironmentSpec(
-            observation_size=(21 if goal_features else 14) * board_size * board_size,
+            observation_size=(14 if compact_features else 21 if goal_features else 14) * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
         )
-        self.pool, _ = self.env.reset(jax.random.PRNGKey(context.seed + context.index))
-        self._init_state = jax.jit(self.env.init_state)
-        self._observe = jax.jit(
-            lambda state, side: encode_observation(
-                game.get_observation(state, side), factorized_actions=factorized_actions,
-                goal_features=goal_features,
+        self.pool = None if coworld_classic else self.env.reset(jax.random.PRNGKey(context.seed + context.index))[0]
+        def initial_state(pool, key):
+            if coworld_classic:
+                index = jax.random.randint(key, (), 0, self.env.pool_size)
+                return jax.tree.map(lambda field: field[index], pool)
+            return self.env.init_state(key)
+
+        self._initial_state = jax.jit(initial_state)
+        self._encode = (
+            encode_coworld_observation
+            if compact_features
+            else lambda obs: encode_observation(
+                obs, factorized_actions=factorized_actions, goal_features=goal_features
             )
+        )
+        self._observe = jax.jit(
+            lambda state, side: self._encode(game.get_observation(state, side))
         )
         opponent_types = {
             "expander": ExpanderAgent,
@@ -121,9 +151,7 @@ class GeneralsPufferEnvironment:
             if teacher_agent is not None:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
                 reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
-            values, mask = encode_observation(
-                final, factorized_actions=factorized_actions, goal_features=goal_features
-            )
+            values, mask = self._encode(final)
             return next_state, next_key, values, mask, reward, done, outcome
 
         self._advance = advance
@@ -158,7 +186,9 @@ class GeneralsPufferEnvironment:
 
     def reset(self, seed: str) -> NumericObservation:
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")
-        self.state = self._init_state(jax.random.PRNGKey(numeric_seed))
+        if self.coworld_classic:
+            self.pool, _ = self.env.reset(jax.random.PRNGKey(numeric_seed ^ 0xC0A17D))
+        self.state = self._initial_state(self.pool, jax.random.PRNGKey(numeric_seed))
         self.key = jax.random.PRNGKey(numeric_seed ^ 0xA5A5A5A5)
         self.side = jnp.int32(numeric_seed % 2)
         self.opponent_id = jnp.int32(numeric_seed % self.num_opponents)
@@ -208,7 +238,7 @@ class BatchedGeneralsPufferEnvironment:
         self.finished = np.zeros(parallel_games, dtype=bool)
         self.outcomes = np.zeros(parallel_games, dtype=np.float32)
         self.completed = np.zeros(parallel_games, dtype=np.int32)
-        self._init_states = jax.jit(jax.vmap(self.base._init_state))
+        self._init_states = jax.jit(jax.vmap(self.base._initial_state, in_axes=(None, 0)))
         self._observe_states = jax.jit(jax.vmap(self.base._observe))
         if self.base.supervise_teacher:
             self._teacher_actions = jax.jit(jax.vmap(self.base._teacher))
@@ -221,7 +251,7 @@ class BatchedGeneralsPufferEnvironment:
                 if self.base.training:
                     def recycle(_):
                         reset_key, following_key = jax.random.split(next_key)
-                        reset_state = self.base._init_state(reset_key)
+                        reset_state = self.base._initial_state(pool, reset_key)
                         reset_values, reset_mask = self.base._observe(reset_state, side)
                         return reset_state, following_key, reset_values, reset_mask
 
@@ -280,6 +310,8 @@ class BatchedGeneralsPufferEnvironment:
 
     def reset(self, seed: str) -> NumericObservation:
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")
+        if self.base.coworld_classic:
+            self.base.pool, _ = self.base.env.reset(jax.random.PRNGKey(numeric_seed ^ 0xC0A17D))
         self.turn = 0
         self.finished[:] = False
         self.outcomes[:] = 0
@@ -289,7 +321,7 @@ class BatchedGeneralsPufferEnvironment:
         self.opponent_ids = jnp.asarray((numeric_seed + indices) % self.base.num_opponents, dtype=jnp.int32)
         state_keys = jax.random.split(jax.random.PRNGKey(numeric_seed), self.parallel_games)
         self.keys = jax.random.split(jax.random.PRNGKey(numeric_seed ^ 0xA5A5A5A5), self.parallel_games)
-        self.states = self._init_states(state_keys)
+        self.states = self._init_states(self.base.pool, state_keys)
         values, masks = self._observe_states(self.states, self.sides)
         return self._observation(values, masks)
 

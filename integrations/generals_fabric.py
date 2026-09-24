@@ -177,7 +177,7 @@ def _local_action_key(source, target, context):
 
 def tied_local_action_policy(
     *, observation_size: int, output_size: int, channels: int, height: int, width: int,
-    features_per_site: int = 8, global_features: int = 32,
+    features_per_site: int = 8, global_features: int = 32, input_radius: float = 2**0.5,
 ) -> PolicyGraph:
     """Share board kernels and action-direction readouts, with global context."""
     cells = height * width
@@ -217,7 +217,7 @@ def tied_local_action_policy(
     graph = nn.cluster("tied_local_action", {"sense": sense, "local": local, "global": global_core, "out": out})
     fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
     graph.add(
-        (sense >> local).by(nn.rules.stencil(radius=2**0.5)).semantics(fixed),
+        (sense >> local).by(nn.rules.stencil(radius=input_radius)).semantics(fixed),
         (local >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
         (local >> global_core).by(nn.rules.all_to_all()),
         (global_core >> out).by(nn.rules.all_to_all()),

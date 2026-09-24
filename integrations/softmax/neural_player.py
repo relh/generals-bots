@@ -1,0 +1,70 @@
+"""Serve a frozen Puffer/Fabric Generals policy over the Coworld player wire."""
+
+import asyncio
+import json
+import os
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+from websockets.asyncio.client import connect
+
+from metta_training.environment import NumericObservation
+from metta_training.inference import FrozenPolicy
+from metta_training.policy_bundle import load_frozen_policy_bundle
+
+from .neural_codec import encode_wire_observation
+from .protocol import VERSION
+
+
+def select_action(policy: FrozenPolicy, message: dict) -> list[int]:
+    values, mask = encode_wire_observation(message, compact=True)
+    prediction = policy.predict(
+        0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()])
+    )
+    probabilities = np.asarray(prediction.probabilities)
+    source = int(np.argmax(probabilities[:1765]))
+    split = int(np.argmax(probabilities[1765:]))
+    if source == 1764:
+        return [1, 0, 0, 0, 0]
+    direction, cell = divmod(source, 441)
+    row, col = divmod(cell, 21)
+    return [0, row, col, direction, split]
+
+
+async def play(url: str, bundle: Path) -> None:
+    policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
+    policy.reset("coworld-classic")
+    # Compile graph execution before the first 500 ms action deadline.
+    dummy = NumericObservation(values=[[0.0] * 6174], action_masks=[[False] * 1764 + [True, True, True]])
+    policy.predict(0, dummy)
+    policy.reset("coworld-classic")
+    replies, slowest = 0, 0.0
+    async with connect(url, ping_timeout=None, max_size=128 * 1024, open_timeout=30) as ws:
+        async for raw in ws:
+            message = json.loads(raw)
+            if message["type"] == "hello":
+                if message["protocol_version"] != VERSION or message["ruleset"] != "classic":
+                    raise ValueError("Unsupported Generals Coworld protocol")
+            elif message["type"] == "observation":
+                if message.get("eliminated"):
+                    continue
+                started = time.monotonic()
+                action = select_action(policy, message)
+                await ws.send(json.dumps({"type": "action", "turn": message["turn"], "action": action}))
+                slowest = max(slowest, time.monotonic() - started)
+                replies += 1
+            elif message["type"] == "final":
+                print(f"[neural] replies={replies} max_reply_seconds={slowest:.4f}", file=sys.stderr, flush=True)
+                return
+            elif message["type"] in ("failure", "error"):
+                raise RuntimeError("Coworld reported a player failure")
+
+
+def main() -> None:
+    asyncio.run(play(os.environ["COWORLD_PLAYER_WS_URL"], Path(os.environ["GENERALS_POLICY_BUNDLE"])))
+
+
+if __name__ == "__main__":
+    main()

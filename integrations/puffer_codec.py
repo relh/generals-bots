@@ -53,6 +53,33 @@ def encode_observation(obs, *, factorized_actions=False, goal_features=False):
     return planes.reshape(-1), mask
 
 
+def encode_coworld_observation(obs):
+    """Compact public 21×21 Classic view with Harvester's route direction."""
+    route = harvester_route_features(obs)
+    height, width = obs.armies.shape
+    land_margin = (obs.owned_land_count - obs.opponent_land_count) / (
+        obs.owned_land_count + obs.opponent_land_count + 1
+    )
+    planes = jnp.stack((
+        jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,
+        obs.generals,
+        obs.castles,
+        obs.mountains,
+        obs.owned_cells,
+        obs.opponent_cells,
+        obs.fog_cells,
+        obs.structures_in_fog,
+        jnp.full((height, width), jnp.log1p(obs.owned_army_count) / 8.0),
+        jnp.full((height, width), jnp.log1p(obs.opponent_army_count) / 8.0),
+        jnp.full((height, width), land_margin),
+        jnp.full((height, width), obs.timestep / 1200.0),
+        route[1],
+        route[4] - route[3] + 2.0 * (route[6] - route[5]),
+    )).astype(jnp.float32)
+    moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
+    return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+
+
 def decode_action(index, size, split=None):
     cells = size * size
     channel, position = index // cells, index % cells

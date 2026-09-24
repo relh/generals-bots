@@ -1,0 +1,46 @@
+"""The hosted wire view must reproduce the neural policy's padded input."""
+
+import jax.numpy as jnp
+import numpy as np
+
+from generals.core import game
+from integrations.puffer_codec import encode_coworld_observation, encode_observation
+from integrations.softmax.engine import Match
+from integrations.softmax.neural_codec import encode_wire_observation, training_observation
+
+
+def test_coworld_wire_view_matches_padded_training_view():
+    height, width = 18, 20
+    grid = np.zeros((height, width), dtype=np.int32)
+    grid[0, 0] = 1
+    grid[-1, -1] = 2
+    grid[1, 1] = 42
+    grid[2, 2] = -2
+    padded = np.pad(grid, ((0, 21 - height), (0, 21 - width)), constant_values=-2)
+    match = Match.__new__(Match)
+    match.state = game.create_initial_state(jnp.asarray(grid))
+    match.height, match.width = height, width
+    match.last_move_executed = [None, None]
+
+    message = match.observation(0)
+    restored = training_observation(message)
+    expected = game.get_observation(game.create_initial_state(jnp.asarray(padded)), 0)
+    for name in (
+        "armies", "generals", "castles", "mountains", "neutral_cells", "owned_cells", "opponent_cells",
+        "fog_cells", "structures_in_fog", "owned_land_count", "owned_army_count", "opponent_land_count",
+        "opponent_army_count", "timestep",
+    ):
+        np.testing.assert_array_equal(np.asarray(getattr(restored, name)), np.asarray(getattr(expected, name)))
+
+    values, mask = encode_wire_observation(message)
+    expected_values, expected_mask = encode_observation(expected, factorized_actions=True, goal_features=True)
+    np.testing.assert_array_equal(values, np.asarray(expected_values))
+    np.testing.assert_array_equal(mask, np.asarray(expected_mask))
+    assert values.shape == (9261,)
+    assert mask.shape == (1767,)
+
+    compact_values, compact_mask = encode_wire_observation(message, compact=True)
+    expected_compact, expected_compact_mask = encode_coworld_observation(expected)
+    np.testing.assert_array_equal(compact_values, np.asarray(expected_compact))
+    np.testing.assert_array_equal(compact_mask, np.asarray(expected_compact_mask))
+    assert compact_values.shape == (6174,)

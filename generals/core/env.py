@@ -133,6 +133,7 @@ class GeneralsEnv:
         min_grid_size: int | None = None,
         max_grid_size: int | None = None,
         pad_to: int | None = None,
+        dynamic_pool: bool = False,
         # Observation mode
         perfect_info: bool = False,
         # Build-castles modifier: no neutral castles spawn; players build their
@@ -204,6 +205,7 @@ class GeneralsEnv:
         self.min_generals_distance = min_generals_distance
         self.max_generals_distance = max_generals_distance
         self.pool_size = pool_size
+        self.dynamic_pool = dynamic_pool
         self.castle_val_range = castle_val_range
         self.perfect_info = perfect_info
         self.build_castles = build_castles
@@ -244,6 +246,25 @@ class GeneralsEnv:
             grid = _build_castles.strip_neutral_castles(grid, num_players=self.num_players)
         return create_initial_state(grid.astype(jnp.int32), teams=self.teams)
 
+    def _make_single_state_dynamic(self, key: jnp.ndarray, dims: jnp.ndarray) -> GameState:
+        grid = generate_grid(
+            key,
+            grid_dims=(self.pad_to, self.pad_to),
+            playable_dims=dims,
+            pad_to=self.pad_to,
+            mountain_density_range=self.mountain_density_range,
+            num_castles_range=self.num_castles_range,
+            min_generals_distance=self.min_generals_distance,
+            max_generals_distance=self.max_generals_distance,
+            castle_val_range=self.castle_val_range,
+            num_players=self.num_players,
+        )
+        return create_initial_state(grid.astype(jnp.int32), teams=self.teams)
+
+    @partial(jax.jit, static_argnums=0)
+    def _make_dynamic_pool_batch(self, keys: jnp.ndarray, dims: jnp.ndarray) -> GameState:
+        return jax.vmap(self._make_single_state_dynamic)(keys, dims)
+
 
 
 
@@ -274,7 +295,15 @@ class GeneralsEnv:
         """
         k_pool, k_init, k_shuffle = jrandom.split(key, 3)
 
-        if self._fixed_dims is not None and self.min_grid_size == self.max_grid_size:
+        if self.dynamic_pool:
+            if self._fixed_dims is not None:
+                raise ValueError("A dynamic pool requires variable board sizes")
+            pool_keys = jrandom.split(k_pool, self.pool_size)
+            dims = jrandom.randint(
+                k_shuffle, (self.pool_size, 2), self.min_grid_size, self.max_grid_size + 1
+            )
+            pool = self._make_dynamic_pool_batch(pool_keys, dims)
+        elif self._fixed_dims is not None and self.min_grid_size == self.max_grid_size:
             # Fast path: single grid size
             h, w = self._fixed_dims
             pool_keys = jrandom.split(k_pool, self.pool_size)
@@ -311,7 +340,11 @@ class GeneralsEnv:
             # Update pool_size to actual (may differ due to integer division)
             self.pool_size = actual_size
 
-        init_state = self._make_single_state_fixed(k_init, self.max_grid_size, self.max_grid_size)
+        init_state = (
+            jax.tree.map(lambda field: field[0], pool)
+            if self.dynamic_pool
+            else self._make_single_state_fixed(k_init, self.max_grid_size, self.max_grid_size)
+        )
         return pool, init_state
 
     def init_state(self, key: jnp.ndarray) -> GameState:
