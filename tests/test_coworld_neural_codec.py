@@ -135,3 +135,22 @@ def test_capture_hint_rallies_surplus_for_reachable_castle():
         np.asarray(expander_harvester_action(jax.random.PRNGKey(0), observation)),
         np.asarray([0, 2, 1, 3, 0]),
     )
+
+
+def test_capture_hint_preserves_home_general_after_opening():
+    armies = np.zeros((5, 5), dtype=np.int32)
+    armies[2, 2] = 50
+    owned = np.zeros((5, 5), dtype=bool)
+    owned[2, 2] = True
+    empty = np.zeros_like(owned)
+    observation = Observation(
+        armies=jnp.asarray(armies), generals=jnp.asarray(owned), castles=jnp.asarray(empty),
+        mountains=jnp.asarray(empty), neutral_cells=jnp.asarray(~owned), owned_cells=jnp.asarray(owned),
+        opponent_cells=jnp.asarray(empty), fog_cells=jnp.asarray(empty), structures_in_fog=jnp.asarray(empty),
+        owned_land_count=jnp.int32(1), owned_army_count=jnp.int32(50),
+        opponent_land_count=jnp.int32(1), opponent_army_count=jnp.int32(1), timestep=jnp.int32(150),
+    )
+    assert int(expander_harvester_action(jax.random.PRNGKey(0), observation)[0]) == 1
+    assert int(expander_harvester_action(
+        jax.random.PRNGKey(0), observation._replace(timestep=jnp.int32(50))
+    )[0]) == 0

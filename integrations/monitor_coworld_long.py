@@ -8,11 +8,12 @@ from pathlib import Path
 
 def main() -> None:
     workspace, job, startup_seconds = Path(sys.argv[1]), sys.argv[2], int(sys.argv[3])
+    prefix = sys.argv[4] if len(sys.argv) > 4 else "sparse-long"
     rates = []
     epochs = []
     completed = []
     for index in (0, 1):
-        run = workspace / f"sparse-long-pilot-{job}-{index}"
+        run = workspace / f"{prefix}-pilot-{job}-{index}"
         log = run / "console.log"
         history = log.read_text() if log.exists() else ""
         if "NonFiniteGradsError" in history or "FloatingPointError" in history:
@@ -28,7 +29,7 @@ def main() -> None:
         rates.append(statistics.median(warm[-5:]) if len(warm) >= 5 else 0)
         completed.append((run / "completed.json").exists())
     samples = []
-    for line in (workspace / f"sparse-long-gpu-{job}.csv").read_text().splitlines():
+    for line in (workspace / f"{prefix}-gpu-{job}.csv").read_text().splitlines():
         field = line.split(",", 1)[0].strip()
         if field.isdigit():
             samples.append(int(field))

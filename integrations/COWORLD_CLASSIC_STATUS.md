@@ -381,3 +381,43 @@ of cold startup. It was uploaded as `richard-generals-classic-neural:v4`.
 Hosted request `xreq_60f8aa59-afcc-4e98-9222-d8fad4e0aeb3` runs eight
 Classic 1v1 games against `co-gas-generals-siege-richard:v2`; this result is
 the next quality gate. No champion change has been made.
+
+That request finished **five wins, two losses, one draw** with no player
+timeouts. The public-leader request
+`xreq_ab614257-832f-471f-9714-539efa0ff811` finished **seven wins, one
+loss** against `aaron-generals:v10`; all seven wins were general captures and
+the replays reported zero timeouts. Castle ownership at turn 400 improved
+from one on average for v3 to four for v4 in games reaching that turn. However,
+the currently lower ranked owned account switched to relh. Against relh's
+actual champion `co-gas-generals-siege-relh:v4`, request
+`xreq_a287ed20-2fd0-4c3d-b674-e8482ba743ee` finished **three wins, four
+losses, one draw**. Relh remained champion with its incumbent. The four loss
+replays show the neural player's own general holding only about 6–22 armies
+while enemy stacks of roughly 40–190 approached within a few tiles; in three
+losses the neural player had an early land advantage.
+
+The next hint variant preserves the home general after turn 100: ordinary
+captures and castle rallies exclude it, while its route action feeds half only
+after its garrison reaches 120. A focused test checks the reserve and opening
+behavior. Clean bounded B300 pilot 12703 trained two 2,048-game policies for
+1,048,576 steps each. Over epochs 10–15, each completed 327,680 steps at
+21,385 and 19,869 SPS, or **41,254 aggregate end-to-end SPS**. GPU utilization
+after the first 60 seconds averaged 35.4% over 82 one-second samples (median
+36%, peak 97%) with 15.4 GiB maximum observed memory use. Its exact source,
+build, final checkpoints, logs, and samples are archived as
+`relh-coworld-home-reserve-clean-12703.tar.gz` (SHA-256
+`bcc70c052b34e8ca559342e6c53db2cb2c6d09fd3f471be00199916c4fde85ee`).
+The first checkpoint SHA-256 is
+`51bf1ddb9a07ce10d86f132b8e62d1f379c873caeede69d2acc49fc98d7b0d55`.
+Held-out seeds 901 and 902 scored **0.872559** and **0.883301**, below v4's
+scripted-pool scores but above the 0.60 bar. Their archived records are
+`relh-coworld-home-reserve-eval-901-12719.json` (SHA-256
+`0f9bc9b7b44e421237dc237e035319f3602b7b31976ebb826d5eca54d16289bf`)
+and `relh-coworld-home-reserve-eval-902-12720.json` (SHA-256
+`f387045cc7e32421a1525ec138e84160edfcd256ee167c5d06bf9334429eb540`).
+The portable local player cold-started in 15.6 seconds and returned warm
+actions in 3.6 ms. It was uploaded under relh's identity as
+`relh-generals-classic-neural:v1`. Hosted request
+`xreq_510cdd93-1a65-4aca-ae81-cda8ad6b2e51` compares eight Classic 1v1
+games with relh's incumbent. A champion change requires evidence that this
+defensive variant improves on the incumbent.

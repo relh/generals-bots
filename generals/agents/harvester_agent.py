@@ -19,7 +19,7 @@ from .hunter_agent import GARRISON, _bfs, _toward
 
 
 @jax.jit
-def _harvester_action(key, obs, fast_opening):
+def _harvester_action(key, obs, fast_opening, fortify_general=False):
     """Capture general > seize an affordable city > feed surplus > advance > wait."""
     del key
     a, mine = obs.armies, obs.owned_cells
@@ -58,7 +58,9 @@ def _harvester_action(key, obs, fast_opening):
     kill = jnp.any(egen) & movable & (to_goal == 1) & advances & (a - 1 > egen_army)
     ki = jnp.argmax(jnp.where(kill, mine_army, -1).reshape(-1))
     sprinting = fast_opening & (obs.timestep < 80)
-    feed = (gen_army >= jnp.where(sprinting, 2, 2 * GARRISON)) & advances.reshape(-1)[g]
+    reserve = fortify_general & (obs.timestep >= 100)
+    feed_floor = jnp.where(reserve, 120, jnp.where(sprinting, 2, 2 * GARRISON))
+    feed = (gen_army >= feed_floor) & advances.reshape(-1)[g]
     fwd = movable & ~gen & advances
     ci = jnp.argmax(jnp.where(fwd, mine_army, -1).reshape(-1))
 
@@ -79,6 +81,12 @@ def harvester_action(key, obs):
 def sprint_harvester_action(key, obs):
     """Expand as soon as the general can move, then preserve the usual garrison."""
     return _harvester_action(key, obs, True)
+
+
+@jax.jit
+def fortified_harvester_action(key, obs):
+    """Keep a growing home garrison after the opening while scouting outward."""
+    return _harvester_action(key, obs, True, True)
 
 
 class HarvesterAgent(Agent):
@@ -133,7 +141,11 @@ def expander_harvester_action(key, obs):
     toward_general = jnp.stack([jnp.roll(obs.generals, shift, (0, 1)) for shift in shifts])
     toward_blocked = jnp.stack([jnp.roll(obs.structures_in_fog, shift, (0, 1)) for shift in shifts])
     legal = compute_valid_move_mask_obs(obs).transpose(2, 0, 1)
-    captures = legal & ~toward_owned & ~toward_blocked & (obs.armies[None] > toward_army + 1)
+    protected_general = obs.generals[None] & obs.owned_cells[None] & (obs.timestep >= 100)
+    general_target = toward_enemy & toward_general
+    captures = (legal & ~toward_owned & ~toward_blocked
+                & (obs.armies[None] > toward_army + 1)
+                & (~protected_general | general_target))
     priority = (3 * (toward_enemy & toward_general).astype(jnp.int32)
                 + 2 * toward_castle.astype(jnp.int32)
                 + toward_enemy.astype(jnp.int32))
@@ -154,7 +166,7 @@ def expander_harvester_action(key, obs):
     rr = jnp.broadcast_to(jnp.arange(height)[:, None], (height, width))
     cc = jnp.broadcast_to(jnp.arange(width)[None, :], (height, width))
     in_bounds = jnp.stack((rr > 0, rr < height - 1, cc > 0, cc < width - 1))
-    city_roots = (obs.owned_cells[None] & toward_castle & toward_neutral
+    city_roots = (obs.owned_cells[None] & ~protected_general & toward_castle & toward_neutral
                   & ~toward_blocked & in_bounds)
     city_rank = -toward_army * 1000 + obs.armies[None]
     city_index = jnp.argmax(jnp.where(city_roots, city_rank, -1000000000).reshape(-1))
@@ -166,7 +178,8 @@ def expander_harvester_action(key, obs):
     defense = toward_army.reshape(-1)[city_index]
     root_army = obs.armies.reshape(-1)[root_cell]
     gather_direction, neighbor_distance = _toward(owned_distance, obs.owned_cells)
-    feeders = connected & (owned_distance > 0) & (obs.armies > 1) & (neighbor_distance < owned_distance)
+    feeders = (connected & (owned_distance > 0) & (obs.armies > 1)
+               & ~protected_general[0] & (neighbor_distance < owned_distance))
     feeder = jnp.argmax(jnp.where(feeders, obs.armies * 1000 - owned_distance, -1).reshape(-1))
     can_take_city = root_army > defense + 1
     city_action = jnp.array([0, root_cell // width, root_cell % width, city_direction, 0], dtype=jnp.int32)
@@ -179,7 +192,7 @@ def expander_harvester_action(key, obs):
     visible_general = jnp.any(obs.opponent_cells & obs.generals)
     immediate_general_capture = jnp.any(captures & toward_enemy & toward_general)
     immediate_city_capture = jnp.any(captures & toward_castle)
-    route_action = sprint_harvester_action(key, obs)
+    route_action = fortified_harvester_action(key, obs)
     return jnp.where(
         immediate_general_capture | immediate_city_capture, action,
         jnp.where(visible_general, route_action,
