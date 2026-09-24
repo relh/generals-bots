@@ -147,3 +147,66 @@ def tied_spatial_mlp_policy(
         nn.tie(graph).by(nn.sharing.edge_key(_local_kernel_key)),
     )
     return PolicyGraph(graph, "sense", ("out",))
+
+
+def _local_action_key(source, target, context):
+    if source[0] == "sense" and target[0] == "local":
+        sx, sy = context.src.attr(source, "coord")
+        dx, dy = context.dst.attr(target, "coord")
+        return ("input", context.src.attr(source, "channel"), dx - sx, dy - sy,
+                context.dst.attr(target, "feature"))
+    if source[0] == "local" and target[0] == "out":
+        return ("action", context.src.attr(source, "feature"), context.dst.attr(target, "direction"))
+    return ("unique", source, target)
+
+
+def tied_local_action_policy(
+    *, observation_size: int, output_size: int, channels: int, height: int, width: int,
+    features_per_site: int = 8, global_features: int = 32,
+) -> PolicyGraph:
+    """Share board kernels and action-direction readouts, with global context."""
+    cells = height * width
+    if min(channels, height, width, features_per_site, global_features) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    if observation_size != channels * cells or output_size != 4 * cells + 4:
+        raise ValueError("This policy requires channel-first maps and factorized Generals actions")
+    sense = nn.cluster(
+        "sense", nn.atoms.Input(), n=observation_size,
+        geometry=nn.geometry.fields(own={
+            (f"input_{i}",): {"coord": (i % width, (i // width) % height), "channel": i // cells}
+            for i in range(observation_size)
+        }),
+    )
+    local = nn.cluster(
+        "local", SiLU(), n=cells * features_per_site,
+        geometry=nn.geometry.fields(own={
+            (f"a_{i}",): {
+                "coord": ((i // features_per_site) % width, (i // features_per_site) // width),
+                "feature": i % features_per_site,
+            }
+            for i in range(cells * features_per_site)
+        }),
+    )
+    global_core = nn.cluster("global", SiLU(), n=global_features)
+    out = nn.cluster(
+        "out", nn.atoms.Output(), n=output_size,
+        geometry=nn.geometry.fields(own={
+            (f"a_{i}",): {
+                "coord": ((i % cells) % width, (i % cells) // width) if i < 4 * cells else (-100, -100),
+                "direction": i // cells if i < 4 * cells else -1,
+                "move": i < 4 * cells,
+            }
+            for i in range(output_size)
+        }),
+    )
+    graph = nn.cluster("tied_local_action", {"sense": sense, "local": local, "global": global_core, "out": out})
+    fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
+    graph.add(
+        (sense >> local).by(nn.rules.stencil(radius=2**0.5)).semantics(fixed),
+        (local >> out).by(nn.rules.stencil(dst=nn.select.output_atoms().where(move=True), radius=0)).semantics(fixed),
+        (local >> global_core).by(nn.rules.all_to_all()),
+        (global_core >> out).by(nn.rules.all_to_all()),
+        nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
+        nn.tie(graph).by(nn.sharing.edge_key(_local_action_key)),
+    )
+    return PolicyGraph(graph, "sense", ("out",))
