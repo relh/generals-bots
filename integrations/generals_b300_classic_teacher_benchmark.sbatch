@@ -31,7 +31,7 @@ srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 --cpu-bind=cores bash -
     }
     trap cleanup EXIT
     trap "exit 143" TERM
-    timeout -k 30s 6m docker run --rm --name "$name" --ulimit core=0:0 \
+    timeout -k 30s 6m docker run -i --rm --name "$name" --ulimit core=0:0 \
         --gpus "device=${SLURM_STEP_GPUS}" --cpus=8 \
         --user "$(id -u):$(id -g)" -v "$workspace:/work" -w /work \
         -e HOME=/work -e PYTHONPATH=/work/runtime:/work/source-gpu \
