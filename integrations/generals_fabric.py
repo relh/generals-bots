@@ -203,7 +203,7 @@ def tied_local_action_policy(
     fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
     graph.add(
         (sense >> local).by(nn.rules.stencil(radius=2**0.5)).semantics(fixed),
-        (local >> out).by(nn.rules.stencil(dst=nn.select.output_atoms().where(move=True), radius=0)).semantics(fixed),
+        (local >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
         (local >> global_core).by(nn.rules.all_to_all()),
         (global_core >> out).by(nn.rules.all_to_all()),
         nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
