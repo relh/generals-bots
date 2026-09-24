@@ -2,8 +2,11 @@
 
 import jax
 import jax.numpy as jnp
+import numpy as np
 
-from generals.agents.harvester_agent import harvester_action
+from generals.agents.harvester_agent import (
+    expander_harvester_action, harvester_action, sprint_harvester_action,
+)
 from generals.agents.hunter_agent import _bfs, _toward
 from generals.core.action import compute_valid_move_mask_obs
 
@@ -130,9 +133,10 @@ def encode_coworld_packed_directional_observation(obs):
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
-def encode_coworld_hinted_observation(obs, *, signed_flags=False):
+def encode_coworld_hinted_observation(obs, *, signed_flags=False, sprint_hint=False, expander_hint=False):
     """Public view with a scripted move hint for a neural residual policy."""
-    hint = harvester_action(jax.random.PRNGKey(0), obs)
+    hint_fn = expander_harvester_action if expander_hint else sprint_harvester_action if sprint_hint else harvester_action
+    hint = hint_fn(jax.random.PRNGKey(0), obs)
     height, width = obs.armies.shape
     direction = jnp.zeros((4, height, width), dtype=jnp.float32)
     direction = direction.at[hint[3], hint[1], hint[2]].set((hint[0] == 0).astype(jnp.float32))
@@ -147,6 +151,16 @@ def encode_coworld_hinted_observation(obs, *, signed_flags=False):
     )).astype(jnp.float32)
     moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+
+
+def hinted_replay_indices(values, board_size: int):
+    """Read the exact scripted action already present in signed hint planes."""
+    cells = board_size * board_size
+    planes = np.asarray(values).reshape(-1, 8, cells)
+    source = np.argmax(planes[:, 4:8].reshape(-1, 4 * cells), axis=1).astype(np.int32)
+    passing = planes[:, 3, 0] > 0
+    split = np.where(passing, -1, planes[:, 2, 0] > 0).astype(np.int32)
+    return np.stack((np.where(passing, 4 * cells, source), split), axis=1)
 
 
 def decode_action(index, size, split=None):

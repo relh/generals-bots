@@ -20,6 +20,12 @@ _encode_directional = jax.jit(encode_coworld_directional_observation)
 _encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
 _encode_hinted = jax.jit(encode_coworld_hinted_observation)
 _encode_prior_hinted = jax.jit(lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True))
+_encode_sprint_prior_hinted = jax.jit(
+    lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True, sprint_hint=True)
+)
+_encode_expander_prior_hinted = jax.jit(
+    lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True, expander_hint=True)
+)
 
 
 def training_observation(message: dict) -> Observation:
@@ -70,10 +76,16 @@ def encode_wire_observation(
     message: dict, *, compact: bool = False, lean: bool = False,
     directional: bool = False, packed_directional: bool = False, hinted: bool = False,
     prior_hinted: bool = False,
+    sprint_prior_hinted: bool = False,
+    expander_prior_hinted: bool = False,
 ):
     observation = training_observation(message)
     values, mask = (
-        _encode_prior_hinted(observation)
+        _encode_expander_prior_hinted(observation)
+        if expander_prior_hinted
+        else _encode_sprint_prior_hinted(observation)
+        if sprint_prior_hinted
+        else _encode_prior_hinted(observation)
         if prior_hinted
         else _encode_hinted(observation)
         if hinted

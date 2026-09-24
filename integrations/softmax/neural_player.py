@@ -38,7 +38,9 @@ async def play(url: str, bundle: Path) -> None:
     build = json.loads(config.build.read_text())
     options = build["config"]["python_environment"]["options"]
     codec_kwargs = (
-        {"prior_hinted": True} if options.get("prior_hint_features")
+        {"expander_prior_hinted": True} if options.get("expander_hint_features")
+        else {"sprint_prior_hinted": True} if options.get("sprint_hint_features")
+        else {"prior_hinted": True} if options.get("prior_hint_features")
         else {"hinted": True} if options.get("hint_features")
         else {"packed_directional": True} if options.get("packed_directional_features")
         else {"directional": True} if options.get("directional_features")

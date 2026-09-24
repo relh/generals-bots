@@ -278,3 +278,42 @@ the held-out result to independent strategy discovery. The portable CPU player
 bundle from this checkpoint loaded in a local container and returned a warm
 action in 3.8 ms after 4.1 s of startup prewarming. Hosted Observatory
 evaluation and champion submission remain to be checked.
+
+Hosted Observatory tests of `richard-generals-classic-neural:v1` lost 0–4 to
+`aaron-generals:v10` (`xreq_2319880e-0b50-4ee4-875c-015eb0ca74c4`) and
+1–5 to richard's incumbent `co-gas-generals-siege-richard:v2`
+(`xreq_d2b60a8f-7822-4670-aaf8-633338b780b9`). The neural policy often
+controlled only one tile at turn 10 while the incumbent controlled four or
+five. It was not submitted or made champion.
+
+A sprint-opening public hint improved early expansion. Its bounded B300 pilot
+reached about 45,000 warm aggregate SPS and 31,200 SPS at the final epoch
+with two 2,048-game trainers. The first checkpoint scored 0.699463 and
+0.745605 on held-out seeds 901 and 902. Uploaded as
+`richard-generals-classic-neural:v2`, it lost 1–5 to the incumbent in hosted
+request `xreq_e463035f-c3a4-4226-9597-a3c1725e2ec0`. It was not promoted.
+
+The capture-first public hint selects affordable frontier captures before
+falling back to the sprint route. Its exact signed hint also supplies sparse
+replay labels, avoiding a second JAX teacher search during each rollout.
+Bounded B300 pilot 12406 trained two independent 2,048-game Puffer policies
+for 1,048,576 steps each. The combined warm rate was about 37,000 SPS, but
+the final displayed rate was 14,200 + 13,700 = **27,900 SPS**. This fails the
+sustained 30,000-SPS gate, so do not launch a long capture-first run until
+late-rollout throughput is fixed. The checkpoints, exact build, logs, and GPU
+samples are archived as
+`/home/metta/relh-generals-puffer/coworld-classic/relh-coworld-expander-prior-12406.tar.gz`
+(SHA-256 `ff774388e0c1cb37c9ff74327ccf8aa2933a3a2ebda34cee285b736c9c2ea047`).
+The first checkpoint scored **0.955322** and **0.960693** on held-out seeds
+901 and 902 against the mixed scripted pool. Their archived records are
+`relh-coworld-expander-eval-901-12407.json` (SHA-256
+`e7b1bdcbbfcdd3d7204029f4cfb1df786e221950799cff0bf6c98f0ceef3deab`)
+and `relh-coworld-expander-eval-902-12408.json` (SHA-256
+`32b9d5fb942a3e074dca648bf13092f7a7f849a9ed47f66634494487bf7f832c`).
+The evaluated checkpoint's SHA-256 is
+`e6e442c3194669cd72e8d0e63de35de0eaff14b3cefe7636df2c74382c80e703`.
+The neural readout follows the scripted public hint closely after short
+supervised training; the hint remains the main source of strength. The exact
+policy was uploaded as `richard-generals-classic-neural:v3`. Hosted request
+`xreq_9903abf6-324d-45d5-8b5f-4e3f788ee1ad` compares it with richard's
+incumbent before any champion change.

@@ -10,7 +10,7 @@ from integrations.puffer_codec import (
     encode_coworld_lean_observation,
     encode_coworld_observation,
     encode_coworld_packed_directional_observation,
-    encode_observation,
+    encode_observation, hinted_replay_indices,
 )
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import encode_wire_observation, training_observation
@@ -80,3 +80,30 @@ def test_coworld_wire_view_matches_padded_training_view():
     expected_prior, expected_prior_mask = encode_coworld_hinted_observation(expected, signed_flags=True)
     np.testing.assert_array_equal(prior_values, np.asarray(expected_prior))
     np.testing.assert_array_equal(prior_mask, np.asarray(expected_prior_mask))
+
+    sprint_values, sprint_mask = encode_wire_observation(message, sprint_prior_hinted=True)
+    expected_sprint, expected_sprint_mask = encode_coworld_hinted_observation(
+        expected, signed_flags=True, sprint_hint=True
+    )
+    np.testing.assert_array_equal(sprint_values, np.asarray(expected_sprint))
+    np.testing.assert_array_equal(sprint_mask, np.asarray(expected_sprint_mask))
+
+    expander_values, expander_mask = encode_wire_observation(message, expander_prior_hinted=True)
+    expected_expander, expected_expander_mask = encode_coworld_hinted_observation(
+        expected, signed_flags=True, expander_hint=True
+    )
+    np.testing.assert_array_equal(expander_values, np.asarray(expected_expander))
+    np.testing.assert_array_equal(expander_mask, np.asarray(expected_expander_mask))
+
+
+def test_signed_hint_replay_metadata_covers_pass_and_move():
+    planes = np.zeros((2, 8, 21 * 21), dtype=np.float32)
+    planes[0, 3] = 1
+    planes[0, 2] = -1
+    planes[1, 3] = -1
+    planes[1, 2] = 1
+    planes[1, 5, 123] = 1
+    np.testing.assert_array_equal(
+        hinted_replay_indices(planes.reshape(2, -1), 21),
+        np.asarray([[1764, -1], [441 + 123, 1]], dtype=np.int32),
+    )

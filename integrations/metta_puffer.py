@@ -20,13 +20,14 @@ from metta_training.environment import (
 
 from generals import GeneralsEnv
 from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
-from generals.agents.harvester_agent import HarvesterAgent
+from generals.agents.harvester_agent import ExpanderHarvesterAgent, HarvesterAgent, SprintHarvesterAgent
 from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
 from integrations.puffer_codec import (
     decode_action, encode_coworld_directional_observation, encode_coworld_lean_observation,
     encode_coworld_hinted_observation, encode_coworld_observation,
     encode_coworld_packed_directional_observation, encode_observation,
+    hinted_replay_indices,
 )
 
 
@@ -53,6 +54,8 @@ class GeneralsPufferEnvironment:
         packed_directional_features: bool = False,
         hint_features: bool = False,
         prior_hint_features: bool = False,
+        sprint_hint_features: bool = False,
+        expander_hint_features: bool = False,
         teacher_rollouts: bool = False,
         goal_features: bool = False,
     ):
@@ -76,6 +79,13 @@ class GeneralsPufferEnvironment:
             raise ValueError("Hinted observations require lean Coworld Classic features")
         if prior_hint_features and not hint_features:
             raise ValueError("Signed prior hints require hinted observations")
+        if sprint_hint_features and not prior_hint_features:
+            raise ValueError("Sprint hints require signed prior hints")
+        if expander_hint_features and (not prior_hint_features or sprint_hint_features):
+            raise ValueError("Expander hints require signed prior hints without sprint hints")
+        expected_teacher = "expander_harvester" if expander_hint_features else "sprinter" if sprint_hint_features else "harvester"
+        if prior_hint_features and teacher != expected_teacher:
+            raise ValueError("Signed hint replay labels must match the scripted teacher")
         if teacher_rollouts and (teacher is None or not (sparse_teacher or supervise_teacher)):
             raise ValueError("Teacher rollouts require supervised teacher actions")
         if coworld_classic:
@@ -91,6 +101,8 @@ class GeneralsPufferEnvironment:
         self.packed_directional_features = packed_directional_features
         self.hint_features = hint_features
         self.prior_hint_features = prior_hint_features
+        self.sprint_hint_features = sprint_hint_features
+        self.expander_hint_features = expander_hint_features
         self.teacher_rollouts = teacher_rollouts and context.mode == "train"
         self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
@@ -128,7 +140,10 @@ class GeneralsPufferEnvironment:
 
         self._initial_state = jax.jit(initial_state)
         self._encode = (
-            (lambda obs: encode_coworld_hinted_observation(obs, signed_flags=prior_hint_features))
+            (lambda obs: encode_coworld_hinted_observation(
+                obs, signed_flags=prior_hint_features, sprint_hint=sprint_hint_features,
+                expander_hint=expander_hint_features,
+            ))
             if hint_features
             else encode_coworld_packed_directional_observation
             if packed_directional_features
@@ -150,6 +165,8 @@ class GeneralsPufferEnvironment:
             "hunter": HunterAgent,
             "random": RandomAgent,
             "harvester": HarvesterAgent,
+            "sprinter": SprintHarvesterAgent,
+            "expander_harvester": ExpanderHarvesterAgent,
             "sentinel": SentinelAgent,
         }
         teacher_agent = opponent_types[teacher]() if teacher is not None else None
@@ -190,7 +207,7 @@ class GeneralsPufferEnvironment:
             reward = outcome + shaping_weight * (
                 0.99 * (0.5 * new_army + 0.3 * new_land) * ~done - (0.5 * old_army + 0.3 * old_land)
             )
-            if teacher_agent is not None:
+            if teacher_agent is not None and imitation_weight:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
                 reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
             values, mask = self._encode(final)
@@ -333,7 +350,7 @@ class BatchedGeneralsPufferEnvironment:
                 alive, active, inactive, operand=None
             )
             teacher_action = None
-            if self.base.training and (self.base.supervise_teacher or self.base.sparse_teacher):
+            if self.base.training and (self.base.supervise_teacher or self.base.sparse_teacher) and not self.base.prior_hint_features:
                 teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
                 teacher_action = self.base._teacher(next_state, side, teacher_key)
             return next_state, next_key, values, mask, reward, done, outcome, teacher_action
@@ -355,18 +372,25 @@ class BatchedGeneralsPufferEnvironment:
         if self.base.sparse_teacher:
             metadata = np.full((self.parallel_games, 2), -1, dtype=np.float32)
             if self.base.training:
-                if teacher_actions is None:
-                    teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
-                    teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
-                actions = np.asarray(teacher_actions)
-                cells = self.base.size**2
-                move_index = actions[:, 3] * cells + actions[:, 1] * self.base.size + actions[:, 2]
-                index = np.where(actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move_index)
-                rows = np.arange(self.parallel_games)
-                labeled = (~self.finished) & legal[rows, index]
-                metadata[labeled, 0] = index[labeled]
-                moving = labeled & (actions[:, 0] == 0)
-                metadata[moving, 1] = actions[moving, 4]
+                if self.base.prior_hint_features:
+                    labels = hinted_replay_indices(public_values, self.base.size)
+                    rows = np.arange(self.parallel_games)
+                    labeled = (~self.finished) & legal[rows, labels[:, 0]]
+                    metadata[labeled, 0] = labels[labeled, 0]
+                    metadata[labeled, 1] = labels[labeled, 1]
+                else:
+                    if teacher_actions is None:
+                        teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+                        teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+                    actions = np.asarray(teacher_actions)
+                    cells = self.base.size**2
+                    move_index = actions[:, 3] * cells + actions[:, 1] * self.base.size + actions[:, 2]
+                    index = np.where(actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move_index)
+                    rows = np.arange(self.parallel_games)
+                    labeled = (~self.finished) & legal[rows, index]
+                    metadata[labeled, 0] = index[labeled]
+                    moving = labeled & (actions[:, 0] == 0)
+                    metadata[moving, 1] = actions[moving, 4]
         if self.base.supervise_teacher:
             probabilities = np.zeros((self.parallel_games, sum(self.spec.action_sizes)), dtype=np.float32)
             weights = np.zeros((self.parallel_games, len(self.spec.action_sizes)), dtype=np.float32)
