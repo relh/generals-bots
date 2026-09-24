@@ -85,3 +85,63 @@ def spatial_mlp_policy(
     if observation_size > image_size:
         graph.add((sense >> out).by(nn.rules.all_to_all(src=nn.select.input_atoms().where(image=False))))
     return PolicyGraph(graph, "sense", ("out",))
+
+
+def _local_kernel_key(source, target, context):
+    src_x, src_y = context.src.attr(source, "coord")
+    dst_x, dst_y = context.dst.attr(target, "coord")
+    return (
+        context.src.attr(source, "channel"),
+        dst_x - src_x,
+        dst_y - src_y,
+        context.dst.attr(target, "feature"),
+    )
+
+
+def tied_spatial_mlp_policy(
+    *, observation_size: int, output_size: int, channels: int, height: int, width: int, features_per_site: int = 8
+) -> PolicyGraph:
+    """Local Fabric features with shared spatial kernels and feature parameters."""
+    if min(channels, height, width, output_size, features_per_site) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    image_size = channels * height * width
+    if observation_size != image_size:
+        raise ValueError("Tied spatial policy expects channel-first image observations")
+    columns, rows = (width + 1) // 2, (height + 1) // 2
+    sense = nn.cluster(
+        "sense",
+        nn.atoms.Input(),
+        n=observation_size,
+        geometry=nn.geometry.fields(
+            own={
+                (f"input_{i}",): {"coord": (i % width, (i // width) % height), "channel": i // (height * width)}
+                for i in range(observation_size)
+            }
+        ),
+    )
+    core = nn.cluster(
+        "core",
+        SiLU(),
+        n=columns * rows * features_per_site,
+        geometry=nn.geometry.fields(
+            own={
+                (f"a_{i}",): {
+                    "coord": (2 * ((i // features_per_site) % columns), 2 * ((i // features_per_site) // columns)),
+                    "feature": i % features_per_site,
+                    "core": True,
+                }
+                for i in range(columns * rows * features_per_site)
+            }
+        ),
+    )
+    out = nn.cluster("out", nn.atoms.Output(), n=output_size)
+    graph = nn.cluster("tied_spatial_mlp", {"sense": sense, "core": core, "out": out})
+    graph.add(
+        (sense >> core).by(nn.rules.stencil(radius=2**0.5)),
+        (core >> out).by(nn.rules.all_to_all()),
+        nn.tie(core).by(nn.field("feature")).on("weight", "bias"),
+        nn.tie(graph).by(
+            nn.edge_key(_local_kernel_key, src=nn.select.input_atoms(), dst=nn.select.atoms().where(core=True))
+        ),
+    )
+    return PolicyGraph(graph, "sense", ("out",))
