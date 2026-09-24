@@ -23,7 +23,9 @@ from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.agents.harvester_agent import HarvesterAgent
 from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
-from integrations.puffer_codec import decode_action, encode_coworld_observation, encode_observation
+from integrations.puffer_codec import (
+    decode_action, encode_coworld_lean_observation, encode_coworld_observation, encode_observation,
+)
 
 
 class GeneralsPufferEnvironment:
@@ -38,28 +40,36 @@ class GeneralsPufferEnvironment:
         teacher: str | None = None,
         imitation_weight: float = 0.0,
         supervise_teacher: bool = False,
+        sparse_teacher: bool = False,
         factorized_actions: bool = False,
         classic_maps: bool = False,
         coworld_classic: bool = False,
         coworld_pool_size: int = 256,
         compact_features: bool = False,
+        lean_features: bool = False,
         goal_features: bool = False,
     ):
-        if imitation_weight < 0 or ((imitation_weight or supervise_teacher) and teacher is None):
+        if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
+        if sparse_teacher and (supervise_teacher or not factorized_actions):
+            raise ValueError("Sparse teacher requires factorized actions without dense supervision")
         if coworld_classic and classic_maps:
             raise ValueError("Choose one map distribution")
         if coworld_classic and (coworld_pool_size < 16 or coworld_pool_size % 16):
             raise ValueError("Coworld map pool must contain the 16 board sizes evenly")
         if compact_features and (not coworld_classic or not factorized_actions or goal_features):
             raise ValueError("Compact observations require Coworld Classic and factorized actions")
+        if lean_features and (not compact_features or goal_features):
+            raise ValueError("Lean observations require compact Coworld Classic features")
         if coworld_classic:
             board_size, horizon = 21, 1200
         self.size = board_size
         self.supervise_teacher = supervise_teacher
+        self.sparse_teacher = sparse_teacher
         self.factorized_actions = factorized_actions
         self.goal_features = goal_features
         self.compact_features = compact_features
+        self.lean_features = lean_features
         self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
         if coworld_classic:
@@ -81,9 +91,11 @@ class GeneralsPufferEnvironment:
                 **map_options,
             )
         self.spec = EnvironmentSpec(
-            observation_size=(14 if compact_features else 21 if goal_features else 14) * board_size * board_size,
+            observation_size=(8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
+            * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
+            replay_metadata_size=2 if sparse_teacher else 0,
         )
         self.pool = None if coworld_classic else self.env.reset(jax.random.PRNGKey(context.seed + context.index))[0]
         def initial_state(pool, key):
@@ -94,7 +106,9 @@ class GeneralsPufferEnvironment:
 
         self._initial_state = jax.jit(initial_state)
         self._encode = (
-            encode_coworld_observation
+            encode_coworld_lean_observation
+            if lean_features
+            else encode_coworld_observation
             if compact_features
             else lambda obs: encode_observation(
                 obs, factorized_actions=factorized_actions, goal_features=goal_features
@@ -111,7 +125,7 @@ class GeneralsPufferEnvironment:
             "sentinel": SentinelAgent,
         }
         teacher_agent = opponent_types[teacher]() if teacher is not None else None
-        if supervise_teacher:
+        if supervise_teacher or sparse_teacher:
             self._teacher = jax.jit(lambda state, side, key: teacher_agent.act(game.get_observation(state, side), key))
         opponent_agents = (
             (RandomAgent(), ExpanderAgent(), HunterAgent()) if opponent == "mixed" else (opponent_types[opponent](),)
@@ -159,6 +173,19 @@ class GeneralsPufferEnvironment:
     def _observation(self, values, mask):
         legal = np.asarray(mask, dtype=bool)
         teachers = []
+        metadata = []
+        if self.sparse_teacher:
+            indices = [-1.0, -1.0]
+            if self.training:
+                opponent_key, _ = jax.random.split(self.key)
+                action = np.asarray(self._teacher(self.state, self.side, jax.random.fold_in(opponent_key, 37)))
+                cells = self.size**2
+                index = 4 * cells if action[0] else action[3] * cells + action[1] * self.size + action[2]
+                if legal[index]:
+                    indices[0] = float(index)
+                    if not action[0]:
+                        indices[1] = float(action[4])
+            metadata = [indices]
         if self.supervise_teacher:
             probabilities = np.zeros(sum(self.spec.action_sizes), dtype=np.float32)
             weights = [0.0] * len(self.spec.action_sizes)
@@ -181,7 +208,8 @@ class GeneralsPufferEnvironment:
                         weights[1] = 1.0
             teachers = [TeacherTargets(probabilities=probabilities.tolist(), weights=weights)]
         return NumericObservation(
-            values=[np.asarray(values).tolist()], action_masks=[legal.tolist()], teachers=teachers
+            values=[np.asarray(values).tolist()], action_masks=[legal.tolist()],
+            teachers=teachers, replay_metadata=metadata,
         )
 
     def reset(self, seed: str) -> NumericObservation:
@@ -240,7 +268,7 @@ class BatchedGeneralsPufferEnvironment:
         self.completed = np.zeros(parallel_games, dtype=np.int32)
         self._init_states = jax.jit(jax.vmap(self.base._initial_state, in_axes=(None, 0)))
         self._observe_states = jax.jit(jax.vmap(self.base._observe))
-        if self.base.supervise_teacher:
+        if self.base.supervise_teacher or self.base.sparse_teacher:
             self._teacher_actions = jax.jit(jax.vmap(self.base._teacher))
 
         def advance_one(state, pool, side, opponent_id, index, split, key, alive):
@@ -268,7 +296,7 @@ class BatchedGeneralsPufferEnvironment:
                 alive, active, inactive, operand=None
             )
             teacher_action = None
-            if self.base.training and self.base.supervise_teacher:
+            if self.base.training and (self.base.supervise_teacher or self.base.sparse_teacher):
                 teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
                 teacher_action = self.base._teacher(next_state, side, teacher_key)
             return next_state, next_key, values, mask, reward, done, outcome, teacher_action
@@ -286,6 +314,22 @@ class BatchedGeneralsPufferEnvironment:
 
         probabilities = None
         weights = None
+        metadata = None
+        if self.base.sparse_teacher:
+            metadata = np.full((self.parallel_games, 2), -1, dtype=np.float32)
+            if self.base.training:
+                if teacher_actions is None:
+                    teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+                    teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+                actions = np.asarray(teacher_actions)
+                cells = self.base.size**2
+                move_index = actions[:, 3] * cells + actions[:, 1] * self.base.size + actions[:, 2]
+                index = np.where(actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move_index)
+                rows = np.arange(self.parallel_games)
+                labeled = (~self.finished) & legal[rows, index]
+                metadata[labeled, 0] = index[labeled]
+                moving = labeled & (actions[:, 0] == 0)
+                metadata[moving, 1] = actions[moving, 4]
         if self.base.supervise_teacher:
             probabilities = np.zeros((self.parallel_games, sum(self.spec.action_sizes)), dtype=np.float32)
             weights = np.zeros((self.parallel_games, len(self.spec.action_sizes)), dtype=np.float32)
@@ -306,7 +350,8 @@ class BatchedGeneralsPufferEnvironment:
                     moving = labeled & (actions[:, 0] == 0)
                     probabilities[rows[moving], self.spec.action_sizes[0] + actions[moving, 4]] = 1
                     weights[moving, 1] = 1
-        return NumericObservation.from_arrays(public_values, legal, probabilities, weights)
+        observation = NumericObservation.from_arrays(public_values, legal, probabilities, weights)
+        return observation.model_copy(update={"replay_metadata": metadata.tolist()}) if metadata is not None else observation
 
     def reset(self, seed: str) -> NumericObservation:
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")

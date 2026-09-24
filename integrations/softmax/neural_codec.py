@@ -3,7 +3,7 @@
 import numpy as np
 
 from generals.core.observation import Observation
-from integrations.puffer_codec import encode_coworld_observation, encode_observation
+from integrations.puffer_codec import encode_coworld_lean_observation, encode_coworld_observation, encode_observation
 
 
 BOARD_SIZE = 21
@@ -53,10 +53,12 @@ def training_observation(message: dict) -> Observation:
     )
 
 
-def encode_wire_observation(message: dict, *, compact: bool = False):
+def encode_wire_observation(message: dict, *, compact: bool = False, lean: bool = False):
     observation = training_observation(message)
     values, mask = (
-        encode_coworld_observation(observation)
+        encode_coworld_lean_observation(observation)
+        if lean
+        else encode_coworld_observation(observation)
         if compact
         else encode_observation(observation, factorized_actions=True, goal_features=True)
     )

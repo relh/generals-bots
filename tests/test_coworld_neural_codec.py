@@ -4,7 +4,7 @@ import jax.numpy as jnp
 import numpy as np
 
 from generals.core import game
-from integrations.puffer_codec import encode_coworld_observation, encode_observation
+from integrations.puffer_codec import encode_coworld_lean_observation, encode_coworld_observation, encode_observation
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import encode_wire_observation, training_observation
 
@@ -44,3 +44,9 @@ def test_coworld_wire_view_matches_padded_training_view():
     np.testing.assert_array_equal(compact_values, np.asarray(expected_compact))
     np.testing.assert_array_equal(compact_mask, np.asarray(expected_compact_mask))
     assert compact_values.shape == (6174,)
+
+    lean_values, lean_mask = encode_wire_observation(message, lean=True)
+    expected_lean, expected_lean_mask = encode_coworld_lean_observation(expected)
+    np.testing.assert_array_equal(lean_values, np.asarray(expected_lean))
+    np.testing.assert_array_equal(lean_mask, np.asarray(expected_lean_mask))
+    assert lean_values.shape == (3528,)

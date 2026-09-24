@@ -20,13 +20,17 @@ def main() -> None:
     games = int(sys.argv[1])
     features = sys.argv[2] == "features"
     compact = sys.argv[2] == "compact"
+    lean = sys.argv[2] == "lean"
     teacher = sys.argv[3] == "teacher"
+    sparse_teacher = sys.argv[3] == "sparse"
     with_transport = len(sys.argv) > 4 and sys.argv[4] == "transport"
     started = time.monotonic()
     env = BatchedGeneralsPufferEnvironment(
         context=context, parallel_games=games, coworld_classic=True, coworld_pool_size=64,
-        opponent="mixed", teacher="harvester" if teacher else None, supervise_teacher=teacher,
-        factorized_actions=True, goal_features=features, compact_features=compact, shaping_weight=1.0,
+        opponent="mixed", teacher="harvester" if teacher or sparse_teacher else None,
+        supervise_teacher=teacher, sparse_teacher=sparse_teacher,
+        factorized_actions=True, goal_features=features, compact_features=compact or lean,
+        lean_features=lean, shaping_weight=1.0,
     )
     print(f"construct_seconds={time.monotonic() - started:.3f}", flush=True)
     started = time.monotonic()

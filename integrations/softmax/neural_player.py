@@ -19,7 +19,7 @@ from .protocol import VERSION
 
 
 def select_action(policy: FrozenPolicy, message: dict) -> list[int]:
-    values, mask = encode_wire_observation(message, compact=True)
+    values, mask = encode_wire_observation(message, lean=True)
     prediction = policy.predict(
         0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()])
     )
@@ -37,7 +37,7 @@ async def play(url: str, bundle: Path) -> None:
     policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
     policy.reset("coworld-classic")
     # Compile graph execution before the first 500 ms action deadline.
-    dummy = NumericObservation(values=[[0.0] * 6174], action_masks=[[False] * 1764 + [True, True, True]])
+    dummy = NumericObservation(values=[[0.0] * 3528], action_masks=[[False] * 1764 + [True, True, True]])
     policy.predict(0, dummy)
     policy.reset("coworld-classic")
     replies, slowest = 0, 0.0

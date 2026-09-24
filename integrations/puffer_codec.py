@@ -80,6 +80,23 @@ def encode_coworld_observation(obs):
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
+def encode_coworld_lean_observation(obs):
+    """Eight public planes for a lower-bandwidth Classic training probe."""
+    route = harvester_route_features(obs)
+    planes = jnp.stack((
+        jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,
+        obs.generals,
+        obs.castles,
+        obs.mountains | obs.structures_in_fog,
+        obs.owned_cells,
+        obs.opponent_cells,
+        obs.fog_cells,
+        route[4] - route[3] + 2.0 * (route[6] - route[5]),
+    )).astype(jnp.float32)
+    moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
+    return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+
+
 def decode_action(index, size, split=None):
     cells = size * size
     channel, position = index // cells, index % cells
