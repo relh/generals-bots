@@ -45,6 +45,11 @@ Current state and evidence
     before any eventual submission. Current CLI identity is Richard,
     ply_ded11f40-3e30-4921-b019-f7f6bc3e9c83. Coworld CLI is under
     /Users/relh/Code/metta (uv run coworld ...).
+    Held-out eval artifacts on metta0 are
+    relh-coworld-stability-lr1e3-eval-901-12998.json (Slurm 12998, SHA256
+    98e2b82a6328f141157001254bd2f250c95c5494964a34750160ea66e0772f70)
+    and relh-coworld-stability-lr1e3-eval-902-12999.json (Slurm 12999,
+    SHA256 b8dfb2ecf8f03d42ad67c29744646c485038701fd8b0a87563540650921eb2b6).
   * A guarded intended ~21M-step two-trainer long run (Slurm 13044) stopped
     at epochs 55/56 because SPS fell to 26.5K. Environment time doubled to
     ~4 s; GPU memory stayed ~15.4 GiB. There was no checkpoint before its
@@ -82,9 +87,14 @@ Exact next steps on resumption
      SPS, checkpoints, and whether Docker/trainer processes remain. Its
      batch script traps cleanup, but cleanup has not been independently
      verified. Preserve checkpoints/logs in a verified archive on B300.
-     Slurm accounting is disabled, but `scontrol show job 13087` reports
-     COMPLETED, exit 0:0. Neither direct SSH nor `srun --jobid` was
-     available after the allocation expired; no new job was launched.
+    Slurm accounting is disabled, but `scontrol show job 13087` reports
+    COMPLETED, exit 0:0. Neither direct SSH nor `srun --jobid` was
+    available after the allocation expired; no new job was launched.
+     At the 22:18 UTC handoff, `squeue` listed no active owned Coworld Slurm
+     jobs. No separate in-flight hosted evaluation request ID is present in
+     this worktree's records; the three v6 `xreq_` IDs above are the known
+     hosted readback IDs. Leave any external evaluation intact and read back
+     its request ID from the initiating session or Observatory before acting.
   2. Diagnose the later-step environment-time and SPS collapse using short,
      bounded B200/B300 probes; profile rollout versus optimization, JAX
      synchronization, teacher target construction, and host/device copies.
