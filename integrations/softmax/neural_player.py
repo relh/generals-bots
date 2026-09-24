@@ -36,9 +36,17 @@ def select_action(policy: FrozenPolicy, message: dict) -> list[int]:
 async def play(url: str, bundle: Path) -> None:
     policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
     policy.reset("coworld-classic")
-    # Compile graph execution before the first 500 ms action deadline.
-    dummy = NumericObservation(values=[[0.0] * 3528], action_masks=[[False] * 1764 + [True, True, True]])
-    policy.predict(0, dummy)
+    # Compile both the wire codec and graph before the first 500 ms deadline.
+    kinds = [[1] * 21 for _ in range(21)]
+    owners = [[0] * 21 for _ in range(21)]
+    armies = [[0] * 21 for _ in range(21)]
+    kinds[10][10], owners[10][10], armies[10][10] = 4, 1, 1
+    warmup = {
+        "height": 21, "width": 21, "type_grid": kinds, "owner_grid": owners, "army_grid": armies,
+        "my_land": 1, "my_army": 1, "opp_land": 1, "opp_army": 1, "turn": 0,
+    }
+    values, mask = encode_wire_observation(warmup, lean=True)
+    policy.predict(0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()]))
     policy.reset("coworld-classic")
     replies, slowest = 0, 0.0
     async with connect(url, ping_timeout=None, max_size=128 * 1024, open_timeout=30) as ws:

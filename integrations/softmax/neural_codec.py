@@ -1,5 +1,6 @@
 """Convert the public Coworld wire view to the padded Puffer training view."""
 
+import jax
 import numpy as np
 
 from generals.core.observation import Observation
@@ -7,6 +8,7 @@ from integrations.puffer_codec import encode_coworld_lean_observation, encode_co
 
 
 BOARD_SIZE = 21
+_encode_lean = jax.jit(encode_coworld_lean_observation)
 
 
 def training_observation(message: dict) -> Observation:
@@ -56,7 +58,7 @@ def training_observation(message: dict) -> Observation:
 def encode_wire_observation(message: dict, *, compact: bool = False, lean: bool = False):
     observation = training_observation(message)
     values, mask = (
-        encode_coworld_lean_observation(observation)
+        _encode_lean(observation)
         if lean
         else encode_coworld_observation(observation)
         if compact
