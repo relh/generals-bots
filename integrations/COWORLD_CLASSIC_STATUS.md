@@ -167,3 +167,29 @@ evaluate on held-out arena maps and opponents, package the frozen checkpoint
 for Coworld's 500 ms player protocol, and compare hosted Observatory matches
 against the active champions. Submit only a proven improvement to the Classic
 1v1 league and set it as champion on the lower-performing eligible account.
+
+The two-trainer sparse run (job 12002) used one B300, 2,048 JAX games per
+trainer, horizon 32, replay ratio 0.125, minibatch 8,192, and seeds 601/602.
+After startup, the aggregate warm rate was commonly 31–40K end-to-end SPS;
+the trailing 60-second B300 utilization rose to roughly 60–74%. At about
+12.8M steps per trainer, environment work had risen to 86% of an epoch and
+the five-epoch median aggregate rate fell to 29,300 SPS. The 30K guard stopped
+the run as intended at 17:49:50 UTC. The latest 12,582,912-step checkpoints
+and exact build are archived on metta0 under `coworld-classic/long-12002`
+(`latest-12582912.tar.gz`, SHA-256
+`66337c24d49ce9cdb6d22293029a2aeab8eebc1cda2fa8143c4c5400a68e64357`).
+Earlier 4,194,304- and 8,388,608-step checkpoints were also archived.
+
+Held-out GPU evaluation of the two latest checkpoints on seeds 901 and 902
+against the mixed scripted pool yielded performances (0.316895, 0.311035) and
+(0.313232, 0.313232). Their records are archived next to the checkpoints as
+`eval-0-901-902.json` (SHA-256
+`3b170418472d9b175dcc64933afd7edafedee2c49217fd886f66643e0624ea23`)
+and `eval-1-901-902.json` (SHA-256
+`f4a61dbbb9d261bfeeeadba2a19ed7d927cb2f677809a31cd57a83fcc87ea9e8`).
+These are not competitive policies. The sparse objective was active, but its
+recorded loss increased from about 2.3 at the start to 4.1–4.3 late in the
+run. The policy's local input stencil had radius 0.1, so it saw only the source
+tile at each candidate move. A bounded pilot with cardinal-neighbor inputs
+and four features per tile is next; it must pass the same end-to-end SPS gate
+before longer training.
