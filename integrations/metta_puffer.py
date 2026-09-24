@@ -40,12 +40,14 @@ class GeneralsPufferEnvironment:
         supervise_teacher: bool = False,
         factorized_actions: bool = False,
         classic_maps: bool = False,
+        goal_features: bool = False,
     ):
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
         self.size = board_size
         self.supervise_teacher = supervise_teacher
         self.factorized_actions = factorized_actions
+        self.goal_features = goal_features
         self.training = context.mode == "train"
         map_options = (
             {"min_generals_distance": board_size - 2, "castle_val_range": (20, 41)} if classic_maps else {}
@@ -59,7 +61,7 @@ class GeneralsPufferEnvironment:
             **map_options,
         )
         self.spec = EnvironmentSpec(
-            observation_size=14 * board_size * board_size,
+            observation_size=(21 if goal_features else 14) * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
         )
@@ -67,7 +69,8 @@ class GeneralsPufferEnvironment:
         self._init_state = jax.jit(self.env.init_state)
         self._observe = jax.jit(
             lambda state, side: encode_observation(
-                game.get_observation(state, side), factorized_actions=factorized_actions
+                game.get_observation(state, side), factorized_actions=factorized_actions,
+                goal_features=goal_features,
             )
         )
         opponent_types = {
@@ -118,7 +121,9 @@ class GeneralsPufferEnvironment:
             if teacher_agent is not None:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
                 reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
-            values, mask = encode_observation(final, factorized_actions=factorized_actions)
+            values, mask = encode_observation(
+                final, factorized_actions=factorized_actions, goal_features=goal_features
+            )
             return next_state, next_key, values, mask, reward, done, outcome
 
         self._advance = advance

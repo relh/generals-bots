@@ -64,6 +64,24 @@ def test_classic10_evaluation_maps_match_classic_scenario_parameters():
     env.close()
 
 
+def test_public_goal_features_preserve_base_observation_and_transport_shape():
+    context = EnvironmentContext(seed=901, index=0, mode="evaluate", output=Path("/tmp"))
+    options = dict(board_size=10, horizon=800, opponent="mixed", classic_maps=True, factorized_actions=True)
+    base = GeneralsPufferEnvironment(context=context, **options)
+    routed = GeneralsPufferEnvironment(context=context, goal_features=True, **options)
+    plain = base.reset("901:0:0")
+    enriched = routed.reset("901:0:0")
+    values = np.asarray(enriched.values[0]).reshape(21, 10, 10)
+    assert routed.spec.observation_size == 2100
+    np.testing.assert_allclose(values[:14].reshape(-1), plain.values[0])
+    assert np.isfinite(values).all()
+    assert (values[14:16] >= 0).all() and (values[14:16] <= 1).all()
+    assert (values[17:21].sum(axis=0) <= 1).all()
+    assert enriched.action_masks == plain.action_masks
+    base.close()
+    routed.close()
+
+
 def test_classic10_sentinel_teacher_targets_legal_actions():
     context = EnvironmentContext(seed=901, index=0, mode="train", output=Path("/tmp"))
     env = GeneralsPufferEnvironment(
