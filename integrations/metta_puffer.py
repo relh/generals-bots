@@ -24,7 +24,8 @@ from generals.agents.harvester_agent import HarvesterAgent
 from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
 from integrations.puffer_codec import (
-    decode_action, encode_coworld_lean_observation, encode_coworld_observation, encode_observation,
+    decode_action, encode_coworld_directional_observation, encode_coworld_lean_observation,
+    encode_coworld_observation, encode_coworld_packed_directional_observation, encode_observation,
 )
 
 
@@ -47,6 +48,8 @@ class GeneralsPufferEnvironment:
         coworld_pool_size: int = 256,
         compact_features: bool = False,
         lean_features: bool = False,
+        directional_features: bool = False,
+        packed_directional_features: bool = False,
         goal_features: bool = False,
     ):
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
@@ -61,6 +64,10 @@ class GeneralsPufferEnvironment:
             raise ValueError("Compact observations require Coworld Classic and factorized actions")
         if lean_features and (not compact_features or goal_features):
             raise ValueError("Lean observations require compact Coworld Classic features")
+        if directional_features and (not lean_features or goal_features):
+            raise ValueError("Directional observations require lean Coworld Classic features")
+        if packed_directional_features and (not lean_features or directional_features or goal_features):
+            raise ValueError("Packed directional observations require lean Coworld Classic features")
         if coworld_classic:
             board_size, horizon = 21, 1200
         self.size = board_size
@@ -70,6 +77,8 @@ class GeneralsPufferEnvironment:
         self.goal_features = goal_features
         self.compact_features = compact_features
         self.lean_features = lean_features
+        self.directional_features = directional_features
+        self.packed_directional_features = packed_directional_features
         self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
         if coworld_classic:
@@ -91,7 +100,7 @@ class GeneralsPufferEnvironment:
                 **map_options,
             )
         self.spec = EnvironmentSpec(
-            observation_size=(8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
+            observation_size=(11 if directional_features else 8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
             * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
@@ -106,7 +115,11 @@ class GeneralsPufferEnvironment:
 
         self._initial_state = jax.jit(initial_state)
         self._encode = (
-            encode_coworld_lean_observation
+            encode_coworld_packed_directional_observation
+            if packed_directional_features
+            else encode_coworld_directional_observation
+            if directional_features
+            else encode_coworld_lean_observation
             if lean_features
             else encode_coworld_observation
             if compact_features

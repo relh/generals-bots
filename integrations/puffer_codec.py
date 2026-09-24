@@ -97,6 +97,37 @@ def encode_coworld_lean_observation(obs):
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
+def encode_coworld_directional_observation(obs):
+    """Lean public view with one channel for each Harvester route direction."""
+    route = harvester_route_features(obs)
+    planes = jnp.stack((
+        jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,
+        obs.generals,
+        obs.castles,
+        obs.mountains | obs.structures_in_fog,
+        obs.owned_cells,
+        obs.opponent_cells,
+        obs.fog_cells,
+        route[3], route[4], route[5], route[6],
+    )).astype(jnp.float32)
+    moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
+    return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+
+
+def encode_coworld_packed_directional_observation(obs):
+    """Eight-channel Classic view with explicit route and source-selection cues."""
+    route = harvester_route_features(obs)
+    planes = jnp.stack((
+        jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,
+        obs.owned_cells,
+        obs.opponent_cells,
+        obs.generals,
+        route[3], route[4], route[5], route[6],
+    )).astype(jnp.float32)
+    moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
+    return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+
+
 def decode_action(index, size, split=None):
     cells = size * size
     channel, position = index // cells, index % cells

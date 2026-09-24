@@ -193,3 +193,34 @@ run. The policy's local input stencil had radius 0.1, so it saw only the source
 tile at each candidate move. A bounded pilot with cardinal-neighbor inputs
 and four features per tile is next; it must pass the same end-to-end SPS gate
 before longer training.
+
+A direct GPU benchmark of the Harvester teacher (job 12070) on Coworld Classic
+held-out seeds 901 and 902 scored 0.78125 (176 wins, 32 losses, 48 draws in
+256 games) and 0.7421875 (169 wins, 45 losses, 42 draws). Its archived log is
+`teacher-benchmark-12070.log` on metta0 (SHA-256
+`33feebcefeb2f498bbd54758416e6a39bfe5919cf24d51e762ddd9e8fe2a2111`).
+This establishes that the scripted supervisor can exceed the desired level;
+the 0.31 neural results reflect a distillation failure.
+
+Two bounded wider-model pilots were stopped after more than three minutes of
+startup compilation with no epoch and sustained 0% B300 compute use: job
+12047 used a five-tile input stencil and four features per site (67,872
+input edges), and job 12069 used four features with a one-tile stencil. A
+bounded 11-channel directional pilot (job 12083) likewise failed to produce
+an epoch after three minutes. Their exact Docker containers were stopped.
+Do not promote these shapes to long runs without a compilation fix.
+
+The 8-channel packed directional view retains the earlier two-feature graph
+shape and explicitly supplies Harvester's up/down/left/right route decisions.
+A pure supervised replay objective (`replace_ppo=true`) and the packed view
+were tested in bounded two-trainer job 12088. Each trainer completed 1,048,576
+steps. Across epochs 6–14, their median end-to-end rates were 18,500 and
+17,600 SPS, 36,100 aggregate, on one B300; the GPU utilization mean after the
+first 60 seconds was 39.2%. Throughput fell to 15,300 + 13,300 = 28,600 SPS
+by epoch 16, so this setup still fails the sustained long-run gate. Its
+checkpoints, build, logs, and GPU samples are archived at
+`/home/metta/relh-generals-puffer/coworld-classic/sparse-packed-bc-pilot-12088.tar.gz`
+(SHA-256 `5c2c090249e64f61995dca25229f234bc1cca3deca09d5f15867f7a6cc151ad1`).
+Held-out evaluation is in progress. If the policy improves, profile the
+late-episode environment work and reduce redundant teacher computation before
+a long run.

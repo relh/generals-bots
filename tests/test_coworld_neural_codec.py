@@ -4,7 +4,13 @@ import jax.numpy as jnp
 import numpy as np
 
 from generals.core import game
-from integrations.puffer_codec import encode_coworld_lean_observation, encode_coworld_observation, encode_observation
+from integrations.puffer_codec import (
+    encode_coworld_directional_observation,
+    encode_coworld_lean_observation,
+    encode_coworld_observation,
+    encode_coworld_packed_directional_observation,
+    encode_observation,
+)
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import encode_wire_observation, training_observation
 
@@ -50,3 +56,15 @@ def test_coworld_wire_view_matches_padded_training_view():
     np.testing.assert_array_equal(lean_values, np.asarray(expected_lean))
     np.testing.assert_array_equal(lean_mask, np.asarray(expected_lean_mask))
     assert lean_values.shape == (3528,)
+
+    directional_values, directional_mask = encode_wire_observation(message, directional=True)
+    expected_directional, expected_directional_mask = encode_coworld_directional_observation(expected)
+    np.testing.assert_array_equal(directional_values, np.asarray(expected_directional))
+    np.testing.assert_array_equal(directional_mask, np.asarray(expected_directional_mask))
+    assert directional_values.shape == (4851,)
+
+    packed_values, packed_mask = encode_wire_observation(message, packed_directional=True)
+    expected_packed, expected_packed_mask = encode_coworld_packed_directional_observation(expected)
+    np.testing.assert_array_equal(packed_values, np.asarray(expected_packed))
+    np.testing.assert_array_equal(packed_mask, np.asarray(expected_packed_mask))
+    assert packed_values.shape == (3528,)
