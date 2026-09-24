@@ -137,7 +137,7 @@ def test_capture_hint_rallies_surplus_for_reachable_castle():
     )
 
 
-def test_capture_hint_preserves_home_general_after_opening():
+def test_capture_hint_uses_home_general_without_visible_threat():
     armies = np.zeros((5, 5), dtype=np.int32)
     armies[2, 2] = 50
     owned = np.zeros((5, 5), dtype=bool)
@@ -150,7 +150,32 @@ def test_capture_hint_preserves_home_general_after_opening():
         owned_land_count=jnp.int32(1), owned_army_count=jnp.int32(50),
         opponent_land_count=jnp.int32(1), opponent_army_count=jnp.int32(1), timestep=jnp.int32(150),
     )
-    assert int(expander_harvester_action(jax.random.PRNGKey(0), observation)[0]) == 1
+    assert int(expander_harvester_action(jax.random.PRNGKey(0), observation)[0]) == 0
     assert int(expander_harvester_action(
         jax.random.PRNGKey(0), observation._replace(timestep=jnp.int32(50))
     )[0]) == 0
+
+
+def test_capture_hint_reinforces_home_against_nearby_enemy_stack():
+    armies = np.zeros((7, 7), dtype=np.int32)
+    armies[3, 2], armies[3, 3], armies[3, 5] = 20, 5, 15
+    owned = np.zeros((7, 7), dtype=bool)
+    owned[3, 2:4] = True
+    general = np.zeros_like(owned)
+    general[3, 3] = True
+    enemy = np.zeros_like(owned)
+    enemy[3, 5] = True
+    empty = np.zeros_like(owned)
+    observation = Observation(
+        armies=jnp.asarray(armies), generals=jnp.asarray(general), castles=jnp.asarray(empty),
+        mountains=jnp.asarray(empty), neutral_cells=jnp.asarray(~(owned | enemy)),
+        owned_cells=jnp.asarray(owned), opponent_cells=jnp.asarray(enemy),
+        fog_cells=jnp.asarray(empty), structures_in_fog=jnp.asarray(empty),
+        owned_land_count=jnp.int32(2), owned_army_count=jnp.int32(25),
+        opponent_land_count=jnp.int32(1), opponent_army_count=jnp.int32(15),
+        timestep=jnp.int32(150),
+    )
+    np.testing.assert_array_equal(
+        np.asarray(expander_harvester_action(jax.random.PRNGKey(0), observation)),
+        np.asarray([0, 3, 2, 3, 0]),
+    )

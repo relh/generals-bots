@@ -421,3 +421,13 @@ actions in 3.6 ms. It was uploaded under relh's identity as
 `xreq_510cdd93-1a65-4aca-ae81-cda8ad6b2e51` compares eight Classic 1v1
 games with relh's incumbent. A champion change requires evidence that this
 defensive variant improves on the incumbent.
+
+That hosted request finished **two wins and six losses**. The static home
+reserve weakened expansion: replays showed the general accumulating 60–250
+armies while land and total army fell behind. Relh's incumbent remains
+champion. The next bounded variant protects and reinforces home only when a
+visible enemy stack of at least eight armies comes within Chebyshev distance
+five after turn 100. With no visible threat it restores the faster opening
+and castle rally behavior. A focused test checks the nearby-stack transfer;
+the variant still needs a measured GPU pilot and hosted evaluation before any
+long run or champion change.
