@@ -9,10 +9,13 @@ from pathlib import Path
 def main() -> None:
     workspace, job, startup_seconds = Path(sys.argv[1]), sys.argv[2], int(sys.argv[3])
     prefix = sys.argv[4] if len(sys.argv) > 4 else "sparse-long"
+    trainer_count = int(sys.argv[5]) if len(sys.argv) > 5 else 2
+    if trainer_count < 1:
+        raise SystemExit("Expected at least one trainer")
     rates = []
     epochs = []
     completed = []
-    for index in (0, 1):
+    for index in range(trainer_count):
         run = workspace / f"{prefix}-pilot-{job}-{index}"
         log = run / "console.log"
         history = log.read_text() if log.exists() else ""

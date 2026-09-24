@@ -1,0 +1,95 @@
+Goal handoff — mbp pane 27 — 2026-09-24
+
+Objective
+Train an excellent neural Generals policy for Softmax Coworld Classic 1v1,
+using the live arena's map distribution, rules, observations, and action
+protocol. Train with PufferLib on B200/B300 GPUs (never metta4 or CPU-only
+Slurm), sustain >=30,000 end-to-end training SPS before a long run, evaluate
+with held-out maps and hosted Observatory matches, then submit and set as
+champion for the lower-performing eligible account, relh or richard.
+
+Owned branch and worktree
+  relh/coworld-classic-neural
+  /Users/relh/Code/worktrees/generals-coworld-classic
+  https://github.com/relh/generals-bots/tree/relh/coworld-classic-neural
+  Main status notes: integrations/COWORLD_CLASSIC_STATUS.md
+  A separate empty worktree, /Users/relh/Code/worktrees/generals-coworld-proactive-home,
+  was created at 3a7037d on relh/coworld-proactive-home. It has no edits.
+
+Current state and evidence
+  * The live Classic 1v1 board is 18–21 tiles per side, padded to 21; the
+    arena allows 1200 turns, with about 24–26% mountains and 9–11 neutral
+    castles. Earlier 10x10 scripted-opponent results do not qualify.
+  * The v6 teacher source hash is
+    2261a533cdbc89d4111ddf9d108c74252da1cf74ed66cf92513c00683645995f.
+    B300 pilot Slurm 12858, 2x2048 environments, measured ~38,383 aggregate
+    SPS in warm epochs 10–15 and ~29% mean GPU utilization after 60 s. Its
+    1.05M-step checkpoint passed 4096-game held-out seeds 901/902 at
+    0.927979/0.929199. Archive on metta-fabric-b300-1:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-dynamic-defense-real-12858.tar.gz
+    SHA256 2cf74ec5df1ff6a4b95e3b8d57bcc74c162e0edc03eb57a84b16496657a10154.
+  * A 3.15M-step-per-trainer LR .001 B300 run (Slurm 12950) finished with
+    late aggregate SPS >30K. Archive:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-dynamic-defense-stability-lr1e3-12950.tar.gz
+    SHA256 2ac48e399259a99c82263604043baeb5f3d26e648b921616d2a06.
+    Selected checkpoint SHA256
+    482b90fee6d6a7f64c4776a6f5ddcf40d15ef811933cbf89c5f609056c9a086b.
+    Held-out 4096-game seeds 901/902: 0.933594/0.930176.
+  * This policy was uploaded as richard-generals-classic-neural:v6. Hosted
+    eight-game results were 4–4 versus Richard's incumbent
+    (xreq_57a78379-a6e5-42e1-b141-f00c7132edc1), 5–3 versus public leader
+    (xreq_b5c6ff53-e236-4458-ad25-edb925bccc73), and 0–6 with 2 draws
+    versus relh's incumbent (xreq_e810c697-6115-4dac-b501-ff05bbedd777).
+    It is not champion-worthy. No champion has been changed. At the last
+    standings check Richard MMR 1683.88 was below relh MMR 1709.30; recheck
+    before any eventual submission. Current CLI identity is Richard,
+    ply_ded11f40-3e30-4921-b019-f7f6bc3e9c83. Coworld CLI is under
+    /Users/relh/Code/metta (uv run coworld ...).
+  * A guarded intended ~21M-step two-trainer long run (Slurm 13044) stopped
+    at epochs 55/56 because SPS fell to 26.5K. Environment time doubled to
+    ~4 s; GPU memory stayed ~15.4 GiB. There was no checkpoint before its
+    scheduled epoch 64. Logs/source/GPU samples archive:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-dynamic-defense-long-stopped-13044.tar.gz
+    SHA256 ca9260a9bd9bb0034925484e63f29d0351b7a1e12bea1c776d1692b9f394d1c4.
+    This late throughput collapse blocks another long run.
+  * A four-trainer 1M-step pilot (Slurm 12978, 4x2048 environments) had
+    ~38,971 aggregate warm SPS and ~70.7% sampled GPU use. Archive:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-dynamic-defense-quad-12978.tar.gz
+    SHA256 0c3db9d397b4ee5d8b9c39429513cad34a82b95318ab06a7272a0f208fa0e7a0.
+  * Bounded four-trainer B300 stability probe Slurm 13087 was the final
+    atomic action: 4x2048 environments, 3,145,728 steps per trainer,
+    LR .001, 20-minute limit, with a four-trainer >=30K SPS monitor and
+    cleanup traps. At 22:15 UTC it was running at epoch ~46 per trainer,
+    ~37.5K aggregate SPS, ~89% sampled GPU use. Slurm reports COMPLETED,
+    exit 0:0, at 22:16:58 UTC after 7 minutes, releasing the allocation.
+    Its final training records, late SPS and cleanup state still need
+    inspection; no final checkpoint or archive has yet been verified.
+    Batch script on metta0:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-coworld-quad-stability-v6.sbatch.
+    Node-local run files: /tmp/relh-generals-coworld/quad-stability-13087.log
+    and /tmp/relh-generals-coworld/expander-quad-stability-pilot-13087-*/ .
+
+Blockers
+  Long training has not sustained >=30K SPS beyond the failure range, and
+  hosted evidence does not justify a champion change. The node-local /tmp
+  on metta0 is different from B300's /tmp. Do not treat old 10x10 results
+  or the mistaken v5 pilot 12811 as v6 Classic evidence. Preserve existing
+  checkpoints and all protected agent histories.
+
+Exact next steps on resumption
+  1. Access B300 node-local files during a future GPU allocation, inspect
+     Slurm 13087 monitor log, all four completed.json records, final late
+     SPS, checkpoints, and whether Docker/trainer processes remain. Its
+     batch script traps cleanup, but cleanup has not been independently
+     verified. Preserve checkpoints/logs in a verified archive on B300.
+     Slurm accounting is disabled, but `scontrol show job 13087` reports
+     COMPLETED, exit 0:0. Neither direct SSH nor `srun --jobid` was
+     available after the allocation expired; no new job was launched.
+  2. Diagnose the later-step environment-time and SPS collapse using short,
+     bounded B200/B300 probes; profile rollout versus optimization, JAX
+     synchronization, teacher target construction, and host/device copies.
+     Keep the >=30K end-to-end gate for the full proposed step range.
+  3. Only after the gate passes, train tens of millions of Classic steps,
+     select a frozen checkpoint by held-out and hosted performance, recheck
+     which eligible account is lower in current standings, upload for that
+     account, submit to Classic 1v1 and verify it is champion.
