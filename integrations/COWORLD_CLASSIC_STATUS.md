@@ -221,6 +221,60 @@ by epoch 16, so this setup still fails the sustained long-run gate. Its
 checkpoints, build, logs, and GPU samples are archived at
 `/home/metta/relh-generals-puffer/coworld-classic/sparse-packed-bc-pilot-12088.tar.gz`
 (SHA-256 `5c2c090249e64f61995dca25229f234bc1cca3deca09d5f15867f7a6cc151ad1`).
-Held-out evaluation is in progress. If the policy improves, profile the
-late-episode environment work and reduce redundant teacher computation before
-a long run.
+Held-out seed 901 was 0.310 for the first packed policy. Raising the learning
+rate from 0.0003 to 0.003 changed the checkpoint more but did not improve
+held-out performance (0.310 and 0.307 for the two trainers). A tied directional
+readout likewise yielded 0.309 and 0.312. These probes did not justify longer
+runs.
+
+Job 12162 added the Harvester recommendation itself to an eight-channel
+public-observation view. Two 2,048-game GPU trainers reached 1,048,576 steps
+each, with 39,300 aggregate SPS across warmed epochs and 31,100 at the last
+epoch. Held-out seeds 901/902 for the first checkpoint scored 0.315/0.307.
+An identical-state audit on 64 teacher-driven turn-16 states measured teacher
+action negative log likelihood 2.480 at 524,288 steps and 2.430 at 1,048,576
+steps. The gradient path is improving slightly, but only 16 optimizer updates
+occur in 1,048,576 environment steps under replay ratio 0.125.
+
+Job 12219 executed Harvester actions during training to provide teacher-driven
+rollouts, retaining the same supervised action loss and disabling intervention
+during evaluation. Its two B300 trainers reached 1,048,576 steps each; their
+last displayed end-to-end rates were 18,200 and 12,000 SPS, 30,200 aggregate.
+Held-out seed 901 scored 0.309326, so this intervention alone did not improve
+the neural policy. The exact build, both runs, logs, and samples are archived at
+`/home/metta/relh-generals-puffer/coworld-classic/relh-coworld-teacher-rollout-12219.tar.gz`
+(SHA-256 `ddc76049ebd2e5ee8b7f2bb76e2c7374f862f908e947d149db61c652058e8a5b`).
+The evaluation record is `relh-coworld-teacher-rollout-eval-12224.json`
+(SHA-256 `248981c195e9c0fe71382396b5f4d2ac4d28403a758b433c8aac448f7a5963a3`).
+The teacher benchmark itself remains over 0.74 on both held-out seeds. A
+bounded 0.03 learning-rate pilot is next. Do not start a long run on the basis
+of the teacher-rollout result or its marginal 30K rate.
+
+Raising the hinted teacher-rollout learning rate to 0.03 in job 12244 lowered
+the supervised loss to about 3.8 but held-out seed 901 fell to 0.301. This
+ruled out learning rate alone as the distillation fix. The run is archived as
+`relh-coworld-teacher-rollout-lr30-12244.tar.gz` (SHA-256
+`d0c0bf3db539c445a1d75dce1ea6ca188049a82b772f0d473aaf77ca20bf058a`).
+
+Job 12279 added trainable direct connections from the public Harvester action
+hint to the matching move, pass, and split logits. The eight-channel signed
+hint view and wire encoder are parity-tested. Two 2,048-game B300 trainers
+reached 1,048,576 steps each with a sparse action loss around 0.025. During
+warm training, the combined rate was around 42,000 SPS, but the final epoch
+fell to 17,400 + 11,900 = **29,300 SPS**. This is a bounded successful policy
+probe, not clearance for a long experiment. The two runs, exact build, logs,
+and throughput samples are archived at
+`/home/metta/relh-generals-puffer/coworld-classic/relh-coworld-hint-prior-12279.tar.gz`
+(SHA-256 `35ad14e32660466d1671e70296d5c4983345bff0b5a3fd87cba33748726b4796`).
+The first final checkpoint scored **0.730469** on held-out seed 901 and
+**0.775146** on seed 902 against the mixed scripted pool. Their archived
+evaluation records are `relh-coworld-hint-prior-eval-12280.json` (SHA-256
+`6fbd61a80fc9bab314597cf5528772cb77373b2612f3e80e504ac8bae265cf09`)
+and `relh-coworld-hint-prior-eval-12300.json` (SHA-256
+`a760200105cae779d2c11a4ec0f8dd71768f64057b837935cc713f4c414a495b`).
+The direct public hint is the main source of this strength. The trainable
+policy follows it closely after a short supervised pilot; do not attribute
+the held-out result to independent strategy discovery. The portable CPU player
+bundle from this checkpoint loaded in a local container and returned a warm
+action in 3.8 ms after 4.1 s of startup prewarming. Hosted Observatory
+evaluation and champion submission remain to be checked.

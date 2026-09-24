@@ -18,8 +18,8 @@ from .neural_codec import encode_wire_observation
 from .protocol import VERSION
 
 
-def select_action(policy: FrozenPolicy, message: dict) -> list[int]:
-    values, mask = encode_wire_observation(message, lean=True)
+def select_action(policy: FrozenPolicy, message: dict, codec_kwargs: dict) -> list[int]:
+    values, mask = encode_wire_observation(message, **codec_kwargs)
     prediction = policy.predict(
         0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()])
     )
@@ -34,7 +34,17 @@ def select_action(policy: FrozenPolicy, message: dict) -> list[int]:
 
 
 async def play(url: str, bundle: Path) -> None:
-    policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
+    config = load_frozen_policy_bundle(bundle)
+    build = json.loads(config.build.read_text())
+    options = build["config"]["python_environment"]["options"]
+    codec_kwargs = (
+        {"prior_hinted": True} if options.get("prior_hint_features")
+        else {"hinted": True} if options.get("hint_features")
+        else {"packed_directional": True} if options.get("packed_directional_features")
+        else {"directional": True} if options.get("directional_features")
+        else {"lean": True}
+    )
+    policy = FrozenPolicy(config)
     policy.reset("coworld-classic")
     # Compile both the wire codec and graph before the first 500 ms deadline.
     kinds = [[1] * 21 for _ in range(21)]
@@ -45,7 +55,7 @@ async def play(url: str, bundle: Path) -> None:
         "height": 21, "width": 21, "type_grid": kinds, "owner_grid": owners, "army_grid": armies,
         "my_land": 1, "my_army": 1, "opp_land": 1, "opp_army": 1, "turn": 0,
     }
-    values, mask = encode_wire_observation(warmup, lean=True)
+    values, mask = encode_wire_observation(warmup, **codec_kwargs)
     policy.predict(0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()]))
     policy.reset("coworld-classic")
     replies, slowest = 0, 0.0
@@ -59,7 +69,7 @@ async def play(url: str, bundle: Path) -> None:
                 if message.get("eliminated"):
                     continue
                 started = time.monotonic()
-                action = select_action(policy, message)
+                action = select_action(policy, message, codec_kwargs)
                 await ws.send(json.dumps({"type": "action", "turn": message["turn"], "action": action}))
                 slowest = max(slowest, time.monotonic() - started)
                 replies += 1

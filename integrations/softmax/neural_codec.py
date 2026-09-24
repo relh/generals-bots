@@ -6,6 +6,7 @@ import numpy as np
 from generals.core.observation import Observation
 from integrations.puffer_codec import (
     encode_coworld_directional_observation,
+    encode_coworld_hinted_observation,
     encode_coworld_lean_observation,
     encode_coworld_observation,
     encode_coworld_packed_directional_observation,
@@ -17,6 +18,8 @@ BOARD_SIZE = 21
 _encode_lean = jax.jit(encode_coworld_lean_observation)
 _encode_directional = jax.jit(encode_coworld_directional_observation)
 _encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
+_encode_hinted = jax.jit(encode_coworld_hinted_observation)
+_encode_prior_hinted = jax.jit(lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True))
 
 
 def training_observation(message: dict) -> Observation:
@@ -65,11 +68,16 @@ def training_observation(message: dict) -> Observation:
 
 def encode_wire_observation(
     message: dict, *, compact: bool = False, lean: bool = False,
-    directional: bool = False, packed_directional: bool = False,
+    directional: bool = False, packed_directional: bool = False, hinted: bool = False,
+    prior_hinted: bool = False,
 ):
     observation = training_observation(message)
     values, mask = (
-        _encode_packed_directional(observation)
+        _encode_prior_hinted(observation)
+        if prior_hinted
+        else _encode_hinted(observation)
+        if hinted
+        else _encode_packed_directional(observation)
         if packed_directional
         else _encode_directional(observation)
         if directional

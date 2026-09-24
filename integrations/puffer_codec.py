@@ -1,7 +1,9 @@
 """Public Generals observation and action contract for native Puffer policies."""
 
+import jax
 import jax.numpy as jnp
 
+from generals.agents.harvester_agent import harvester_action
 from generals.agents.hunter_agent import _bfs, _toward
 from generals.core.action import compute_valid_move_mask_obs
 
@@ -123,6 +125,25 @@ def encode_coworld_packed_directional_observation(obs):
         obs.opponent_cells,
         obs.generals,
         route[3], route[4], route[5], route[6],
+    )).astype(jnp.float32)
+    moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
+    return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+
+
+def encode_coworld_hinted_observation(obs, *, signed_flags=False):
+    """Public view with a scripted move hint for a neural residual policy."""
+    hint = harvester_action(jax.random.PRNGKey(0), obs)
+    height, width = obs.armies.shape
+    direction = jnp.zeros((4, height, width), dtype=jnp.float32)
+    direction = direction.at[hint[3], hint[1], hint[2]].set((hint[0] == 0).astype(jnp.float32))
+    planes = jnp.concatenate((
+        jnp.stack((
+            jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,
+            obs.owned_cells.astype(jnp.float32),
+            jnp.full((height, width), 2 * hint[4] - 1 if signed_flags else hint[4], dtype=jnp.float32),
+            jnp.full((height, width), 2 * hint[0] - 1 if signed_flags else hint[0], dtype=jnp.float32),
+        )),
+        direction,
     )).astype(jnp.float32)
     moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))

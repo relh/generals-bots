@@ -1,6 +1,7 @@
 """Small memoryless Fabric policy for batched Generals observations."""
 
 import jax
+import numpy as np
 from fabric import lang as fl
 from fabric import nn
 from metta_training.fabric import PolicyGraph
@@ -178,6 +179,7 @@ def _local_action_key(source, target, context):
 def tied_local_action_policy(
     *, observation_size: int, output_size: int, channels: int, height: int, width: int,
     features_per_site: int = 8, global_features: int = 32, input_radius: float = 2**0.5,
+    tie_readout: bool = False, hint_prior_strength: float = 0.0,
 ) -> PolicyGraph:
     """Share board kernels and action-direction readouts, with global context."""
     cells = height * width
@@ -210,18 +212,45 @@ def tied_local_action_policy(
                 "coord": ((i % cells) % width, (i % cells) // width) if i < 4 * cells else (-100, -100),
                 "direction": i // cells if i < 4 * cells else -1,
                 "move": i < 4 * cells,
+                "readout_group": i // cells if i < 4 * cells else i,
             }
             for i in range(output_size)
         }),
     )
     graph = nn.cluster("tied_local_action", {"sense": sense, "local": local, "global": global_core, "out": out})
     fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
+    def readout_key(source, target, context):
+        if tie_readout and source[0] == "global" and target[0] == "out":
+            return ("global", source[1], context.dst.attr(target, "readout_group"))
+        return _local_action_key(source, target, context)
     graph.add(
         (sense >> local).by(nn.rules.stencil(radius=input_radius)).semantics(fixed),
         (local >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
         (local >> global_core).by(nn.rules.all_to_all()),
         (global_core >> out).by(nn.rules.all_to_all()),
         nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
-        nn.tie(graph).by(nn.sharing.edge_key(_local_action_key)),
+        nn.tie(graph).by(nn.sharing.edge_key(readout_key)),
     )
+    if hint_prior_strength:
+        if channels != 8:
+            raise ValueError("The action-hint prior requires eight input channels")
+        hint_edges = [((4 + direction) * cells + cell, direction * cells + cell)
+                      for direction in range(4) for cell in range(cells)]
+        graph.add(
+            (sense >> out).by(nn.rules.edges(np.asarray(hint_edges, dtype=np.int32))).semantics(
+                nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength))
+            ),
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [(3 * cells + cell, 4 * cells) for cell in range(cells)], dtype=np.int32
+            ))).semantics(
+                nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))
+            ),
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [(2 * cells + cell, 4 * cells + 2) for cell in range(cells)], dtype=np.int32
+            ))).semantics(
+                nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))
+            ),
+        )
+    if tie_readout:
+        graph.add(nn.tie(out).by(nn.sharing.field("readout_group")).on("W", "b"))
     return PolicyGraph(graph, "sense", ("out",))

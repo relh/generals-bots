@@ -25,7 +25,8 @@ from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
 from integrations.puffer_codec import (
     decode_action, encode_coworld_directional_observation, encode_coworld_lean_observation,
-    encode_coworld_observation, encode_coworld_packed_directional_observation, encode_observation,
+    encode_coworld_hinted_observation, encode_coworld_observation,
+    encode_coworld_packed_directional_observation, encode_observation,
 )
 
 
@@ -50,6 +51,9 @@ class GeneralsPufferEnvironment:
         lean_features: bool = False,
         directional_features: bool = False,
         packed_directional_features: bool = False,
+        hint_features: bool = False,
+        prior_hint_features: bool = False,
+        teacher_rollouts: bool = False,
         goal_features: bool = False,
     ):
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
@@ -68,6 +72,12 @@ class GeneralsPufferEnvironment:
             raise ValueError("Directional observations require lean Coworld Classic features")
         if packed_directional_features and (not lean_features or directional_features or goal_features):
             raise ValueError("Packed directional observations require lean Coworld Classic features")
+        if hint_features and (not lean_features or directional_features or packed_directional_features or goal_features):
+            raise ValueError("Hinted observations require lean Coworld Classic features")
+        if prior_hint_features and not hint_features:
+            raise ValueError("Signed prior hints require hinted observations")
+        if teacher_rollouts and (teacher is None or not (sparse_teacher or supervise_teacher)):
+            raise ValueError("Teacher rollouts require supervised teacher actions")
         if coworld_classic:
             board_size, horizon = 21, 1200
         self.size = board_size
@@ -79,6 +89,9 @@ class GeneralsPufferEnvironment:
         self.lean_features = lean_features
         self.directional_features = directional_features
         self.packed_directional_features = packed_directional_features
+        self.hint_features = hint_features
+        self.prior_hint_features = prior_hint_features
+        self.teacher_rollouts = teacher_rollouts and context.mode == "train"
         self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
         if coworld_classic:
@@ -115,7 +128,9 @@ class GeneralsPufferEnvironment:
 
         self._initial_state = jax.jit(initial_state)
         self._encode = (
-            encode_coworld_packed_directional_observation
+            (lambda obs: encode_coworld_hinted_observation(obs, signed_flags=prior_hint_features))
+            if hint_features
+            else encode_coworld_packed_directional_observation
             if packed_directional_features
             else encode_coworld_directional_observation
             if directional_features
@@ -286,8 +301,17 @@ class BatchedGeneralsPufferEnvironment:
 
         def advance_one(state, pool, side, opponent_id, index, split, key, alive):
             def active(_):
+                executed_index, executed_split = index, split
+                if self.base.teacher_rollouts:
+                    teacher_key = jax.random.fold_in(jax.random.split(key)[0], 37)
+                    action = self.base._teacher(state, side, teacher_key)
+                    executed_index = jnp.where(
+                        action[0] == 1, 4 * self.base.size**2,
+                        action[3] * self.base.size**2 + action[1] * self.base.size + action[2],
+                    )
+                    executed_split = action[4]
                 next_state, next_key, values, mask, reward, done, outcome = self.base._advance(
-                    state, pool, side, opponent_id, index, split, key
+                    state, pool, side, opponent_id, executed_index, executed_split, key
                 )
                 if self.base.training:
                     def recycle(_):

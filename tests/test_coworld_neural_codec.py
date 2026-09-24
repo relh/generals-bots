@@ -6,6 +6,7 @@ import numpy as np
 from generals.core import game
 from integrations.puffer_codec import (
     encode_coworld_directional_observation,
+    encode_coworld_hinted_observation,
     encode_coworld_lean_observation,
     encode_coworld_observation,
     encode_coworld_packed_directional_observation,
@@ -68,3 +69,14 @@ def test_coworld_wire_view_matches_padded_training_view():
     np.testing.assert_array_equal(packed_values, np.asarray(expected_packed))
     np.testing.assert_array_equal(packed_mask, np.asarray(expected_packed_mask))
     assert packed_values.shape == (3528,)
+
+    hinted_values, hinted_mask = encode_wire_observation(message, hinted=True)
+    expected_hinted, expected_hinted_mask = encode_coworld_hinted_observation(expected)
+    np.testing.assert_array_equal(hinted_values, np.asarray(expected_hinted))
+    np.testing.assert_array_equal(hinted_mask, np.asarray(expected_hinted_mask))
+    assert hinted_values.shape == (3528,)
+
+    prior_values, prior_mask = encode_wire_observation(message, prior_hinted=True)
+    expected_prior, expected_prior_mask = encode_coworld_hinted_observation(expected, signed_flags=True)
+    np.testing.assert_array_equal(prior_values, np.asarray(expected_prior))
+    np.testing.assert_array_equal(prior_mask, np.asarray(expected_prior_mask))
