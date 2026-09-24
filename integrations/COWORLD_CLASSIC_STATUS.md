@@ -431,3 +431,10 @@ five after turn 100. With no visible threat it restores the faster opening
 and castle rally behavior. A focused test checks the nearby-stack transfer;
 the variant still needs a measured GPU pilot and hosted evaluation before any
 long run or champion change.
+
+If a bounded candidate passes the 30,000 SPS gate and improves hosted play,
+`integrations/generals_coworld_classic_expander_stability.sbatch` probes
+3,145,728 steps per trainer with the same two-process GPU configuration. It
+crosses the earlier ~2.6M-step nonfinite-gradient failure point before the
+20.97M-step long script may be submitted. Both scripts retain the live SPS and
+GPU utilization guard and disable container core dumps.
