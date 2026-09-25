@@ -1155,3 +1155,71 @@ Current next step
   and pure PPO, then test transfer on held-out full Classic maps. Keep the
   user-authorized >=25K complete-step floor, and require clear gains over
   v11 before hosted matches. Preserve frozen checkpoints and other panes.
+
+Update, 2026-09-25 pure PPO map curriculum
+  * A 10–12-tile playable curriculum padded to 21x21 kept the same raw
+    observation/model/action contract, with a 600-turn game and Random
+    opponent. Focused B300 contract tests passed. Job 16042 completed
+    8.39M steps on one B300 at 28.66K/29.10K final 16/20-epoch SPS,
+    including the save. Held-out seed 1101 scored .500488 against Random
+    on small maps, but only .500000 vs Random (draws), .007080 vs
+    ExpanderHarvester, and 0 vs Sentinel on full Classic. Training and
+    evaluation archive SHA256s on metta0 are
+    a1331bb5bd6c12eef06f39e8d7eb4e056df69d9acc7a5f1c570dde20c64daac1,
+    934428df819719e55697e73486a9db9a2aad25d2885add63d4b4c3c8135ad635.
+  * A 6–8-tile playable curriculum padded to 21x21 uses 300 turns,
+    Random, pure PPO and no teacher. Focused B300 contract tests passed.
+    First job 16094 stopped before training because the B300 node-local
+    /tmp inode allotment was full, despite ample free bytes. Only the
+    archived, inactive run/build source copies owned by this pane were
+    removed; checkpoints/logs in verified metta0 archives, protected agent
+    histories, and other panes' files were untouched. Rerun 16108
+    completed 8.39M steps at 26.32K/26.74K final 16/20-epoch SPS.
+    Held-out seed 1101 scored .509888 vs Random on tiny maps, while full
+    Classic remained .500000 Random (draws), .009644 Expander, 0 Sentinel.
+    Its training/evaluation archive SHA256s on metta0 are
+    c178ad08ec895a27b6ca782e54c9f6d6626b6997bafde1f24ac4441009275d8e,
+    7d46f9b9f4d7ecae556cf1825055200fbb457dc5484b6cfeaf4f9ec8822f74b2.
+  * Pure PPO tiny-to-small transfer job 16160 completed 8.39M steps at
+    26.94K/27.53K final 16/20-epoch SPS, including the checkpoint save.
+    Its final checkpoint SHA256 is
+    cbe7d466654e1c4a958402af915764083f29cc327fde98994d0148ba97b217af.
+    Held-out seed 1101 scored .510132 versus Random on small maps, then
+    .500000 Random (draws), .010620 Expander, and 0 Sentinel on full Classic.
+    Verified metta0 training/evaluation archive SHA256s are
+    3d766a586f3d878263cc86402db59520579a2bd6695aa829dd131147ae0a8ff9,
+    559895940b47971689ce9d68fa7acfea2a74a7421a19ad08212873204dd609f2.
+    The held-out small-map gain is modest and full-map play remains weak.
+    Next run a bounded pure PPO transfer from this checkpoint to the full
+    18–21-tile Classic distribution, maintaining the user-authorized 25K
+    complete-step floor. Evaluate against strong opponents before any
+    hosted test. No hosted upload or champion change occurred.
+
+Update, 2026-09-25 pure PPO transfer to full Classic
+  * First job 16236 stopped before training: Slurm assigned a GPU with
+    another user's 43 GB process, and the idle-GPU guard rejected it.
+    No other user's process or files were touched. Retry 16245 used an idle
+    B300 GPU, completed 8,388,608 full Classic PPO steps, and measured
+    26,517/26,914 complete-step SPS in final 16/20-epoch windows including
+    the save; pre-save late windows were ~28.7K. Configuration remained
+    4,096 games/four buffers, 16 CPUs, horizon32, minibatch16,384,
+    replay .5, LR .001, gamma .999, land .5/castle .25 potential, Random
+    opponent, no teacher or imitation. Checkpoint SHA256 is
+    71806c20b4e755bcc53abceff19a83db84306eb68f15478f051327a86656b3df.
+    Training archive on metta0 is relh-classic-small-to-classic-ppo-16245.tar.gz,
+    SHA256 27f91229d46a50d772ebbd2bebd775b6caa29ef07756f1bd5781abfe319ebfda.
+  * Frozen seed-1101 full Classic tests completed normally: Random .500122
+    (mostly draws), ExpanderHarvester .013184, Sentinel 0. The evaluation
+    archive relh-classic-small-to-classic-ppo-16245-evals.tar.gz has SHA256
+    7b70dcdfb269206831bbeceb8a6ed1c3d411b95e76103cb567f0f10d929a5af7.
+    The transfer gained little against Expander and did not produce a
+    competitive policy. No hosted test, upload, submission or champion
+    change occurred.
+
+Current next step
+  Diagnose PPO action behavior and return learning on the frozen small/full
+  checkpoints. The 28,816-parameter one-hop spatial policy remains near
+  random despite reward shaping and curriculum. Try a bounded policy or
+  action-space change that improves held-out full Classic play, under the
+  user-authorized >=25K complete-step SPS floor. Do not extend the current
+  weak checkpoint or publish it. Keep other panes' jobs and data separate.

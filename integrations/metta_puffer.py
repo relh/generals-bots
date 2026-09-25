@@ -57,6 +57,8 @@ class GeneralsPufferEnvironment:
         factorized_actions: bool = False,
         classic_maps: bool = False,
         coworld_classic: bool = False,
+        coworld_small_map_curriculum: bool = False,
+        coworld_tiny_map_curriculum: bool = False,
         coworld_pool_size: int = 256,
         compact_features: bool = False,
         lean_features: bool = False,
@@ -83,6 +85,10 @@ class GeneralsPufferEnvironment:
             raise ValueError("Sparse teacher requires factorized actions without dense supervision")
         if coworld_classic and classic_maps:
             raise ValueError("Choose one map distribution")
+        if (coworld_small_map_curriculum or coworld_tiny_map_curriculum) and not coworld_classic:
+            raise ValueError("Map curriculum requires Coworld Classic padding")
+        if coworld_small_map_curriculum and coworld_tiny_map_curriculum:
+            raise ValueError("Choose one map curriculum")
         if coworld_classic and (coworld_pool_size < 16 or coworld_pool_size % 16):
             raise ValueError("Coworld map pool must contain the 16 board sizes evenly")
         if compact_features and (not coworld_classic or not factorized_actions or goal_features):
@@ -120,7 +126,8 @@ class GeneralsPufferEnvironment:
         if teacher_rollouts and (teacher is None or not (sparse_teacher or supervise_teacher)):
             raise ValueError("Teacher rollouts require supervised teacher actions")
         if coworld_classic:
-            board_size, horizon = 21, 1200
+            board_size = 21
+            horizon = 300 if coworld_tiny_map_curriculum else 600 if coworld_small_map_curriculum else 1200
         self.size = board_size
         self.supervise_teacher = supervise_teacher
         self.sparse_teacher = sparse_teacher
@@ -143,9 +150,15 @@ class GeneralsPufferEnvironment:
         self.training = context.mode == "train"
         if coworld_classic:
             self.env = GeneralsEnv(
-                min_grid_size=18, max_grid_size=21, pad_to=21, truncation=1200,
-                mountain_density_range=(0.24, 0.26), min_generals_distance=17,
-                build_castles=False, deathtouch_turn=None, pool_size=coworld_pool_size, dynamic_pool=True,
+                min_grid_size=6 if coworld_tiny_map_curriculum else 10 if coworld_small_map_curriculum else 18,
+                max_grid_size=8 if coworld_tiny_map_curriculum else 12 if coworld_small_map_curriculum else 21,
+                pad_to=21, truncation=horizon,
+                mountain_density_range=(0.18, 0.22) if coworld_tiny_map_curriculum else (0.24, 0.26),
+                min_generals_distance=4 if coworld_tiny_map_curriculum else 8 if coworld_small_map_curriculum else 17,
+                num_castles_range=(0, 3) if coworld_tiny_map_curriculum else (2, 5) if coworld_small_map_curriculum else (9, 11),
+                castle_val_range=(10, 21) if coworld_tiny_map_curriculum else (20, 41) if coworld_small_map_curriculum else (40, 51),
+                build_castles=False, deathtouch_turn=None,
+                pool_size=coworld_pool_size, dynamic_pool=True,
             )
         else:
             map_options = (

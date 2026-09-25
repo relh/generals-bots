@@ -1830,3 +1830,97 @@ PPO on full Classic maps still has almost no positive winning experience at
 8.39M steps. Next test a bounded smaller-map win curriculum using the same
 21x21 padded model, then evaluate transfer on held-out full Classic maps.
 No hosted upload, league submission, publication, or champion change occurred.
+
+## Pure PPO map-size curriculum (2026-09-25)
+
+The first curriculum keeps the 21x21 raw observation and factorized action
+contract while generating 10–12-tile playable boards, two to five castles,
+and 600-turn games against Random. A focused B300 environment contract test
+passed. One-B300 job 16042 completed 8,388,608 steps with 4,096 games,
+four buffers, 16 CPUs, horizon32, minibatch16,384, replay .5, LR .001,
+gamma .999 and no teacher or imitation. Exact final 16/20-epoch windows
+including the save were **28,663/29,099 SPS**, above the user-authorized
+25K floor. Final checkpoint SHA-256 is
+`d0d1d9db297983dd63e68c84b072499831b71132dbfccab0cad8741d2f153d36`.
+The verified training archive on metta0 is
+`relh-classic-smallmap-ppo-16042.tar.gz` (SHA-256
+`a1331bb5bd6c12eef06f39e8d7eb4e056df69d9acc7a5f1c570dde20c64daac1`).
+Held-out seed-1101 performance: **.500488** versus Random on 10–12-tile
+maps; on the true 18–21-tile Classic distribution, **.500000** against
+Random (draws), **.007080** against ExpanderHarvester, and **0** against
+Sentinel. The verified evaluation archive is
+`relh-classic-smallmap-ppo-16042-evals.tar.gz` (SHA-256
+`934428df819719e55697e73486a9db9a2aad25d2885add63d4b4c3c8135ad635`).
+
+The second curriculum generates 6–8-tile playable boards padded to 21,
+zero to three castles, and 300-turn games against Random. A focused B300
+contract test passed. The first job 16094 stopped before training when the
+B300 node-local `/tmp` exhausted its inode allotment even though 1.6 TiB
+of bytes were free. Only this pane's archived, inactive source/run/build
+copies were removed. No protected agent histories or other panes' files
+were touched. Rerun 16108 completed 8,388,608 steps on one B300 at final
+16/20-epoch **26,317/26,737 SPS** including the save. Training score
+progressed from −.031 to +.023 against Random. Final checkpoint SHA-256:
+`a4155f03bbd685bb2e1bce31f1dc46f034b6ae07c76e7bf5431e825a86bc38fb`.
+Verified archive: `relh-classic-tinymap-ppo-16108.tar.gz` (SHA-256
+`c178ad08ec895a27b6ca782e54c9f6d6626b6997bafde1f24ac4441009275d8e`).
+Held-out seed-1101 score was **.509888** against Random on tiny maps;
+full Classic transferred scores were **.500000** Random (draws), **.009644**
+ExpanderHarvester, **0** Sentinel. Verified evaluation archive:
+`relh-classic-tinymap-ppo-16108-evals.tar.gz` (SHA-256
+`7d46f9b9f4d7ecae556cf1825055200fbb457dc5484b6cfeaf4f9ec8822f74b2`).
+Neither checkpoint is a competitive full Classic policy.
+
+A pure PPO transfer from the tiny checkpoint to the 10–12-tile curriculum
+completed as Slurm job 16160. It verified the parent checkpoint SHA-256
+`a4155f03bbd685bb2e1bce31f1dc46f034b6ae07c76e7bf5431e825a86bc38fb`
+and unchanged Fabric model hash before training. The 8,388,608-step run
+measured final 16/20-epoch **26,938/27,531 SPS** including the save.
+Training score in 600-turn games rose from +.007 to +.020. The final
+checkpoint SHA-256 is
+`cbe7d466654e1c4a958402af915764083f29cc327fde98994d0148ba97b217af`.
+The verified metta0 training archive is
+`relh-classic-tiny-to-small-ppo-16160.tar.gz` (SHA-256
+`3d766a586f3d878263cc86402db59520579a2bd6695aa829dd131147ae0a8ff9`).
+Held-out seed-1101 score was **.510132** against Random on small maps,
+**.500000** against Random (draws), **.010620** against ExpanderHarvester,
+and **0** against Sentinel on full Classic. The verified evaluation archive
+is `relh-classic-tiny-to-small-ppo-16160-evals.tar.gz` (SHA-256
+`559895940b47971689ce9d68fa7acfea2a74a7421a19ad08212873204dd609f2`).
+The small-map gain did not translate into meaningful full-map play. The
+next bounded experiment transfers to full 18–21-tile Classic under the 25K
+complete-step guard. Publish only after strong held-out and hosted
+direct-match evidence. No hosted upload, submission or champion change
+occurred in these curriculum probes.
+
+## Pure PPO transfer to full Classic (2026-09-25)
+
+First Slurm attempt 16236 rejected its assigned B300 GPU because another
+user's process already occupied about 43 GB. The idle-GPU guard stopped
+before training; no other user's process or data was touched. Retry 16245
+used an idle B300 GPU. It transferred the verified tiny-to-small checkpoint
+to the true 18–21-tile, 1,200-turn Classic distribution against Random.
+It retained the 14-channel raw 21×21 observation, 28,816-parameter tied
+local model, native PufferLib 5 PPO, no teacher, and land/castle potential
+weights .5/.25. Settings: 4,096 games, four buffers, 16 CPUs, horizon32,
+minibatch16,384, replay .5, LR .001, gamma/shaping gamma .999.
+
+Job 16245 completed 8,388,608 steps. The final 16/20-epoch windows
+including the checkpoint save measured **26,517/26,914 end-to-end SPS**;
+late pre-save windows measured about 28.7K. Final checkpoint SHA-256 is
+`71806c20b4e755bcc53abceff19a83db84306eb68f15478f051327a86656b3df`.
+The verified metta0 archive of source, build, run, logs and GPU samples is
+`relh-classic-small-to-classic-ppo-16245.tar.gz`, SHA-256
+`27f91229d46a50d772ebbd2bebd775b6caa29ef07756f1bd5781abfe319ebfda`.
+
+Frozen seed-1101 full Classic performance was **.500122** against Random
+(mostly draws), **.013184** against ExpanderHarvester, and **0** against
+Sentinel. Evaluation jobs 16295–16297 completed normally. Their verified
+archive is `relh-classic-small-to-classic-ppo-16245-evals.tar.gz`, SHA-256
+`7b70dcdfb269206831bbeceb8a6ed1c3d411b95e76103cb567f0f10d929a5af7`.
+The transfer's slight Expander gain from .010620 is not a meaningful
+competitive result. The next step is to inspect action behavior and PPO
+returns on the frozen checkpoints, then test a materially different
+policy or action representation in a bounded run. Maintain the user's 25K
+complete-step gate. No hosted test, upload, submission or champion change
+occurred.

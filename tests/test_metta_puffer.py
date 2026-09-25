@@ -477,6 +477,52 @@ def test_teacher_free_training_arrays_obey_native_transport_contract():
         env.close()
 
 
+def test_small_map_curriculum_keeps_classic_transport_size():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, coworld_classic=True, coworld_small_map_curriculum=True,
+        coworld_pool_size=64, opponent="random", factorized_actions=True,
+        parallel_games=4, require_gpu=False,
+    )
+    try:
+        assert env.base.env.min_grid_size == 10
+        assert env.base.env.max_grid_size == 12
+        assert env.base.env.pad_to == 21
+        assert env.base.env.truncation == 600
+        assert env.base.env.min_generals_distance == 8
+        assert env.base.env.num_castles_range == (2, 5)
+        observation = env.reset("small-map-curriculum")
+        assert np.asarray(observation.values).shape == (4, 14 * 21 * 21)
+        assert np.asarray(observation.action_masks).shape == (4, 4 * 21 * 21 + 3)
+        positions = np.asarray(env.states.general_positions)
+        assert np.all(positions >= 0) and np.all(positions < 12)
+        assert np.isfinite(env.step([[4 * 21 * 21, 0]] * 4).rewards).all()
+    finally:
+        env.close()
+
+
+def test_tiny_map_curriculum_keeps_classic_transport_size():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, coworld_classic=True, coworld_tiny_map_curriculum=True,
+        coworld_pool_size=64, opponent="random", factorized_actions=True,
+        parallel_games=4, require_gpu=False,
+    )
+    try:
+        assert (env.base.env.min_grid_size, env.base.env.max_grid_size) == (6, 8)
+        assert env.base.env.pad_to == 21 and env.base.env.truncation == 300
+        assert env.base.env.min_generals_distance == 4
+        assert env.base.env.num_castles_range == (0, 3)
+        observation = env.reset("tiny-map-curriculum")
+        assert np.asarray(observation.values).shape == (4, 14 * 21 * 21)
+        assert np.asarray(observation.action_masks).shape == (4, 4 * 21 * 21 + 3)
+        positions = np.asarray(env.states.general_positions)
+        assert np.all(positions >= 0) and np.all(positions < 8)
+        assert np.isfinite(env.step([[4 * 21 * 21, 0]] * 4).rewards).all()
+    finally:
+        env.close()
+
+
 def test_teacher_rollouts_reuse_next_state_action():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     options = dict(
