@@ -787,3 +787,58 @@ Current next step
   SPS and improved held-out results on strong opponents before hosted tests.
   Keep other panes' work separate and leave current champion unchanged
   until direct hosted matches prove a replacement.
+
+Update, 2026-09-25 two-feature cardinal readout and continuation
+  * A 10-channel tied-local model with a one-tile cardinal input stencil
+    (input_radius 1.01) and two features per site compiled on B300 job 15167.
+    It has 8,088 parameters and model SHA256
+    ae3ab7e3e7454a99c2a7927a3e5af23bf4e46227dc7b9ab68d03c26283eb2fa5.
+    Scratch pilot 15171 completed 4,194,304 steps; epochs 10-31 ran
+    2,752,512 / 78.909 s = 34,882 end-to-end SPS on one B300, with 4,096
+    games, 8,192 minibatch, horizon 32, replay ratio .125, 16 CPUs,
+    40.4% sampled GPU use, 12.9 GiB. Checkpoint SHA256
+    7677c5afc5e6b4041ce89829e4ffe415eeedf88da304586bb60639816d6c8ff7.
+    Held-out seed 1101 scored .433105 ExpanderHarvester / .293579 Sentinel.
+  * A 29.36M-step 8,192-minibatch continuation job 15182 stopped at epoch
+    18 when monitor SPS fell to 29,700, with no new checkpoint. Its logs
+    were archived. A bounded 16,384-minibatch continuation job 15189 then
+    completed 4,194,304 new steps from the scratch checkpoint. Epochs 10-31
+    ran 2,752,512 / 85.160 s = 32,322 SPS; sampled B300 use 37.2%,
+    15.0 GiB. Checkpoint SHA256
+    cc420fd829e3408405a772029296881972ba72ff64b8d56e329825eb8307f5c4.
+    At 8.39M cumulative steps, held-out seed 1101 scored .448364/.301636.
+  * Guarded long job 15207 completed 25,165,824 new steps from that exact
+    checkpoint, 33,554,432 cumulative in this cardinal policy line, with
+    six checkpoints and no nonfinite gradients. Epochs 32-191 ran
+    20,840,448 steps / 679.660 s = 30,663 end-to-end SPS on one B300;
+    4,096 games, minibatch 16,384, horizon 32, replay ratio .125, 16 CPUs,
+    sampled GPU use 33.9% and 14.9 GiB. Final checkpoint SHA256
+    fb9f235c8c8283db19da7b63e2768f1a5820cf359672bbbd4c6c249f885feff0.
+    Held-out seed 1101 scored .487915 ExpanderHarvester / .321655 Sentinel,
+    below v11 .496338/.337769. Intermediate new-step checkpoints at
+    8.39M, 16.78M, and 20.97M scored .475342/.309326,
+    .474854/.313354, and .481567/.324707 (jobs 15214-15219). None beat
+    v11 on both. No hosted or publication action was justified.
+  * Verified metta0 archives and SHA256s: cardinal2 pilot
+    relh-classic-cardinal2-15171.tar.gz 582b27862385085819da558ede9fb0f3a3fbc3863e83354c67554d95e3f916af;
+    evals relh-classic-cardinal2-evals-15176-15177.tar.gz
+    4097a7fbe4af6c7369b881f8c73c6f34c759252e5ad12aa461528374edeff453;
+    stopped run relh-classic-cardinal2-long-stopped-15182.tar.gz
+    ac6405e38179f3f15f454081c9eb50fe623121915da158564428ef9601ef032d;
+    mb16 pilot relh-classic-cardinal2-mb16-15189.tar.gz
+    72c446236adbd95455fcee56d2cd783b9b5ad25503278b271eb91ce9cb0a17c7;
+    mb16 evals relh-classic-cardinal2-mb16-evals-15202-15203.tar.gz
+    9f8aa4370539a7787dc73562c038c3583e09adfa33ef75238c591e79725f6131;
+    long relh-classic-cardinal2-mb16-long-15207.tar.gz
+    066832969690f69a39f955ccca7a65e63afcce5e67b7c39e858dc45258f4150c;
+    final evals relh-classic-cardinal2-mb16-long-evals-15209-15210.tar.gz
+    64ca0cc9c50f8bda744eaab0348af3c1894aceac1905eac4ee078519d1689e20;
+    scan relh-classic-cardinal2-mb16-scan-15214-15219.tar.gz
+    657ebdee208b2120ce09c51f5a3999ee41525368cb2f38e371ad441b3197bdce.
+
+Current next step
+  Improve the learning signal or spatial policy design with a bounded B300
+  probe; the cardinal teacher-only line plateaued below v11 despite
+  sustained >=30K SPS. Require improvement over v11 on fresh held-out
+  strong-opponent maps, then larger winning hosted direct matches before
+  publishing. Keep other panes' jobs and the current champion unchanged.

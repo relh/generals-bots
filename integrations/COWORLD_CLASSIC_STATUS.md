@@ -1232,3 +1232,78 @@ cardinal-stencil builds stalled before their first epoch, so first run a
 bounded B300 build/profile with two features per site and a one-tile stencil.
 Verify compilation time and >=30K end-to-end SPS before a long run, and use
 fresh held-out maps and strong opponents before any hosted candidate test.
+
+## Two-feature cardinal readout and long continuation (2026-09-25)
+
+A two-feature-per-site, 10-channel tied-local model with a one-tile cardinal
+input stencil (`input_radius=1.01`) built successfully on B300 job 15167.
+Its graph has 8,088 trainable parameters, model SHA-256
+`ae3ab7e3e7454a99c2a7927a3e5af23bf4e46227dc7b9ab68d03c26283eb2fa5`.
+The packed-context public input and sparse ExpanderHarvester teacher were
+retained. Compilation before the first epoch was expensive, but bounded
+scratch pilot 15171 completed 4,194,304 steps. With one B300, 4,096 games
+in four buffers, horizon 32, 8,192 minibatch, replay ratio .125, LR .001,
+and 16 CPUs, epochs 10–31 ran 2,752,512 steps / 78.909 s = **34,882
+end-to-end SPS**; sampled GPU use was 40.4% and 12.9 GiB. Final checkpoint
+SHA-256 `7677c5afc5e6b4041ce89829e4ffe415eeedf88da304586bb60639816d6c8ff7`.
+Held-out seed 1101 scored .433105 versus ExpanderHarvester and .293579
+versus Sentinel (jobs 15176/15177), below v11.
+
+A 29.36M-step continuation at minibatch 8,192 (job 15182) was stopped by
+the throughput guard at epoch 18: monitor SPS fell to 29,700. No new
+checkpoint was written. Compared with the scratch pilot, epoch 15 optimizer
+time increased from about 1.03 s to 1.26 s and environment time from about
+2.44 s to 2.65 s. Logs and build are preserved in
+`relh-classic-cardinal2-long-stopped-15182.tar.gz`, SHA-256
+`ac6405e38179f3f15f454081c9eb50fe623121915da158564428ef9601ef032d`.
+Doubling minibatch to 16,384 kept the replay sample budget while reducing
+optimizer calls. Bounded continuation 15189 from the exact scratch
+checkpoint completed 4,194,304 more steps without nonfinite gradients.
+Epochs 10–31 ran 2,752,512 steps / 85.160 s = **32,322 end-to-end SPS**;
+37.2% sampled GPU use and 15.0 GiB. Checkpoint SHA-256
+`cc420fd829e3408405a772029296881972ba72ff64b8d56e329825eb8307f5c4`.
+At 8,388,608 cumulative steps it scored .448364/.301636 versus
+ExpanderHarvester/Sentinel on held-out seed 1101 (jobs 15202/15203).
+
+The guarded long continuation 15207 from that checkpoint completed
+25,165,824 new steps, reaching **33,554,432 cumulative steps** in this
+policy line, with six saved checkpoints and no nonfinite gradients. One B300,
+4,096 games, four buffers, horizon 32, minibatch 16,384, replay ratio .125,
+LR .001, and 16 CPUs were used. Epochs 32–191 completed 20,840,448 steps
+in 679.660 s = **30,663 end-to-end SPS**, including checkpoint overhead;
+sampled GPU use averaged 33.9% and 14.9 GiB. The final checkpoint SHA-256
+is `fb9f235c8c8283db19da7b63e2768f1a5820cf359672bbbd4c6c249f885feff0`.
+Held-out seed 1101 scored .487915 versus ExpanderHarvester and .321655
+versus Sentinel (jobs 15209/15210), below v11's .496338/.337769.
+
+Three intermediate long-run checkpoints were scanned on the same four
+1,024-game episodes per opponent (jobs 15214–15219):
+
+| New steps in long run | ExpanderHarvester | Sentinel |
+| ---: | ---: | ---: |
+| 8,388,608 | .475342 | .309326 |
+| 16,777,216 | .474854 | .313354 |
+| 20,971,520 | .481567 | .324707 |
+| 25,165,824 (final) | **.487915** | .321655 |
+
+The final is best on Expander, while 20.97M new steps is best on Sentinel;
+no tested checkpoint beat v11 on both. Neither this policy line nor the
+general-distance and threat-plane probes justified hosted upload, league
+submission, or a champion change.
+
+| Verified metta0 artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-cardinal2-15171.tar.gz` | `582b27862385085819da558ede9fb0f3a3fbc3863e83354c67554d95e3f916af` |
+| `relh-classic-cardinal2-evals-15176-15177.tar.gz` | `4097a7fbe4af6c7369b881f8c73c6f34c759252e5ad12aa461528374edeff453` |
+| `relh-classic-cardinal2-long-stopped-15182.tar.gz` | `ac6405e38179f3f15f454081c9eb50fe623121915da158564428ef9601ef032d` |
+| `relh-classic-cardinal2-mb16-15189.tar.gz` | `72c446236adbd95455fcee56d2cd783b9b5ad25503278b271eb91ce9cb0a17c7` |
+| `relh-classic-cardinal2-mb16-evals-15202-15203.tar.gz` | `9f8aa4370539a7787dc73562c038c3583e09adfa33ef75238c591e79725f6131` |
+| `relh-classic-cardinal2-mb16-long-15207.tar.gz` | `066832969690f69a39f955ccca7a65e63afcce5e67b7c39e858dc45258f4150c` |
+| `relh-classic-cardinal2-mb16-long-evals-15209-15210.tar.gz` | `64ca0cc9c50f8bda744eaab0348af3c1894aceac1905eac4ee078519d1689e20` |
+| `relh-classic-cardinal2-mb16-scan-15214-15219.tar.gz` | `657ebdee208b2120ce09c51f5a3999ee41525368cb2f38e371ad441b3197bdce` |
+
+Next, improve the learning signal or spatial policy design rather than
+continuing this plateaued teacher-only line. Require a bounded B300 probe at
+>=30K full training SPS, then improvement over v11 on fresh held-out maps
+and strong opponents before any hosted test. Keep v11 private and the
+incumbent champion unchanged until direct hosted wins prove replacement.
