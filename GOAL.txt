@@ -324,3 +324,46 @@ Update, 2026-09-24 capped Sentinel and warm-start strong-opponent probes
     run. Keep the >=30K end-to-end B300 gate, require improvement over the
     selected baseline on fresh held-out seeds, and only then advance to hosted
     direct matches. No publication or champion change occurred.
+
+Update, 2026-09-24 scripted teacher gap and warm-start PPO probe
+  * The exact Coworld Classic scripted benchmark was repaired for the current
+    batched environment signature and made parameterized by teacher/opponent.
+    B300 job 13696 completed 256 fresh 18-21-tile games on seed 1201 per
+    pairing. ExpanderHarvester scored .300781 versus Sentinel, Sentinel scored
+    .664062 versus ExpanderHarvester, and ExpanderHarvester self-play scored
+    .496094. This confirms a large teacher quality gap independent of the
+    neural checkpoints. Verified metta0 archive SHA256
+    610c99d8639bb7133befe33b7d8da5fc95b01c2e14ef9bc90f4faccb24635dad.
+  * The Puffer runtime normally rejects policy initialization when the loss
+    changes. A source-hash-verified experimental copy of its Python package
+    allowed only the known 31.46M supervised checkpoint to initialize the
+    identical 8,004-parameter policy with PPO plus .25 sparse-teacher loss;
+    it retained environment/spec, build revision, checkpoint digest, state
+    words, and policy override checks. The shared runtime was not edited.
+    Job 13709 failed before steps because it reused an executable whose
+    adapter fingerprint preceded the isolated patch. Job 13718 timed out
+    starting the rebuilt Docker container, with zero build output. Both
+    terminal jobs and logs are archived on metta0, SHA256
+    f87e2d8dcd2d0a89911ff375449760def2d995954a29a206e0b73068cb5d10a9.
+  * Job 13733 rebuilt the native executable under the isolated runtime and
+    completed 4,194,304 new PPO-plus-teacher steps from the verified 31.46M
+    checkpoint. One B300, 4,096 environments in four buffers, 8,192
+    minibatch, horizon 32, replay ratio .125, 16 CPUs, LR .0001, entropy
+    .005 sustained about 30.8-33.6K end-to-end SPS across warm epochs, about
+    32.7K late, and passed the 2.6M nonfinite failure range. Late sampled
+    60-second GPU utilization was about 39.7%. Final checkpoint SHA256
+    a6c6075293fe87843611a1268ab2e34d5c7ccf5bb4868c7b82b4188b2a83201c.
+  * Held-out B300 jobs 13744/13745 completed four 1,024-game batch episodes
+    per opponent on seed 1101. Warm PPO scored .481689 against
+    ExpanderHarvester and .318115 against Sentinel, effectively no gain from
+    the selected baseline .481445/.321411. Source checkpoint and transfer
+    identities were recorded; no long extension or hosted upload was made.
+    Training, rebuilt executable, evaluations, GPU samples, and isolated
+    source are verified on metta0, SHA256
+    9400cfa454876480e8abfdb03f9cd3aec801c31ca1398e9ce06c71ea2cd3c541.
+  * Next concrete step: obtain a stronger training target with less per-step
+    cost than the full Sentinel decision, or improve direct RL credit for
+    midgame production/defense. Prove >=30K sustained B300 end-to-end SPS
+    through 2.6M steps, then beat .481445/.321411 on fresh held-out Classic
+    opponents before committing to tens of millions of steps and hosted tests.
+    No policy has met the publication gate; the goal remains active.

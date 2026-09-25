@@ -797,3 +797,43 @@ were verified. Training, builds, evals, and samples are archived as
 `24f62cd56f34b854a9c41af56202e96f613c4feaa453c878f4277ec06b72df15`).
 The warm-start and evaluation scripts preserve the exact settings in this
 branch. There is no quality gain to justify a long extension or hosted upload.
+
+The scripted Classic benchmark was updated for the current batched API and
+parameterized by teacher and opponent. On B300, job 13696 played 256 fresh
+18–21-tile games per pairing (seed 1201): ExpanderHarvester scored **0.300781
+against Sentinel**, Sentinel scored **0.664062 against ExpanderHarvester**,
+and ExpanderHarvester self-play scored **0.496094**. This independently shows
+the gap between the fast training teacher and the stronger tactical teacher.
+The completed benchmark is archived as
+`relh-classic-scripted-quality-13696.tar.gz` (SHA-256
+`610c99d8639bb7133befe33b7d8da5fc95b01c2e14ef9bc90f4faccb24635dad`).
+
+An isolated, source-hash-verified copy of the Puffer runtime was used to test
+policy-only initialization across the supervised-to-PPO loss change. It
+permits only the known checkpoint/build pair with identical environment spec,
+model state size, nonloss build configuration, and zero-output sparse-teacher
+head; all existing checkpoint digest and architecture override checks remain.
+The shared runtime was untouched. Setup job 13709 failed before training
+because its reused native executable had the previous adapter fingerprint.
+Job 13718 timed out starting its Docker build and produced no native build.
+Their terminal logs are archived as
+`relh-classic-warm-ppo-setup-failures-13709-13718.tar.gz` (SHA-256
+`f87e2d8dcd2d0a89911ff375449760def2d995954a29a206e0b73068cb5d10a9`).
+
+Job 13733 rebuilt the native executable under the isolated runtime, loaded
+the 31.46M-step neural checkpoint, and completed 4,194,304 new PPO-plus-
+teacher steps. It used one B300, 4,096 games in four buffers, 8,192
+minibatch, horizon 32, replay ratio .125, 16 CPUs, LR .0001, and entropy
+.005. Warm end-to-end rate was about **30.8–33.6K SPS** through the prior
+2.6M-step nonfinite range; late rate was about 32.7K, with 39.7% sampled
+GPU utilization over the late 60-second window. Its final checkpoint SHA-256
+is `a6c6075293fe87843611a1268ab2e34d5c7ccf5bb4868c7b82b4188b2a83201c`.
+Held-out jobs 13744/13745 each evaluated 4,096 Classic games on seed 1101:
+**0.481689 versus ExpanderHarvester** and **0.318115 versus Sentinel**.
+These are flat/slightly below the selected baseline **0.481445/0.321411**.
+The training build, run, eval records, samples, and isolated source are archived
+as `relh-classic-warm-ppo-13733-13744-13745.tar.gz` (SHA-256
+`9400cfa454876480e8abfdb03f9cd3aec801c31ca1398e9ce06c71ea2cd3c541`).
+No long PPO extension or hosted upload was made. A stronger, cheaper training
+target or improved win-focused credit remains necessary before the next long
+run and publication gate.
