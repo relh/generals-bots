@@ -967,3 +967,55 @@ Current next step
   opponents. Only then attempt hosted direct matches; publish a frozen
   policy only after larger winning hosted evidence. Preserve v11 private,
   the incumbent champion, and other panes' work.
+
+Update, 2026-09-25 Cardinal periodic-Sentinel and reduced-imitation screens
+  * The 33.55M-step Cardinal teacher checkpoint SHA256
+    fb9f235c8c8283db19da7b63e2768f1a5820cf359672bbbd4c6c249f885feff0
+    was continued with a Sentinel label every fourth turn. B300 bounded
+    job 15434 completed 4,194,304 steps; warm epochs 10-31 measured
+    2,752,512 / 88.761 seconds = 31,010 full training SPS on 4,096 games,
+    four buffers, 16 CPUs, horizon 32, minibatch 16,384, replay .125,
+    LR .0003. Checkpoint SHA256
+    2957e83b23aa327d0d4a54043c864fff75000a9f4c78a45e01aabd2f86e92d79.
+    Seed-1101 four-batch scores were .473633 Expander / .316406 Sentinel,
+    worse than the Cardinal parent and v11. Verified metta0 archive
+    relh-classic-cardinal2-sentinel-15434-evals.tar.gz SHA256
+    9b54ac53e8e9a23cf872d7fec9a5dd770d3cc6c7ab1b793fb2f21149bb69f945.
+  * An audited v11 teacher-to-PPO transfer lowered sparse imitation
+    coefficient from .25 to .05, keeping the 3:1 Expander/Sentinel mix.
+    B300 bounded job 15451 completed 4,194,304 steps; warm epochs 10-31
+    measured 2,752,512 / 85.274 seconds = 32,278 end-to-end SPS with
+    the same 4,096-game/four-buffer/16-CPU/horizon-32/minibatch-16,384/
+    replay-.125/LR-.0003 setup. Checkpoint SHA256
+    730022aafcb836422d7b97d403d30bcfa6a30552cb6e40e90825a29c4c85ef5f.
+    Held-out seeds 1101-1103 averaged .519369 Expander / .348714 Sentinel;
+    v11 scored .513061/.351156. Verified archive
+    relh-classic-v11-lowteacher-15451-evals.tar.gz SHA256
+    c0f83b242d3c892a30af88fb864f4cb2af88d428bbbd301f82121945feed4d4d.
+  * Guarded B300 continuation job 15469 completed 25,165,824 new steps
+    and saved six checkpoints. Warm epochs 32-191 measured 20,840,448 /
+    633.649 seconds = 32,890 end-to-end SPS including six saves; late
+    epochs 160-191 remained 32,314. GPU sample after warmup averaged
+    41.3% utilization and 12,932 MiB. No stall/nonfinite occurred. Final
+    checkpoint SHA256
+    d254a125a979e5f7c7dd794ca5b165b22a5fc9bb609c2b06530dcb9027a604fe.
+    Seed-1101 four-batch scans found no checkpoint clearly better than
+    v11 against both opponents. At 16.78M new steps, the best Sentinel
+    candidate scored .338745 vs v11 .337769, but only .494873 vs
+    Expander, below v11 .496338. The final scored .480835/.332520.
+    Full run archive relh-classic-v11-lowteacher-long-15469.tar.gz SHA256
+    2e3241c8f76295d7eca6facf3e97c8ebec7499d9b8e1d4c5bcb7cffac65ea8fa;
+    ten evaluation records in relh-classic-v11-lowteacher-long-15469-evals.tar.gz
+    SHA256 d7db7d58c8170b3570842a23e97c91821f2639a4309571ccb3c10d9adcd87a65.
+    Full checkpoint scan and source hashes are in
+    integrations/COWORLD_CLASSIC_STATUS.md. No hosted upload, league
+    submission, publication, or champion change occurred.
+
+Current next step
+  Probe a changed spatial neural architecture or defense/expansion learning
+  signal in a bounded B300 run, keeping 4,096 parallel games and the
+  complete-step >=30K SPS gate. Evaluate frozen candidates on fresh full
+  Classic 18-21-tile maps against both strong opponents. Only a clear
+  improvement over v11 warrants private hosted direct matches; require
+  larger winning hosted evidence before publishing. Preserve v11 private,
+  the incumbent champion, and other panes' work.

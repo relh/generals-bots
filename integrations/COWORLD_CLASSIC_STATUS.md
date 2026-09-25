@@ -1485,3 +1485,117 @@ The next probe should change the spatial policy design or reduce conflicting
 teacher supervision while preserving the 30K complete-step gate. Retain v11
 as the strongest private hosted-tested neural checkpoint and the current
 incumbent as champion until direct hosted wins prove replacement.
+
+## Cardinal periodic-Sentinel continuation screen (2026-09-25)
+
+The 33.55M-step two-feature Cardinal checkpoint (SHA-256
+`fb9f235c8c8283db19da7b63e2768f1a5820cf359672bbbd4c6c249f885feff0`)
+was screened with the periodic Sentinel labels that had helped v11. The
+10-channel, one-tile stencil model, sparse-teacher-only loss, and packed
+public observation were unchanged; every fourth training turn replaced
+the signed Expander target with a Sentinel action. The native build retained
+model hash `ae3ab7e3e7454a99c2a7927a3e5af23bf4e46227dc7b9ab68d03c26283eb2fa5`
+and 14,124 model-state words. Focused packed-context and Sentinel-label
+B300 tests passed, and initialization used the exact parent checkpoint.
+
+Bounded job 15434 completed 4,194,304 new steps on one B300 with 4,096
+games in four buffers, 16 CPUs, horizon 32, minibatch 16,384, replay
+ratio .125, and learning rate .0003. Warm epochs 10–31 measured
+**2,752,512 steps / 88.761 seconds = 31,010 end-to-end SPS**, including
+environment steps, inference, host/device transfers, and optimization.
+Sampled GPU use after the first minute averaged 31.0% and 12,968 MiB.
+The final checkpoint SHA-256 is
+`2957e83b23aa327d0d4a54043c864fff75000a9f4c78a45e01aabd2f86e92d79`.
+
+Frozen seed-1101 evaluations each covered four 1,024-game Classic batches:
+**.473633 versus ExpanderHarvester** and **.316406 versus Sentinel** (jobs
+15436/15437). Both regressed from the Cardinal parent .487915/.321655 and
+remain below v11 .496338/.337769. A long continuation or hosted upload
+is not justified. The training build, checkpoint, source hashes, GPU sample,
+and both evaluation records are verified in the metta0 archive
+`relh-classic-cardinal2-sentinel-15434-evals.tar.gz`, SHA-256
+`9b54ac53e8e9a23cf872d7fec9a5dd770d3cc6c7ab1b793fb2f21149bb69f945`.
+No league submission or champion change occurred.
+
+## Reduced imitation loss from v11 (2026-09-25)
+
+The audited v11 teacher-to-PPO transfer was repeated with sparse imitation
+coefficient **.05** instead of .25 to reduce conflict between the periodic
+Sentinel labels, intervening Expander hints, and competitive reward. The
+source checkpoint remains SHA-256
+`8f641eae8d3958b319f48fa8e4831b4010ec28b1e20f825653f07f9659441346`.
+The source model hash is
+`c199a856c706ad2d859ff0ea1091d191ff7922e3ffc08af2097383b1afbf55c9`,
+the .05-loss target hash is
+`b8c1b1162b5f6c64b5da8dc4f166d8fb9a9327fb2f692e92eaadadb07d9689a2`,
+and both have 12,360 model-state words. The isolated Puffer source SHA-256
+is `48a47da8c0ade533e0b61102462911e54dc456cfdfb3dab8daefe13ba1163fc7`;
+the shared runtime was untouched. Target prebuild 15447 passed.
+
+Bounded pilot 15451 used the same seed, one B300, 4,096 games in four
+buffers, 16 CPUs, horizon 32, minibatch 16,384, replay ratio .125,
+learning rate .0003, 75% ExpanderHarvester / 25% Sentinel opponents, and
+4,194,304 fresh steps as the .25-loss comparison. Warm epochs 10–31
+completed **2,752,512 steps / 85.274 seconds = 32,278 end-to-end SPS**;
+sampled use after one minute averaged 39.6% and 11,551 MiB. It completed
+without a stall or nonfinite gradients. Final checkpoint SHA-256 is
+`730022aafcb836422d7b97d403d30bcfa6a30552cb6e40e90825a29c4c85ef5f`.
+
+Frozen checkpoint evaluations each used four 1,024-game Classic batches:
+
+| Seed | .05 PPO vs Expander | v11 vs Expander | .05 PPO vs Sentinel | v11 vs Sentinel |
+| ---: | ---: | ---: | ---: | ---: |
+| 1101 | .508911 | .496338 | .331543 | .337769 |
+| 1102 | .528687 | .519531 | .357544 | .355957 |
+| 1103 | .520508 | .523315 | .357056 | .359741 |
+| Mean | .519369 | .513061 | .348714 | .351156 |
+
+The lower imitation weight produced a small Expander mean gain but no
+Sentinel gain. No hosted upload or publication followed. The bounded run,
+target build, isolated source, monitor, checkpoint, GPU samples, and all
+six evaluations are verified on metta0 in
+`relh-classic-v11-lowteacher-15451-evals.tar.gz`, SHA-256
+`c0f83b242d3c892a30af88fb864f4cb2af88d428bbbd301f82121945feed4d4d`.
+
+A guarded 25,165,824-step continuation from that exact pilot checkpoint
+completed as B300 job 15469. It kept the native build, environment, loss,
+optimizer settings, and seed 685; six checkpoints were saved every
+4,194,304 new steps. With the same 4,096 games/four buffers, 16 CPUs,
+horizon 32, minibatch 16,384, and replay .125, warm epochs 32–191
+completed **20,840,448 steps / 633.649 seconds = 32,890 end-to-end SPS**,
+including all six saves. The late epoch 160–191 interval was 32,314 SPS.
+Sampled GPU use averaged 41.3% after warmup, with 12,932 MiB used. The
+run ended normally without a stall or nonfinite gradient. Final checkpoint
+SHA-256 is
+`d254a125a979e5f7c7dd794ca5b165b22a5fc9bb609c2b06530dcb9027a604fe`.
+The full run, all checkpoints, GPU samples, and monitor are verified on
+metta0 in `relh-classic-v11-lowteacher-long-15469.tar.gz`, SHA-256
+`2e3241c8f76295d7eca6facf3e97c8ebec7499d9b8e1d4c5bcb7cffac65ea8fa`.
+
+Frozen seed-1101 checkpoint scans used four 1,024-game Classic batches per
+opponent. The pilot checkpoint at zero new continuation steps scored
+.508911 versus ExpanderHarvester and .331543 versus Sentinel; v11 scored
+.496338 and .337769 on the same seed.
+
+| New steps | ExpanderHarvester | Sentinel |
+| ---: | ---: | ---: |
+| 4,194,304 | .507935 | .328247 |
+| 8,388,608 | — | .332642 |
+| 12,582,912 | .496582 | .323608 |
+| 16,777,216 | .494873 | .338745 |
+| 20,971,520 | — | .336182 |
+| 25,165,824 | .480835 | .332520 |
+
+The 16.78M checkpoint's .000976 Sentinel edge over v11 coincided with an
+Expander score below v11, and all other scanned Sentinel scores were below
+v11. The final checkpoint also regressed against both opponents. Further
+continuation and hosted testing are not justified. All ten evaluation
+records, configurations, and build configurations are verified on metta0
+in `relh-classic-v11-lowteacher-long-15469-evals.tar.gz`, SHA-256
+`d7db7d58c8170b3570842a23e97c91821f2639a4309571ccb3c10d9adcd87a65`.
+No upload, league submission, publication, or champion change occurred.
+
+Next, probe a changed spatial policy or defense/expansion learning signal
+with a bounded B300 run. Require at least 30,000 warm complete-step SPS,
+clear gains over v11 on fresh held-out 18–21-tile maps against both strong
+opponents, and larger winning hosted direct matches before publication.
