@@ -46,6 +46,8 @@ class GeneralsPufferEnvironment:
         horizon: int = 300,
         opponent: str = "expander",
         shaping_weight: float = 0.2,
+        army_shaping_weight: float = 0.5,
+        land_shaping_weight: float = 0.3,
         castle_shaping_weight: float = 0.0,
         teacher: str | None = None,
         imitation_weight: float = 0.0,
@@ -70,7 +72,7 @@ class GeneralsPufferEnvironment:
         teacher_rollouts: bool = False,
         goal_features: bool = False,
     ):
-        if shaping_weight < 0 or castle_shaping_weight < 0:
+        if min(shaping_weight, army_shaping_weight, land_shaping_weight, castle_shaping_weight) < 0:
             raise ValueError("Shaping weights must be nonnegative")
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
@@ -225,25 +227,32 @@ class GeneralsPufferEnvironment:
             previous = game.get_observation(state, side)
             timestep, next_state = env.step(state, actions, pool)
             final = game.get_observation(timestep.last_state, side)
-            old_army = (previous.owned_army_count - previous.opponent_army_count) / (
-                previous.owned_army_count + previous.opponent_army_count + 1
-            )
-            new_army = (final.owned_army_count - final.opponent_army_count) / (
-                final.owned_army_count + final.opponent_army_count + 1
-            )
-            old_land = (previous.owned_land_count - previous.opponent_land_count) / (
-                previous.owned_land_count + previous.opponent_land_count + 1
-            )
-            new_land = (final.owned_land_count - final.opponent_land_count) / (
-                final.owned_land_count + final.opponent_land_count + 1
-            )
-            old_castles = _castle_control_margin(state, side)
-            new_castles = _castle_control_margin(timestep.last_state, side)
+            def margin(ours, theirs):
+                return (ours - theirs) / (ours + theirs + 1)
+
+            old_potential = jnp.float32(0)
+            new_potential = jnp.float32(0)
+            if army_shaping_weight:
+                old_potential += army_shaping_weight * margin(
+                    previous.owned_army_count, previous.opponent_army_count
+                )
+                new_potential += army_shaping_weight * margin(
+                    final.owned_army_count, final.opponent_army_count
+                )
+            if land_shaping_weight:
+                old_potential += land_shaping_weight * margin(
+                    previous.owned_land_count, previous.opponent_land_count
+                )
+                new_potential += land_shaping_weight * margin(
+                    final.owned_land_count, final.opponent_land_count
+                )
+            if castle_shaping_weight:
+                old_potential += castle_shaping_weight * _castle_control_margin(state, side)
+                new_potential += castle_shaping_weight * _castle_control_margin(timestep.last_state, side)
             done = timestep.terminated | timestep.truncated
             outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
             reward = outcome + shaping_weight * (
-                0.99 * (0.5 * new_army + 0.3 * new_land + castle_shaping_weight * new_castles) * ~done
-                - (0.5 * old_army + 0.3 * old_land + castle_shaping_weight * old_castles)
+                0.99 * new_potential * ~done - old_potential
             )
             if teacher_agent is not None and imitation_weight:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))

@@ -177,6 +177,43 @@ def test_castle_control_margin_tracks_owned_and_enemy_castles():
     assert float(_castle_control_margin(state, jnp.int32(1))) == pytest.approx(-0.2)
 
 
+def test_land_castle_reward_adds_discounted_potential_to_game_outcome():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    options = dict(board_size=6, horizon=12, opponent="random", factorized_actions=True)
+    shaped = GeneralsPufferEnvironment(
+        context=context, shaping_weight=1.0, army_shaping_weight=0.0,
+        land_shaping_weight=0.5, castle_shaping_weight=0.25, **options,
+    )
+    baseline = GeneralsPufferEnvironment(context=context, shaping_weight=0.0, **options)
+
+    def potential(env):
+        obs = game.get_observation(env.state, env.side)
+        land = (obs.owned_land_count - obs.opponent_land_count) / (
+            obs.owned_land_count + obs.opponent_land_count + 1
+        )
+        return float(0.5 * land + 0.25 * _castle_control_margin(env.state, env.side))
+
+    try:
+        observation = shaped.reset("land-castle-reward")
+        baseline.reset("land-castle-reward")
+        for _ in range(5):
+            old_potential = potential(shaped)
+            action = observation.action_masks[0].index(True)
+            result = shaped.step([[action, 0]])
+            unshaped = baseline.step([[action, 0]])
+            next_potential = 0.0 if result.episode_done else potential(shaped)
+            assert result.rewards[0] - unshaped.rewards[0] == pytest.approx(
+                0.99 * next_potential - old_potential, abs=1e-6
+            )
+            assert result.score == unshaped.score
+            observation = result.observation
+            if result.episode_done:
+                break
+    finally:
+        shaped.close()
+        baseline.close()
+
+
 def test_strong_mixed_opponents_assign_one_quarter_sentinel_games():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     env = BatchedGeneralsPufferEnvironment(

@@ -1696,3 +1696,55 @@ opponent mix, and reward setup is not justified. No hosted upload, league
 submission, or champion change followed. Next, test a higher-capacity
 policy or materially different learning signal in a bounded GPU probe,
 then require strong-opponent gains before hosted evaluation.
+
+## Land and castle potential in pure Puffer 5 PPO (2026-09-25)
+
+The hosted loss replays previously showed positive early land margins followed
+by midgame army and castle decline. A new PPO-only reward combines the game's
+win/loss outcome with a discounted potential on relative land and castle
+control. The training configuration uses `shaping_weight=1`,
+`army_shaping_weight=0`, `land_shaping_weight=.5`, and
+`castle_shaping_weight=.25`. The potential is zeroed at episode end. It has no
+teacher, teacher-action bonus, scripted observation hint, or auxiliary loss.
+The focused B300 reward contract test passed (1 passed, 23 deselected).
+
+The first 8/16-feature wider model, job 15797, and the 4/8-feature model,
+job 15811, spent the 300-second startup window compiling JAX and were
+stopped before an epoch. No checkpoint was created. Their verified log/build
+archive on metta0 is `relh-classic-landcastle-compile-stopped-15797-15811.tar.gz`
+(SHA-256 `258f3e459aa167f505756475a834a44f8df386f30318bf1ab04743057bfaedf2`).
+The preflight was corrected to pass stdin to Docker before job 15811; it
+then explicitly verified the reward/observation path. The longer startup
+allowance let the same 4/8-feature shape compile and train in job 15820.
+
+Job 15820 used one B300, 4,096 parallel Classic games in four buffers,
+16 CPUs, horizon 32, minibatch 16,384, replay .25, LR .001, entropy .0001,
+and seed 691. It completed 8,388,608 steps in 64 epochs. Exact end-to-end
+windows at epoch 64 were **40,186 SPS over 16 epochs** and **41,123 SPS over
+20 epochs**, including checkpoint time. After the first minute, 394 B300
+samples averaged 13.6% GPU utilization; peak sampled VRAM was 17,440 MiB.
+The final 28,816-parameter checkpoint SHA-256 is
+`ea00d8f6847ecce935a1731ce7a797e60683c424362f7be6b7d72f504edbc05a`.
+Source, build manifest, both checkpoints, run logs and GPU samples are in
+`relh-classic-landcastle-ppo-mid2-15820.tar.gz` on metta0 (SHA-256
+`5376f901ddfdc8ca31857f2cf1c3a643634f5934dbd7ccd616076c27e9e91dc5`).
+
+Frozen seed-1101 full Classic evaluations completed as jobs 15827–15829:
+
+| Opponent | Performance | Evaluation games/batches |
+| --- | ---: | ---: |
+| Random | .500000 | 4 |
+| ExpanderHarvester | .008789 | 4 |
+| Sentinel | .000000 | 1 |
+
+The score against Random is entirely draws at the 1,200-turn horizon. The
+strong-opponent scores are far below the v11 baseline of .496338/.337769 on
+this seed. Evaluation configs/results/logs are archived on metta0 as
+`relh-classic-landcastle-ppo-mid2-15820-evals.tar.gz` (SHA-256
+`672500bfbfcb6600f19483ff22b757f5df1bd2b5a4856723407603e36d682bb9`).
+The final training dashboard showed policy entropy about 5.06 and near-zero
+KL/clip fraction, consistent with weak policy updates. This result does not
+justify a long run or hosted upload. The next bounded step is to inspect
+action distributions and try a win-producing curriculum or stronger policy
+update while preserving the >=30K complete-step gate. No submission or
+champion change occurred.

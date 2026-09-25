@@ -1074,3 +1074,38 @@ Current next step
   Sentinel. Only then attempt hosted matches and publish a frozen policy
   after larger winning direct-match evidence. Preserve v11 private and
   other panes' branches/jobs/champions.
+
+Update, 2026-09-25 pure PPO with land and castle potential
+  * A new raw-observation PPO reward uses the true win/loss outcome plus
+    discounted changes in relative land and castle control. Its training
+    configuration disables army shaping, all scripted hints/teacher targets,
+    imitation losses and teacher rollouts; shaping weight 1.0, land 0.5,
+    castle 0.25. A focused B300 reward test passed. The 28,816-parameter
+    tied spatial policy is trained from scratch by native PufferLib 5 PPO.
+  * B300 job 15820 completed 8,388,608 steps in 64 epochs with 4,096 games,
+    four buffers, 16 CPUs, horizon 32, minibatch 16,384, replay .25,
+    LR .001 and entropy .0001. Exact final 16/20-epoch complete-step windows
+    measured 40,186/41,123 SPS, above the 30K gate, including checkpoint
+    cost. After warmup, 394 one-second B300 samples averaged 13.6% GPU use.
+    Final checkpoint SHA256
+    ea00d8f6847ecce935a1731ce7a797e60683c424362f7be6b7d72f504edbc05a.
+    Source/build/run/checkpoints/logs archive on metta0:
+    relh-classic-landcastle-ppo-mid2-15820.tar.gz, SHA256
+    5376f901ddfdc8ca31857f2cf1c3a643634f5934dbd7ccd616076c27e9e91dc5.
+    Two prior bounded wider-shape starts, jobs 15797 and 15811, were stopped
+    without an epoch at the 300-second JAX compilation guard; their archive
+    SHA256 is 258f3e459aa167f505756475a834a44f8df386f30318bf1ab04743057bfaedf2.
+  * Held-out seed-1101 Classic evaluation of the final checkpoint scored
+    .500000 vs Random (draws), .008789 vs ExpanderHarvester and .000000 vs
+    Sentinel; jobs 15827-15829 completed normally. Evaluation archive on
+    metta0 is relh-classic-landcastle-ppo-mid2-15820-evals.tar.gz, SHA256
+    672500bfbfcb6600f19483ff22b757f5df1bd2b5a4856723407603e36d682bb9.
+    The strong-opponent scores are far below v11's .496338/.337769 on the
+    same seed. No hosted upload or champion change occurred.
+
+Current next step
+  Diagnose why reward-only PPO produces high-entropy, draw-prone play, then
+  test a bounded curriculum or policy change on B300. Require a clear
+  stronger-opponent quality gain as well as sustained >=30K complete-step
+  SPS before a long run. Only challenge daveey in hosted matches after the
+  held-out gate; publish solely with larger winning direct-match evidence.
