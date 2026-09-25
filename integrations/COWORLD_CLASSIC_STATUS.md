@@ -1436,3 +1436,52 @@ Next, change the policy's defense/expansion signal or architecture and run
 another bounded B300 screen. Require sustained >=30K complete-step SPS,
 clear held-out gains over v11 across strong opponents and fresh maps, then
 larger winning hosted direct matches before any publication.
+
+## v11 castle-control PPO reward screen (2026-09-25)
+
+The hosted v11 loss replays showed the candidate's castle margin becoming
+negative before its army margin collapsed. To test a direct training signal
+for that weakness, an isolated copy of the exact v11 strong-mix source added
+the current repository's castle-control margin and potential-based reward
+term with coefficient 1.0. Its `metta_puffer.py` SHA-256 is
+`f932ec2fa90f29af4aa9314f37728bd886319fc15bede046807a40f90741892b`.
+The original v11 fabric/model and isolated audited PPO transfer stayed
+unchanged. Both the original periodic-Sentinel test and the castle-control
+sign test passed on B300, and the build retained PPO model hash
+`d8c86c6207159518e4465879f1e19de55857260e00744c7d44f35fa550140125`.
+
+The first bounded job 15384 was stopped at epoch 16 by the older
+dashboard-median guard reporting 29.9K SPS; it had no checkpoint. Its exact
+completed-step epoch 9–16 interval was about 30,276 SPS. Job 15395 reran
+the same configuration and seed with the task-specific exact-interval
+monitor (SHA-256
+`7ef182b2e978fadd3cbfe2792251ef9b50823d1c24b51c9141c36aa65ec95bdf`).
+It completed **4,194,304 steps**, crossing the earlier 2.6M-step failure
+range without a stall or nonfinite gradient. On one B300 with 4,096 games
+in four buffers, 16 CPUs, horizon 32, minibatch 16,384, replay ratio .125,
+and LR .0003, warm epochs 10–31 completed **2,752,512 steps / 84.346
+seconds = 32,634 end-to-end SPS**. After the first 60 seconds, sampled GPU
+utilization averaged 37.8% and memory 11,066 MiB. The final checkpoint
+SHA-256 is
+`f9fe7528b1c6976988662b5236801f79c99a727acd9ead885861ae6b5cfb34b4`.
+
+Frozen-checkpoint evaluations used four 1,024-game Classic episodes each:
+
+| Seed | Castle PPO vs Expander | v11 vs Expander | Castle PPO vs Sentinel | v11 vs Sentinel |
+| ---: | ---: | ---: | ---: | ---: |
+| 1101 | .500122 | .496338 | .330811 | .337769 |
+| 1102 | .526001 | .519531 | .360474 | .355957 |
+| 1103 | .516113 | .523315 | .354980 | .359741 |
+| Mean | .514079 | .513061 | .348755 | .351156 |
+
+The Expander mean gain was only .001017 and the Sentinel mean fell .002401.
+This does not support long training or hosted testing. No upload, league
+submission, or champion change occurred. Source, builds, both bounded runs,
+checkpoint, GPU samples, monitor, and all six evaluation records are
+archived on metta0 as `relh-classic-v11-castle-ppo-15395-evals.tar.gz`,
+SHA-256 `269f0e967d3907c6e9e8797eec17a5f6ad1ee3e1e2ddedd07df78b0bd96754bc`.
+
+The next probe should change the spatial policy design or reduce conflicting
+teacher supervision while preserving the 30K complete-step gate. Retain v11
+as the strongest private hosted-tested neural checkpoint and the current
+incumbent as champion until direct hosted wins prove replacement.

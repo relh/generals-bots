@@ -936,3 +936,34 @@ Current next step
   training SPS and clear gains across fresh held-out strong opponents before
   a private hosted screen. Publish only after larger winning hosted direct
   matches; leave other panes and the incumbent champion alone.
+
+Update, 2026-09-25 v11 castle-control PPO screen
+  * An isolated exact-v11-fabric environment added castle-control potential
+    shaping because v11's hosted losses showed castle/army margins collapsing
+    in midgame. The staged environment SHA256 is
+    f932ec2fa90f29af4aa9314f37728bd886319fc15bede046807a40f90741892b.
+    B300 Sentinel-label and castle-control sign tests passed. The target
+    model hash and 12,360 state words matched the v11 PPO transfer exactly.
+  * First bounded job 15384 reached epoch 16 and was stopped by the old
+    dashboard-median guard at 29.9K; exact epoch 9-16 complete-step rate
+    was about 30,276 SPS. Same-seed/config rerun 15395 used the pinned
+    exact 16/20-epoch guard, completed 4,194,304 steps, and measured
+    2,752,512 steps / 84.346 seconds = 32,634 end-to-end SPS over epochs
+    10-31. Hardware: one B300; 4,096 games/four buffers, 16 CPUs, horizon
+    32, minibatch 16,384, replay .125, LR .0003. Checkpoint SHA256
+    f9fe7528b1c6976988662b5236801f79c99a727acd9ead885861ae6b5cfb34b4.
+  * Held-out seeds 1101-1103, four 1,024-game Classic batches each, averaged
+    .514079/.348755 against ExpanderHarvester/Sentinel; v11 scored
+    .513061/.351156 on those same seeds. Castle reward did not improve
+    defensive strength. No hosted upload, league submission, or champion
+    change followed. Verified archive on metta0:
+    /home/metta/relh-generals-puffer/coworld-classic/relh-classic-v11-castle-ppo-15395-evals.tar.gz,
+    SHA256 269f0e967d3907c6e9e8797eec17a5f6ad1ee3e1e2ddedd07df78b0bd96754bc.
+
+Current next step
+  Try a spatial policy redesign or reduce conflicting teacher supervision
+  in a bounded B300 probe. Gate on >=30K complete-step end-to-end SPS and
+  clear gains over v11 on fresh 18-21-tile maps versus both strong
+  opponents. Only then attempt hosted direct matches; publish a frozen
+  policy only after larger winning hosted evidence. Preserve v11 private,
+  the incumbent champion, and other panes' work.
