@@ -1019,3 +1019,58 @@ Current next step
   improvement over v11 warrants private hosted direct matches; require
   larger winning hosted evidence before publishing. Preserve v11 private,
   the incumbent champion, and other panes' work.
+
+Update, 2026-09-25 public daveey search and pure PufferLib 5 PPO
+  * Public Metta-AI GitHub branches, daveey-authored PRs/repositories,
+    strakam/generals-bots forks, and code search did not reveal the source
+    or training recipe for daveey-grl:v7. Coworld submission metadata lists
+    the policy version but no recipe. Its claimed pure-Puffer provenance
+    remains unverified. Live Classic leaderboard at this check: daveey
+    ~2136 MMR, Richard ~1549, relh ~1452. No access to Dave's private
+    files was attempted.
+  * A new two-stage tied spatial Fabric policy now trains from public
+    14-channel observations with native PufferLib 5 PPO, no teacher,
+    teacher-action reward, scripted hint input, or auxiliary imitation
+    loss. The source/config/preflight, build, and training path are in
+    integrations/generals_fabric.py and the raw-ppo Slurm scripts. The
+    original v11 policy also used the PufferLib 5 runner, but its training
+    was primarily teacher imitation, so changing the objective mattered.
+  * B300 pure PPO job 15713, 4,096 games/four buffers, 16 CPUs, horizon32,
+    minibatch16384, replay .125, LR .0003, entropy .01, completed 4.19M
+    steps. Exact steady intervals reached ~51K complete-step SPS. Frozen
+    seed-1101 Classic score: .007568 versus ExpanderHarvester, 0 versus
+    Sentinel. Checkpoint SHA256
+    4bb5a1536c2e6fe6c7c0ae2d4114bde0fb8556a3f14b24de65f3715c8a15af6c.
+    Verified metta0 training/eval archive SHA256s:
+    a464cff3a805eb89aa96fd24075b41af7ebe803108de305232f70d963638a1bd
+    and f12ad0ffe11868347487893a2a423ea40eec6de1d72075296bb1bb1b8f592259.
+  * Replay .5 job 15717 was canceled after five epochs at ~26-28K SPS;
+    no checkpoint or container remained. A bounded 8.39M-step probe at
+    replay .125, shaping weight1.0, entropy .0001 (job15723) completed
+    at 36,716 SPS over epochs16-31 and 39,325 over epochs32-63. Its
+    4.19M/8.39M checkpoints scored .007935/.007812 vs Expander and 0/0
+    vs Sentinel. Verified training/eval archive SHA256s:
+    28943020d586518b0d17c8f993940ff2cf04b90b271c5cd2b42e55f5a287a345
+    and a20f05463668cfbc917faf282c24aefbdd911471758d4bbe0c200248d62e5ed4.
+  * Replay .25 doubles PPO minibatches per 131,072-step rollout while
+    holding the reward/model fixed. B300 job15750 completed 8.39M steps,
+    with 35,777 SPS over epochs16-31 and 37,547 over epochs32-63. Its
+    4.19M/8.39M checkpoints scored .006836/.007568 vs Expander and 0/0
+    vs Sentinel. Verified training/eval archive SHA256s:
+    c570002617fa5cf196d9d3ed09e9097098845a6a7462ee6fdeea3282edfe08a7
+    and a9c8ef38daa719114c01b3643f1691eb1dfe67f15bb0b6cd23a5117db8b8839b.
+    Full hardware, run configs, checkpoint hashes, and evaluation records
+    are in integrations/COWORLD_CLASSIC_STATUS.md. No hosted candidate,
+    league submission, or champion change occurred.
+
+Current next step
+  The pure PPO training path is operational and clears the speed gate, but
+  the two-feature spatial model failed to learn competitive play under
+  these bounded settings. Profile policy gradients/behavior and probe a
+  higher-capacity spatial architecture or materially stronger reward/
+  opponent curriculum. Keep B300/B200 complete-step >=30K SPS gate;
+  reject long training until a bounded candidate clearly improves on
+  fresh held-out full Classic maps against both ExpanderHarvester and
+  Sentinel. Only then attempt hosted matches and publish a frozen policy
+  after larger winning direct-match evidence. Preserve v11 private and
+  other panes' branches/jobs/champions.

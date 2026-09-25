@@ -1599,3 +1599,100 @@ Next, probe a changed spatial policy or defense/expansion learning signal
 with a bounded B300 run. Require at least 30,000 warm complete-step SPS,
 clear gains over v11 on fresh held-out 18–21-tile maps against both strong
 opponents, and larger winning hosted direct matches before publication.
+
+## Public daveey search and reward-only Puffer 5 pilot (2026-09-25)
+
+The live Classic leaderboard shows `daveey-grl:v7` well ahead of our active
+players. Public GitHub code search, Metta-AI branch refs and daveey-authored
+PRs, daveey's public repositories, and `strakam/generals-bots` forks did not
+reveal the `daveey-grl` source or its training recipe. The public Coworld
+submission metadata identifies the policy version but gives no training
+configuration. Thus the report that it used only PufferLib 5 remains
+unverified. Our runner already invokes the PufferLib 5 trainer; the previous
+v11 line primarily optimized a teacher-imitation loss.
+
+`integrations/generals_fabric.py` now has a two-stage tied spatial policy.
+The raw PPO pilot disables every scripted observation hint, teacher and
+imitation target, and Fabric auxiliary loss. PufferLib 5 handles PPO with
+public 14-channel observations and the game's outcome/army/land reward.
+The B300 build and environment preflight passed. Job 15713 completed
+4,194,304 steps with 4,096 games/four buffers, 16 CPUs, horizon 32,
+minibatch 16,384, replay .125, learning rate .0003, entropy coefficient .01,
+and no initialized teacher checkpoint. Exact warm intervals after epoch 22
+were about 51,000 end-to-end SPS; 189 post-minute GPU samples averaged
+10.8% utilization and 15,993 MiB. Checkpoint SHA-256:
+`4bb5a1536c2e6fe6c7c0ae2d4114bde0fb8556a3f14b24de65f3715c8a15af6c`.
+The source/build/run archive on metta0 is
+`relh-classic-raw-ppo-15713.tar.gz`, SHA-256
+`a464cff3a805eb89aa96fd24075b41af7ebe803108de305232f70d963638a1bd`.
+
+Frozen seed-1101 tests, four 1,024-game Classic batches per opponent, scored
+**.007568 versus ExpanderHarvester** and **0 versus Sentinel** (jobs
+15714/15715). The v11 baseline on this seed is .496338/.337769. The
+verified evaluation archive is `relh-classic-raw-ppo-15713-evals.tar.gz`,
+SHA-256 `f12ad0ffe11868347487893a2a423ea40eec6de1d72075296bb1bb1b8f592259`.
+This new policy is far too weak for hosted play or publication.
+
+A second probe raised PPO replay to .5, raised shaping weight from .2 to
+1.0, and lowered entropy coefficient to .0001. Job 15717 was stopped after
+five epochs because the measured warm rate was only about 26,000–28,000
+SPS. No checkpoint was produced; its Docker container was removed.
+Job 15723 retains the changed reward and entropy with replay restored to
+.125. It completed 8,388,608 steps in a guarded B300 run, with the same
+4,096 games/four buffers, 16 CPUs, horizon 32, minibatch 16,384, and LR
+.0003. Exact warm epochs 16–31 ran at **36,716 end-to-end SPS** and epochs
+32–63 at **39,325 SPS**, crossing the previous late-stall range. After
+minute one, 233 GPU samples averaged 14.8% utilization and 14,028 MiB.
+The 4.19M and 8.39M checkpoint SHA-256s are respectively
+`a7fe375536669e5f148f99efa41c5421cb3527f8e473135a73051288bddf40ef`
+and `d05d08540868420b65fdd814944d8cc034e030ef7477c9a2d271e9dd2ed066e8`.
+The verified training archive on metta0 is
+`relh-classic-raw-ppo-shaping-15723.tar.gz`, SHA-256
+`28943020d586518b0d17c8f993940ff2cf04b90b271c5cd2b42e55f5a287a345`.
+Frozen seed-1101 evaluations found **no such gain**:
+
+| Checkpoint | ExpanderHarvester | Sentinel |
+| ---: | ---: | ---: |
+| 4.19M steps | .007935 | 0 |
+| 8.39M steps | .007812 | 0 |
+
+Each Expander score covers four 1,024-game Classic batches; Sentinel losses
+ended within one such batch. Jobs 15736–15739 all completed with exit 0.
+The evaluation archive on metta0 is
+`relh-classic-raw-ppo-shaping-15723-evals.tar.gz`, SHA-256
+`a20f05463668cfbc917faf282c24aefbdd911471758d4bbe0c200248d62e5ed4`.
+The new raw policy is still uncompetitive, and no hosted upload or champion
+change was made. Probe more PPO updates per rollout within the throughput
+gate before spending on a longer run.
+
+## Two PPO minibatches per rollout (2026-09-25)
+
+The PufferLib 5 CUDA trainer computes its optimizer minibatch count as
+`replay_ratio * rollout_batch_size / minibatch_size`. With 131,072 rollout
+steps and 16,384 minibatch size, replay .125 means one PPO minibatch per
+epoch and .25 means two. Job 15750 changed only this ratio to .25 from the
+reward-only shaping probe. It completed 8,388,608 steps on one B300 with
+4,096 games/four buffers and 16 CPUs. Exact warm epochs 16–31 measured
+**35,777 end-to-end SPS**; epochs 32–63 measured **37,547 SPS**. After
+minute one, 233 GPU samples averaged 16.6% utilization and 14,752 MiB.
+The 4.19M and 8.39M checkpoint SHA-256s are
+`535b29f4af44090bb03915e32f7694f23d2a538e0dfb0050d9e8e51dae9e6e94`
+and `60d1d473b434d5f68b372d7aeb5acd738a2bb27ec2b99f555945ec743fffc324`.
+The verified metta0 training archive is
+`relh-classic-raw-ppo-update-15750.tar.gz`, SHA-256
+`c570002617fa5cf196d9d3ed09e9097098845a6a7462ee6fdeea3282edfe08a7`.
+Frozen seed-1101 evaluations found no useful gain:
+
+| Checkpoint | ExpanderHarvester | Sentinel |
+| ---: | ---: | ---: |
+| 4.19M steps | .006836 | 0 |
+| 8.39M steps | .007568 | 0 |
+
+Jobs 15751–15754 all completed with exit 0. The verified metta0 evaluation
+archive is `relh-classic-raw-ppo-update-15750-evals.tar.gz`, SHA-256
+`a9c8ef38daa719114c01b3643f1691eb1dfe67f15bb0b6cd23a5117db8b8839b`.
+The extra PPO minibatch did not help. A longer run under this exact model,
+opponent mix, and reward setup is not justified. No hosted upload, league
+submission, or champion change followed. Next, test a higher-capacity
+policy or materially different learning signal in a bounded GPU probe,
+then require strong-opponent gains before hosted evaluation.
