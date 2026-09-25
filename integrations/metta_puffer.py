@@ -21,6 +21,7 @@ from metta_training.environment import (
 from generals import GeneralsEnv
 from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.agents.harvester_agent import HarvesterAgent
+from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
 from integrations.puffer_codec import decode_action, encode_observation
 
@@ -38,22 +39,29 @@ class GeneralsPufferEnvironment:
         imitation_weight: float = 0.0,
         supervise_teacher: bool = False,
         factorized_actions: bool = False,
+        classic_maps: bool = False,
+        goal_features: bool = False,
     ):
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
         self.size = board_size
         self.supervise_teacher = supervise_teacher
         self.factorized_actions = factorized_actions
+        self.goal_features = goal_features
         self.training = context.mode == "train"
+        map_options = (
+            {"min_generals_distance": board_size - 2, "castle_val_range": (20, 41)} if classic_maps else {}
+        )
         self.env = GeneralsEnv(
             grid_dims=(board_size, board_size),
             truncation=horizon,
             pool_size=8,
             mountain_density_range=(0.18, 0.26),
             num_castles_range=(2, 5),
+            **map_options,
         )
         self.spec = EnvironmentSpec(
-            observation_size=14 * board_size * board_size,
+            observation_size=(21 if goal_features else 14) * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
         )
@@ -61,7 +69,8 @@ class GeneralsPufferEnvironment:
         self._init_state = jax.jit(self.env.init_state)
         self._observe = jax.jit(
             lambda state, side: encode_observation(
-                game.get_observation(state, side), factorized_actions=factorized_actions
+                game.get_observation(state, side), factorized_actions=factorized_actions,
+                goal_features=goal_features,
             )
         )
         opponent_types = {
@@ -69,6 +78,7 @@ class GeneralsPufferEnvironment:
             "hunter": HunterAgent,
             "random": RandomAgent,
             "harvester": HarvesterAgent,
+            "sentinel": SentinelAgent,
         }
         teacher_agent = opponent_types[teacher]() if teacher is not None else None
         if supervise_teacher:
@@ -111,7 +121,9 @@ class GeneralsPufferEnvironment:
             if teacher_agent is not None:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
                 reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
-            values, mask = encode_observation(final, factorized_actions=factorized_actions)
+            values, mask = encode_observation(
+                final, factorized_actions=factorized_actions, goal_features=goal_features
+            )
             return next_state, next_key, values, mask, reward, done, outcome
 
         self._advance = advance
@@ -222,11 +234,18 @@ class BatchedGeneralsPufferEnvironment:
                 values, mask = self.base._observe(state, side)
                 return state, key, values, mask, jnp.float32(0), jnp.bool_(False), jnp.float32(0)
 
-            return jax.lax.cond(alive, active, inactive, operand=None)
+            next_state, next_key, values, mask, reward, done, outcome = jax.lax.cond(
+                alive, active, inactive, operand=None
+            )
+            teacher_action = None
+            if self.base.training and self.base.supervise_teacher:
+                teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
+                teacher_action = self.base._teacher(next_state, side, teacher_key)
+            return next_state, next_key, values, mask, reward, done, outcome, teacher_action
 
         self._advance_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0, 0, 0, 0)))
 
-    def _observation(self, values, masks):
+    def _observation(self, values, masks, teacher_actions=None):
         public_values = np.asarray(values).copy()
         public_values[self.finished] = 0
         legal = np.asarray(masks, dtype=bool).copy()
@@ -235,35 +254,29 @@ class BatchedGeneralsPufferEnvironment:
         if self.base.factorized_actions:
             legal[self.finished, self.spec.action_sizes[0] :] = True
 
-        teachers = []
+        probabilities = None
+        weights = None
         if self.base.supervise_teacher:
-            actions = None
+            probabilities = np.zeros((self.parallel_games, sum(self.spec.action_sizes)), dtype=np.float32)
+            weights = np.zeros((self.parallel_games, len(self.spec.action_sizes)), dtype=np.float32)
             if self.base.training:
-                teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
-                actions = np.asarray(self._teacher_actions(self.states, self.sides, teacher_keys))
-            for game_index in range(self.parallel_games):
-                probabilities = np.zeros(sum(self.spec.action_sizes), dtype=np.float32)
-                weights = [0.0] * len(self.spec.action_sizes)
-                if actions is not None and not self.finished[game_index]:
-                    action = actions[game_index]
-                    cells = self.base.size**2
-                    index = (
-                        (4 if self.base.factorized_actions else 8) * cells
-                        if action[0]
-                        else ((action[3] if self.base.factorized_actions else action[4] * 4 + action[3]) * cells)
-                        + action[1] * self.base.size
-                        + action[2]
-                    )
-                    if legal[game_index, index]:
-                        probabilities[index] = 1.0
-                        weights[0] = 1.0
-                        if self.base.factorized_actions and not action[0]:
-                            probabilities[self.spec.action_sizes[0] + action[4]] = 1.0
-                            weights[1] = 1.0
-                teachers.append(TeacherTargets(probabilities=probabilities.tolist(), weights=weights))
-        return NumericObservation(
-            values=public_values.tolist(), action_masks=legal.tolist(), teachers=teachers
-        )
+                if teacher_actions is None:
+                    teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+                    teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+                actions = np.asarray(teacher_actions)
+                cells = self.base.size**2
+                direction = actions[:, 3] if self.base.factorized_actions else actions[:, 4] * 4 + actions[:, 3]
+                move_index = direction * cells + actions[:, 1] * self.base.size + actions[:, 2]
+                index = np.where(actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move_index)
+                rows = np.arange(self.parallel_games)
+                labeled = (~self.finished) & legal[rows, index]
+                probabilities[rows[labeled], index[labeled]] = 1
+                weights[labeled, 0] = 1
+                if self.base.factorized_actions:
+                    moving = labeled & (actions[:, 0] == 0)
+                    probabilities[rows[moving], self.spec.action_sizes[0] + actions[moving, 4]] = 1
+                    weights[moving, 1] = 1
+        return NumericObservation.from_arrays(public_values, legal, probabilities, weights)
 
     def reset(self, seed: str) -> NumericObservation:
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")
@@ -288,7 +301,7 @@ class BatchedGeneralsPufferEnvironment:
             [action[1] if self.base.factorized_actions else 0 for action in actions], dtype=jnp.int32
         )
         was_finished = self.finished.copy()
-        self.states, self.keys, values, masks, rewards, done, outcomes = self._advance_states(
+        self.states, self.keys, values, masks, rewards, done, outcomes, teacher_actions = self._advance_states(
             self.states,
             self.base.pool,
             self.sides,
@@ -312,7 +325,7 @@ class BatchedGeneralsPufferEnvironment:
         else:
             score = float(self.outcomes.mean()) if episode_done else 0.0
         return NumericTransition(
-            observation=self._observation(values, masks),
+            observation=self._observation(values, masks, teacher_actions),
             rewards=np.asarray(rewards).tolist(),
             terminated=[True] * self.parallel_games if episode_done else newly_finished.tolist(),
             episode_done=episode_done,

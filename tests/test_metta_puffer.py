@@ -48,6 +48,73 @@ def test_other_opponents_keep_the_numeric_contract(opponent):
     env.close()
 
 
+def test_classic10_evaluation_maps_match_classic_scenario_parameters():
+    context = EnvironmentContext(seed=901, index=0, mode="evaluate", output=Path("/tmp"))
+    env = GeneralsPufferEnvironment(
+        context=context, board_size=10, horizon=800, opponent="mixed", classic_maps=True
+    )
+    assert env.env._fixed_dims == (10, 10)
+    assert env.env.num_players == 2
+    assert env.env.truncation == 800
+    assert env.env.min_generals_distance == 8
+    assert env.env.mountain_density_range == (0.18, 0.26)
+    assert env.env.num_castles_range == (2, 5)
+    assert env.env.castle_val_range == (20, 41)
+    assert env.num_opponents == 3
+    env.close()
+
+
+def test_public_goal_features_preserve_base_observation_and_transport_shape():
+    context = EnvironmentContext(seed=901, index=0, mode="evaluate", output=Path("/tmp"))
+    options = dict(board_size=10, horizon=800, opponent="mixed", classic_maps=True, factorized_actions=True)
+    base = GeneralsPufferEnvironment(context=context, **options)
+    routed = GeneralsPufferEnvironment(context=context, goal_features=True, **options)
+    plain = base.reset("901:0:0")
+    enriched = routed.reset("901:0:0")
+    values = np.asarray(enriched.values[0]).reshape(21, 10, 10)
+    assert routed.spec.observation_size == 2100
+    np.testing.assert_allclose(values[:14].reshape(-1), plain.values[0])
+    assert np.isfinite(values).all()
+    assert (values[14:16] >= 0).all() and (values[14:16] <= 1).all()
+    assert (values[17:21].sum(axis=0) <= 1).all()
+    assert enriched.action_masks == plain.action_masks
+    base.close()
+    routed.close()
+
+
+def test_classic10_sentinel_teacher_targets_legal_actions():
+    context = EnvironmentContext(seed=901, index=0, mode="train", output=Path("/tmp"))
+    env = GeneralsPufferEnvironment(
+        context=context,
+        board_size=10,
+        horizon=800,
+        opponent="mixed",
+        teacher="sentinel",
+        supervise_teacher=True,
+        factorized_actions=True,
+        classic_maps=True,
+    )
+    saw_move = False
+    for seed in ("901:0:0", "901:0:1", "901:0:2"):
+        observation = env.reset(seed)
+        for _ in range(16):
+            target = observation.teachers[0]
+            first, second = env.spec.action_sizes
+            assert target.weights[0] == 1.0
+            assert sum(target.probabilities[:first]) == 1.0
+            assert sum(target.probabilities[first : first + second]) in (0.0, 1.0)
+            assert all(
+                not probability or legal
+                for probability, legal in zip(target.probabilities, observation.action_masks[0])
+            )
+            action = int(np.argmax(target.probabilities[:first]))
+            split = int(np.argmax(target.probabilities[first:]))
+            saw_move |= action != first - 1
+            observation = env.step([[action, split]]).observation
+    assert saw_move
+    env.close()
+
+
 def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     coached = GeneralsPufferEnvironment(
