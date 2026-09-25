@@ -681,3 +681,47 @@ incumbent. No new policy was submitted to the league or set as champion.**
 The next training iteration needs a stronger opponent/teacher or direct
 self-play objective; the current mixed opponent pool is only Random,
 Expander, and Hunter, while the sparse teacher loss replaces PPO.
+
+To establish a more useful local gate, jobs 13473 and 13476 built compatible
+Classic 1,024-game evaluation environments with ExpanderHarvester and Sentinel
+as opponents. The evaluator's explicit environment-transfer check retained
+the trained model and observation spec while changing only the opponent. On
+fresh seed 1101, four batch episodes (4,096 individual games) per checkpoint,
+the validation-selected 31.46M policy scored **0.481445 against
+ExpanderHarvester** and **0.321411 against Sentinel**. The final 41.94M
+checkpoint scored **0.485229** and **0.316650**, respectively. Both jobs
+completed on B300 with matching checkpoint SHA-256s and non-null source-build
+records. Their evaluation JSONs, target manifests/binaries, configs, and logs
+are archived on metta0 as `relh-classic-strong-opponent-eval-13473-13476.tar.gz`
+(SHA-256 `bbda17c60a038dffa67fcf1595f8451d786596979738050777766c6083e4fea0`).
+This direct comparison exposes the large gap concealed by the Random/Expander/
+Hunter mixed pool. The next bounded training probe should use the stronger
+opponent gate and a learning objective capable of surpassing the current
+scripted teacher while retaining >=30K end-to-end SPS.
+
+A bounded PPO-plus-teacher pilot, Slurm 13486, changed the opponent to
+ExpanderHarvester, enabled PPO alongside sparse teacher loss (teacher
+coefficient 0.25), used LR 0.0003 and entropy coefficient 0.005, and kept the
+four-buffer 4,096-agent Puffer setup on one B300. It completed 4,194,304 steps
+across 32 epochs. The live monitor measured about 35,600–37,100 end-to-end
+SPS over warm epochs 7–31, crossed the 2.6M-step failure range, and found no
+stalled or nonfinite trainer. Its build, final/intermediate checkpoints,
+source-independent run records, logs, and GPU samples are archived on metta0
+as `relh-classic-ppo-strong-pilot-13486.tar.gz` (SHA-256
+`dcdd4a183349b36358b72ed8a0b7a9125e904cd8f6c05359d5d232379bf00594`).
+Against the same fresh seed 1101, its final checkpoint scored only
+**0.418457 versus ExpanderHarvester** and **0.278198 versus Sentinel**, below
+both prior supervised checkpoints. Jobs 13490/13491 completed with zero
+environment-transfer or checkpoint verification errors. Their records are
+archived as `relh-classic-ppo-strong-eval-13490-13491.tar.gz` (SHA-256
+`568a1d3824098d32ddbf460a0cc62ad5c754d8195ee8ae8ebbaef6ce2f248c3a`).
+The halfway 2,097,152-step checkpoint scored **0.421265 against
+ExpanderHarvester** and **0.277466 against Sentinel** on the same seed, almost
+identical to the final PPO scores. Jobs 13495/13496 completed, and their
+verified records are archived on metta0 as
+`relh-classic-ppo-strong-half-eval-13495-13496.tar.gz` (SHA-256
+`404b66dd49df9a50d268ed3656d30efcf06b84c1eff288b0b83e4eaea9b73192`).
+There is no improving quality trend to justify extending this exact setup.
+The next iteration should test a stronger teacher or a more direct win
+objective with a bounded B300 pilot, then require improvement over the
+0.481445/0.321411 baseline on fresh stronger-opponent seeds before a long run.

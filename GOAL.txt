@@ -199,3 +199,43 @@ Current blocker and exact next steps
      direct matches against the active incumbent and leader, recheck standings
      and identity, and submit/champion only if the new candidate is proven.
      The archived v7-v10 candidates are for comparison, not publication.
+
+Update, 2026-09-24 stronger local quality gate
+  * Compatible B300 evaluations against ExpanderHarvester and Sentinel now
+    exist. On fresh seed 1101, each result covers 4,096 Classic games. The
+    31.46M checkpoint scored .481445 vs ExpanderHarvester and .321411 vs
+    Sentinel; the final 41.94M checkpoint scored .485229 and .316650.
+    Evaluations used explicit environment transfer, preserving the model and
+    observation spec, and completed as Slurm jobs 13473/13476. The archive
+    on metta0 has SHA256 bbda17c60a038dffa67fcf1595f8451d786596979738050777766c6083e4fea0.
+  * The next concrete step is a bounded B300 Puffer pilot that can improve
+    against these stronger opponents, likely by replacing pure sparse-teacher
+    imitation with a direct PPO/self-play objective. Measure end-to-end SPS
+    with four 1,024-game buffers and reject any long run below 30K or with
+    a late stall. Then evaluate on held-out stronger-opponent seeds before
+    spending more hosted matches. No Slurm training or hosted requests from
+    this continuation remain active; no champion change was made.
+
+Update, 2026-09-24 bounded PPO-plus-teacher pilot
+  * Job 13486 trained 4,194,304 steps on one B300 with four 1,024-game
+    buffers, 4,096 total agents, 8,192 minibatch, PPO plus sparse teacher
+    coefficient .25, ExpanderHarvester opponent, LR .0003, entropy .005. It
+    sustained about 35.6K-37.1K end-to-end SPS over warm epochs 7-31,
+    crossed the 2.6M-step failure range, completed normally, and left no
+    job container. Verified archive SHA256
+    dcdd4a183349b36358b72ed8a0b7a9125e904cd8f6c05359d5d232379bf00594.
+  * Paired stronger-opponent tests on seed 1101 showed the final 4.19M
+    checkpoint scored .418457 vs ExpanderHarvester and .278198 vs Sentinel.
+    The halfway 2.10M checkpoint scored .421265 and .277466. Both are below
+    the supervised baseline .481445/.321411; quality did not improve with
+    further steps. Final eval archive SHA256
+    568a1d3824098d32ddbf460a0cc62ad5c754d8195ee8ae8ebbaef6ce2f248c3a;
+    halfway eval archive SHA256
+    404b66dd49df9a50d268ed3656d30efcf06b84c1eff288b0b83e4eaea9b73192.
+    No long PPO run, hosted PPO upload, league submission, or champion change
+    was made.
+  * Exact next step: design a bounded GPU pilot using a stronger teacher
+    (Sentinel or improved strategy) or a win-focused objective that does not
+    merely drift from the current teacher. Preserve the four-buffer throughput
+    gate, profile any slower opponent/teacher, and require a held-out
+    improvement over the stronger-opponent baseline before another long run.
