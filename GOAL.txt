@@ -1217,9 +1217,16 @@ Update, 2026-09-25 pure PPO transfer to full Classic
     change occurred.
 
 Current next step
-  Diagnose PPO action behavior and return learning on the frozen small/full
-  checkpoints. The 28,816-parameter one-hop spatial policy remains near
-  random despite reward shaping and curriculum. Try a bounded policy or
-  action-space change that improves held-out full Classic play, under the
-  user-authorized >=25K complete-step SPS floor. Do not extend the current
-  weak checkpoint or publish it. Keep other panes' jobs and data separate.
+  The replacement thread verified no owned Classic job was active. A codec
+  check found no direction/index mismatch on padded Classic boards. A frozen
+  eight-game, 120-turn B300 trace of checkpoint 16245 found greedy pass in
+  16.9%-26.7% of states with legal moves across 20-turn windows, and the
+  split head's half-army probability stayed fixed at 0.399634 over all 960
+  states. No game completed in this short trace. The trace is on metta0 at
+  /home/metta/relh-generals-puffer/coworld-classic/diagnose-coworld-actions-16245.log,
+  SHA256 567afcbc2d512f76608f4cede9c78eeb8126350a33e977e50f3b32e0f1914283.
+  Compare a frozen no-pass-when-moves-exist held-out evaluation, then test a
+  bounded GPU policy/action-space change. Require >=30K complete-step
+  end-to-end SPS before sustained training and a clear full-Classic gain
+  before hosted matches. Do not extend or publish weak checkpoint 16245.
+  Keep other panes' jobs and data separate.

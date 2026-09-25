@@ -1921,6 +1921,35 @@ archive is `relh-classic-small-to-classic-ppo-16245-evals.tar.gz`, SHA-256
 The transfer's slight Expander gain from .010620 is not a meaningful
 competitive result. The next step is to inspect action behavior and PPO
 returns on the frozen checkpoints, then test a materially different
-policy or action representation in a bounded run. Maintain the user's 25K
-complete-step gate. No hosted test, upload, submission or champion change
+policy or action representation in a bounded run. Maintain the 30K
+complete-step gate for sustained training. No hosted test, upload, submission or champion change
 occurred.
+
+## Frozen PPO action trace (2026-09-25)
+
+The replacement thread verified that no owned Classic training job remained
+active, and traced the final job-16245 checkpoint without restarting training.
+The codec's direction-major mask and decoder agreed on legal source and
+destination indices on padded 18×18, 18×21, and 21×21 boards. Pass is always
+legal, and both split choices are always exposed by the second action head.
+
+`integrations/diagnose_coworld_actions.py` ran eight deterministic, full-map
+Classic games against Random for 120 turns on one allocated B300, using the
+frozen checkpoint with SHA-256
+`71806c20b4e755bcc53abceff19a83db84306eb68f15478f051327a86656b3df`.
+Across the six 20-turn windows, the policy's greedy action was pass in
+16.9%–26.7% of states where at least one move was legal. It always selected
+the full-army split choice; the half-army probability was a constant
+0.399634 across all 960 sampled states. No game completed in this short
+trace. These observations identify pass frequency and an unresponsive split
+head as hypotheses, not proof of the cause of weak held-out play.
+
+The complete trace is on metta0 at
+`/home/metta/relh-generals-puffer/coworld-classic/diagnose-coworld-actions-16245.log`
+(SHA-256 `567afcbc2d512f76608f4cede9c78eeb8126350a33e977e50f3b32e0f1914283`).
+The staged script matches the worktree source at SHA-256
+`5024a7dd99ed9ccaa6398172e7e31801e3c0b38ccb52aee7aa74e8e5d1eef11f`.
+Next compare a frozen no-pass-when-moves-exist evaluation on held-out full
+Classic maps, then profile a bounded GPU training change that exceeds 30K
+complete-step end-to-end SPS before any sustained run. No hosted action was
+taken and no champion was changed.
