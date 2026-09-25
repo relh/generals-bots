@@ -10,3 +10,10 @@
 - During a Puffer run, read completed steps from its console dashboard or native metrics file. The JSON run monitor can remain at zero until the subprocess exits; do not use that field alone to classify a live trainer as stalled.
 - Profile rollout time separately from optimization and investigate JAX synchronization, numeric observation encoding, teacher targets, Python list conversion, and Puffer vector environment configuration. Increase parallel games and process count only when an end-to-end measurement confirms an improvement.
 - Preserve and verify existing checkpoints before canceling or replacing a run. Keep dependent long jobs held until the 30K SPS gate passes. After throughput is fixed, continue training for tens of millions of steps and evaluate a selected policy on held-out 10×10 classic maps against mixed scripted opponents; success requires at least 0.60 performance.
+
+## Cluster storage
+
+- Check live Slurm reservations and physical GPU use before submission. Reserve only proportional CPU and memory, with a bounded time and identifiable job name.
+- Move finished checkpoints and logs to private `s3://softmax-slurm-artifacts/<user>/<job>/` using [Metta's transfer procedure](https://github.com/Metta-AI/metta/blob/main/docs/ai/onboarding/services/slurm.md#move-files-in-and-out). Do not give jobs AWS credentials.
+- Split presigned uploads above 5 GB into 4 GB parts. Verify S3 objects before removing local copies; the bucket expires objects after 90 days.
+- Keep only active outputs on node-local disks. Never delete another investigator's data or protected agent history during cleanup.
