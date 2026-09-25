@@ -717,3 +717,37 @@ Current next step
   SPS on one B300. Require >=30K sustained throughput, improvement over
   v11 on fresh held-out strong-opponent maps, and larger winning hosted
   direct matches before publishing any policy.
+
+Update, 2026-09-25 neighborhood-threat PPO probe
+  * Added a public 3x3 max of visible enemy strength at each source cell as
+    the tenth 10-channel input, with general/castle as channel nine and the
+    original eight signed Expander hint channels. Focused B300 tests passed
+    for replay-label indexing and hosted-wire/training parity. Prebuild job
+    15015 used the isolated audited checkpoint transfer and preserved the
+    8,008-parameter target model hash
+    40cbc1d5e997b15fbd32f4732dc0fc6a1e7f346709c709a987556a57cdb65c43.
+  * One-B300 PPO pilot 15020 completed 4,194,304 steps, 4,096 games, four
+    buffers, horizon 32, 16,384 minibatch, replay ratio .125, LR .001,
+    16 CPUs. Epochs 10-31 ran 2,752,512 steps / 92.323 s = 29,814
+    end-to-end SPS; late epochs 19-31 ran 1,572,864 / 49.160 s = 31,995
+    SPS with 42.7% sampled GPU use and 15.0 GiB. The full warm interval
+    misses the 30K gate, so do not start a long run on this configuration
+    without throughput work. Final checkpoint SHA256
+    48bef910b750da0ca7e3068e921f5780cbb820199587e9ce5f0993b4764b8b0d.
+  * Held-out seed 1101, 4x1024 games per opponent (jobs 15053/15054),
+    scored .487061 ExpanderHarvester and .320557 Sentinel, below v11's
+    .496338/.337769. No hosted evaluation or publication was justified.
+    Verified metta0 archives: relh-classic-neighbor-threat-source.tar.gz
+    SHA256 ba6e4ba837df5886d0fcd84c991ab17c268559f2a03c18e3c7783ece94be0fc7;
+    relh-classic-neighbor-ppo-15020.tar.gz SHA256
+    6d4c5f218ac9ca112335e5333ccdf73ea977a37eeadf311a89ccb4850871c9c6;
+    relh-classic-neighbor-ppo-evals-15053-15054.tar.gz SHA256
+    4e63f04e8838869ba8c336c5d1c8dbd5cb8282507a2336f90c2d0fd8142702f1.
+
+Current next step
+  Profile why early warm epochs stay below 30K and try a bounded B300
+  representation with an actual neighboring-cell readout or public distance
+  to general. Require >=30K sustained end-to-end training and improvement
+  over v11 on both held-out strong opponents. Keep all other panes' work,
+  v11 private, and current champion unchanged until direct hosted matches
+  prove a replacement.

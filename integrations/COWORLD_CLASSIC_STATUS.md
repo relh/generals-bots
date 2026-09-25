@@ -1143,3 +1143,46 @@ public neighborhood threat or general-distance information, maintain >=30K
 end-to-end SPS, and beat v11 on fresh held-out maps before hosted testing.
 No owned job or container remains; no upload, league submission, or champion
 change followed.
+
+## Neighborhood-threat PPO probe (2026-09-25)
+
+The tied-local action readout now receives a public 3×3 max of visible enemy
+army strength at each source cell, alongside the packed general/castle plane
+and the original eight signed Expander hint channels. Focused B300 tests
+verified the 10-channel replay labels and parity between training and hosted
+wire observations. The target keeps the 8,008-parameter model hash
+`40cbc1d5e997b15fbd32f4732dc0fc6a1e7f346709c709a987556a57cdb65c43`.
+The isolated transfer path loaded the verified 33.55M-step packed-context
+parent checkpoint, SHA-256
+`bc5a3dc51ca41b709472f7a07a11dfb58be24ceef9d6f3b37fc77475ac103a31`.
+
+B300 job 15020 trained 4,194,304 additional steps with 4,096 games in four
+buffers, horizon 32, 16,384 minibatch, replay ratio .125, LR .001, 16 CPUs,
+75% ExpanderHarvester and 25% Sentinel opponents, castle shaping 1.0,
+and PPO plus .25 sparse Expander imitation. It crossed the earlier 2.6M
+nonfinite failure range and completed normally. Epochs 10–31 covered
+2,752,512 steps in 92.323 s, **29,814 end-to-end SPS**; epochs 19–31
+covered 1,572,864 steps in 49.160 s, **31,995 end-to-end SPS**. The latter
+stable interval sampled 42.7% B300 use and 15.0 GiB. The full warm interval
+missed the 30K gate, so this does not justify a long run without further
+throughput work. Final checkpoint SHA-256 is
+`48bef910b750da0ca7e3068e921f5780cbb820199587e9ce5f0993b4764b8b0d`.
+
+Held-out seed 1101, four 1,024-game episodes per opponent, scored .487061
+versus ExpanderHarvester and .320557 versus Sentinel (jobs 15053/15054).
+Both are below v11's .496338/.337769; the Sentinel score also trails the
+packed-context parent .326782. The added local threat plane did not repair
+defense, so no long run, hosted upload, league submission, or champion change
+followed.
+
+| Verified metta0 artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-neighbor-threat-source.tar.gz` | `ba6e4ba837df5886d0fcd84c991ab17c268559f2a03c18e3c7783ece94be0fc7` |
+| `relh-classic-neighbor-ppo-15020.tar.gz` | `6d4c5f218ac9ca112335e5333ccdf73ea977a37eeadf311a89ccb4850871c9c6` |
+| `relh-classic-neighbor-ppo-evals-15053-15054.tar.gz` | `4e63f04e8838869ba8c336c5d1c8dbd5cb8282507a2336f90c2d0fd8142702f1` |
+
+Next, test a bounded representation with actual neighboring-cell readout or
+public general-distance features and profile 10–31 warm epochs. Require
+>=30K sustained end-to-end SPS and a held-out improvement over v11 on both
+strong opponents before hosted testing. Preserve v11 private and the
+incumbent champion until direct hosted evidence proves a replacement.

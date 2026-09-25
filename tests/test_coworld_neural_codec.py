@@ -120,6 +120,39 @@ def test_coworld_wire_view_matches_padded_training_view():
         packed_planes[8], 2 * np.asarray(expected.generals) + np.asarray(expected.castles)
     )
 
+    threat_values, threat_mask = encode_wire_observation(message, expander_neighbor_threat_prior_hinted=True)
+    expected_threat, expected_threat_mask = encode_coworld_hinted_observation(
+        expected, signed_flags=True, expander_hint=True, neighbor_threat_features=True,
+    )
+    np.testing.assert_array_equal(threat_values, np.asarray(expected_threat))
+    np.testing.assert_array_equal(threat_mask, np.asarray(expected_threat_mask))
+    assert threat_values.shape == (10 * 21 * 21,)
+
+
+def test_neighbor_threat_plane_reaches_adjacent_source_only():
+    armies = np.zeros((5, 5), dtype=np.int32)
+    armies[2, 2], armies[2, 3] = 10, 9
+    owned = np.zeros((5, 5), dtype=bool)
+    owned[2, 2] = True
+    enemy = np.zeros_like(owned)
+    enemy[2, 3] = True
+    empty = np.zeros_like(owned)
+    observation = Observation(
+        armies=jnp.asarray(armies), generals=jnp.asarray(owned), castles=jnp.asarray(empty),
+        mountains=jnp.asarray(empty), neutral_cells=jnp.asarray(~(owned | enemy)),
+        owned_cells=jnp.asarray(owned), opponent_cells=jnp.asarray(enemy),
+        fog_cells=jnp.asarray(empty), structures_in_fog=jnp.asarray(empty),
+        owned_land_count=jnp.int32(1), owned_army_count=jnp.int32(10),
+        opponent_land_count=jnp.int32(1), opponent_army_count=jnp.int32(9), timestep=jnp.int32(200),
+    )
+    values, _ = encode_coworld_hinted_observation(
+        observation, signed_flags=True, expander_hint=True, neighbor_threat_features=True,
+    )
+    planes = np.asarray(values).reshape(10, 5, 5)
+    assert planes[8, 2, 2] == 2
+    assert planes[9, 2, 2] > 1
+    assert planes[9, 2, 1] == 0
+
 
 def test_signed_hint_replay_metadata_covers_pass_and_move():
     planes = np.zeros((2, 8, 21 * 21), dtype=np.float32)
