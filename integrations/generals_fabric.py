@@ -232,8 +232,8 @@ def tied_local_action_policy(
         nn.tie(graph).by(nn.sharing.edge_key(readout_key)),
     )
     if hint_prior_strength:
-        if channels != 8:
-            raise ValueError("The action-hint prior requires eight input channels")
+        if channels < 8:
+            raise ValueError("The action-hint prior requires at least eight input channels")
         hint_edges = [((4 + direction) * cells + cell, direction * cells + cell)
                       for direction in range(4) for cell in range(cells)]
         graph.add(

@@ -573,3 +573,78 @@ Current next step
   Run a bounded B300 architecture/observation probe with >=30K end-to-end
   SPS before long training. Keep v11 private and require larger direct
   hosted wins before any publication.
+
+Update, 2026-09-25 public-context observation probes and 33.55M-step continuation
+  * The eight-channel signed Expander hint did not expose explicit generals,
+    castles, enemy ownership, or blockers. A 14-channel variant appended
+    those fields and both army totals; its focused training and hosted-wire
+    tests passed. The larger four-feature-per-site/eight-global-feature
+    model (job 14464) consumed its five-minute startup window compiling,
+    with zero epochs and an idle B300, so the guard stopped it. The original
+    two-feature/two-global architecture with 14 channels reached only about
+    25.0K warm end-to-end SPS with four 1,024-game buffers (job 14498),
+    and two 2,048-game buffers reached about 22.5K (job 14523). Both were
+    stopped by the throughput guard. Their logs, builds, GPU samples, and
+    the 14498 checkpoint are preserved in verified metta0 archives:
+    relh-classic-context-hint-setup-14464.tar.gz SHA256
+    7d7ac7ce631dd47cea95a5c66887657ed72d62b573ae0fd7f20f8af3b7be1211,
+    relh-classic-context-hint-small-stopped-14498.tar.gz SHA256
+    ebe0e98ed44d5512d2666ad93d758a742e4285373294b868d794b25aeed67e5a,
+    and relh-classic-context-hint-buf2-stopped-14523.tar.gz SHA256
+    318ccf36dda1cbe422c4ed094aea6214fa216d5a8359ba1380a1237b81b10f6f.
+  * A 10-channel alternative kept the exact eight signed hint channels and
+    added two packed public planes: 2*generals+castles, and enemy-owned
+    minus blocked cells. Focused B300 tests proved signed replay-label
+    indexing and hosted-wire encoding. Its original two-site/two-global
+    tied-local model has 8,008 trainable parameters. Job 14539 trained
+    4,194,304 steps from scratch with sparse ExpanderHarvester imitation,
+    four 1,024-game buffers, 8,192 minibatch, horizon 32, replay ratio
+    .125, LR .001, and 16 CPUs. Warm epochs 10-31 covered 2,752,512 steps
+    in 85.295 s: 32,270 end-to-end SPS on one B300. Sampled GPU utilization
+    averaged about 35.0% and 12.9 GiB over that interval. Final checkpoint
+    SHA256 7e204fb4712d9f72f835d7541a8bb051aa9e85dcebaf813871fcabdf24d0b753.
+    Held-out seed 1101, four 1,024-game batch episodes per opponent, scored
+    .443604 versus ExpanderHarvester and .284790 versus Sentinel (jobs
+    14565/14566). Verified run archive relh-classic-packed-hint-14539.tar.gz
+    SHA256 c8661b68d840fcacaf6fa59574e04284138816ff91e857bbef1e8b137abb5664;
+    eval archive relh-classic-packed-hint-evals-14565-14566.tar.gz SHA256
+    9a88fc5d1b766979521e26ed635eaed93fbae0ee93eec72832c4e861f5f6f794.
+  * The throughput and 2.6M-step stability gates permitted a long
+    teacher-only continuation from that verified checkpoint. Job 14603
+    completed 29,360,128 additional steps, 33,554,432 total in the policy
+    line, with seven new checkpoints and no nonfinite gradients. Epochs
+    32-223 completed 25,034,752 steps in 760.684 s: 32,911 end-to-end
+    SPS on one B300; 4,096 games, 8,192 minibatch, horizon 32, replay
+    ratio .125, 16 CPUs. The selected B300 sampled 34.6% utilization and
+    12.8 GiB during that interval. Final checkpoint SHA256
+    bc5a3dc51ca41b709472f7a07a11dfb58be24ceef9d6f3b37fc77475ac103a31.
+    Its held-out seed-1101 scores improved to .485352 versus
+    ExpanderHarvester and .326782 versus Sentinel (jobs 14675/14676), but
+    remain below v11's .496338/.337769. Three earlier continuation
+    checkpoints, evaluated identically, scored .481567/.320312 at 8.39M,
+    .484131/.314819 at 16.78M, and .475220/.323364 at 25.17M new steps
+    (jobs 14705-14710). None exceeded v11 on both opponents. The final
+    checkpoint is the strongest tested in this policy line, yet still not a
+    hosted candidate. Verified archives on metta0 are
+    relh-classic-packed-hint-long-14603.tar.gz SHA256
+    e1b0acd08978cd6bddfc21c4b01b8e1c5d7537be1f327a6fd8f3b00e389bcabf,
+    relh-classic-packed-hint-long-evals-14675-14676.tar.gz SHA256
+    06d310cb47d5352cc83c0487ae54e334e10f2ee9b401212e4cdcaf46c31500cc,
+    and relh-classic-packed-hint-long-scan-14705-14710.tar.gz SHA256
+    11f170145924532ce512d340136af40d9f5b464cde1fd8041cec64eb44c4ec8d.
+    Source snapshots are verified as relh-classic-context-hint-source.tar.gz
+    SHA256 4d8c468e3e087d47fca0b8d16eb904f98627b05c95cf5bd854d27a820d947d46
+    and relh-classic-packed-hint-source.tar.gz SHA256
+    cc04ef0d42f03f1ae180a1a0b33327135031c786afed1f35ec608473eb2542b3.
+    No owned job or container remains. No hosted upload, league submission,
+    or champion change followed.
+
+Current next step
+  The compact context input is fast enough but ExpanderHarvester imitation
+  still plateaus below v11. Change the learning target toward defense and
+  castle retention: design a bounded B300 probe with a stronger teacher or
+  direct win-focused opponent signal, retain the 10-channel public input,
+  and require >=30K steady-state end-to-end SPS. Compare against v11 on
+  fresh held-out maps before any private hosted match. Keep v11 private and
+  Richard's incumbent champion unchanged until a larger direct hosted set
+  proves a replacement.

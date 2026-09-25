@@ -133,7 +133,10 @@ def encode_coworld_packed_directional_observation(obs):
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
-def encode_coworld_hinted_observation(obs, *, signed_flags=False, sprint_hint=False, expander_hint=False):
+def encode_coworld_hinted_observation(
+    obs, *, signed_flags=False, sprint_hint=False, expander_hint=False,
+    context_features=False, packed_context_features=False,
+):
     """Public view with a scripted move hint for a neural residual policy."""
     hint_fn = expander_harvester_action if expander_hint else sprint_harvester_action if sprint_hint else harvester_action
     hint = hint_fn(jax.random.PRNGKey(0), obs)
@@ -149,14 +152,30 @@ def encode_coworld_hinted_observation(obs, *, signed_flags=False, sprint_hint=Fa
         )),
         direction,
     )).astype(jnp.float32)
+    if packed_context_features:
+        context = jnp.stack((
+            2.0 * obs.generals + obs.castles,
+            obs.opponent_cells.astype(jnp.float32) - (obs.mountains | obs.structures_in_fog),
+        )).astype(jnp.float32)
+        planes = jnp.concatenate((planes, context))
+    elif context_features:
+        context = jnp.stack((
+            obs.generals,
+            obs.castles,
+            obs.opponent_cells,
+            obs.mountains | obs.structures_in_fog,
+            jnp.full((height, width), jnp.log1p(obs.owned_army_count) / 8.0),
+            jnp.full((height, width), jnp.log1p(obs.opponent_army_count) / 8.0),
+        )).astype(jnp.float32)
+        planes = jnp.concatenate((planes, context))
     moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
-def hinted_replay_indices(values, board_size: int):
+def hinted_replay_indices(values, board_size: int, channels: int = 8):
     """Read the exact scripted action already present in signed hint planes."""
     cells = board_size * board_size
-    planes = np.asarray(values).reshape(-1, 8, cells)
+    planes = np.asarray(values).reshape(-1, channels, cells)
     source = np.argmax(planes[:, 4:8].reshape(-1, 4 * cells), axis=1).astype(np.int32)
     passing = planes[:, 3, 0] > 0
     split = np.where(passing, -1, planes[:, 2, 0] > 0).astype(np.int32)

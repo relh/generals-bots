@@ -1031,3 +1031,60 @@ the local strength gate, so there was no long run, hosted upload, league
 submission, or champion change. The next bounded probe should revisit the
 eight-channel hinted observation and small tied-local policy to expose
 contested castles and general-defense context while maintaining 30K SPS.
+
+## Public-context observation and long training (2026-09-25)
+
+The signed Expander hint's eight channels omitted explicit generals,
+castles, enemy ownership, and blockers. A 14-channel version added those
+public fields and both army totals. Focused training and hosted-wire tests
+passed, but the larger four-feature/eight-global model compiled for the full
+five-minute startup window without an epoch (job 14464). The original
+two-feature/two-global model reached only about 25.0K warm end-to-end SPS
+with four 1,024-game buffers (job 14498); two 2,048-game buffers reached
+about 22.5K (job 14523). Guards stopped all three. Their logs, GPU samples,
+builds, and the 14498 checkpoint are archived on metta0:
+
+| Failed/stopped probe | Archive SHA-256 |
+| --- | --- |
+| `relh-classic-context-hint-setup-14464.tar.gz` | `7d7ac7ce631dd47cea95a5c66887657ed72d62b573ae0fd7f20f8af3b7be1211` |
+| `relh-classic-context-hint-small-stopped-14498.tar.gz` | `ebe0e98ed44d5512d2666ad93d758a742e4285373294b868d794b25aeed67e5a` |
+| `relh-classic-context-hint-buf2-stopped-14523.tar.gz` | `318ccf36dda1cbe422c4ed094aea6214fa216d5a8359ba1380a1237b81b10f6f` |
+
+A 10-channel version kept the signed hint unchanged and added two packed
+public planes: `2*generals+castles` and `enemy-owned-blocked`. Focused B300
+tests passed for replay-label indexing and hosted-wire parity. The resulting
+tied-local policy has 8,008 trainable parameters. Training used one B300,
+four 1,024-game buffers, 4,096 total games, 8,192 minibatch, horizon 32,
+replay ratio .125, 16 CPUs, LR .001, and sparse ExpanderHarvester imitation.
+
+| Run | Steps in run | Steady interval | Sampled B300 use | Held-out Expander / Sentinel, seed 1101 |
+| --- | ---: | ---: | ---: | ---: |
+| 14539, scratch pilot | 4,194,304 | epochs 10–31: 2,752,512 / 85.295 s = **32,270 SPS** | 35.0%; 12.9 GiB | .443604 / .284790 |
+| 14603, continuation | 29,360,128 | epochs 32–223: 25,034,752 / 760.684 s = **32,911 SPS** | 34.6%; 12.8 GiB | .485352 / .326782 |
+
+The continuation initialized from the pilot's exact SHA-256
+`7e204fb4712d9f72f835d7541a8bb051aa9e85dcebaf813871fcabdf24d0b753`,
+completed 33,554,432 total steps in this policy line, and crossed the prior
+2.6M-step failure range without nonfinite gradients. Final SHA-256 is
+`bc5a3dc51ca41b709472f7a07a11dfb58be24ceef9d6f3b37fc77475ac103a31`.
+Each held-out score covers four 1,024-game batch episodes. Intermediate
+continuation checkpoints at 8.39M, 16.78M, and 25.17M new steps scored
+.481567/.320312, .484131/.314819, and .475220/.323364 respectively on
+the same seed. The final is the strongest tested in this line, but remains
+below v11's .496338/.337769 on both opponents.
+
+| Verified metta0 artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-context-hint-source.tar.gz` | `4d8c468e3e087d47fca0b8d16eb904f98627b05c95cf5bd854d27a820d947d46` |
+| `relh-classic-packed-hint-source.tar.gz` | `cc04ef0d42f03f1ae180a1a0b33327135031c786afed1f35ec608473eb2542b3` |
+| `relh-classic-packed-hint-14539.tar.gz` | `c8661b68d840fcacaf6fa59574e04284138816ff91e857bbef1e8b137abb5664` |
+| `relh-classic-packed-hint-evals-14565-14566.tar.gz` | `9a88fc5d1b766979521e26ed635eaed93fbae0ee93eec72832c4e861f5f6f794` |
+| `relh-classic-packed-hint-long-14603.tar.gz` | `e1b0acd08978cd6bddfc21c4b01b8e1c5d7537be1f327a6fd8f3b00e389bcabf` |
+| `relh-classic-packed-hint-long-evals-14675-14676.tar.gz` | `06d310cb47d5352cc83c0487ae54e334e10f2ee9b401212e4cdcaf46c31500cc` |
+| `relh-classic-packed-hint-long-scan-14705-14710.tar.gz` | `11f170145924532ce512d340136af40d9f5b464cde1fd8041cec64eb44c4ec8d` |
+
+No owned job or container remains. The 10-channel input meets the training
+speed gate, but ExpanderHarvester imitation still plateaus below v11. The
+next bounded probe should use a stronger defense/castle learning signal and
+compare with v11 on fresh held-out maps before any private hosted upload.
+No league submission or champion change followed.

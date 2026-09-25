@@ -26,6 +26,16 @@ _encode_sprint_prior_hinted = jax.jit(
 _encode_expander_prior_hinted = jax.jit(
     lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True, expander_hint=True)
 )
+_encode_expander_context_prior_hinted = jax.jit(
+    lambda obs: encode_coworld_hinted_observation(
+        obs, signed_flags=True, expander_hint=True, context_features=True,
+    )
+)
+_encode_expander_packed_context_prior_hinted = jax.jit(
+    lambda obs: encode_coworld_hinted_observation(
+        obs, signed_flags=True, expander_hint=True, packed_context_features=True,
+    )
+)
 
 
 def training_observation(message: dict) -> Observation:
@@ -78,10 +88,16 @@ def encode_wire_observation(
     prior_hinted: bool = False,
     sprint_prior_hinted: bool = False,
     expander_prior_hinted: bool = False,
+    expander_context_prior_hinted: bool = False,
+    expander_packed_context_prior_hinted: bool = False,
 ):
     observation = training_observation(message)
     values, mask = (
-        _encode_expander_prior_hinted(observation)
+        _encode_expander_packed_context_prior_hinted(observation)
+        if expander_packed_context_prior_hinted
+        else _encode_expander_context_prior_hinted(observation)
+        if expander_context_prior_hinted
+        else _encode_expander_prior_hinted(observation)
         if expander_prior_hinted
         else _encode_sprint_prior_hinted(observation)
         if sprint_prior_hinted

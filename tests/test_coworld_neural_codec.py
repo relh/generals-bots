@@ -98,6 +98,28 @@ def test_coworld_wire_view_matches_padded_training_view():
     np.testing.assert_array_equal(expander_values, np.asarray(expected_expander))
     np.testing.assert_array_equal(expander_mask, np.asarray(expected_expander_mask))
 
+    context_values, context_mask = encode_wire_observation(message, expander_context_prior_hinted=True)
+    expected_context, expected_context_mask = encode_coworld_hinted_observation(
+        expected, signed_flags=True, expander_hint=True, context_features=True,
+    )
+    np.testing.assert_array_equal(context_values, np.asarray(expected_context))
+    np.testing.assert_array_equal(context_mask, np.asarray(expected_context_mask))
+    assert context_values.shape == (14 * 21 * 21,)
+    np.testing.assert_array_equal(context_values.reshape(14, 21, 21)[8], np.asarray(expected.generals))
+    np.testing.assert_array_equal(context_values.reshape(14, 21, 21)[9], np.asarray(expected.castles))
+
+    packed_values, packed_mask = encode_wire_observation(message, expander_packed_context_prior_hinted=True)
+    expected_packed_context, expected_packed_context_mask = encode_coworld_hinted_observation(
+        expected, signed_flags=True, expander_hint=True, packed_context_features=True,
+    )
+    np.testing.assert_array_equal(packed_values, np.asarray(expected_packed_context))
+    np.testing.assert_array_equal(packed_mask, np.asarray(expected_packed_context_mask))
+    assert packed_values.shape == (10 * 21 * 21,)
+    packed_planes = packed_values.reshape(10, 21, 21)
+    np.testing.assert_array_equal(
+        packed_planes[8], 2 * np.asarray(expected.generals) + np.asarray(expected.castles)
+    )
+
 
 def test_signed_hint_replay_metadata_covers_pass_and_move():
     planes = np.zeros((2, 8, 21 * 21), dtype=np.float32)
@@ -108,6 +130,16 @@ def test_signed_hint_replay_metadata_covers_pass_and_move():
     planes[1, 5, 123] = 1
     np.testing.assert_array_equal(
         hinted_replay_indices(planes.reshape(2, -1), 21),
+        np.asarray([[1764, -1], [441 + 123, 1]], dtype=np.int32),
+    )
+    expanded = np.pad(planes, ((0, 0), (0, 6), (0, 0)))
+    np.testing.assert_array_equal(
+        hinted_replay_indices(expanded.reshape(2, -1), 21, 14),
+        np.asarray([[1764, -1], [441 + 123, 1]], dtype=np.int32),
+    )
+    packed = np.pad(planes, ((0, 0), (0, 2), (0, 0)))
+    np.testing.assert_array_equal(
+        hinted_replay_indices(packed.reshape(2, -1), 21, 10),
         np.asarray([[1764, -1], [441 + 123, 1]], dtype=np.int32),
     )
 
