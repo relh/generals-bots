@@ -1109,3 +1109,49 @@ Current next step
   stronger-opponent quality gain as well as sustained >=30K complete-step
   SPS before a long run. Only challenge daveey in hosted matches after the
   held-out gate; publish solely with larger winning direct-match evidence.
+
+Update, 2026-09-25 hot-loop audit and longer-horizon PPO
+  * The user explicitly relaxed the training floor to 25,000 complete-step
+    SPS for this work. A 1,024-game B300 hot-loop profile found median
+    14.319 ms per environment step: JAX game kernel 3.627 ms, numeric
+    observation construction 6.400 ms, other host/transfer 4.157 ms.
+    Teacher-free training now avoids redundant array copies/validation and
+    sends actions in one JAX array. The same profile fell to 8.792 ms/step
+    (kernel 3.785, observation 2.902, other 2.109), a 39% reduction.
+    Focused GPU reward/transport tests passed. Source is in
+    integrations/metta_puffer.py; reproducible profiler and Slurm scripts
+    are in integrations/. No active pane or incumbent was modified.
+  * Four-update pilot 15865 stopped at 4.19M steps because its exact
+    16/20-epoch rates were 27.53K/27.66K under the old 30K guard. Three
+    updates with final-only checkpointing, job 15904, stopped under that
+    same old guard at 29.68K/29.49K. The source and checkpoints/logs were
+    archived on metta0; full hashes and run details are in
+    integrations/COWORLD_CLASSIC_STATUS.md.
+  * Optimized three-update job 15932 completed 8.39M steps on one B300,
+    4,096 games/four buffers, 16 CPUs, horizon32, minibatch16,384,
+    replay .375, LR .001, gamma .99. Exact final 16/20-epoch rates
+    including the save were 28.19K/28.73K; earlier late windows reached
+    ~31K. Seed-1101 performance: .500000 Random (draws), .008301
+    ExpanderHarvester, 0 Sentinel. Its training/eval archives on metta0
+    have SHA256s 728b671566c69dcee0d8b988e6a53b69a3e82570f20109235e7e6051ce42ca49
+    and d19c3e9b02b1bf5717b20b6289cbac1906178de28805fb41f3e1b20ab1f3625c.
+  * With PPO and potential discounts both .999, three-update job 15976
+    completed 8.39M steps. Final 16/20-epoch rates were 29.71K/30.27K.
+    Seed-1101 scores were .500000 Random (draws), .009766 Expander, and
+    0 Sentinel. Verified training/eval archive SHA256s:
+    9dece8c525d2838f99797eae2ea8280debd7d62bdfee6127e85493b240f7bc91,
+    abf95f8b21610163571c3c252b9176686cf3885ce072153a3c391764a9e39ae2.
+    Four-update job 15999 under the same reward/discount completed 8.39M
+    steps at 26.36K/26.68K final 16/20-epoch SPS; scores were .500000
+    Random (draws), .008057 Expander, 0 Sentinel. Verified archive hashes:
+    0e8a065ebd2fab28cc154e290952c83dc154428ef38e1902fbdaf61d0d61f31d,
+    bfca12baea2782bdc13c8cac53ba8209c37d101c1e6559e2fb20cd4b239f3e69.
+    No hosted test, upload, submission or champion change was made.
+
+Current next step
+  The speed bottleneck is improved, but pure PPO on full Classic maps still
+  sees almost no wins after 8.39M steps. Before any long run, run a bounded
+  win-producing small-map curriculum with the same 21x21 padded observation
+  and pure PPO, then test transfer on held-out full Classic maps. Keep the
+  user-authorized >=25K complete-step floor, and require clear gains over
+  v11 before hosted matches. Preserve frozen checkpoints and other panes.

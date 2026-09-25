@@ -46,6 +46,7 @@ class GeneralsPufferEnvironment:
         horizon: int = 300,
         opponent: str = "expander",
         shaping_weight: float = 0.2,
+        shaping_gamma: float = 0.99,
         army_shaping_weight: float = 0.5,
         land_shaping_weight: float = 0.3,
         castle_shaping_weight: float = 0.0,
@@ -74,6 +75,8 @@ class GeneralsPufferEnvironment:
     ):
         if min(shaping_weight, army_shaping_weight, land_shaping_weight, castle_shaping_weight) < 0:
             raise ValueError("Shaping weights must be nonnegative")
+        if not 0 < shaping_gamma <= 1:
+            raise ValueError("Shaping discount must be in (0, 1]")
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
         if sparse_teacher and (supervise_teacher or not factorized_actions):
@@ -252,7 +255,7 @@ class GeneralsPufferEnvironment:
             done = timestep.terminated | timestep.truncated
             outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
             reward = outcome + shaping_weight * (
-                0.99 * new_potential * ~done - old_potential
+                shaping_gamma * new_potential * ~done - old_potential
             )
             if teacher_agent is not None and imitation_weight:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
@@ -435,6 +438,14 @@ class BatchedGeneralsPufferEnvironment:
         return np.asarray(self._sentinel_actions(states, self.sides[:count], keys))
 
     def _observation(self, values, masks, teacher_actions=None, sentinel_actions=None):
+        if self.base.training and not self.base.sparse_teacher and not self.base.supervise_teacher:
+            # Training never marks a game as finished: it recycles terminal
+            # states inside the JAX step. Both arrays are fresh device outputs.
+            # Avoid copying them and revalidating every cell on every step.
+            return NumericObservation.model_construct(
+                values=np.asarray(values), action_masks=np.asarray(masks, dtype=bool),
+                replay_metadata=[], teachers=[], assignments=[],
+            )
         public_values = np.asarray(values).copy()
         public_values[self.finished] = 0
         legal = np.asarray(masks, dtype=bool).copy()
@@ -533,10 +544,9 @@ class BatchedGeneralsPufferEnvironment:
     def step(self, actions: list[list[int]]) -> NumericTransition:
         if len(actions) != self.parallel_games:
             raise ValueError("Expected one action per parallel game")
-        indices = jnp.asarray([action[0] for action in actions], dtype=jnp.int32)
-        splits = jnp.asarray(
-            [action[1] if self.base.factorized_actions else 0 for action in actions], dtype=jnp.int32
-        )
+        action_array = jnp.asarray(np.asarray(actions, dtype=np.int32))
+        indices = action_array[:, 0]
+        splits = action_array[:, 1] if self.base.factorized_actions else jnp.zeros_like(indices)
         was_finished = self.finished.copy()
         cached_teacher_actions = (
             self.cached_teacher_actions if self.base.teacher_rollouts

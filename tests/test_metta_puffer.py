@@ -177,11 +177,12 @@ def test_castle_control_margin_tracks_owned_and_enemy_castles():
     assert float(_castle_control_margin(state, jnp.int32(1))) == pytest.approx(-0.2)
 
 
-def test_land_castle_reward_adds_discounted_potential_to_game_outcome():
+@pytest.mark.parametrize("shaping_gamma", [0.99, 0.999])
+def test_land_castle_reward_adds_discounted_potential_to_game_outcome(shaping_gamma):
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     options = dict(board_size=6, horizon=12, opponent="random", factorized_actions=True)
     shaped = GeneralsPufferEnvironment(
-        context=context, shaping_weight=1.0, army_shaping_weight=0.0,
+        context=context, shaping_weight=1.0, shaping_gamma=shaping_gamma, army_shaping_weight=0.0,
         land_shaping_weight=0.5, castle_shaping_weight=0.25, **options,
     )
     baseline = GeneralsPufferEnvironment(context=context, shaping_weight=0.0, **options)
@@ -203,7 +204,7 @@ def test_land_castle_reward_adds_discounted_potential_to_game_outcome():
             unshaped = baseline.step([[action, 0]])
             next_potential = 0.0 if result.episode_done else potential(shaped)
             assert result.rewards[0] - unshaped.rewards[0] == pytest.approx(
-                0.99 * next_potential - old_potential, abs=1e-6
+                shaping_gamma * next_potential - old_potential, abs=1e-6
             )
             assert result.score == unshaped.score
             observation = result.observation
@@ -450,6 +451,30 @@ def test_batched_games_step_together_and_obey_native_contract():
     assert transition.terminated == [True] * env.spec.agents
     assert -1 <= transition.score <= 1
     env.close()
+
+
+def test_teacher_free_training_arrays_obey_native_transport_contract():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, board_size=6, horizon=12, opponent="mixed",
+        factorized_actions=True, parallel_games=4, require_gpu=False,
+    )
+    serializer = NativeEnvironment.__new__(NativeEnvironment)
+    serializer.spec = env.spec
+    try:
+        observation = env.reset("fast-training-transport")
+        for _ in range(4):
+            assert isinstance(observation.values, np.ndarray)
+            assert isinstance(observation.action_masks, np.ndarray)
+            assert observation.values.dtype == np.float32
+            assert observation.action_masks.dtype == np.bool_
+            assert np.isfinite(observation.values).all()
+            transport, mask = serializer.encode(observation)
+            assert len(transport) == 4 * env.spec.agents * env.spec.transport_size
+            assert len(mask) == env.spec.agents * sum(env.spec.action_sizes)
+            observation = env.step([[env.spec.action_sizes[0] - 1, 0]] * 4).observation
+    finally:
+        env.close()
 
 
 def test_teacher_rollouts_reuse_next_state_action():

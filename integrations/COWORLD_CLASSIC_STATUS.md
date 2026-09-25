@@ -1748,3 +1748,85 @@ justify a long run or hosted upload. The next bounded step is to inspect
 action distributions and try a win-producing curriculum or stronger policy
 update while preserving the >=30K complete-step gate. No submission or
 champion change occurred.
+
+## Hot-loop audit, 25K floor, and longer credit horizon (2026-09-25)
+
+The user explicitly set 25,000 complete-step SPS as an acceptable floor for
+this work. The unchanged 30K monitor stopped four-update job 15865 at 4.19M
+steps after exact 16/20-epoch rates of 27,531/27,664 SPS. Its midpoint
+checkpoint SHA-256 is
+`f6a738b40f63bc829c5260fbbe4eddcbe2f5ff84a74a5541b4453447b13e8be9`.
+The verified archive is `relh-classic-landcastle-ppo-mid3-stopped-15865.tar.gz`
+(SHA-256 `4a782b024a1557f73a7080f0c700c846fd802e4386217a6b9fa3285cf23ab920`).
+Three-update job 15877 initially ran above 30K, then the midpoint save
+dropped the measured windows to 28,485/29,055 SPS and the old guard stopped
+it. Its checkpoint SHA-256 is
+`ac02a54065c330c91274378f7ec02ce5796a86f0052e4d119e116d84d29fea9c`;
+archive `relh-classic-landcastle-ppo-mid4-stopped-15877.tar.gz` SHA-256
+`a941eb1f5d272e2ee8ef8552f45442d9ecd2927ae020357612d08d86b80dcc15`.
+Final-only checkpointing, job 15904, removed that midpoint save but ran at
+29,675/29,495 SPS across its last 16/20 epochs before the old guard stopped
+it. Its verified log/build archive is
+`relh-classic-landcastle-ppo-mid5-stopped-15904.tar.gz`, SHA-256
+`afe3327aed03aa8767a094bd93fea5f0fe31f23b37f26296e09379a87ad546c0`.
+These probes had no residual trainer containers.
+
+The B300 hot-loop profiler in `profile_coworld_puffer_step.py` sampled 32
+post-warmup steps of 1,024 Classic games. Median step time was **14.319 ms**:
+3.627 ms in the synchronized JAX advance, 6.400 ms constructing the numeric
+observation, and 4.157 ms in other Python/array transport. The teacher-free
+training path now avoids copying and revalidating the fresh observation and
+mask arrays, and transfers actions as one array. A repeat on the same B300
+measured **8.792 ms**: kernel 3.785, observation 2.902, other 2.109, a 39%
+hot-loop reduction. The native transport and reward GPU tests passed (2
+selected tests). Evaluation and teacher paths retain their validation.
+
+The optimized three-update pilot, job 15932, completed 8,388,608 steps on
+one B300 with 4,096 games/four buffers, 16 CPUs, horizon32, minibatch16,384,
+replay .375, LR .001, gamma .99. Exact final 16/20-epoch windows including
+the save were **28,195/28,733 SPS**; warm windows before checkpoint were
+31–32K. After minute one, 292 GPU samples averaged 20.5% utilization and
+15,392 MiB peak VRAM. Final checkpoint SHA-256:
+`4ab7d553f8eb613ce4ab52970e0ddbfb9c96838142cc29a08a53380445f7fac2`.
+The complete source/build/run/profile archive is
+`relh-classic-landcastle-ppo-fast6-15932.tar.gz` (SHA-256
+`728b671566c69dcee0d8b988e6a53b69a3e82570f20109235e7e6051ce42ca49`).
+Frozen full Classic seed-1101 performance was .500000 against Random (draws),
+.008301 against ExpanderHarvester, and zero against Sentinel. The evaluation
+archive is `relh-classic-landcastle-ppo-fast6-15932-evals.tar.gz` (SHA-256
+`d19c3e9b02b1bf5717b20b6289cbac1906178de28805fb41f3e1b20ab1f3625c`).
+
+The 1,200-turn game makes gamma .99 strongly discount late wins: at turn 600
+the return coefficient is about .0024. A new `shaping_gamma` option keeps
+potential shaping consistent with PPO gamma. It defaults to .99 for old
+builds. A focused GPU test for .99/.999 and the fast transport path passed
+(3 selected tests). Three-update job 15976 used gamma .999 for PPO and
+shaping, completed 8,388,608 steps, and measured **29,712/30,266 SPS** in
+its final 16/20-epoch windows. After warmup, 291 B300 GPU samples averaged
+20.2% utilization. Final checkpoint SHA-256:
+`aa3aa19e1bb5f10159e84b5979229e264fdd5c4c72cb7d171d3346948f9c306d`.
+Its full training archive is `relh-classic-landcastle-ppo-gamma7-15976.tar.gz`
+(SHA-256 `9dece8c525d2838f99797eae2ea8280debd7d62bdfee6127e85493b240f7bc91`).
+Seed-1101 full Classic performance was .500000 Random (draws), .009766
+ExpanderHarvester, zero Sentinel. The eval archive is
+`relh-classic-landcastle-ppo-gamma7-15976-evals.tar.gz` (SHA-256
+`abf95f8b21610163571c3c252b9176686cf3885ce072153a3c391764a9e39ae2`).
+
+Four-update job 15999 kept gamma .999 but replay .5. It completed 8,388,608
+steps with final 16/20-epoch windows **26,358/26,679 SPS**, including the
+save; the corresponding midpoint-save windows were about 26.3–26.8K. After
+warmup, 321 GPU samples averaged 20.7% utilization. Final checkpoint SHA-256:
+`2ccb0fb10b911c51a66f54a68b330162c93a427a9453895e6ec1fa8e25f89823`.
+The training archive is `relh-classic-landcastle-ppo-update4-15999.tar.gz`
+(SHA-256 `0e8a065ebd2fab28cc154e290952c83dc154428ef38e1902fbdaf61d0d61f31d`).
+Frozen seed-1101 scores were .500000 Random (draws), .008057 Expander,
+zero Sentinel. The eval archive is
+`relh-classic-landcastle-ppo-update4-15999-evals.tar.gz` (SHA-256
+`bfca12baea2782bdc13c8cac53ba8209c37d101c1e6559e2fb20cd4b239f3e69`).
+
+None of these frozen policies merits hosted play or a long continuation.
+The environment hot loop is much faster and the 25K floor is verified; pure
+PPO on full Classic maps still has almost no positive winning experience at
+8.39M steps. Next test a bounded smaller-map win curriculum using the same
+21x21 padded model, then evaluate transfer on held-out full Classic maps.
+No hosted upload, league submission, publication, or champion change occurred.
