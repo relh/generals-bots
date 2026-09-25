@@ -1307,3 +1307,69 @@ continuing this plateaued teacher-only line. Require a bounded B300 probe at
 >=30K full training SPS, then improvement over v11 on fresh held-out maps
 and strong opponents before any hosted test. Keep v11 private and the
 incumbent champion unchanged until direct hosted wins prove replacement.
+
+## Cardinal competitive PPO transfer and lower-rate probe (2026-09-25)
+
+An isolated Puffer initializer was derived from pinned upstream source SHA-256
+`25ab571e3083a0a89c857970b5ae37d1c2e43e980e9eda649286a604cad4206e`.
+It accepts only the verified 33.55M-step Cardinal teacher checkpoint SHA-256
+`fb9f235c8c8283db19da7b63e2768f1a5820cf359672bbbd4c6c249f885feff0`,
+source model hash `ae3ab7e3e7454a99c2a7927a3e5af23bf4e46227dc7b9ab68d03c26283eb2fa5`,
+PPO target model hash `ba1e2e49188a4ff66191bc9091ea80832119ccd09d542c8ddfd217fb5776eabf`,
+matching 14,124 model-state words, identical non-loss model config and
+environment spec, and the exact sparse-teacher loss change from replacement
+coefficient 1.0 to PPO plus coefficient .25. The patched source SHA-256 is
+`23cc9aaefe6539a65411682093c30d0c78fdff613c33b769c318bb0ed93d077d`;
+the shared runtime was untouched. Target prebuild 15226 passed its checks.
+
+Both bounded probes used one B300, 4,096 games in four buffers, horizon 32,
+minibatch 16,384, replay ratio .125, 16 CPUs, 75% ExpanderHarvester /
+25% Sentinel training opponents, castle shaping 1.0, and PPO plus .25 sparse
+Expander imitation. They transferred the exact source checkpoint and
+completed 4,194,304 new steps without nonfinite gradients:
+
+| Job | LR | Epochs 10–31 | Sampled B300 use | Held-out Expander / Sentinel, seed 1101 |
+| ---: | ---: | ---: | ---: | ---: |
+| 15231 | .001 | 2,752,512 / 89.173 s = **30,867 SPS** | 40.4%; 15.0 GiB | .483154 / .325806 |
+| 15238 | .0003 | 2,752,512 / 85.518 s = **32,186 SPS** | 37.0%; 14.7 GiB | .487427 / .325073 |
+
+Final checkpoint SHA-256s are
+`facd0bb0ffb94671d565d91e969ae5c3398cf26353875c4c40713ca82ad28d3b`
+and `3b67d69f20eeb01fb11b3f08aee22f5b3d3cc13ac066c7b9de9c57a7b872ac97`.
+The lower rate retained more of the teacher-only parent's .487915 Expander
+score and modestly improved its .321655 Sentinel score, but neither probe
+beat v11's .496338/.337769.
+
+A lower-rate long continuation first exited before any epoch (job 15246):
+the rebuilt environment hash differed despite identical full build configs,
+model hashes, state words, and revision. Standard Puffer environment-transfer
+initialization resolved this same-config mismatch in job 15249. That run
+reached epoch 36 and saved its epoch-32, 4,194,304-step checkpoint SHA-256
+`bee0720089fdb70516c23314c385653ac49253c82aeb02435a15f2837534f552`.
+The old dashboard-median guard stopped it at 29.8K immediately after the
+checkpoint. Exact completed-step/wall measurements remained 32,011 SPS over
+epochs 10–31 and 30,596 SPS over epochs 10–36; the final trailing 20 epochs
+measured 30,469 SPS. A task-specific monitor now measures exact 16- and
+20-epoch intervals and stops only if both are below 30K, while retaining the
+nonfinite, startup, and stale-console guards. A local synthetic test passed;
+its Python 3.9 execution on B300 parsed the stopped run correctly.
+
+Held-out seed 1101 for the saved continuation checkpoint scored .487793
+versus ExpanderHarvester and .312256 versus Sentinel (jobs 15261/15262).
+The Sentinel regression from .325073 independently rules out a longer
+continuation or hosted test. No upload, league submission, or champion change
+followed.
+
+| Verified metta0 artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-cardinal2-ppo-15231.tar.gz` | `e26f9483808343541dcf1fef51a03676f3b1dee767d61fd299deaf8e3abb42ff` |
+| `relh-classic-cardinal2-ppo-evals-15233-15234.tar.gz` | `bed343597caf69ee012d98668f571425f52074a09fa2a4bf8e980d80649b1df8` |
+| `relh-classic-cardinal2-ppo-lr3e4-15238.tar.gz` | `c0c59e7d10cb2dac6489914e3cfc59ab7c2b87197f4eb05d04ab7d692f686c7e` |
+| `relh-classic-cardinal2-ppo-lr3e4-evals-15241-15242.tar.gz` | `039afc0739fc3ab74d1ea314094fce46363931e3edbbed088bbe3c318bfd6231` |
+| `relh-classic-cardinal2-ppo-lr3e4-stopped-15249.tar.gz` | `825f32bffa7ab60cfc6b8758ba404757d0a7be7a5ea96224e6b00d4d19a42dac` |
+| `relh-classic-cardinal2-ppo-lr3e4-stopped-evals-15261-15262.tar.gz` | `b1d816ca9b06b8b05d37fba723e6e3c286d33f6dfc9b844f59ade56d54537b48` |
+
+The teacher-only and PPO Cardinal lines now both remain below v11. The next
+probe needs a more effective defense and expansion learning signal or a new
+policy architecture; do not continue this regressing PPO line. Retain the
+>=30K B300 gate and fresh held-out plus hosted proof before publication.

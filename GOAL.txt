@@ -842,3 +842,60 @@ Current next step
   sustained >=30K SPS. Require improvement over v11 on fresh held-out
   strong-opponent maps, then larger winning hosted direct matches before
   publishing. Keep other panes' jobs and the current champion unchanged.
+
+Update, 2026-09-25 Cardinal competitive PPO transfer
+  * Isolated Puffer transfer guard accepts only the audited 33.55M-step
+    Cardinal teacher checkpoint SHA256
+    fb9f235c8c8283db19da7b63e2768f1a5820cf359672bbbd4c6c249f885feff0,
+    source model ae3ab7e3e7454a99c2a7927a3e5af23bf4e46227dc7b9ab68d03c26283eb2fa5,
+    target PPO model ba1e2e49188a4ff66191bc9091ea80832119ccd09d542c8ddfd217fb5776eabf,
+    matching 14,124 state words, same non-loss config/environment spec,
+    and sparse-teacher replacement 1.0 to PPO plus sparse teacher .25.
+    Patched source SHA256 23cc9aaefe6539a65411682093c30d0c78fdff613c33b769c318bb0ed93d077d;
+    shared runtime untouched. Target prebuild job 15226 succeeded.
+  * One-B300 bounded PPO jobs 15231 (LR .001) and 15238 (LR .0003)
+    transferred successfully and each completed 4,194,304 steps, 4,096
+    games, four buffers, horizon 32, minibatch 16,384, replay ratio .125,
+    16 CPUs, 75% Expander / 25% Sentinel opponents. Warm epochs 10-31
+    measured 30,867 and 32,186 end-to-end SPS; sampled utilization
+    40.4%/37.0%, memory 15.0/14.7 GiB. Held-out seed 1101 scores were
+    .483154/.325806 and .487427/.325073 versus Expander/Sentinel,
+    respectively, both below v11 .496338/.337769. Checkpoint SHA256s
+    facd0bb0ffb94671d565d91e969ae5c3398cf26353875c4c40713ca82ad28d3b
+    and 3b67d69f20eeb01fb11b3f08aee22f5b3d3cc13ac066c7b9de9c57a7b872ac97.
+  * Long continuation job 15246 exited before any training step because
+    the rebuilt environment hash differed despite identical full build
+    config, model hash, state words, and revision. Standard environment
+    transfer fixed initialization in job 15249. It saved a 4,194,304-step
+    checkpoint SHA256
+    bee0720089fdb70516c23314c385653ac49253c82aeb02435a15f2837534f552,
+    then the old five-dashboard-median monitor stopped at epoch 36 after a
+    checkpoint dip. Exact epochs 10-31 were 32,011 SPS, epochs 10-36
+    30,596 SPS, and trailing 20 epochs 30,469 SPS. A new task-specific
+    monitor measures exact 16/20-epoch end-to-end intervals and requires
+    both to be below 30K before stopping; it preserves nonfinite/stall
+    checks. Local synthetic test passed and Python 3.9 B300 parsed the
+    stopped trace. The saved checkpoint scored .487793/.312256 on held-out
+    seed 1101 (jobs 15261/15262), a Sentinel regression that rules out
+    further continuation regardless of the monitor change.
+  * Verified metta0 archives: relh-classic-cardinal2-ppo-15231.tar.gz
+    SHA256 e26f9483808343541dcf1fef51a03676f3b1dee767d61fd299deaf8e3abb42ff;
+    relh-classic-cardinal2-ppo-evals-15233-15234.tar.gz SHA256
+    bed343597caf69ee012d98668f571425f52074a09fa2a4bf8e980d80649b1df8;
+    relh-classic-cardinal2-ppo-lr3e4-15238.tar.gz SHA256
+    c0c59e7d10cb2dac6489914e3cfc59ab7c2b87197f4eb05d04ab7d692f686c7e;
+    relh-classic-cardinal2-ppo-lr3e4-evals-15241-15242.tar.gz SHA256
+    039afc0739fc3ab74d1ea314094fce46363931e3edbbed088bbe3c318bfd6231;
+    relh-classic-cardinal2-ppo-lr3e4-stopped-15249.tar.gz SHA256
+    825f32bffa7ab60cfc6b8758ba404757d0a7be7a5ea96224e6b00d4d19a42dac;
+    relh-classic-cardinal2-ppo-lr3e4-stopped-evals-15261-15262.tar.gz
+    SHA256 b1d816ca9b06b8b05d37fba723e6e3c286d33f6dfc9b844f59ade56d54537b48.
+    No hosted upload or publication action occurred.
+
+Current next step
+  Change the defense/expansion learning signal or policy architecture in
+  a bounded B300 probe. Both 33.55M-step teacher-only and transferred PPO
+  Cardinal lines remain below v11, and longer PPO regressed Sentinel.
+  Require >=30K sustained end-to-end SPS, improvement over v11 on fresh
+  held-out strong-opponent maps, then larger winning hosted direct matches
+  before publication. Keep other panes' work and champion unchanged.
