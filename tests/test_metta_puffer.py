@@ -327,6 +327,42 @@ def test_sentinel_label_mix_overrides_only_selected_hint_targets():
         env.close()
 
 
+def test_sentinel_only_labels_leave_unselected_turns_unlabeled():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, opponent="random", coworld_classic=True, coworld_pool_size=64,
+        teacher="expander_harvester", sparse_teacher=True, factorized_actions=True,
+        compact_features=True, lean_features=True,
+        hint_features=True, prior_hint_features=True, expander_hint_features=True,
+        parallel_games=4, sentinel_teacher_fraction=1.0, sentinel_teacher_interval=2,
+        sentinel_teacher_only=True, require_gpu=False,
+    )
+    try:
+        observation = env.reset("sentinel-only-labels")
+        assert np.all(np.asarray(observation.replay_metadata)[:, 0] >= 0)
+        observation = env.step([[env.spec.action_sizes[0] - 1, 0]] * 4).observation
+        assert np.all(np.asarray(observation.replay_metadata) == -1)
+        observation = env.step([[env.spec.action_sizes[0] - 1, 0]] * 4).observation
+        assert np.all(np.asarray(observation.replay_metadata)[:, 0] >= 0)
+    finally:
+        env.close()
+
+    evaluation = BatchedGeneralsPufferEnvironment(
+        context=EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp")),
+        opponent="random", coworld_classic=True, coworld_pool_size=64,
+        teacher="expander_harvester", sparse_teacher=True, factorized_actions=True,
+        compact_features=True, lean_features=True,
+        hint_features=True, prior_hint_features=True, expander_hint_features=True,
+        parallel_games=4, sentinel_teacher_fraction=1.0, sentinel_teacher_interval=2,
+        sentinel_teacher_only=True, require_gpu=False,
+    )
+    try:
+        observation = evaluation.reset("sentinel-only-evaluation")
+        assert np.all(np.asarray(observation.replay_metadata) == -1)
+    finally:
+        evaluation.close()
+
+
 def test_training_restarts_a_finished_game_without_ending_the_batch():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     env = BatchedGeneralsPufferEnvironment(

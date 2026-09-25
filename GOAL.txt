@@ -427,3 +427,49 @@ Current next step
   sustained end-to-end B300 SPS, stronger held-out local scores, and a
   larger winning direct hosted set before any league submission/champion
   change. Recheck identity and standings immediately before publication.
+
+Update, 2026-09-25 hosted replay diagnosis and Sentinel-only pilot
+  * All 32 v11-versus-Richard confirmation replays were downloaded and
+    measured. In the 15 losses, average candidate army/land/castle margins
+    were +7.3/+9.7/-0.4 at turn 200, -23.7/+2.7/-1.73 at turn 300, and
+    -109.4/-0.3/-1.86 at turn 400 (14 games still live then). All 15
+    losses were general captures, median loss turn 610; mean pass and half
+    rates were .0082 and .0595. The full replays, analysis script, and
+    per-game records are verified on metta0 in
+    relh-classic-v11-replay-analysis.tar.gz, SHA256
+    0ce2301348b6323c27f7843259ff44ecaa995782b5e89a504e6ab5474e536f20.
+    The recurring problem is midgame army and castle control loss.
+  * A bounded follow-up made sparse imitation labels Sentinel-only every
+    fourth step, leaving intervening turns unlabeled instead of imitating
+    Expander hints. B300 Slurm 14123 completed 4,194,304 new Puffer steps
+    from the original selected 31.46M checkpoint. It used four 1,024-game
+    buffers, 4,096 games total, 8,192 minibatch, horizon 32, replay ratio
+    .125, LR .0003, and 16 CPUs. After compilation, epochs 10-31 completed
+    2,752,512 steps in 81.436 s, or 33,800 end-to-end SPS. The selected
+    B300 averaged 35.1% sampled utilization and 12.2 GiB during that
+    interval. It crossed the prior 2.6M failure range without a nonfinite
+    or stall. Final checkpoint SHA256
+    42eb95aaa0fafe8bc8b43516a0d56a3c50b5339dfea53c00a1681be4686b45d4.
+    Verified metta0 run archive relh-classic-sentinel-only-14123.tar.gz has
+    SHA256 80ecf346345e29074e21d47ac34820e8f2cc18970e3c237d40362d801dd7d063.
+  * Focused B300 tests passed (3 passed) after correcting evaluation-mode
+    configuration. Held-out seed 1101 covered four 1,024-game batch
+    episodes per opponent. Jobs 14159/14165 scored .485596 versus
+    ExpanderHarvester and .320312 versus Sentinel, compared with the old
+    baseline .481445/.321411 and v11 .496338/.337769. Verified metta0
+    evaluation archive relh-classic-sentinel-only-evals-14159-14165.tar.gz
+    has SHA256 eae826e4788ebc50fbd9d951aa4cfd95cef40db834adeda43642a1f1b0fbe613.
+    This pilot does not improve the stronger local gate, so no long run,
+    hosted upload, league submission, or champion change followed. Setup
+    jobs 14107/14116/14120 and eval jobs 14149/14152 failed before useful
+    steps/results due node staging, GPU visibility, script quoting/argument,
+    and test mode errors that were corrected. No owned Sentinel-only Slurm
+    job or container remains.
+
+Current next step
+  The label mixture and Sentinel-only sparse imitation both failed to
+  reverse midgame army/castle decline. Design a win-focused B300 pilot with
+  dense credit for army/castle retention or stronger direct opponent play,
+  keeping the 30K end-to-end gate. Require stronger held-out results before
+  another long run, and winning larger hosted direct matches before any
+  publication. V11 remains private; Richard's incumbent remains champion.

@@ -298,7 +298,8 @@ class BatchedGeneralsPufferEnvironment:
 
     def __init__(
         self, *, context: EnvironmentContext, parallel_games: int = 16, require_gpu: bool = True,
-        sentinel_teacher_fraction: float = 0.0, sentinel_teacher_interval: int = 1, **options
+        sentinel_teacher_fraction: float = 0.0, sentinel_teacher_interval: int = 1,
+        sentinel_teacher_only: bool = False, **options
     ):
         if parallel_games < 1:
             raise ValueError("parallel_games must be positive")
@@ -312,6 +313,9 @@ class BatchedGeneralsPufferEnvironment:
         self.parallel_games = parallel_games
         self.sentinel_teacher_games = round(parallel_games * sentinel_teacher_fraction) if self.base.training else 0
         self.sentinel_teacher_interval = sentinel_teacher_interval
+        self.sentinel_teacher_only = sentinel_teacher_only
+        if self.base.training and sentinel_teacher_only and not self.sentinel_teacher_games:
+            raise ValueError("Sentinel-only labels require a nonzero Sentinel teacher fraction")
         if self.sentinel_teacher_games and not (
             self.base.sparse_teacher and self.base.prior_hint_features and not self.base.teacher_rollouts
         ):
@@ -399,11 +403,12 @@ class BatchedGeneralsPufferEnvironment:
             metadata = np.full((self.parallel_games, 2), -1, dtype=np.float32)
             if self.base.training:
                 if self.base.prior_hint_features:
-                    labels = hinted_replay_indices(public_values, self.base.size)
-                    rows = np.arange(self.parallel_games)
-                    labeled = (~self.finished) & legal[rows, labels[:, 0]]
-                    metadata[labeled, 0] = labels[labeled, 0]
-                    metadata[labeled, 1] = labels[labeled, 1]
+                    if not self.sentinel_teacher_only:
+                        labels = hinted_replay_indices(public_values, self.base.size)
+                        rows = np.arange(self.parallel_games)
+                        labeled = (~self.finished) & legal[rows, labels[:, 0]]
+                        metadata[labeled, 0] = labels[labeled, 0]
+                        metadata[labeled, 1] = labels[labeled, 1]
                     if sentinel_actions is not None:
                         count = self.sentinel_teacher_games
                         cells = self.base.size**2
