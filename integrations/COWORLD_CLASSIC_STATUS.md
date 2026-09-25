@@ -545,3 +545,139 @@ historical median SPS did not catch it promptly once other trainers finished.
 The shared Classic monitor now fails if any unfinished trainer's console has
 made no progress for 90 seconds. Its synthetic fresh/stale check passes; any
 future batch script must stage this updated monitor and verify its new hash.
+
+Later B300 diagnostics isolated the throughput tradeoff. Seed 602 completed
+4,194,304 steps alone without a stall; its epochs 54–63 measured 27,118 SPS,
+so the earlier stall was not reproduced from the seed alone. That run is archived
+as `relh-classic-seed602-diagnostic-13172.tar.gz` (SHA-256
+`2852b607fea2ad646292e15146ad0ce612afb7074dff2828ead0d5bc6440d45c`).
+A single 4,096-game trainer completed 2,097,152 steps at 21,580 SPS over
+epochs 5–15 (archive `relh-classic-4096-single-pilot-13188.tar.gz`, SHA-256
+`104bee455b9c55888cd7a5c2feb3220e818b67f74e709ad0c0ee32553043d5cf`).
+Four independent 1,024-game trainers reached only about 20,700 aggregate SPS;
+the guard stopped job 13219 and preserved its archive
+`relh-classic-quad1024-stopped-13219.tar.gz` (SHA-256
+`1453caee26601e42c0a1f256263672ee31d2e1f44ca8c6717bbabf8e04b49a28`).
+Giving the single 2,048-game trainer eight CPUs produced 25,760 SPS across
+epochs 10–30 (archive `relh-classic-2048-cpu8-pilot-13229.tar.gz`, SHA-256
+`b11c41d33ca0abc0c0c020288e689b421e70b95fa620d3a44550d0efcd67bc81`).
+
+The exact Classic rollout benchmark now accepts a build config and can drive
+games with teacher actions. On one B300, 2,048-game rollouts plus native
+encoding measured upper bounds of 50,677 SPS with passing actions, 57,443
+after 200 teacher-action warmup steps, and 51,571 after 1,000. The measured
+advance, observation, and native encoding times for the last 16-step sample
+were 0.200, 0.242, and 0.144 seconds respectively. These omit Puffer's model
+and native loop overhead; they are not end-to-end training rates. Logs are in
+`relh-classic-rollout-profiles-13240-13243-13246.tar.gz` (SHA-256
+`6bb048a8cd2e03bf6c4e331f2761746af8620bcc8be9f14d9fff30bd604422c1`).
+
+A single Puffer trainer with four 1,024-game buffers, four environment threads,
+4,096 total agents, 8,192 minibatch, horizon 32, replay ratio 0.125, and LR
+0.001 completed a 2,097,152-step pilot at 33,733 SPS over epochs 5–15
+(archive `relh-classic-buffer4-pilot-13271.tar.gz`, SHA-256
+`1a28e710d516e0661c7253542348be342fe2376329156ce3c3be133d3e3c27e5`).
+The matching 8,388,608-step stability job 13282 completed through epoch 64.
+It measured 31,616 SPS over epochs 10–20, 33,448 over 20–40, 34,178 over
+40–60, and 35,053 over 54–63. Sampled B300 utilization after minute one
+averaged 35.4%. Final checkpoint SHA-256 is
+`2bed49f36bc7de773219cdbdb34dd6fe4321c624fe29b490c01a06c437e1c62f`;
+archive `relh-classic-buffer4-stability-13282.tar.gz` on metta0 has SHA-256
+`c3f95e01713cebe61c32e4205f10ae06071f7c60990d9bc2d1fc427f5d389f0c`.
+This clears the observed failure range on one GPU. The guarded long run,
+Slurm 13316, completed all 41,943,040 steps in 320 epochs on one B300. Its
+warm end-to-end throughput was 32,438 SPS over epochs 10–40, 33,198 over
+40–160, 33,804 over 160–240, and 34,140 over 240–319. It used one Puffer
+trainer with four 1,024-game buffers, 4,096 total agents, 8,192 minibatch,
+horizon 32, replay ratio 0.125, LR 0.001, and 16 CPUs. After minute one, 1,305
+GPU samples averaged 35.2% utilization (median 48%, peak 71%). The verified
+archive on metta0 is `relh-classic-buffer4-long-13316.tar.gz` (SHA-256
+`5c77a9e58b702069fd3a4513b290136df9bc6399ba7e55038abec3711b752255`).
+The 10,485,760, 20,971,520, 31,457,280, and 41,943,040-step candidate
+checkpoint SHA-256 values are respectively
+`675926eadc3905bf5f3c7c216e5a7c3df9b61f33bd6082b8ffe217075a8bdf90`,
+`2a80b3765afd044628211b6b72ca317226e2183de9660057326cb528745991dd`,
+`939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499`,
+and `ef5f40c7d7c543a45befec19433a3f402a0ae1e087a671dca087388f22d36353`.
+
+Validation against the Classic mixed opponents is complete. Seeds 901/902
+scored 0.941528/0.942871 at 10,485,760 steps, 0.945312/0.946045 at
+20,971,520, 0.946533/0.944946 at 31,457,280, and 0.944580/0.944946 at
+41,943,040. Each seed has four Puffer batch episodes, or 4,096 individual
+games with the 1,024-agent build. The 31,457,280-step checkpoint has the
+highest two-seed mean, 0.9457395, narrowly above 0.9456785 at 20,971,520.
+All eight evaluation JSONs, requests, and logs are archived on metta0 as
+`relh-classic-buffer4-validation-13316.tar.gz` (SHA-256
+`1fb1a8d54585db0d722f5c8711ad6a7a1f7f9fc72cc70a8e039fbe92b26dfa5c`).
+The first record is separately archived as `relh-classic-buffer4-eval-13409.tar.gz`
+(SHA-256 `2b32e4a630bb65c4263663b2298dc6326fbb2846cf13d1e311c6bb0ba7085a79`).
+The wrapper's first final check expected one batch episode and marked job
+13409 failed, although its evaluation completed. The corrected wrapper
+accepts at least the requested episode count while verifying the exact
+checkpoint digest and seed. Jobs 13414–13420 completed with this check.
+
+The selected 31,457,280-step policy scored 0.942139, 0.941528, and 0.933594
+on fresh seeds 1001–1003, respectively, or **0.939087 over 12,288 individual
+games**. Jobs 13438–13440 completed, and an independent local audit matched
+their build, seed, checkpoint digest, and episode counts. The held-out archive
+on metta0 is `relh-classic-buffer4-heldout-13316.tar.gz` (SHA-256
+`1b5967178900978de74b8a769e5e63aa45e42950be090e6e58f530a1413d6b24`).
+Its frozen bundle was exported on B300 job
+13442 using the exact 1,024-game build manifest and weights. The bundle is
+archived on metta0 as `relh-classic-buffer4-selected-31457280-bundle.tar.gz`
+(SHA-256 `9529ffce84206856ff398f61ce0520b63102cb36119ec5088c441a147bd6f836`),
+and its weights independently match checkpoint SHA-256
+`939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499`.
+The bundle was added to the prior v6 amd64 runtime image, whose teacher,
+codec, and neural-player source hashes match this run. The image bundle's
+weights and build manifest hashes were verified. Under the currently active
+Richard identity, the candidate was uploaded privately for testing as
+`richard-generals-classic-neural:v7`. At upload, Classic 1v1 standings placed
+Richard at 1652.49 MMR below relh at 1678.35. Eight-game hosted comparisons
+finished with zero failed episodes: **4–4** against Richard's champion
+(`xreq_2cb0db6e-c693-4e79-8218-2def5939ad57`), **4 wins, 2 losses,
+2 draws** against relh's champion (`xreq_35a8d698-96c3-46e8-8bef-fbaf1216035e`),
+and **5–3** against the public leader (`xreq_5201b70b-cbb4-424e-8909-ac5c4ccb101c`).
+The confirmatory hosted requests all completed without failed episodes. In
+32 games, v7 went **7 wins, 22 losses, 3 draws** against Richard's champion
+(`xreq_3ffacbf6-5bad-4e60-a9e5-4392ab50e35c`) and **15 wins, 9 losses,
+8 draws** against the earlier v6 neural policy
+(`xreq_3ffb1dc5-00c9-4691-8662-0deae3cf148d`). It went **8–8** against
+relh's champion (`xreq_92204a80-34e2-4800-b78f-f490ef7860c7`) and
+**6 wins, 8 losses, 2 draws** against the public leader
+(`xreq_c2cca12f-2d25-48ac-9729-118ee71ed0fd`) in 16 games each. The
+eight-game screening sets were misleadingly optimistic. V7 is stronger than
+v6 in their direct comparison but is **not champion-worthy**. All seven
+hosted request bodies and completed responses are archived on metta0 as
+`relh-classic-hosted-v7-results.tar.gz` (SHA-256
+`e198197943ae4068b3f42478bf81a273a5aeb4fb3a44075846423683b58eb17b`).
+The candidate has not been submitted to the league or set as champion.
+
+Because the 20,971,520-step checkpoint nearly tied the selected checkpoint
+in local validation, its exact frozen bundle was exported on B300 and
+archived as `relh-classic-buffer4-selected-20971520-bundle.tar.gz` (SHA-256
+`56dde7167221a10b48e6e5c3d9b2add694590e3c9aef6250c78188c4a4ba85ec`).
+Its image bundle matches checkpoint SHA-256
+`2a80b3765afd044628211b6b72ca317226e2183de9660057326cb528745991dd`.
+It was uploaded privately as `richard-generals-classic-neural:v8` for
+24-game hosted tests against Richard's champion
+(`xreq_37c5e7d9-b883-4135-8d32-dc6c58b77bb5`) and v7
+(`xreq_61c2e0e8-cd06-45b3-aa8b-72771abe18a3`). The 10,485,760-step and
+final 41,943,040-step bundles were also hash-verified and archived together
+as `relh-classic-buffer4-other-bundles-13316.tar.gz` (SHA-256
+`28de5c8175569559d4563994ea13c814f18ca4f5f11a2a445ce656d866b88ac3`).
+They were uploaded privately as v10 and v9, respectively, for 24-game
+direct hosted tests against Richard's champion
+(`xreq_c24f58d4-e1b3-417b-a35f-98b643ef3329` and
+`xreq_57d277f4-6a7c-4aca-9236-805c7db5ec6a`). These tests all finished
+without failed episodes. V8 went **9 wins, 12 losses, 3 draws** against
+Richard's champion and **9 wins, 8 losses, 7 draws** against v7. V9 went
+**10 wins, 11 losses, 3 draws** against Richard's champion. V10 went
+**7 wins, 14 losses, 3 draws**. Their request bodies and completed responses
+are archived on metta0 as `relh-classic-hosted-v8-v10-results.tar.gz`
+(SHA-256 `4c512e4c16d137617397a44ef0a56c6e11cb1bf6e8d4a9cf032251c0c0034c0b`).
+**None of the four saved checkpoints has proven an advantage over Richard's
+incumbent. No new policy was submitted to the league or set as champion.**
+The next training iteration needs a stronger opponent/teacher or direct
+self-play objective; the current mixed opponent pool is only Random,
+Expander, and Hunter, while the sparse teacher loss replaces PPO.

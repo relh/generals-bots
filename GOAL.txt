@@ -138,3 +138,64 @@ Current next step
   Keep the 30K end-to-end gate and do not submit long training until all
   trainers can pass the failure range without a stall. No champion change or
   new hosted evaluation was made in this continuation.
+
+Update, 2026-09-24 after the buffer4 training and hosted evaluations
+  * Owned branch/worktree remain relh/coworld-classic-neural and
+    /Users/relh/Code/worktrees/generals-coworld-classic. Other panes' branches
+    and worktrees were not edited. Repository HEAD matched its origin at the
+    start of this continuation. See integrations/COWORLD_CLASSIC_STATUS.md for
+    full measurements, checkpoints, hashes, and request IDs.
+  * Four 1,024-game buffers in one Puffer trainer, four environment threads,
+    4,096 agents, 8,192 minibatch, horizon 32, replay ratio .125, LR .001,
+    16 CPUs on one B300 passed the end-to-end gate. The 8.39M-step stability
+    job 13282 held 31.6K-35.1K SPS through the prior failure range. The
+    guarded job 13316 completed 41,943,040 steps across 320 epochs at 32.4K
+    SPS over epochs 10-40 and 33.2K-34.1K across later intervals. The
+    verified long-run archive on metta0 is
+    /home/metta/relh-generals-puffer/coworld-classic/relh-classic-buffer4-long-13316.tar.gz,
+    SHA256 5c77a9e58b702069fd3a4513b290136df9bc6399ba7e55038abec3711b752255.
+    Warm B300 GPU utilization averaged 35.2% across 1,305 samples.
+  * Checkpoints at 10.49M, 20.97M, 31.46M, 41.94M were evaluated on Classic
+    mixed-opponent validation seeds 901/902, 4,096 individual games per seed.
+    The 31.46M checkpoint narrowly led at mean perf .9457395; its SHA256 is
+    939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499.
+    On fresh seeds 1001-1003, it scored .942139/.941528/.933594, mean
+    .939087 across 12,288 games. Validation archive SHA256
+    1fb1a8d54585db0d722f5c8711ad6a7a1f7f9fc72cc70a8e039fbe92b26dfa5c;
+    held-out archive SHA256
+    1b5967178900978de74b8a769e5e63aa45e42950be090e6e58f530a1413d6b24.
+  * Private hosted candidates v7/v8/v9/v10 correspond respectively to the
+    31.46M/20.97M/41.94M/10.49M checkpoints. All four were evaluated directly
+    against Richard's Classic incumbent with no failed episodes. V7 went
+    7 wins, 22 losses, 3 draws over 32 confirmatory games; v8 went 9-12-3,
+    v9 10-11-3, and v10 7-14-3 over 24 each. V7 beat the earlier v6 neural
+    policy 15 wins, 9 losses, 8 draws but was still much weaker than the
+    incumbent. V7's first eight-game sets were 4-4 vs Richard, 4-2-2 vs relh,
+    and 5-3 vs the leader; larger sets showed these were misleading. Hosted
+    v7 archive SHA256 e198197943ae4068b3f42478bf81a273a5aeb4fb3a44075846423683b58eb17b;
+    v8-v10 archive SHA256 4c512e4c16d137617397a44ef0a56c6e11cb1bf6e8d4a9cf032251c0c0034c0b.
+    Neither a league submission nor a champion change was made.
+  * Active Coworld CLI identity remains Richard, player
+    ply_ded11f40-3e30-4921-b019-f7f6bc3e9c83. At the last standings check,
+    Richard's Classic MMR 1652.49 was below relh's 1678.35; recheck before
+    eventual submission. Local Docker/OrbStack stopped briefly when disk free
+    space reached 190 MiB. Only local temporary copies of two archives already
+    verified on metta0 were removed; OrbStack restarted and images built.
+    Protected Codex session/history data and remote artifacts were untouched.
+
+Current blocker and exact next steps
+  1. No checkpoint from this supervised run is champion-worthy despite the
+     local held-out scores. The current `mixed` opponent pool in
+     integrations/metta_puffer.py is Random/Expander/Hunter, and the sparse
+     teacher loss replaces PPO with imitation of ExpanderHarvester. This local
+     criterion does not predict games against Richard's incumbent.
+  2. Build a stronger local quality gate using the exact Classic distribution
+     against ExpanderHarvester and Sentinel, or analyze hosted loss replays to
+     identify the policy's failure mode. Keep validation/held-out seeds
+     separate. Then change opponent/teacher or add a direct self-play RL
+     objective, with a bounded B300 probe that demonstrates >=30K end-to-end
+     SPS through the prior failure range before another long run.
+  3. Train and select a new frozen neural checkpoint, test it in larger hosted
+     direct matches against the active incumbent and leader, recheck standings
+     and identity, and submit/champion only if the new candidate is proven.
+     The archived v7-v10 candidates are for comparison, not publication.

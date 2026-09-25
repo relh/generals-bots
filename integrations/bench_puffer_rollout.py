@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 import jax
+import numpy as np
 from metta_training.environment import EnvironmentContext, NativeEnvironment
 
 from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
@@ -18,35 +19,50 @@ from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--parallel-games", type=int, nargs="+", default=[16, 64, 256, 1024])
+    parser.add_argument("--parallel-games", type=int, nargs="+")
+    parser.add_argument("--build-config", type=Path)
     parser.add_argument("--warmup-steps", type=int, default=5)
     parser.add_argument("--measure-steps", type=int, default=32)
     parser.add_argument("--native-encode", action="store_true")
+    parser.add_argument("--teacher-actions", action="store_true")
     args = parser.parse_args()
     if jax.devices()[0] not in jax.devices("cuda"):
         raise RuntimeError("This benchmark requires CUDA")
 
-    for count in args.parallel_games:
+    configured = json.loads(args.build_config.read_text())["python_environment"]["options"] if args.build_config else None
+    counts = args.parallel_games or ([configured["parallel_games"]] if configured else [16, 64, 256, 1024])
+    for count in counts:
+        options = dict(configured) if configured else dict(
+            board_size=10, horizon=300, opponent="mixed", shaping_weight=1.0,
+            teacher="harvester", supervise_teacher=True, factorized_actions=True,
+        )
+        options["parallel_games"] = count
         env = BatchedGeneralsPufferEnvironment(
             context=EnvironmentContext(seed=241, index=0, mode="train", output=Path.cwd()),
-            board_size=10,
-            horizon=300,
-            opponent="mixed",
-            shaping_weight=1.0,
-            teacher="harvester",
-            supervise_teacher=True,
-            factorized_actions=True,
-            parallel_games=count,
+            **options,
         )
-        actions = [[400, 0] for _ in range(count)]
+        actions = [[4 * env.base.size**2, 0] for _ in range(count)]
+        teacher = getattr(env, "_teacher_actions", None)
+        if args.teacher_actions and teacher is None:
+            raise ValueError("Teacher actions require a supervised teacher build")
+
+        def next_actions():
+            if not args.teacher_actions:
+                return actions
+            keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(env.keys)
+            chosen = np.asarray(teacher(env.states, env.sides, keys))
+            cells = env.base.size**2
+            moves = chosen[:, 3] * cells + chosen[:, 1] * env.base.size + chosen[:, 2]
+            indices = np.where(chosen[:, 0] == 1, 4 * cells, moves)
+            return np.stack((indices, chosen[:, 4]), axis=1).tolist()
+
         started = time.perf_counter()
         env.reset(f"bench:{count}")
         for _ in range(args.warmup_steps):
-            env.step(actions)
+            env.step(next_actions())
         compiled_seconds = time.perf_counter() - started
         components = {"advance": 0.0, "teacher": 0.0, "observation": 0.0}
         advance = env._advance_states
-        teacher = env._teacher_actions
         observation = env._observation
 
         def timed_advance(*values):
@@ -70,25 +86,29 @@ def main() -> None:
             return result
 
         env._advance_states = timed_advance
-        env._teacher_actions = timed_teacher
+        if teacher is not None:
+            env._teacher_actions = timed_teacher
         env._observation = timed_observation
         native = NativeEnvironment.__new__(NativeEnvironment)
         native.spec = env.spec
         encoded_seconds = 0.0
-        started = time.perf_counter()
+        elapsed = 0.0
         for _ in range(args.measure_steps):
-            transition = env.step(actions)
+            active_actions = next_actions()
+            started = time.perf_counter()
+            transition = env.step(active_actions)
             if args.native_encode:
                 encode_started = time.perf_counter()
                 native.encode(transition.observation)
                 encoded_seconds += time.perf_counter() - encode_started
-        elapsed = time.perf_counter() - started
+            elapsed += time.perf_counter() - started
         print(
             json.dumps(
                 {
                     "device": jax.devices("cuda")[0].device_kind,
                     "parallel_games": count,
                     "native_encode": args.native_encode,
+                    "teacher_actions": args.teacher_actions,
                     "encoded_seconds": encoded_seconds,
                     "warmup_steps": args.warmup_steps,
                     "measure_steps": args.measure_steps,
