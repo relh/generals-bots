@@ -62,6 +62,37 @@ def test_optional_pass_mask_preserves_moves_and_forced_pass():
         no_pass.close()
 
 
+def test_device_step_matches_numeric_training_step():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    options = dict(parallel_games=4, board_size=6, factorized_actions=True, require_gpu=False)
+    numeric = BatchedGeneralsPufferEnvironment(context=context, **options)
+    device = BatchedGeneralsPufferEnvironment(context=context, **options)
+    try:
+        initial = numeric.reset("device-parity-73")
+        values, masks = device.reset_device("device-parity-73")
+        np.testing.assert_array_equal(np.asarray(values), np.asarray(initial.values))
+        np.testing.assert_array_equal(np.asarray(masks, dtype=bool), np.asarray(initial.action_masks))
+        indices = np.argmax(np.asarray(masks)[:, :device.spec.action_sizes[0]], axis=1)
+        actions = np.stack((indices, np.zeros(4, dtype=np.int32)), axis=1)
+        expected = numeric.step(actions.tolist())
+        values, masks, rewards, terminals, episode_done = device.step_device(jnp.asarray(actions, dtype=jnp.float32))
+        assert not episode_done
+        np.testing.assert_array_equal(np.asarray(values), np.asarray(expected.observation.values))
+        np.testing.assert_array_equal(np.asarray(masks, dtype=bool), np.asarray(expected.observation.action_masks))
+        np.testing.assert_allclose(np.asarray(rewards), np.asarray(expected.rewards))
+        np.testing.assert_array_equal(np.asarray(terminals, dtype=bool), np.asarray(expected.terminated))
+        numeric.horizon = device.horizon = 2
+        next_indices = np.argmax(np.asarray(masks)[:, :device.spec.action_sizes[0]], axis=1)
+        next_actions = np.stack((next_indices, np.zeros(4, dtype=np.int32)), axis=1)
+        expected = numeric.step(next_actions.tolist())
+        _, _, _, terminals, episode_done = device.step_device(jnp.asarray(next_actions, dtype=jnp.float32))
+        assert episode_done and expected.episode_done
+        np.testing.assert_array_equal(np.asarray(terminals, dtype=bool), np.asarray(expected.terminated))
+    finally:
+        numeric.close()
+        device.close()
+
+
 @pytest.mark.parametrize("opponent", ["random", "hunter", "harvester", "mixed"])
 def test_other_opponents_keep_the_numeric_contract(opponent):
     context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))

@@ -550,7 +550,7 @@ class BatchedGeneralsPufferEnvironment:
         observation = NumericObservation.from_arrays(public_values, legal, probabilities, weights)
         return observation.model_copy(update={"replay_metadata": metadata.tolist()}) if metadata is not None else observation
 
-    def reset(self, seed: str) -> NumericObservation:
+    def _reset_states(self, seed: str):
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")
         if self.base.coworld_classic:
             self.base.pool, _ = self.base.env.reset(jax.random.PRNGKey(numeric_seed ^ 0xC0A17D))
@@ -569,7 +569,34 @@ class BatchedGeneralsPufferEnvironment:
         if self.base.teacher_rollouts:
             teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
             self.cached_teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+        return values, masks
+
+    def reset(self, seed: str) -> NumericObservation:
+        values, masks = self._reset_states(seed)
         return self._observation(values, masks, self.cached_teacher_actions, self._sentinel_labels())
+
+    def reset_device(self, seed: str):
+        if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher or self.base.supervise_teacher:
+            raise ValueError("Device-resident Classic training currently requires policy rollouts without teacher data")
+        values, masks = self._reset_states(seed)
+        return values, masks.astype(jnp.uint8)
+
+    def step_device(self, actions):
+        if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher or self.base.supervise_teacher:
+            raise ValueError("Device-resident Classic training currently requires policy rollouts without teacher data")
+        indices = actions[:, 0].astype(jnp.int32)
+        splits = actions[:, 1].astype(jnp.int32) if self.base.factorized_actions else jnp.zeros_like(indices)
+        cached = jnp.zeros((self.parallel_games, 5), dtype=jnp.int32)
+        self.states, self.keys, values, masks, rewards, done, _, _ = self._advance_states(
+            self.states, self.base.pool, self.sides, self.opponent_ids,
+            indices, splits, self.keys, cached, jnp.ones(self.parallel_games, dtype=bool),
+        )
+        self.turn += 1
+        episode_done = self.turn >= self.horizon
+        if episode_done:
+            self.turn = 0
+            done = jnp.ones_like(done)
+        return values, masks.astype(jnp.uint8), rewards.astype(jnp.float32), done.astype(jnp.float32), episode_done
 
     def step(self, actions: list[list[int]]) -> NumericTransition:
         if len(actions) != self.parallel_games:

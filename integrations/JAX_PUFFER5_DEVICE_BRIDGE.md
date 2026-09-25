@@ -52,3 +52,34 @@ new backend. Do not report a training gate pass from a crashed or
 policy-only incomplete run. Strong held-out play is a separate gate: the
 latest pure PPO checkpoint scored .007568 against ExpanderHarvester and zero
 against Sentinel, so a long run on that learning objective is not justified.
+
+## Implementation status, 2026-09-25
+
+A work-in-progress implementation in the separate Metta worktree satisfies
+items 1–5 above for a bounded smoke. The Generals adapter's device step
+matched its numeric step on a fixed small-game parity test. B300 job 16958
+completed 1,048,576 integrated Puffer5 steps and a checkpoint with 4,096
+games, horizon 32 and minibatch 16,384. Its warm epochs ran at 114K–121K
+completed training SPS. The measured final epoch spent 80 ms in the JAX
+environment, 194 ms in rollout model inference and 866 ms in optimizer
+training. Its exact artifacts are archived as
+`device-bridge-success-16958.tar.gz` on metta0 (SHA-256
+`f5a5e68e880c87d1daea2ae366a11282b0e56e7b496dc8287d5db7f03ecbfb3e`).
+
+The pinned Puffer5 configuration treats `base.cudagraphs=0` as enabled;
+`-1` disables capture. The Python GPU callbacks require `-1`. A 32,768
+minibatch probe did not complete an epoch because of node inode exhaustion
+in one attempt and a 300-second compilation startup guard in the next.
+Neither produces a speed measurement. The next throughput step is profiling
+and reducing optimizer time, then repeating a complete bounded run. Before
+an overnight run, implement environment state checkpoint/restore and show
+a learning objective that beats the previous hinted policy on held-out bots.
+
+Review fixed a truncation reset omitted by the first callback. B300 job
+17061 crossed the full Classic 1,200-turn boundary, logged the reset, and
+completed 5,373,952 steps with a final checkpoint. Its final epoch ran at
+111,643 completed SPS, spending 78 ms in the environment and 900 ms in the
+optimizer. The exact run is archived on metta0 as
+`device-bridge-boundary-success-17061.tar.gz` (SHA-256
+`a7da00a659d6eb3effb06e22811af1e992d4af479908ea6d4308a4ac313903a6`).
+Exact environment state restore remains unimplemented.

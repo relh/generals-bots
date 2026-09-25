@@ -2165,3 +2165,57 @@ and `b42e555f80febdad7939fe74dcc3fc4943df58fddb7efd0804912420ef6da49e`).
 This establishes CUDA-buffer aliasing across the current process boundary
 as a technical possibility. It does not yet connect JAX to Puffer5's own
 buffers, handle action/reward/mask synchronization, or measure training SPS.
+
+## First integrated Puffer5 GPU environment run (2026-09-25)
+
+The separate Metta bridge worktree now connects Puffer5-owned CUDA actions,
+observations, legal-action masks, rewards, and terminals to the full Classic
+JAX environment with DLPack and device copies. The pinned Puffer5 GPU driver
+needed an exact-source patch to pass its action-mask pointer to
+`puf_vec_create`. In this revision, `base.cudagraphs=-1` disables CUDA graph
+capture; `0` enables it and aborts when the Python environment is called.
+
+B300 job 16958 completed a bounded 1,048,576-step Puffer5 training run and
+saved a 1,048,576-step checkpoint. It used 4,096 parallel Classic games,
+one GPU vector buffer, horizon 32, a 131,072-step rollout
+batch, optimizer minibatch 16,384, replay ratio 0.25, float32 Fabric policy
+with 28.8K parameters, and the complete legal-action mask. After JAX
+compilation and warmup, epochs 3–8 reported 114K–121K completed training
+SPS, including policy inference, GPU environment steps, and optimizer work.
+The final epoch reported 114,186 SPS. Its 1.147-second interval comprised
+274 ms rollout (194 ms model and 80 ms environment) and 866 ms training
+(863 ms model). VRAM use was 14.6 GiB. Compilation made the whole eight-epoch
+process about 61 seconds, so the whole-run average was much lower than its
+steady rate. The exact checkpoint, source snapshot, executable, manifests,
+and logs are archived on metta0 as `device-bridge-success-16958.tar.gz`
+(SHA-256 `f5a5e68e880c87d1daea2ae366a11282b0e56e7b496dc8287d5db7f03ecbfb3e`).
+
+This establishes the repository's 30K sustained SPS floor for a bounded
+integrated run. It does not establish the requested 300K rate or a strong
+policy. The optimizer currently consumes about 75% of each epoch. A 32,768
+minibatch probe (job 16965) first failed when the shared B300 `/tmp` mount
+ran out of inodes during JAX autotuning. The experiment's 138 MB compile
+cache was copied to `/var/tmp` and the temporary copy removed. Job 16989
+then compiled two larger optimizer variants in 94 and 90 seconds but reached
+its 300-second startup guard before any completed epoch. Neither probe
+produced training SPS. No long or hosted run has been launched; environment
+state checkpoint/restore and a stronger learning objective remain open.
+The failed-probe configs and logs are archived as
+`device-bridge-mb32768-failures.tar.gz` on metta0 (SHA-256
+`8421bda1b75af5e6576c8bf0285382a0bb63d7eda6a2fe4845b314fa12c70b0c`).
+
+Review after the smoke found that the device callback also needed to reset
+all games at the environment's 1,200-turn truncation boundary. The bridge
+now returns the new reset observation while preserving the preceding step's
+reward and terminal flags. A focused boundary test and the Generals
+numeric/device parity test passed locally. The revised callback was then
+verified in B300 job 17061: it logged the reset at episode 2, continued
+training, and completed 5,373,952 steps and a final checkpoint. This run
+used the same 4,096 games, horizon 32 and 16,384 optimizer minibatch as
+job 16958. Final steady rate was 111,643 completed training SPS; the last
+1.174-second epoch contained 270 ms rollout (192 ms model, 78 ms environment)
+and 900 ms optimizer work. Its exact source, binary, checkpoints and logs
+are archived on metta0 as `device-bridge-boundary-success-17061.tar.gz`
+(SHA-256 `a7da00a659d6eb3effb06e22811af1e992d4af479908ea6d4308a4ac313903a6`).
+Environment state is still absent from checkpoints, so resume cannot yet
+reconstruct the exact game state.

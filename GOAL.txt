@@ -1329,3 +1329,36 @@ Update, 2026-09-25 wide-batch transport profile
     callback, synchronization, parity and throughput tasks are recorded in
     integrations/JAX_PUFFER5_DEVICE_BRIDGE.md. No integrated bridge or
     300K end-to-end trainer exists yet.
+
+Update, 2026-09-25 first device-resident Puffer5 trainer
+  * Separate Metta branch relh/generals-jax-device-bridge (worktree
+    /Users/relh/Code/worktrees/metta-generals-device-bridge) now builds a
+    Puffer5 CUDA environment with legal masks, DLPack actions and device
+    observation/reward/terminal transport. The Generals adapter has a
+    device path; its one-step parity test passed. This source is still WIP.
+  * B300 job 16958 completed 1,048,576 steps and a final checkpoint with
+    4,096 agent slots, horizon 32, 131,072-step rollout batches, 16,384
+    optimizer minibatches, replay ratio .25, and one GPU buffer. Warm
+    completed-training epochs 3-8 were 114K-121K SPS; final epoch 114,186.
+    Its 1.147s comprised 274ms rollout and 866ms training. The source,
+    binary, checkpoint and logs are archived on metta0 at
+    device-bridge-success-16958.tar.gz SHA256
+    f5a5e68e880c87d1daea2ae366a11282b0e56e7b496dc8287d5db7f03ecbfb3e.
+    Whole-run startup/compilation lowered the overall rate. This is a
+    sustained 30K floor pass, not a 300K pass or quality gate.
+  * 32,768-minibatch job 16965 failed before any epoch on shared B300 /tmp
+    inode exhaustion. Our own JAX cache was copied to /var/tmp and removed
+    from /tmp. Retry 16989 compiled larger optimizer variants in 94/90s but
+    hit the 300s startup guard with no completed epoch. Do not count either
+    toward SPS. Need optimizer-side tuning and checkpoint/restore support
+    before a long run. Prior pure PPO policy remains weak on held-out bots;
+    no overnight or hosted job is running.
+  * Post-smoke review fixed the GPU callback's 1,200-turn truncation reset.
+    Local boundary and numeric/device parity tests passed. B300 job 17061
+    crossed that boundary, logged the reset, then completed 5,373,952
+    steps and a final checkpoint. Final steady epoch was 111,643 SPS, with
+    78ms environment and 900ms optimizer work. Exact archive on metta0 is
+    device-bridge-boundary-success-17061.tar.gz SHA256
+    a7da00a659d6eb3effb06e22811af1e992d4af479908ea6d4308a4ac313903a6.
+    Environment state still lacks checkpoint/restore. Quality has not
+    passed held-out or hosted evaluation, so no overnight run is launched.
