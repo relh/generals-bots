@@ -648,3 +648,72 @@ Current next step
   fresh held-out maps before any private hosted match. Keep v11 private and
   Richard's incumbent champion unchanged until a larger direct hosted set
   proves a replacement.
+
+Update, 2026-09-25 packed-context defense-label and PPO probes
+  * A focused B300 test verified that all packed-context games receive
+    Sentinel imitation labels on scheduled turns, intervening turns remain
+    unlabeled, and the 10-channel observation contract is unchanged. Job
+    14803 initialized from the audited 33.55M packed-context checkpoint
+    (SHA256 bc5a3dc51ca41b709472f7a07a11dfb58be24ceef9d6f3b37fc77475ac103a31),
+    then used Sentinel labels every fourth turn in every game, sparse
+    imitation only, LR .001, four 1,024-game buffers, 8,192 minibatch,
+    horizon 32, replay ratio .125, and 16 CPUs. It completed 4,194,304
+    steps without nonfinite gradients. Warm epochs 10-31 completed
+    2,752,512 steps in 87.182 s: 31,572 end-to-end SPS on one B300.
+    Sampled GPU utilization averaged 34.1% and 12.9 GiB. Final checkpoint
+    SHA256 c362a567e2a9f23012ad96d7ca7dd4815e7d54d00f79cee0b634f322c9caa208.
+    Held-out seed 1101 scored .477661 versus ExpanderHarvester and .322388
+    versus Sentinel (jobs 14837/14838), below its parent .485352/.326782
+    and v11 .496338/.337769. Verified metta0 archives are
+    relh-classic-packed-sentinel-source.tar.gz SHA256
+    7f5dc2cfdb66e5dff22dae6ab42fb55e0121a06e527b3ba5225f892b769c906a,
+    relh-classic-packed-sentinel-14803.tar.gz SHA256
+    478e38d6e137f8d61cf92abd375c66b9917e92a1f209e8271a416813ad5efc47,
+    and relh-classic-packed-sentinel-evals-14837-14838.tar.gz SHA256
+    11972d19afa40c1c0dc41041d827762b12531d7d5219aedc2b10e8bc35eaadd7.
+  * An isolated Puffer initialization patch was generated from the pinned
+    upstream source, permitting only the verified packed-context 33.55M
+    checkpoint to transfer from imitation-only into the matching 8,008-
+    parameter PPO-plus-.25-sparse-teacher model. The source, target model
+    hashes, checkpoint digest, model state words, unchanged non-loss model
+    config, environment spec, and exact loss transition were checked. The
+    shared runtime was not edited. PPO used 75% ExpanderHarvester and 25%
+    Sentinel training opponents, castle-control shaping 1.0, LR .001,
+    4,096 games, 16 CPUs, and horizon 32. Its target model SHA256 is
+    40cbc1d5e997b15fbd32f4732dc0fc6a1e7f346709c709a987556a57cdb65c43;
+    patched runtime source SHA256 is
+    e9d68296fc076b9a9d4fce7b6951a5eae19279836dcc3e99ab0209280a01983d.
+    Verified prebuild/patch archive relh-classic-packed-ppo-setup-14883.tar.gz
+    on metta0 has SHA256 12c1fac1d5ab336d4a32fe53fb8668787112be48c4e1ef0a2c2587dcd97199eb.
+  * Initial PPO pilot 14906 used 8,192 minibatch and replay ratio .125.
+    It transferred successfully and trained to epoch 12, but warm median
+    was about 28.8K SPS, below the gate; the guard stopped it. No long run
+    followed. Its logs and build are verified in
+    relh-classic-packed-ppo-stopped-14906.tar.gz SHA256
+    d970234424c155c23a1dbb2878dfba6a063ac5d1bfe49dca39bc9b9f336d4b1d.
+    Doubling minibatch to 16,384 kept the same replay sample budget with
+    fewer optimizer calls. Job 14925 completed all 4,194,304 steps and
+    crossed 2.6M without nonfinite gradients. Epochs 10-31 completed
+    2,752,512 steps in 89.416 s: 30,783 end-to-end SPS on one B300;
+    sampled utilization averaged 41.0% and 15.0 GiB. Final checkpoint
+    SHA256 b9593bc7841c8ce99c002dfaffef027cc771d040cdd1e6dd3f87ec1f2cdd0951.
+    Held-out seed 1101 scored .481567 versus ExpanderHarvester and .321167
+    versus Sentinel (jobs 14972/14973), below the parent and v11. Verified
+    run archive relh-classic-packed-ppo-mb16-14925.tar.gz SHA256
+    1430145587079635865deb21f17e1a66613b07485651b2e7ccd918a1af8f2327;
+    eval archive relh-classic-packed-ppo-mb16-evals-14972-14973.tar.gz
+    SHA256 ed99103fda1a3197de486a6998f2c99d002176681d7b37ca5af8047a36bca5fa.
+    No owned job or container remains. No candidate justified long training,
+    private hosted upload, league submission, or champion change.
+
+Current next step
+  The present 8,008-parameter tied-local policy has input_radius .1, so
+  each cell's local feature only sees its own input cell; the two global
+  features pool information without retaining where an enemy threat lies.
+  Neither stronger Sentinel labels nor castle-shaped competitive PPO
+  corrected held-out defense. Add cheap public neighborhood-threat or
+  distance-to-general information to a bounded spatial-observation probe,
+  or an efficient neighboring-cell readout, and measure full end-to-end
+  SPS on one B300. Require >=30K sustained throughput, improvement over
+  v11 on fresh held-out strong-opponent maps, and larger winning hosted
+  direct matches before publishing any policy.

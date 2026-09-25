@@ -234,6 +234,29 @@ def test_packed_context_hints_preserve_signed_replay_labels():
         env.close()
 
 
+def test_packed_context_sentinel_only_labels_skip_unselected_turns():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, opponent="expander_harvester", coworld_classic=True,
+        coworld_pool_size=64, teacher="expander_harvester", sparse_teacher=True,
+        factorized_actions=True, compact_features=True, lean_features=True,
+        hint_features=True, prior_hint_features=True, expander_hint_features=True,
+        packed_context_hint_features=True, parallel_games=4,
+        sentinel_teacher_fraction=1.0, sentinel_teacher_interval=2,
+        sentinel_teacher_only=True, require_gpu=False,
+    )
+    try:
+        observation = env.reset("packed-context-sentinel-labels")
+        assert env.spec.observation_size == 10 * 21 * 21
+        assert np.all(np.asarray(observation.replay_metadata)[:, 0] >= 0)
+        observation = env.step([[env.spec.action_sizes[0] - 1, 0]] * 4).observation
+        assert np.all(np.asarray(observation.replay_metadata) == -1)
+        observation = env.step([[env.spec.action_sizes[0] - 1, 0]] * 4).observation
+        assert np.all(np.asarray(observation.replay_metadata)[:, 0] >= 0)
+    finally:
+        env.close()
+
+
 def test_supervised_teacher_provides_legal_targets_only_during_training():
     training = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     evaluating = training.model_copy(update={"mode": "evaluate"})

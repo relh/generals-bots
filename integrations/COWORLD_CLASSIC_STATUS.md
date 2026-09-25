@@ -1088,3 +1088,58 @@ speed gate, but ExpanderHarvester imitation still plateaus below v11. The
 next bounded probe should use a stronger defense/castle learning signal and
 compare with v11 on fresh held-out maps before any private hosted upload.
 No league submission or champion change followed.
+
+## Packed-context Sentinel labels and competitive PPO (2026-09-25)
+
+The 10-channel policy was initialized from its verified 33.55M-step
+checkpoint to test stronger learning signals. A focused B300 test confirmed
+that packed-context games receive Sentinel labels on scheduled turns and
+remain unlabeled between them. The Sentinel-only imitation pilot labeled
+all games every fourth turn. PPO used a 75% ExpanderHarvester / 25% Sentinel
+opponent mix, castle-control shaping 1.0, and sparse Expander labels at
+coefficient .25. Both used four 1,024-game buffers, 4,096 games total,
+horizon 32, replay ratio .125, LR .001, and 16 CPUs on one B300.
+
+| Run | Minibatch | Steps | Warm interval | Sampled B300 use | Held-out Expander / Sentinel, seed 1101 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 14803, Sentinel labels | 8,192 | 4,194,304 | epochs 10–31: 2,752,512 / 87.182 s = **31,572 SPS** | 34.1%; 12.9 GiB | .477661 / .322388 |
+| 14906, PPO startup probe | 8,192 | stopped at epoch 12 | ~28,800 warm SPS; guard stopped it | diagnostic only | no final policy |
+| 14925, PPO | 16,384 | 4,194,304 | epochs 10–31: 2,752,512 / 89.416 s = **30,783 SPS** | 41.0%; 15.0 GiB | .481567 / .321167 |
+
+Both completed runs passed the prior 2.6M-step nonfinite failure range and
+saved final checkpoints. SHA-256s are
+`c362a567e2a9f23012ad96d7ca7dd4815e7d54d00f79cee0b634f322c9caa208`
+for Sentinel labels and
+`b9593bc7841c8ce99c002dfaffef027cc771d040cdd1e6dd3f87ec1f2cdd0951`
+for PPO. Each held-out score covers four 1,024-game batch episodes. Both
+are below their parent .485352/.326782 and v11 .496338/.337769.
+
+The PPO source-to-target transfer used an isolated patch copied from the
+pinned upstream runtime; the shared runtime was not edited. The gate checked
+the exact source checkpoint, source and target model hashes, model state
+words, unchanged non-loss model config and environment spec, and the exact
+imitation-only to PPO-plus-.25-sparse-teacher loss transition. Target model
+SHA-256 is `40cbc1d5e997b15fbd32f4732dc0fc6a1e7f346709c709a987556a57cdb65c43`;
+patched runtime source SHA-256 is
+`e9d68296fc076b9a9d4fce7b6951a5eae19279836dcc3e99ab0209280a01983d`.
+The 8,192-minibatch PPO pilot produced ~28.8K SPS and was stopped by the
+throughput guard. Doubling minibatch to 16,384 kept the replay sample budget
+while reducing optimizer calls enough to clear the gate.
+
+| Verified metta0 artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-packed-sentinel-source.tar.gz` | `7f5dc2cfdb66e5dff22dae6ab42fb55e0121a06e527b3ba5225f892b769c906a` |
+| `relh-classic-packed-sentinel-14803.tar.gz` | `478e38d6e137f8d61cf92abd375c66b9917e92a1f209e8271a416813ad5efc47` |
+| `relh-classic-packed-sentinel-evals-14837-14838.tar.gz` | `11972d19afa40c1c0dc41041d827762b12531d7d5219aedc2b10e8bc35eaadd7` |
+| `relh-classic-packed-ppo-setup-14883.tar.gz` | `12c1fac1d5ab336d4a32fe53fb8668787112be48c4e1ef0a2c2587dcd97199eb` |
+| `relh-classic-packed-ppo-stopped-14906.tar.gz` | `d970234424c155c23a1dbb2878dfba6a063ac5d1bfe49dca39bc9b9f336d4b1d` |
+| `relh-classic-packed-ppo-mb16-14925.tar.gz` | `1430145587079635865deb21f17e1a66613b07485651b2e7ccd918a1af8f2327` |
+| `relh-classic-packed-ppo-mb16-evals-14972-14973.tar.gz` | `ed99103fda1a3197de486a6998f2c99d002176681d7b37ca5af8047a36bca5fa` |
+
+The current tied-local model uses input radius .1 and only two global
+features, so each local action readout lacks neighboring threat context;
+the global pool loses location. A bounded next probe should expose cheap
+public neighborhood threat or general-distance information, maintain >=30K
+end-to-end SPS, and beat v11 on fresh held-out maps before hosted testing.
+No owned job or container remains; no upload, league submission, or champion
+change followed.
