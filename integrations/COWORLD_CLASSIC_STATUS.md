@@ -2064,3 +2064,47 @@ builds, outputs, configurations, and logs are archived on metta0 as
 `relh-classic-normalized-heldout-16734.tar.gz` (SHA-256
 `fa04efae38af34fe37734ef6277217326ffe8783e2ddd1558eb191a43d143854`).
 No hosted action or champion change occurred.
+
+## Clean fixed-runtime throughput probe (2026-09-25)
+
+Job 16788 repeated the bounded normalized-readout PPO setup with the current
+metta-training environment and the no-extra-column transport shortcut. It
+completed 4,194,304 full Classic Puffer agent steps on one NVIDIA B300 SXM6
+AC, with 4,096 games in four 1,024-game buffers, 16 CPUs, horizon 32,
+minibatch 16,384, replay .25, learning rate .001, and gamma .999. The first
+logged epoch was epoch 8 at 66.020 seconds of trainer uptime; the final
+16-epoch interval, epochs 16–32, completed 2,097,152 steps in 61.414 seconds
+or 34,148 end-to-end SPS, including the final checkpoint. Epochs 12–32
+completed 2,621,440 steps in 75.180 seconds or 34,869 SPS. Before the save,
+epochs 14–30 were 38,343 SPS, with 16.7% mean B300 utilization in the most
+recent 60 one-second samples. One process used the GPU, so per-process and
+aggregate rates are equal.
+
+The trainer exited successfully, wrote `completed.json`, and reported no
+nonfinite gradients. The policy SHA-256 is
+`169ef0df7107a7bdc82d6836341cde62be507b3e4e189e1e977d631a219487a6`;
+the completed manifest SHA-256 is
+`38cd7978cee41b5e7eae5bf2ed3bf0011487dc57c72e88adf20927540561471a`.
+Source, build, run, GPU samples and logs are archived on metta0 as
+`relh-classic-normalized-clean-pilot-16788.tar.gz` (SHA-256
+`eee443edef1b38f8103a0f573f837033612879bec0a313d91299ad7ca01ec0c8`).
+This setup passes the repository's 30K clean-training minimum but is far
+below the user's 300K target. The comparable earlier normalized checkpoint
+was weak on held-out opponents. Job 16805 tested this exact clean checkpoint
+on seed 1101: Random `.500000` (draws), ExpanderHarvester `.007568`, and
+Sentinel `0`. These are 4,096 individual full Classic games each except the
+Sentinel evaluation, which stopped after one 1,024-game batch once all games
+were losses. The output archive on metta0 is
+`relh-classic-normalized-clean-heldout-16805.tar.gz` (SHA-256
+`100abd84a8b5a00b42d5add3a0d8d52309bdfc028d48230da8fa3897b7f28b4f`).
+This is far weaker against strong opponents than the prior hinted v11 line;
+do not extend the pure PPO run overnight.
+
+The generated Puffer5 build selects `PUF_CPU` for the Python/JAX environment.
+Its `PUF_GPU` branch instead creates an environment with `puf_vec_create`
+using device pointers for observations, actions, rewards and terminals and
+requires one vector buffer. The present 4,096-game adapter uses four buffers
+and host serialization; increasing GPU utilization alone cannot remove that
+measured handoff. Reaching 300K needs a device-resident JAX/Puffer interface
+or an equally substantial transport and batched-step redesign, followed by
+an end-to-end benchmark with policy updates.

@@ -1270,3 +1270,24 @@ Update, 2026-09-25 Puffer5/JAX throughput and readout audit
     tests, package typecheck, and scoped lint passed. Current metta main
     already serializes NumPy masks and a B300 container smoke passed.
     No hosted test, upload, submission, or champion change has occurred.
+
+Update, 2026-09-25 clean fixed-runtime throughput probe
+  * Job 16788 finished 4,194,304 full Classic Puffer steps and wrote its
+    final checkpoint plus completed.json with current metta-training's
+    NumPy-mask serialization. One B300 SXM6 AC, 4,096 games/four buffers,
+    horizon32, minibatch16,384, replay .25, 16 CPUs. Warm epochs 16–32:
+    2,097,152 steps/61.414s = 34,148 complete end-to-end SPS including
+    save. Epochs 12–32: 2,621,440 steps/75.180s = 34,869 SPS. GPU
+    utilization mean was 16.7% over 60 one-second samples before save.
+    First logged epoch8 was at 66.020s trainer uptime. This passes the
+    30K clean-training floor but is far below 300K.
+  * Checkpoint SHA256 169ef0df7107a7bdc82d6836341cde62be507b3e4e189e1e977d631a219487a6;
+    completed.json SHA256 38cd7978cee41b5e7eae5bf2ed3bf0011487dc57c72e88adf20927540561471a;
+    metta0 training archive SHA256 eee443edef1b38f8103a0f573f837033612879bec0a313d91299ad7ca01ec0c8.
+    Held-out frozen-policy eval job 16805 scored .500000 Random (draws),
+    .007568 ExpanderHarvester, and 0 Sentinel on seed 1101. Its evaluation
+    archive SHA256 is 100abd84a8b5a00b42d5add3a0d8d52309bdfc028d48230da8fa3897b7f28b4f.
+    This pure PPO checkpoint is weak; do not extend it overnight. Next
+    pursue the device-resident JAX/Puffer5 interface needed for 300K and
+    a learning objective that beats the previous hinted v11 line on strong
+    held-out opponents before hosted testing.
