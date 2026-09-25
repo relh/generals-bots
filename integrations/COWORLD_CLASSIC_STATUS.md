@@ -725,3 +725,43 @@ There is no improving quality trend to justify extending this exact setup.
 The next iteration should test a stronger teacher or a more direct win
 objective with a bounded B300 pilot, then require improvement over the
 0.481445/0.321411 baseline on fresh stronger-opponent seeds before a long run.
+
+Four bounded Sentinel-teacher probes followed. Job 13499 spent its startup
+window compiling a larger tied local policy and produced no epochs; it was
+stopped and archived (SHA-256
+`0dc466fdca7ca36420bee9c8f73973733393f59d567cd505a3d05a30a6336878`).
+With two features per site, two global features, and radius 0.1, job 13509
+reached 24.3–24.4K warm end-to-end SPS with four 1,024-game buffers. Job
+13523 tried eight 512-game buffers and reached about 19.0K. Archives are
+`relh-classic-sentinel-compact-stopped-13509.tar.gz` (SHA-256
+`1478cd736bf8d63c0a19e873d0129fe10c61c4aa71a6dcd75e79202b207d4d86`)
+and `relh-classic-sentinel-buffer8-stopped-13523.tar.gz` (SHA-256
+`94ada176aa6a676ae15f424803c880bc28b2dd4b2981cc4f5eb1d7b737496e`).
+The four-buffer jobs used 4,096 total games, 8,192 minibatch, horizon 32,
+replay ratio 0.125, and 16 CPUs on one B300. GPU utilization was low when
+the environment or JAX compilation dominated; the environment took about
+4.1 seconds per epoch in job 13509 versus 1.2 seconds for optimization.
+
+`integrations/metta_puffer.py` now caches each next-state teacher action for
+the following rollout step, removing a duplicate current-state teacher call.
+A focused GPU test passed. The cached-teacher job 13563 improved warm rate
+only to about 24.7–24.8K SPS, with environment time about 3.3 seconds and
+optimization about 1.4 seconds per epoch. It was stopped below the 30K gate
+and archived as `relh-classic-sentinel-cache-stopped-13563.tar.gz` (SHA-256
+`7fd5cb5beca14d460e1f72158ada180d2640b8d8c5e9713139e6b34fa90ef105`).
+All canceled jobs left no trainer or container. The four pilot scripts preserve
+their exact settings. No long Sentinel training was started.
+
+The 32 hosted v7-versus-Richard replays were examined for a causal target.
+All 22 losses ended by general capture, median turn 645. In these losses,
+candidate army/land/castle margins averaged +18/+8/−0.5 at turn 200 but
+−154/−20/−1.7 at turn 400. Only four losses had an army lead immediately
+before capture. This points to midgame army and economy retention, while
+individual general-defense failures also occurred. The next bounded GPU
+experiment should target that interval with a cheaper strong training signal,
+measure environment and optimizer time separately, pass >=30K end-to-end
+SPS, and surpass the 0.481445/0.321411 stronger-opponent baseline on fresh
+seeds before a longer run or new hosted candidate. The current CLI identity
+is still Richard; the most recent Classic standings showed Richard 1721.93
+and relh 1627.47. Recheck both before eventual publication. No league
+submission or champion change was made.

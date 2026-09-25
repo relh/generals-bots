@@ -269,6 +269,31 @@ def test_batched_games_step_together_and_obey_native_contract():
     env.close()
 
 
+def test_teacher_rollouts_reuse_next_state_action():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    options = dict(
+        context=context, board_size=6, horizon=12, opponent="random",
+        teacher="harvester", sparse_teacher=True, teacher_rollouts=True,
+        factorized_actions=True, parallel_games=2, require_gpu=False,
+    )
+    first = BatchedGeneralsPufferEnvironment(**options)
+    second = BatchedGeneralsPufferEnvironment(**options)
+    try:
+        first.reset("teacher-cache")
+        second.reset("teacher-cache")
+        pass_index = first.spec.action_sizes[0] - 1
+        for _ in range(2):
+            first.step([[pass_index, 0]] * 2)
+            second.step([[0, 1]] * 2)
+            np.testing.assert_array_equal(np.asarray(first.states.armies), np.asarray(second.states.armies))
+            keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(first.keys)
+            expected = first._teacher_actions(first.states, first.sides, keys)
+            np.testing.assert_array_equal(np.asarray(first.cached_teacher_actions), np.asarray(expected))
+    finally:
+        first.close()
+        second.close()
+
+
 def test_training_restarts_a_finished_game_without_ending_the_batch():
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     env = BatchedGeneralsPufferEnvironment(

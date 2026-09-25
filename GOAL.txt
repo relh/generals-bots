@@ -239,3 +239,46 @@ Update, 2026-09-24 bounded PPO-plus-teacher pilot
     merely drift from the current teacher. Preserve the four-buffer throughput
     gate, profile any slower opponent/teacher, and require a held-out
     improvement over the stronger-opponent baseline before another long run.
+
+Update, 2026-09-24 Sentinel teacher throughput and hosted replay diagnosis
+  * Sentinel teacher rollouts were tested in bounded B300 Puffer jobs with an
+    ExpanderHarvester opponent, 4,096 total games, four 1,024-game buffers,
+    8,192 minibatch, horizon 32, replay ratio .125, and 16 CPUs. Job 13499
+    used 14 observation channels and a larger tied local policy; JAX
+    compilation produced no epochs inside the five-minute startup bound, so
+    it was stopped. Verified metta0 archive SHA256
+    0dc466fdca7ca36420bee9c8f73973733393f59d567cd505a3d05a30a6336878.
+    Job 13509 reduced features/site and global features to two each and
+    radius to .1; its warm end-to-end rate was 24.3-24.4K SPS. Job 13523
+    tried eight 512-game buffers and reached only about 19.0K SPS. They were
+    stopped around 1.4M steps. Verified archive SHA256s, respectively:
+    1478cd736bf8d63c0a19e873d0129fe10c61c4aa71a6dcd75e79202b207d4d86,
+    94ada176aa6a676ae15f424803c880bc28b2dd4b2981cc4f5eb1d7b737496e.
+  * Teacher rollouts calculated the teacher action twice per state: once for
+    execution and again as the next supervised label. A cache now reuses the
+    next-state label for the following action. Its focused GPU test passed
+    (1 passed, 13 deselected). B300 job 13563 with this change reached about
+    24.7-24.8K warm end-to-end SPS, still below the 30K gate; it was stopped
+    around 1.7M steps. Verified archive SHA256
+    7fd5cb5beca14d460e1f72158ada180d2640b8d8c5e9713139e6b34fa90ef105.
+    No Sentinel long run was started. No canceled job left a container or
+    trainer process. The four exact pilot scripts are in integrations/.
+  * All 32 replays from hosted v7 versus Richard were inspected locally.
+    The 22 losses were general captures, median loss turn 645. In those losses,
+    average candidate army/land/castle margins were +18/+8/-.5 at turn 200
+    and -154/-20/-1.7 at turn 400. Only four losses had an army lead just
+    before capture. The common failure is midgame army/economy decline, not
+    solely a final-turn general defense lapse. The candidate passed about
+    1.8% of turns and used half moves about 6.6% of turns in losses.
+  * Current blocker: the tested Sentinel teacher configuration cannot meet
+    the GPU throughput gate, and the PPO pilot regressed on the strong local
+    gate. The next concrete step is a bounded B300 probe of a stronger but
+    cheaper training signal targeting turn-200-to-400 army/castle retention,
+    using the same Classic map distribution and held-out ExpanderHarvester /
+    Sentinel tests. Profile environment time separately from optimization;
+    demonstrate >=30K sustained end-to-end SPS and improvement over
+    .481445/.321411 before another long run. Then require larger direct
+    hosted wins before publication. Recheck active Coworld identity and
+    standings: at the latest check Richard remained active, but relh had
+    fallen below Richard (1627.47 versus 1721.93). No submission or champion
+    change was made.

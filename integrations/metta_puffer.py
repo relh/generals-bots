@@ -316,12 +316,11 @@ class BatchedGeneralsPufferEnvironment:
         if self.base.supervise_teacher or self.base.sparse_teacher:
             self._teacher_actions = jax.jit(jax.vmap(self.base._teacher))
 
-        def advance_one(state, pool, side, opponent_id, index, split, key, alive):
+        def advance_one(state, pool, side, opponent_id, index, split, key, cached_teacher_action, alive):
             def active(_):
                 executed_index, executed_split = index, split
                 if self.base.teacher_rollouts:
-                    teacher_key = jax.random.fold_in(jax.random.split(key)[0], 37)
-                    action = self.base._teacher(state, side, teacher_key)
+                    action = cached_teacher_action
                     executed_index = jnp.where(
                         action[0] == 1, 4 * self.base.size**2,
                         action[3] * self.base.size**2 + action[1] * self.base.size + action[2],
@@ -350,12 +349,15 @@ class BatchedGeneralsPufferEnvironment:
                 alive, active, inactive, operand=None
             )
             teacher_action = None
-            if self.base.training and (self.base.supervise_teacher or self.base.sparse_teacher) and not self.base.prior_hint_features:
+            if self.base.teacher_rollouts or (
+                self.base.training and (self.base.supervise_teacher or self.base.sparse_teacher)
+                and not self.base.prior_hint_features
+            ):
                 teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
                 teacher_action = self.base._teacher(next_state, side, teacher_key)
             return next_state, next_key, values, mask, reward, done, outcome, teacher_action
 
-        self._advance_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0, 0, 0, 0)))
+        self._advance_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0, 0, 0, 0, 0)))
 
     def _observation(self, values, masks, teacher_actions=None):
         public_values = np.asarray(values).copy()
@@ -429,7 +431,11 @@ class BatchedGeneralsPufferEnvironment:
         self.keys = jax.random.split(jax.random.PRNGKey(numeric_seed ^ 0xA5A5A5A5), self.parallel_games)
         self.states = self._init_states(self.base.pool, state_keys)
         values, masks = self._observe_states(self.states, self.sides)
-        return self._observation(values, masks)
+        self.cached_teacher_actions = None
+        if self.base.teacher_rollouts:
+            teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+            self.cached_teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+        return self._observation(values, masks, self.cached_teacher_actions)
 
     def step(self, actions: list[list[int]]) -> NumericTransition:
         if len(actions) != self.parallel_games:
@@ -439,6 +445,10 @@ class BatchedGeneralsPufferEnvironment:
             [action[1] if self.base.factorized_actions else 0 for action in actions], dtype=jnp.int32
         )
         was_finished = self.finished.copy()
+        cached_teacher_actions = (
+            self.cached_teacher_actions if self.base.teacher_rollouts
+            else jnp.zeros((self.parallel_games, 5), dtype=jnp.int32)
+        )
         self.states, self.keys, values, masks, rewards, done, outcomes, teacher_actions = self._advance_states(
             self.states,
             self.base.pool,
@@ -447,8 +457,11 @@ class BatchedGeneralsPufferEnvironment:
             indices,
             splits,
             self.keys,
+            cached_teacher_actions,
             jnp.asarray(~was_finished),
         )
+        if self.base.teacher_rollouts:
+            self.cached_teacher_actions = teacher_actions
         newly_finished = np.asarray(done, dtype=bool)
         if self.base.training:
             self.completed += newly_finished
