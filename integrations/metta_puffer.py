@@ -575,19 +575,43 @@ class BatchedGeneralsPufferEnvironment:
         values, masks = self._reset_states(seed)
         return self._observation(values, masks, self.cached_teacher_actions, self._sentinel_labels())
 
+    def _device_transport(self, values, masks, teacher_actions):
+        if not self.base.supervise_teacher:
+            return values
+        cells = self.base.size**2
+        direction = teacher_actions[:, 3] if self.base.factorized_actions else teacher_actions[:, 4] * 4 + teacher_actions[:, 3]
+        move = direction * cells + teacher_actions[:, 1] * self.base.size + teacher_actions[:, 2]
+        index = jnp.where(teacher_actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move)
+        legal = jnp.take_along_axis(masks, index[:, None], axis=1)[:, 0]
+        probabilities = jnp.where(legal[:, None], jax.nn.one_hot(index, self.spec.action_sizes[0]), 0)
+        weights = [legal.astype(jnp.float32)]
+        if self.base.factorized_actions:
+            moving = legal & (teacher_actions[:, 0] == 0)
+            splits = jnp.where(moving[:, None], jax.nn.one_hot(teacher_actions[:, 4], 2), 0)
+            probabilities = jnp.concatenate((probabilities, splits), axis=1)
+            weights.append(moving.astype(jnp.float32))
+        return jnp.concatenate((
+            values, probabilities.astype(jnp.float32), masks.astype(jnp.float32),
+            jnp.stack(weights, axis=1), jnp.zeros((self.parallel_games, 2), dtype=jnp.float32),
+        ), axis=1)
+
     def reset_device(self, seed: str):
-        if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher or self.base.supervise_teacher:
-            raise ValueError("Device-resident Classic training currently requires policy rollouts without teacher data")
+        if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher:
+            raise ValueError("Device-resident Classic training requires policy rollouts without replay metadata")
         values, masks = self._reset_states(seed)
+        if self.base.supervise_teacher:
+            teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+            teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+            values = self._device_transport(values, masks, teacher_actions)
         return values, masks.astype(jnp.uint8)
 
     def step_device(self, actions):
-        if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher or self.base.supervise_teacher:
-            raise ValueError("Device-resident Classic training currently requires policy rollouts without teacher data")
+        if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher:
+            raise ValueError("Device-resident Classic training requires policy rollouts without replay metadata")
         indices = actions[:, 0].astype(jnp.int32)
         splits = actions[:, 1].astype(jnp.int32) if self.base.factorized_actions else jnp.zeros_like(indices)
         cached = jnp.zeros((self.parallel_games, 5), dtype=jnp.int32)
-        self.states, self.keys, values, masks, rewards, done, _, _ = self._advance_states(
+        self.states, self.keys, values, masks, rewards, done, _, teacher_actions = self._advance_states(
             self.states, self.base.pool, self.sides, self.opponent_ids,
             indices, splits, self.keys, cached, jnp.ones(self.parallel_games, dtype=bool),
         )
@@ -596,6 +620,8 @@ class BatchedGeneralsPufferEnvironment:
         if episode_done:
             self.turn = 0
             done = jnp.ones_like(done)
+        if self.base.supervise_teacher:
+            values = self._device_transport(values, masks, teacher_actions)
         return values, masks.astype(jnp.uint8), rewards.astype(jnp.float32), done.astype(jnp.float32), episode_done
 
     def step(self, actions: list[list[int]]) -> NumericTransition:

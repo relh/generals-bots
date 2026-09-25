@@ -1362,3 +1362,48 @@ Update, 2026-09-25 first device-resident Puffer5 trainer
     a7da00a659d6eb3effb06e22811af1e992d4af479908ea6d4308a4ac313903a6.
     Environment state still lacks checkpoint/restore. Quality has not
     passed held-out or hosted evaluation, so no overnight run is launched.
+
+Update, 2026-09-25 GPU reward/quality screen
+  * Frozen device checkpoint from B300 job 17061 scored .007690 against
+    held-out ExpanderHarvester seed 1101, essentially the prior weak PPO
+    baseline. Evaluation archive on metta0: device-heldout-17085.tar.gz
+    SHA256 7e22dcf07abe554a147c632c21669f6d1404abbaf9b47545c67260ba9ed754b7.
+    Metta branch now permits audited CUDA-training-to-CPU-evaluation transfer
+    when model, game interface, factory and engine match; 72 focused Puffer
+    tests and scoped lint passed.
+  * GPU strong-mixed/teacher-match-.25 pilot job 17100 completed 16,777,216
+    steps and four checkpoints at final steady 85,188 end-to-end SPS on B300.
+    Archive: device-teacher-pilot-17100.tar.gz SHA256
+    cf639280f40ac0095f47abaa65853e5fa3eb89254898f15a545eac2191b6a439.
+    Its final checkpoint scored only .009155 on held-out ExpanderHarvester
+    (job 17102; eval archive device-teacher-eval-17102.tar.gz SHA256
+    cdec267f7031558a3f02b2af16e7265b6407b9c1b83ec2b270ce0ce704ddeb17).
+    No long continuation or hosted action. Stronger teacher-reward pilot
+    under construction; do not treat it as evidence of learning until scored.
+
+Update, 2026-09-25 GPU supervised-teacher bridge
+  * Teacher-match reward 4.0 pilot job 17111 finished 16,777,216 steps at
+    final 84,665 SPS, but its frozen checkpoint scored only .008057 against
+    held-out ExpanderHarvester seed 1101 (job 17119). Durable archives on
+    metta0: device-teacher4-pilot-17111.tar.gz SHA256
+    5bac40f7985d5a2223b45cf14a7de18c87d9d6c274c6a7b16e8520f60cac1ee0
+    and device-teacher4-eval-17119.tar.gz SHA256
+    19e9402a43c2e45932476fc4477e1ecad030ff34b077cafbab996c6cf2115ec4.
+    Do not extend reward-only training.
+  * Added GPU transport for supervised teacher targets without feeding them
+    into public observations. CPU numeric/device rows match at reset and
+    after action; 31 General adapter and 73 Metta Puffer tests passed.
+    Metta commit c26fd3e019 is pushed. Supervised B300 pilot job 17141
+    completed 4,194,304 steps with 57,913/57,962 SPS over 16/20-epoch
+    intervals. It saved checkpoint SHA256
+    80899534bfa2cba8c8031de4c296312f9dfd4a62764f308f5d8aebfafdfffc71.
+    Archive: device-supervised-pilot-17141.tar.gz SHA256
+    b628b2c74e0214d5a50f94ed12dfa4c958984cf71191618ab2993d9e3a7d875d.
+    Held-out evaluation job 17153 scored only .008301 against ExpanderHarvester
+    seed 1101. Eval archive: device-supervised-eval-17153.tar.gz SHA256
+    2893fe91cedf70a16d4f1511a4740d2eaa2de115e903575e1491d651cd2b0d7f.
+    Since the earlier strong policy needed about 31.46M supervised steps,
+    bounded 33.55M-step learning-curve job 17223 is running with intermediate
+    checkpoints and a sustained 30k SPS guard. No overnight continuation or
+    hosted submission is justified yet. Optimizer time dominates and the
+    current bridge is far short of the requested 300k SPS.

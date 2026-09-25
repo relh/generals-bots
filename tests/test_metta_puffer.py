@@ -93,6 +93,37 @@ def test_device_step_matches_numeric_training_step():
         device.close()
 
 
+def test_device_teacher_transport_matches_numeric_training_step():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    options = dict(
+        parallel_games=4, board_size=6, factorized_actions=True, require_gpu=False,
+        teacher="harvester", supervise_teacher=True,
+    )
+    numeric = BatchedGeneralsPufferEnvironment(context=context, **options)
+    device = BatchedGeneralsPufferEnvironment(context=context, **options)
+    serializer = NativeEnvironment.__new__(NativeEnvironment)
+    serializer.spec = numeric.spec
+    try:
+        observation = numeric.reset("device-teacher-parity-73")
+        values, masks = device.reset_device("device-teacher-parity-73")
+        encoded, legal = serializer.encode(observation)
+        np.testing.assert_array_equal(np.asarray(values), np.frombuffer(encoded, np.float32).reshape(4, -1))
+        np.testing.assert_array_equal(np.asarray(masks), np.frombuffer(legal, np.uint8).reshape(4, -1))
+        indices = np.argmax(np.asarray(masks)[:, :device.spec.action_sizes[0]], axis=1)
+        actions = np.stack((indices, np.zeros(4, dtype=np.int32)), axis=1)
+        expected = numeric.step(actions.tolist())
+        values, masks, rewards, terminals, episode_done = device.step_device(jnp.asarray(actions, dtype=jnp.float32))
+        encoded, legal = serializer.encode(expected.observation)
+        np.testing.assert_array_equal(np.asarray(values), np.frombuffer(encoded, np.float32).reshape(4, -1))
+        np.testing.assert_array_equal(np.asarray(masks), np.frombuffer(legal, np.uint8).reshape(4, -1))
+        np.testing.assert_allclose(np.asarray(rewards), np.asarray(expected.rewards))
+        np.testing.assert_array_equal(np.asarray(terminals, dtype=bool), np.asarray(expected.terminated))
+        assert not episode_done
+    finally:
+        numeric.close()
+        device.close()
+
+
 @pytest.mark.parametrize("opponent", ["random", "hunter", "harvester", "mixed"])
 def test_other_opponents_keep_the_numeric_contract(opponent):
     context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))

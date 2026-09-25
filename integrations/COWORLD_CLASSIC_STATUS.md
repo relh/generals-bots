@@ -2219,3 +2219,73 @@ are archived on metta0 as `device-bridge-boundary-success-17061.tar.gz`
 (SHA-256 `a7da00a659d6eb3effb06e22811af1e992d4af479908ea6d4308a4ac313903a6`).
 Environment state is still absent from checkpoints, so resume cannot yet
 reconstruct the exact game state.
+
+## Device policy held-out test and on-device teacher-reward screen (2026-09-25)
+
+A CPU held-out evaluator now accepts the CUDA-trained checkpoint only when
+the model fingerprint, state size, environment factory, observation/action
+specification (apart from vector agent count), and engine revision match.
+B300 job 17085 evaluated the frozen 5,373,952-step Random-opponent device
+checkpoint (SHA-256 `54146c37d68529689b623e23d54ff58dc1dcc86fecd37a805492ae8ff9fc9286`)
+on seed 1101 against ExpanderHarvester. Its four 1,024-game batches scored
+**.007690**, effectively the same weak performance as prior reward-only PPO.
+The source, compatible CPU eval build, checkpoint copy, result and logs are
+archived on metta0 as `device-heldout-17085.tar.gz` (SHA-256
+`7e22dcf07abe554a147c632c21669f6d1404abbaf9b47545c67260ba9ed754b7`).
+
+A distinct B300 pilot then trained against 75% ExpanderHarvester and 25%
+Sentinel, using an ExpanderHarvester teacher-match reward of .25 computed on
+the GPU. Job 17100 completed 16,777,216 steps with 4,096 full Classic games,
+one GPU buffer, horizon 32, minibatch 16,384, replay .25, and learning rate
+.0003. Four checkpoints were saved. The final completed epoch measured
+**85,188 end-to-end SPS**: 439 ms environment, 194 ms rollout model, 901 ms
+optimizer. Late one-minute GPU utilization samples were roughly 35–41% on
+the allocated B300. The source, build, checkpoints, GPU samples and logs are
+archived on metta0 as `device-teacher-pilot-17100.tar.gz` (SHA-256
+`cf639280f40ac0095f47abaa65853e5fa3eb89254898f15a545eac2191b6a439`).
+
+Frozen seed-1101 held-out evaluation of its final checkpoint (SHA-256
+`5dda69635d431890ad2d0f940f14c8ab43061fae5080fdf37e6b31e90e0ee09b`)
+scored **.009155 against ExpanderHarvester** (job 17102, four 1,024-game
+batches). The evaluation artifact is archived as `device-teacher-eval-17102.tar.gz`
+(SHA-256 `cdec267f7031558a3f02b2af16e7265b6407b9c1b83ec2b270ce0ce704ddeb17`).
+This small change did not justify a long continuation. A separate bounded
+teacher-match reward 4.0 screen completed another 16,777,216 steps in B300
+job 17111. Its final epoch measured 84,665 SPS (434 ms environment, 196 ms
+rollout model, 914 ms optimizer), with the same 4,096 games and batch
+geometry. The final checkpoint (SHA-256
+`dcd1fc2866bcc42f6b5cdec667f64c4cbd5edb190399e36a8641a96496e760c0`)
+scored only **.008057** on the same seed-1101 held-out ExpanderHarvester
+evaluation (job 17119). The pilot and evaluation archives are on metta0:
+`device-teacher4-pilot-17111.tar.gz` (SHA-256
+`5bac40f7985d5a2223b45cf14a7de18c87d9d6c274c6a7b16e8520f60cac1ee0`)
+and `device-teacher4-eval-17119.tar.gz` (SHA-256
+`19e9402a43c2e45932476fc4477e1ecad030ff34b077cafbab996c6cf2115ec4`).
+Reward-only training is still far below the held-out standard, so no longer
+reward-only run is justified.
+
+The next GPU bridge carries scripted teacher targets in the native transport
+columns, separate from the public model observation. A row-for-row test
+matched the CPU numeric teacher transport at reset and after an action;
+all 31 General adapter tests and 73 focused Metta Puffer tests passed.
+B300 supervised pilot job 17141 trained 4,194,304 steps against the same
+strong-mixed opponent with pure teacher behavior and teacher cross-entropy.
+It saved a checkpoint (SHA-256
+`80899534bfa2cba8c8031de4c296312f9dfd4a62764f308f5d8aebfafdfffc71`).
+The completed 16/20-epoch intervals measured **57,913/57,962 end-to-end
+SPS**; the final epoch took 570 ms in the environment, 202 ms rollout model,
+and 1,532 ms optimizer. The source, build, checkpoint, teacher metrics and
+logs are archived on metta0 as `device-supervised-pilot-17141.tar.gz`
+(SHA-256 `b628b2c74e0214d5a50f94ed12dfa4c958984cf71191618ab2993d9e3a7d875d`).
+Held-out job 17153 scored only **.008301** against ExpanderHarvester on seed
+1101, essentially unchanged from the reward-only policy. Its compatible CPU
+evaluation build, record and logs are archived as
+`device-supervised-eval-17153.tar.gz` (SHA-256
+`2893fe91cedf70a16d4f1511a4740d2eaa2de115e903575e1491d651cd2b0d7f`).
+The earlier 8,004-parameter policy was selected after about 31.46M
+supervised steps, so bounded job 17223 is screening this new bridge through
+33.55M steps with intermediate checkpoints and a sustained 30k SPS guard.
+No overnight continuation or hosted submission is justified yet.
+The teacher transport increases
+the model rollout width from 6,174 to 9,712 floats per agent, and optimizer
+work remains the main obstacle to the requested 300,000 SPS.
