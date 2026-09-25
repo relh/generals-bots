@@ -765,3 +765,35 @@ seeds before a longer run or new hosted candidate. The current CLI identity
 is still Richard; the most recent Classic standings showed Richard 1721.93
 and relh 1627.47. Recheck both before eventual publication. No league
 submission or champion change was made.
+
+A further bounded Sentinel teacher experiment capped each Bellman path search
+at 32 iterations without changing the production Sentinel. Two focused B300
+routing tests passed, but Puffer job 13620 still reached only about 24.7K
+warm end-to-end SPS on one B300 with 4,096 environments, four buffers, 8,192
+minibatch, horizon 32, and 16 CPUs. Environment time stayed near 3.4 seconds
+per epoch versus 1.4 seconds for optimization. The throughput guard stopped
+it at epoch 10. The verified archive is
+`relh-classic-sentinel-fast-stopped-13620.tar.gz` (SHA-256
+`40c57020fadc2d617d54b4dc7a8ec3d61d087e3ac77ccdcf6b22662073038d3d`).
+The experimental code was removed from the branch after this negative result;
+the exact pilot script remains in the metta0 Coworld archive directory.
+
+The next bounded probe instead used Puffer's verified policy initialization.
+Job 13651 loaded the selected 31.46M-step checkpoint (SHA-256
+`939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499`),
+retained the same sparse ExpanderHarvester teacher and model, and changed the
+opponent from `mixed` to ExpanderHarvester. It completed 4,194,304 fresh steps
+at about 36.4–37.3K warm end-to-end SPS over epochs 7–31, crossing the prior
+2.6M-step failure range. The last checkpoint display includes saving overhead
+and is excluded from the sustained rate. Late 60-second sampled GPU
+utilization was about 40%. On fresh seed 1101, jobs 13670/13671 evaluated
+4,096 games per opponent: **0.485352 versus ExpanderHarvester** and
+**0.321411 versus Sentinel**. These are effectively unchanged from the
+selected baseline's **0.481445/0.321411**. The source checkpoint identity,
+environment transfer, and final checkpoint SHA-256
+`81baa8d4bc0e443a7f4aa2b32dbae1f02968901805c2697df64013b44511dd7a`
+were verified. Training, builds, evals, and samples are archived as
+`relh-classic-warm-strong-13651-13670-13671.tar.gz` (SHA-256
+`24f62cd56f34b854a9c41af56202e96f613c4feaa453c878f4277ec06b72df15`).
+The warm-start and evaluation scripts preserve the exact settings in this
+branch. There is no quality gain to justify a long extension or hosted upload.

@@ -282,3 +282,45 @@ Update, 2026-09-24 Sentinel teacher throughput and hosted replay diagnosis
     standings: at the latest check Richard remained active, but relh had
     fallen below Richard (1627.47 versus 1721.93). No submission or champion
     change was made.
+
+Update, 2026-09-24 capped Sentinel and warm-start strong-opponent probes
+  * A temporary Sentinel training variant capped both Bellman path searches
+    at 32 iterations. Its focused B300 routing tests passed (2 passed), but
+    Puffer job 13620 still reached only about 24.7K warm end-to-end SPS with
+    4,096 environments, 8,192 minibatch, horizon 32, four buffers, and 16
+    CPUs. Environment time was about 3.4 seconds and optimization about 1.4
+    seconds per epoch. The 30K monitor stopped it at epoch 10; Slurm reports
+    FAILED due to the intentional guard stop, and no job container remained.
+    The run, staged source, GPU samples, and build are verified on metta0 as
+    relh-classic-sentinel-fast-stopped-13620.tar.gz, SHA256
+    40c57020fadc2d617d54b4dc7a8ec3d61d087e3ac77ccdcf6b22662073038d3d.
+    The unhelpful training variant was removed from this branch; its exact
+    pilot script remains in the metta0 Coworld archive directory.
+  * Puffer's checkpoint initialization supports an opponent-only environment
+    transfer when the model/build outside the environment match. Job 13651
+    initialized from the selected 31.46M-step supervised checkpoint, SHA256
+    939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499,
+    retained sparse ExpanderHarvester imitation, and changed the opponent
+    from the easy mixed pool to ExpanderHarvester. One B300, four 1,024-game
+    buffers, 8,192 minibatch, horizon 32, replay ratio .125, 16 CPUs, and
+    LR .0003 completed 4,194,304 new steps. Warm epochs 7-31 measured about
+    36.4-37.3K end-to-end SPS, passing the 2.6M-step failure range; the last
+    checkpoint's SPS display includes checkpoint overhead and is excluded.
+    The 60-second sampled GPU utilization near the end was about 40%.
+    Initialization identity was recorded and final checkpoint SHA256 is
+    81baa8d4bc0e443a7f4aa2b32dbae1f02968901805c2697df64013b44511dd7a.
+  * Paired B300 evaluations 13670/13671 on held-out seed 1101 covered four
+    1,024-game batch episodes each. The warm-start checkpoint scored .485352
+    versus ExpanderHarvester and .321411 versus Sentinel, effectively flat
+    against the selected baseline .481445/.321411. Both jobs completed and
+    verified checkpoint and environment-transfer identities. Training, builds,
+    evaluations, and GPU samples are archived on metta0 as
+    relh-classic-warm-strong-13651-13670-13671.tar.gz, SHA256
+    24f62cd56f34b854a9c41af56202e96f613c4feaa453c878f4277ec06b72df15.
+    No long extension or hosted upload is justified from this result.
+  * Next concrete step: develop a stronger *fast* teacher or direct policy
+    learning signal for midgame army/castle retention and general safety.
+    Compare it against ExpanderHarvester and Sentinel locally before a long
+    run. Keep the >=30K end-to-end B300 gate, require improvement over the
+    selected baseline on fresh held-out seeds, and only then advance to hosted
+    direct matches. No publication or champion change occurred.
