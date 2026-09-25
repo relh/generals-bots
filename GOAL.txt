@@ -1291,3 +1291,32 @@ Update, 2026-09-25 clean fixed-runtime throughput probe
     pursue the device-resident JAX/Puffer5 interface needed for 300K and
     a learning objective that beats the previous hinted v11 line on strong
     held-out opponents before hosted testing.
+
+Update, 2026-09-25 wide-batch transport profile
+  * B300 job 16823 profiled 4,096/8,192/16,384 full Classic JAX games with
+    6 warmup and 16 measured rollout steps per size. With current-main
+    numeric transport, median total profile steps were 96.44/201.73/384.16
+    ms; native serialization alone was 65.80/139.41/266.17 ms. The implied
+    rollout rates were about 42.5K/40.6K/42.6K SPS before learning. NumPy
+    tobytes used 56.0 ms per 4,096-game step and JAX-to-NumPy conversion
+    26.1 ms. Thus batch widening does not approach 300K on this bridge.
+    Profile log SHA256 8035768893e1b6579837a27d525a56cbe3dd78eaa940c988432d5751f3db2bd2.
+  * Device-only B300 probes kept actions, state, rewards, observation and
+    masks on the accelerator and synchronized each full Classic JAX step.
+    At 4,096/8,192 games, 32-step medians were 1.654/2.307 ms, equivalent
+    to 2.48M/3.55M rollout SPS without policy or optimizer. A 1,300-step
+    4,096-game run, including truncation and recycle, held 1.613 ms median
+    with 99.54% moving actions; early/late 200-step medians were
+    1.661/1.592 ms. Exact logs SHA256s are
+    23105335fe516fe0a0ac8987105f64170839423badad8418866a2e608145dfc6 and
+    67fd51402b5448a836915b41104db01afc0d9853bb2a2d4a63faeb7b00b89cef.
+    The accelerator step is fast enough in isolation; build a device-resident
+    Puffer5 bridge and then measure complete inference/update training.
+  * CUDA IPC job 16874 passed a cross-process 25,288,704-float buffer test:
+    a spawned worker imported its parent's CUDA tensor through DLPack,
+    donated it to a JAX update, retained the same device pointer, and the
+    parent verified every element changed. Probe/source SHA256s are
+    b42e555f80febdad7939fe74dcc3fc4943df58fddb7efd0804912420ef6da49e and
+    55d3b1f59b1cf184576c5ede3f865c619f0830398cf9c22cf95453aa26310106.
+    This is a bridge feasibility result, not Puffer training. Next attach
+    Puffer-owned CUDA buffers and synchronize action/observation streams.

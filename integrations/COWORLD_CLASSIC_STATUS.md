@@ -2108,3 +2108,60 @@ and host serialization; increasing GPU utilization alone cannot remove that
 measured handoff. Reaching 300K needs a device-resident JAX/Puffer interface
 or an equally substantial transport and batched-step redesign, followed by
 an end-to-end benchmark with policy updates.
+
+## Wide-batch JAX/Puffer5 transport scaling (2026-09-25)
+
+Bounded B300 job 16823 profiled the fixed current-main transport path with
+the same full Classic JAX adapter, 6 warmup steps and 16 sampled steps at
+each size. These are rollout plus native numeric serialization timings with
+no policy inference or optimization; they do **not** count as training SPS.
+
+| Games per batched step | Median complete profile step | Native transport | Approximate profiled rollout SPS |
+| ---: | ---: | ---: | ---: |
+| 4,096 | 96.44 ms | 65.80 ms | 42,472 |
+| 8,192 | 201.73 ms | 139.41 ms | 40,610 |
+| 16,384 | 384.16 ms | 266.17 ms | 42,649 |
+
+The 4,096-game cProfile attributes 0.896 seconds of 16 steps to 32 NumPy
+`tobytes()` calls and 0.418 seconds to JAX array-to-NumPy conversion; those
+are 56.0 and 26.1 ms per step. The reported synchronized device computation
+inside `_advance_states` was only 1.59 ms median; host transfer and copying
+dominate the measured loop. Doubling or quadrupling game count did not raise
+profiled SPS. The log is archived on metta0 as
+`wide-transport-profile-16823.log` (SHA-256
+`8035768893e1b6579837a27d525a56cbe3dd78eaa940c988432d5751f3db2bd2`).
+This scaling rules out simple batch widening on the present host bridge as
+the route to 300K end-to-end SPS.
+
+The same JAX environment was timed with actions and resulting state,
+observations, rewards, and masks kept on the GPU, synchronizing each step.
+Job 16845 measured 32 post-warmup steps: 4,096 games took 1.654 ms median
+(about 2.48M device-only rollout SPS), while 8,192 took 2.307 ms (about
+3.55M). About 98% of the selected legal actions were moves, but this short
+probe had no terminal games. Job 16850 therefore ran 1,300 measured steps
+after 16 warmup steps at 4,096 games. Its median was 1.613 ms (about 2.54M
+device-only rollout SPS), with 1.661/1.592 ms early/late 200-step medians,
+99.54% moves, and one terminal/truncation per game followed by recycle.
+The logs are archived on metta0 as `device-step-profile-16845.log` (SHA-256
+`23105335fe516fe0a0ac8987105f64170839423badad8418866a2e608145dfc6`)
+and `device-long-profile-16850.log` (SHA-256
+`67fd51402b5448a836915b41104db01afc0d9853bb2a2d4a63faeb7b00b89cef`).
+These probes deliberately omit policy inference, optimization, and host
+transfers. They show that the JAX game step itself has substantial headroom
+for 300K training SPS; only an integrated Puffer5 trainer can establish the
+actual end-to-end rate.
+
+A bounded CUDA buffer-sharing probe tested the bridge seam using the pinned
+B300 container's JAX 0.11.0 and PyTorch CUDA tensor support. JAX's DLPack
+import pointed at the same device address as an external 4,096×6,174 float32
+tensor; a donated JAX update reused that address. In job 16874, the tensor
+was allocated in a parent process and passed to a separate spawned worker
+via CUDA IPC. The worker imported and donated the buffer through JAX; after
+synchronization, the parent saw every one of its 25,288,704 values changed,
+and both processes exited normally. The exact probe and output are archived
+on metta0 as `cuda-ipc-probe-16874.py` and `cuda-ipc-probe-16874.log`
+(SHA-256 `55d3b1f59b1cf184576c5ede3f865c619f0830398cf9c22cf95453aa26310106`
+and `b42e555f80febdad7939fe74dcc3fc4943df58fddb7efd0804912420ef6da49e`).
+This establishes CUDA-buffer aliasing across the current process boundary
+as a technical possibility. It does not yet connect JAX to Puffer5's own
+buffers, handle action/reward/mask synchronization, or measure training SPS.
