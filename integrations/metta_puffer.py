@@ -55,6 +55,7 @@ class GeneralsPufferEnvironment:
         supervise_teacher: bool = False,
         sparse_teacher: bool = False,
         factorized_actions: bool = False,
+        mask_pass_when_moves_exist: bool = False,
         classic_maps: bool = False,
         coworld_classic: bool = False,
         coworld_small_map_curriculum: bool = False,
@@ -132,6 +133,7 @@ class GeneralsPufferEnvironment:
         self.supervise_teacher = supervise_teacher
         self.sparse_teacher = sparse_teacher
         self.factorized_actions = factorized_actions
+        self.mask_pass_when_moves_exist = mask_pass_when_moves_exist
         self.goal_features = goal_features
         self.compact_features = compact_features
         self.lean_features = lean_features
@@ -208,6 +210,16 @@ class GeneralsPufferEnvironment:
                 obs, factorized_actions=factorized_actions, goal_features=goal_features
             )
         )
+        if mask_pass_when_moves_exist:
+            encode = self._encode
+            pass_index = (4 if factorized_actions else 8) * board_size**2
+
+            def encode_without_optional_pass(obs):
+                values, mask = encode(obs)
+                mask = mask.at[pass_index].set(~jnp.any(mask[:pass_index]))
+                return values, mask
+
+            self._encode = encode_without_optional_pass
         self._observe = jax.jit(
             lambda state, side: self._encode(game.get_observation(state, side))
         )
@@ -451,6 +463,11 @@ class BatchedGeneralsPufferEnvironment:
         return np.asarray(self._sentinel_actions(states, self.sides[:count], keys))
 
     def _observation(self, values, masks, teacher_actions=None, sentinel_actions=None):
+        # Queue both device-to-host copies before waiting for either one.
+        # The dense Classic observation and action mask otherwise serialize
+        # two large transfers on every environment step.
+        values.copy_to_host_async()
+        masks.copy_to_host_async()
         if self.base.training and not self.base.sparse_teacher and not self.base.supervise_teacher:
             # Training never marks a game as finished: it recycles terminal
             # states inside the JAX step. Both arrays are fresh device outputs.
@@ -576,6 +593,10 @@ class BatchedGeneralsPufferEnvironment:
             cached_teacher_actions,
             jnp.asarray(~was_finished),
         )
+        # Start the large transfers while the small reward and terminal
+        # arrays are being read below.
+        values.copy_to_host_async()
+        masks.copy_to_host_async()
         if self.base.teacher_rollouts:
             self.cached_teacher_actions = teacher_actions
         newly_finished = np.asarray(done, dtype=bool)

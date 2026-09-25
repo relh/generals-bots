@@ -35,6 +35,7 @@ def main() -> None:
     policy.reset("classic-action-diagnosis-1101")
     observation = env.reset("classic-action-diagnosis-1101")
     records = []
+    initial_values = np.asarray(observation.values).copy()
     pass_index = env.spec.action_sizes[0] - 1
     try:
         for turn in range(args.turns):
@@ -54,7 +55,9 @@ def main() -> None:
                     records.append((turn, seat, int(masks[seat, :pass_index].sum()),
                                     float(head[pass_index]), chosen == pass_index,
                                     float(head.max()), split,
-                                    float(probabilities[pass_index + 2])))
+                                    float(probabilities[pass_index + 2]),
+                                    float(prediction.value),
+                                    float(np.max(np.abs(values[seat] - initial_values[seat])))))
             observation = env.step(actions).observation
             if (turn + 1) % 20 == 0:
                 recent = [row for row in records if row[0] >= turn - 19]
@@ -68,6 +71,10 @@ def main() -> None:
                     "top_probability_mean": float(np.mean([r[5] for r in recent])),
                     "split_argmax_fraction": float(np.mean([r[6] for r in recent])),
                     "split_probability_mean": float(np.mean([r[7] for r in recent])),
+                    "split_probability_std": float(np.std([r[7] for r in recent])),
+                    "value_mean": float(np.mean([r[8] for r in recent])),
+                    "value_std": float(np.std([r[8] for r in recent])),
+                    "input_max_delta_mean": float(np.mean([r[9] for r in recent])),
                     "completed_games": int(np.sum(env.completed)),
                 }), flush=True)
     finally:

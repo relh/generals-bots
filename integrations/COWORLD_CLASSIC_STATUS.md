@@ -1953,3 +1953,114 @@ Next compare a frozen no-pass-when-moves-exist evaluation on held-out full
 Classic maps, then profile a bounded GPU training change that exceeds 30K
 complete-step end-to-end SPS before any sustained run. No hosted action was
 taken and no champion was changed.
+
+## Action readout and Puffer5 transport audit (2026-09-25)
+
+Further tracing of the frozen job-16245 checkpoint found that real Classic
+observations changed across turns while the value output stayed at
+`-0.0685342401266098` and the half-army probability stayed at `0.399634`
+through the sampled states. The input-change trace is archived on metta0 as
+`diagnose-coworld-actions-input-16245.log` (SHA-256
+`503071f7919ba8288bf71f676011e58cba72835f2c2f43f52ac9cc5b3558ceac`).
+The no-pass legal-mask ablation used the same checkpoint and held-out seed
+1101, with 4,096 full Classic games per opponent. Random performance was
+`.501099` versus `.500122` before masking, ExpanderHarvester `.012451`
+versus `.013184`, and Sentinel `0` in both cases. The verified archive is
+`relh-classic-nopass-16245-evals.tar.gz` (SHA-256
+`987ee3f943c29f19f842d4adb82c4d9f7f111b5c67d76fa0bf2716185920f14f`).
+Masking optional passes does not explain the competitive failure.
+
+The original Fabric network responded to large synthetic inputs but its
+special readouts were effectively constant on real boards. Two graph
+changes that wired direct or local features into those readouts produced
+nonzero initial responses, but bounded B300 pilots 16471 and 16518 spent
+their 300-second startup windows compiling and completed zero epochs.
+Their source, builds and logs are archived on metta0. A third candidate
+scales the global fan-in before SiLU and preserves the original parameter
+layout. With the frozen checkpoint, realistic board changes moved its value
+logit by `+0.850848` and split logits by `+0.2764/-0.2748`. Its frozen
+post-hoc Random evaluation remained `.500488` over four 1,024-game batches.
+This is an architecture ablation, not evidence of a trained strong policy.
+The normalized build archive is `relh-classic-normalized-build-16245.tar.gz`
+(SHA-256 `0493d6b9116d07194f2366ac3613e7efdce60a5762ef1bc6dc9c3791f396fdfd`);
+the explicit frozen ablation archive is
+`relh-normalized-ablation-random-16245.tar.gz` (SHA-256
+`a8264286a9c95dd5964ca37734e8d7cdf89914f729783bbc4eb040e3fbd4a7fe`).
+
+The user set **300K+ end-to-end Puffer5 training SPS** as the performance
+target for the JAX Classic environment. These early-turn B300 profiles used
+the same 18–21-tile Classic adapter, 16 warm steps per configuration, and no
+policy inference or update. They are bottleneck measurements, not training
+SPS or a speed-gate pass:
+
+| 4,096-game profile | Median ms/step | Approximate rollout SPS |
+| --- | ---: | ---: |
+| Original environment step, before native serialization | 30.71 | 133K |
+| Prefetch observation and mask to host | 26.76 | 153K |
+| Prefetch plus Puffer native serialization | 107.03 | 38K |
+| Eight-channel observation plus native serialization | 79.52 | 52K |
+| Float32 no-extra-column transport shortcut plus serialization | 87.68 | 47K |
+
+In the 4,096-game native profile, serialization alone took 77.54 ms of the
+107.03 ms step. The 14-channel observation holds 6,174 float32 values per
+game, and repeated allocation and byte copying dominate. Queueing both
+device-to-host copies cut the environment-only step but did not fix native
+transport. Half-precision observations made serialization slower; generic
+vectorized validation did not improve the 4,096-game profile. The transport
+shortcut passed all 20 focused metta-training environment tests and is being
+tested in a bounded end-to-end Puffer pilot. All transport profile logs and
+experimental source snapshots are in
+`relh-classic-transport-audit-16245.tar.gz` (SHA-256
+`1ed8c95d876643bf3490787cff94ad415f5ecf15cdb6b0a72639ed2b61a74e94`);
+the eight-channel and transport-shortcut logs are separately archived as
+`lean-transport-profile-16611.log` (SHA-256
+`391d78397db4a397d9438877f9ffd4aac555003e22a3208c17ed36347cd0e422`)
+and `zerocopy-transport-profile-16613.log` (SHA-256
+`722ff1b3671a37fba56b829ea0831b16200a63f4d428d7c3b77a361b939d76f3`).
+
+At 4,096 games, 300K SPS requires a complete training step in at most
+13.65 ms. The best measured serialized rollout here still takes 87.68 ms,
+before inference or optimization. No overnight run is justified by this
+throughput or by the current held-out policy quality. No hosted test,
+upload, submission or champion change occurred.
+
+## Normalized readout bounded pilot (2026-09-25)
+
+Pilot 16625 correctly rejected a changed environment source fingerprint
+before training and was archived as
+`relh-classic-normalized-zerocopy-build-guard-16625.tar.gz` (SHA-256
+`755bf26c08fde362dc17f91d60743bbabf8c7c2fc370b817812752019a6e2edb`).
+Pilot 16633 rebuilt the executable with the transport shortcut, verifying
+the normalized model hash and state-word count were unchanged and the
+environment fingerprint changed. It ran on one B300 with 4,096 full Classic
+games in four 1,024-game buffers, 16 CPUs, horizon 32, minibatch 16,384,
+replay .25, learning rate .001, and PPO/shaping discount .999. JAX
+compilation took most of the first nine minutes. Before the final save,
+epochs 16–31 showed 42,750 complete-step SPS and epochs 12–31 showed
+42,683, with 18.2% recent sampled GPU use. The final 4,194,304-step policy
+file has SHA-256
+`2d3d1166cc5ac57c52fbada38de79ff50f3eb946bc3e91ad6856056d86818407`.
+The verified metta0 archive of source, build, run, console, and GPU samples
+is `relh-classic-normalized-zerocopy-pilot-16633.tar.gz` (SHA-256
+`bdbd4bec2ee5c1cb39f476ad3f91bc356d1c8a42ec9536ddfb2037cc30e47f40`).
+
+The native trainer then aborted while serializing its environment
+checkpoint: the staged older metta-training `NumericObservation` could
+carry NumPy action masks but could not JSON-serialize them. No
+`completed.json` was written. The policy bytes are preserved and
+independently hash-verified, but the run is **incomplete**, and its warm SPS
+does not pass the repository's clean-training gate. Current metta `main`
+already serializes NumPy masks; a container smoke verified that behavior.
+The transport shortcut itself is in draft
+[metta PR #25434](https://app.graphite.dev/github/pr/Metta-AI/metta/25434),
+with 421 package tests, package typecheck, and scoped lint passing. The
+current-main integration also passed 29 focused Generals tests. Frozen
+checkpoint 16633 was evaluated on held-out seed 1101 with freshly built
+opponent environments: Random `.500000` (draws), ExpanderHarvester `.007080`,
+and Sentinel `0`. These are respectively unchanged, worse, and unchanged
+against the older 16245 checkpoint. The normalized readout has not improved
+full Classic play, so a long run on it is not justified. The evaluation
+builds, outputs, configurations, and logs are archived on metta0 as
+`relh-classic-normalized-heldout-16734.tar.gz` (SHA-256
+`fa04efae38af34fe37734ef6277217326ffe8783e2ddd1558eb191a43d143854`).
+No hosted action or champion change occurred.

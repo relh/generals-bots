@@ -1230,3 +1230,43 @@ Current next step
   end-to-end SPS before sustained training and a clear full-Classic gain
   before hosted matches. Do not extend or publish weak checkpoint 16245.
   Keep other panes' jobs and data separate.
+
+Update, 2026-09-25 Puffer5/JAX throughput and readout audit
+  * The user raised the target to 300K+ end-to-end training SPS on a
+    B300 or mettabox, with a 4-5 hour overnight run once the setup works.
+    Keep the repository's 30K minimum gate and do not claim rollout-only
+    rates as training throughput. At 4,096 games, 300K requires a complete
+    13.65 ms step including inference and updates.
+  * Frozen checkpoint 16245 has constant value and split outputs on real
+    changing Classic observations. Masking optional passes did not improve
+    held-out Expander or Sentinel performance. A normalized global Fabric
+    atom makes those outputs respond to board changes, but the old checkpoint
+    still scores .500488 against Random. No evidence yet supports a long
+    normalized policy run.
+  * Early-turn B300 profiling: 4,096-game JAX step 30.71 ms before native
+    serialization; asynchronous host prefetch reduced it to 26.76 ms.
+    Adding the Puffer5 numeric transport raised it to 107.03 ms, including
+    77.54 ms of serialization. A no-extra-column transport shortcut gave
+    87.68 ms, still only about 47K rollout SPS before learning. Eight-channel
+    observations gave 79.52 ms. Half-precision transport was slower.
+    Logs, exact sources, and hashes are in integrations/COWORLD_CLASSIC_STATUS.md.
+  * A bounded normalized-readout/transport pilot is job 16633. Its first
+    attempt 16625 stopped at the expected environment fingerprint guard;
+    16633 rebuilt the executable with the same model hash. It reached
+    4,194,304 steps at 42,750/42,683 SPS over final pre-save 16/20-epoch
+    windows, but then aborted while JSON-serializing a NumPy action mask
+    in the staged older metta-training environment checkpoint. It has no
+    completed.json, so these numbers do not pass the clean-run SPS gate.
+    Policy SHA256 is 2d3d1166cc5ac57c52fbada38de79ff50f3eb946bc3e91ad6856056d86818407;
+    archive SHA256 is bdbd4bec2ee5c1cb39f476ad3f91bc356d1c8a42ec9536ddfb2037cc30e47f40.
+    Held-out seed-1101 job 16734 scored .500000 Random (draws), .007080
+    ExpanderHarvester, and 0 Sentinel. Expander is worse than checkpoint
+    16245. The held-out evaluation archive SHA256 is
+    fa04efae38af34fe37734ef6277217326ffe8783e2ddd1558eb191a43d143854.
+    Do not launch an overnight job without both policy quality and clean
+    training throughput proof.
+  * The transport shortcut lives in a separate metta worktree on branch
+    relh/generals-native-transport and draft PR #25434. Its 421 package
+    tests, package typecheck, and scoped lint passed. Current metta main
+    already serializes NumPy masks and a B300 container smoke passed.
+    No hosted test, upload, submission, or champion change has occurred.

@@ -38,6 +38,30 @@ def test_fogged_observation_mask_and_finite_episode():
     env.close()
 
 
+def test_optional_pass_mask_preserves_moves_and_forced_pass():
+    context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))
+    normal = GeneralsPufferEnvironment(context=context, board_size=6, factorized_actions=True)
+    no_pass = GeneralsPufferEnvironment(
+        context=context, board_size=6, factorized_actions=True,
+        mask_pass_when_moves_exist=True,
+    )
+    board = jnp.zeros((6, 6), dtype=jnp.int32).at[2, 2].set(1).at[5, 5].set(2)
+    state = game.create_initial_state(board)
+    try:
+        for army, expected_pass in ((1, True), (3, False)):
+            changed = state._replace(armies=state.armies.at[2, 2].set(army))
+            observation = game.get_observation(changed, 0)
+            values, mask = normal._encode(observation)
+            ablated_values, ablated_mask = no_pass._encode(observation)
+            np.testing.assert_array_equal(np.asarray(ablated_values), np.asarray(values))
+            np.testing.assert_array_equal(np.asarray(ablated_mask[:-3]), np.asarray(mask[:-3]))
+            assert bool(ablated_mask[-3]) is expected_pass
+            assert np.asarray(ablated_mask[-2:]).tolist() == [True, True]
+    finally:
+        normal.close()
+        no_pass.close()
+
+
 @pytest.mark.parametrize("opponent", ["random", "hunter", "harvester", "mixed"])
 def test_other_opponents_keep_the_numeric_contract(opponent):
     context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))

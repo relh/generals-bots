@@ -43,6 +43,7 @@ def main() -> None:
     workspace, job, startup_seconds, prefix = (
         Path(sys.argv[1]), sys.argv[2], int(sys.argv[3]), sys.argv[4]
     )
+    startup_limit = int(sys.argv[5]) if len(sys.argv) > 5 else 300
     run = workspace / f"{prefix}-pilot-{job}-0"
     log = run / "console.log"
     history = log.read_text(errors="replace") if log.exists() else ""
@@ -67,8 +68,8 @@ def main() -> None:
     )
     if times and not completed and time.time() - log.stat().st_mtime > 90:
         raise SystemExit("No console progress for 90 seconds")
-    if not completed and startup_seconds >= 300 and epoch == 0:
-        raise SystemExit("No completed training epoch after 300 seconds")
+    if not completed and startup_seconds >= startup_limit and epoch == 0:
+        raise SystemExit(f"No completed training epoch after {startup_limit} seconds")
     if (
         not completed and epoch >= 30
         and sps_16 is not None and sps_20 is not None

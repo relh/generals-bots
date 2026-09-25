@@ -11,7 +11,7 @@ from pathlib import Path
 import jax
 import numpy as np
 
-from metta_training.environment import EnvironmentContext
+from metta_training.environment import EnvironmentContext, NativeEnvironment
 from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
 
 
@@ -21,11 +21,16 @@ def main() -> None:
     parser.add_argument("--games", type=int, default=1024)
     parser.add_argument("--warmup", type=int, default=6)
     parser.add_argument("--steps", type=int, default=32)
+    parser.add_argument("--transport", action="store_true")
+    parser.add_argument("--lean", action="store_true")
     args = parser.parse_args()
     if not jax.devices("cuda"):
         raise RuntimeError("B300 CUDA device required")
     options = dict(json.loads(args.build.read_text())["config"]["python_environment"]["options"])
     options["parallel_games"] = args.games
+    if args.lean:
+        options["compact_features"] = True
+        options["lean_features"] = True
     env = BatchedGeneralsPufferEnvironment(
         context=EnvironmentContext(seed=1104, index=0, mode="train", output=Path("/tmp")),
         **options,
@@ -51,8 +56,11 @@ def main() -> None:
 
     env._advance_states = timed_advance
     env._observation = timed_observation
+    serializer = NativeEnvironment.__new__(NativeEnvironment)
+    serializer.spec = env.spec
     profiler = cProfile.Profile()
     totals = []
+    transport_seconds = []
     for turn in range(args.warmup + args.steps):
         # Choose the first legal move, once movement is possible; this choice
         # happens outside the measured environment step.
@@ -63,6 +71,11 @@ def main() -> None:
         if turn == args.warmup:
             profiler.enable()
         obs = env.step(actions).observation
+        if args.transport:
+            before_transport = time.perf_counter()
+            serializer.encode(obs)
+            if turn >= args.warmup:
+                transport_seconds.append(time.perf_counter() - before_transport)
         if turn >= args.warmup:
             totals.append(time.perf_counter() - start)
     profiler.disable()
@@ -72,11 +85,13 @@ def main() -> None:
     total = np.asarray(totals)
     print(json.dumps({
         "games": args.games, "sampled_steps": args.steps,
+        "observation_size": env.spec.observation_size,
         "total_ms_median": float(np.median(total) * 1000),
         "kernel_ms_median": float(np.median(kernel) * 1000),
         "numeric_observation_ms_median": float(np.median(observation) * 1000),
         "other_ms_median": float(np.median((total - kernel - observation) * 1000)),
         "total_ms_p90": float(np.percentile(total, 90) * 1000),
+        "transport_ms_median": float(np.median(transport_seconds) * 1000) if transport_seconds else None,
     }), flush=True)
     stream = io.StringIO()
     pstats.Stats(profiler, stream=stream).strip_dirs().sort_stats("cumtime").print_stats(22)

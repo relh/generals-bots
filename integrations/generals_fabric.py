@@ -45,6 +45,25 @@ class GlobalSiLU:
     publish = _silu_publish
 
 
+def _normalized_global_step(self, state, parameters, inbox, rho):
+    return state.replace(pub=jax.nn.silu(inbox.drive * parameters.weight / 32.0 + parameters.bias))
+
+
+@fl.atom
+class NormalizedGlobalSiLU:
+    """Scale the fan-in from all board sites before the global activation."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(drive=fl.slot(1, merge=fl.monoids.sum))
+    params = fl.params(
+        weight=fl.local((1,), init=fl.inits.constant(1.0)),
+        bias=fl.local((1,), init=fl.inits.constant(0.0)),
+    )
+    step = _normalized_global_step
+    publish = _silu_publish
+
+
 @fl.atom
 class ContextSiLU:
     """Second spatial stage; keep its pool separate from the first stage."""
@@ -187,6 +206,9 @@ def _local_action_key(source, target, context):
         return ("input", context.src.attr(source, "channel"), dx - sx, dy - sy,
                 context.dst.attr(target, "feature"))
     if source[0] == "local" and target[0] == "out":
+        if not context.dst.attr(target, "move"):
+            return ("special", context.src.attr(source, "feature"),
+                    context.dst.attr(target, "readout_group"))
         return ("action", context.src.attr(source, "feature"), context.dst.attr(target, "direction"))
     return ("unique", source, target)
 
@@ -195,6 +217,7 @@ def tied_local_action_policy(
     *, observation_size: int, output_size: int, channels: int, height: int, width: int,
     features_per_site: int = 8, global_features: int = 32, input_radius: float = 2**0.5,
     tie_readout: bool = False, hint_prior_strength: float = 0.0,
+    local_special_readout: bool = False, normalized_global: bool = False,
 ) -> PolicyGraph:
     """Share board kernels and action-direction readouts, with global context."""
     cells = height * width
@@ -219,12 +242,13 @@ def tied_local_action_policy(
             for i in range(cells * features_per_site)
         }),
     )
-    global_core = nn.cluster("global", GlobalSiLU(), n=global_features)
+    global_core = nn.cluster("global", NormalizedGlobalSiLU() if normalized_global else GlobalSiLU(), n=global_features)
     out = nn.cluster(
         "out", nn.atoms.Output(), n=output_size,
         geometry=nn.geometry.fields(own={
             (f"a_{i}",): {
-                "coord": ((i % cells) % width, (i % cells) // width) if i < 4 * cells else (-100, -100),
+                "coord": ((i % cells) % width, (i % cells) // width) if i < 4 * cells
+                else (0, 0) if local_special_readout else (-100, -100),
                 "direction": i // cells if i < 4 * cells else -1,
                 "move": i < 4 * cells,
                 "readout_group": i // cells if i < 4 * cells else i,
