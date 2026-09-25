@@ -899,3 +899,40 @@ Current next step
   Require >=30K sustained end-to-end SPS, improvement over v11 on fresh
   held-out strong-opponent maps, then larger winning hosted direct matches
   before publication. Keep other panes' work and champion unchanged.
+
+Update, 2026-09-25 v11 competitive PPO screen
+  * The strongest private checkpoint, v11 SHA256
+    8f641eae8d3958b319f48fa8e4831b4010ec28b1e20f825653f07f9659441346,
+    was transferred under an isolated audited Puffer initializer to PPO
+    plus .25 sparse teacher loss, with Sentinel targets every fourth turn
+    and Expander hint targets otherwise. The source/target model hashes
+    were c199a856c706ad2d859ff0ea1091d191ff7922e3ffc08af2097383b1afbf55c9
+    and d8c86c6207159518e4465879f1e19de55857260e00744c7d44f35fa550140125,
+    with identical 12,360 state words. Job 15309 stopped before training:
+    the newer fabric changed the model hash. The successful job kept the
+    original v11 fabric and added only the established 3:1 Expander/Sentinel
+    opponent mix to an isolated v11 environment copy. Shared runtime and
+    the original v11 checkpoint remained untouched.
+  * B300 job 15317 completed 4,194,304 steps with 4,096 games/four buffers,
+    16 CPUs, horizon 32, minibatch 16,384, replay .125, LR .0003. Exact
+    epochs 10-31 were 2,752,512 steps / 83.374 seconds = 33,014
+    end-to-end SPS. Checkpoint SHA256
+    52afcd3d299208cc7de0423ccd136eea8b3d303e4337a637205411b32cc2c199.
+    Each held-out evaluation used four 1,024-game Classic batches. Across
+    seeds 1101-1103, PPO averaged .514526/.350342 versus ExpanderHarvester /
+    Sentinel, compared with v11 .513061/.351156 on those same seeds. The
+    mixed result is too small and inconsistent to warrant hosted testing.
+    No upload, league submission, or champion change occurred.
+  * B300 training/builds/source/GPU samples and six evaluation records are
+    archived and SHA256-verified on metta0 as
+    /home/metta/relh-generals-puffer/coworld-classic/relh-classic-v11-ppo-15317-evals.tar.gz,
+    SHA256 c021ad48edaa8a2f9e7b2179adbdb954b6014fedcb19cfcf59a55d892a0eae70.
+    Full settings and seed results are in integrations/COWORLD_CLASSIC_STATUS.md.
+
+Current next step
+  Change defense/expansion supervision or neural architecture in a bounded
+  B300 probe. The stronger v11 checkpoint also plateaued under competitive
+  PPO, so do not extend this line. Require >=30K sustained complete-step
+  training SPS and clear gains across fresh held-out strong opponents before
+  a private hosted screen. Publish only after larger winning hosted direct
+  matches; leave other panes and the incumbent champion alone.

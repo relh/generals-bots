@@ -1373,3 +1373,66 @@ The teacher-only and PPO Cardinal lines now both remain below v11. The next
 probe needs a more effective defense and expansion learning signal or a new
 policy architecture; do not continue this regressing PPO line. Retain the
 >=30K B300 gate and fresh held-out plus hosted proof before publication.
+
+## v11 competitive PPO transfer screen (2026-09-25)
+
+The stronger v11 periodic-Sentinel checkpoint was screened with PPO and
+75% ExpanderHarvester / 25% Sentinel training opponents. Sentinel labels
+replace the signed Expander hint every fourth turn; the other turns retain
+the Expander hint target. An isolated Puffer
+initializer accepts only v11 checkpoint SHA-256
+`8f641eae8d3958b319f48fa8e4831b4010ec28b1e20f825653f07f9659441346`,
+source model hash `c199a856c706ad2d859ff0ea1091d191ff7922e3ffc08af2097383b1afbf55c9`,
+target PPO model hash `d8c86c6207159518e4465879f1e19de55857260e00744c7d44f35fa550140125`,
+identical 12,360 model-state words, the same non-loss build configuration and
+environment spec, and the exact sparse-teacher replacement 1.0 to PPO plus
+sparse teacher .25 loss change. Its patched Puffer source SHA-256 is
+`4e6a5d2abaa9d9c2bc31db15b1da4d55caa169e6ad2ce96c596de478afa74c55`.
+The shared runtime was untouched. Prebuild job 15292 verified the target.
+
+The first pilot, job 15309, stopped before training because the newer
+`source-general-distance` fabric generated model hash
+`cf00da78e6d7daf4fe7b4a93c66668ac54a0d7b0fa83980b00d572684c420764`
+despite
+the same state size. An isolated copy of v11's original source was therefore
+used, adding only the existing four-opponent strong mix (three Expander,
+one Sentinel) to its environment; the patched environment SHA-256 is
+`459e10eab59671c160d11ae8f49a3ffa31e487adf3a606ac7fedc3748745a56d`.
+The original v11 fabric stayed identical. The source's reward shaping has
+army and land terms; its unsupported castle-shaping option was removed from
+the pilot build configuration. The pilot passed its focused B300 test and
+rebuilt the exact target model hash.
+
+Job 15317 completed 4,194,304 fresh Puffer steps on one B300 with 4,096
+parallel games in four buffers, 16 CPUs, horizon 32, minibatch 16,384,
+replay ratio .125, learning rate .0003, PPO entropy coefficient .005, and
+75% ExpanderHarvester / 25% Sentinel opponents. Its exact warm epoch 10–31
+interval was **2,752,512 steps / 83.374 seconds = 33,014 end-to-end SPS**,
+including rollout, host/device transfers, inference, and optimization.
+Warm sampled GPU utilization after 60 seconds averaged 22.7% (compilation
+overlapped the early sample); mean VRAM use was 12,090 MiB. Its final
+checkpoint SHA-256 is
+`52afcd3d299208cc7de0423ccd136eea8b3d303e4337a637205411b32cc2c199`.
+
+Frozen checkpoint evaluations each used four 1,024-game episodes on fresh
+Classic map seeds and verified checkpoint/build identity:
+
+| Seed | PPO vs Expander | v11 vs Expander | PPO vs Sentinel | v11 vs Sentinel |
+| ---: | ---: | ---: | ---: | ---: |
+| 1101 | .502441 | .496338 | .335449 | .337769 |
+| 1102 | .524658 | .519531 | .360352 | .355957 |
+| 1103 | .516479 | .523315 | .355225 | .359741 |
+| Mean | .514526 | .513061 | .350342 | .351156 |
+
+The Expander mean rose only .001465 and the Sentinel mean fell .000814.
+This does not justify a long continuation or hosted upload. No league
+submission or champion change occurred. The B300 training build, model,
+run, GPU samples, isolated source, failed setup, and all six evaluation
+records were verified in the metta0 archive
+`relh-classic-v11-ppo-15317-evals.tar.gz`, SHA-256
+`c021ad48edaa8a2f9e7b2179adbdb954b6014fedcb19cfcf59a55d892a0eae70`.
+
+Next, change the policy's defense/expansion signal or architecture and run
+another bounded B300 screen. Require sustained >=30K complete-step SPS,
+clear held-out gains over v11 across strong opponents and fresh maps, then
+larger winning hosted direct matches before any publication.
