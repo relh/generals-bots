@@ -1320,3 +1320,12 @@ Update, 2026-09-25 wide-batch transport profile
     55d3b1f59b1cf184576c5ede3f865c619f0830398cf9c22cf95453aa26310106.
     This is a bridge feasibility result, not Puffer training. Next attach
     Puffer-owned CUDA buffers and synchronize action/observation streams.
+  * A separate metta worktree at
+    /Users/relh/Code/worktrees/metta-generals-device-bridge was created on
+    relh/generals-jax-device-bridge from f93c027e03. Source inspection found
+    that Metta already wraps Puffer-owned CUDA buffers with DLPack for the
+    Fabric model, while pinned Puffer5's GPU environment callback lacks the
+    action-mask pointer Generals requires. The concrete build, mask,
+    callback, synchronization, parity and throughput tasks are recorded in
+    integrations/JAX_PUFFER5_DEVICE_BRIDGE.md. No integrated bridge or
+    300K end-to-end trainer exists yet.
