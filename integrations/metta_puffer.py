@@ -297,14 +297,25 @@ class BatchedGeneralsPufferEnvironment:
     """Run independent Generals games in one JAX device step."""
 
     def __init__(
-        self, *, context: EnvironmentContext, parallel_games: int = 16, require_gpu: bool = True, **options
+        self, *, context: EnvironmentContext, parallel_games: int = 16, require_gpu: bool = True,
+        sentinel_teacher_fraction: float = 0.0, sentinel_teacher_interval: int = 1, **options
     ):
         if parallel_games < 1:
             raise ValueError("parallel_games must be positive")
+        if not 0 <= sentinel_teacher_fraction <= 1:
+            raise ValueError("Sentinel teacher fraction must be in [0, 1]")
+        if sentinel_teacher_interval < 1:
+            raise ValueError("Sentinel teacher interval must be positive")
         if require_gpu and not jax.devices("cuda"):
             raise RuntimeError("Batched Generals training requires a CUDA JAX device")
         self.base = GeneralsPufferEnvironment(context=context, **options)
         self.parallel_games = parallel_games
+        self.sentinel_teacher_games = round(parallel_games * sentinel_teacher_fraction) if self.base.training else 0
+        self.sentinel_teacher_interval = sentinel_teacher_interval
+        if self.sentinel_teacher_games and not (
+            self.base.sparse_teacher and self.base.prior_hint_features and not self.base.teacher_rollouts
+        ):
+            raise ValueError("Sentinel label mix requires sparse signed-hint labels and policy rollouts")
         self.spec = self.base.spec.model_copy(update={"agents": parallel_games})
         self.horizon = self.base.env.truncation
         self.turn = 0
@@ -315,6 +326,11 @@ class BatchedGeneralsPufferEnvironment:
         self._observe_states = jax.jit(jax.vmap(self.base._observe))
         if self.base.supervise_teacher or self.base.sparse_teacher:
             self._teacher_actions = jax.jit(jax.vmap(self.base._teacher))
+        if self.sentinel_teacher_games:
+            sentinel = SentinelAgent()
+            self._sentinel_actions = jax.jit(jax.vmap(
+                lambda state, side, key: sentinel.act(game.get_observation(state, side), key)
+            ))
 
         def advance_one(state, pool, side, opponent_id, index, split, key, cached_teacher_action, alive):
             def active(_):
@@ -359,7 +375,15 @@ class BatchedGeneralsPufferEnvironment:
 
         self._advance_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0, 0, 0, 0, 0)))
 
-    def _observation(self, values, masks, teacher_actions=None):
+    def _sentinel_labels(self):
+        if not self.sentinel_teacher_games or self.turn % self.sentinel_teacher_interval:
+            return None
+        count = self.sentinel_teacher_games
+        keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys[:count])
+        states = jax.tree.map(lambda value: value[:count] if value is not None else None, self.states)
+        return np.asarray(self._sentinel_actions(states, self.sides[:count], keys))
+
+    def _observation(self, values, masks, teacher_actions=None, sentinel_actions=None):
         public_values = np.asarray(values).copy()
         public_values[self.finished] = 0
         legal = np.asarray(masks, dtype=bool).copy()
@@ -380,6 +404,18 @@ class BatchedGeneralsPufferEnvironment:
                     labeled = (~self.finished) & legal[rows, labels[:, 0]]
                     metadata[labeled, 0] = labels[labeled, 0]
                     metadata[labeled, 1] = labels[labeled, 1]
+                    if sentinel_actions is not None:
+                        count = self.sentinel_teacher_games
+                        cells = self.base.size**2
+                        actions = sentinel_actions
+                        move_index = actions[:, 3] * cells + actions[:, 1] * self.base.size + actions[:, 2]
+                        index = np.where(actions[:, 0] == 1, self.spec.action_sizes[0] - 1, move_index)
+                        chosen = np.arange(count)
+                        valid = (~self.finished[:count]) & legal[chosen, index]
+                        metadata[:count] = -1
+                        metadata[chosen[valid], 0] = index[valid]
+                        moving = valid & (actions[:, 0] == 0)
+                        metadata[chosen[moving], 1] = actions[moving, 4]
                 else:
                     if teacher_actions is None:
                         teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
@@ -435,7 +471,7 @@ class BatchedGeneralsPufferEnvironment:
         if self.base.teacher_rollouts:
             teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
             self.cached_teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
-        return self._observation(values, masks, self.cached_teacher_actions)
+        return self._observation(values, masks, self.cached_teacher_actions, self._sentinel_labels())
 
     def step(self, actions: list[list[int]]) -> NumericTransition:
         if len(actions) != self.parallel_games:
@@ -476,7 +512,7 @@ class BatchedGeneralsPufferEnvironment:
         else:
             score = float(self.outcomes.mean()) if episode_done else 0.0
         return NumericTransition(
-            observation=self._observation(values, masks, teacher_actions),
+            observation=self._observation(values, masks, teacher_actions, self._sentinel_labels()),
             rewards=np.asarray(rewards).tolist(),
             terminated=[True] * self.parallel_games if episode_done else newly_finished.tolist(),
             episode_done=episode_done,

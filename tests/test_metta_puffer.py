@@ -13,7 +13,7 @@ from metta_training.environment import EnvironmentContext, NativeEnvironment
 from generals.agents import ExpanderAgent
 from generals.core import game
 from integrations.metta_puffer import BatchedGeneralsPufferEnvironment, GeneralsPufferEnvironment
-from integrations.puffer_codec import decode_action
+from integrations.puffer_codec import decode_action, hinted_replay_indices
 
 
 def test_fogged_observation_mask_and_finite_episode():
@@ -292,6 +292,39 @@ def test_teacher_rollouts_reuse_next_state_action():
     finally:
         first.close()
         second.close()
+
+
+def test_sentinel_label_mix_overrides_only_selected_hint_targets():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, opponent="random", coworld_classic=True, coworld_pool_size=64,
+        teacher="expander_harvester", sparse_teacher=True, factorized_actions=True,
+        compact_features=True, lean_features=True,
+        hint_features=True, prior_hint_features=True, expander_hint_features=True,
+        parallel_games=4, sentinel_teacher_fraction=0.5, sentinel_teacher_interval=2,
+        require_gpu=False,
+    )
+    try:
+        observation = env.reset("sentinel-label-mix")
+        assert env.sentinel_teacher_games == 2
+        for turn in range(3):
+            targets = np.asarray(observation.replay_metadata)
+            actions = env._sentinel_labels()
+            hints = hinted_replay_indices(np.asarray(observation.values), env.base.size)
+            if turn % 2 == 0:
+                cells = env.base.size**2
+                sentinel_index = np.where(
+                    actions[:, 0] == 1, env.spec.action_sizes[0] - 1,
+                    actions[:, 3] * cells + actions[:, 1] * env.base.size + actions[:, 2],
+                )
+                np.testing.assert_array_equal(targets[:2, 0], sentinel_index)
+                np.testing.assert_array_equal(targets[2:], hints[2:])
+            else:
+                assert actions is None
+                np.testing.assert_array_equal(targets, hints)
+            observation = env.step([[env.spec.action_sizes[0] - 1, 0]] * 4).observation
+    finally:
+        env.close()
 
 
 def test_training_restarts_a_finished_game_without_ending_the_batch():

@@ -837,3 +837,69 @@ as `relh-classic-warm-ppo-13733-13744-13745.tar.gz` (SHA-256
 No long PPO extension or hosted upload was made. A stronger, cheaper training
 target or improved win-focused credit remains necessary before the next long
 run and publication gate.
+
+## Periodic Sentinel labels and private v11 screen (2026-09-24/25)
+
+`BatchedGeneralsPufferEnvironment` can now replace its fast signed-hint
+imitation target with the actual Sentinel action for a fixed fraction of games
+at a specified turn interval. The policy still chooses rollout actions. A
+focused GPU test passed, and the 4,194,304-step B300 pilot 13829, using
+Sentinel labels in all games every fourth step, sustained about 31.3-33.2K
+warm end-to-end SPS through the prior 2.6M-step failure range. Its seed-1101
+strong-opponent scores were .484619 versus ExpanderHarvester and .318726
+versus Sentinel, versus the selected baseline .481445/.321411. The pilot and
+evals are verified on metta0 in
+`relh-classic-hybrid-periodic-13829-13848-13849.tar.gz` (SHA-256
+`88578ba81101d56473832b234b457188bfa9295ef261268d4843a41f7cb4e57b`).
+Spatial 50% and 25% Sentinel labels every turn reached only about 28.2K SPS
+and were stopped by the throughput guard. Their terminal archive SHA-256 is
+`a1ddca0b00fd4dd58ed5c2f6e14670434bd5604c5a54a436d7750228504caa1e`.
+
+The first long continuation 13892 selected a GPU with another user's active
+process, warmed around 18K SPS, and was guard-stopped without a checkpoint.
+Its diagnostic archive SHA-256 is
+`5b3b522613be5fb21a738d17028c76ca23eb5cc587add91b5b10524042215bcc`.
+Job 13916 reserved three B300 devices, inspected physical use, and trained
+only on the free GPU. It completed 33,554,432 new steps from the pilot with
+four 1,024-game buffers, 4,096 games total, 8,192 minibatch, horizon 32,
+replay ratio .125, LR .0003, and 16 CPUs. Warm end-to-end intervals were
+about 31.1-34.3K SPS; late intervals 32.9-33.5K. The selected B300 sampled
+about 30-40% utilization and 11.9 GiB memory. The final checkpoint SHA-256 is
+`8f641eae8d3958b319f48fa8e4831b4010ec28b1e20f825653f07f9659441346`.
+The complete run is verified on metta0 as `relh-classic-hybrid-long-13916.tar.gz`
+(SHA-256 `9ef74fe4f500d923091bc376e5c0fc1d482ae9e3391f71544cef8a454e08765a`).
+
+Strong-opponent held-out results each cover 4,096 Classic games per
+opponent/checkpoint/seed:
+
+| Seed | Baseline Expander | Final Expander | Baseline Sentinel | Final Sentinel |
+| --- | ---: | ---: | ---: | ---: |
+| 1101 | .481445 | .496338 | .321411 | .337769 |
+| 1102 | .511230 | .519531 | .365601 | .355957 |
+| 1103 | .499146 | .523315 | .337402 | .359741 |
+
+The final checkpoint has a mean relative gain of about .0158 against
+ExpanderHarvester and .0097 against Sentinel across these seeds. This is
+small and inconsistent for Sentinel. The 8.39M and 16.78M intermediate
+checkpoints were also evaluated on seed 1101. All B300 builds, evals, and
+identity checks are archived as
+`relh-classic-hybrid-strong-evals-13973-14016.tar.gz` (SHA-256
+`68ef2db30edf9da14f5a3565c895a0df2fde3bf43c3a44ab5cbd5b01d73c7678`).
+
+The final weights were verified against that checkpoint and put in the same
+amd64 runtime as the prior hosted policy, with the unchanged model build.
+They were uploaded privately as `richard-generals-classic-neural:v11` under
+the active Richard identity. His active Classic incumbent is
+`co-gas-generals-siege-richard:v2`, and Richard was the lower-rated eligible
+account at upload. The first eight-game direct hosted screen is
+`xreq_c9a1b313-c378-4146-bd3f-eb522229fc74`; it completed with zero failed
+episodes and **3 wins, 3 losses, 2 draws**. The 32-game private confirmation
+is `xreq_92691f48-7db6-4190-87ae-04f669afc498`; it completed with zero
+failed episodes and **10 wins, 15 losses, 7 draws**. The exact request bodies
+and complete readbacks are verified on metta0 in
+`relh-classic-hosted-v11-results.tar.gz` (SHA-256
+`85acaffb08ddc7f12236bebef8638ebe8fd70204bb947573702f0b9aafc9a868`).
+V11 has not proven an advantage over Richard's incumbent. No league
+submission or champion change occurred. The next training iteration should
+inspect the hosted losses and improve the learning target or policy before
+another bounded B300 pilot and hosted test.

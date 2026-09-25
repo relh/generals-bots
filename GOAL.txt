@@ -367,3 +367,63 @@ Update, 2026-09-24 scripted teacher gap and warm-start PPO probe
     through 2.6M steps, then beat .481445/.321411 on fresh held-out Classic
     opponents before committing to tens of millions of steps and hosted tests.
     No policy has met the publication gate; the goal remains active.
+
+Update, 2026-09-24/25 hybrid periodic Sentinel teacher and long-run candidate
+  * The bounded hybrid teacher labels all 1,024 games with Sentinel every
+    fourth step and keeps the fast signed-hint target on other steps. The
+    4,194,304-step B300 pilot 13829 sustained about 31.3-33.2K warm
+    end-to-end SPS and crossed 2.6M steps. Its held-out seed-1101 scores
+    were .484619 versus ExpanderHarvester and .318726 versus Sentinel,
+    effectively flat against the selected baseline .481445/.321411. Archive
+    relh-classic-hybrid-periodic-13829-13848-13849.tar.gz on metta0 has
+    SHA256 88578ba81101d56473832b234b457188bfa9295ef261268d4843a41f7cb4e57b.
+    Spatial 50% and 25% Sentinel labels every step were both below the
+    30K gate at about 28.2K SPS and stopped by the guard (jobs 13779/13793).
+  * An initial long run 13892 selected a B300 device already occupied by an
+    external user's process, warmed near 18K SPS, and was stopped by the
+    throughput guard without a checkpoint. Archive SHA256
+    5b3b522613be5fb21a738d17028c76ca23eb5cc587add91b5b10524042215bcc.
+    The clean-device job 13916 reserved three B300 GPUs to inspect physical
+    use, then trained on the one free GPU without disturbing the other user's
+    processes. It completed 33,554,432 new steps from the pilot checkpoint,
+    with four 1,024-game buffers, 4,096 games total, 8,192 minibatch,
+    horizon 32, replay ratio .125, LR .0003, and 16 CPUs. Warm end-to-end
+    intervals were about 31.1-34.3K SPS; late intervals 32.9-33.5K. The
+    selected GPU sampled about 30-40% utilization and 11.9 GiB memory.
+    Final checkpoint SHA256
+    8f641eae8d3958b319f48fa8e4831b4010ec28b1e20f825653f07f9659441346.
+    Verified metta0 archive relh-classic-hybrid-long-13916.tar.gz has SHA256
+    9ef74fe4f500d923091bc376e5c0fc1d482ae9e3391f71544cef8a454e08765a.
+  * Stronger-opponent held-out tests used four 1,024-game batch episodes per
+    checkpoint/opponent/seed on B300. On seed 1101 the final checkpoint
+    scored .496338 versus ExpanderHarvester and .337769 versus Sentinel,
+    compared with baseline .481445/.321411. On seed 1102 it scored
+    .519531/.355957 versus baseline .511230/.365601. On seed 1103 it scored
+    .523315/.359741 versus baseline .499146/.337402. The relative mean
+    gain across seeds is about +.0158/+.0097, respectively: positive but
+    small and inconsistent against Sentinel. Intermediate 8.39M and 16.78M
+    checkpoints were also tested; the final led the latter on Sentinel.
+    Verified evaluation archive relh-classic-hybrid-strong-evals-13973-14016.tar.gz
+    has SHA256 68ef2db30edf9da14f5a3565c895a0df2fde3bf43c3a44ab5cbd5b01d73c7678.
+  * The final checkpoint was packaged in the proven amd64 Classic runtime,
+    verifying the exact weight SHA above and the unchanged model build. It
+    was uploaded privately under active Richard as
+    richard-generals-classic-neural:v11. At upload, Richard remained the
+    lower-rated eligible account and his incumbent was
+    co-gas-generals-siege-richard:v2. A private eight-game direct hosted
+    screen against that incumbent completed as
+    xreq_c9a1b313-c378-4146-bd3f-eb522229fc74: 3 wins, 3 losses, 2 draws,
+    zero failed episodes. A 32-game private direct confirmation completed as
+    xreq_92691f48-7db6-4190-87ae-04f669afc498: 10 wins, 15 losses,
+    7 draws, zero failed episodes. All request bodies and readbacks are
+    verified on metta0 as relh-classic-hosted-v11-results.tar.gz, SHA256
+    85acaffb08ddc7f12236bebef8638ebe8fd70204bb947573702f0b9aafc9a868.
+    No league submission or champion change has occurred.
+
+Current next step
+  V11 has not proven an advantage over Richard's incumbent; keep it private.
+  Inspect its hosted loss replays for the midgame economy/defense failure,
+  then build a bounded improved learning target or policy. Require >=30K
+  sustained end-to-end B300 SPS, stronger held-out local scores, and a
+  larger winning direct hosted set before any league submission/champion
+  change. Recheck identity and standings immediately before publication.
