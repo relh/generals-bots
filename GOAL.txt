@@ -518,3 +518,58 @@ Current next step
   a stronger opponent or directly optimize against competitive play in a
   bounded B300 pilot. Require strong local held-out improvement and larger
   hosted direct wins before publishing any policy.
+
+Update, 2026-09-25 stronger-opponent PPO and learning-rate probes
+  * A new strong_mixed Classic opponent pool assigns three quarters of
+    training games to ExpanderHarvester and one quarter to Sentinel. The
+    focused B300 routing test passed. Both bounded probes used one B300
+    trainer on an uncontended device, reserving three visible devices only
+    to select it; four 1,024-game buffers, 4,096 total games, 8,192
+    minibatch, horizon 32, replay ratio .125, 16 CPUs, castle shaping
+    weight 1.0, PPO plus sparse-teacher coefficient .25, and verified
+    initialization from the selected 31.46M checkpoint.
+  * Job 14364 (LR .0001) completed 4,194,304 new steps. Warm epochs 10-31
+    completed 2,752,512 steps in 79.090 s, 34,802 end-to-end SPS; the
+    selected B300 averaged 34.6% sampled utilization and 12.1 GiB during
+    active training. Final checkpoint SHA256
+    3d42140e118bc6e78556e4781cdd1e3350d159751d2e2bf299437c73b2804a96.
+    Held-out seed 1101, four 1,024-game batch episodes per opponent, scored
+    .481567 versus ExpanderHarvester and .321533 versus Sentinel (Slurm
+    14369/14373), essentially the old baseline and below v11. Parameter
+    RMS change from the starting checkpoint was only .001542. Verified
+    metta0 run archive SHA256
+    4bf5ca528b7f786018a2a31049c4b825c8be1fc562de086094f699ccf22216c7;
+    eval archive SHA256
+    ee4f034221444ac7f117da1b554016ed491745c4b5d9b759a0cd43b60455a4a2.
+  * Job 14411 increased LR to .001 while retaining the audited .25 teacher
+    coefficient. It completed 4,194,304 steps with no nonfinite gradients;
+    warm epochs 10-31 yielded 2,752,512 steps in 81.496 s, 33,775
+    end-to-end SPS. The selected B300 averaged 38.0% sampled utilization
+    and 12.2 GiB during active training. Its final checkpoint SHA256 is
+    6e9ba2b0faa26a146bfbcd4e2831f69649e7d73dd29bad387ad9ea3f2630c859.
+    Parameter RMS change rose to .018126, but held-out seed-1101 scores
+    were only .484375 versus ExpanderHarvester and .320312 versus Sentinel
+    (Slurm 14419/14432), still below v11. Verified metta0 run archive
+    SHA256 aba37428629a77d6af083ad5d41dbe9ce805a82eec8253e5f8370964f4d2cd88;
+    eval archive SHA256
+    523fa1d17aaabfe2691963065c351f35cfbc842473eb37f99e74400c97146705.
+    An attempted .05 teacher coefficient was stopped before training by
+    the existing verified model-identity transfer gate (job 14403), then
+    rerun with the audited .25 coefficient. Its setup logs are preserved
+    in verified metta0 archive
+    relh-classic-strong-mixed-ppo-lr1e3-setup-14403.tar.gz, SHA256
+    1047bb55cddc58434146ec4973e44613c0a53a073e0ea090723b5387a51fcd2e.
+    Job 14411 wrote its final
+    checkpoint and completion record before Docker teardown delayed the
+    Slurm exit; Slurm ultimately reported COMPLETED 0:0. All owned jobs and
+    containers are now absent. No longer run, hosted upload, league
+    submission, or champion change followed.
+
+Current next step
+  Stronger sampled opponents and a twelvefold larger policy update both
+  failed to improve the held-out gate. Revisit the eight-channel hinted
+  observation and 8,004-parameter tied-local model, particularly whether
+  they expose sufficient contested-castle and general-defense context.
+  Run a bounded B300 architecture/observation probe with >=30K end-to-end
+  SPS before long training. Keep v11 private and require larger direct
+  hosted wins before any publication.

@@ -983,3 +983,51 @@ are archived as `relh-classic-castle-ppo-setup-failures-14254-14299.tar.gz`
 No owned job or container remains. The next attempt needs a stronger local
 competitive objective or opponent while keeping the 30K SPS gate; v11 remains
 private and Richard's incumbent remains champion.
+
+## Stronger-opponent PPO and learning-rate probes (2026-09-25)
+
+The `strong_mixed` Classic opponent pool assigns three quarters of training
+games to ExpanderHarvester and one quarter to Sentinel. A focused B300 test
+passed its deterministic 16-game routing and finite-step check. Both bounded
+probes used the same 8,004-parameter tied-local policy initialized from the
+selected 31.46M supervised checkpoint, castle-control shaping weight 1.0,
+PPO plus sparse-teacher coefficient .25, four 1,024-game buffers, 4,096 total
+games, 8,192 minibatch, horizon 32, replay ratio .125, and 16 CPUs. Three
+B300 devices were reserved to select one uncontended device; one device ran
+the sole trainer.
+
+| Run | LR | Warm epochs 10–31 | B300 utilization | Held-out Expander / Sentinel, seed 1101 |
+| --- | ---: | ---: | ---: | ---: |
+| 14364 | .0001 | 2,752,512 steps / 79.090 s = **34,802 SPS** | 34.6%; 12.1 GiB | .481567 / .321533 |
+| 14411 | .001 | 2,752,512 steps / 81.496 s = **33,775 SPS** | 38.0%; 12.2 GiB | .484375 / .320312 |
+
+Both runs completed 4,194,304 steps without nonfinite gradients. Each
+held-out score covers four 1,024-game batch episodes per opponent. Both are
+essentially at the old selected baseline (.481445/.321411) and below v11
+(.496338/.337769) on the same seed. Checkpoint 14364 SHA-256 is
+`3d42140e118bc6e78556e4781cdd1e3350d159751d2e2bf299437c73b2804a96`;
+checkpoint 14411 SHA-256 is
+`6e9ba2b0faa26a146bfbcd4e2831f69649e7d73dd29bad387ad9ea3f2630c859`.
+Against the common starting checkpoint, the policy RMS change was .001542
+at LR .0001 and .018126 at LR .001. The twelvefold larger update did not
+produce a stronger policy. An attempted .05 teacher coefficient was stopped
+before training by the audited model-identity transfer gate (job 14403), so
+both measured runs retained coefficient .25.
+
+The run/evaluation pairs are verified on metta0 as:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-strong-mixed-ppo-14364.tar.gz` | `4bf5ca528b7f786018a2a31049c4b825c8be1fc562de086094f699ccf22216c7` |
+| `relh-classic-strong-mixed-ppo-evals-14369-14373.tar.gz` | `ee4f034221444ac7f117da1b554016ed491745c4b5d9b759a0cd43b60455a4a2` |
+| `relh-classic-strong-mixed-ppo-lr1e3-14411.tar.gz` | `aba37428629a77d6af083ad5d41dbe9ce805a82eec8253e5f8370964f4d2cd88` |
+| `relh-classic-strong-mixed-ppo-lr1e3-evals-14419-14432.tar.gz` | `523fa1d17aaabfe2691963065c351f35cfbc842473eb37f99e74400c97146705` |
+| `relh-classic-strong-mixed-ppo-lr1e3-setup-14403.tar.gz` | `1047bb55cddc58434146ec4973e44613c0a53a073e0ea090723b5387a51fcd2e` |
+
+Job 14411 wrote its final checkpoint and `completed.json` before Docker
+teardown delayed Slurm completion; accounting ultimately reported COMPLETED
+0:0. No owned strong-mixed job or container remains. Neither candidate met
+the local strength gate, so there was no long run, hosted upload, league
+submission, or champion change. The next bounded probe should revisit the
+eight-channel hinted observation and small tied-local policy to expose
+contested castles and general-defense context while maintaining 30K SPS.

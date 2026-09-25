@@ -177,6 +177,23 @@ def test_castle_control_margin_tracks_owned_and_enemy_castles():
     assert float(_castle_control_margin(state, jnp.int32(1))) == pytest.approx(-0.2)
 
 
+def test_strong_mixed_opponents_assign_one_quarter_sentinel_games():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, opponent="strong_mixed", coworld_classic=True,
+        coworld_pool_size=64, parallel_games=16, require_gpu=False,
+    )
+    try:
+        env.reset("strong-mixed-opponents")
+        ids = np.asarray(env.opponent_ids)
+        assert env.base.num_opponents == 4
+        assert np.bincount(ids, minlength=4).tolist() == [4, 4, 4, 4]
+        transition = env.step([[env.spec.action_sizes[0] - 1]] * 16)
+        assert np.isfinite(transition.rewards).all()
+    finally:
+        env.close()
+
+
 def test_supervised_teacher_provides_legal_targets_only_during_training():
     training = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     evaluating = training.model_copy(update={"mode": "evaluate"})

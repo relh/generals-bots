@@ -182,7 +182,9 @@ class GeneralsPufferEnvironment:
         if supervise_teacher or sparse_teacher:
             self._teacher = jax.jit(lambda state, side, key: teacher_agent.act(game.get_observation(state, side), key))
         opponent_agents = (
-            (RandomAgent(), ExpanderAgent(), HunterAgent()) if opponent == "mixed" else (opponent_types[opponent](),)
+            (RandomAgent(), ExpanderAgent(), HunterAgent()) if opponent == "mixed"
+            else (ExpanderHarvesterAgent(), ExpanderHarvesterAgent(), ExpanderHarvesterAgent(), SentinelAgent())
+            if opponent == "strong_mixed" else (opponent_types[opponent](),)
         )
         self.num_opponents = len(opponent_agents)
         opponent_branches = tuple(lambda args, agent=agent: agent.act(*args) for agent in opponent_agents)
