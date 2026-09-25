@@ -1403,7 +1403,24 @@ Update, 2026-09-25 GPU supervised-teacher bridge
     seed 1101. Eval archive: device-supervised-eval-17153.tar.gz SHA256
     2893fe91cedf70a16d4f1511a4740d2eaa2de115e903575e1491d651cd2b0d7f.
     Since the earlier strong policy needed about 31.46M supervised steps,
-    bounded 33.55M-step learning-curve job 17223 is running with intermediate
-    checkpoints and a sustained 30k SPS guard. No overnight continuation or
-    hosted submission is justified yet. Optimizer time dominates and the
-    current bridge is far short of the requested 300k SPS.
+    bounded 33.55M-step learning-curve job 17223 tested that duration with
+    intermediate checkpoints and a sustained 30k SPS guard. Its last
+    20-epoch interval was 58,458 SPS, but final held-out ExpanderHarvester
+    score was still only .007690 (job 17287). Curve archive SHA256
+    a52ab65b975c1b23271d9dbe298227be97a7afd6bbab117dec3e57415ca5f05b;
+    eval archive SHA256 5399be8f3f310700944eec7de96cec0bd0a01583f28b8b9b6bf7c7db578490f0.
+    A native Puffer audit sampled 524,288 teacher-mixed actions against the
+    prior GPU mask and found zero illegal (job 17305; archive SHA256
+    8854a9c678299861ebb1689816b4f9f8a2ca22f86208c0f56b3332fa7993f291).
+    A separate unassisted student-policy audit also found zero illegal in
+    524,288 actions (job 17367; archive SHA256
+    27526168de0ad3a6c11738f510f50148444b628c4b8c9bc406bec1cb8e967d56).
+    Thus the weak quality is not explained by illegal action sampling.
+    The previous strong policy used an explicit ExpanderHarvester hint and
+    prior; a bounded GPU pilot with that input completed 4.19M steps in job
+    17381 at about 55k steady SPS. Checkpoint SHA256
+    b5a040dab9a8b0df97852c8e64782a7122665754676a9edfa5a0b5a6b948a133;
+    archive device-hinted-pilot-17381.tar.gz SHA256
+    1e40b70af59aa11ad5721c01b4570878820c54656aebb5bd6ac4f42cc46c4e18.
+    Held-out job 17398 is running. No overnight continuation or hosted
+    submission is justified yet; current SPS is far short of 300k.

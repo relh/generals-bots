@@ -2283,8 +2283,41 @@ evaluation build, record and logs are archived as
 `device-supervised-eval-17153.tar.gz` (SHA-256
 `2893fe91cedf70a16d4f1511a4740d2eaa2de115e903575e1491d651cd2b0d7f`).
 The earlier 8,004-parameter policy was selected after about 31.46M
-supervised steps, so bounded job 17223 is screening this new bridge through
-33.55M steps with intermediate checkpoints and a sustained 30k SPS guard.
+supervised steps, so bounded job 17223 screened this bridge through
+33,554,432 steps with intermediate checkpoints and a sustained 30k SPS guard.
+It completed at roughly 55–59k warm SPS, with the last 20-epoch interval
+at 58,458 SPS and late one-minute B300 utilization around 25–34%.
+Its final checkpoint (SHA-256
+`5d854f47b1aaf0be1d695495a723a5acc04f0570af8ac2ed79e007d90e712d3a`)
+scored only **.007690** on held-out ExpanderHarvester seed 1101 (job 17287).
+The curve and evaluation archives are on metta0:
+`device-supervised-curve-17223.tar.gz` (SHA-256
+`a52ab65b975c1b23271d9dbe298227be97a7afd6bbab117dec3e57415ca5f05b`)
+and `device-supervised-curve-eval-17287.tar.gz` (SHA-256
+`5399be8f3f310700944eec7de96cec0bd0a01583f28b8b9b6bf7c7db578490f0`).
+Longer training with this architecture is not justified.
+
+A direct native diagnostic compared every sampled GPU action with the
+preceding mask in job 17305: **524,288 actions, zero illegal**. Its source,
+build, checkpoint, log, and an initial build-fingerprint failure are archived
+on metta0 as `device-action-audit-17288-17305.tar.gz` (SHA-256
+`8854a9c678299861ebb1689816b4f9f8a2ca22f86208c0f56b3332fa7993f291`).
+The stronger check disabled teacher action mixing: B300 job 17367 sampled
+another **524,288 student-policy actions, zero illegal**. Its exact build,
+run and logs are archived as `device-student-audit-17356-17367.tar.gz`
+(SHA-256 `27526168de0ad3a6c11738f510f50148444b628c4b8c9bc406bec1cb8e967d56`).
+These checks rule out illegal sampling as the cause of the poor held-out scores.
+The old competitive model used a direct ExpanderHarvester hint and prior;
+a bounded GPU pilot of that proven input pattern completed 4,194,304 steps
+in job 17381. It uses 4,096 full Classic games, one buffer, horizon 32,
+minibatch 16,384, replay .25, and LR .0003. Completed 16/20-epoch intervals
+were around 55k SPS, with final epoch 931 ms environment, 121 ms rollout
+model, and 1,384 ms optimizer. The checkpoint SHA-256 is
+`b5a040dab9a8b0df97852c8e64782a7122665754676a9edfa5a0b5a6b948a133`.
+Its source, build, failed setup attempts, checkpoint and GPU samples are
+archived as `device-hinted-pilot-17381.tar.gz` (SHA-256
+`1e40b70af59aa11ad5721c01b4570878820c54656aebb5bd6ac4f42cc46c4e18`).
+The held-out test is running in job 17398.
 No overnight continuation or hosted submission is justified yet.
 The teacher transport increases
 the model rollout width from 6,174 to 9,712 floats per agent, and optimizer

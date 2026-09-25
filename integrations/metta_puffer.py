@@ -445,8 +445,10 @@ class BatchedGeneralsPufferEnvironment:
             )
             teacher_action = None
             if self.base.teacher_rollouts or (
-                self.base.training and (self.base.supervise_teacher or self.base.sparse_teacher)
-                and not self.base.prior_hint_features
+                self.base.training and (
+                    self.base.supervise_teacher
+                    or (self.base.sparse_teacher and not self.base.prior_hint_features)
+                )
             ):
                 teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
                 teacher_action = self.base._teacher(next_state, side, teacher_key)
