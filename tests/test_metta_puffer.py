@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import jax
+import jax.numpy as jnp
 import numpy as np
 import pytest
 
@@ -12,7 +13,9 @@ from metta_training.environment import EnvironmentContext, NativeEnvironment
 
 from generals.agents import ExpanderAgent
 from generals.core import game
-from integrations.metta_puffer import BatchedGeneralsPufferEnvironment, GeneralsPufferEnvironment
+from integrations.metta_puffer import (
+    BatchedGeneralsPufferEnvironment, GeneralsPufferEnvironment, _castle_control_margin,
+)
 from integrations.puffer_codec import decode_action, hinted_replay_indices
 
 
@@ -149,6 +152,29 @@ def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
     unshaped = baseline.step([[action_index]])
     assert rewarded.rewards[0] - unshaped.rewards[0] == pytest.approx(0.4)
     assert rewarded.score == unshaped.score
+
+
+def test_castle_control_margin_tracks_owned_and_enemy_castles():
+    state = game.GameState(
+        armies=jnp.ones((2, 3), dtype=jnp.int32),
+        ownership=jnp.asarray([
+            [[True, False, False], [False, True, False]],
+            [[False, True, False], [False, False, False]],
+        ]),
+        ownership_neutral=jnp.zeros((2, 3), dtype=bool),
+        generals=jnp.zeros((2, 3), dtype=bool),
+        castles=jnp.asarray([[True, True, True], [False, True, False]]),
+        mountains=jnp.zeros((2, 3), dtype=bool),
+        passable=jnp.ones((2, 3), dtype=bool),
+        general_positions=jnp.zeros((2, 2), dtype=jnp.int32),
+        teams=jnp.arange(2, dtype=jnp.int32),
+        eliminated=jnp.zeros(2, dtype=bool),
+        time=jnp.int32(0),
+        winner=jnp.int32(-1),
+        pool_idx=jnp.int32(0),
+    )
+    assert float(_castle_control_margin(state, jnp.int32(0))) == pytest.approx(0.2)
+    assert float(_castle_control_margin(state, jnp.int32(1))) == pytest.approx(-0.2)
 
 
 def test_supervised_teacher_provides_legal_targets_only_during_training():

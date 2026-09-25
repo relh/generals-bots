@@ -944,3 +944,42 @@ hosted candidate. Setup jobs 14107/14116/14120 and evaluation jobs
 14149/14152 failed before useful work due staging, GPU visibility, script,
 and test mode mistakes that were corrected. No owned Sentinel-only Slurm job
 or container remains. No league submission or champion change was made.
+
+## Castle-control PPO pilot (2026-09-25)
+
+The existing PPO shaping potential included normalized army and land margins
+but no castle-control term. `GeneralsPufferEnvironment` now supports an
+optional normalized castle margin in that potential; its default coefficient
+is zero. A focused B300 unit test passed. The bounded pilot used shaping
+weight 1.0, castle coefficient 1.0, PPO plus sparse imitation coefficient
+.25, ExpanderHarvester as opponent, LR .0001, and the same 8,004-parameter
+model initialized from the selected 31.46M supervised checkpoint (SHA-256
+`939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499`).
+
+B300 job 14314 completed 4,194,304 new steps with four 1,024-game buffers,
+4,096 games total, 8,192 minibatch, horizon 32, replay ratio .125, and
+16 CPUs. It reserved three visible B300 devices to find an uncontended one;
+one device ran the sole trainer. After compilation, epochs 10–31 completed 2,752,512 steps in
+74.700 seconds: **36,848 end-to-end SPS**. The selected B300 sampled 35.7%
+utilization and 12.2 GiB during that interval. It crossed 2.6M steps without
+nonfinite gradients or a stall and completed normally. Final checkpoint
+SHA-256 is `ff71e4a55c9548a890fae733beea103f7478b5627cb4e57bdce307676afadedc`.
+The complete run, build, source, test, logs, and samples are verified on metta0
+as `relh-classic-castle-ppo-14314.tar.gz` (SHA-256
+`81174c791013924702c1e198cf078d4ec786fdb47ae8c43e2c3d3f003c62f946`).
+
+Held-out seed 1101, four 1,024-game batch episodes per opponent, scored
+**.481445 versus ExpanderHarvester** (job 14323) and **.315430 versus
+Sentinel** (job 14331). Both are no better than the old selected baseline
+(.481445/.321411) and below v11 (.496338/.337769). The evaluation records,
+build, and logs are verified on metta0 as
+`relh-classic-castle-ppo-evals-14323-14331.tar.gz` (SHA-256
+`c11c94ea99015dd723929c4434d64f1b5dd1db3ff06e8520e8e54346d3bdea7e`).
+There is no basis for a long run or hosted upload. Setup jobs 14254, 14292,
+and 14299 failed before training due transient Docker image startup, missing
+linker libraries in an alternate image, and a test import error. Their logs
+are archived as `relh-classic-castle-ppo-setup-failures-14254-14299.tar.gz`
+(SHA-256 `d55a7dd1f8d1b8760a1ea9babb659cea9d24150265a92512bbb8c906b9d5cac5`).
+No owned job or container remains. The next attempt needs a stronger local
+competitive objective or opponent while keeping the 30K SPS gate; v11 remains
+private and Richard's incumbent remains champion.

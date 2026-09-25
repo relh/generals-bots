@@ -473,3 +473,48 @@ Current next step
   keeping the 30K end-to-end gate. Require stronger held-out results before
   another long run, and winning larger hosted direct matches before any
   publication. V11 remains private; Richard's incumbent remains champion.
+
+Update, 2026-09-25 castle-control PPO pilot
+  * The prior potential-based reward covered army and land, but not castle
+    control. An optional normalized castle-control potential was added for
+    a bounded win-focused PPO-plus-sparse-teacher experiment; its default
+    coefficient is zero, retaining earlier configurations. The focused B300
+    test passed. The exact Classic build used shaping weight 1.0, castle
+    coefficient 1.0, PPO with sparse-teacher coefficient .25, ExpanderHarvester
+    opponent, the existing 8,004-parameter model, and initialization from
+    the selected 31.46M supervised checkpoint (SHA256 939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499).
+  * B300 job 14314 completed 4,194,304 new steps with four 1,024-game
+    buffers, 4,096 games total, 8,192 minibatch, horizon 32, replay ratio
+    .125, LR .0001, and 16 CPUs. It reserved three visible B300 devices to
+    identify an uncontended one and ran the sole trainer on that device.
+    After JAX compilation, epochs 10-31
+    completed 2,752,512 steps in 74.700 seconds, or 36,848 end-to-end SPS.
+    The selected B300 sampled 35.7% utilization and 12.2 GiB memory during
+    that interval. It crossed 2.6M steps and completed without nonfinite
+    gradients or a stall. Final checkpoint SHA256
+    ff71e4a55c9548a890fae733beea103f7478b5627cb4e57bdce307676afadedc.
+    Verified metta0 run archive relh-classic-castle-ppo-14314.tar.gz has
+    SHA256 81174c791013924702c1e198cf078d4ec786fdb47ae8c43e2c3d3f003c62f946.
+  * Held-out seed 1101, four 1,024-game batch episodes per opponent, scored
+    .481445 versus ExpanderHarvester (job 14323) and .315430 versus Sentinel
+    (job 14331). These do not exceed the old baseline .481445/.321411 or
+    v11 .496338/.337769. Verified eval archive
+    relh-classic-castle-ppo-evals-14323-14331.tar.gz on metta0 has SHA256
+    c11c94ea99015dd723929c4434d64f1b5dd1db3ff06e8520e8e54346d3bdea7e.
+    There is no quality basis for a long run or private hosted upload.
+  * Setup jobs 14254/14292/14299 stopped before training because Docker
+    startup timed out for the otherwise working B300 image, the alternative
+    image lacked native linker libraries, and one focused test lacked a
+    numpy import. All causes were corrected. Their logs are preserved on
+    metta0 as relh-classic-castle-ppo-setup-failures-14254-14299.tar.gz,
+    SHA256 d55a7dd1f8d1b8760a1ea9babb659cea9d24150265a92512bbb8c906b9d5cac5.
+    No owned castle-PPO Slurm job or container remains.
+
+Current next step
+  Castle-control PPO cleared the throughput gate but failed the held-out
+  strength gate. Keep v11 private and the champion unchanged. Analyze whether
+  the fixed ExpanderHarvester opponent and limited model observations prevent
+  the policy from learning to hold castles in contested midgame states; build
+  a stronger opponent or directly optimize against competitive play in a
+  bounded B300 pilot. Require strong local held-out improvement and larger
+  hosted direct wins before publishing any policy.

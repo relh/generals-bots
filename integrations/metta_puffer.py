@@ -31,6 +31,12 @@ from integrations.puffer_codec import (
 )
 
 
+def _castle_control_margin(state: game.GameState, side: jnp.ndarray) -> jnp.ndarray:
+    owned = jnp.sum(state.castles & state.ownership[side])
+    opposing = jnp.sum(state.castles & state.ownership[1 - side])
+    return (owned - opposing) / (jnp.sum(state.castles) + 1)
+
+
 class GeneralsPufferEnvironment:
     def __init__(
         self,
@@ -40,6 +46,7 @@ class GeneralsPufferEnvironment:
         horizon: int = 300,
         opponent: str = "expander",
         shaping_weight: float = 0.2,
+        castle_shaping_weight: float = 0.0,
         teacher: str | None = None,
         imitation_weight: float = 0.0,
         supervise_teacher: bool = False,
@@ -59,6 +66,8 @@ class GeneralsPufferEnvironment:
         teacher_rollouts: bool = False,
         goal_features: bool = False,
     ):
+        if shaping_weight < 0 or castle_shaping_weight < 0:
+            raise ValueError("Shaping weights must be nonnegative")
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
         if sparse_teacher and (supervise_teacher or not factorized_actions):
@@ -202,10 +211,13 @@ class GeneralsPufferEnvironment:
             new_land = (final.owned_land_count - final.opponent_land_count) / (
                 final.owned_land_count + final.opponent_land_count + 1
             )
+            old_castles = _castle_control_margin(state, side)
+            new_castles = _castle_control_margin(timestep.last_state, side)
             done = timestep.terminated | timestep.truncated
             outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
             reward = outcome + shaping_weight * (
-                0.99 * (0.5 * new_army + 0.3 * new_land) * ~done - (0.5 * old_army + 0.3 * old_land)
+                0.99 * (0.5 * new_army + 0.3 * new_land + castle_shaping_weight * new_castles) * ~done
+                - (0.5 * old_army + 0.3 * old_land + castle_shaping_weight * old_castles)
             )
             if teacher_agent is not None and imitation_weight:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
