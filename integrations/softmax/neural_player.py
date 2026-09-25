@@ -38,7 +38,9 @@ async def play(url: str, bundle: Path) -> None:
     build = json.loads(config.build.read_text())
     options = build["config"]["python_environment"]["options"]
     codec_kwargs = (
-        {"expander_neighbor_threat_prior_hinted": True}
+        {"expander_general_distance_prior_hinted": True}
+        if options.get("general_distance_hint_features")
+        else {"expander_neighbor_threat_prior_hinted": True}
         if options.get("neighbor_threat_hint_features")
         else {"expander_packed_context_prior_hinted": True}
         if options.get("expander_hint_features") and options.get("packed_context_hint_features")

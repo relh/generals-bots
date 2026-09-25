@@ -41,6 +41,11 @@ _encode_expander_neighbor_threat_prior_hinted = jax.jit(
         obs, signed_flags=True, expander_hint=True, neighbor_threat_features=True,
     )
 )
+_encode_expander_general_distance_prior_hinted = jax.jit(
+    lambda obs: encode_coworld_hinted_observation(
+        obs, signed_flags=True, expander_hint=True, general_distance_features=True,
+    )
+)
 
 
 def training_observation(message: dict) -> Observation:
@@ -96,10 +101,13 @@ def encode_wire_observation(
     expander_context_prior_hinted: bool = False,
     expander_packed_context_prior_hinted: bool = False,
     expander_neighbor_threat_prior_hinted: bool = False,
+    expander_general_distance_prior_hinted: bool = False,
 ):
     observation = training_observation(message)
     values, mask = (
-        _encode_expander_neighbor_threat_prior_hinted(observation)
+        _encode_expander_general_distance_prior_hinted(observation)
+        if expander_general_distance_prior_hinted
+        else _encode_expander_neighbor_threat_prior_hinted(observation)
         if expander_neighbor_threat_prior_hinted
         else _encode_expander_packed_context_prior_hinted(observation)
         if expander_packed_context_prior_hinted

@@ -66,6 +66,7 @@ class GeneralsPufferEnvironment:
         context_hint_features: bool = False,
         packed_context_hint_features: bool = False,
         neighbor_threat_hint_features: bool = False,
+        general_distance_hint_features: bool = False,
         teacher_rollouts: bool = False,
         goal_features: bool = False,
     ):
@@ -103,6 +104,11 @@ class GeneralsPufferEnvironment:
             not expander_hint_features or context_hint_features or packed_context_hint_features
         ):
             raise ValueError("Neighbor threat hints require signed Expander hints without other context")
+        if general_distance_hint_features and (
+            not expander_hint_features or context_hint_features or packed_context_hint_features
+            or neighbor_threat_hint_features
+        ):
+            raise ValueError("General distance hints require signed Expander hints without other context")
         expected_teacher = "expander_harvester" if expander_hint_features else "sprinter" if sprint_hint_features else "harvester"
         if prior_hint_features and teacher != expected_teacher:
             raise ValueError("Signed hint replay labels must match the scripted teacher")
@@ -126,6 +132,7 @@ class GeneralsPufferEnvironment:
         self.context_hint_features = context_hint_features
         self.packed_context_hint_features = packed_context_hint_features
         self.neighbor_threat_hint_features = neighbor_threat_hint_features
+        self.general_distance_hint_features = general_distance_hint_features
         self.teacher_rollouts = teacher_rollouts and context.mode == "train"
         self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
@@ -148,7 +155,7 @@ class GeneralsPufferEnvironment:
                 **map_options,
             )
         self.spec = EnvironmentSpec(
-            observation_size=(14 if context_hint_features else 10 if packed_context_hint_features or neighbor_threat_hint_features else 11 if directional_features else 8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
+            observation_size=(14 if context_hint_features else 10 if packed_context_hint_features or neighbor_threat_hint_features or general_distance_hint_features else 11 if directional_features else 8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
             * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
@@ -168,6 +175,7 @@ class GeneralsPufferEnvironment:
                 expander_hint=expander_hint_features, context_features=context_hint_features,
                 packed_context_features=packed_context_hint_features,
                 neighbor_threat_features=neighbor_threat_hint_features,
+                general_distance_features=general_distance_hint_features,
             ))
             if hint_features
             else encode_coworld_packed_directional_observation
@@ -437,7 +445,7 @@ class BatchedGeneralsPufferEnvironment:
                         labels = hinted_replay_indices(
                             public_values, self.base.size,
                             14 if self.base.context_hint_features
-                            else 10 if self.base.packed_context_hint_features or self.base.neighbor_threat_hint_features
+                            else 10 if self.base.packed_context_hint_features or self.base.neighbor_threat_hint_features or self.base.general_distance_hint_features
                             else 8,
                         )
                         rows = np.arange(self.parallel_games)

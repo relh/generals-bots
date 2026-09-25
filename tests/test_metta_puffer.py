@@ -277,6 +277,26 @@ def test_neighbor_threat_hints_preserve_signed_replay_labels():
         env.close()
 
 
+def test_general_distance_hints_preserve_signed_replay_labels():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = BatchedGeneralsPufferEnvironment(
+        context=context, opponent="strong_mixed", coworld_classic=True,
+        coworld_pool_size=64, teacher="expander_harvester", sparse_teacher=True,
+        factorized_actions=True, compact_features=True, lean_features=True,
+        hint_features=True, prior_hint_features=True, expander_hint_features=True,
+        general_distance_hint_features=True, parallel_games=4, require_gpu=False,
+    )
+    try:
+        observation = env.reset("general-distance-hints")
+        assert env.spec.observation_size == 10 * 21 * 21
+        np.testing.assert_array_equal(
+            np.asarray(observation.replay_metadata),
+            hinted_replay_indices(np.asarray(observation.values), env.base.size, 10),
+        )
+    finally:
+        env.close()
+
+
 def test_supervised_teacher_provides_legal_targets_only_during_training():
     training = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     evaluating = training.model_copy(update={"mode": "evaluate"})

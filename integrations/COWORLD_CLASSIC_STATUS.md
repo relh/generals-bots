@@ -1186,3 +1186,49 @@ public general-distance features and profile 10–31 warm epochs. Require
 >=30K sustained end-to-end SPS and a held-out improvement over v11 on both
 strong opponents before hosted testing. Preserve v11 private and the
 incumbent champion until direct hosted evidence proves a replacement.
+
+## General-distance PPO probe (2026-09-25)
+
+The tenth channel now has the public normalized Manhattan distance from each
+cell to the owned general; channel nine remains the general/castle plane and
+the original eight signed Expander hint channels remain intact. Focused B300
+tests passed for 10-channel replay labels and hosted-wire/training parity.
+The model is the same 8,008-parameter target hash
+`40cbc1d5e997b15fbd32f4732dc0fc6a1e7f346709c709a987556a57cdb65c43`.
+The audited transfer again used packed-context parent checkpoint SHA-256
+`bc5a3dc51ca41b709472f7a07a11dfb58be24ceef9d6f3b37fc77475ac103a31`.
+
+Pilot 15114 exited before training because no GPU in its three-GPU Slurm
+allocation was uncontended. Pilot 15119 then found an idle B300 and
+completed 4,194,304 steps with one training GPU, 4,096 games in four buffers,
+horizon 32, 16,384 minibatch, replay ratio .125, LR .001, 16 CPUs,
+75% ExpanderHarvester / 25% Sentinel opponents, castle shaping 1.0, and
+PPO plus .25 sparse Expander imitation. It passed the 2.6M-step failure range
+without nonfinite gradients. Epochs 10–31 completed 2,752,512 steps in
+84.106 s: **32,727 end-to-end SPS**; sampled B300 use was 43.8% and 15.0 GiB.
+Checkpoint interval 32 kept the warm interval free of an intermediate save.
+The prior neighborhood probe's 29,814-SPS broad warm interval included an
+8.826-second epoch 16, consistent with its checkpoint at that epoch; its
+later 19–31 interval measured 31,995 SPS. Final distance checkpoint SHA-256
+`173a926ff323f87ce0d6b79e8817d738d3066ab0177873c0e985221e170ef3a1`.
+
+Held-out ExpanderHarvester seed 1101 scored **.484863** across four 1,024-game
+episodes (job 15128), below both the packed-context parent .485352 and v11
+.496338. Sentinel job 15129 remained CPU active but produced no dashboard
+update or evaluation record for over seven minutes; it was canceled at ten
+minutes, and its leftover owned container was stopped. No Sentinel score is
+claimed. The complete Expander result already disqualifies this checkpoint
+from longer training or hosted testing. No upload, league submission, or
+champion change followed.
+
+| Verified metta0 artifact | SHA-256 |
+| --- | --- |
+| `relh-classic-general-distance-source.tar.gz` | `1f49c5dbe478a4425368f7a5fd76bfe0e61b9c8c8d9be0094462602086a8ae93` |
+| `relh-classic-distance-ppo-15119.tar.gz` | `8e23ca954acdc35d54aab4f2546fe6bc6affc6fd9c572ef15b218bca22515693` |
+| `relh-classic-distance-ppo-evals-15128-15129.tar.gz` | `2d4431aad0aedb0a46e836c67164372d63b7c5d2b4d7792217e919f5ebd01375` |
+
+Next, investigate an efficient neighboring-cell readout. Earlier four-feature
+cardinal-stencil builds stalled before their first epoch, so first run a
+bounded B300 build/profile with two features per site and a one-tile stencil.
+Verify compilation time and >=30K end-to-end SPS before a long run, and use
+fresh held-out maps and strong opponents before any hosted candidate test.

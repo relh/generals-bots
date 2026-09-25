@@ -128,6 +128,16 @@ def test_coworld_wire_view_matches_padded_training_view():
     np.testing.assert_array_equal(threat_mask, np.asarray(expected_threat_mask))
     assert threat_values.shape == (10 * 21 * 21,)
 
+    distance_values, distance_mask = encode_wire_observation(
+        message, expander_general_distance_prior_hinted=True,
+    )
+    expected_distance, expected_distance_mask = encode_coworld_hinted_observation(
+        expected, signed_flags=True, expander_hint=True, general_distance_features=True,
+    )
+    np.testing.assert_array_equal(distance_values, np.asarray(expected_distance))
+    np.testing.assert_array_equal(distance_mask, np.asarray(expected_distance_mask))
+    assert distance_values.shape == (10 * 21 * 21,)
+
 
 def test_neighbor_threat_plane_reaches_adjacent_source_only():
     armies = np.zeros((5, 5), dtype=np.int32)
@@ -152,6 +162,29 @@ def test_neighbor_threat_plane_reaches_adjacent_source_only():
     assert planes[8, 2, 2] == 2
     assert planes[9, 2, 2] > 1
     assert planes[9, 2, 1] == 0
+
+
+def test_general_distance_plane_has_zero_at_owned_general():
+    armies = np.zeros((5, 5), dtype=np.int32)
+    armies[2, 2] = 10
+    owned = np.zeros((5, 5), dtype=bool)
+    owned[2, 2] = True
+    empty = np.zeros_like(owned)
+    observation = Observation(
+        armies=jnp.asarray(armies), generals=jnp.asarray(owned), castles=jnp.asarray(empty),
+        mountains=jnp.asarray(empty), neutral_cells=jnp.asarray(~owned),
+        owned_cells=jnp.asarray(owned), opponent_cells=jnp.asarray(empty),
+        fog_cells=jnp.asarray(empty), structures_in_fog=jnp.asarray(empty),
+        owned_land_count=jnp.int32(1), owned_army_count=jnp.int32(10),
+        opponent_land_count=jnp.int32(0), opponent_army_count=jnp.int32(0), timestep=jnp.int32(200),
+    )
+    values, _ = encode_coworld_hinted_observation(
+        observation, signed_flags=True, expander_hint=True, general_distance_features=True,
+    )
+    distances = np.asarray(values).reshape(10, 5, 5)[9]
+    assert distances[2, 2] == 0
+    assert distances[2, 3] == distances[3, 2] == 0.1
+    assert distances[0, 0] == 0.4
 
 
 def test_signed_hint_replay_metadata_covers_pass_and_move():

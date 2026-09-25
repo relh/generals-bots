@@ -136,6 +136,7 @@ def encode_coworld_packed_directional_observation(obs):
 def encode_coworld_hinted_observation(
     obs, *, signed_flags=False, sprint_hint=False, expander_hint=False,
     context_features=False, packed_context_features=False, neighbor_threat_features=False,
+    general_distance_features=False,
 ):
     """Public view with a scripted move hint for a neural residual policy."""
     hint_fn = expander_harvester_action if expander_hint else sprint_harvester_action if sprint_hint else harvester_action
@@ -152,7 +153,16 @@ def encode_coworld_hinted_observation(
         )),
         direction,
     )).astype(jnp.float32)
-    if neighbor_threat_features:
+    if general_distance_features:
+        height, width = obs.generals.shape
+        general_cell = jnp.argmax(jnp.ravel(obs.generals & obs.owned_cells))
+        rows = jnp.arange(height)[:, None]
+        columns = jnp.arange(width)[None, :]
+        distance = (jnp.abs(rows - general_cell // width)
+                    + jnp.abs(columns - general_cell % width)) / (height + width)
+        context = jnp.stack((2.0 * obs.generals + obs.castles, distance)).astype(jnp.float32)
+        planes = jnp.concatenate((planes, context))
+    elif neighbor_threat_features:
         enemy_strength = jnp.where(
             obs.opponent_cells,
             1.0 + jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,

@@ -751,3 +751,39 @@ Current next step
   over v11 on both held-out strong opponents. Keep all other panes' work,
   v11 private, and current champion unchanged until direct hosted matches
   prove a replacement.
+
+Update, 2026-09-25 general-distance PPO probe
+  * Added a public normalized Manhattan distance-to-owned-general plane as
+    channel ten, retaining the general/castle plane and eight signed
+    Expander hint channels. B300 focused tests passed for replay labels and
+    training/hosted-wire parity. Target model remains 8,008 parameters,
+    model SHA256 40cbc1d5e997b15fbd32f4732dc0fc6a1e7f346709c709a987556a57cdb65c43.
+  * Pilot 15114 exited before training because its allocated GPUs were all
+    busy; no other pane's work was touched. Pilot 15119 completed 4,194,304
+    steps on one uncontended B300, 4,096 games, four buffers, horizon 32,
+    16,384 minibatch, replay ratio .125, LR .001, 16 CPUs, PPO plus .25
+    sparse Expander imitation. Warm epochs 10-31 completed 2,752,512 steps
+    in 84.106 s = 32,727 end-to-end SPS; sampled B300 use 43.8%, 15.0 GiB.
+    It crossed 2.6M without nonfinite gradients. Checkpoint SHA256
+    173a926ff323f87ce0d6b79e8817d738d3066ab0177873c0e985221e170ef3a1.
+  * Held-out seed 1101 ExpanderHarvester score was .484863 over 4x1024
+    games (job 15128), below packed parent .485352 and v11 .496338.
+    Sentinel job 15129 had no new dashboard or result for over seven
+    minutes despite CPU activity; canceled at ten minutes and stopped its
+    leftover owned container. No Sentinel score is claimed. The Expander
+    result already disqualifies this checkpoint from long/hosted training.
+    No hosted upload or publication occurred.
+  * Verified metta0 archives: relh-classic-general-distance-source.tar.gz
+    SHA256 1f49c5dbe478a4425368f7a5fd76bfe0e61b9c8c8d9be0094462602086a8ae93;
+    relh-classic-distance-ppo-15119.tar.gz SHA256
+    8e23ca954acdc35d54aab4f2546fe6bc6affc6fd9c572ef15b218bca22515693;
+    relh-classic-distance-ppo-evals-15128-15129.tar.gz SHA256
+    2d4431aad0aedb0a46e836c67164372d63b7c5d2b4d7792217e919f5ebd01375.
+
+Current next step
+  Profile compilation and throughput for a bounded two-feature-per-site
+  cardinal-neighbor stencil on B300; older four-feature neighbor builds
+  stalled before their first epoch. Require >=30K sustained full training
+  SPS and improved held-out results on strong opponents before hosted tests.
+  Keep other panes' work separate and leave current champion unchanged
+  until direct hosted matches prove a replacement.
