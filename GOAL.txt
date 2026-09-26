@@ -1643,3 +1643,17 @@ Update, 2026-09-26 meaningful context learning continuation
     device-context-long-22148.log. Do not duplicate. Evaluate intermediate
     and final checkpoints against held-out baseline and mixed opponents;
     hosted validation and publishing remain contingent on proven strength.
+
+Update, 2026-09-26 live continuation and learning curve
+  * Verified22148 live at epoch91, >23.8M additional steps,16/20epoch
+    intervals203,084/201,804SPS, recent60samples81.5%GPU. First16.78M
+    checkpoint is durable on node, SHA256
+    bb9c5b900ca16e33bd9159648745a032958acf33f5c19b47da1040f3eab448c0.
+  * Initial22138 evaluation is live and advancing (>2.1Mevaluation steps),
+    not stalled; named container active and held-out seed log advancing.
+  * Submitted22170 to evaluate16.78M continuation checkpoint on identical
+    seed1101/Expander held-out setup. Reuses verified22138 CPU evaluation
+    build to avoid duplicate compilation. Inspect device-context-16m-eval-22170
+    on B300 node. Next read both results and final22148 checkpoints; archive
+    run/evals with verified checksums, evaluate mixed opponents if improved.
+    No hosted release. All three jobs are distinct authorized work.
