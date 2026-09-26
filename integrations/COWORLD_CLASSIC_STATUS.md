@@ -2649,3 +2649,17 @@ Update, 2026-09-26 completed context recovery and final held-out
   * Local Metta device-bridge worktree no longer exists (external workspace
     change); General worktree clean before these additions. Remote GPU
     source remains pinned/verified. Do not recreate or alter histories.
+
+Update, 2026-09-26 learning-signal inspection while final eval runs
+  * Final22280 revalidated live; held-out seed log advancing. Do not
+    duplicate or infer terminal state from a quiet outer console.
+  * Teacher metrics: initial18330 dense CE.0782561 (32updates); final22243
+    CE.0552999 (record updates256, coefficient1/PPO1,32768labels/head,
+    no value teacher). Improvement in imitation is measured, but does not
+    prove stronger play. Context checkpoint remains below v11 in current
+    held-out evidence. Next final22280 result, then decide recipe changes.
+  * Read signed hinted transport and prior output indexing: move directions
+    channels4–7, pass at4*cells, split1 at4*cells+2 (head starts4*cells+1),
+    final column value. No new split/pass off-by-one found in this read.
+    Earlier device/numeric parity and legal action audits remain evidence;
+    this source read does not claim a new full codec correctness proof.
