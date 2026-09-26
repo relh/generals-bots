@@ -2621,3 +2621,31 @@ Update, 2026-09-26 first context held-out result
     config/run paths there; resubmitted22243. Observe exact handle before
     claiming training. Read outputs under/var/tmp/relh-generals-recovery/
     device-context-disk-22243. Shared node inode issue is not policy failure.
+
+Update, 2026-09-26 completed context recovery and final held-out
+  * 16.78Mcontinuation checkpoint heldout22170 completed: score-.120728,
+    perf.439636 vs initial.427307; below v11.496338 baseline. Eight batched
+    episodes/1024parallel games. Archive verified on metta0:
+    device-context-16m-eval-22170.tar.gz SHA256
+    3f9e9ea5a0d37229da782e8847336ecd9742d34d9dcd31c1a84ac5130206a17f.
+  * Relocated inactive build18222 to/var/tmp/relh-generals-device-fused-8192-build-18222,
+    kept original path symlink; before/after binary digest exactly
+    f764bd2abdc3db40d7fa640f53c33a3f2ee94082437d2ff62ca31e1ffa2adcf7.
+    Freed1117tmpinodes for pending evaluation result writes; nothing deleted.
+  * 22243 completed67,108,864countersteps with saved50.33M and67.11M
+    checkpoints. It restored counter33.55M, thus executed33.55Mnew steps;
+    plus initial4.19M training, retained policy lineage totals71.30M.
+    Final20epochinterval189,657SPS,16epoch186,954SPS, after compiled/warm
+    restored epochs. OneB300/8192games/onebuffer/horizon32/minibatch32768/
+    replay.25/float32. Recent60samples before completion81.6%GPU use.
+    Final checkpoint SHA256
+    12e5237a897ccae01818471a6e04bcab2841c725c53427cd4ec4c11a07a4bc94.
+    Verified archive device-context-disk-22243.tar.gz SHA256
+    af5f12c457a1806ce48fef3436fd4f35346e0808a0f79312d1763e1a7d8a336c.
+  * Final heldout22280 submitted, same seed1101/Expander baseline setup,
+    reused CPUbuild22138, outputs on/var/tmp/relh-generals-recovery/
+    device-context-final-eval-22280. Check exact job before next action.
+    No quality gate passed and no hosted release yet.
+  * Local Metta device-bridge worktree no longer exists (external workspace
+    change); General worktree clean before these additions. Remote GPU
+    source remains pinned/verified. Do not recreate or alter histories.
