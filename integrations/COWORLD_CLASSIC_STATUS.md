@@ -2663,3 +2663,19 @@ Update, 2026-09-26 learning-signal inspection while final eval runs
     final column value. No new split/pass off-by-one found in this read.
     Earlier device/numeric parity and legal action audits remain evidence;
     this source read does not claim a new full codec correctness proof.
+
+Update, 2026-09-26 final context result and replay probe
+  * Final22280 completed, frozen71.30Mpolicy-lineage checkpoint: seed1101
+    ExpanderHarvester score-.101196/perf.449402, eight batched episodes,
+    31,104parameters. Learning curve .427307 -> .439636 -> .449402 remains
+    below v11.496338. No hosted submission justified. Final eval archive
+    verified device-context-final-eval-22280.tar.gz SHA256
+    9fa86692a34a999fa52d6be0659e75f2ef354d472a14e272f9429cdc34f88f22.
+  * Current transfer guard requires identical teacher recipe; no widening
+    was done. Submitted22802 bounded8,388,608step replay1.0 pilot from
+    final22243checkpoint. Same model/teacher1/PPO1/LR.0001/minibatch32768/
+    8192games/horizon32; replay is4xprevious. Seed1314; weights initialize,
+    optimizer fresh (restore_learner:false). Compare optimizer amount and
+    throughput before any longer run. Source/run digest checked by loader.
+    All outputs on/var/tmp/relh-generals-recovery/device-context-replay-22802.
+    Inspect exact job and archive final; no duplicate or overnight job.
