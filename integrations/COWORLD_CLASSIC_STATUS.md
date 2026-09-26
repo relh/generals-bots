@@ -2813,3 +2813,16 @@ Update, 2026-09-26 opponent comparisons and hosted-runtime readiness
     Outputs/var/tmp/relh-generals-recovery/device-context-overnight335m-eval-23277
     anddevice-context-overnight335m-sentinel-eval-23278. Nextcompare curve
     beforeextendingflatrecipe; trainingcontinuesguarded, nohostedrelease.
+
+Update, 2026-09-26 evaluated335Mcheckpoint safely archived
+  * 22922verifiedlive epoch1550 (~406.32Msteps),20epoch126,578SPS,
+    recent60samples84.9%GPU. Both23277/23278verifiedlive,1.8Mevalsteps
+    advancing; no terminalresult yet. Previousgoalturn verifiedwait;
+    currentturn preservesauthoritativecheckpoint artifacts.
+  * Policy+learner+identity+trainingrecord335,544,320checkpoint archive
+    verified onmetta0, createdonlyafterconfirmingfilenameabsent:
+    device-context-overnight-22922-335m-checkpoint.tar.gz SHA256
+    4a4ae9004fae268e99a046e3aac003cb48b5eee55b02d08307bc67a93b0c9d18.
+    PolicySHAunchanged081c142c3ff8b9dceb0462582b1d1e3f9b13c743c73a82e99ce798b6e26e00ca.
+    Nextinspecthourboundaryguard onactualdashboard and readbothheldout
+    resultsbeforeanyrecipechange. No duplicatedjobs orpublication.
