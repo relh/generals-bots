@@ -93,14 +93,14 @@ def test_device_step_matches_numeric_training_step():
         device.close()
 
 
-@pytest.mark.parametrize("hints", [False, True])
-def test_device_teacher_transport_matches_numeric_training_step(hints):
+@pytest.mark.parametrize("hints,context_hints", [(False, False), (True, False), (True, True)])
+def test_device_teacher_transport_matches_numeric_training_step(hints, context_hints):
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     options = dict(
         parallel_games=4, board_size=6, factorized_actions=True, require_gpu=False,
         teacher="expander_harvester" if hints else "harvester", supervise_teacher=True,
         compact_features=hints, lean_features=hints, hint_features=hints,
-        prior_hint_features=hints, expander_hint_features=hints,
+        prior_hint_features=hints, expander_hint_features=hints, context_hint_features=context_hints,
         coworld_classic=hints, coworld_pool_size=16,
     )
     numeric = BatchedGeneralsPufferEnvironment(context=context, **options)

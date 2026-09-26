@@ -2486,3 +2486,26 @@ Verified archive `device-wide-mb32768-pilot-18293.tar.gz` SHA-256:
 The 300k training SPS target and policy-quality gate remain open;
 no overnight or hosted job is running. Next prioritize a richer context
 policy and a bounded learning experiment instead of extending flat v11 PPO.
+
+Update, 2026-09-25 device context learning pilot
+  * Previous throughput turn was progress: verified and archived 276,596
+    end-to-end SPS, then pushed General 0ff3f96 and Metta 39263f7d84.
+  * Extended device/numeric teacher transport parity to 14-channel context
+    hints; all three parameter cases pass (16.89 seconds).
+  * B300 build 18326 succeeded for a fresh two-stage tied spatial policy:
+    14 context/hint channels, four features per site, eight global features,
+    context radius1.01, prior8. PPO coefficient1 plus dense teacher1,
+    strong_mixed opponents, full Classic18–21. This combines context with
+    hints, unlike the earlier raw/no-hint two-stage PPO experiments.
+    Binary SHA256
+    637c44bcf19f0191be66a7c44c0afe6f4ddba16dfafa61f4fc9b0062878671fb;
+    model SHA256
+    84e2952b84980bfdf29ca287f63031d85b77d29c9909546b4ab2bfee291dbd96.
+  * Bounded pilot 18330 submitted: 4,194,304 steps from scratch, seed1311,
+    8,192 environments/one buffer/horizon32/minibatch32768/replay.25,
+    LR.0001, float32. Startup limit600s, wall limit16m. Observe this exact
+    job before further action; do not duplicate. Checkpoints and console:
+    /tmp/relh-generals-coworld/device-context-pilot-18330/run on B300 node.
+    Quality and throughput are unproven for this new architecture. Once
+    complete, archive directly to metta0, evaluate held-out, and compare
+    against v11 before choosing a longer continuation. No hosted publish.
