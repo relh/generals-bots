@@ -1856,3 +1856,15 @@ Update, 2026-09-26 first overnight checkpoint frozen
     device-context-overnight67m-eval-23019. Compare against initialization
     .452820; training22922alsoverifiedlive. No duplicate or hostedpublish.
     Next checkpoint134,217,728; evaluate if usefullearning continues.
+
+Update, 2026-09-26 second overnight checkpoint preserved
+  * 22922verifiedlive at528epochs (~138.41Msteps);20epoch119,387SPS,
+    recentGPU83.3%. 23019firstcheckpointheldoutverifiedlive at3.9Mevalsteps.
+  * 134,217,728checkpoint SHA256
+    8ba5059254416b47629e6acb8026dcf819588dd177c6fec44e279fa2f943570e.
+    Policy+learner+identity+trainingrecord archive verified onmetta0:
+    device-context-overnight-22922-134m-checkpoint.tar.gz SHA256
+    7520e2fca34b5b97d0886a80cc3c3adc86d16229c503d5b43a57d2bac0b95afe.
+    No duplicateevaluation submitted while23019comparisonpending. Next
+    read23019result before selecting nextcheckpointforheldout. Goalactive,
+    strength/hostedpublication stillunproven. No Codex archival changes.
