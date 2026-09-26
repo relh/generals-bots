@@ -1882,3 +1882,29 @@ Update, 2026-09-26 first overnight quality improvement
     Output/var/tmp/relh-generals-recovery/device-context-overnight67m-sentinel-eval-23134.
     Compare v11Sentinel.337769; bothnewjobsdistinctboundedcomparisons.
     Revalidatehandlesbeforeactions; training22922continues. No publish.
+
+Update, 2026-09-26 opponent comparisons and hosted-runtime readiness
+  * 23133finished134Mcheckpoint Expanderperf.490173/score-.019653, vs
+    67M.488708. Smallgain; belowv11.496338. 23134finished67Mcheckpoint
+    Sentinelperf.329346/score-.341309, belowv11.337769. Eight1024-gamebatch
+    episodes each,seed1101. No quality/publication gatepassed.
+  * Frozenbundleprobe23199failedimport (trainingimage lackswebsockets),
+    23218thenfailedoldertraining-snapshotwirecodecunsupportedcontextflag.
+    Corrected isolatedprobe withhostedDockerfile'spinnedwebsockets16 and
+    currentneural_codec/neural_player readonlybinds; no trainingchange.
+  * 23249passedCPUFrozenPolicyexport/reload and actualselect_action path
+    on fourpublicboard shapes18x21,21x18,19x20,21x21. Fourwarmups then32
+    measuredlegalactions; mean17.23ms/max18.13ms, below500msdeadline.
+    Syntheticboardwarmtiming doesnotprovehostedstartupormatchstrength.
+    Bundlecheckpoint is67M SHA8ee76d545e459dc6eaf37e952c38f2c14f6083968541f06a4ce0e2cdc69d993f.
+  * Combinedevals+bundle+probesource archiveverified onmetta0:
+    device-context-heldout-and-bundle-23249.tar.gz SHA256
+    6eb6ff5fe56c92982c6de779e008b218d0d3bf39dcb4ccc9514733e24661d0c0.
+  * Training22922liveepoch1388 (~363.86Msteps),121,842SPS/82.8%recentGPU.
+    Selected335,544,320checkpoint SHA256
+    081c142c3ff8b9dceb0462582b1d1e3f9b13c743c73a82e99ce798b6e26e00ca.
+    Submitted23277Expander and23278Sentinel heldout onthissamecheckpoint,
+    reusingexistingverifiedCPUbuilds22138/23134. Revalidateexacthandles.
+    Outputs/var/tmp/relh-generals-recovery/device-context-overnight335m-eval-23277
+    anddevice-context-overnight335m-sentinel-eval-23278. Nextcompare curve
+    beforeextendingflatrecipe; trainingcontinuesguarded, nohostedrelease.
