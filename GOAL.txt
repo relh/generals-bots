@@ -1534,3 +1534,50 @@ Next after 2026-09-25 device-backward pilots
   * Change the policy-learning recipe rather than extending the flat v11
     warm-start PPO line. Require a bounded checkpoint to beat held-out v11
     across seeds, then hosted matches, before any long training or publish.
+
+Update, 2026-09-25 fused device environment
+  * Reprofiled the optimized 8,192-game environment on one B300: 37.65 ms
+    per full JAX step (217,555 environment-only SPS, job 18201). Archive:
+    device-pipeline-hintreuse-8192-profile-18201.tar.gz SHA256
+    b3e8024dfceb0f99c9967281e6074b195043b9476282517ccbaaad36fb5a5478.
+  * Specialized the device training step to omit the general numeric path's
+    inactive-game branch and fuse dense teacher transport into its JAX
+    compilation. All 32 adapter tests passed. B300 profile job 18212 measured
+    27.42 ms per 8,192-game step (298,791 environment-only SPS). Archive:
+    device-pipeline-fused-8192-profile-18212.tar.gz SHA256
+    1b1e32f1b103d00335d6ef4fd3d2e2118eb73fb42cb5c9823a68fe4340f9a2ae.
+  * Bounded 4.19M-step Puffer5 pilot 18226 completed at 221,499 warm
+    end-to-end SPS over epochs 8–16. One B300, 8,192 full Classic18–21
+    games, one buffer, horizon 32, minibatch 16,384, replay .25, float32.
+    Final epoch environment/optimizer times were 739/287 ms. Checkpoint
+    SHA256 52d42b94d9f2bedd5b038b78b45e75fc2547040ef1927f9037671ef2177e6f53.
+    The complete source/build/run/GPU archive is
+    device-fused-8192-pilot-18226.tar.gz SHA256
+    e533e0505a30241166ce8433de2d64fd4730437972c2af4127886577abaa6d5c.
+  * At 16,384 games, profile job 18238 measured 43.11 ms per full step,
+    or 380,068 environment-only SPS. Archive
+    device-pipeline-fused-16384-profile-18238.tar.gz SHA256
+    cb421645bbad4dea85b0ba0131c15a5075ed2c513e09d42ae2ae10c14da468b1.
+    First integrated job 18257 aborted before an epoch: the pinned Puffer
+    rollout transpose used signed 32-bit arithmetic for 3,704,619,008
+    observation elements. Failed-run archive
+    device-fused-16384-failed-18257.tar.gz SHA256
+    cafb102b357084a440518bba54859b1a4ea6dd7b72f3d57d1c46edbc36517851.
+    Metta commit 39263f7d84 fixes transpose indices and launch sizing to
+    64-bit. All 429 package tests and scoped lint passed. Retry job 18285
+    completed 8.39M steps at 249,765 warm end-to-end SPS over epochs 8–16.
+    One B300, 16,384 games, horizon 32, minibatch 16,384, replay .25;
+    peak VRAM 50,444 MiB and final 30 samples averaged 71.3% GPU use.
+    Checkpoint SHA256
+    e416f3bd1f57c0cce358c78bda5102d5ec29215585fb02dbaa8eee8ee2c3b103.
+    Complete archive device-wide-16384-pilot-18285.tar.gz SHA256
+    294147f58bde06fef886fbbf97615528f0aeb5fcd56605890fd2ded42fae0023.
+    Minibatch-32768 pilot 18293 completed 8.39M steps at 276,596 warm
+    end-to-end SPS: 4,194,304 steps over epochs 8–16, 15.164 seconds
+    after compilation and eight warmup epochs. Same B300/16,384 games/
+    horizon32/replay.25 setup; final env/optimizer times 1,310/341 ms.
+    Checkpoint SHA256
+    60dad89eecf5133c1b13f664b7766e93bca36ac31d293cbe0347f47e620b6aac.
+    Verified archive device-wide-mb32768-pilot-18293.tar.gz SHA256
+    f3530057b7abad278f7d38f8cfa085a1000a66c3ca2e5f80708b8cfc99892d1a.
+    No overnight or hosted job is running; quality and 300k remain open.

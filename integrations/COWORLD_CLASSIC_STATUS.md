@@ -2343,7 +2343,7 @@ SHA-256 `fe5b25260619567c3ce8127783da3a951b5e8255f1a16a002545a1ec42f3d2ac`.
 Its frozen seed-1101 ExpanderHarvester evaluation scored **.487793** in job
 17802, close to the old checkpoint's .496338 and better than the new
 scratch PPO policy's .432861. This does not establish improvement over v11.
-The teacher transport makes the model rollout width 9,712 floats per agent;
+The teacher transport makes the model rollout width 7,066 floats per agent;
 environment and optimizer work remain obstacles to the requested 300,000
 SPS. No hosted submission or overnight continuation is running.
 The exact source, old policy input, B300 build, warm-start run, and GPU
@@ -2428,3 +2428,61 @@ are archived as `device-backward-8192-eval-18138.tar.gz` (SHA-256
 There is no demonstrated
 quality gain, so no hosted submission or overnight continuation was launched.
 The 300k target and policy-quality gate remain open.
+
+## Specialized device environment, 2026-09-25
+
+The optimized 8,192-game environment still took 37.65 ms per full JAX step
+(217,555 environment-only SPS) in profile job 18201. Its profile/source
+archive is `device-pipeline-hintreuse-8192-profile-18201.tar.gz` (SHA-256
+`b3e8024dfceb0f99c9967281e6074b195043b9476282517ccbaaad36fb5a5478`).
+The device training path now omits the numeric path's inactive-game branch
+and fuses dense teacher transport into the JAX step. All 32 adapter tests
+passed. B300 profile job 18212 measured 27.42 ms per 8,192-game step, or
+298,791 environment-only SPS. Archive:
+`device-pipeline-fused-8192-profile-18212.tar.gz` (SHA-256
+`1b1e32f1b103d00335d6ef4fd3d2e2118eb73fb42cb5c9823a68fe4340f9a2ae`).
+
+Bounded Puffer5 pilot 18226 completed 4.19M steps at **221,499 warm
+end-to-end SPS** over epochs 8–16, after the first eight epochs. It used
+one B300, 8,192 full Classic18–21 games, one buffer, horizon 32,
+minibatch 16,384, replay .25, and float32. Final environment and optimizer
+times were 739/287 ms per epoch. The final checkpoint SHA-256 is
+`52d42b94d9f2bedd5b038b78b45e75fc2547040ef1927f9037671ef2177e6f53`.
+Source, build, run, checkpoint, and GPU samples are archived on metta0 as
+`device-fused-8192-pilot-18226.tar.gz` (SHA-256
+`e533e0505a30241166ce8433de2d64fd4730437972c2af4127886577abaa6d5c`).
+
+At 16,384 games, profile job 18238 measured 43.11 ms per full step, or
+380,068 environment-only SPS. Archive:
+`device-pipeline-fused-16384-profile-18238.tar.gz` (SHA-256
+`cb421645bbad4dea85b0ba0131c15a5075ed2c513e09d42ae2ae10c14da468b1`).
+The first integrated run, job 18257, aborted before an epoch. The native
+rollout transpose used signed 32-bit products and indices for a
+3,704,619,008-element observation buffer. Its source, build, logs, and GPU
+samples are archived as `device-fused-16384-failed-18257.tar.gz` (SHA-256
+`cafb102b357084a440518bba54859b1a4ea6dd7b72f3d57d1c46edbc36517851`).
+Metta commit `39263f7d84` changes transpose indexing and launch sizing to
+64-bit. All 429 package tests and scoped lint passed.
+
+Retry job 18285 completed 8.39M steps at **249,765 warm end-to-end SPS**
+over epochs 8–16. It used one B300, 16,384 games, horizon 32, minibatch
+16,384, and replay .25. Peak VRAM was 50,444 MiB; the last 30 samples
+averaged 71.3% GPU utilization. The final checkpoint SHA-256 is
+`e416f3bd1f57c0cce358c78bda5102d5ec29215585fb02dbaa8eee8ee2c3b103`.
+The complete archive is `device-wide-16384-pilot-18285.tar.gz` (SHA-256
+`294147f58bde06fef886fbbf97615528f0aeb5fcd56605890fd2ded42fae0023`).
+Minibatch-32,768 pilot 18293 completed 8,388,608 steps at **276,596 warm
+end-to-end SPS**. Epochs 8–16 cover 4,194,304 steps in 15.164 seconds,
+following compilation and eight warmup epochs. One B300, 16,384 games,
+one buffer, horizon 32, replay .25, float32; final environment/optimizer
+times were 1,310/341 ms. Peak recorded allocation was 50,666 MiB; the
+last 15 samples with the allocation resident averaged 77.7% GPU use
+(including the terminal sample). This is one process, so aggregate and
+per-process SPS are equal.
+Checkpoint SHA-256:
+`60dad89eecf5133c1b13f664b7766e93bca36ac31d293cbe0347f47e620b6aac`.
+Verified archive `device-wide-mb32768-pilot-18293.tar.gz` SHA-256:
+`f3530057b7abad278f7d38f8cfa085a1000a66c3ca2e5f80708b8cfc99892d1a`.
+The 300k training SPS target and policy-quality gate remain open;
+no overnight or hosted job is running. Next prioritize a richer context
+policy and a bounded learning experiment instead of extending flat v11 PPO.

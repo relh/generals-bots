@@ -458,6 +458,40 @@ class BatchedGeneralsPufferEnvironment:
 
         self._advance_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0, 0, 0, 0, 0)))
 
+        def advance_device_one(state, pool, side, opponent_id, index, split, key):
+            next_state, next_key, values, mask, reward, done, _ = self.base._advance(
+                state, pool, side, opponent_id, index, split, key
+            )
+
+            def recycle(_):
+                reset_key, following_key = jax.random.split(next_key)
+                reset_state = self.base._initial_state(pool, reset_key)
+                reset_values, reset_mask = self.base._observe(reset_state, side)
+                return reset_state, following_key, reset_values, reset_mask
+
+            next_state, next_key, values, mask = jax.lax.cond(
+                done, recycle, lambda _: (next_state, next_key, values, mask), operand=None
+            )
+            teacher_action = None
+            if self.base.supervise_teacher:
+                if self.base.prior_hint_features:
+                    teacher_action = hinted_teacher_action_device(values, self.base.size)
+                else:
+                    teacher_key = jax.random.fold_in(jax.random.split(next_key)[0], 37)
+                    teacher_action = self.base._teacher(next_state, side, teacher_key)
+            return next_state, next_key, values, mask, reward, done, teacher_action
+
+        def advance_device(states, pool, sides, opponent_ids, indices, splits, keys):
+            next_states, next_keys, values, masks, rewards, done, teacher_actions = jax.vmap(
+                advance_device_one, in_axes=(0, None, 0, 0, 0, 0, 0)
+            )(states, pool, sides, opponent_ids, indices, splits, keys)
+            return (
+                next_states, next_keys, self._device_transport(values, masks, teacher_actions),
+                masks, rewards, done,
+            )
+
+        self._advance_device_states = jax.jit(advance_device)
+
     def _sentinel_labels(self):
         if not self.sentinel_teacher_games or self.turn % self.sentinel_teacher_interval:
             return None
@@ -617,18 +651,15 @@ class BatchedGeneralsPufferEnvironment:
             raise ValueError("Device-resident Classic training requires policy rollouts without replay metadata")
         indices = actions[:, 0].astype(jnp.int32)
         splits = actions[:, 1].astype(jnp.int32) if self.base.factorized_actions else jnp.zeros_like(indices)
-        cached = jnp.zeros((self.parallel_games, 5), dtype=jnp.int32)
-        self.states, self.keys, values, masks, rewards, done, _, teacher_actions = self._advance_states(
+        self.states, self.keys, values, masks, rewards, done = self._advance_device_states(
             self.states, self.base.pool, self.sides, self.opponent_ids,
-            indices, splits, self.keys, cached, jnp.ones(self.parallel_games, dtype=bool),
+            indices, splits, self.keys,
         )
         self.turn += 1
         episode_done = self.turn >= self.horizon
         if episode_done:
             self.turn = 0
             done = jnp.ones_like(done)
-        if self.base.supervise_teacher:
-            values = self._device_transport(values, masks, teacher_actions)
         return values, masks.astype(jnp.uint8), rewards.astype(jnp.float32), done.astype(jnp.float32), episode_done
 
     def step(self, actions: list[list[int]]) -> NumericTransition:
