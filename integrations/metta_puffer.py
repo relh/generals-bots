@@ -27,7 +27,7 @@ from integrations.puffer_codec import (
     decode_action, encode_coworld_directional_observation, encode_coworld_lean_observation,
     encode_coworld_hinted_observation, encode_coworld_observation,
     encode_coworld_packed_directional_observation, encode_observation,
-    hinted_replay_indices,
+    hinted_replay_indices, hinted_teacher_action_device,
 )
 
 
@@ -444,7 +444,9 @@ class BatchedGeneralsPufferEnvironment:
                 alive, active, inactive, operand=None
             )
             teacher_action = None
-            if self.base.teacher_rollouts or (
+            if self.base.training and self.base.supervise_teacher and self.base.prior_hint_features and not self.base.teacher_rollouts:
+                teacher_action = hinted_teacher_action_device(values, self.base.size)
+            elif self.base.teacher_rollouts or (
                 self.base.training and (
                     self.base.supervise_teacher
                     or (self.base.sparse_teacher and not self.base.prior_hint_features)
@@ -602,8 +604,11 @@ class BatchedGeneralsPufferEnvironment:
             raise ValueError("Device-resident Classic training requires policy rollouts without replay metadata")
         values, masks = self._reset_states(seed)
         if self.base.supervise_teacher:
-            teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
-            teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
+            if self.base.prior_hint_features:
+                teacher_actions = jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values)
+            else:
+                teacher_keys = jax.vmap(lambda key: jax.random.fold_in(jax.random.split(key)[0], 37))(self.keys)
+                teacher_actions = self._teacher_actions(self.states, self.sides, teacher_keys)
             values = self._device_transport(values, masks, teacher_actions)
         return values, masks.astype(jnp.uint8)
 

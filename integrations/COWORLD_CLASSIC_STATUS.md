@@ -2366,3 +2366,65 @@ evaluation archive is `device-v11-transfer-cont-eval-17870.tar.gz`
 (SHA-256 `68c62d2a0142fa8acfcc7df20f9f2b586b2a0f1086b9d4e7be158684e80153a3`).
 This interrupted run is not counted as a completed 16.78M-step screen.
 The observed plateau does not justify longer PPO training with this recipe.
+
+## B300 throughput and GPU backward, 2026-09-25
+
+A stage profile of 4,096 full Classic18–21 JAX games measured a 32.09 ms
+median device step, or 127,643 environment-only SPS (job 17920). At 8,192
+games the step was 44.34 ms, or 184,745 environment-only SPS (job 17925).
+The archives on metta0 are `device-pipeline-profile-17920.tar.gz` (SHA-256
+`fd1c8b8482f8eb25ac686bb5690ea404e0b6ed2e8fd0d9fb01d1113c774e62c5`)
+and `device-pipeline-profile-8192-17925.tar.gz` (SHA-256
+`11c351589046860964b87721ae8aea18c0e841e1a605f4d45607931058dc3ac1`).
+
+The observation encoder already computes ExpanderHarvester's deterministic
+action for the public hint planes. The adapter now decodes that action for
+dense teacher targets instead of running the teacher again. All 32 General
+adapter parity tests passed. A repeat profile at 4,096 games measured
+27.12 ms per full JAX step, or 151,036 environment-only SPS (job 17946).
+Archive: `device-pipeline-hintreuse-profile-17946.tar.gz` (SHA-256
+`fd8541be5cbd7a5bbe74241a80b8c867cbb3971a4e116ab753157c8c51a749e3`).
+
+End-to-end warm-start Puffer5 pilots on one B300 measured **55,575 warm SPS**
+at 4,096 games (job 17955) and **62,959 warm SPS** at 8,192 games (job 17983).
+Both used one buffer, horizon 32, minibatch 16,384, replay .25, and 4.19M
+steps. The 8,192-game run used about 27 GB GPU memory. The optimizer still
+took roughly 1.4 seconds per epoch at 4,096 games and 2.8 seconds at 8,192.
+Source, builds, runs, checkpoints, logs, and GPU samples are archived as
+`device-hintreuse-throughput-17955-17983.tar.gz` (SHA-256
+`ec601e723a03edf698b13eb82e534e3efd78f380d25ac75517ea9f477f4af052`).
+These runs measure throughput, not policy quality; the prior held-out policy
+plateau still rules out an overnight continuation or hosted submission.
+
+Metta commit `9c49220c02` adds a GPU backward path for PPO and ungrouped
+cross-entropy teacher loss, passing cotangents and packed parameter gradients
+through device memory. CPU gradient parity tests and all 429 package tests
+passed, as did scoped lint. B300 build 18076 and bounded 4.19M-step warm-start
+pilot 18082 completed at **116,892 end-to-end SPS** over a 16-epoch warm
+interval. Final optimizer time fell to about 134 ms per epoch from roughly
+1,400 ms before, while environment time was about 874 ms. The environment
+is now the main bottleneck. Source, build, checkpoint, logs, and GPU samples
+are archived on metta0 as `device-backward-pilot-18082.tar.gz` (SHA-256
+`774abc964dfc24fc06b8a50414be8dae9d12861aa01cd2ef0ccd902db3e2aa40`).
+A bounded 8,192-game continuation from the 4,096-game checkpoint (job 18111)
+completed another 4.19M steps at **159,795 warm end-to-end SPS** over its
+final eight epochs. Final environment and optimizer times were about
+1,191/295 ms per epoch; GPU memory peaked at 27,016 MiB. Its build,
+run, checkpoint, logs, and GPU samples are archived as
+`device-backward-8192-pilot-18111.tar.gz` (SHA-256
+`4182841584c61c51645a3e7d6168d8708958e6ce47ab659aba758b8d1ee05f81`).
+The completed run's console supplies the interval timing. The original
+monitor only parsed minute-formatted uptimes and assumed 4,096 games; its
+sub-minute parsing and step-count inputs are corrected in this branch.
+Held-out job 18108 scored the 4,096-game checkpoint **.484009** against
+ExpanderHarvester seed 1101, near the earlier .487793 warm-start result and
+below v11's .496338. Its CPU build and evaluation are archived on metta0 as
+`device-backward-eval-18108.tar.gz` (SHA-256
+`32550145918ff10cb203812a055ab6d4fbc404f0011ff856d4a3ec405c979243`).
+Held-out job 18138 scored the 8,192-game continuation **.494690** on the
+same seed, essentially level with v11's .496338. Its CPU build and result
+are archived as `device-backward-8192-eval-18138.tar.gz` (SHA-256
+`afff7cbe6b17503acf9385c765f569ed1928f09407e6b29c9887b310ebf034b6`).
+There is no demonstrated
+quality gain, so no hosted submission or overnight continuation was launched.
+The 300k target and policy-quality gate remain open.

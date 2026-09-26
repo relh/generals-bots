@@ -1468,3 +1468,69 @@ Update, 2026-09-25 GPU hinted PPO and v11 warm start
     The monitor symlink in the script is fixed. Do not count this as a full
     16.78M-step result or extend this flat PPO line. No overnight or hosted
     job has been launched, and 300k SPS remains unmet.
+
+Update, 2026-09-25 B300 throughput profiling and device backward
+  * Profiled the full 4,096-game Classic18–21 JAX step at 32.09 ms median
+    (127,643 environment-only SPS), and 8,192 games at 44.34 ms (184,745
+    environment-only SPS). Archives on metta0:
+    device-pipeline-profile-17920.tar.gz SHA256
+    fd1c8b8482f8eb25ac686bb5690ea404e0b6ed2e8fd0d9fb01d1113c774e62c5;
+    device-pipeline-profile-8192-17925.tar.gz SHA256
+    11c351589046860964b87721ae8aea18c0e841e1a605f4d45607931058dc3ac1.
+  * Reused the deterministic ExpanderHarvester action already present in the
+    public hint planes, eliminating a duplicate teacher invocation. CPU/device
+    transport parity passed 32 tests. On one B300, the 4,096-game JAX step
+    fell to 27.12 ms (151,036 environment-only SPS; job 17946); archive
+    device-pipeline-hintreuse-profile-17946.tar.gz SHA256
+    fd8541be5cbd7a5bbe74241a80b8c867cbb3971a4e116ab753157c8c51a749e3.
+  * End-to-end guarded 4.19M-step Puffer5 warm-start pilots measured 55,575
+    warm SPS at 4,096 games (job 17955) and 62,959 SPS at 8,192 (job 17983),
+    each with horizon 32, minibatch 16,384, replay .25, one B300. The optimizer
+    remained roughly 1.4/2.8 seconds per epoch. Source, builds, logs,
+    checkpoints and GPU samples are in
+    device-hintreuse-throughput-17955-17983.tar.gz SHA256
+    ec601e723a03edf698b13eb82e534e3efd78f380d25ac75517ea9f477f4af052.
+    These are throughput pilots, not policy-quality evidence. No hosted or
+    overnight continuation was launched; 300k end-to-end SPS remains unmet.
+  * A Metta device-native PPO backward path now computes loss cotangents and
+    packs gradients on GPU, replacing the large GPU-host-GPU tensor roundtrip.
+    Pushed Metta commit 9c49220c02. CPU parity tests and the full 429-test
+    Metta training package passed;
+    scoped lint passed. B300 build 18076 and bounded 4.19M-step warm-start
+    pilot 18082 completed. The 16-epoch warm interval measured 116,892
+    end-to-end SPS, with final optimizer time about 134 ms per epoch versus
+    roughly 1,400 ms before; the environment now dominates at about 874 ms.
+    Final checkpoint SHA256
+    e726bedc53211f43afcfd8dc9e5f15f99e6b55d95eab4e4c7c0edd8b00309499.
+    Source, build, checkpoint, logs and GPU samples are archived on metta0
+    as device-backward-pilot-18082.tar.gz SHA256
+    774abc964dfc24fc06b8a50414be8dae9d12861aa01cd2ef0ccd902db3e2aa40.
+    A bounded 8,192-game continuation from that checkpoint (job 18111)
+    completed another 4.19M steps at 159,795 warm end-to-end SPS over its
+    final eight epochs. Its final environment/optimizer times were about
+    1,191/295 ms per epoch; GPU memory peaked at 27,016 MiB. The run is
+    archived as device-backward-8192-pilot-18111.tar.gz SHA256
+    4182841584c61c51645a3e7d6168d8708958e6ce47ab659aba758b8d1ee05f81.
+    Its final checkpoint SHA256 is
+    84379ed82a75e03cce875323280ea0d489ac0e12bd3aebafd6ac17fae6f98822.
+    Held-out job 18108 scored the 4,096-game checkpoint .484009 against
+    ExpanderHarvester seed 1101, below v11 .496338 and near the previous
+    warm-start .487793. Its CPU build and evaluation are archived on metta0
+    as device-backward-eval-18108.tar.gz SHA256
+    32550145918ff10cb203812a055ab6d4fbc404f0011ff856d4a3ec405c979243.
+    Held-out job 18138 scored the 8,192-game continuation .494690 on the
+    same seed, essentially level with v11 .496338. Its CPU build and result
+    are archived as device-backward-8192-eval-18138.tar.gz SHA256
+    afff7cbe6b17503acf9385c765f569ed1928f09407e6b29c9887b310ebf034b6.
+    No hosted submission or
+    overnight continuation was launched: the throughput improved, but this
+    PPO recipe has not shown a policy-quality gain. 300k SPS remains unmet.
+
+Next after 2026-09-25 device-backward pilots
+  * Profile the optimized 8,192-game JAX step and its kernel/launch costs;
+    environment time alone is about 1.19 s per 262,144-step epoch, above the
+    0.87 s total-epoch budget required for 300k SPS. The GPU backward path
+    removed the optimizer bottleneck but further environment work is needed.
+  * Change the policy-learning recipe rather than extending the flat v11
+    warm-start PPO line. Require a bounded checkpoint to beat held-out v11
+    across seeds, then hosted matches, before any long training or publish.

@@ -203,6 +203,17 @@ def hinted_replay_indices(values, board_size: int, channels: int = 8):
     return np.stack((np.where(passing, 4 * cells, source), split), axis=1)
 
 
+def hinted_teacher_action_device(values, board_size: int):
+    """Recover the deterministic teacher action already encoded in public hint planes."""
+    cells = board_size * board_size
+    planes = values.reshape(-1, cells)
+    source = jnp.argmax(planes[4:8].reshape(-1))
+    direction, cell = jnp.divmod(source, cells)
+    passing = planes[3, 0] > 0
+    split = planes[2, 0] > 0
+    return jnp.array((passing, cell // board_size, cell % board_size, direction, split), dtype=jnp.int32)
+
+
 def decode_action(index, size, split=None):
     cells = size * size
     channel, position = index // cells, index % cells
