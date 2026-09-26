@@ -22,3 +22,17 @@ def test_checkpoint_dip_does_not_hide_sustained_slowdown():
     slow.update({epoch: times[40] + (epoch - 40) * 5.0 for epoch in range(41, 62)})
     assert interval_sps(slow, 16) < 30_000
     assert interval_sps(slow, 20) < 30_000
+
+
+def test_steady_interval_crosses_hour_boundary():
+    history = ""
+    for epoch in range(21):
+        total_seconds = 3590 + 2 * epoch
+        hours, remaining = divmod(total_seconds, 3600)
+        minutes, seconds = divmod(remaining, 60)
+        hours_text = f"{hours}h " if hours else ""
+        history += f"╭\n│ Epoch {epoch} │\n│ Uptime {hours_text}{minutes}m {seconds}s 125ms │\n"
+    times = completed_epoch_times(history)
+    assert times[0] == 3590.125
+    assert times[20] == 3630.125
+    assert interval_sps(times, 20, 8192 * 32) == 131072

@@ -2696,3 +2696,17 @@ Update, 2026-09-26 increased replay pilot completed
     device-context-replay-eval-22839. Revalidateexacthandle; no duplicate.
     Compare against parent.449402 before any long replay1continuation.
     Policy-quality/hosted proof and300kuser-target still open.
+
+Update, 2026-09-26 hour-aware guard and overnight readiness
+  * 22839 is still live; latest heldout log3.9Msteps and advancing. Previous
+    goal turn was progress; current check is verified wait plus guard fix.
+  * Fixed monitor uptime parsing across one-hour boundary; both focused
+    tests pass. Before fix, an hour dashboard failed regex, weakening the
+    steady SPS gate. NewguardSHA256
+    5ee0cf0891e266d64a77a2d51dae6ed293d397af557c08f0e1e2a7e803d85ef3.
+  * Prepared (not submitted/staged) overnight script for1,879,048,192
+    steps (~4.24h at proven123kSPS), checkpoint every67.11Msteps, same
+    replay1modelrecipe from22802checkpoint. 4h30processbound/4h45allocation.
+    Decision depends on22839heldout against parent.449402; no overnight
+    job exists yet. Stage newguard into/var/tmp/relh-generals-recovery before
+    any submission. Goal remains strongpolicy+heldout+hostedproof, no release.
