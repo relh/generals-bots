@@ -1828,3 +1828,18 @@ Update, 2026-09-26 overnight training launched after replay proof
     Outputs/var/tmp/relh-generals-recovery/device-context-overnight-22922;
     logs sameparent/device-context-overnight-22922.log and
     device-context-overnight-gpu-22922.csv. Do not duplicate jobs.
+
+Update, 2026-09-26 native hour format guard correction
+  * Verified22922live epoch240,62.91Msteps;16/20epoch127,704/126,508SPS,
+    recent60samples85.2%GPU. Firstcheckpoint at256epochs is notyetpresent.
+  * Read pinnednative dash_duration: >=1h format is0d1h0m0s, no ms.
+    Priorhourfix missed days/no-ms. Corrected parser to sum native d/h/m/s/ms
+    tokens, including subsecondstartup. Three focusedtests pass, exactnative
+    hourboundary covered. NewguardSHA256
+    5a2142491aad55cf4b2961f0c21572c80a80b76760d7ba6a4eccacf194b07371.
+  * Stagedv4guard onnode and atomically updated livev3 path consumed by
+    alreadyrunning22922 loop. Preserved originalv3 as
+    /var/tmp/relh-generals-recovery/monitor_coworld_steady_interval_v3-original-22922.py.
+    Verifiedliveguarddigest afterreplacement. Futureovernight script usesv4.
+    No trainer interruption or restart. Next freeze67.11Mcheckpoint for
+    heldoutcomparison against initializationperf.452820.

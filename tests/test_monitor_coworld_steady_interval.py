@@ -36,3 +36,12 @@ def test_steady_interval_crosses_hour_boundary():
     assert times[0] == 3590.125
     assert times[20] == 3630.125
     assert interval_sps(times, 20, 8192 * 32) == 131072
+
+
+def test_native_dashboard_day_hour_format_without_milliseconds():
+    history = "╭\n│ Epoch 0 │\n│ Uptime 0ms │\n"
+    history += "╭\n│ Epoch 12 │\n│ Uptime 59m 58s 500ms │\n"
+    history += "╭\n│ Epoch 32 │\n│ Uptime 0d 1h 0m 40s │\n"
+    times = completed_epoch_times(history)
+    assert times == {0: 0.0, 12: 3598.5, 32: 3640.0}
+    assert interval_sps(times, 20, 8192 * 32) > 120000

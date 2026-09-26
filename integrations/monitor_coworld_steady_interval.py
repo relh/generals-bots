@@ -20,11 +20,12 @@ def completed_epoch_times(history: str) -> dict[int, float]:
     result = {}
     for block in history.split("╭"):
         epoch = re.search(r"Epoch\s+(\d+)", block)
-        uptime = re.search(r"Uptime\s+(?:(\d+)h\s+)?(?:(\d+)m\s+)?(\d+)s\s+(\d+)ms", block)
+        uptime = re.search(r"Uptime\s+((?:\d+(?:ms|[dhms])\s*)+)", block)
         if epoch and uptime:
-            result[int(epoch[1])] = (
-                int(uptime[1] or 0) * 3600 + int(uptime[2] or 0) * 60
-                + int(uptime[3]) + int(uptime[4]) / 1000
+            factors = {"d": 86400, "h": 3600, "m": 60, "s": 1, "ms": 0.001}
+            result[int(epoch[1])] = sum(
+                int(value) * factors[unit]
+                for value, unit in re.findall(r"(\d+)(ms|[dhms])", uptime[1])
             )
     return result
 

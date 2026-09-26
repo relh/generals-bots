@@ -20,8 +20,8 @@ job=$SLURM_JOB_ID
 disk=/var/tmp/relh-generals-recovery
 out=$disk/device-context-overnight-$job
 mkdir -p "$out"
-printf "%s  %s\n" 5ee0cf0891e266d64a77a2d51dae6ed293d397af557c08f0e1e2a7e803d85ef3 \
-    "$disk/monitor_coworld_steady_interval_v3.py" | sha256sum -c -
+printf "%s  %s\n" 5a2142491aad55cf4b2961f0c21572c80a80b76760d7ba6a4eccacf194b07371 \
+    "$disk/monitor_coworld_steady_interval_v4.py" | sha256sum -c -
 printf "%s  %s\n" 637c44bcf19f0191be66a7c44c0afe6f4ddba16dfafa61f4fc9b0062878671fb \
     "$w/device-context-build-18326/puffer" | sha256sum -c -
 printf "%s  %s\n" 24034ec915b7b91a8a3e9333ce12b3dcbd9e517c0eb7c828cdf500c297d2fc06 \
@@ -110,7 +110,7 @@ status=0
 while kill -0 "$pid" 2>/dev/null; do
     sleep 15
     now=$(date +%s)
-    if ! python3 "$disk/monitor_coworld_steady_interval_v3.py" \
+    if ! python3 "$disk/monitor_coworld_steady_interval_v4.py" \
         "$disk" "$job" "$((now-start))" device-context-overnight 600 262144; then
         echo "Device bridge smoke stopped by startup or progress guard" >&2
         status=1
