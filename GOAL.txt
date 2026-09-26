@@ -1657,3 +1657,24 @@ Update, 2026-09-26 live continuation and learning curve
     on B300 node. Next read both results and final22148 checkpoints; archive
     run/evals with verified checksums, evaluate mixed opponents if improved.
     No hosted release. All three jobs are distinct authorized work.
+
+Update, 2026-09-26 inode failure and recovery
+  * 22148 aborted after epoch189 (~49.5M additional steps) with OSError28
+    while writing teacher-metrics.tmp and monitor-v2.tmp. No nonfinite
+    gradient error. Do not count the crashed run as a completed throughput
+    proof; successful18330 remains the gate proof. No leftover container.
+    Saved33.55M checkpoint SHA256
+    d61b008a991f3a2daac732eb522a6c82178122cdf525765b11aaa59fb0b92ad0.
+  * Failed-run archive verified on metta0:
+    device-context-long-22148.tar.gz SHA256
+    8f88cb3a2de3966c9a8bce8caa781018eb12b712a08ec953a191cb63d5dc1875.
+  * Node/tmp had1.6T bytes free but zero of1,048,576inodes. Moved only
+    inactive own build18279 to/var/tmp/relh-generals-device-wide-16384-build-18279,
+    preserved original path with symlink, verified unchanged native SHA
+    8d053606c8c2956f5cf5ecf46c6d29b843f5cc687e3abd3e3c9c80974e881487.
+    Freed1117inodes and verified a new metrics-directory file could be
+    created. No Codex history, unrelated jobs, or artifacts deleted.
+  * Submitted recovery22199 for33.55M additional steps from saved33.55M
+    checkpoint, identical proven batching/model recipe,seed1313. Inspect
+    device-context-recovery-22199 on node. Initial22138 and16m22170 evals
+    still running/advancing; no strength result yet. Watch node inodes.
