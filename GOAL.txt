@@ -1678,3 +1678,12 @@ Update, 2026-09-26 inode failure and recovery
     checkpoint, identical proven batching/model recipe,seed1313. Inspect
     device-context-recovery-22199 on node. Initial22138 and16m22170 evals
     still running/advancing; no strength result yet. Watch node inodes.
+
+  * Recovery22199 stopped before any steps: policy-only initialization
+    requires completed.json. No run completion was fabricated. Existing
+    restore_learner path verifies learner sidecar, policy/run digests,
+    original seed/overrides and counters, and supports interrupted parents.
+    Corrected recovery22211 submitted with restore_learner:true, seed1312,
+    original67.11M absolute budget and identical overrides. Saved33.55M
+    optimizer/counters resume; active games/RNG do not resume. No package
+    code changed. Verify22211 handle and initialization before continuing.

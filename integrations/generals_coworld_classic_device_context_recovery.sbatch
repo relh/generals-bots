@@ -45,13 +45,14 @@ python3 - "$w/normalized-clean-pilot-16788/config.json" "$out/config.json" <<"PY
 import json, sys
 from pathlib import Path
 record = json.loads(Path(sys.argv[1]).read_text())
-record["total_timesteps"] = 33_554_432
+record["total_timesteps"] = 67_108_864
 record["initialize"] = {
     "run": "/work/device-context-long-22148/run",
     "checkpoint": "/work/device-context-long-22148/run/checkpoints/metta_generals/run/0000000033554432.bin",
     "sha256": "d61b008a991f3a2daac732eb522a6c82178122cdf525765b11aaa59fb0b92ad0",
+    "restore_learner": True,
 }
-record["seed"] = 1313
+record["seed"] = 1312
 record["overrides"].update({
     "vec.total_agents": 8192, "vec.num_buffers": 1, "vec.num_threads": 1,
     "base.cudagraphs": -1, "base.checkpoint_interval": 64,
