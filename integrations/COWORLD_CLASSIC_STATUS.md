@@ -2592,3 +2592,27 @@ Update, 2026-09-26 inode failure and recovery
     original67.11M absolute budget and identical overrides. Saved33.55M
     optimizer/counters resume; active games/RNG do not resume. No package
     code changed. Verify22211 handle and initialization before continuing.
+
+Update, 2026-09-26 first context held-out result
+  * Initial checkpoint18330 evaluated successfully (22138): seed1101,
+    ExpanderHarvester score-.145386/perf.427307,31,104params. Lower than
+    v11perf.496338; no quality gate passed. Native result games8 denotes
+    batched environment episodes (1024parallel games each), not8individual
+    games. Do not label this a statistically matched v11 head-to-head.
+  * Recovery22211 is live and restored saved epoch128; at epoch151 it
+    reports39.6Msteps,16epoch interval197,323SPS. Initial compilation
+    completed; learner-state recovery succeeded. 16.78Mcheckpoint eval
+    22170 remains live. Next read it, then freeze/evaluate final22211.
+
+  * Initial held-out archive verified: device-context-eval-22138.tar.gz
+    SHA256 e721a84469717abe7e9be00fd03923f6910650a67e05d73de0af90f7690ece11.
+  * Recovery22211 again aborted after epoch180 with OSError28 writing
+    teacher-metrics.tmp; node/tmp inode count again exactly1,048,576/1,048,576.
+    No gradient failure. Relocating outputs is necessary; freeing1117
+    inodes was insufficient against concurrent node inode consumption.
+  * Submitted22236 with all new run/config/checkpoint/log/monitor outputs
+    mounted from/var/tmp/relh-generals-recovery, root filesystem with
+    >1billion free inodes. Source paths remain read-only-use existing/tmp
+    workspace. Restores original33.55M checkpoint/optimizer to67.11M target.
+    Inspect /var/tmp/relh-generals-recovery/device-context-disk-22236 on
+    node. No data or Codex archives removed. 16mheldout22170 still pending.
