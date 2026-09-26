@@ -2679,3 +2679,20 @@ Update, 2026-09-26 final context result and replay probe
     throughput before any longer run. Source/run digest checked by loader.
     All outputs on/var/tmp/relh-generals-recovery/device-context-replay-22802.
     Inspect exact job and archive final; no duplicate or overnight job.
+
+Update, 2026-09-26 increased replay pilot completed
+  * 22802 completed8,388,608steps, finite beyond2.6M. Final20epochinterval
+    5,242,880steps at123,069SPS (~42.60seconds), after12warmupepochs;
+    final16epoch122,838SPS. OneB300/process,8192games,onebuffer,horizon32,
+    minibatch32768,replay1.0,float32. Recent60GPU samples beforecompletion
+    79.6%; monitorfinal77.6% includingtail. Greater replay approximately
+    doubles epochwalltime vs previousreplay.25, but meets30krequiredgate.
+    FinalcheckpointSHA256
+    5c29558c071a67b9b66516e52b0e219da9dd5d7ef6189525ac841e7a32cf0247.
+    Verifiedarchive device-context-replay-22802.tar.gz SHA256
+    7f18a6027b57790bb47f85f5b3760e5c64c952d06b75f4f66453a0438d6f3004.
+  * Heldouteval22839 submitted on finalcheckpoint, same1101/Expander
+    recipe andexistingCPUbuild22138. Outputs/var/tmp/relh-generals-recovery/
+    device-context-replay-eval-22839. Revalidateexacthandle; no duplicate.
+    Compare against parent.449402 before any long replay1continuation.
+    Policy-quality/hosted proof and300kuser-target still open.
