@@ -2509,3 +2509,27 @@ Update, 2026-09-25 device context learning pilot
     Quality and throughput are unproven for this new architecture. Once
     complete, archive directly to metta0, evaluate held-out, and compare
     against v11 before choosing a longer continuation. No hosted publish.
+
+Update, 2026-09-26 context pilot completed; held-out pending
+  * Revalidated exact job18330: terminal, completed.json records4,194,304
+    steps, checkpoint present, no leftover named Docker container. Finite
+    run beyond the required2.6M failure region. Warm epochs8–16 completed
+    2,097,152 steps in10.513 seconds (431.323–441.836s uptime), or199,482
+    end-to-end SPS. One B300/process,8192games,onebuffer,horizon32,
+    minibatch32768,replay.25,float32. Model31.1K params; final epoch
+    env772ms/model272ms/optimizer269ms. Compilation took about422s.
+    Last15GPU samples with the allocation resident averaged66.2%
+    (including completion/zero samples); dashboard finalGPU92%.
+    Checkpoint SHA256
+    d577fa7b59891d845ebc2cc25b5e38a8d741ffb250df4d51b00302cb219fa97c.
+  * Direct metta0 archives were verified:
+    device-context-build-18326.tar.gz SHA256
+    b27b805a8ac1453158f0fcb40289426e993bfb4d35ced6e548c13e24f71f8b8e;
+    device-context-pilot-18330.tar.gz SHA256
+    611ac8fbb8ccaea57ce1c0e28354bd8b8dd9dc529b6cb5eed401400235012556.
+  * Held-out evaluation job22138 submitted for seed1101 against
+    ExpanderHarvester, using the same setup as v11's .496338 baseline.
+    Inspect /tmp/relh-generals-coworld/device-context-eval-22138 on the
+    B300 node. Do not duplicate. New model passes throughput/stability,
+    but quality is unproven; only32optimizer minibatches in this pilot.
+    No hosted release or overnight run has been launched.
