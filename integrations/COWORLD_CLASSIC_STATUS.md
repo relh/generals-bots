@@ -2317,7 +2317,14 @@ model, and 1,384 ms optimizer. The checkpoint SHA-256 is
 Its source, build, failed setup attempts, checkpoint and GPU samples are
 archived as `device-hinted-pilot-17381.tar.gz` (SHA-256
 `1e40b70af59aa11ad5721c01b4570878820c54656aebb5bd6ac4f42cc46c4e18`).
-The held-out test is running in job 17398.
+Held-out job 17398 scored **.424805 against ExpanderHarvester** on seed 1101
+(four 1,024-game batches). Its build, result and logs are archived on metta0
+as `device-hinted-eval-17398.tar.gz` (SHA-256
+`2d76128528a8b5c4999c623ded6c8226a58fb3ec4316f90ee88d92a645894e70`).
+This is a large recovery from .008 but remains below the existing v11
+checkpoint's .496338 on the same seed. A bounded PPO plus .25 teacher-loss
+pilot with unassisted student actions is running as B300 job 17602; it must
+pass the same throughput and held-out gates before longer training.
 No overnight continuation or hosted submission is justified yet.
 The teacher transport increases
 the model rollout width from 6,174 to 9,712 floats per agent, and optimizer

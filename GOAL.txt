@@ -1422,5 +1422,9 @@ Update, 2026-09-25 GPU supervised-teacher bridge
     b5a040dab9a8b0df97852c8e64782a7122665754676a9edfa5a0b5a6b948a133;
     archive device-hinted-pilot-17381.tar.gz SHA256
     1e40b70af59aa11ad5721c01b4570878820c54656aebb5bd6ac4f42cc46c4e18.
-    Held-out job 17398 is running. No overnight continuation or hosted
+    Held-out job 17398 scored .424805 against ExpanderHarvester seed 1101;
+    eval archive SHA256 2d76128528a8b5c4999c623ded6c8226a58fb3ec4316f90ee88d92a645894e70.
+    This beats the .008 no-hint checkpoints but trails v11's .496338 on the
+    same seed. Bounded PPO plus .25 teacher-loss job 17602 is running with
+    unassisted student actions. No overnight continuation or hosted
     submission is justified yet; current SPS is far short of 300k.
