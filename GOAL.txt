@@ -1805,3 +1805,26 @@ Update, 2026-09-26 hour-aware guard and overnight readiness
     Decision depends on22839heldout against parent.449402; no overnight
     job exists yet. Stage newguard into/var/tmp/relh-generals-recovery before
     any submission. Goal remains strongpolicy+heldout+hostedproof, no release.
+
+Update, 2026-09-26 overnight training launched after replay proof
+  * Replayeval22839 completed score-.09436/perf.452820 vs parent.449402.
+    Small positive change; remains below v11.496338. Eight1024-game batch
+    episodes, seed1101/Expander. Archive verified onmetta0:
+    device-context-replay-eval-22839.tar.gz SHA256
+    12b8db3514bbdc8e46183072a011c644e664be274ef8e0603d801782ab532162.
+  * User requested4–5hours training; exactreplay1 setup proved123,069SPS
+    andfinite8.39Mpilot, learning curve stillupward. Submitted22922 for
+    1,879,048,192additionalsteps (~4.24hat123k), oneB300/8192games/
+    horizon32/minibatch32768/replay1/LR.0001/teacher1/PPO1,seed1315.
+    Initializes final22802weights, freshoptimizer. Checkpoint interval256
+    epochs=67,108,864steps (~9min). Wallbound4h30,allocation4h45.
+    Hour-aware30kSPSguard staged/verified; output/var/tmp throughout.
+  * Observe22922exacthandle, dashboardsteps and checkpoint existence.
+    Firstcheckpoint0000000067108864.bin, then134217728 etc. Evaluate
+    intermediate checkpoints frozen on held-out before choosing fullrun
+    duration; stop on persistent regression/no usefulgain after evidence,
+    archive/checksum before cancellation. No release without multi-seed,
+    mixed-opponent andhostedproof. 300kusertrainingtarget remains unmet.
+    Outputs/var/tmp/relh-generals-recovery/device-context-overnight-22922;
+    logs sameparent/device-context-overnight-22922.log and
+    device-context-overnight-gpu-22922.csv. Do not duplicate jobs.
