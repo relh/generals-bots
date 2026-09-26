@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=relh-classic-device-hinted-ppo-eval
+#SBATCH --job-name=relh-classic-device-hinted-ppo-early-eval
 #SBATCH --partition=b300
 #SBATCH --nodelist=metta-fabric-b300-1
 #SBATCH --nodes=1
@@ -10,17 +10,17 @@
 #SBATCH --time=00:30:00
 #SBATCH --nice=100
 #SBATCH --chdir=/tmp
-#SBATCH --output=/tmp/relh-generals-coworld/device-hinted-ppo-eval-%j.log
+#SBATCH --output=/tmp/relh-generals-coworld/device-hinted-ppo-early-eval-%j.log
 set -euo pipefail
 
 srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 bash -c '
 set -euo pipefail
 w=/tmp/relh-generals-coworld
 job=$SLURM_JOB_ID
-out=$w/device-hinted-ppo-eval-$job
-checkpoint=$w/device-hinted-ppo-pilot-17602/run/checkpoints/metta_generals/run/0000000016777216.bin
+out=$w/device-hinted-ppo-early-eval-$job
+checkpoint=$w/device-hinted-ppo-pilot-17602/run/checkpoints/metta_generals/run/0000000004194304.bin
 mkdir -p "$out"
-printf "%s  %s\n" 7c2be2be4fae8125c8fd348ff7000373b5258bc3513e76b197834e7e6c275142 "$checkpoint" | sha256sum -c -
+printf "%s  %s\n" e7ca7e9c483fcabeb0e95cdce28b44ef610ad8f9dd6e35e83772ff01160e4000 "$checkpoint" | sha256sum -c -
 printf "%s  %s\n" 66a6e8e46b1da410fb1464da8f4fc59a421842e2ca47ea4e7a2180f3427f0269 \
     "$w/metta-device-audit-source.tar.gz" | sha256sum -c -
 printf "%s  %s\n" 03b3527ac714a88596739da2d56747eecbdb1405c6c2f80f954c6dcc26ea7d85 \
@@ -63,14 +63,14 @@ common=(--rm --gpus "device=$gpu" --cpus=16 --ulimit core=0:0
     -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work
     -e HOME=/work -e JAX_COMPILATION_CACHE_DIR=/cache
     -e PYTHONPATH=/work/metta-device-audit-source:/work/runtime:/work/source-normalized-16245:/work/oldsource)
-name=relh-classic-device-hinted-ppo-eval-$job
+name=relh-classic-device-hinted-ppo-early-eval-$job
 cleanup() { docker stop -t 5 "$name-build" "$name-eval" >/dev/null 2>&1 || true; }
 trap cleanup EXIT
 trap "exit 143" TERM
 timeout -k 30s 6m docker run "${common[@]}" --name "$name-build" \
     relh-generals-b300:20260923b bash /work/source-normalized-16245/integrations/run_puffer_gpu.sh build \
-    --config "/work/device-hinted-ppo-eval-$job/build-config.json" \
-    --output "/work/device-hinted-ppo-eval-$job/build" > "$out/build-container.log" 2>&1
+    --config "/work/device-hinted-ppo-early-eval-$job/build-config.json" \
+    --output "/work/device-hinted-ppo-early-eval-$job/build" > "$out/build-container.log" 2>&1
 python3 - "$w/device-hinted-ppo-build-17431/build.json" "$out/build/build.json" <<"PY"
 import json, sys
 from pathlib import Path
@@ -83,15 +83,15 @@ assert target["config"]["python_environment"]["options"]["opponent"] == "expande
 PY
 timeout -k 30s 18m docker run "${common[@]}" --name "$name-eval" \
     relh-generals-b300:20260923b bash /work/source-normalized-16245/integrations/eval_puffer_gpu.sh \
-    /work/device-hinted-ppo-pilot-17602/run "/work/device-hinted-ppo-eval-$job/build" \
-    "/work/device-hinted-ppo-eval-$job/eval" "/work/device-hinted-ppo-eval-$job/eval-config.json" \
-    /work/device-hinted-ppo-pilot-17602/run/checkpoints/metta_generals/run/0000000016777216.bin \
+    /work/device-hinted-ppo-pilot-17602/run "/work/device-hinted-ppo-early-eval-$job/build" \
+    "/work/device-hinted-ppo-early-eval-$job/eval" "/work/device-hinted-ppo-early-eval-$job/eval-config.json" \
+    /work/device-hinted-ppo-pilot-17602/run/checkpoints/metta_generals/run/0000000004194304.bin \
     > "$out/eval-container.log" 2>&1
 python3 - "$out/eval/evaluation.json" <<"PY"
 import json, sys
 from pathlib import Path
 record = json.loads(Path(sys.argv[1]).read_text())
-assert record["checkpoint_sha256"] == "7c2be2be4fae8125c8fd348ff7000373b5258bc3513e76b197834e7e6c275142"
+assert record["checkpoint_sha256"] == "e7ca7e9c483fcabeb0e95cdce28b44ef610ad8f9dd6e35e83772ff01160e4000"
 assert record["config"]["seeds"] == [1101]
 assert record["config"]["allow_environment_transfer"]
 assert len(record["results"]) == 1

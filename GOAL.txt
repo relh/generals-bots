@@ -1428,3 +1428,43 @@ Update, 2026-09-25 GPU supervised-teacher bridge
     same seed. Bounded PPO plus .25 teacher-loss job 17602 is running with
     unassisted student actions. No overnight continuation or hosted
     submission is justified yet; current SPS is far short of 300k.
+
+Update, 2026-09-25 GPU hinted PPO and v11 warm start
+  * Hinted scratch PPO plus .25 teacher loss at 4,096 B300 JAX games finished
+    16.78M steps in job 17602 at about 54.1k final warm end-to-end SPS.
+    Held-out ExpanderHarvester seed 1101 scores were .418335 after 4.19M
+    steps (job 17614) and .432861 at the end (job 17626), below the older
+    v11 checkpoint's .496338. Durable archives on metta0 are
+    device-hinted-ppo-pilot-17602.tar.gz SHA256
+    b0a53701902a64d58775ef2b486d59f0de6a21a4a5cd47d011484594e7b9b2ec,
+    device-hinted-ppo-early-eval-17614.tar.gz SHA256
+    1a7832e865bb605b2bfda712ced710022922b7c35cc316fd0882d2e85176f4c5,
+    and device-hinted-ppo-eval-17626.tar.gz SHA256
+    0de5fa1f2ff38121a6aec90b0673a439f4f0fdc6b086bed776e7f10c26ad09f5.
+  * Metta commit e25a90b588 permits only the exact archived v11 checkpoint
+    SHA256 939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499
+    to initialize the corresponding 8,004-parameter hinted GPU PPO model;
+    optimizer and games are not restored. Focused Puffer tests (75) and
+    scoped lint passed. B300 4.19M-step warm-start pilot 17779 finished at
+    about 56.3k warm end-to-end SPS. Its checkpoint SHA256 is
+    fe5b25260619567c3ce8127783da3a951b5e8255f1a16a002545a1ec42f3d2ac,
+    and held-out job 17802 scored .487793 on seed 1101 ExpanderHarvester.
+    This is statistically close to the v11 baseline, not a demonstrated gain.
+    Pilot archive device-v11-transfer-pilot-17779.tar.gz SHA256
+    ace1943f64d80bf0111da87ad0b938fdc9b7833842c434e1ac28cb4d7d87d3aa;
+    eval archive device-v11-transfer-eval-17802.tar.gz SHA256
+    5ab79d5c7143f16861b9a9d5eb81ce447337ee9556812db18279b11605148e7c.
+    Lower-LR continuation job 17836 sustained about 52-55k SPS through 13.5M
+    displayed steps but its monitor used the wrong run symlink and stopped it
+    at the 300-second startup guard. The saved 12.58M checkpoint SHA256 is
+    53bba0f4b195e732e898e940cdace1377808ee5c1c8eeb960accecf2cdeebec7;
+    held-out evaluation job 17870 scored .486938 against ExpanderHarvester
+    seed 1101, flat against the 4.19M warm-start checkpoint .487793 and below
+    v11 .496338. The interrupted run is archived
+    as device-v11-transfer-cont-17836-stopped.tar.gz SHA256
+    4e6e02d55039273dad74de207cf86b544753ab8d10dbed1603d5de06ab1112c2.
+    Evaluation archive device-v11-transfer-cont-eval-17870.tar.gz SHA256
+    68c62d2a0142fa8acfcc7df20f9f2b586b2a0f1086b9d4e7be158684e80153a3.
+    The monitor symlink in the script is fixed. Do not count this as a full
+    16.78M-step result or extend this flat PPO line. No overnight or hosted
+    job has been launched, and 300k SPS remains unmet.

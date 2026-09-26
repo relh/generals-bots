@@ -2322,10 +2322,47 @@ Held-out job 17398 scored **.424805 against ExpanderHarvester** on seed 1101
 as `device-hinted-eval-17398.tar.gz` (SHA-256
 `2d76128528a8b5c4999c623ded6c8226a58fb3ec4316f90ee88d92a645894e70`).
 This is a large recovery from .008 but remains below the existing v11
-checkpoint's .496338 on the same seed. A bounded PPO plus .25 teacher-loss
-pilot with unassisted student actions is running as B300 job 17602; it must
-pass the same throughput and held-out gates before longer training.
-No overnight continuation or hosted submission is justified yet.
-The teacher transport increases
-the model rollout width from 6,174 to 9,712 floats per agent, and optimizer
-work remains the main obstacle to the requested 300,000 SPS.
+checkpoint's .496338 on the same seed. A PPO plus .25 teacher-loss screen
+with unassisted student actions completed 16,777,216 steps as B300 job 17602.
+Its final warm rate was about 54,100 end-to-end SPS. Held-out evaluations
+scored .418335 after 4.19M steps (job 17614) and .432861 at the end (job
+17626). The training and evaluation archives on metta0 are
+`device-hinted-ppo-pilot-17602.tar.gz` (SHA-256
+`b0a53701902a64d58775ef2b486d59f0de6a21a4a5cd47d011484594e7b9b2ec`),
+`device-hinted-ppo-early-eval-17614.tar.gz` (SHA-256
+`1a7832e865bb605b2bfda712ced710022922b7c35cc316fd0882d2e85176f4c5`),
+and `device-hinted-ppo-eval-17626.tar.gz` (SHA-256
+`0de5fa1f2ff38121a6aec90b0673a439f4f0fdc6b086bed776e7f10c26ad09f5`).
+The result remains below v11 and does not justify an overnight continuation.
+
+Metta commit `e25a90b588` adds an exact, checkpoint-hash-pinned policy-only
+transfer from the v11 checkpoint into this GPU PPO graph. It does not restore
+the old optimizer or active games. B300 warm-start pilot 17779 completed
+4,194,304 steps at about 56,300 warm end-to-end SPS and saved checkpoint
+SHA-256 `fe5b25260619567c3ce8127783da3a951b5e8255f1a16a002545a1ec42f3d2ac`.
+Its frozen seed-1101 ExpanderHarvester evaluation scored **.487793** in job
+17802, close to the old checkpoint's .496338 and better than the new
+scratch PPO policy's .432861. This does not establish improvement over v11.
+The teacher transport makes the model rollout width 9,712 floats per agent;
+environment and optimizer work remain obstacles to the requested 300,000
+SPS. No hosted submission or overnight continuation is running.
+The exact source, old policy input, B300 build, warm-start run, and GPU
+samples are archived on metta0 as `device-v11-transfer-pilot-17779.tar.gz`
+(SHA-256 `ace1943f64d80bf0111da87ad0b938fdc9b7833842c434e1ac28cb4d7d87d3aa`).
+The evaluation archive is `device-v11-transfer-eval-17802.tar.gz`
+(SHA-256 `5ab79d5c7143f16861b9a9d5eb81ce447337ee9556812db18279b11605148e7c`).
+A bounded continuation at learning rate 0.00003 started as B300 job 17836.
+It trained above 50k SPS through 13.5M displayed steps, but the external
+monitor used a `-pilot-` symlink convention and did not read the run's
+console. Its 300-second startup guard stopped the job before 16.78M.
+Checkpoints at 4.19M, 8.39M and 12.58M were preserved; the last checkpoint
+has SHA-256 `53bba0f4b195e732e898e940cdace1377808ee5c1c8eeb960accecf2cdeebec7`.
+The stopped run is archived as `device-v11-transfer-cont-17836-stopped.tar.gz`
+(SHA-256 `4e6e02d55039273dad74de207cf86b544753ab8d10dbed1603d5de06ab1112c2`).
+The symlink was corrected in the continuation script. Held-out evaluation
+of the 12.58M checkpoint scored **.486938** in job 17870, essentially flat
+against the 4.19M warm-start result .487793 and below v11 .496338. The
+evaluation archive is `device-v11-transfer-cont-eval-17870.tar.gz`
+(SHA-256 `68c62d2a0142fa8acfcc7df20f9f2b586b2a0f1086b9d4e7be158684e80153a3`).
+This interrupted run is not counted as a completed 16.78M-step screen.
+The observed plateau does not justify longer PPO training with this recipe.
