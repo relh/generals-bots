@@ -1628,3 +1628,18 @@ Update, 2026-09-26 context pilot completed; held-out pending
     B300 node. Do not duplicate. New model passes throughput/stability,
     but quality is unproven; only32optimizer minibatches in this pilot.
     No hosted release or overnight run has been launched.
+
+Update, 2026-09-26 meaningful context learning continuation
+  * Previous turn was progress: proven199,482SPS, archived checkpoint,
+    launched held-out22138. Re-polled22138: running evaluation compilation.
+  * Submitted job22148 for67,108,864 additional steps from verified18330
+    checkpoint, unchanged architecture, batching, LR.0001, replay.25,
+    teacher1/PPO1. Seed1312, checkpoint every64epochs (~16.78Msteps).
+    Prior4.19M pilot has only32 optimizer minibatches, insufficient for a
+    learning-strength verdict. The exact setup passed throughput/stability,
+    so this bounded continuation follows AGENTS requirement to train tens
+    of millions after the gate. Wall bound25m and30k steady guard remain.
+    Inspect /tmp/relh-generals-coworld/device-context-long-22148/run and
+    device-context-long-22148.log. Do not duplicate. Evaluate intermediate
+    and final checkpoints against held-out baseline and mixed opponents;
+    hosted validation and publishing remain contingent on proven strength.
