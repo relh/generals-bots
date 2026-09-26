@@ -1843,3 +1843,16 @@ Update, 2026-09-26 native hour format guard correction
     Verifiedliveguarddigest afterreplacement. Futureovernight script usesv4.
     No trainer interruption or restart. Next freeze67.11Mcheckpoint for
     heldoutcomparison against initializationperf.452820.
+
+Update, 2026-09-26 first overnight checkpoint frozen
+  * 22922live at320epochs (~83.89Msteps),16/20epoch128kSPS,85.4%recentGPU.
+    First67,108,864checkpoint SHA256
+    8ee76d545e459dc6eaf37e952c38f2c14f6083968541f06a4ce0e2cdc69d993f.
+    Trainingrecord/policy/learner/identity archive verified onmetta0:
+    device-context-overnight-22922-67m-checkpoint.tar.gz SHA256
+    fdbd70bb2d893f01ff7dcd8877f18b943cff87772f0f9e80077f2e04164792de.
+  * Heldouteval23019 running frozen67Mcheckpoint, same1101/Expander
+    protocol/reusedCPUbuild22138. Output/var/tmp/relh-generals-recovery/
+    device-context-overnight67m-eval-23019. Compare against initialization
+    .452820; training22922alsoverifiedlive. No duplicate or hostedpublish.
+    Next checkpoint134,217,728; evaluate if usefullearning continues.
