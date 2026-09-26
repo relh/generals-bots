@@ -2773,3 +2773,17 @@ Update, 2026-09-26 second overnight checkpoint preserved
     No duplicateevaluation submitted while23019comparisonpending. Next
     read23019result before selecting nextcheckpointforheldout. Goalactive,
     strength/hostedpublication stillunproven. No Codex archival changes.
+
+Update, 2026-09-26 first overnight quality improvement
+  * 23019completed67Mcheckpoint heldout: score-.022583/perf.488708,
+    upfrominitialization.452820, stillbelowv11.496338. Eight1024-gamebatch
+    episodes,seed1101/Expander. Supportscontinuedtraining, notpublication.
+    Archiveverified device-context-overnight67m-eval-23019.tar.gz SHA256
+    033c5767c147da5812cd8d2953dfac56e61584494298617dfa612f530c68f0e6.
+  * Submitted23133heldout134Mcheckpoint vsExpander, existingCPUbuild22138.
+    Output/var/tmp/relh-generals-recovery/device-context-overnight134m-eval-23133.
+  * Submitted23134heldout67Mcheckpoint vsSentinel, same seed1101. Build
+    CPUtargetchangingonlyopponent; assertmodelSHA/statewordsunchanged.
+    Output/var/tmp/relh-generals-recovery/device-context-overnight67m-sentinel-eval-23134.
+    Compare v11Sentinel.337769; bothnewjobsdistinctboundedcomparisons.
+    Revalidatehandlesbeforeactions; training22922continues. No publish.
