@@ -2616,3 +2616,8 @@ Update, 2026-09-26 first context held-out result
     workspace. Restores original33.55M checkpoint/optimizer to67.11M target.
     Inspect /var/tmp/relh-generals-recovery/device-context-disk-22236 on
     node. No data or Codex archives removed. 16mheldout22170 still pending.
+  * 22236 failed before container startup: nested/work mountpoint creation
+    touched exhausted/tmp. Corrected mount to/recovery at container root,
+    config/run paths there; resubmitted22243. Observe exact handle before
+    claiming training. Read outputs under/var/tmp/relh-generals-recovery/
+    device-context-disk-22243. Shared node inode issue is not policy failure.

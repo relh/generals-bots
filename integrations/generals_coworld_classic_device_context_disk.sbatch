@@ -92,7 +92,7 @@ ln -s "$out/run" "$disk/device-context-disk-pilot-$job-0"
 timeout -k 30s 25m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=16 \
     --ulimit core=0:0 --user "$(id -u):$(id -g)" \
     -v "$w:/work" \
-    -v "$out:/work/device-context-disk-$job" \
+    -v "$out:/recovery" \
     -v /var/tmp/relh-generals-jax-cache:/cache \
     -v "$w/metta_puffer-device-fused.py:/work/source-normalized-16245/integrations/metta_puffer.py:ro" \
     -v "$w/puffer_codec-hintreuse.py:/work/source-normalized-16245/integrations/puffer_codec.py:ro" \
@@ -101,9 +101,9 @@ timeout -k 30s 25m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=16
     -e HOME=/work -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-normalized-16245:/work/oldsource \
     -e JAX_LOG_COMPILES=1 -e PYTHONFAULTHANDLER=1 -e JAX_COMPILATION_CACHE_DIR=/cache \
     relh-generals-b300:20260923b bash /work/source-normalized-16245/integrations/run_puffer_gpu.sh train \
-    --config "/work/device-context-disk-$job/config.json" \
+    --config /recovery/config.json \
     --build /work/device-context-build-18326 \
-    --output "/work/device-context-disk-$job/run" > "$out/container.log" 2>&1 &
+    --output /recovery/run > "$out/container.log" 2>&1 &
 pid=$!
 start=$(date +%s)
 status=0
