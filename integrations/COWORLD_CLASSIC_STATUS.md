@@ -3251,3 +3251,46 @@ Nextbounded16.8Mprobeusesverified134Mparent,lr.001,replay1.0,mb131072,
 seed1328,freshoptimizer. Fourupdatesperepoch(vsone),zero teacherloss,
 unchangedfullClassicmaps/codec/actionmasks. Requirefiniteproofandsteady
 >=30k beforelongerlearning;300ktargetremainsunmet andnoqualitypublication.
+
+
+## 2026-09-27 stronger-update probe and held-out recovery via metta1
+
+metta0 SSH timed out repeatedly. metta1 reached the SAME mettabox cluster,
+controller metta3, and a bounded B300 reader recovered exact job artifacts.
+24783/24771 were gone from scheduler retention, but completed.json/evaluation.json
+proved completion and exact containers were absent. No duplicate jobs launched.
+Login-host /home/metta archives are host-local: earlier archives remain on
+metta0; new archives below are on metta1. Do not infer loss from absent metta1 paths.
+
+24783 completed16,777,216finite steps, B30016384env,H32,mb131072,replay1,
+lr.001,entropy.001,seed1328,freshoptimizer,verified134Mparent. Fouroptimizer
+updatesperepoch ratherthanone. After12warmup20epochs:
+10,485,760steps/52.804s=198,579SPS; native70.576->123.380s.
+RecentGPUat27epochs88.4%, final100%,VRAM88.5/268G. Finalnativeenv1.314s49%,
+actor.447s16%,train.885s33%(.860smodel),misc.025s0%. Entropy2.005.
+Checkpoint9b4a79465aa4b0864c795b6146b86e3c64bf7c60446d1cf884bcd632558b0203.
+
+24771 nativeheldoutCOMPLETE seed1101 score-.53894,perf.23053,games16
+(nativevectorworkers, each1024lanes); samezero-teachergraph,134Mcheckpointa672.
+This is lowerthanprior~.49 baseline. Native evaluation samples actions;
+hostedselect_action usesper-headargmax, so servedbehaviorneedsitsownassessment.
+Do notclaimstrongerpolicyorpublishbasedonthisresult.
+Verifiedmetta1archive device-context-strong-update-24783-and-heldout-24771.tar.gz
+SHA9d1b12f1b8a9a25e76612569695ee4dbd9dd96c72ef04ea35f2bc3068ef4e11d.
+
+24978 pairedactionauditcompleted71s:24,576decisions,24,328flexible.
+Parent134M/newstrong16Mgreedyteacheragreement100%,greedydifference0.
+Moveentropy1.066619->1.356119,splitentropy.185481->.647661,
+teacherprob.862588->.814886. Meanmovehintweight8.812615->8.774679.
+Thus increasedlearningchangedprobabilitiesbutnotobservedgreedydecisions yet.
+
+24994 submittedbounded134,217,728NEWstrong-updatesteps,seed1329,
+verified24783weights,freshoptimizer,unchangedgatedrecipe,checkpointsevery16epochs.
+24995 submittedpairedFrozengreedyheldout: parent134Mvsstrong16M,
+ExpanderandSentinel,256gameseach,seed1101(reset1101:0:0),fullClassic.
+FrozenPolicy verifies model/checkpoint andtraininglineageexcludesheldoutseed.
+Usesexacthostedper-headprobabilityargmax andpublicactionmasks, retainsper-game
+outcomes; doesnotclaimnative-samplingprotocolcomparability. Newruntimehelper
+loadsverifiedsame37550...run-controlmoduletointerprettraininglineage while
+archivedphysicalenvironmentfilesremainunchanged. Fourcasesbounded9mineach,
+45minscheduler. Goalactive;nohostedcandidatepublicationorovernightrunyet.
