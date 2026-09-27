@@ -2477,3 +2477,37 @@ This is actual behavioral change after the longer strong-update run; it is
 not yet evidence of higher match performance. 25057 held-out greedy matches
 remain running. Check jobs before further submissions. Do not lower hint scales
 preemptively until this checkpoint's match results are inspected.
+
+
+## Follow-up: authoritative live state and stronger wide batching
+
+Previous goal turn classified progress: terminal jobs recovered, checkpoints
+archived, new strong134M behavior quantified; no duplicate training restarted.
+25058 completed successfully (81s) and archived on metta1 as
+ device-context-strong134m-action-audit-25058.tar.gz
+SHA256 c01f3bccfdaf11300314b84171c7ef124b5dc20c9119ec3d8695cd1ff73a87d3.
+25057 confirmed RUNNING; parent Expander completed (.484375) and parent
+Sentinel at turn651. Strong134M held-out cases remain pending.
+
+Found existing authenticated CLI /Users/relh/Code/coworld/.venv/bin/coworld;
+read its AGENTS and fetched origin without touching dirty/untracked work.
+No active player pointer; CLI acts as main user. Accessible identities include
+richard ply_ded11f40-3e30-4921-b019-f7f6bc3e9c83 and
+relh ply_18302115-9fc9-482d-a2f3-f4c592bf9e57.
+Live Classic division div_5ee4b276-f330-42e8-b8e4-a6097c779d99:
+daveey rank1 MMR2154.63846 champion daveey-grl:v7
+(76b0a083-f0a4-4ec7-9811-038349266633);
+richard rank3 MMR1579.11139 champion co-gas-generals-siege-richard:v2
+(7a3f30e9-1341-43fa-a1ac-7bf46edf5641);
+relh rank4 MMR1495.35868 champion co-gas-generals-siege-relh:v4
+(e53e30be-0b23-4d62-b944-4dd249a483fe).
+Thus relh is currently the lower eligible publishing account, subject to
+fresh inspection before a future champion change. No hosted writes performed.
+
+25080 submitted and confirmed RUNNING: finite 33,554,432-step wider strong PPO
+probe, 32768 environments, H32, minibatch262144, replay1, lr.001, entropy.001,
+seed1331. Initializes exact24994 weights with checked environment transfer for
+agent count, fresh optimizer; unchanged zero-teacher model/codec. Purpose:
+measure throughput for the stronger optimization recipe; weak replay.25's
+276k does not prove stronger-recipe throughput. 12warm+20measuredepochs,
+1048576steps/epoch, same finite/SPS/startup guards. No dependent long job.
