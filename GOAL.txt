@@ -2604,3 +2604,40 @@ probe_context_frozen_bundle 3762d8f33e5ea16c67c44c038fc5953c4f629a63cb26eafda0db
 Newstagingnames *-serving-20260927.py under/var/tmp/relh-generals-recovery.
 Websockets16.0 installs into uniquejoboutputdeps, neverphysicalMetta source.
 Goalactive; awaitcurrenttrainingandheld-outqualitybeforeprivatehostedcandidate.
+
+
+## Deduplicated-opponent experiment and corrected final serving result
+
+Previousgoalturnclassifiedprogress: exactservingsourcesstaged andprobequeued.
+25118 completed134,217,728NEWsteps,final20-interval205329SPS
+(10,485,760steps/51.068s),16384env,H32,mb131072,replay1,oneB300,
+recentGPU88.8%,final88.5/268GB. Learner/shapinggamma.999,finitecompletedrecord.
+FinalcheckpointSHA8f83b514d10967ef1788deeff1439f941929d29178e407d811cb9235c9963091.
+Verifiedmetta1archive device-context-aligned-discount-134m-25118.tar.gz
+SHA3260da9cc35726a0f14a4c85f66157e5c0fa86fa42d40c2ac98509f74613a004.
+25120 held-outgreedycasesconfirmedRUNNING after25118; qualitystillpending.
+25128 servingprobe completed:32measuredactions after4warmupboardshapes,
+mean17.448ms,max18.394ms,allactionslegal,under500ms. Exactfinalcheckpoint
+exportedFrozenPolicybundle,calibratedwirefeatureoptions. SyntheticCPU path
+only; actualhostedstartup andstrengthremainunproven. Servingarchiveinitiated,
+checksumstillpending atthisdocumentationupdate.
+
+Newoptional deduplicate_opponent_branches=False leavesdefaultrecipesunchanged.
+Forstrong_mixed,three identicalExpanderbranch IDs0/1/2 map to onebranch0;
+SentinelID3 maps tobranch1. num_opponents andoriginalfourID laneassignments
+remain unchanged, preserving3:1 opponentmix,keys,mapseeds,trajectories.
+Unlikepreviousrejectedgroupedexperiment,retainsfullbatchlayout ratherthan
+splitting/reinterleavinglanes. CPUtwo-seedfulltransition/recyclingparity passes
+4tests (twooptimizations)30.37s. Rufffound11preexistingissues; comparingactual
+sourceandHEADviastdinintroducedzeroissues. NewGPUhelperhascleanRuff.
+CurrentadapterSHA d96e145c753b20e6a29fc33b306e819d27defb1ca31546fe53ba104ef899ced5;
+GPUhelperSHA571f3710900b7eaae1f5bc872728c705a372cb35b3e2f773071e52bf78867e3e.
+Pinnednewstagingfilenamesretainallbaselinearchives/sourcebinds.
+25146deduplicatedaligneddiscountbuild+GPUparitycompleted57s:384transitions,
+32selectivelyrecycledlanesexactlyequalbaseline oncuda:0. Model060fb15a...
+unchanged;newbinary2e5831676a1d585ce721c1d1bdd997e08285d5ad1b6fd3a849ce5a9a2c411400.
+25148finite16.8MperformancepilotconfirmedRUNNING afterparitypassed;
+sameinitial24646weights,seed1328,learner/shapinggamma.999,H32,mb131072,replay1,
+lr.001,entropy.001 as25101,checkedenvtransfer. Comparesbranchsharingonly.
+OptionremainsoffuntilactualSPSconfirmsimprovement. Noadditional longjob.
+Goalactive; nohostedpublication/championchange,300kstillunmet.

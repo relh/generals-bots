@@ -46,6 +46,7 @@ class GeneralsPufferEnvironment:
         board_size: int = 10,
         horizon: int = 300,
         opponent: str = "expander",
+        deduplicate_opponent_branches: bool = False,
         shaping_weight: float = 0.2,
         shaping_gamma: float = 0.99,
         army_shaping_weight: float = 0.5,
@@ -261,14 +262,18 @@ class GeneralsPufferEnvironment:
             if opponent == "strong_mixed" else (opponent_types[opponent](),)
         )
         self.num_opponents = len(opponent_agents)
-        opponent_branches = tuple(lambda args, agent=agent: agent.act(*args) for agent in opponent_agents)
+        if deduplicate_opponent_branches and opponent != "strong_mixed":
+            raise ValueError("Deduplicated opponent branches require strong_mixed")
+        branch_agents = (opponent_agents[0], opponent_agents[-1]) if deduplicate_opponent_branches else opponent_agents
+        opponent_branches = tuple(lambda args, agent=agent: agent.act(*args) for agent in branch_agents)
         env = self.env
 
         @jax.jit
         def advance(state, pool, side, opponent_id, index, split, key):
             opponent_key, next_key = jax.random.split(key)
+            selector = jnp.where(opponent_id == 3, 1, 0) if deduplicate_opponent_branches else opponent_id
             enemy = jax.lax.switch(
-                opponent_id, opponent_branches, (game.get_observation(state, 1 - side), opponent_key)
+                selector, opponent_branches, (game.get_observation(state, 1 - side), opponent_key)
             )
             ours = decode_action(index, board_size, split if factorized_actions else None)
             actions = jnp.where(side == 0, jnp.stack((ours, enemy)), jnp.stack((enemy, ours)))

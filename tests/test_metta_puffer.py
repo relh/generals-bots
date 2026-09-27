@@ -134,7 +134,8 @@ def test_device_teacher_transport_matches_numeric_training_step(hints, context_h
 
 
 @pytest.mark.parametrize("seed", [1326, 1327])
-def test_grouped_device_opponents_preserve_transitions_and_recycling(seed, tmp_path):
+@pytest.mark.parametrize("optimization", ["group_device_opponents", "deduplicate_opponent_branches"])
+def test_device_opponent_optimizations_preserve_transitions_and_recycling(seed, optimization, tmp_path):
     context = EnvironmentContext(seed=seed, index=0, mode="train", output=tmp_path)
     options = dict(
         parallel_games=8, require_gpu=False, opponent="strong_mixed",
@@ -145,7 +146,7 @@ def test_grouped_device_opponents_preserve_transitions_and_recycling(seed, tmp_p
         move_hint_scale=.375, split_hint_scale=.125,
     )
     baseline = BatchedGeneralsPufferEnvironment(context=context, **options)
-    grouped = BatchedGeneralsPufferEnvironment(context=context, group_device_opponents=True, **options)
+    grouped = BatchedGeneralsPufferEnvironment(context=context, **{optimization: True}, **options)
     try:
         first = baseline.reset_device(str(seed))
         second = grouped.reset_device(str(seed))
