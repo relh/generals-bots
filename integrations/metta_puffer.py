@@ -825,3 +825,120 @@ class BatchedGeneralsPufferEnvironment:
 
     def close(self) -> None:
         self.base.close()
+
+
+class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment):
+    """Train the same device policy in both seats of each Classic game."""
+
+    def __init__(self, *, context: EnvironmentContext, parallel_games: int = 16, **options):
+        if context.mode != "train":
+            raise ValueError("Self-play is a training environment; use the one-seat adapter for evaluation")
+        if options.get("teacher_rollouts") or options.get("supervise_teacher") or options.get("sparse_teacher"):
+            raise ValueError("Self-play requires policy actions in both seats without teacher targets")
+        if options.get("audit_native_actions"):
+            raise ValueError("The one-seat native-action audit does not apply to self-play")
+        self._reward_options = {
+            name: float(options.get(name, default))
+            for name, default in (
+                ("shaping_weight", 0.2), ("shaping_gamma", 0.99), ("reward_scale", 1.0),
+                ("army_shaping_weight", 0.5), ("land_shaping_weight", 0.3),
+                ("castle_shaping_weight", 0.0), ("land_gain_reward_weight", 0.0),
+            )
+        }
+        super().__init__(context=context, parallel_games=parallel_games, **options)
+        if not self.base.factorized_actions:
+            raise ValueError("Self-play requires factorized move and split actions")
+        self.spec = self.base.spec.model_copy(update={"agents": 2 * parallel_games})
+        self._self_sides = jnp.arange(2, dtype=jnp.int32)
+        self._observe_both = jax.jit(jax.vmap(
+            lambda state: jax.vmap(lambda side: self.base._observe(state, side))(self._self_sides)
+        ))
+        env = self.base.env
+        encode = self.base._encode
+        initial_state = self.base._initial_state
+        size = self.base.size
+        weights = self._reward_options
+
+        def margin(ours, theirs):
+            return (ours - theirs) / (ours + theirs + 1)
+
+        def potential(observation, state, side):
+            value = weights["army_shaping_weight"] * margin(
+                observation.owned_army_count, observation.opponent_army_count
+            )
+            value += weights["land_shaping_weight"] * margin(
+                observation.owned_land_count, observation.opponent_land_count
+            )
+            if weights["castle_shaping_weight"]:
+                value += weights["castle_shaping_weight"] * _castle_control_margin(state, side)
+            return value
+
+        def advance_one(state, pool, indices, splits, key):
+            next_key, reset_key = jax.random.split(key)
+            actions = jax.vmap(lambda index, split: decode_action(index, size, split))(indices, splits)
+            previous = jax.vmap(lambda side: game.get_observation(state, side))(self._self_sides)
+            timestep, next_state = env.step(state, actions, pool)
+            final = jax.vmap(lambda side: game.get_observation(timestep.last_state, side))(self._self_sides)
+            done = timestep.terminated | timestep.truncated
+
+            def side_reward(side, old, new):
+                outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
+                shaped = weights["shaping_weight"] * (
+                    weights["shaping_gamma"] * potential(new, timestep.last_state, side) * ~done
+                    - potential(old, state, side)
+                )
+                land_gain = weights["land_gain_reward_weight"] * (
+                    jnp.float32(new.owned_land_count) - jnp.float32(old.owned_land_count)
+                )
+                return (outcome + shaped + land_gain) * weights["reward_scale"]
+
+            rewards = jax.vmap(side_reward)(self._self_sides, previous, final)
+
+            def recycle(_):
+                fresh = initial_state(pool, reset_key)
+                return fresh, jax.random.fold_in(next_key, 1)
+
+            next_state, next_key = jax.lax.cond(
+                done, recycle, lambda _: (next_state, next_key), operand=None
+            )
+            values, masks = jax.vmap(lambda side: encode(game.get_observation(next_state, side)))(
+                self._self_sides
+            )
+            return next_state, next_key, values, masks, rewards, done
+
+        self._advance_self_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0)))
+
+    def reset_device(self, seed: str):
+        self._reset_states(seed)
+        values, masks = self._observe_both(self.states)
+        return values.reshape((self.spec.agents, -1)), masks.reshape((self.spec.agents, -1)).astype(jnp.uint8)
+
+    def step_device(self, actions):
+        expected = (self.spec.agents, len(self.spec.action_sizes))
+        if actions.shape != expected:
+            raise ValueError(f"Self-play action shape {actions.shape}; expected {expected}")
+        paired = actions.reshape((self.parallel_games, 2, len(self.spec.action_sizes))).astype(jnp.int32)
+        self.states, self.keys, values, masks, rewards, done = self._advance_self_states(
+            self.states, self.base.pool, paired[:, :, 0], paired[:, :, 1], self.keys
+        )
+        self.turn += 1
+        if self.turn >= self.horizon:
+            self.turn = 0
+            if self.base.coworld_classic:
+                self._pool_generation += 1
+                self.base.pool, _ = self.base.env.reset(
+                    jax.random.fold_in(self._pool_seed, self._pool_generation)
+                )
+        return (
+            values.reshape((self.spec.agents, -1)),
+            masks.reshape((self.spec.agents, -1)).astype(jnp.uint8),
+            rewards.reshape((self.spec.agents,)).astype(jnp.float32),
+            jnp.repeat(done, 2).astype(jnp.float32),
+            False,
+        )
+
+    def reset(self, seed: str):
+        raise NotImplementedError("Self-play uses device-resident training only")
+
+    def step(self, actions):
+        raise NotImplementedError("Self-play uses device-resident training only")

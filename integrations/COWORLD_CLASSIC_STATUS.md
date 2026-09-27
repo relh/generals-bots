@@ -5762,3 +5762,69 @@ samples, and evaluation are archived on metta0 as
 `relh-classic-spatial-hint2-prior2-low-lr-27456-27457.tar.gz`, SHA256
 `1a85e6e2a749ecf65ef384d9ac287d568cded218797d86e39e5b74f71fd648e5`.
 No hosted upload, league submission, or champion change occurred.
+
+## Device-resident Classic self-play and long-horizon screen (2026-09-27)
+
+The public [Average Joe](https://github.com/strakam/AverageJoe) Generals
+reference uses two-seat self-play, a board transformer, 512-step PPO rollouts,
+advantage filtering, a value distribution, and an Expander-magnet KL term.
+Its target is generals.io rather than Coworld Classic, so this is a training
+design reference, not a transferable checkpoint or a claim about Coworld
+strength. We implemented a device-resident two-seat Classic adapter that
+shares one policy across both seats while retaining the exact Coworld Classic
+maps, fogged observation, factorized legal masks, and terminal rewards. A
+single-GPU Docker preflight (27489) verified 16 agent rows from eight games,
+distinct seat observations, finite zero-sum rewards on a pass step, and valid
+action-mask shapes. A second bounded B300 preflight (27570) advanced until
+both seats had legal non-pass moves, submitted a different selected move for
+each seat, and matched the resulting complete game state leaf by leaf to a
+direct two-action `GeneralsEnv.step`. Its log and pinned adapter are archived
+on metta0 as `relh-classic-selfplay-action-audit-27570.tar.gz`, SHA256
+`9929cdffb01c0e90e05e3cf61cd2faa8e9d52c5eb435adbcb71f157a9c2358d9`.
+
+An initial attempt (27491) to initialize the new environment factory from
+the earlier one-seat checkpoint stopped before training. Metta's existing
+initializer correctly requires the same environment factory for this kind
+of transfer; we kept that guard and trained fresh instead. Job 27493 used
+4,096 self-play games (8,192 policy seats), one B300, horizon 32, minibatch
+16,384, replay .5, LR .001, GAE .99, entropy .003, and matched learner and
+shaping gamma .999. It completed 16,777,216 agent steps. The final warmed
+20-epoch window delivered **232,407 end-to-end SPS** for its single process
+and in aggregate; recent GPU samples averaged about 84% utilization.
+Frozen evaluation 27494 at held-out seed 1386 found both 4.19M and 16.78M
+checkpoints byte-identical by per-game outcome array to the earlier
+strength-8 parent against ExpanderHarvester and Sentinel: 63/52/13 and
+40/81/7 W/L/D. The build, passed preflight, failed initialization logs,
+successful run, and evaluation are archived on metta0 as
+`relh-classic-selfplay-v1-27489-27494.tar.gz`, SHA256
+`84dfaf2a9560ccecfe573ee9f96e315f4734b336ccec36b47a260d5723d363a0`.
+
+Job 27520 trained the same two-seat setup fresh with a weaker public action
+prior (strength 2), completing 16,777,216 steps. Warmed epochs 44→64
+completed 5,242,880 steps in 22.718 seconds: **230,781 end-to-end SPS**
+on one B300, for both its single process and the aggregate. Frozen
+evaluation 27521 found its 4.19M and
+16.78M checkpoints' per-game outcome arrays again byte-identical to the
+baseline on both 128-game opponent sets. The build, run, GPU samples, and
+quality results are archived on metta0 as
+`relh-classic-selfplay-prior2-v1-27520-27521.tar.gz`, SHA256
+`6121a953bf333935054b76258083a80e943c015c1ec81c2bdbe5b4b19103e5f3`.
+
+To test whether 32-step credit assignment was the constraint, smoke job
+27544 used 1,024 self-play games (2,048 seats), horizon 512, minibatch
+131,072, replay .5, LR .003, GAE .90, entropy .003, and learner/shaping
+gamma both 1.0. It completed 8,388,608 agent steps on one B300. Warmed
+epochs 4→8 completed 4,194,304 steps in 34.354 seconds at
+**122,091 end-to-end SPS**, again
+the one-process aggregate. The final dashboard reported 100% GPU utilization
+and 85.6 GiB VRAM. Its corrected short-window monitor was pinned at SHA256
+`beed873c711690f936b8486fc4cde2ec8e3c755528d08b6cc38623d77fcb8f29`
+and passed the 30K gate. Frozen evaluation 27545 found both 4.19M and
+8.39M checkpoints' outcome arrays byte-identical to the same baseline
+against both strong opponents. The smoke, build, samples, monitor, and
+evaluation are archived on metta0 as
+`relh-classic-selfplay-h512-27544-27545.tar.gz`, SHA256
+`2fc01fe875e8c54e9d062f51362acb1b740d0d85d416b15a06a2453448b6e086`.
+This establishes a fast two-seat and long-horizon path, but not a stronger
+Classic policy. No 300M-step continuation, hosted upload, submission, or
+champion change followed.

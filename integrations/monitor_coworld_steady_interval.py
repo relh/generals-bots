@@ -47,10 +47,15 @@ def main() -> None:
     startup_limit = int(sys.argv[5]) if len(sys.argv) > 5 else 300
     steps_per_epoch = int(sys.argv[6]) if len(sys.argv) > 6 else STEPS_PER_EPOCH
     min_sps = int(sys.argv[7]) if len(sys.argv) > 7 else MIN_SPS
+    short_span = int(sys.argv[8]) if len(sys.argv) > 8 else 16
+    long_span = int(sys.argv[9]) if len(sys.argv) > 9 else 20
+    gate_epoch = int(sys.argv[10]) if len(sys.argv) > 10 else 30
     if min_sps <= 0:
         raise SystemExit("Minimum SPS must be positive")
     if steps_per_epoch <= 0:
         raise SystemExit("Steps per epoch must be positive")
+    if not 0 < short_span < long_span < gate_epoch:
+        raise SystemExit("Require 0 < short_span < long_span < gate_epoch")
     run = workspace / f"{prefix}-pilot-{job}-0"
     log = run / "console.log"
     history = log.read_text(errors="replace") if log.exists() else ""
@@ -67,10 +72,10 @@ def main() -> None:
             if field.isdigit():
                 samples.append(int(field))
     gpu_mean = statistics.mean(samples[-60:]) if len(samples) >= 60 else -1
-    sps_16 = interval_sps(times, 16, steps_per_epoch)
-    sps_20 = interval_sps(times, 20, steps_per_epoch)
+    sps_short = interval_sps(times, short_span, steps_per_epoch)
+    sps_long = interval_sps(times, long_span, steps_per_epoch)
     print(
-        f"epoch={epoch} sps_16={sps_16} sps_20={sps_20} "
+        f"epoch={epoch} sps_{short_span}={sps_short} sps_{long_span}={sps_long} "
         f"gpu_mean_60s={gpu_mean:.1f} completed={completed}", flush=True,
     )
     if times and not completed and time.time() - log.stat().st_mtime > 90:
@@ -78,9 +83,9 @@ def main() -> None:
     if not completed and startup_seconds >= startup_limit and epoch == 0:
         raise SystemExit(f"No completed training epoch after {startup_limit} seconds")
     if (
-        not completed and epoch >= 30
-        and sps_16 is not None and sps_20 is not None
-        and sps_16 < min_sps and sps_20 < min_sps
+        not completed and epoch >= gate_epoch
+        and sps_short is not None and sps_long is not None
+        and sps_short < min_sps and sps_long < min_sps
     ):
         raise SystemExit(f"Sustained end-to-end training SPS below {min_sps:,}")
 
