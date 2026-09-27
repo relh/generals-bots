@@ -5113,3 +5113,47 @@ known deltas and 10000-resample confidence intervals reproduced exactly with
 seed1379. This verifies actual archived data handling, not new policy quality.
 Ruff and git diff checks pass. Use new analysis seed1383 for lifecycle results;
 untouched final1381 remains reserved. No long training/hosted write is released.
+
+## Lifecycle paired quality result: both long-budget recipes rejected
+
+Evaluation26364 is terminal, all nine records recovered read-only. The live
+allocation had expired before export; no evaluation was restarted. Empty failed
+export retained. Final recovery archive SHA
+8e702201c85463331eb8919b1697154bb6fa4e8dbeb1e9971b96b07571f69e8d
+matched login/local. Verified held-out argmax metadata, settings, paired initial
+hashes/sides/opponent IDs and W/L/D against outcome arrays. Seed1382,2048 cases
+per opponent,1305 unique initial states. Bootstrap10000 clusters,seed1383.
+
+Baseline / old134M / fixed134M W/L/D:
+
+- Expander889/778/381 →380/1260/408 →351/1345/352.
+- Sentinel503/1268/277 →243/1627/178 →204/1676/168.
+- Mixed790/890/368 →337/1361/350 →305/1444/299.
+
+Baseline→control score deltas/95%CIs:
+Expander-.48389[-.53531,-.43278], Sentinel-.30225[-.34918,-.25595],
+mixed-.45117[-.49708,-.40498].
+Baseline→fixed:
+-.53955[-.59238,-.48692],-.34521[-.39334,-.29665],-.50732[-.55550,-.45695].
+Control→fixed:
+-.05566[-.09793,-.01306],-.04297[-.08147,-.00390],-.05615[-.09536,-.01622].
+All intervals exclude zero below it. Correct lifecycle semantics did not improve
+this learning recipe; neither134M checkpoint qualifies for promotion or a new
+long run. Keep the correctness fix, but do not claim it solved policy strength.
+No training or evaluation remains live for these experiments.
+
+Read-only parameter audit verifies published hashes and true initialweights.
+Fixed/control RMS changes from untrained initializer: encoder.001518/.001527;
+actor.001982/.001838; value.010419/.009411; recurrent.007458/.007537. All786432
+recurrent parameters changed. This excludes a frozen optimizer, but weight drift
+alone cannot identify the harmful gradient source. Local report:
+/tmp/relh-lifecycle-134m-parameter-audit-20260927.json.
+
+Next architectural investigation: pinned native mingru forward/train/backward
+loops return their input when num_layers=0. A feedforward public-hint initializer
+could remove recurrent drift while matching initial action probabilities.
+Support is not yet GPU-proven: typed initializer currently requires layers>0,
+and frozen inference stacks recurrent states. Extend explicit zero-layer layout
+validation and verify native forward/backward/state behavior before any training
+release. Do not disguise the artifact as trained or reuse another architecture's
+checkpoint identity. Final1381 remains untouched; goal active.
