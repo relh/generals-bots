@@ -1,4 +1,4 @@
-"""Bounded reward-only Puffer5 training on public Coworld Classic observations."""
+"""Bounded Puffer5 training on public Coworld Classic observations."""
 
 import argparse
 import hashlib
@@ -23,6 +23,7 @@ def main():
     parser.add_argument("--replay-ratio", type=float, default=1.0)
     parser.add_argument("--checkpoint-interval", type=int, default=1)
     parser.add_argument("--opponent", choices=("strong_mixed", "random"), default="strong_mixed")
+    parser.add_argument("--expect-imitation-weight", type=float, default=0.0)
     args = parser.parse_args()
     if (
         args.timesteps <= 0
@@ -33,6 +34,8 @@ def main():
         or not math.isfinite(args.replay_ratio)
         or args.replay_ratio <= 0
         or args.checkpoint_interval <= 0
+        or not math.isfinite(args.expect_imitation_weight)
+        or args.expect_imitation_weight < 0
     ):
         raise ValueError("Invalid training budget or learning rate")
     build = json.loads((args.build / "build.json").read_text())
@@ -49,6 +52,7 @@ def main():
         or options["shaping_gamma"] != 0.999
         or not options["balance_opponent_sides"]
         or options["opponent"] != args.opponent
+        or options["imitation_weight"] != args.expect_imitation_weight
     ):
         raise ValueError("Unexpected raw RL environment")
     record = json.loads(args.template.read_text())

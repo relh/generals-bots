@@ -5463,5 +5463,46 @@ confirmed these settings; job 27042 completed 33,554,432 steps. Its late
 20-epoch guard measured 244,238 end-to-end SPS on one B300. Final checkpoint
 SHA256 was
 `30388e1409d48cc62f753aec0660e34c55e3979a4de973d8109696acb3bc9e8c`.
-Paired initial/8M/final held-out evaluation 27049 is running. No longer run
-or policy publication is justified until those outcomes are inspected.
+Paired initial/8M/final held-out evaluation 27049 completed on seed 1386.
+The 8M checkpoint exactly matched the initializer against all four pools.
+The final 33M checkpoint scored W/L/D 1005/0/19 versus Random,
+410/425/189 versus ExpanderHarvester, 316/632/76 versus Sentinel, and
+388/467/169 versus strong mixed, compared with initializer 1004/0/20,
+410/424/190, 316/632/76, and 388/466/170 respectively. The longer
+horizon did not establish a quality gain. Another long flat-policy run is
+not justified by these results.
+
+Raw actor diagnostic build 27054 compiled with the same normalized native
+Puffer5 binary and a distinct environment fingerprint: Random opponent,
+ExpanderHarvester teacher, and imitation reward weight 2.0 for exact
+non-pass teacher-action agreement. Its 8,388,608-step run 27059 completed
+with a finite checkpoint (SHA256
+`a3e491c84db59c6d720a831e97d9ba87f27375a26da4ba520ca13871d6d221a0`).
+This intentionally changes the reward and is only a learnability diagnostic,
+not a candidate for hosted play. Held-out evaluation 27067 completed with
+W/L/D 0/2/1022 versus Random and 0/1013/11 versus ExpanderHarvester.
+Its Random trajectories had 33,849 reward-clipped transitions out of
+1,228,720 active transitions, consistent with occasional exact teacher-action
+bonuses, but they did not yield game wins. This sparse reward result does
+not establish that native PPO can learn the teacher on matched states.
+
+Matched-state GPU audit 27075 compared the 2M and 8M checkpoints on the
+same 16,384 teacher-driven Classic decisions (128 games × 128 turns). Exact
+teacher source top-1 rose from 10.64% to 14.38%; joint move/split top-1
+rose from 10.52% to 14.28%. Mean teacher source probability rose from
+.11832 to .12855, and joint probability from .07112 to .09840. Thus
+the native PPO weights moved toward the rewarded teacher actions on these
+states, yet the on-policy actor still drew almost all Random games and won
+none. This narrows the problem to converting local action learning into
+productive own trajectories. It does not warrant a long flat-policy run.
+The diagnostic used one B300, 65,536 environments, horizon 16, a
+1,048,576-step rollout, minibatch 524,288, replay ratio 4, LR .003,
+advantage normalization, zero entropy, and matched learner/shaping gamma
+.999. After the first two warm epochs, dashboard uptime from 2,097,152
+to 7,340,032 steps was 14.712 to 27.422 seconds: 5,242,880 completed
+steps / 12.710 seconds = 412,500 end-to-end SPS, including intermediate
+checkpoint saves. GPU utilization samples after the first 15 seconds
+averaged 53.5%; peak sampled VRAM was 134,992 MiB. The verified build,
+run, evaluations, GPU samples, and audit are archived on metta0 in
+`relh-native-raw-imitation-diag-27054-27059-27067-27075.tar.gz`, SHA256
+`23a4dd3c61df7f1fad284cb9066c119399f12f9154a04c575ebf21f344f09508`.
