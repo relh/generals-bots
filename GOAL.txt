@@ -3190,3 +3190,46 @@ recurrent backward vs JAX gradient reference, including recurrent state and
 terminal resets. Forward parity, finite parameters and changed weights do not
 prove gradient correctness. Preserve objective/throughput gates and untouched
 final held-out/hosted requirements. No champion changes; goalactive.
+
+
+## 2026-09-27 native gradient proofs and longer sequence probe
+
+GPU job25804 passed actual native MinGRU training forward/backward against JAX
+scan/autodiff: B4,T16,H128,L4, six-agent initial state with offset1, three
+terminal-reset fixtures, actor and critic cotangents. Maximum forward error
+3.20375e-7, parameter-gradient error8.9407e-8 and initial-state-gradient
+error6.5193e-9. Uses the real arch_backward and model forward_train operations.
+
+GPU job25806 passed actual native masked cache/PPO loss against an independent
+JAX clipped objective: 16cases, heads1765/2, policy/value clipping.2, raw
+advantages, entropy0/.001. Max actor-gradient error7.45058e-8, value-gradient
+error3.72529e-9, metric error4.76837e-7. Illegal logits have exactly zero
+native/reference gradient. These fixtures validate recurrent and loss math;
+they do not prove optimizer or complete rollout correctness.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-backward-and-ppo-gradient-parity-25804-25806.tar.gz`
+SHA256 `d4344f0addbca7e4c820e2f7360fdbe97a2d423ba5899d819a421fa1bab89812`.
+1B validation archive `/home/metta/relh-generals-puffer/native-policy-1b-validation-25796.tar.gz`
+SHA256 `d753226aa39e0c29ab7e5854061bd61441af94f43676fa7042a32382304cb6b8`.
+
+Inspected actual GPU rollout_start: pufferl_forward_step precedes puf_step.
+It records current observation plus the preceding action's reward/terminal,
+resets actor state at terminals, then samples the current action. Advantage
+kernel uses next_r/next_d/next_v for action t. The last row is a bootstrap row
+with zero advantage. Source inspection supports the intended ordering; this
+is not an end-to-end transition fixture. Device recycle replaces terminal
+observations with reset-state observations and preserves reward/terminal.
+
+Original25600 remains live at epoch1662 (1,742,733,312 new steps), uptime1h3m,
+477.8K dashboard SPS, GPU95-96%,147.5/268GB. Latest strength evaluation remains
+1B: zero wins in1,536held-out cases. Throughput alone is not strength.
+
+Bounded H64 probe25822 launched on one separate B300,134,217,728newsteps,
+seed1338, same65,536agents/native build, batch4,194,304, mb65,536/replay4,
+H128/L4, lr.003/entropy0/gamma and shaping_gamma.999. Warm from verified1B
+checkpoint8553d1d6... with fresh optimizer. Balanced3:1 opponents,8,192lanes
+per opponentID/side. Tests longer credit assignment after H16 density probe
+failed to produce wins.30minute allocation/25minute trainer timeout; existing
+startup/progress guards and exact container cleanup retained. No dependent
+long job authorized by this launch; first measure finite steps/SPS, then
+frozen held-out validation. Original long run continues. No hosted writes or
+champion changes. Goal active.
