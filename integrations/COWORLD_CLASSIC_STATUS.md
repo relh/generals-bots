@@ -4879,3 +4879,26 @@ public-hint-driven trajectories; separate recurrent state for each policy.
 Measures entropy, hinted-action agreement/probability, parameter changes, and
 argmax disagreement. No new training or long allocation is released from this
 audit. All underlying checkpoints and builds remain unchanged.
+
+H512 learning audit 26301 completed successfully. Its allocation ended before
+the first live export began; no trainer was restarted. Empty failed exports
+were retained. A separate two-minute GPU allocation retrieved existing output
+read-only (first retrieval lacked required --mem; corrected with a new output
+name). Archive SHA 7e48cea26edff634dfe32fc1c84fadcce5564121a0e93ead79e2f52bbd870e87
+matched login and local copies. This is retrieval, not a new policy experiment.
+
+12288 decisions, 11991 with multiple legal moves, identical public-hint-driven
+trajectories. Baseline / low-lr 2B / reward-scaled 33M:
+
+- Changed argmax from baseline: 0 / 0.00225169 / 0.
+- Move entropy: 0.763009 / 0.354806 / 0.756035.
+- Split entropy: 8.67e-13 / 6.21e-16 / 1.36e-13.
+- Agreement with public hint: 0.954966 / 0.952715 / 0.954966.
+- Hinted move probability: 0.866316 / 0.941093 / 0.867564.
+
+Long low-rate training primarily sharpened existing action preferences in this
+sample, while held-out quality regressed. Reward scaling changed probabilities
+slightly but not preferred actions here. This sample is neither a complete
+training trajectory audit nor held-out strength evidence. The next bounded
+training comparison should test explicit exploration with otherwise matched
+initialization and recipe, not release another zero-entropy long run.
