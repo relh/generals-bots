@@ -4559,3 +4559,23 @@ runSHA311c559b74bb7c3eed84ac49a3f3539cf4363b336e6c1aa5f8264c3c2b708827,
 all independently matched publication identity. Paired1024/opponent validation
 submitted once as26107,seed1361; submission marker recorded on login host.
 No duplicate long run, hosted upload, league submission or champion change.
+
+
+Private hosted smoke artifact uploaded after authoritative exact-name lookup
+confirmed no version existed: relh-generals-native-h512-33m-test:v1,
+policyversion f93478a4-e221-41fb-85f7-eff862b892c8, default richard actor.
+Fixed image above; purpose=hosted-smoke,checkpointSHA61df...,trained_steps33554432.
+No global actor change. CLI lookup model expected legacytotal_count; actual API
+returns entries/next_cursor, so read raw authenticated response without modifying
+client or weakening any checks. Upload succeeded2026-09-27T10:34:32Z.
+
+Private:true Classiccompetition league/division targeted XP requests,4episodes
+each vs existingrelh co-gas-generals-siege-relh:v4(e53e30be...):
+candidate seat0 xreq_efa3b88f-49bc-4014-bffd-f98310d4760e;
+candidate seat1 xreq_02bb010e-0cae-42ae-a6bc-216953afa4c7.
+Unique idempotencykeys relh-native-h512-33m-hosted-smoke-20260927-seat{0,1}.
+Creation responses confirmed exactroster/slots,1200turns,Classic1v1variant.
+Both pending at firstpoll, no failures/completions yet. This is runtime smoke,
+not statistically powered skill proof; noleague submission/champion change.
+CPUimage proof preservedlogin archiveSHA
+477865fbf4b54a4aed0db407216cedcabc06c47681e737a93d34da982ec231a1.
