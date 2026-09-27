@@ -4725,3 +4725,21 @@ original33M vs weakprior33M. Explicitcompleted+identitychecks, samephysical
 rewardcounter helpers; submissionmarker preventsduplicates. Mainlong26068
 stillRUNNING at~1hour, no duplicate longjob orchampionchange. Awaitquality
 next; don't releaseanotherlongrun on entropy/SPS alone.
+
+
+Scale12 pairedvalidation26183 COMPLETED exit0:0,4m15s; all6resultrecords
+recovered,archiveSHA5eba39e04f32736cd6360b5e93622104230578939ad05ecb5359c7e181942d49
+verifiedlocal/login.1024cases/opponent,seed1368,637uniqueinitialstates; exact
+initialhash/side/opponent arrays matched. Original33M→scale12 33M W/L/D:
+Expander423/424/177→401/454/169;Sentinel258/638/128→261/697/66;
+mixed385/476/163→389/504/131. Mapcluster10000resamples seed1369:
+Δ-.05078125/95%CI[-.12074084,.02235180],207better251worse566same;
+Δ-.0546875/[-.13073265,.02201154],157/192/675;
+Δ-.0234375/[-.09284401,.04762025],204/225/595.
+Allpointestimates lower, allCIs includezero: neither improvement nor significant
+regression established. Increasedexploration changesmanycaseoutcomes, but
+thisboundedrecipe produces no provenqualitygain. Reject its promotion/long
+release; don't describe it as significantlyworse. Probe/validation bothterminal,
+no orphan trainer. Main26068 remains solelongrun. Next2B pairedquality gate
+staged (not submitted beforepublication/finiteidentity); originalscheduled
+4hour-scale training continues. Final1371 seed staysuntouched.
