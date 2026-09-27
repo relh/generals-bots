@@ -1,6 +1,7 @@
 """Evaluate the hosted argmax policy on verified, held-out Classic games."""
 
 import argparse
+import hashlib
 import json
 import time
 from pathlib import Path
@@ -24,6 +25,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1101)
     parser.add_argument("--games", type=int, default=1024)
+    parser.add_argument("--pool-size", type=int)
     parser.add_argument("--opponent", choices=("expander_harvester", "sentinel", "strong_mixed"), required=True)
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
@@ -37,6 +39,8 @@ def main():
     options = manifest["config"]["python_environment"]["options"].copy()
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     options.update(parallel_games=args.games, opponent=args.opponent, supervise_teacher=False)
+    if args.pool_size is not None:
+        options["coworld_pool_size"] = args.pool_size
     args.output.mkdir(parents=True, exist_ok=False)
     context = EnvironmentContext(seed=args.seed, index=0, mode="evaluate", output=args.output)
     env = BatchedGeneralsPufferEnvironment(context=context, **options)
@@ -46,6 +50,18 @@ def main():
     start = time.monotonic()
     try:
         observation = env.reset(reset_seed)
+        initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
+        assert all(leaf.shape[0] == args.games for leaf in initial_leaves)
+        initial_hashes = []
+        for lane in range(args.games):
+            digest = hashlib.sha256()
+            for leaf in initial_leaves:
+                digest.update(str((leaf.dtype.str, leaf.shape[1:])).encode())
+                digest.update(leaf[lane].tobytes())
+            initial_hashes.append(digest.hexdigest())
+        np.save(args.output / "initial_state_sha256.npy", np.asarray(initial_hashes, dtype="U64"))
+        np.save(args.output / "initial_sides.npy", np.asarray(env.sides))
+        np.save(args.output / "initial_opponent_ids.npy", np.asarray(env.opponent_ids))
         for turn in range(env.horizon):
             predictions = policy.predict_many(seats, observation)
             actions = np.asarray([
@@ -69,6 +85,8 @@ def main():
         scope="Frozen GPU argmax inference on Classic maps; hosted service startup remains separate",
         action_selection="argmax_per_head", seed=args.seed, reset_seed=reset_seed,
         games=args.games, opponent=args.opponent, checkpoint_sha256=args.sha256,
+        unique_initial_states=len(set(initial_hashes)),
+        sampling="Pool samples; initial state hashes, sides and opponent IDs saved",
         model_sha256=manifest["model_sha256"], options=options,
         wins=int((outcomes > 0).sum()), losses=int((outcomes < 0).sum()), draws=int((outcomes == 0).sum()),
         score=float(outcomes.mean()), perf=float((outcomes.mean() + 1) / 2),

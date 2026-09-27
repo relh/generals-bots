@@ -2704,3 +2704,48 @@ seed1328,learner/shapinggamma.999,H32,mb131072,replay1,lr.001,entropy.001,
 checkedenvtransfer. Isolatesopponent-sideassignmentvs25101; branchsharingoff.
 No longdependenttrainyet; inspectfiniteSPSgatefirst. AGENTS requiresconditional
 opponent-sidecoverage. Goalactive,300kSPS/strongmixed/hostedproofstillmissing.
+
+
+## Balanced-side gate passed; fresh paired evaluation prepared
+
+Previousgoalturnclassifiedprogress: confirmedconditionalopponentcoveragebug,
+CPU/GPUvalidatedbalancedassignment,startedfiniteprobe. 25211nowterminal
+COMPLETED168s,16,777,216finite steps. After12warmup+20epochs,
+10,485,760steps/53.353s =196535.53SPS,oneB300,16384env,H32,mb131072,replay1,
+learner/shapinggamma.999,recentsteadyGPU87.8%,final88.5/268GB.
+ExactfinalcheckpointSHA57389ed9b6d814092cde20702d3c33f6b978babed523568f0f6f20a6f187c3fc;
+matchingtrainercontainerabsent. GPUparityjointcountsensureeach4opponentIDs
+hasbothsides;16ksetupgives2048lanesforeachopponent/sidepair.
+Verifiedmetta1archivecomplete25200build+25211run+exactbalancedsource/helper:
+device-context-balanced-aligned-discount-probe-25211.tar.gz
+SHA04da2fc23ad704a16f5322cf944ffb30e585a910eed723d46c85374c85a8a28c.
+
+25236balanced134,217,728NEWstepcontinuation submittedandconfirmedRUNNING:
+exact25211weights,freshoptimizer,seed1329,same16k/H32/mb131072/replay1/lr.001/
+entropy.001 as25118. At168epochs20-interval192771SPS,recentGPU87.8%,finite.
+Onlyopponent-sideassignmentdiffersbetweenmatchedtwo-stagecontrolledrecipes.
+Noalready-runningtrainerrestarted orduplicatejobsubmitted.
+
+25271submittedafterok:25236 freshpairedheld-out512games/pool512/seed1102
+forparent24646 andbalanced25236 vsExpander,Sentinel,strong_mixed (6cases).
+Bothmodelsusebalanced25200environmentoptions duringevaluation,so mixed
+comparisonscoverbothopponentrolesfairly. NativeFrozenPolicyargmaxselection,
+checkpoint/model/sourceverification,andseedexcludedfromtraininglineage.
+Casebounds9mineach,60minjob. Individualopponentdatasetsremainequalgames
+androles; largerfreshpooldeliberatelydiffersfromold1101/pool64scores.
+
+Greedyevaluatornewoptional--pool-size andrecordsinitialfull-stateSHA256,
+sides,opponentIDsforpaired/clusteranalysis. Hashesareevaluationmetadataonly,
+notinputtopolicy. Logsuniqueinitialstates; avoidsclaimingallgamesindependent
+whentheyresamplepoolentries. Existingphysicalarchivedhelpersleftunchanged;
+newstaging evaluate_coworld_frozen_greedy-balanced-20260927.py SHA
+010a7b78afdd24a3c6718cea81bf0bebfe4a5d7407513bf6c84ae013850e02e5,
+launch_puffer_balanced_greedy-20260927.py SHA
+ af3c1d7fc0c52b8f31a0d9d20d43be36421af5938772810e1116e3de0064527f.
+Ruff+Pythoncompile andSBATCHsyntaxpassed; stagingcompletedbeforedependency
+submission. Actualevaluationruntimevalidationpendingafter25236completes.
+
+25276submittedafterok:25236 exactfinalFrozenPolicyCPUservingexport/probe,
+samepinnedcalibratedwirecodec+player+helper as25128,balancedadapter/build.
+Measureswarmlegalreplydeadline500ms; doesnotreplaceactualhostedstartup/matches.
+Goalactive,300kandstrongheld-out/hostedpublicationremainunproven. Nochampionchange.
