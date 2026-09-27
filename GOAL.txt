@@ -3321,3 +3321,53 @@ and justified publishing are still unproven. Prior fixture proofs eliminate
 specific forward/backward/PPO-loss errors; they do not prove every integration
 or optimizer path. Longer credit horizon and denser PPO updates alone have
 not produced wins. Avoid duplicating any completed or currently live jobs.
+
+
+## 2026-09-27 native learnability probe and explicit public-hint initializer
+
+Bounded B300 diagnostic25841 completed: native H128/L4 architecture initialized
+from actual2Bsnapshot, JAX Adam lr.001/clip.5,1500updates of256samples. Real
+public Expander-driven Classic observations:16,384train decisions onseed1340,
+8,192validation decisions onseed1341;64map pools. Independent observations
+use zero recurrent state; critic unsupervised. Train complete hint accuracy
+.07159→.88501 (flexible.88275), validation.16052→.28564(flexible.25877).
+Train CE5.19036→.387687, validationCE3.73198→6.91942. Strong sample overfit,
+weak transfer to a separate map seed. This is a representation/optimization
+reference diagnostic, NOT native Muon/PPO correctness, Puffer SPS, match
+strength or a completed Puffer learner run. No source artifacts rewritten.
+Diagnostic parameterSHA256 `880a8b3d8f0211bdd62608b4afd6c7cd5202c8cb96279ab33f3ab5567d9a0510`.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-hint-capacity-probe-25841.tar.gz`
+SHA256 `2a28b95053f86065f40f31495d29d1c9295bf52841b8b6dda5cf459dc33609c5`.
+
+Implemented deterministic native public-hint initializer: H512/L1,4,852,736
+parameters, scale24. Source-location preference (sum of4hint planes) plus
+shared per-direction preference selects the hinted cell/direction. Signed
+pass/split fields control their logits. Zero recurrent matrices create a
+uniform time-dependent hidden offset; equal row sums or subtraction of an
+unused hidden unit cancel it. Existing native MinGRU family and public6174
+observation contract; no private labels, new transport, or serving override.
+Artifact schema generals-native-public-hint-initializer-v1 explicitly records
+zero trained steps, no learner state, build SHA and parameter SHA. It is NOT
+release eligible and does not fabricate completed.json, learner identity,
+training.json or a warm-start source run. No existing initializer guards
+bypassed. Initializer policySHA256
+`d990fc280ccdae692e4d20f7457c996c0e5f048e69913d4224ea7a3b9692fbff`.
+
+GPU proof25847 completed: real trajectories seed1343/1344,64games each,
+192turns per seed.24,576decisions exactly match public hint actions;23,959
+flexible decisions,708hinted passes, zero illegal actions. Actual pinned CUDA
+arch_forward H512/L1 matches JAX reference exactly (max logit/state error0)
+on24sample decisions with a partial-seat state reset. No match-strength or
+training-throughput claim from this proof.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-public-hint-initializer-proof-25847.tar.gz`
+SHA256 `4fc7ec1af562934b12f3e5afcfe4e999055c3a05527652f14169ba2376b5568d`.
+
+Next: explicit validated native initializer import support, preserving its
+true untrained provenance. Do not fake completion/learner files to reuse old
+warm-start guards. Then bounded native PPO H512/L1 throughput/finite probe,
+frozen baseline and trained-policy validation; release a long run only after
+actual gates. Goal still requires trained improvement beyond this scripted
+starting baseline, untouched final held-out and actual hosted proof. Original
+25600 remains RUNNING1h33m32s; no duplicate long job or hosted writes. This
+turn makes progress through new learnability evidence and a verified concrete
+initialization artifact. Ruff/bash-n/diff checks pass. Goal active.
