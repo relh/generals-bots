@@ -3777,3 +3777,47 @@ Allthree newSBATCH scripts pass Bash syntax; existing adapter unchanged.
 25365 and canceled25356 evidence archived and tar verified onmetta1:
 device-context-balanced-distribution-audit-and-canceled-overnight-25365-25356.tar.gz
 SHA256 e7348e47709da339cbe1d2c97acf9730375f5c7192946f6a694b80f2efedd68e.
+
+
+## Zero-entropy gate passed; bounded continuation now running
+
+25374 COMPLETED exit0 in183s,16,777,216finite steps. OneB300,16,384env,H32,
+minibatch131072,replay1,lr.001,entropy0,learner/shapinggamma.999, balanced sides.
+After12warmup epochs, final20interval10,485,760steps/53.750s=195083.90698SPS
+(per-process and aggregate, one trainer). NativefinalGPU85%,88.5/268GB;
+late monitor60sGPU87%at epoch27. FinalcheckpointSHA256
+4e3f9aa4226887d4a6206481ecc8746294081eb671db7710dfae9a8c7b6da3dc.
+Complete verifiedmetta1archive device-context-balanced-zero-entropy-pilot-25374.tar.gz
+SHA256bdf7a0c0ce492e6694badcf9e9ad07c84eb4f565145ddc0c4045916a5b067e7e.
+
+25377 controlled distribution comparison COMPLETED83s. Same24,576shared sampled
+trajectory decisions,24,364flexible: parent moveentropy1.248012/split.185233,
+teacher probability.840521; entropy.00116M moveentropy1.706895/split.685857,
+teacher probability.761632; entropy0 16M moveentropy1.228989/split.012212,
+teacher probability.843125. Allthree greedy policiesagree100% withparent/teacher
+onthese flexible decisions. This directlysupports entropy-induced softening at
+16M; it does not yet prove that disabling entropy restores134Mmatch quality.
+
+25271 six-case validation COMPLETED30m39s. Finalbalanced25236 mixed1W/478L/33D
+perf.0341796875 versus parent184W/233L/95D perf.4521484375. Paired analysis
+verified exactinitial state hashes,sides,andopponentIDsfor512games/case:
+Expander11better/299worse/202equal, perfchange-.4580078125;
+Sentinel1better/194worse/317equal, change-.3349609375;
+mixed7better/264worse/241equal, change-.41796875. 321distinctmaps, so these are
+paired descriptive results, not independent-game confidence intervals.
+Completeverified archive onmetta1:
+device-context-balanced-paired-validation-and-entropy-comparison-25271-25377.tar.gz
+SHA256cfd8a9d05cbdd5ff97e5a80d8130ecfbecb42c9e6ff49e4065761fdb80612a21.
+Localread-onlyanalysis read arrays directlyfrom a copiedownresult archive in/tmp;
+no session history touched.
+
+25386 bounded134,217,728NEWstep zero-entropy continuation confirmedRUNNING:
+exact25374weights,freshoptimizer,seed1329,samebalanced25200build and all25236
+settings exceptentropy0. Native/source/checkpointidentityverifiedby launchscript.
+The productionsetup passed30kSPS and2.6Mfinite gates before submission. This
+is a controlled~13min experiment, not an overnight release or a publication.
+25390 afterok:25386 paired512game/512pool validation queued againstparent24646,
+threeopponents each, freshseed1103, exactmaps/sides metadata toverifypairing.
+25376 16Mvalidation still RUNNING onseed1102, no duplicatejobs/restarts.
+Waitfor actualstrength before any overnight training;300kSPS andheld-out/hosted
+improvementremainunproven. Goalactive; no champion change.
