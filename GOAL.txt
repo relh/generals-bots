@@ -2511,3 +2511,34 @@ agent count, fresh optimizer; unchanged zero-teacher model/codec. Purpose:
 measure throughput for the stronger optimization recipe; weak replay.25's
 276k does not prove stronger-recipe throughput. 12warm+20measuredepochs,
 1048576steps/epoch, same finite/SPS/startup guards. No dependent long job.
+
+
+## Controlled reward-discount correction
+
+This goal turn found a concrete training-objective mismatch. Actual pinned
+metta_puffer-calibrated-v1.py line50 defaults shaping_gamma=.99, line303 uses
+shaping_gamma*Phi(next)*(~done)-Phi(current). Actual24499 build options omit
+shaping_gamma, while actual24994 train config explicitly has train.gamma=.999.
+Thus the shaping term is not potential-invariant under the learner discount.
+Illustration (not a simulated match): Phi starts0, stays.4 for1000steps, ends0
+at win. Under learner gamma.999, original shaping contributes -2.276296,
+discounted terminal win +.367695, net -1.908601. Matched shaping_gamma.999
+sums to numerical zero and leaves +.367695. This plausibly biases the policy
+against holding an advantage; actual match causality remains to be measured.
+
+25057 strong134M Expander case finished:59W/139L/58D,perf.34375 vsparent
+.484375 on same256held-outgames. Clear aggregate regression; Sentinelcase
+still RUNNING atturn401. Do not publish this checkpoint based on action changes.
+25080 wider strong probe confirmed advancing24epochs,20-interval~240056SPS;
+not final12warm+20 measurement yet. 300k remains unmet.
+
+25098 corrected-discount build completed35s. Only change from24499config:
+python_environment.options.shaping_gamma=.999, same16384agents andcalibration.
+Verified model060fb15a... and binary13f201f7... unchanged.
+25101 finite16,777,216-step pilot confirmed RUNNING after25098successfulbuild:
+initializes exact24646parentweights with checked environment transfer,
+freshoptimizer; same seed1328, lr.001,replay1,mb131072,H32,entropy.001 as24783,
+thus isolates the reward discount against that prior pilot. Assert learner
+and shaping gamma both.999. No long dependent run submitted yet; inspect
+finite throughput after12warm+20epochs, then controlled continuation/evaluation.
+All old artifacts and physical sources retained; no source-fingerprint bypass.
