@@ -28,6 +28,13 @@ class NativePufferPolicy:
             raise ValueError("Unsupported native policy contract")
         self.hidden = int(record["config"]["overrides"]["policy.hidden_size"])
         self.layers = int(record["config"]["overrides"]["policy.num_layers"])
+        self.hint_prior = config.get("native_hint_prior")
+        if self.hint_prior is not None:
+            prior = self.hint_prior
+            if (prior["channels"] * prior["cells"] != 6174 or prior["cells"] != 441
+                    or prior["move_channel"] + 4 > prior["channels"]
+                    or max(prior["pass_channel"], prior["split_channel"]) >= prior["channels"]):
+                raise ValueError("Unsupported native hint prior")
         if self.hidden <= 0 or self.layers < 0:
             raise ValueError("Invalid recurrent dimensions")
         data = checkpoint.read_bytes()
@@ -71,7 +78,18 @@ class NativePufferPolicy:
             s = jax.nn.sigmoid(projection)
             x = s * next_state + (1 - s) * x
             states.append(next_state)
-        return jnp.matmul(x, self.decoder.T, precision=jax.lax.Precision.HIGHEST), (
+        decoded = jnp.matmul(x, self.decoder.T, precision=jax.lax.Precision.HIGHEST)
+        if self.hint_prior is not None:
+            prior = self.hint_prior
+            planes = observations.reshape(-1, prior["channels"], prior["cells"])
+            moves = prior["move_scale"] * planes[:, prior["move_channel"]:prior["move_channel"] + 4].reshape(-1, 1764)
+            passing = prior["pass_scale"] * planes[:, prior["pass_channel"], 0]
+            splitting = prior["split_scale"] * planes[:, prior["split_channel"], 0]
+            decoded = decoded + jnp.concatenate((
+                moves, passing[:, None], -splitting[:, None], splitting[:, None],
+                jnp.zeros((observations.shape[0], 1), dtype=decoded.dtype),
+            ), axis=1)
+        return decoded, (
             jnp.stack(states) if self.layers else state
         )
 
