@@ -4076,3 +4076,22 @@ against stored536Mparent results. Do not replace/release a long run based on
 SPS alone. Current long25600 remains live at epoch1012 (~1.061B),447,402SPS.
 Next actual snapshot1024=1,073,741,824steps; inspect existence before use.
 No new long duplicate job, hosted upload, or champion change. Goal active.
+
+
+### Update-density validation and original1B snapshot
+
+25786 completed: denser-update67M checkpoint still0wins, Expander503L9D,
+Sentinel512L0D,mixed506L6D. No release of a denser-update long run.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-density-validation-and-1b-checkpoint-25786.tar.gz`
+SHA256 `0e925ff11b82bfdc2b0a02d2cb1c3e6634832e4bc596220c2615357bec806788`.
+Includes original long run's1,073,741,824checkpoint and learner identity/state;
+policySHA256 `8553d1d6deab145bec2f4e7361d02d1de8c6df434ba9e85b13cf86bdc17921b2`.
+1B frozen validation25796 completed: Expander0W503L9D,Sentinel0W509L3D,
+mixed0W505L7D,seed1104,512cases/opponent. Still no useful strength.
+Paired arrays should be independently compared after archive download before
+claiming per-case changes; aggregate results alone show no wins.
+Original25600remains live. Next correctness check: actual default native CUDA
+recurrent backward vs JAX gradient reference, including recurrent state and
+terminal resets. Forward parity, finite parameters and changed weights do not
+prove gradient correctness. Preserve objective/throughput gates and untouched
+final held-out/hosted requirements. No champion changes; goalactive.
