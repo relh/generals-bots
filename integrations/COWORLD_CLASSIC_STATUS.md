@@ -4858,3 +4858,24 @@ matching container. No training remains running. Checkpoints and original run
 records remain preserved. Next investigation must explain useful PPO actor
 changes and quality, rather than repeat the same long recipe. Goal remains
 active: throughput passes, held-out and hosted strength requirements do not.
+
+## H512 policy behavior investigation
+
+The preceding goal turn made progress: reward clipping was corrected and GPU
+verified, its bounded training and paired quality experiment completed, and the
+regressed 2B long run was stopped after verified backups. No blocker is present.
+
+Fresh remote state confirms those completed/stopped jobs are absent. Source
+inspection shows native PPO consumes actual minibatch advantages and uses the
+same masked action likelihood; previously retained native/JAX backward and PPO
+fixtures passed. Muon normalizes matrix updates, so scalar reward changes need
+not substantially alter actor updates. Identical reward-scaled outcomes alone
+are not proof of identical actions or distributions.
+
+Submitted bounded B300 learning audit 26301 once with an exclusive ledger.
+It compares verified original 33M H512 baseline, the regressed 2B checkpoint,
+and the new reward-scaled 33M policy. Seed 1377, 64 games, 192 turns on the same
+public-hint-driven trajectories; separate recurrent state for each policy.
+Measures entropy, hinted-action agreement/probability, parameter changes, and
+argmax disagreement. No new training or long allocation is released from this
+audit. All underlying checkpoints and builds remain unchanged.
