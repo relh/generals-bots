@@ -3740,3 +3740,40 @@ SHA2569c06f1eda43c8e39eabacd83c8bde9425deea18d0dc9de661db086dded478b0c.
 Goal remains active; larger budget alone cannot justify training a checkpoint
 that has just demonstrated this regression. Investigate learning/reward/
 logit behavior before releasing another long run. No publication.
+
+
+## Learning regression investigated; controlled zero-entropy probe
+
+Previous turn made progress: native sampled-action legality passed, and newly
+completed paired validation stopped the overnight before any saved update.
+25365 frozen distribution audit completed in82s. On24,576 shared sampled
+training decisions (24,221 flexible), parent moveentropy .503764 /splitentropy
+.185727, teacher probability .934261 and agreement1.0; balanced25236 moveentropy
+3.231892 /splitentropy .692320, teacher probability .208561 andagreement.608645.
+Flexible greedy disagreement39.1355%. Mean move-hint weight8.812615→8.494842.
+This diagnoses logit/behavior drift, not its root cause. Balanced Sentinel
+validation now0W/505L/7D versus parent154W/316L/42D. Mixed case still running.
+No champion change or new hosted upload.
+
+Inspected pinned native algo.cu: PPO uses g.advantages directly and independently
+applies ent_coef=.001; no upstream advantage normalization on this setup.
+Optional Metta partition normalization is disabled by default. The GPU bridge
+synchronizes its stream before borrowing actions and after each DLPack copy.
+Hypothesis to test: entropy pressure overwhelms small raw reward advantages.
+This is an inference, not a proven bug or a claim of a working fix.
+
+25374 controlled16,777,216-step probe is live: same25200build, parent24646weights,
+seed1328,16k/H32/mb131072/replay1/lr.001, matched gamma.999, balanced opponents,
+exact25211recipe except ent_coef0.0 (previously.001). Alreadyfinitepast2.6M;
+late observed20interval195171SPS, GPU87%, final steady gate pending.
+25376 afterok:25374 validation queued,512games/pool512/seed1102 eachExpander,
+Sentinel andstrong_mixed. Reusing1102 supports comparisons against25271baseline;
+these are recipe-selection validation, not an untouched final confirmation set.
+25377 afterok:25374 distribution comparison queued against parent and entropy
+16M25211 on shared32game/768step sampled trajectories, seed1333.
+No long dependent training released; assess actual behavior and quality first.
+Allthree newSBATCH scripts pass Bash syntax; existing adapter unchanged.
+
+25365 and canceled25356 evidence archived and tar verified onmetta1:
+device-context-balanced-distribution-audit-and-canceled-overnight-25365-25356.tar.gz
+SHA256 e7348e47709da339cbe1d2c97acf9730375f5c7192946f6a694b80f2efedd68e.
