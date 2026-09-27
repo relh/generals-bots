@@ -3557,3 +3557,75 @@ Prepared/staged (NOT submitted) recovery134M paired validation script:
 baseline25880 vs published25994 step134,217,728;1024games/opponent,pool1024,
 freshseed1356. Wait for publication, verify finiteweights and allidentityhashes,
 then submit once; do not duplicate the confirmed live recovery trainer.
+
+
+## 2026-09-27 constant-rate recovery completed; stable long run released
+
+Previous goal turn made progress: rejected collapsed long checkpoint, preserved
+its verified latest weights/learner/identity, then launched bounded recovery.
+Recovery25994 COMPLETED exit0 after11m49s,268,435,456 actual newsteps;
+4,852,736 finite parameters, final policySHA256
+8f262b5b2edce7df1cc31d0c6a98c2d67b6a65d402ede788b5f0561cb16ea5ac.
+Explicit constant lr.0001 (train.anneal_lr=0), entropy0,vf1,gamma=shaping_gamma=.999;
+H512/L1,oneB300,65536env,H16,batch1,048,576,mb524,288,replay1; balanced3:1
+Expander/Sentinel,8192lanes peropponentID perside;freshoptimizer,source25880,
+seed1354. Same native masked GPU transport and frozen environment fingerprint.
+Steady epochs11→255:255,852,544steps/652.071seconds=392,369.15end-to-endSPS;
+uptime34.918→686.989seconds. Late235→255:20,971,520/51.813=404,754.02SPS.
+Exclude anomalous finalepoch256. GPU95.754% over613samples excludingfirst60/
+last15;150.8/268GBVRAM. Per-process=aggregateSPS(one trainer). Allgatespassed.
+Probe +134Mvalidation archive
+native-policy-initialized-512-low-lr-probe-and-134m-validation-25994-26023.tar.gz
+SHA25611af29dbe6aa0fbf5bb1ac05b855f050b2c28cf5d607a991b215cde67cd241b0.
+
+Recovery134M checkpoint b65ede3edd4ab32786650e8528e07021bb93a1bb3d648c712a21e689f23be5f9
+independently verified finite,policy/learner/run hashes; archive
+native-policy-initialized-512-25994-step134217728.tar.gz SHA256
+48f17713bf26debc4db492b24af39043793f921aeab93793eb936765d120a8c2.
+Paired validation26023 COMPLETED exit0,4m25s,1024games/opponent,pool1024,seed1356,
+629uniqueinitialstates. Baseline33M→recovery134M W/L/D identical:
+Expander456/388/180;Sentinel269/608/147;mixed428/434/162. Everycaseoutcome also
+identical, not merely counts. Allhash/sides/opponentID arrays matched.
+No new strength gain demonstrated; early high-rate collapse avoided.
+Same-source parameter drift at134M: highlrvs lowlr L2delta encoder4.719/.202,
+decoder2.652/.0334,recurrent10.644/.6543 (initialrecurrentnorm1.7284).
+This supports smallerupdates; it does not prove the collapse's cause.
+
+Final paired validation26040 COMPLETED exit0,4m03s,1024cases/opponent,seed1358,
+655distinctinitialstates. Baseline33M→recovery268M W/L/D:
+Expander481/353/190→481/354/189;
+Sentinel254/615/155→254/615/155;
+mixed410/440/174→410/441/173.
+Allinitialhash/sides/opponentID arrays verified equal. Mapclusterbootstrap
+10000resamples seed1360: Expander delta-.0009765625,95%CI[-.00688976,.00473519],
+3better/4worse/1017same;Sentinel0,CI[-.00292113,.00291262],1/1/1022;
+mixed-.0009765625,CI[-.00667302,.00386473],2/3/1019.
+No significant gain or regression; almostallpaired outcomes preserved. The
+constant-rate setup preserves earlier verified33M gains; don't call this new
+improvement or championship strength. This remains validation, not untouched
+finalheldout or hosted proof.
+
+Actual268M weights CUDA/JAX real-view parity26064 COMPLETED:24decisions,
+partial-seat reset,exactmaskedactions,maxlogitdifference7.2479e-5,
+state8.9407e-8,originalcombinedatol/rtol2e-5passed. No tolerance changes.
+Finalvalidation/parity archive
+native-policy-initialized-512-low-lr-final-validation-and-parity-26040-26064.tar.gz
+SHA256c76c847c960a040e0623fb85500625269e39cf6780cbf1e8a731dc25aa3a5b38.
+Temporary overlapreads after Slurmjob completion failed; no jobsrestarted.
+Two emptyfailed-export files retained, not claimedverified. Bounded2minB300
+metadataexport recovered completedresults. DirectnodeSSHunauthorized; local
+Docker29.4/linuxarm64 confirmedavailable for future actual hosted-image work.
+
+Released stable-setup long26068,5,368,709,120newsteps,seed1359,warmweightsfrom
+realcompleted25994final8f262...,freshoptimizer,constantlr.0001,anneal0;
+all65536/H16/mb524288/replay1/gamma.999/shaping.999/opponentbalance settings
+unchanged. Justified by actual392K sustainedSPS,268Mfinite and stablepaired
+validation. No duplicate training: bounded25994 completed before26068.
+26068 RUNNING with epochs produced; allocation5h30/container315min,
+explicit300K16/20epochguard. Needverifynewlive steadySPS and finitecheckpoints.
+Prepared/staged (NOT submitted) first536,870,912-newstep validation:
+baseline25880 originalbest33M vs26068published536M;1024cases/opponent,fresh
+seed1361. Check publication/identity/finitevalues before submittingonce; then
+check1B/2B as appropriate and retain only policies with proven gains. Nochampion
+change or hostedwrites. Goalactive: stable competitivelearning,untouched final
+heldout and actualhostedperformance stillrequired.
