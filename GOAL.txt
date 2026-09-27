@@ -2160,3 +2160,16 @@ Update, 2026-09-26 larger minibatch reaches255k trainingSPS
     memorylessstate transport ratherthanshrinkingmodel/replay tohitSPS;
     reverse-walk-none alone maynotproveforwardstatelessness forothergraphs.
     Do not enablewithoutforward/gradient/reset parity andnativeGPUproof.
+
+Update, 2026-09-26 action audit and minibatch probe durably archived
+  *23988audit/23995trainer exactcontainers absent. Verifiedmetta0archive
+    device-context-action-audit-and-mb131072-23995.tar.gz SHA256
+    5dc9844bb1554d97d2153186078e536f3d802e66445eb2acff0d06d1d6acac8c.
+    Containsauditconfig/result/runtime source andcomplete131072minibatch
+    trainer/checkpoints/learneridentities/console/GPUcsv. Alljobsended;
+    do not rerunorresume saturatedteacherrecipe.
+  *Branchimplementation74a4ea5pushed. Nextconcretequalitywork ishint
+    confidence calibration withteachergradientzero, strictverifiedweight
+    transfer, host/device/wireencoder parity andboundedGPUlearningprobe.
+    Goalremainsactive;255,358SPS currentcontextmodel,300k/strongerhosted
+    policy notyetachieved. Codexhistory/rollouts/SQLite untouched.
