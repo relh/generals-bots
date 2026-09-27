@@ -4663,3 +4663,40 @@ e96fdd1c7238838c84d2a4156cf3b332913e8ab8ec88313f28009c89bfaf9d86,
 verified physicalcopies; originalhelpers untouched. Ruff/shellsyntax/diff clean.
 1Breward-validation-v2script staged,NOTsubmitted before checkpoint identity
 andfinitecheck. Runtimeverification will use actualGPUpairedqualityjob.
+
+
+1,073,741,824-newstep checkpoint published,all4,852,736paramsfinite; policySHA
+0e6f27683b38d3c3aa783fa195e0c2201053187a751cdaa998d795387b20a3bc,
+learnerSHA d297b90de7449804a6302fb1ab696a191d7ca75559205cd00d6aab4786d824d4,
+runSHA311c559b...; matchedall publicationidentity fields. Preservedverified
+checkpointarchiveSHAe7044fb5bd66387445742aa63fa7cd4fd6e7fcb15fb42b2fa7bf9a0228a996a4
+on login/local. Paired1B quality+rewarddiagnostic26154 terminal,all6records
+recovered,archiveSHA89395829aa6a1e446d680982ba0a4f4268b2520e0a2a5a4987c5f3e45e45830f
+verifiedlogin/local. ActualnewGPUcounters pass, samelegalactions/state/outcome
+path unchanged.1024/opponent,seed1363,649uniqueinitialstates; allinitialhash/
+side/opponent arrays matched.33M→1B W/L/D: Exp451/378/195→451/377/196;
+Sent239/636/149→240/636/148;mixed393/442/189→393/439/192.
+Mapcluster10000resamples seed1366:Δ .00097656/CI[-.00497525,.00678952],
+.00097656/[-.00385356,.00607903],.00292969/[-.00202439,.00888450].
+Better/worse/same7changesExp(4/3/1017),4Sent(2/2/1020),6mixed(4/2/1018).
+No statisticallysignificant gain/regression; no championchange.
+Rawrewardclippedcounts baseline→candidate:130→130Exp,170→168Sent,143→141mixed;
+allterminal, no nonterminalclips observed in these frozenargmax cases.
+Range acrosscases[-1.3372,1.4141]. Effectivelearnerreward differs at these
+terminals; no proof this causes weaklearning, don't change liveweights/rewards.
+Prepared2Bqualityseed1365,notyet submitted; final1371 held untouched.
+
+Bounded independent explorationprobe26177 RUNNING,33,554,432steps,seed1367,
+untrainedpublichintlogit_scale12 instead24. Sameoriginal33M native training
+recipe(.003 cosine/defaultanneal,entropy0,H512L1,65536/H16/batch1048576/mb524288/
+replay1/gamma+shaping.999,balanced3:1opponents). Positivehalfdecoder scaling
+preserves initialmaskedargmax decisions mathematically while broadening sampled
+actions. Not a copiedlearnedcheckpoint or fakelearner; explicittrained_steps0
+initializer manifest. Main4hour-plan26068 continues unchanged; this is a
+different boundedprobe, not a duplicate longrun, no longrelease fromhypothesis.
+NewrunnerSHA9d619be5267442f361e9c0f0a6f7a32dfb0f0596cae313cbe7197921d21faa55,
+launcherSHAe3c8c5ed69f65876b6bca4fef076bff085c5b9c4aded1e59eacfcfe3f67c0aca,
+verifiedphysicalcopies; existingexporter/core/sourcepackage fingerprints retained.
+Preparedpairedscale12validation1024/opponentseed1368 vs known33Mbaseline,
+requiresrealcompletedruns; notsubmitted until actualcompletion/finiteidentity.
+Needmeasure newSPS,actualinitializer identity andfinitecheckpoint before quality.

@@ -17,13 +17,15 @@ def main():
     parser.add_argument("--template", type=Path, required=True)
     parser.add_argument("--build", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--logit-scale", type=float, default=24.0)
+    parser.add_argument("--seed", type=int, default=1346)
     args = parser.parse_args()
     assert not (args.output / "run").exists()
-    _, initializer = export(args.build / "build.json", args.output / "initializer")
+    _, initializer = export(args.build / "build.json", args.output / "initializer", scale=args.logit_scale)
     artifact = args.output / "initializer/initializer.json"
     record = json.loads(args.template.read_text())
     record["total_timesteps"] = 33_554_432
-    record["seed"] = 1346
+    record["seed"] = args.seed
     record["initialize"] = None
     record["native_policy_initializer"] = dict(
         manifest=str(artifact), sha256=hashlib.sha256(artifact.read_bytes()).hexdigest()
