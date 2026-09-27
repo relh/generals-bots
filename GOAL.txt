@@ -3629,3 +3629,9 @@ seed1361. Check publication/identity/finitevalues before submittingonce; then
 check1B/2B as appropriate and retain only policies with proven gains. Nochampion
 change or hostedwrites. Goalactive: stable competitivelearning,untouched final
 heldout and actualhostedperformance stillrequired.
+
+
+26068 startup verified: RUNNING2m26s,epoch42,steady16/20epochSPS~365.4K,
+GPU~96.1%. SourcecheckpointSHA8f262... and inheritedlineageseeds[1346,1354]
+verifiedfromactualinitialization.json; currenttrainingseed1359.300Kguardpassed.
+No duplicate trainingjobs. First536Mqualityscript staged,notyet submitted.
