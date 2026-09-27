@@ -2813,3 +2813,25 @@ warmstart25236, seed1331, 3,221,225,472newsteps, lr.001 annealedacross6144epochs
 H32/16k/mb131072/replay1/entropy.001, matching discounts. Productionsetup's
 measured205kSPS exceeds30kgate;300k aspirationstillunmet. Checkpoint128epochs
 (~5.5min); final budgetexpected4.4h. No duplicate own overnight trainer.
+
+
+### Overnight stopped after newly completed held-out regression
+
+First balanced25236 candidate result arrived immediately after overnight
+submission: on the same512Expander tests, 2W/469L/41D, perf.0439453125,
+versus parent199W/197L/116D, perf.501953125. This is a severe regression,
+so25356 was canceled during startup before any saved training checkpoint;
+its initial-policy SHA was verified equal to archived25236 and the exact
+owned Docker container was stopped. No sustained overnight training remains
+running. Do not treat the earlier submission note as a current live trainer.
+Mask legality passing does not establish correctness of PPO updates or useful
+policy behavior. New bounded frozen action-distribution/parameter audit is
+prepared against parent on shared trajectories using corrected25200environment.
+Remaining25271candidate Sentinel/mixed held-out cases continue withoutrestart.
+
+Complete diagnostic archive verified onmetta1:
+device-context-native-action-audit-25344-25350.tar.gz
+SHA2569c06f1eda43c8e39eabacd83c8bde9425deea18d0dc9de661db086dded478b0c.
+Goal remains active; larger budget alone cannot justify training a checkpoint
+that has just demonstrated this regression. Investigate learning/reward/
+logit behavior before releasing another long run. No publication.
