@@ -40,8 +40,11 @@ def main():
             current = np.asarray(getattr(policy, key))
             original = np.asarray(getattr(baseline, key))
             delta = current - original
-            report[key] = dict(rms_change=float(np.sqrt(np.mean(delta**2))),
-                               max_change=float(np.max(np.abs(delta))))
+            report[key] = dict(
+                parameters=int(delta.size),
+                rms_change=float(np.sqrt(np.mean(delta**2))) if delta.size else 0.0,
+                max_change=float(np.max(np.abs(delta))) if delta.size else 0.0,
+            )
         parameter_reports[name] = report
     try:
         for turn in range(config["turns"]):

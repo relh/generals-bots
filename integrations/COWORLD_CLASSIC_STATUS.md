@@ -5228,3 +5228,33 @@ backup verified login/local, SHA
 c59e093f05d0d00a7bca9cf7119c174cde68aa9f3f1dd9b647da432e9f79eed7.
 Original node checkpoints remain intact. Paired held-out job 26613 is running
 on independent seed 1386; no multi-billion run or hosted promotion released.
+
+Paired 134M quality job 26613 completed on seed 1386, 1,024 games per
+opponent, 640 unique initial maps. Baseline 26286 vs H512/L0 134M W/L/D:
+Expander 407/393/224 → 106/750/168; Sentinel 274/620/130 →
+86/873/65; mixed 381/433/210 → 104/775/145. The metadata/outcome-array
+validator proved equal options, seeds, initial-state hashes, sides, opponent
+IDs, and counted W/L/D, then clustered 10,000 bootstrap resamples by map
+(seed 1387). Paired score deltas and 95% CIs: Expander
+-.64258[-.71582,-.56981]; Sentinel -.43066[-.49851,-.36114]; mixed
+-.60449[-.67396,-.53520]. All are significant regressions. Verified
+quality archive SHA d5718d7c71a58d028e8fe8c88f25c12e8b94166a85b4f38b50b5ee041a7a04fb,
+local `/tmp/relh-native-feedforward-134m-quality-26613`; analysis JSON at
+`/tmp/relh-native-feedforward-134m-quality-26613-analysis.json`. Reject this
+recipe; no 4–5h extension, hosted upload, or champion change.
+
+Identical-trajectory actor audit 26625 used 64 public-hint games × 192 turns,
+12,288 decisions, 11,970 with multiple legal moves. The untrained H512/L0
+initializer chose the legal hint for 100% of flexible decisions; 33M agreed
+95.60%, 134M agreed 93.38%. Mean hint action probability fell from .85269
+to .84624 to .79594, while move entropy rose .84909→.86267→.93277. The
+134M argmax differed from untrained on 6.62% of these flexible decisions.
+This shows behavioral drift away from the public hint, without proving which
+PPO gradient or reward component caused it. Archive SHA
+14a83021047ff98c7390249d71e98eb68ab3e20cd3021517791735eb02eec8f4,
+local `/tmp/relh-native-feedforward-distribution-26625`.
+
+Audit attempts 26618 and 26623 terminated before Docker because host code
+mistook the container's `/recovery` mount for a host path. The corrected 26625
+used a verified node-disk mapping for host checks. No training job was
+restarted. The original 134M evaluation, audit, and training are all terminal.
