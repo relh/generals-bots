@@ -5047,3 +5047,45 @@ Prepared (not yet submitted) paired validation uses seed1382, 2048 games/pool
 per opponent, original reward-scaled best33M versus both matched134M models.
 Read completed identities/finite weights first. Final seed1381 remains untouched.
 Ruff new runner/launcher, bash syntax and git diff checks pass.
+
+## Completed matched 134M native probes
+
+Corrected 26349 and control26351 completed all 134217728 steps and are absent
+from fresh squeue. Both contain 4852736 finite parameters; policy, learner and
+training hashes matched published identities. Actual initializer metadata has
+zero trained steps/no learner/no seeds, and copied weights match d990fc...bff.
+Read effective total budget134217728, seed1346 and entropy0 from training.json.
+Each recorded build matches its own environment fingerprint.
+
+Single B300 each,65536 environments,H16,batch1048576,mb524288,H512L1,replay1,
+float32,gamma=shaping_gamma.999;3:1opponents8192 lanes per ID/side. After 11 warmup
+epochs, measured epoch11→127 (excluded anomalous final128):
+
+- Corrected:121634816steps/298.959s=406861.20end-to-endSPS.
+- Control:121634816steps/306.972s=396240.75SPS.
+
+These intervals include rollouts, transfers, updates, checkpoints and the
+refresh boundary. Corrected boundary-specific epoch64→80:16777216steps/41.280s
+=406424.81SPS. Late corrected GPU mean93–95%; control~95–96%.
+Both pass the user's300k target beyond the lifecycle boundary and finite gate.
+No relative performance causal claim: random map evolution differs after reset.
+
+Corrected final policy5d08a923b3c76940c3c487aa30b15f746ce0fca3d8ced7899f738d968aa2a328,
+learner5d1ea49312231c5493233a1d9de9d89e1b494067b465c192a97222aecb42ea6d,
+training5e72de7475c3e591848b274c8f98ad92ce1d93da051b008735e3eb2364c67165.
+Control policy45b826de1040cdfaf46deab322732f8ff9582d9ff96016d71cdaf58c8d86ea96,
+learner268d60de155deecd5a1475cfc442366508a28dda7a60706e666ac60a4336e222,
+training2d3c49c85e37436bb4a9d2cbe70da1867d9262d748426e25f0766b85a9cd3320.
+
+Corrected final snapshot archive SHA b0efbdd51a7e0fdda9ebdd5d36d32fa3142ec71507dd6f3db6cdf1f0b6fd96e1
+verified login/local. Includes final checkpoint/learner/identity, true completion,
+training config/console and initializer. Earlier checkpoints stay on the node;
+this archive is explicitly the final snapshot rather than the entire run.
+Control final snapshot retrieval uses current evaluation allocation, read-only.
+
+Submitted paired frozen evaluation26364 once after completion/identity/finite
+and steadySPS gates. Seed1382,2048games/pool per opponent, originalreward-scaled
+33M versus oldlifecycle134M versus corrected134M; nine result records expected.
+Interpret matched control comparison and improvement beyond existing baseline
+separately. No overnight training/champion promotion is released. Final1381
+seed remains unused. Goal active; strength proof remains open.
