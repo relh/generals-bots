@@ -5590,3 +5590,31 @@ The successful build, complete run, GPU samples, four-game legacy check,
 and 128-game frozen evaluation are archived on metta0 in
 `relh-classic-spatial-land-gain-27130-27173.tar.gz`, SHA256
 `c77eac86d6f80687ac65c6f7c3b9091070f3f3582434ee7e9946f3b80085826f`.
+
+## Two-minibatch spatial PPO diagnostic (2026-09-27)
+
+Job 27188 kept the same Classic spatial policy, Random opponent, signed land
+gain reward .2, matched learner/shaping gamma .999, 4,096 environments in
+four buffers, 16 CPUs, horizon 32, minibatch 16,384, LR .0003, and B300 GPU.
+It changed replay ratio from .125 to .25, giving two PPO minibatches per
+131,072-step rollout, and targeted 8,388,608 steps. The warmed 16/20-epoch
+complete-step windows at epoch 31 were 30,037/29,757 SPS. By epoch 34 they
+fell to 27,440/27,795 SPS, so the throughput guard stopped training at about
+4.7M steps. Rollout environment time was about 3.3 seconds per epoch, versus
+about .8 seconds of optimizer time; recent sampled GPU utilization averaged
+8%. This is a throughput failure, not a viable long-run recipe.
+
+The 4,194,304-step checkpoint was saved before the stop (SHA256
+`ffce092d2fed32af7557a4e72f228a76009b699f56ac531af93ec95ef81eaeee6`).
+The 8M-dependent evaluation job 27189 was canceled because that checkpoint
+does not exist. A versioned evaluator with an explicit `--allow-incomplete`
+diagnostic option evaluated the 4.19M checkpoint in GPU job 27204. On the
+same 128 held-out Classic Random games at seed 1386, it scored W/L/D
+**0/1/127**, identical to the one-minibatch job 27130. It verified the
+checkpoint SHA, build fingerprint, 78 distinct initial-state hashes, legal
+masked argmax actions, and zero clipped rewards in 153,594 active steps.
+Neither extra updates nor continued training with this actor is supported.
+No hosted upload or champion change occurred. The stopped run, saved
+checkpoint, GPU samples, and pinned evaluator result are
+archived on metta0 as `relh-classic-spatial-land-gain-replay2-27188-27204.tar.gz`,
+SHA256 `0e53c72597e7ddc52826bd431f44fa778cb2add32e79ba811405c32671eb56ad`.
