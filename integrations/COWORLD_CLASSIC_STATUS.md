@@ -3956,3 +3956,39 @@ parent vs zeroentropy134M all512initial hashes/sides/IDs equal per opponent;
 all512outcomes equal in each ofthree opponents (1536unchanged games).
 No improvement in that Fabric continuation. No hosted upload/champion change.
 Goal active; native held-out and hosted proof remain open.
+
+
+## 2026-09-27 native serving support and completed early validation
+
+Native paired validation25658 completed. Verified archive:
+`/home/metta/relh-generals-puffer/native-policy-early-validation-25658.tar.gz`,
+SHA256 `df9f490eee0bce0c13d5fa82f4cea0a40162282cfd55fc973c6f4109737fc8ab`.
+Initial-state hashes, sides and opponent IDs match exactly for all512 cases per
+opponent. Early134M checkpoint vs starting33M checkpoint:
+- Expander:6better/2worse/504equal;0W501L11D.
+- Sentinel:4better/0worse/508equal;0W508L4D.
+- Mixed:4better/2worse/506equal;0W504L8D.
+Small draw changes do not establish useful strength. No champion promotion.
+
+Implemented native bundle export with checksum/finite/dimension validation,
+portable build/training/parameter files, recurrent single-seat player adapter,
+and native bundle selection in the existing WebSocket player. Dockerfile now
+includes the native inference/bundle modules. Completed CPU serving probe25690:
+32legal actions after4warmups, mean1.346ms/max1.590ms,4local WebSocket replies,
+max2.316ms. Uses the same public context-hint codec/scales as training.
+Scope: synthetic CPU action path and local WebSocket protocol; actual hosted
+container startup and match strength remain unproven.
+
+Probe25682 exposed missing websockets dependency in the training image;
+25687 exposed the older archived wire codec. Final script installs isolated
+websockets16.0 and mounts current checksum-verified codec/player files, keeping
+physical archived runtime/source unchanged. Failed attempts retained.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-serving-probe-25682-25690.tar.gz`,
+SHA256 `280ef2a6ab0ac48f91324038b5094607d11f7e4b006556c17d6a3efe581575c7`.
+Existing wire-codec tests:11passed in8.85s. New helpers Ruff clean.
+
+Training25600 remains live at epoch423, approximately443Mnew steps,
+steady20interval483,070SPS,lateGPU95.6%; checkpoints128M/268M/402M saved.
+Next validation can use536M or1B snapshot after it actually exists; preserve
+and verify before use. Final untouched held-out and hosted proof still pending.
+Goal active. No duplicate training job, external upload, or champion change.

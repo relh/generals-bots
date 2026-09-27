@@ -8,11 +8,12 @@ import time
 from pathlib import Path
 
 import numpy as np
-from websockets.asyncio.client import connect
-
 from metta_training.environment import NumericObservation
 from metta_training.inference import FrozenPolicy
 from metta_training.policy_bundle import load_frozen_policy_bundle
+from websockets.asyncio.client import connect
+
+from integrations.native_policy_bundle import NativePlayerPolicy
 
 from .neural_codec import encode_wire_observation
 from .protocol import VERSION
@@ -34,8 +35,9 @@ def select_action(policy: FrozenPolicy, message: dict, codec_kwargs: dict) -> li
 
 
 async def play(url: str, bundle: Path) -> None:
-    config = load_frozen_policy_bundle(bundle)
-    build = json.loads(config.build.read_text())
+    native = (bundle / "native-policy.json").exists()
+    config = None if native else load_frozen_policy_bundle(bundle)
+    build = json.loads((bundle / "build.json" if native else config.build).read_text())
     options = build["config"]["python_environment"]["options"]
     codec_kwargs = (
         {"expander_general_distance_prior_hinted": True}
@@ -58,7 +60,7 @@ async def play(url: str, bundle: Path) -> None:
         move_hint_scale=options.get("move_hint_scale", 1.0),
         split_hint_scale=options.get("split_hint_scale", 1.0),
     )
-    policy = FrozenPolicy(config)
+    policy = NativePlayerPolicy(bundle) if native else FrozenPolicy(config)
     policy.reset("coworld-classic")
     # Compile both the wire codec and graph before the first 500 ms deadline.
     kinds = [[1] * 21 for _ in range(21)]
