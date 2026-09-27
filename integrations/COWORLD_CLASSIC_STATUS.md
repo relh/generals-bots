@@ -4791,3 +4791,48 @@ the original 5B job remains the sole long run. Final held-out seed 1371 is unuse
 Verification: new proof script Ruff passed; shell syntax and git diff checks
 passed. The adapter passes Ruff with its pre-existing I001/E501 findings ignored;
 those existing style findings were not rewritten.
+
+## Reward probe and 2B quality gate results
+
+Reward-scaled training probe 26286 completed 33,554,432 steps with all 4,852,736
+parameters finite. Genuine untrained initializer SHA d990fc280ccdae692e4d20f7457c996c0e5f048e69913d4224ea7a3b9692fbff
+matched the copied initial weights; trained_steps=0, no learner and no seeds.
+The published final policy SHA is d63dd53c54a7446f78f404e13fe32ab464e447556899f14b931ac4212df9d0c9.
+All policy/learner/training publication hashes matched. Epochs 11 through 31,
+after 11 warmup epochs: 20,971,520 steps / 50.723 seconds = 413,451.89 SPS.
+The anomalous final epoch was excluded. Single B300, 65536 environments,
+horizon 16, batch 1048576, minibatch 524288, hidden 512 / one layer, replay 1.
+The steady guard saw GPU utilization mean 95% at epoch 26. This confirms speed,
+not strength. Probe archive SHA 5a6ee003057881ac85a165e4931a328bcbaf2f35820070c164f5f987e1d34dd1
+was verified on login and local copies. Fresh paired validation 26291 uses
+seed 1374, 1024 games per opponent, original 33M baseline versus this probe.
+It was submitted once after completion, finite and identity checks.
+Build/proof archive d4ef601d2cca8fd333b057867dd5724d503c1659c9e5ddd43615af2e77ab2246
+also matched the local copy.
+
+The original long run's 2B validation 26285 finished all six records. Paired
+initial states, sides, and opponent IDs matched. Seed 1365, 1024 games per
+opponent, 649 unique states. Baseline to 2B W/L/D:
+
+- Expander: 422/402/200 to 368/477/179. Score delta -0.12598,
+  map-cluster bootstrap 95% CI [-0.17426, -0.07918].
+- Sentinel: 274/614/136 to 218/682/124. Delta -0.12109,
+  CI [-0.16392, -0.07972].
+- Mixed: 373/474/177 to 324/546/154. Delta -0.11816,
+  CI [-0.16044, -0.07700].
+
+10000 resamples, bootstrap seed 1375. All intervals exclude zero; this checkpoint
+regressed against all three opponents. Archive SHA ed7eebe2b99b88d55979beb5fc406affc2522497a9bbc1e7391ab795d2f95463
+matched local and login copies. Continuing the original recipe to 5B is rejected.
+Before requesting stop, preserved its latest 2,281,701,376-step finite checkpoint,
+learner state, identity, training configuration and console. Policy SHA:
+fe758a0406979d2383b82fb8c4c2754f8e14b920e48902fa149266d04233dd82.
+Verified backup SHA 3639ee4da60f6dbc627a0bc4db4cebdd83f942c46d7958a690ed4f23b2850c5e
+on local and login hosts. Only job 26068's exact named container and allocation
+were targeted. No completed.json was fabricated; this is a stopped experiment.
+The precommitted 5B final gate remains unrun, and seed 1371 remains untouched.
+
+Metta training API work is published as draft PR 25653:
+https://app.graphite.dev/github/pr/Metta-AI/metta/25653
+Head 0efdaf292e, 452 package tests passed. GitHub reports base conflicts and
+pending required CI; the draft is not merged or ready for release.
