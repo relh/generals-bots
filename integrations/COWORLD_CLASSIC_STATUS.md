@@ -4608,3 +4608,14 @@ seat0 xreq_984abdb7-e8ee-429b-b184-bf31a40d7586;seat1 xreq_e73e5aa9-920c-4ded-ad
 Createdpending; poll exactIDs,neverduplicate dueaggregationlag.
 26068 at epoch682715.1Mnewsteps,console415.1K,GPU100%,150.8/268GB;
 no newqualityclaim or championchange.
+
+
+Precommitted untouched final paired held-out gate (NOT submitted): final
+26068 planned5,368,709,120-newstep weights vs originalbest33M,8192games/opponent,
+8192map pool,seed1371. Threeopponents,balanced sides via existingadapter.
+Do not inspect outcomes or use this seed for tuning/checkpoint selection.
+Run only once after finalweights selected and sourceidentity/finiteverified;
+if rejected, require a new untouched gate for a changed candidate. Explicitly
+separate validation seeds1361/1363 from final1371. Hostedproof on selected
+candidate against existingchampion remains independently required; current
+33M baseline smoke/benchmark cannot qualify differentfinalweights.
