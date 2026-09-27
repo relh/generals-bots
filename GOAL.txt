@@ -2988,3 +2988,38 @@ device-context-label-free-32768-pilot-25456.tar.gz
 SHA25630ba556544592d515b32279a01c64724579852dc448b841a9cb81d42d5cd051b.
 AllnewSBATCH scripts pass Bash syntax; verifier passes Ruff and Pythoncompile;
 git whitespace check passes. No Metta package edits or Codex history changes.
+
+
+## 2026-09-27 native Puffer policy breakthrough and long run
+
+The prior zero-entropy 134M Fabric continuation (25386) produced the same
+aggregate paired-validation scores as parent 24646 in completed job 25425;
+no strategic improvement is proven. Label-free Fabric profiles passed finite
+33,554,432 steps at 254k SPS (32,768 lanes, job25456) and 284k SPS
+(65,536 lanes, job25488), but missed the user's300k target.
+
+Native built-in Puffer5 policy build25526/profile25532 passed33,554,432 finite
+steps on oneB300 with1,213,184 parameters. Source arch uses MinGRU; hidden128,
+4layers.65,536 environments,H16,mb524,288,replay1,lr.003,entropy0,
+PPO gamma=environment shaping_gamma=.999; balanced3Expander:1Sentinel,
+8192lanes per opponent ID and player side. Epoch11→31 steady interval:
+20,971,520 completed steps, approximately44.09s,475,641.74 end-to-end SPS;
+GPU94.5% over late60s. Finaldashboard timing gives a higher anomalous SPS;
+use the pre-final steady interval. No teacher metadata/loss,6174 public obs.
+
+Native sampled-action audit25563 completed4,194,304 additional steps with
+DEVICE_ACTION_MASK_AUDIT actions=4194304 illegal=0; all1,213,184 parameters
+finite (checkpointSHA30658549b023ab0d5563a6f76bec330addfa96a2db10e5c81ab100f351dd4191).
+Profile25532checkpointSHA90426db6f33c1200cc37d83ecc48e34a01a5c6e4e1a0ce5923f08f20655407b8.
+Build/profile/audit archived and verified onmetta1:
+/home/metta/relh-generals-puffer/native-policy-build-profile-audit-25526-25563.tar.gz
+SHA61f502c156febbf21fd192801934ded6391436b221e8796d953ea639f781afcd.
+
+Submitted one long run25600 (native-policy-8b),8,053,063,680 new steps,
+seed1336, same setup, checkpoint128epochs, allocation5h30/timeout5h15,
+approximately4.7h training at measured throughput. Policy-only initialization
+from archived25532, fresh optimizer; this is not exact learner resume.
+No duplicate training job. Need confirm live steady progress/finite behavior,
+then legitimate native MinGRU frozen evaluation/serving; existing Fabric-only
+FrozenPolicy cannot read this checkpoint. Strong held-out/hosted proof and
+champion publication remain open. Goal active; no hosted writes.
