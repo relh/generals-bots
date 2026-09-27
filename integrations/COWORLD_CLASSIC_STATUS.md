@@ -4836,3 +4836,25 @@ Metta training API work is published as draft PR 25653:
 https://app.graphite.dev/github/pr/Metta-AI/metta/25653
 Head 0efdaf292e, 452 package tests passed. GitHub reports base conflicts and
 pending required CI; the draft is not merged or ready for release.
+
+Reward-scaled paired validation 26291 finished all six records and released its
+allocation. Seed 1374, 1024 cases per opponent, 643 unique initial states. Initial
+state hashes, sides, and opponent IDs matched exactly. Every paired outcome was
+identical (3072/3072), not merely matching totals:
+
+- Expander baseline and candidate: 453 wins, 364 losses, 207 draws.
+- Sentinel: 235 wins, 642 losses, 147 draws.
+- Mixed: 399 wins, 442 losses, 183 draws.
+
+All paired deltas and map-cluster bootstrap intervals are zero (10000 resamples,
+seed 1376). This bounded recipe establishes no quality improvement. Reward
+scaling corrects clipping but does not solve learning in the measured test.
+Validation archive SHA c705116f2796b33ceed3d2b812e8ae8a8f2ff05aa1fa1fb48dc048fe63df98ad
+matched login and local copies. No dependent long run is released.
+
+Fresh squeue confirms 26068, 26285, 26286, and 26291 are absent. The exact long
+container was stopped before scancel and a subsequent Docker query returned no
+matching container. No training remains running. Checkpoints and original run
+records remain preserved. Next investigation must explain useful PPO actor
+changes and quality, rather than repeat the same long recipe. Goal remains
+active: throughput passes, held-out and hosted strength requirements do not.
