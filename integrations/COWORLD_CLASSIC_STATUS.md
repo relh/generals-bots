@@ -4377,3 +4377,27 @@ startup600s, allocation5h30m/container315m. Expected 3.6–5h at 300–414K SPS.
 Need verify actual startup, live long throughput and finite checkpoints; check
 early frozen strength before investing whole budget. No duplicate long job,
 no hosted writes, no release yet. Goal active.
+
+
+### 25978 live throughput and H512 serving check
+
+Replacement25978 RUNNING with genuine source25880 initialization; source
+lineage seed1346 plus current seed1350. Actual steady epochs44→64 afterwarmup:
+20,971,520 steps /58.137seconds =360,725.87 end-to-end SPS; console uptime
+132.504→190.641seconds. GPU roughly95% utilization. Per-process and aggregate
+rates identical (one trainer, one B300). The explicit300K guard passed.
+Checkpoint interval128; none published yet at epoch68. First134,217,728-step
+paired validation script prepared/staged (NOT submitted), baseline completed
+25880 vs published25978 snapshot;1024games/opponent/pool1024,freshseed1353;
+verifies policy/learner/training identity before inference. Check publication,
+finite values and unchanged lineage before submitting; no waiting GPU job.
+
+H512 trained33M CPU/local-WebSocket serving probe25985 COMPLETED exit0 in8s.
+32warmed actions (4warmup), mean1.335ms,max1.532ms;4wire replies,max2.652ms.
+Allchecked actions legal. This uses synthetic public boards and localWebSocket;
+real hosted image startup/strength remain unproven. Exported truthful portable
+bundle and archive native-policy-initialized-512-serving-probe-25985.tar.gz
+SHA256 0d5655f7facdeee37c27bbef938cf6b73a44dcb608acda83fadfbfd03b4eae60.
+General changes committed/pushed; MettaHEAD0efdaf292e also pushed normally.
+Goal active; preserve the run, inspect checkpoint quality as it progresses;
+no champion change or hosted match initiated this sequence.
