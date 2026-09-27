@@ -3228,3 +3228,26 @@ parity across384 transitions and32selectively recycled lanes. GPU cuda:0.
 Finite16.8MnativePufferprobe,16384lanes,mb131072,replay.25,seed1326,
 verified24609parentweights withchecked environment transfer only. No group
 performance result yet. GPU parity helper andprobe script added forreproducibility.
+
+
+### Grouping rejected; 134M action audit still teacher-greedy
+
+24760 COMPLETED finite16,777,216steps. Exact GPU parity384transitions/32resets.
+But after12warmup20epochs:10,485,760steps/44.799s=234,062SPS; native
+uptime112.448->157.247s. RecentGPU77.0%at31,final100%,88.5/268G.
+Nativeenv1.570s69%,model.447s19%,train.240s10%,misc.025s1%.
+Slowerthanungrouped261,132SPS: do notenablegrouping forlongtraining.
+Finalcheckpoint8e8ccfcf192a3d1be1171b3de9e015f261f4e304d47697570d21bf96367c995a.
+Exactcontainerabsent. Verifiedarchive device-context-grouped-calibrated-probe-24760.tar.gz
+SHA7d50f26e76b73dae93c69752dfe4cd7285090a8b094857cfefb0a77c4f689935.
+Optionremainsdefaultoff; acceptedrecipeusesoriginalcalibratedv1source.
+
+Newheldout24771confirmedlive; largerdeadline1800s. Pairedaudit24772COMPLETED.
+134Mpolicy still100%greedyteacher,0greedydifference across24,576decisions,
+24,373flexible. Parent/newentropy1.324152/1.363177,split.078652/.185249,
+teachermoveprob.831030/.825653. Meanmovehintweight8.821377->8.812615.
+Noovernightcurrentrecipe: probabilitylearningdoesnotyetchangegreedyplay.
+Nextbounded16.8Mprobeusesverified134Mparent,lr.001,replay1.0,mb131072,
+seed1328,freshoptimizer. Fourupdatesperepoch(vsone),zero teacherloss,
+unchangedfullClassicmaps/codec/actionmasks. Requirefiniteproofandsteady
+>=30k beforelongerlearning;300ktargetremainsunmet andnoqualitypublication.
