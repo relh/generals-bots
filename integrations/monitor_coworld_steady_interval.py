@@ -46,6 +46,9 @@ def main() -> None:
     )
     startup_limit = int(sys.argv[5]) if len(sys.argv) > 5 else 300
     steps_per_epoch = int(sys.argv[6]) if len(sys.argv) > 6 else STEPS_PER_EPOCH
+    min_sps = int(sys.argv[7]) if len(sys.argv) > 7 else MIN_SPS
+    if min_sps <= 0:
+        raise SystemExit("Minimum SPS must be positive")
     if steps_per_epoch <= 0:
         raise SystemExit("Steps per epoch must be positive")
     run = workspace / f"{prefix}-pilot-{job}-0"
@@ -77,9 +80,9 @@ def main() -> None:
     if (
         not completed and epoch >= 30
         and sps_16 is not None and sps_20 is not None
-        and sps_16 < MIN_SPS and sps_20 < MIN_SPS
+        and sps_16 < min_sps and sps_20 < min_sps
     ):
-        raise SystemExit("Sustained end-to-end training SPS below 30,000")
+        raise SystemExit(f"Sustained end-to-end training SPS below {min_sps:,}")
 
 
 if __name__ == "__main__":

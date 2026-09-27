@@ -73,10 +73,10 @@ def main():
     for line in ('#include "ini.h"', '#include "metta_sweep.cuh"', '#include ENV_HEADER',
                  '#include <nccl.h>', '#include <nvml.h>', '#include <nvtx3/nvToolsExt.h>'):
         prefix = prefix.replace(line, "")
-    harness = HARNESS.replace('B=4, H=128, L=4, T=6', 'B=4, H=512, L=1, T=6')
-    assert harness != HARNESS
+    harness = HARNESS
     harness_path = args.output / "native_initializer_forward.cu"
-    harness_path.write_text("#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + harness)
+    harness_path.write_text("#define POLICY_HIDDEN 512\n#define POLICY_LAYERS 1\n"
+                            + "#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + harness)
     executable = args.output / "native_initializer_forward"
     subprocess.run(["nvcc", "-O2", "-arch=sm_100", "-std=c++17", "-DPRECISION_FLOAT",
                     "-Xcompiler=-Wno-narrowing", "--diag-suppress=2361", "-I" + str(source),

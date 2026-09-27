@@ -17,7 +17,7 @@ void read_file(const char* name, void* data, size_t bytes) {
 }
 int main(int argc, char** argv) {
     assert(argc == 5);
-    const int B=4, H=128, L=4, T=6, O=6174, D=1768;
+    const int B=4, H=POLICY_HIDDEN, L=POLICY_LAYERS, T=6, O=6174, D=1768;
     cublas_init_handle();
     Arch arch = build_arch(O, H, L, D-1, false, 16);
     Allocator params={}, acts={};
@@ -64,56 +64,104 @@ def main():
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--public-views", action="store_true")
     args = parser.parse_args()
     assert jax.devices()[0].platform == "gpu"
     args.output.mkdir(parents=True, exist_ok=False)
     policy = NativePufferPolicy(args.build, args.training, args.checkpoint, args.sha256)
-    assert (policy.hidden, policy.layers) == (128, 4)
     source = args.source / "src"
     prefix = (source / "pufferl.cu").read_text().split('#include "protein.cu"')[0]
     for line in ('#include "ini.h"', '#include "metta_sweep.cuh"', '#include ENV_HEADER',
                  '#include <nccl.h>', '#include <nvml.h>', '#include <nvtx3/nvToolsExt.h>'):
         prefix = prefix.replace(line, "")
     harness = args.output / "native_forward.cu"
-    harness.write_text("#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + HARNESS)
+    harness.write_text(
+        f"#define POLICY_HIDDEN {policy.hidden}\n#define POLICY_LAYERS {policy.layers}\n"
+        + "#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + HARNESS
+    )
     executable = args.output / "native_forward"
     subprocess.run(["nvcc", "-O2", "-arch=sm_100", "-std=c++17", "-DPRECISION_FLOAT",
                     "-Xcompiler=-Wno-narrowing", "--diag-suppress=2361", "-I" + str(source),
                     str(harness), "-lcublas", "-lcurand", "-o", str(executable)], check=True)
     rng = np.random.default_rng(20260927)
     observations = rng.normal(size=(6, 4, 6174)).astype(np.float32) / 8
-    states = rng.uniform(size=(4, 4, 128)).astype(np.float32)
+    states = rng.uniform(size=(policy.layers, 4, policy.hidden)).astype(np.float32)
+    public_masks = None
+    if args.public_views:
+        from metta_training.environment import EnvironmentContext
+
+        from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
+
+        options = json.loads(args.build.read_text())["config"]["python_environment"]["options"]
+        options.update(parallel_games=64, coworld_pool_size=64, supervise_teacher=False, teacher_rollouts=False)
+        env = BatchedGeneralsPufferEnvironment(
+            context=EnvironmentContext(seed=1351, index=0, mode="train", output=args.output), **options
+        )
+        views, allowed = [], []
+        trajectory_state = policy.initial_state(64)
+        try:
+            observation = env.reset("1351")
+            for _ in range(6):
+                values = np.asarray(observation.values, np.float32)
+                masks = np.asarray(observation.action_masks, bool)
+                views.append(values[:4].copy())
+                allowed.append(masks[:4].copy())
+                actions, trajectory_state = policy.actions(values, masks, trajectory_state)
+                transition = env.step(np.asarray(actions))
+                observation = transition.observation
+                trajectory_state = jax.numpy.where(
+                    jax.numpy.asarray(transition.terminated)[None, :, None], 0, trajectory_state
+                )
+        finally:
+            env.close()
+        observations = np.stack(views)
+        public_masks = np.stack(allowed)
+        states = np.zeros((policy.layers, 4, policy.hidden), np.float32)
     obs_path, state_path, output_path = [args.output / name for name in ("obs.bin", "state.bin", "native.bin")]
     observations.tofile(obs_path)
     states.tofile(state_path)
     subprocess.run([str(executable), str(args.checkpoint), str(obs_path), str(state_path),
                     str(output_path)], check=True)
-    native = np.fromfile(output_path, dtype=np.float32).reshape(6, 4 * 1768 + 4 * 4 * 128)
+    native = np.fromfile(output_path, dtype=np.float32).reshape(6, 4 * 1768 + policy.layers * 4 * policy.hidden)
     state = jax.numpy.asarray(states)
     max_logits, max_state = 0.0, 0.0
+    differences = []
+    actual_outputs, expected_outputs = [], []
+    actual_states, expected_states = [], []
     for turn in range(6):
         if turn == 3:
             state = state.at[:, 1].set(0)
         before = state
         decoded, state = policy.forward(jax.numpy.asarray(observations[turn]), before)
         expected_logits = native[turn, :4 * 1768].reshape(4, 1768)
-        expected_state = native[turn, 4 * 1768:].reshape(4, 4, 128)
-        np.testing.assert_allclose(decoded, expected_logits, atol=2e-5, rtol=2e-5)
-        np.testing.assert_allclose(state, expected_state, atol=2e-5, rtol=2e-5)
+        expected_state = native[turn, 4 * 1768:].reshape(policy.layers, 4, policy.hidden)
+        actual_outputs.append(np.asarray(decoded))
+        expected_outputs.append(expected_logits)
+        actual_states.append(np.asarray(state))
+        expected_states.append(expected_state)
         max_logits = max(max_logits, float(np.max(np.abs(np.asarray(decoded) - expected_logits))))
         max_state = max(max_state, float(np.max(np.abs(np.asarray(state) - expected_state))))
-        masks = rng.random((4, 1767)) > .5
-        masks[:, 1764:] = True
+        differences.append(dict(turn=turn, max_logit=float(np.max(np.abs(np.asarray(decoded) - expected_logits))),
+                                max_state=float(np.max(np.abs(np.asarray(state) - expected_state)))))
+        if public_masks is None:
+            masks = rng.random((4, 1767)) > .5
+            masks[:, 1764:] = True
+        else:
+            masks = public_masks[turn]
         reference = np.where(masks, expected_logits[:, :1767], -np.inf)
         expected_actions = np.stack((reference[:, :1765].argmax(-1), reference[:, 1765:].argmax(-1)), -1)
         actual, action_state = policy.actions(observations[turn], masks, before)
         np.testing.assert_array_equal(actual, expected_actions)
         np.testing.assert_allclose(action_state, expected_state, atol=2e-5, rtol=2e-5)
-    result = dict(checkpoint_sha256=args.sha256, recurrent_steps=24, partial_seat_reset=True,
-                  max_logit_difference=max_logits, max_state_difference=max_state,
+    result = dict(checkpoint_sha256=args.sha256, hidden_size=policy.hidden, num_layers=policy.layers,
+                  recurrent_steps=24, partial_seat_reset=True,
+                  max_logit_difference=max_logits, max_state_difference=max_state, per_turn=differences,
+                  exact_masked_actions=True, public_views=args.public_views,
                   scope="CUDA arch_forward vs frozen JAX logits, values, recurrent states and masked argmax")
     (args.output / "parity.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result), flush=True)
+    np.testing.assert_allclose(actual_outputs, expected_outputs, atol=2e-5, rtol=2e-5)
+    np.testing.assert_allclose(actual_states, expected_states, atol=2e-5, rtol=2e-5)
 
 
 if __name__ == "__main__":

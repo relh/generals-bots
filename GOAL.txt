@@ -3417,3 +3417,58 @@ running; no replacement or duplicate initialized long run yet. Require larger
 validation before choosing the initialized long candidate. Throughput and
 finite gates passed; frozen trained H512 native parity, CPU serving, final
 held-out improvement and actual hosted proof still required. Goal active.
+
+
+## 2026-09-27 confirmed initialized-policy gain and 5B replacement run
+
+Larger paired validation 25924 COMPLETED (exit 0, 12m40s): 4,096 cases per
+opponent, seed 1349, 2,618 distinct initial states. Identical map hashes, sides
+and opponent IDs verified independently. Init→trained W/L/D:
+Expander 1631/1604/861→1848/1440/808;
+Sentinel 1131/2587/378→1040/2542/514;
+mixed 1495/1832/769→1664/1678/754.
+Map-cluster bootstrap, 10,000 resamples seed 1352:
+Expander score delta .09301758, 95% CI [.05642360,.12958435];
+Sentinel -.01123047, CI [-.04795421,.02619793];
+mixed .07885742, CI [.04407382,.11399482].
+Clear validation gains against Expander/mixed; Sentinel remains weak and its
+change is inconclusive. This is not untouched final held-out or hosted proof.
+Archive native-policy-initialized-512-large-validation-and-parity-25924-25967.tar.gz
+SHA256 3f7e0e68d7c9aacc602a107675152e2e959c25d3548ae618f13eb07c198426c9.
+
+Generalized CUDA serving parity harness to training-record dimensions; updated
+initializer proof callsite to supply those dimensions. Actual trained H512/L1
+real-view parity 25967 COMPLETED (exit 0, 20s), 24 decisions, partial-seat reset,
+exact masked actions, max logit difference 6.1035e-5, state 8.9407e-8. All
+comparisons passed the original atol=rtol=2e-5 combined tolerance. Prior
+synthetic signed-normal diagnostics 25951/25959 failed that same tolerance:
+complete 24-decision audit showed max logit error .00024414, state 1.7881e-7
+and exact masked actions. Retained failures; no tolerance loosening. Real-view
+proof does not claim all possible inputs or hosted startup success.
+
+Metta initializer API committed/pushed 0efdaf292e after official dev environment
+repair; normal pre-commit/pre-push hooks passed. Full 452 package tests and
+scoped Bazel formatting already passed. No hooks or source guards bypassed.
+
+Preserved original 25600 latest published step 3,758,096,384 policy, learner,
+identity, training/initialization manifests and console before replacement.
+Independently verified all three identity hashes from downloaded archive.
+Policy SHA256 727bc2bdd61ce6e14136c6aded7a015ff6e3b9505e24d78091d586e602a2d949.
+Archive native-policy-original-25600-replacement-checkpoint-20260927.tar.gz
+SHA256 0677dafcb470a0a23560ac0b0840d5ac44c378da0530467c9fc372bfb19cd5f5.
+Earlier step3,623,878,656 archive SHA256
+9e80830fb7f24b91ab8a9db777bd6c3f3d59057ffa1349a90ddd1ac4e9a9815d.
+Stopped only exact own container relh-classic-device-context-native-policy-8b-25600,
+verified it no longer ran, then scancel 25600. Checkpoint/source data retained.
+
+Submitted replacement native H512/L1 long run 25978: 5,368,709,120 new steps,
+seed 1350, warm policy from completed 25880 (SHA61df...), fresh optimizer;
+65,536 env/H16/batch1,048,576/mb524,288/replay1/lr.003/entropy0;
+gamma=shaping_gamma=.999; same balanced 3:1 opponent mixture on both sides.
+Prior identical setup passed 414,260 end-to-end SPS and 33M finite-step gates.
+Checkpoint interval128 epochs. Automatic 16/20-epoch throughput guard explicitly
+requires 300,000 SPS for this run; default other callers remains 30K. Bounded
+startup600s, allocation5h30m/container315m. Expected 3.6–5h at 300–414K SPS.
+Need verify actual startup, live long throughput and finite checkpoints; check
+early frozen strength before investing whole budget. No duplicate long job,
+no hosted writes, no release yet. Goal active.
