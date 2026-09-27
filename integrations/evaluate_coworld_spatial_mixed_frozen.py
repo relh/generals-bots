@@ -67,15 +67,15 @@ def main():
         action="store_true",
         help="Count raw rewards affected by the native learner's [-1, 1] clamp",
     )
-    parser.add_argument("--force-hint-move", action="store_true", help="Diagnostic: replace the native move head")
-    parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the native split head")
+    parser.add_argument("--force-hint-move", action="store_true", help="Diagnostic: replace the move head")
+    parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the split head")
     parser.add_argument(
         "--opponent", choices=("random", "expander_harvester", "sentinel", "strong_mixed"), required=True
     )
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert args.sample_seed is None or args.native
-    assert not (args.force_hint_move or args.force_hint_split) or args.native and args.sample_seed is None
+    assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
     assert not args.native and args.training_pool_episode is None
     record = json.loads((args.run / "training.json").read_text())
     completed = json.loads((args.run / "completed.json").read_text())

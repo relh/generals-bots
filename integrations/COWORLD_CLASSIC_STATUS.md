@@ -5840,3 +5840,35 @@ The stopped run, build, GPU samples, and logs are archived on metta0 as
 `da8ad9b8ad2bf89f92c39bd53a3826af6f4ea0420e11cf22ee4daf1bc6fbaab5`.
 Do not project throughput or quality from this build; a larger actor needs
 a compiler-efficient implementation before further training.
+
+## Frozen self-play actor versus public hint (2026-09-27)
+
+The prior-strength-2 self-play checkpoint at 16,777,216 steps (SHA256
+`9c270c0c8e649356ed9041ab9231c86b962dcda669c492a4aa092bba3fd99fd4`)
+was audited against the public action hint on the same seed-1386 held-out
+Classic maps. We extended the frozen evaluator's hint intervention to the
+Fabric actor and verified the staged evaluator SHA256
+`e51c64c3b89b1307945fdd3c923de688a79ee1786735b66e0973ac4000d143db`.
+Job 27615 ran the two GPU evaluations on one B300. Its postprocessing exited
+nonzero because host Python lacked NumPy; both evaluations completed and a
+standard-library postprocessing pass recovered and verified the results.
+
+For ExpanderHarvester, the actor changed **0 moves and 0 split choices in
+93,607 active decisions** from the public hint. For Sentinel, it changed **0
+moves and 0 split choices in 87,615 active decisions**. In each opponent set,
+the forced-hint and original network per-game outcome arrays were byte-equal:
+63/52/13 and 40/81/7 W/L/D, respectively. The 128 games per opponent covered
+78 unique initial maps. The source job, evaluations, identity, comparison, and
+logs are archived on metta0 as
+`relh-classic-selfplay-hint-audit-27615.tar.gz`, SHA256
+`5ed9f683c3ae42a9b4d642097df9eef372e98984d0ecaecca4c738448f09e22f`.
+The final audit script removes the host NumPy dependency; rerunning the GPU
+evaluations is unnecessary.
+
+This is a concrete reason not to extend this checkpoint to 300M or more
+steps: its frozen action choices on both held-out sets are exactly the public
+hint. The next candidate must permit and demonstrate learned action changes,
+then beat the hint on held-out opponents before a long run. A richer board
+model and training objective are more promising than repeating this tiny
+hint-dominated Fabric graph. No hosted upload, submission, or champion change
+followed this audit.
