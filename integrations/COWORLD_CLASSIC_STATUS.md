@@ -5258,3 +5258,51 @@ Audit attempts 26618 and 26623 terminated before Docker because host code
 mistook the container's `/recovery` mount for a host path. The corrected 26625
 used a verified node-disk mapping for host checks. No training job was
 restarted. The original 134M evaluation, audit, and training are all terminal.
+
+## Move-head intervention on the rejected stateless checkpoint, 2026-09-27
+
+The bounded B300 action audit 26674 reused the verified initializer, 33M,
+and 134M checkpoints on 64 identical hint-driven games for 192 turns. Among
+11,970 decisions with multiple legal moves, the 33M policy changed **zero
+move heads** and 4.40% of split heads relative to the public hint. The 134M
+policy changed 2.52% of move heads and 4.09% of same-move split heads. Its
+hint agreement by turn window 0–63/64–127/128–191 was 99.92%/91.99%/88.75%.
+This describes fixed teacher trajectories, not the policy's own match states.
+The audit output is archived on the GPU node and locally at
+`/tmp/relh-native-policy-feedforward-distribution-strata-26674-v1.tar.gz`;
+matching SHA256 is
+`7adcc3f18963d2d77998a3fa119e58acdd808c286fe0c6692e72d05bbd5e14ef`.
+
+Frozen action intervention 26685 failed after 51 turns because the diagnostic
+asserted hinted move legality for already-finished lanes, whose masks expose
+only pass. It did not finish a held-out case. Its logs and partial output are
+preserved locally and on the node as
+`native-policy-intervention-failed-26685-v1.tar.gz`, SHA256
+`6aa1305119ca126ab48b8b30f0f2cd7801029b035eca4f074de98301026c4580`.
+The corrected evaluator applies the hint only to active lanes. Job 26690
+completed all six held-out diagnostic cases; no trainer or hosted job was
+restarted. Its local/node archive SHA256 is
+`ac572d4f8391d4f574e7d7039f036cb3407c23ebeae58b53d0d2aeab4546f911`;
+local analysis is `/tmp/relh-native-policy-intervention-26690-analysis.json`.
+
+On seed 1386, 1,024 games per opponent, the original 134M policy's
+Expander/Sentinel/mixed W/L/D were 106/750/168, 86/873/65, 104/775/145.
+Forcing **only its split head** to the public Expander hint produced
+111/757/156, 95/882/47, 107/794/123: still badly below the baseline.
+Forcing **only its move head** produced 406/393/225, 275/620/129,
+380/433/211, almost identical to the prior 33M baseline's 407/393/224,
+274/620/130, 381/433/210. All four policies used the same recorded initial
+map hashes, sides, opponent IDs, seed, options, and frozen argmax action
+selection before intervention. Outcome arrays and W/L/D were revalidated.
+
+Map-cluster bootstrap (10,000 draws, seed 1392) gives baseline-to-move-forced
+score differences and 95% intervals of -.00098[-.00574,.00300],
++.00098[-.00580,.00883], and -.00098[-.00598,.00397]. Only 5/5/7 of the
+1,024 paired games changed outcome. Baseline-to-split-forced differences were
+-.64453[-.72212,-.56854], -.43066[-.50346,-.35945], and
+-.62012[-.69165,-.55024]. This intervention isolates the move-head changes
+as the cause of nearly all measured regression for this checkpoint. It does
+not show a trained policy stronger than the baseline. Reject further training
+of the same recipe; a new move residual needs a fixed prior and a paired
+quality gate before any long run. No champion changed and final seed 1381
+remains untouched.

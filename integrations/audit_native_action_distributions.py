@@ -78,6 +78,10 @@ def main():
                         flexible=flexible,
                         teacher_legal=teacher_legal,
                         agreement=agreement,
+                        move_changed_from_hint=greedy[name][:, 0] != hint[:, 0],
+                        split_changed_from_hint=(greedy[name][:, 0] == hint[:, 0]) & (
+                            hint[:, 0] != 1764) & (greedy[name][:, 1] != hint[:, 1]
+                        ),
                         move_entropy=-(moves * np.log(np.maximum(moves, 1e-300))).sum(axis=1),
                         split_entropy=-(splits * np.log(np.maximum(splits, 1e-300))).sum(axis=1),
                         move_max=moves.max(axis=1),
@@ -107,6 +111,7 @@ def main():
     result["policies"] = {}
     for name, rows in samples.items():
         arrays = {key: np.concatenate([row[key] for row in rows]) for key in rows[0] if key != "turn"}
+        turns = np.repeat(np.arange(config["turns"]), config["games"])
         flexible = arrays["flexible"]
         assert flexible.any()
         result["policies"][name] = dict(
@@ -114,6 +119,14 @@ def main():
             flexible_decisions=int(flexible.sum()),
             teacher_legal_fraction=float(arrays["teacher_legal"].mean()),
             teacher_agreement=float(arrays["agreement"][flexible].mean()),
+            move_changed_from_hint=float(arrays["move_changed_from_hint"][flexible].mean()),
+            same_move_wrong_split=float(arrays["split_changed_from_hint"][flexible].mean()),
+            hint_agreement_by_turn_window=[
+                dict(first_turn=start, last_turn=min(start + 63, config["turns"] - 1),
+                     decisions=int((flexible & (turns >= start) & (turns < start + 64)).sum()),
+                     agreement=float(arrays["agreement"][flexible & (turns >= start) & (turns < start + 64)].mean()))
+                for start in range(0, config["turns"], 64)
+            ],
             changed_from_parent=float(arrays["changed_from_parent"][flexible].mean()),
             predicted_pass_fraction=float(arrays["pass_prediction"][flexible].mean()),
             move_entropy=float(arrays["move_entropy"][flexible].mean()),
