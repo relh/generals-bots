@@ -5094,3 +5094,22 @@ Control final snapshot archive f174ca6019091a6ba4b6e5d58ba8ec2e97589e6216eff7be0
 matched login/local copies. The original completed node run and all earlier
 checkpoints remain unchanged. Latest authoritative squeue: quality26364 RUNNING
 at1m11s; no duplicate trainer or evaluation was created.
+
+## Paired lifecycle result analysis prepared
+
+Previous goal turn made progress: matched probes completed, finite/identity and
+full-interval SPS gates passed, final snapshots backed up, and evaluation26364
+submitted once. Fresh squeue confirms evaluation RUNNING; do not duplicate it.
+Baseline records currently complete: Expander889/778/381, Sentinel503/1268/277,
+mixed790/890/368, each2048cases. Control/fixed results are still pending.
+
+Added analyze_native_paired_evaluation.py for all three required contrasts:
+baseline→control, baseline→fixed, control→fixed. It requires held-out argmax
+records, identical settings/seeds and initial-state/side/opponent arrays, valid
+outcome values/shapes, and recorded W/L/D equal to outcome-array counts. Computes
+score deltas and map-cluster bootstrap intervals, keeping tuning scope explicit.
+Verified its comparison code against the completed entropy26316 data: all three
+known deltas and 10000-resample confidence intervals reproduced exactly with
+seed1379. This verifies actual archived data handling, not new policy quality.
+Ruff and git diff checks pass. Use new analysis seed1383 for lifecycle results;
+untouched final1381 remains reserved. No long training/hosted write is released.
