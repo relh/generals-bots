@@ -3106,3 +3106,19 @@ and teacher-schedule transfer are both required. No new quality result or
 Metta focused transfer tests passed (10); full package suite pending. Required
 scoped Bazel lint failed on a GitHub download timeout; direct Ruff on modified
 Metta Python files passed. No long run or hosted policy published.
+
+
+### Calibrated PPO probe submitted
+
+Metta full suite: 444 passed in 1199.61s. Checked transfer implementation
+committed as 0b0979470e. General calibration implementation b361838 and paired
+action-audit script 215ce01 pushed. Required scoped Bazel lint did not pass
+(GitHub copy_directory binary download timed out); direct Metta Ruff passed.
+Calibrated B300 training job 24604 submitted against build 24499. Finite
+16,777,216-step cap, seed 1323, 16,384 environments, horizon 32, minibatch
+131072, replay .25, float32, lr .0001, entropy .001. Parent 23778 checkpoint
+SHA 859e041b1e8b44d515ff3a45fbb007bd16068d944d781564f789d0a4051a1c42.
+No sustained throughput, entropy, held-out, or hosted result for this recipe yet.
+Do not launch duplicate jobs or long training until the probe is inspected.
+Slurm currently identifies the login user as metta (ec2-user is now invalid);
+use authoritative squeue/scontrol rather than old account assumptions.
