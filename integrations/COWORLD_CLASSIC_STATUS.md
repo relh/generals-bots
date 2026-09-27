@@ -4991,3 +4991,18 @@ still recycle. Also reruns paired reward/state/observation/mask proof. No existi
 binary or environment fingerprint is reused as the corrected build. Await proof
 and new throughput/quality gates before long training. New scripts Ruff pass;
 adapter passes with its existing I001/E501 style findings ignored.
+
+Corrected GPU boundary proof 26339 returned: actual game terminals 0, returned
+terminals 0, artificial terminals 0, episode_done false. All 64 natural game
+horizon endings still emitted terminal flags and recycled to time zero.
+The proof also verified continuing game state against the direct transition and
+observed deterministic map-pool generation advance. Build archive and final
+manifest remain to be collected before training release.
+
+Important measurement scope: 33M steps with 65536 environments cover only 512
+batched environment advances, below the 1200-step refresh boundary. Another
+33M probe cannot test this fix's effect on training. Next bounded comparison
+must exceed 78,643,200 agent steps; use matched 134,217,728-step old/new lifecycle
+recipes and the same training seed/initializer/schedule, then paired validation.
+Keep the corrected fingerprint/source binding explicit and test >=300k actual
+steady end-to-end SPS before considering a long run.
