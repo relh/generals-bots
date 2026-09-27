@@ -4743,3 +4743,51 @@ release; don't describe it as significantlyworse. Probe/validation bothterminal,
 no orphan trainer. Main26068 remains solelongrun. Next2B pairedquality gate
 staged (not submitted beforepublication/finiteidentity); originalscheduled
 4hour-scale training continues. Final1371 seed staysuntouched.
+
+## Reward clipping correction — 2026-09-27
+
+Pinned native Puffer clamps rewards to [-1, 1] before GAE. The 1B paired
+validation observed terminal shaped rewards outside that interval; its sampled
+nonterminal rewards did not clip. This changes the potential-shaped objective,
+but does not establish the cause of the learning plateau.
+
+Added an explicit positive `reward_scale`, default 1.0. The new experiment uses
+0.5 on the complete reward, with army/land/castle potential weights 0.5/0.3/0,
+imitation 0, shaping weight 1, and learner/shaping gamma both 0.999. The analytic
+absolute reward bound is 0.9, below Puffer's clamp. Scaling preserves the reward
+objective up to a positive constant; optimizer behavior can change.
+
+Fresh B300 build 26260 passed the final manifest assertions and released its
+allocation. Slurm accounting is disabled and the terminal job record expired;
+the retained scheduler log ends with NATIVE_POLICY_BUILD_OK. Binary SHA256:
+4344af30b6bdbde7703f1db67be42f4d7cd8822b42ccdd381b1393f2b1809299.
+New environment fingerprint:
+73e9271702b1b2d9d548f73ee7c3bb9e9148a3e4c26b4e91fabba15cf16e229b.
+Archive SHA256 d4ef601d2cca8fd333b057867dd5724d503c1659c9e5ddd43615af2e77ab2246
+on the login host; local copy verification is tracked separately.
+
+Paired GPU replay used frozen original 33M weights, seed 1373, 256 games,
+1200 turns, and 204114 active transitions. Private states, observations, masks,
+terminals, and outcomes were identical. Rewards matched 0.5 times the original
+within 1e-6; 33 raw clipped transitions became zero scaled clipped transitions.
+Maximum absolute scaled reward was 0.7241087. This proves the environment
+correction, not training throughput or policy strength.
+
+Bounded training probe 26286 was submitted once with an exclusive submission
+ledger. It uses the fresh build, the same untrained logit-scale-24 initializer
+and seed 1346 as the original 33M baseline, 65536 environments, horizon 16,
+batch 1048576, minibatch 524288, hidden 512 / one recurrent layer, learning rate
+0.003 with the original short cosine schedule, entropy 0, replay ratio 1.
+The 33,554,432-step budget and 300k sustained SPS guard constrain the experiment.
+Opponent IDs each have 8192 lanes per side, totaling a 3:1 Expander/Sentinel mix.
+No second long run was released. No champion was changed.
+
+Existing long job 26068 published 2,147,483,648 finite steps. Policy SHA256:
+59c150c77011d3dfc0c0ce36b770411c21093e3e46258c0d3623f20e425a2ea4.
+Policy, learner, and training identity hashes matched before launching paired
+1024-game-per-opponent validation 26285 with seed 1365. Both new jobs are bounded;
+the original 5B job remains the sole long run. Final held-out seed 1371 is unused.
+
+Verification: new proof script Ruff passed; shell syntax and git diff checks
+passed. The adapter passes Ruff with its pre-existing I001/E501 findings ignored;
+those existing style findings were not rewritten.

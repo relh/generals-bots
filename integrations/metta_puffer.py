@@ -50,6 +50,7 @@ class GeneralsPufferEnvironment:
         deduplicate_opponent_branches: bool = False,
         shaping_weight: float = 0.2,
         shaping_gamma: float = 0.99,
+        reward_scale: float = 1.0,
         army_shaping_weight: float = 0.5,
         land_shaping_weight: float = 0.3,
         castle_shaping_weight: float = 0.0,
@@ -85,6 +86,8 @@ class GeneralsPufferEnvironment:
             raise ValueError("Shaping weights must be nonnegative")
         if not 0 < shaping_gamma <= 1:
             raise ValueError("Shaping discount must be in (0, 1]")
+        if not np.isfinite(reward_scale) or reward_scale <= 0:
+            raise ValueError("Reward scale must be finite and positive")
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
         if sparse_teacher and (supervise_teacher or not factorized_actions):
@@ -312,7 +315,7 @@ class GeneralsPufferEnvironment:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
                 reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
             values, mask = self._encode(final)
-            return next_state, next_key, values, mask, reward, done, outcome
+            return next_state, next_key, values, mask, reward * reward_scale, done, outcome
 
         self._advance = advance
 

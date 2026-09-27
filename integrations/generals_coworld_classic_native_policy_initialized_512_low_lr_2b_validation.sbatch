@@ -95,7 +95,7 @@ timeout -k 30s 9m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=16 
     -v "$disk/puffer_codec-calibrated-v1.py:/work/source-normalized-16245/integrations/puffer_codec.py:ro" \
     -v /tmp/relh-generals-gpu/runtime:/work/runtime:ro \
     -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work \
-    -e HOME=/work -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-normalized-16245:/work/oldsource \
+    -e XDG_CACHE_HOME=/recovery-output/cache -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-normalized-16245:/work/oldsource \
     -e JAX_COMPILATION_CACHE_DIR=/cache \
     -e JAX_PLATFORMS=cuda,cpu -e XLA_PYTHON_CLIENT_PREALLOCATE=false \
     -e LD_LIBRARY_PATH=/work/runtime/nvidia/cu13/lib \
