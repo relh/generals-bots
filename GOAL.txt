@@ -2455,3 +2455,25 @@ confirmed RUNNING; do not restart without checking exact job state. The long
 training budget remains conditional on evidence that the policy learns useful
 served actions. No new hosted publication; goal remains active.
 Archive of 24994/24995/25006/25015 initiated on metta1; checksum pending.
+
+
+### Verified archive, paired outcomes and new behavioral progress
+
+Archive verified on metta1: device-context-strong134m-wide-and-greedy-24994-25015.tar.gz
+SHA256 2b28196db88d8e2ede2cad1668f3435a0a092ac0c66e4540b2c50ea5ad53541f.
+24995 parent and strong16M outcomes.npy have identical SHA256 per opponent:
+Expander 32614baf8ec76931cba39d4cc089a6a8f6cddbaf7dfa465774bc21f50627ee40;
+Sentinel 32f7424f67c22845823eeb74541b1073b68521e8e438dde4b59d206316587e86.
+Thus every saved per-game outcome agrees, not just aggregate scores.
+25015 final checkpoint SHA256
+499246c11e0b055fd26ab9abd40e8695fd364305a46325e5848b066a51feead8.
+
+25058 audit produced valid results: 24,576 real trajectory decisions,
+24,268 flexible; new strong134M greedy decisions differ from parent on
+14.8962% of flexible decisions, teacher agreement now 85.1038%.
+Teacher legal fraction 100% in both; move entropy .6930 -> 2.9057,
+teacher move probability .9099 -> .4306, mean hint weight 8.8126 -> 8.5364.
+This is actual behavioral change after the longer strong-update run; it is
+not yet evidence of higher match performance. 25057 held-out greedy matches
+remain running. Check jobs before further submissions. Do not lower hint scales
+preemptively until this checkpoint's match results are inspected.
