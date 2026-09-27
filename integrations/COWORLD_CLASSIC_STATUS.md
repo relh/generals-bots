@@ -3122,3 +3122,14 @@ No sustained throughput, entropy, held-out, or hosted result for this recipe yet
 Do not launch duplicate jobs or long training until the probe is inspected.
 Slurm currently identifies the login user as metta (ec2-user is now invalid);
 use authoritative squeue/scontrol rather than old account assumptions.
+
+
+### Scheduler environment recovery
+
+24604 never entered the training script: held/requeued at zero runtime with
+user_env_retrieval_failed_requeued_held. A bounded B300 reader verified no
+24604 container/output directory/log. Canceled 24604 and verified CANCELLED.
+Replacement 24609 uses a fixed build-24499 script and default sbatch environment
+export (no explicit variable export). Same finite training recipe, no duplicate
+trainer. Metta commit 0b0979470e now pushed successfully with isolated-worktree
+hooks disabled after the unconfigured CLI pre-push hook failed. No history edits.
