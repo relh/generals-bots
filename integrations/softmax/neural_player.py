@@ -1,16 +1,17 @@
 """Serve a frozen Puffer/Fabric Generals policy over the Coworld player wire."""
 
+from __future__ import annotations
+
 import asyncio
 import json
 import os
 import sys
 import time
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 from metta_training.environment import NumericObservation
-from metta_training.inference import FrozenPolicy
-from metta_training.policy_bundle import load_frozen_policy_bundle
 from websockets.asyncio.client import connect
 
 from integrations.native_policy_bundle import NativePlayerPolicy
@@ -18,8 +19,11 @@ from integrations.native_policy_bundle import NativePlayerPolicy
 from .neural_codec import encode_wire_observation
 from .protocol import VERSION
 
+if TYPE_CHECKING:
+    from metta_training.inference import FrozenPolicy
 
-def select_action(policy: FrozenPolicy, message: dict, codec_kwargs: dict) -> list[int]:
+
+def select_action(policy: FrozenPolicy | NativePlayerPolicy, message: dict, codec_kwargs: dict) -> list[int]:
     values, mask = encode_wire_observation(message, **codec_kwargs)
     prediction = policy.predict(
         0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()])
@@ -36,6 +40,10 @@ def select_action(policy: FrozenPolicy, message: dict, codec_kwargs: dict) -> li
 
 async def play(url: str, bundle: Path) -> None:
     native = (bundle / "native-policy.json").exists()
+    if not native:
+        from metta_training.inference import FrozenPolicy
+        from metta_training.policy_bundle import load_frozen_policy_bundle
+
     config = None if native else load_frozen_policy_bundle(bundle)
     build = json.loads((bundle / "build.json" if native else config.build).read_text())
     options = build["config"]["python_environment"]["options"]

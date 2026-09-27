@@ -4540,3 +4540,22 @@ heldout and actualhostedperformance stillrequired.
 GPU~96.1%. SourcecheckpointSHA8f262... and inheritedlineageseeds[1346,1354]
 verifiedfromactualinitialization.json; currenttrainingseed1359.300Kguardpassed.
 No duplicate trainingjobs. First536Mqualityscript staged,notyet submitted.
+
+
+2026-09-27: actual amd64 CPU deployment image verified on B300 host within
+existing26068 allocation, Docker without GPU access, UID10001. First image
+failed eager optional Fabric import; neural_player now loads Fabric inference
+only in Fabric branch. Fixed image config6ec4470fb06ff56b4dba22a52ea6a6d96bcf84bb8f480ce292809f9a1d18e4f8;
+Docker-save SHAca0001d2fd702bc3d470eca661e8dc4d13d4196bf80c49a755d3ac41f0fdbd9a.
+Known33M policy61df...:32warmed synthetic actions max1.5865ms,4localWebSocket
+replies max3.2441ms,500ms deadline passed. Actual hosted startup/strength remains
+unproven. Original failures retained; local arm64 emulation AVX guard not bypassed.
+
+26068 at24m22s: epoch546,572.5M newsteps,console374.2KSPS,GPU100%,150.8/268GB.
+First536,870,912 checkpoint published and all4,852,736 float32 parameters finite;
+policySHAe7c62bcc3cfc88730e4b73b337211d9f64def91b637d6f09fe9209b0f91864d6,
+learnerSHA d5d4c7ea2837a35d6c08bcc2b4c3a74392eba1c1e55c891852000f6b94835960,
+runSHA311c559b74bb7c3eed84ac49a3f3539cf4363b336e6c1aa5f8264c3c2b708827,
+all independently matched publication identity. Paired1024/opponent validation
+submitted once as26107,seed1361; submission marker recorded on login host.
+No duplicate long run, hosted upload, league submission or champion change.
