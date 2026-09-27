@@ -5697,3 +5697,68 @@ compilation with no training steps and idle GPU; it has no checkpoint.
 Another long run on either tested actor is not justified. The next policy
 change needs an outcome-sensitive action architecture or curriculum that
 demonstrably changes held-out strong-opponent results on this fast bridge.
+
+## Spatial PPO action-prior diagnostics (2026-09-27)
+
+Job 27410 resumed the pinned 8.39M-step hinted spatial checkpoint from job
+27340 for 16,777,216 more Classic strong-mix steps on one B300. It kept
+8,192 device-resident games, horizon 32, minibatch 16,384, matched learner
+and shaping gamma .999, and used LR .003, replay ratio .5, GAE lambda .99,
+and entropy coefficient .003. The exact warmed epoch 37→57 interval was
+5,242,880 steps in 33.640 seconds: **155,853 end-to-end SPS** for the one
+process and in aggregate. A separate ten-second allocated-GPU sample averaged
+83.3% utilization (range 75–92%) and used about 26.2 GiB VRAM. The pinned
+monitor on the node assumed 4,096 environments, so its displayed 78K SPS
+was exactly half the actual completed-step rate. This measurement bug did
+not affect training or the conservative 30K throughput guard.
+
+Frozen 128-game Classic argmax evaluation at held-out seed 1386 found **no
+change in any outcome** at either 4.19M or 16.78M continuation steps:
+ExpanderHarvester 63/52/13 and Sentinel 40/81/7 W/L/D, exactly matching
+the parent checkpoint. The 16.78M checkpoint SHA256 is
+`659861745b07f395186bb22b0df271cae777e9fd18f951df87c16e3a20578994`.
+The run and quality results are archived on metta0 as
+`relh-classic-spatial-hint2-update-27410-27414.tar.gz`, SHA256
+`224523a98b15288baf2f88f6c7bdbe98a324aa98c4c333ff01771c71ce769129`.
+The separate allocated-GPU sample is
+`/home/metta/relh-generals-puffer/spatial-hint2-update-gpu-manual-27410.csv`.
+
+Job 27432 then changed the actor's built-in public Expander action-prior
+strength from 8 to 2, kept the same true CUDA environment and strong-mix
+settings, and trained 16,777,216 steps from a fresh build with LR .003,
+replay .5, GAE .99, and entropy .003. Its warmed completed-step throughput
+was about **160K SPS** on one B300; the allocated-GPU sampler averaged about
+84% over the last steady minute. Entropy increased from about .4–.6 to
+about 3.2, with nonzero PPO KL and clipping, and frozen outcomes changed.
+The 128-game seed-1386 results at 4.19M steps were Expander **63/49/16**,
+Sentinel **32/85/11**; at 16.78M steps they were Expander **43/59/26**,
+Sentinel **39/77/12**. This is mixed or worse than the strength-8 parent,
+not evidence for an overnight 300M-step run. The final checkpoint SHA256 is
+`c0d4ce1aceca35d0ff3d534f6c2ed456deda6c29d305e4ee6077b66621cc68b3`.
+The build, run, samples, and quality results are archived on metta0 as
+`relh-classic-spatial-hint2-prior2-27432-27437.tar.gz`, SHA256
+`fce737de09544830c77fca85147d7d3ca88df6ea436d57d0aa5d3978e37ea1f7`.
+
+Job 27456 completed a bounded 67,108,864-step continuation from the
+prior-2 4.19M checkpoint with LR reduced tenfold to .0003. It kept 8,192
+device-resident games, horizon 32, minibatch 16,384, replay .5, GAE .99,
+entropy .003, and matched learner/shaping gamma .999 on one B300. The
+corrected monitor (SHA256
+`9b88eb675c9781f4f1a4b670577cf61ce490622a89d22f16321f3d0213f028e0`)
+used the actual 262,144 steps per epoch. Its final warmed 20-epoch window
+measured **156,780 end-to-end SPS** for the one process and aggregate, with
+about 83% mean GPU utilization over the recent 60-second samples. The
+16.78M and 67.11M continuation checkpoint SHA256s were
+`3a3887cc8008423827ed6d1e98864951bc9ab1afba939a195fdf6daf916c2af2`
+and `3f73e1009ce24855974b5bb181530779b56bf669f9cda4f82d513309124dc767`.
+
+Dependent pinned frozen evaluation 27457 tested both checkpoints on the
+same 128 held-out seed-1386 Classic games against each opponent. **Both
+produced byte-identical per-game outcome arrays to the parent checkpoint:**
+ExpanderHarvester 63/52/13 and Sentinel 40/81/7 W/L/D. The lower-rate learner did not improve
+held-out play after another 67M steps. A 300M-step extension of this actor
+is therefore unsupported despite excellent throughput. The run, monitor,
+samples, and evaluation are archived on metta0 as
+`relh-classic-spatial-hint2-prior2-low-lr-27456-27457.tar.gz`, SHA256
+`1a85e6e2a749ecf65ef384d9ac287d568cded218797d86e39e5b74f71fd648e5`.
+No hosted upload, league submission, or champion change occurred.
