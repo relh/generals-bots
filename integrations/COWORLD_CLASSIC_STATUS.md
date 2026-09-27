@@ -2997,3 +2997,71 @@ Update, 2026-09-26 16k probe and quality evidence archived
     Next:real-state actionentropy/teacheragreement andtrainedhintweight
     audit, plus minibatch65536/131072 fixed-replay.25 boundedprofile.
     Currentcontextmodel226,994SPS;300kandstrongerpolicyremainunproven.
+
+Update, 2026-09-26 action-distribution audit prepared and submitted
+  *Previousgoalturn progress:16k227kSPS andteacher05flatquality recorded,
+    botharchived58f715b5... beforecurrentwork. Currentbranchsynced/clean
+    beforeedits; oldjobs23675/23778revalidatedmissing. No duplicates.
+  *NewboundedB300audit:32realClassiclanes,768turns,seed1321,strong_mixed,
+    trajectorydrivenbylatest23778frozenpolicy. Compareparent335M,23613,
+    23778 onexactlythesamepublicstates;reportgreedyactiondifferences,
+    teacheragreement/legality,headentropies andprobabilities, plusactual
+    trainedhintcouplingweights selectedbyknowninitialvalue8.
+  *Fourthcounterfactual useslatestweights withpublichintchannels2:8
+    scaledto.25 onlyforitsinference; trajectorydriverandallweights remain
+    untouched. Diagnosticonly, notheld-outperformance ortrainingchange.
+    Audit SHA256c146e740db8b8191de11ee468a849e4603e655b52f487ee44e003ef15cedef29;
+    Pythonlint/format/compile andSBATCHbashsyntaxpassed.
+  *Preparedseparate16.78M-step minibatch131072probe vsprior32768 atsame
+    16384env/horizon32/replay.25,float32,teacher.05,entropy.001. Seed1318,
+    completed23778parent,freshoptimizer. Awaitstagingcompletion before
+    submit; verify20postwarmup epochSPS. Noovernight/hostedpublication.
+
+Update, 2026-09-26 real-state audit identifies exploration saturation
+  *23988 completed:32Classiclanes x768turns=24,576decisions;24,348 had
+    >1legal move-head action. Parent335M,teacher05small23613 andwide23778
+    all100% greedyteacheragreement and0% greedychangesfromparent.
+    Teacherhintlegal fraction1.0. Allcomparedonidenticalrealstates driven
+    bylatestpolicy,seed1321,strong_mixed;diagnostic, notheldoutstrength.
+  *Latest23778teacher-move probabilitymean.99999718985; moveentropy
+    .00005318892,splitentropy1.1574e-13. Parent/small nearlysame. Learned
+    hintcoupling1764weights mean8.81660(parent)->8.82138(latest),min8,
+    max9.24205. Priorbecamestronger; teachercoef .05 didnotunlocksampling.
+  *Counterfactualsame23778weights, publichintchannels2:8scaled.25:
+    moveentropy3.47320074,teacher-moveprobability.44349582,splitentropy
+    .00224738; greedyteacheragreementstill100%, greedyparentchanges0%.
+    Demonstratescalibration canallowexploration whilepreserving initial
+    greedyteacherpolicy. No copiedweights modified, no performanceclaim.
+  *Actualpinnednative source calls sample_logits withmask_b.data and
+    mask_stride. DeviceEnvbinds/copies liveactionmaskbuffer; no missing
+    studentmaskcall found. Teacherlegalityisdistinctfrom thisstaticproof.
+  *Nextrecipe shouldcalibrate hintconfidence andremove teachergradient
+    pressure, ratherthancontinuingteacher.05 on saturatedlogits. Movement
+    scale.375 andsplit.125 arecandidatecalibration values, notyet tested
+    orimplemented. Retain sameobs/actionindices andheldout/hostedencoder
+    parity. RequiresfiniteGPUprobe andevidencebeforelongtraining.
+  *23995largeminibatch131072finiteprobe nowterminal/missing; read its
+    completed/native logsbeforeSPSclaim oranyrestart. Goalactive.
+
+Update, 2026-09-26 larger minibatch reaches255k trainingSPS
+  *23995completed16,777,216 newsteps. OneB300,16384env,horizon32,
+    minibatch131072,replay.25,float32,teacher.05,entropy.001,seed1318.
+    After12warmup epochs,20epochs:10,485,760steps/41.063s =255,358SPS;
+    nativeuptime148.748->189.811s. Fixedreplaywork .25 vs32768baseline
+    226,994SPS; optimizerupdates/epoch4->1, samples/epoch unchanged.
+    RecentGPUmean60s at31epochs84.1%;nativefinal92%,VRAM87.0/268GB.
+    Finalnative env1.391s/67%, inference model.447s/21%,train.235s/11%
+    (train model.209s/10%),misc.025s/1%.300ktargetstillunmet.
+  *FinalcheckpointSHA256
+    29cbca764c5da7a6182538be7af3a207d523e2d0005bc1367f6f97e764b672b6.
+    Entropy0.000 nativeconfirmsaudit saturation; noqualityclaimorovernight.
+  *Archive23988audit and23995complete trainer/checkpoints/logs before
+    nextrecipe. Calibratedhintinputs/purePPO arethe nextquality action;
+    maintainhostedencoder parity andexplicittransferconstraints.
+  *Potentialfutureperformance optimization: NativeFabricPolicy always
+    copies full22956-word carried state perlane beforeforward_device,
+    packs advancedstate, andnativecopy writes it back. Compiler reports
+    allstatefulpopulationsmailboxes/no later reads. Investigateaudited
+    memorylessstate transport ratherthanshrinkingmodel/replay tohitSPS;
+    reverse-walk-none alone maynotproveforwardstatelessness forothergraphs.
+    Do not enablewithoutforward/gradient/reset parity andnativeGPUproof.
