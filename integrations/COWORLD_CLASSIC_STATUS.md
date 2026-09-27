@@ -4700,3 +4700,28 @@ verifiedphysicalcopies; existingexporter/core/sourcepackage fingerprints retaine
 Preparedpairedscale12validation1024/opponentseed1368 vs known33Mbaseline,
 requiresrealcompletedruns; notsubmitted until actualcompletion/finiteidentity.
 Needmeasure newSPS,actualinitializer identity andfinitecheckpoint before quality.
+
+
+Scale12 probe26177 COMPLETED exit0:0,Slurm2m03s,33,554,432actualsteps.
+All4,852,736paramsfinite; finalpolicySHA
+8e0780f7b6a9d76a01650617327c110779357561584e882119f2e50d745d98a2,
+learner53600fe1e1e929cb05cc7c9a31b3a7c8aff642daff434c5a9167372e4465ac14,
+trainingc3b0142609957744eda741ae541181703a5eb4348e1968e4261df148fe48f8ad,
+allpublicationidentities matched. Actualuntrainedscale12 initializerSHA
+68a07b8848c3e9601214888c5a52c680b7db45dcd5cffa5ad1ee1827c9bf3f83,
+metadata trained_steps0/no learner/no seeds verified, copiedinitialweightsSHA
+matched. Actualsourceconfigseed1367; no fakecompletedrecords orsourcebypass.
+
+SingleB300,65536env,H16,batch1048576,mb524288,replay1,H512L1,float32,
+gamma/shaping.999;3:1opponents8192lanes/opponentID/side. Epoch11→31 after
+11warmupepochs:20,971,520steps/58.413s=359,021.45end-to-endSPS. Excludes
+anomalousfinal32epoch. LatestnativeGPU100%,150.8/268GB; finaltrainingentropy
+~3.325,higher than strongpriorreading. Broader exploration, notstrengthproof.
+Initialthroughputparser wronglyrequiredaminutefield beforeuptimeunder60s;
+metadataread failedStopIteration, nottrainerfailure; fixedoptionalminuteparse,
+no jobsrestarted. ProbearchiveSHA1ef0f08ac24170d50605fc2ed8f4ffe56f0a425d0be38eea66cd16e1577a1e6a
+verifiedlogin/local. Paired1024/opponentquality26183 RUNNING,seed1368,baseline
+original33M vs weakprior33M. Explicitcompleted+identitychecks, samephysical
+rewardcounter helpers; submissionmarker preventsduplicates. Mainlong26068
+stillRUNNING at~1hour, no duplicate longjob orchampionchange. Awaitquality
+next; don't releaseanotherlongrun on entropy/SPS alone.
