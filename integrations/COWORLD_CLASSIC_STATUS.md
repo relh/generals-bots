@@ -3546,3 +3546,18 @@ sameinitial24646weights,seed1328,learner/shapinggamma.999,H32,mb131072,replay1,
 lr.001,entropy.001 as25101,checkedenvtransfer. Comparesbranchsharingonly.
 OptionremainsoffuntilactualSPSconfirmsimprovement. Noadditional longjob.
 Goalactive; nohostedpublication/championchange,300kstillunmet.
+
+
+### First corrected held-out result and experimental throughput outcome
+
+25120 correctedExpander case completed256games:100W/96L/60D,perf.5078125
+vsparent.484375 andoldunmatched-discountstrong.34375. This recovers the old
+regression on this sample; the small parent advantage is not yet statistical
+or mixed/hosted proof. Sentinel+strong_mixedcasesstillpending; jobconfirmedlive.
+25148 branch-sharingprobe reachedcompleted32epochs,16,777,216finite steps:
+final20-interval197408.7SPS vsidenticalbaseline25101's196886.1 (+.27%).
+No material speedgain; keep optionoff and do not promote for300k target.
+TerminalSlurmstate/checkpoint/archive stillneedverification nextturn.
+25128 servingarchive fullyverified onmetta1:
+device-context-aligned-discount-serving-probe-25128.tar.gz
+SHA40769d2b2db68419bbc68a8a365012bb3a7f3b49dfd1a68b5add695ed465d716.
