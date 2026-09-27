@@ -5306,3 +5306,93 @@ not show a trained policy stronger than the baseline. Reject further training
 of the same recipe; a new move residual needs a fixed prior and a paired
 quality gate before any long run. No champion changed and final seed 1381
 remains untouched.
+
+## Native Puffer5 raw RL and fixed-prior check (2026-09-27)
+
+The native fixed public-hint prior initially passed rollout inference parity,
+but a zero-rate pilot showed PPO KL 2.663. The native encoder mutates the
+observation shape during train forward; the prior kernel read its stride after
+that mutation. Metta commit `cd2567f49d` captures the stride before squeeze.
+Corrected build 26757 and zero-rate job 26759 yielded KL/clipfrac 0/0 and an
+identical final checkpoint. Thus rollout and replay now agree. The corrected
+8,388,608-step fixed-prior pilots 26763 (LR .0001) and 26768 (LR .003) made
+no held-out improvement over the initializer: seed 1386, 1,024 games each,
+W/L/D 410/424/190 versus ExpanderHarvester, 316/632/76 versus Sentinel,
+388/466/170 versus strong mixed. Job 26763's warm epochs 2–7 delivered
+5,242,880 steps in 14.674 seconds, 357,290 end-to-end SPS on one B300.
+
+The separate raw reward-only build 26769 uses 14 public channels, no hint
+features, no fixed prior, no teacher loss, and the same legal action masks.
+Puffer5 PPO uses 65,536 games, horizon 16, a 1,048,576-step rollout,
+524,288-step minibatches, H512/L0, gamma=shaping_gamma=.999, and opponents
+split across four IDs and both sides. Job 26780 completed 134,217,728 steps
+with replay ratio 1 and LR .003. Warm epochs 96–127 delivered 32,505,856
+steps in 50.269 seconds: 646,638 end-to-end SPS on one B300. Mean sampled
+GPU utilization during the active run was 94.9%. Final policy SHA256
+`487eea3eb683379db42a07f40c0adcc0bd19cb33c0332608719b7f04ae58c292`.
+Frozen seed-1386 evaluation 26781, 1,024 games per opponent, gave W/L/D
+0/1010/14, 0/1014/10, and 0/1011/13. This recipe learned no competitive
+policy despite its throughput.
+
+A controlled replay-ratio-4 pilot 26791 completed 8,388,608 steps at
+approximately 323,500 steady-state SPS (epochs 2–7: five 1,048,576-step
+epochs in 16.202 seconds). PPO KL was .010 at epoch 2 and fell to 0 by epoch
+7. Final policy SHA256
+`cd145187d1294f47698bda589f5c5f0cc7a8311d6a83e6b938d71e96d917ab96`.
+Held-out evaluation 26796 yielded 0/1016/8, 0/1017/7, and 0/1015/9.
+The same setup's bounded 134,217,728-step job 26800 completed. Its submitted
+script SHA256 is
+`8652e968000eef3e138d60c3f61f801425984d41633ec481375448bba60a6ab7`.
+The final checkpoint SHA256 is
+`3f98e0e4fb9ba88847ef14b5eae559e94cc2eed3c027e2d8a0d0ecf231268b6c`.
+The live guard measured 403,590 SPS across epochs 112–128 and 399,465 SPS
+across epochs 108–128; GPU utilization averaged 93.8% over its last sampled
+minute. Held-out job 26803 produced W/L/D 0/1003/21, 0/1013/11, and
+0/1006/18 against ExpanderHarvester, Sentinel, and mixed. Raw reward
+diagnostics saw zero values clipped in 467,960/346,444/441,192 active steps
+across those opponents; all raw rewards remained within [-.422,.397]. This
+rules out the native reward clamp as the cause of the zero-win result. The
+raw 134M job's progress guard was wired to
+an old prefix and did not provide its intended live protection; job 26800
+used the matching prefix. Fixed-prior LR .003 continuation job 26808 also
+completed 134,217,728 steps. Its final policy SHA256 is
+`fcc641ab1c8c4cb392ad7368ac430195355ca636e21c7ebdea1ef9e6a43d335b`.
+The late 20-epoch guard measured 344,654 SPS on one B300. The submitted
+script inherited an old monitor prefix; symlinks to this job's run and GPU
+log restored live guard readings without altering the submitted script.
+Held-out job 26809 exactly matched its initializer's three W/L/D counts.
+
+Both 134M runs' effective Puffer `run.ini` used `anneal_lr=1` and
+`min_lr_ratio=0`, tapering LR to zero over this bounded budget. A controlled
+fixed-prior pilot 26820 explicitly set `anneal_lr=0`; effective `run.ini`
+confirmed constant LR .003. It completed 33,554,432 steps with final SHA256
+`a65458007dfa38e69f2d75724d47caf98f928f129f90968a349d9070afb728f8`.
+Held-out job 26824 again exactly matched the initializer on all three
+opponents. The fixed prior produces a baseline but this dense residual PPO
+setup has shown no served-action quality gain with either LR schedule.
+
+Raw reward-only replay-ratio-4 constant-rate job 26836 completed 33,554,432
+steps at roughly 357,000 steady SPS. Its effective `run.ini` confirmed
+`anneal_lr=0`, replay ratio 4, LR .003. Final checkpoint SHA256
+`a7c6d3dfaac94c40615176e51c8094e41ed5a5049ace88505b30765c183ad38b`.
+Held-out job 26837 again won zero games: W/L/D 0/1008/16, 0/1014/10,
+0/1006/18. Thus constant LR sustains PPO updates but did not produce useful
+greedy play by 33M steps. The flat H512/L0 actor plus current reward and
+strong-opponent curriculum needs an action-distribution diagnosis before
+another large run.
+
+The first action audit 26842 rejected its input: the raw observation layout
+does not carry the hint channels assumed by the fixed-prior audit. Its
+assertion stopped before producing a comparison. Corrected own-trajectory
+audit 26844 compared raw initial and constant-rate raw policies on 64 games,
+192 turns each. The trained policy's mean move entropy increased from
+1.65 to 2.67 from turns 0–49 to 150–191; pass-with-legal-move frequency was
+5.7% in the last window. Moves remained legal, but policy concentration fell
+as games developed. These own-policy trajectories are diagnostic, not paired
+held-out outcomes.
+
+Reward-only replay-ratio-4, constant-rate, zero-entropy job 26848 is active
+for 33,554,432 steps; held-out job 26849 depends on its success. This isolates
+the entropy bonus as one possible cause of diffuse action choices. Inspect
+these exact jobs before another trainer. No policy has been published or set
+as champion.
