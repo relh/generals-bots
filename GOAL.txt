@@ -2406,3 +2406,25 @@ strong134Mfinitecheckpoint andactiondifferences. Archive before any replacement.
 Currentqualitygaps: native sampleperf.23053 at134M; argmaxauds still100%teacher
 throughstrong16M. 300kSPS remainsunmet; groupedcandidatewasrejected as slower.
 Do not markgoalcomplete orrestart saturatedteacher recipe merelybecauseGPUbusy.
+
+
+## Wider GPU batching and first served-greedy held-out results
+
+Previousgoalturnwasprogress: stronger-updateprobe/auditandnativeheldoutcompleted,
+artifactsarchived, pairedserved-greedyharnessimplemented,24994/24995launched.
+Thisturnrevalidatedbothlivebeforework; no duplicatejobs.
+
+24995parent134Mgreedyheldoutcasefinished vsExpander:256games,99wins107losses
+50draws,perf.484375,170.94s. SameparentvsSentinel:68wins153losses35draws,
+perf.333984375,142.92s. FullClassicseed1101:0:0,codecscales.375/.125.
+Thisconfirmsnative-sampling .23053doesnotrepresentservedargmaxbehavior.
+Parentstillnotprovenstrongerthanincumbents;strong16Mpairedcasespending.
+24994 stronger134Mtrainingconfirmedlive; steady~202kSPSat33epochs,finite.
+
+25006 wider32768environmentB300buildcompleted36s. Samezero-teachergraph,
+codecandungroupedexecution; agents/options32768. Preparingfinite33,554,432
+stepprobe:32epochs,12warmup+20measured,1048576stepsperepoch,mb131072,
+replay.25,lr.0001,entropy.001,seed1330. Verified24783parentweights,
+checkedenvironmenttransferforagentcountchange,nolearnerrestore.
+Memoryheadroombaseline88.5/268GBsuggestswiderbatchisworthmeasuring;
+no300kclaimuntilactualend-to-endSPSandVRAMareverified.
