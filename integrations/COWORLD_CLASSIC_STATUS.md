@@ -2920,3 +2920,16 @@ Update, 2026-09-26 teacher05 finite native probe completed
     teacher.05 requires matchingCPU-environment build; script constructs
     target configuration and verifies checkpoint identity. Noovernight
     extension orhostedpublication until learning evidence is reviewed.
+
+Update, 2026-09-26 probe archived and held-out job submitted
+  *23613/23576 exact containers absent. Archiveverified onmetta0:
+    device-context-teacher05-pilot-23613-and-failed-23576.tar.gz SHA256
+    6211cf44ab0ea4eadf36fb3db68dae8ef00c221dc904f8b43126c858f5bd2b0b.
+    Contains checkpoints,trainingrecord/initialization,logs/GPUcsv and
+    pinned external launcher/run-control source. No Codex archive changes.
+  *Submitted23675 teacher05 heldout Expander comparison. Expectedparent
+    checkpoint1f0ee38cdee14d23cc2a54e0cfd92e27b417016b996f30aae3512aa78b2a3d4f.
+    Source23613; seed1101/eight1024-game batches. Output
+    /var/tmp/relh-generals-recovery/device-context-teacher05-eval-23675.
+    Nextrevalidate23675 andreadquality beforelongertraining. Goalactive;
+    currenttraining125,203SPS, target300k stillunmet. No hostedrelease.
