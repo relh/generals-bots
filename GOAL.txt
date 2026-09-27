@@ -3303,3 +3303,21 @@ Verified original2Bcheckpoint+learner archive
 SHA256 `dd48974acbdc4a49b3b65d3bdc16c1c241c9d3ce205c4a4cb99277a2bbcdef83`.
 2B validation25833 first two opponents: Expander0W505L7D,Sentinel0W505L7D;
 mixed still running. Original25600 remains live,1h17m. No hosted writes.
+
+
+### Original2B frozen evaluation completed
+
+25833 authoritative Slurm COMPLETED,ExitCode0:0. Snapshot2,013,265,920steps:
+Expander0W505L7D,Sentinel0W505L7D,mixed0W507L5D. Zero wins among1,536cases.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-2b-validation-25833.tar.gz`
+SHA256 `b2a1e6248fd240c768629423bbf20e6d5deb1e816294e036c3e063eccb6028fa`.
+Only aggregate strength claims here;2Bpaired arrays not independently compared.
+Original25600 confirmed RUNNING at1h18m53s. Full user-requested training budget
+continues. No new long candidate, hosted writes or champion promotion.
+This goal turn made progress: H32 finite/steady proof, paired negative H32
+quality result, and a new preserved2Bnegative quality result. Goal remains
+active: competitive learning, untouched final held-out, actual hosted matches
+and justified publishing are still unproven. Prior fixture proofs eliminate
+specific forward/backward/PPO-loss errors; they do not prove every integration
+or optimizer path. Longer credit horizon and denser PPO updates alone have
+not produced wins. Avoid duplicating any completed or currently live jobs.
