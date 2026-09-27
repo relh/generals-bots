@@ -3485,3 +3485,27 @@ only training shapingdiscountchanged. Hostedstrength/startupstillunproven.
 AGENTS nowrequires explicit matching potential/learnerdiscounts beforetraining.
 Goalactive; nohostedpublication/championchange, overnightbudgetstillconditional
 onactualqualityimprovement ratherthanonlyfiniteSPS.
+
+
+## Final-checkpoint serving readiness prepared
+
+Previous turn classified progress: correctedfinitegate andverifiedarchive,
+controlled134Mcontinuation+afterokheld-outjob. Revalidated25118RUNNING,
+25120PENDING(Dependency). At90epochs native20-interval209305SPS,
+recentGPU88.6%; nofailures orduplicate trainer.
+
+25128 submittedafterok:25118 servingprobe using exactfinalcheckpoint and25098
+build. Requirescompleted134Mrecord, hashescheckpoint, exportsFrozenPolicybundle
+andtestsactualselect_action withcalibratedwirecodec onfourClassicboardshapes.
+MeasuresCPUinference becausehostedplayerisCPU; GPUallocationrequiredperrepo,
+this is a servingprofile andmustnotbeclaimedGPUtraining/held-outperformance.
+Synthetic warm actions+legality/<500ms checks; actualhostedstartupstillseparate.
+SourcesstagedonB300 via independent finiteGPUreader tar --keep-old-files,
+completionverifiedbeforejobsubmission. Nooverwritingarchivedsnapshots.
+ExactsourceSHA:
+neural_codec a92b4f3232903984f76292ccb71590e0d5450255166f9793a826d4986d3d68e1;
+neural_player b2ab08723a4636aa431686ea0c6fd56bacccd02d235df9e091be880048b8968c;
+probe_context_frozen_bundle 3762d8f33e5ea16c67c44c038fc5953c4f629a63cb26eafda0dbe5a538e291eb.
+Newstagingnames *-serving-20260927.py under/var/tmp/relh-generals-recovery.
+Websockets16.0 installs into uniquejoboutputdeps, neverphysicalMetta source.
+Goalactive; awaitcurrenttrainingandheld-outqualitybeforeprivatehostedcandidate.
