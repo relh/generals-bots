@@ -5549,3 +5549,44 @@ The two verified builds, complete runs, GPU samples, held-out outcomes,
 and own-trajectory audit are archived on metta0 in
 `relh-native-raw-land-gain-27090-27109.tar.gz`, SHA256
 `126c2d598ff19faba7f7460b97c111a00c1bb979a377b137b0b8ac79fd11a21e`.
+
+## Two-stage spatial land-gain pilot (2026-09-27)
+
+The existing two-stage tied local Fabric policy provides shared spatial
+features with PufferLib 5 PPO and no teacher loss or hint. Its new bounded
+Classic pilot uses signed land gain reward weight .2 against Random, with
+the same outcome, army/land potential, reward scale .5, and matched
+learner/shaping gamma .999 as the native raw probes. The first build attempt
+27120 stopped before training because the node's `/tmp` ran out of inodes;
+bytes remained free and no protected history was touched. The corrected
+script places build, run, and JAX cache output on `/var/tmp`. A retry 27128
+was stopped during compilation when the pinned launcher still pointed its
+cache at `/tmp`; it left no trainer container. Job 27130 completed its
+4,194,304-step bounded run and saved a finite checkpoint, SHA256
+`f6b053c6fe02da1c98acb0f56462908355e5fc6b2a015a75fc8ab76594a5a543`.
+
+Settings: one B300, 4,096 parallel games in four buffers, 16 CPUs,
+horizon 32, minibatch 16,384, replay .125, LR .0003, entropy 0. After
+compilation and early warmup, the last 16/20-epoch complete-step windows
+including the final save measured 35,378/35,952 SPS. At epoch 31, before
+the save, the 16/20-epoch windows measured 38,936/38,818 SPS; the recent
+60 GPU-utilization samples averaged 8.1%. Rollout environment time was
+about 75% of each epoch. This clears the 30K floor but is far below the
+300K target and leaves the GPU underfed.
+
+The legacy evaluator job 27142 completed only four seeded games and is
+too small for a quality decision. The pinned-source batched frozen
+evaluator 27173 checked 128 held-out Classic lanes (78 unique initial
+states) at seed 1386:
+W/L/D **0/1/127 against Random**. It verified the checkpoint and model
+fingerprints, legal masked argmax actions, map hashes, sides, and opponent
+IDs. No longer training or hosted publication is justified by this result.
+The next candidate should change the action policy and its learning
+curriculum, with an early held-out Random win gate before a 300M-step
+budget. Native flat logits and the current two-feature-per-site spatial
+policy have both failed that gate; increasing steps alone is not a
+supported plan.
+The successful build, complete run, GPU samples, four-game legacy check,
+and 128-game frozen evaluation are archived on metta0 in
+`relh-classic-spatial-land-gain-27130-27173.tar.gz`, SHA256
+`c77eac86d6f80687ac65c6f7c3b9091070f3f3582434ee7e9946f3b80085826f`.
