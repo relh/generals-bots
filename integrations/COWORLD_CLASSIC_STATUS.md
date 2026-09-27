@@ -5214,3 +5214,17 @@ at most 4.77e-6 under the original 2e-5 gradient tolerance. This verifies
 model math, not PPO optimizer math. A bounded 134M diagnostic 26604 started
 after parity. Its result is pending; no multi-billion overnight job was
 released and no champion changed.
+
+Bounded H512/L0 134M job 26604 completed exactly 134,217,728 steps using the
+verified stateless binary and same genuine initializer/seed/settings; 65,536
+envs, H16, batch 1,048,576, minibatch 524,288, one B300. Warmed epochs
+11→127 completed 121,634,816 steps in 285.684 seconds = **425,767
+end-to-end SPS**, GPU utilization typically 94–95%. Final 4,066,304 policy
+parameters finite, SHA 95a3e18dad11b3d8c97537fd7b135d89f391bc84139df7c382ac5226cfc0e095;
+learner SHA 5423c69cf18fbc87273ea032347ea950e844aa5e39781540017edd3dea492a80.
+Compared with initializer, encoder/decoder RMS updates .001545/.002840;
+this establishes optimizer movement, not strength. Selective final artifact
+backup verified login/local, SHA
+c59e093f05d0d00a7bca9cf7119c174cde68aa9f3f1dd9b647da432e9f79eed7.
+Original node checkpoints remain intact. Paired held-out job 26613 is running
+on independent seed 1386; no multi-billion run or hosted promotion released.
