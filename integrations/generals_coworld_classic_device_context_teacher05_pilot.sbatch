@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=relh-classic-device-context-teacher05
+#SBATCH --partition=b300
+#SBATCH --nodelist=metta-fabric-b300-1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=96G
+#SBATCH --time=00:30:00
+#SBATCH --nice=100
+#SBATCH --chdir=/tmp
+#SBATCH --output=/var/tmp/relh-generals-recovery/device-context-teacher05-%j.log
+set -euo pipefail
+
+srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 bash -c '
+set -euo pipefail
+w=/tmp/relh-generals-coworld
+job=$SLURM_JOB_ID
+disk=/var/tmp/relh-generals-recovery
+out=$disk/device-context-teacher05-$job
+mkdir -p "$out"
+printf "%s  %s\n" 54d1e79632e2f0d0c08249367f47579a83231be4c2549b1e07825754af81eac1 \
+    "$disk/launch_puffer_teacher_transfer.py" | sha256sum -c -
+printf "%s  %s\n" f25839647a7690652e13f770e2001825831b522b4a426f269486e790eb08d968 \
+    "$disk/run_puffer_teacher_transfer.sh" | sha256sum -c -
+printf "%s  %s\n" 5a2142491aad55cf4b2961f0c21572c80a80b76760d7ba6a4eccacf194b07371 \
+    "$disk/monitor_coworld_steady_interval_v4.py" | sha256sum -c -
+printf "%s  %s\n" f87f50e4617a8fe7f537ab82b848597a06d1351665f3dc2db7020a075ea899fd \
+    "$disk/puffer-teacher-transfer.py" | sha256sum -c -
+printf "%s  %s\n" 24034ec915b7b91a8a3e9333ce12b3dcbd9e517c0eb7c828cdf500c297d2fc06 \
+    "$w/metta-device-wide-source.tar.gz" | sha256sum -c -
+printf "%s  %s\n" ea5106c8467f10465d39e6a2779cca58fee464f791e1f7f36665041a76357151 \
+    "$w/metta_puffer-device-fused.py" | sha256sum -c -
+printf "%s  %s\n" a38ca81c920091a43f444ea14a8c0decdff0eea2412ddda600f78472b872b799 \
+    "$w/puffer_codec-hintreuse.py" | sha256sum -c -
+printf "%s  %s\n" 41eca0c773fa1fb011d7ce5ff040bbf64d1f6787ce15e3aa7a1c5ae6bb88ba67 \
+    "$disk/device-context-teacher05-build-23518/build/puffer" | sha256sum -c -
+python3 - "$disk/device-context-teacher05-build-23518/build/build.json" <<"PY"
+import json, sys
+from pathlib import Path
+config = json.loads(Path(sys.argv[1]).read_text())["config"]
+options = config["python_environment"]["options"]
+assert options["opponent"] == "strong_mixed"
+assert options["teacher"] == "expander_harvester"
+assert options["supervise_teacher"] and options["imitation_weight"] == 0.0
+assert options["expander_hint_features"] and options["prior_hint_features"]
+phase = config["fabric"]["teacher"]["phases"][0]
+assert (phase["ppo_coefficient"], phase["coefficient"], phase["action_mix"]) == (1.0, 0.05, 0.0)
+PY
+python3 - "$w/normalized-clean-pilot-16788/config.json" "$out/config.json" <<"PY"
+import json, sys
+from pathlib import Path
+record = json.loads(Path(sys.argv[1]).read_text())
+record["total_timesteps"] = 8_388_608
+record["initialize"] = {
+    "run": "/recovery/device-context-overnight-22922/run",
+    "checkpoint": "/recovery/device-context-overnight-22922/run/checkpoints/metta_generals/run/0000000335544320.bin",
+    "sha256": "081c142c3ff8b9dceb0462582b1d1e3f9b13c743c73a82e99ce798b6e26e00ca",
+    "allow_teacher_schedule_transfer": True,
+    "allow_published_checkpoint": True,
+}
+record["seed"] = 1316
+record["overrides"].update({
+    "vec.total_agents": 8192, "vec.num_buffers": 1, "vec.num_threads": 1,
+    "base.cudagraphs": -1, "base.checkpoint_interval": 16,
+    "train.learning_rate": 0.0001, "train.ent_coef": 0.001, "train.replay_ratio": 1.0, "train.minibatch_size": 32768,
+})
+Path(sys.argv[2]).write_text(json.dumps(record) + "\n")
+PY
+IFS=, read -r -a allocated_gpus <<< "$SLURM_STEP_GPUS"
+mapfile -t usage < <(nvidia-smi --query-gpu=memory.used,utilization.gpu --format=csv,noheader,nounits)
+gpu=
+gpu_local=
+for i in "${!allocated_gpus[@]}"; do
+    IFS=, read -r memory utilization <<< "${usage[$i]}"
+    memory=${memory//[[:space:]]/}
+    utilization=${utilization//[[:space:]]/}
+    if (( memory < 2048 && utilization < 20 )); then gpu=${allocated_gpus[$i]}; gpu_local=$i; break; fi
+done
+test -n "$gpu"
+echo "allocated_gpus=$SLURM_STEP_GPUS training_gpu=$gpu local_index=$gpu_local"
+name=relh-classic-device-context-teacher05-$job
+cleanup() {
+    kill "${sampler:-}" 2>/dev/null || true
+    docker stop -t 5 "$name" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+trap "exit 143" TERM
+(
+    while true; do
+        date -u +%H:%M:%S
+        nvidia-smi -i "$gpu_local" --query-gpu=utilization.gpu,utilization.memory,memory.used --format=csv,noheader,nounits
+        sleep 1
+    done
+) > "$disk/device-context-teacher05-gpu-$job.csv" 2>&1 &
+sampler=$!
+ln -s "$out/run" "$disk/device-context-teacher05-pilot-$job-0"
+timeout -k 30s 25m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=16 \
+    --ulimit core=0:0 --user "$(id -u):$(id -g)" \
+    -v "$w:/work" \
+    -v "$out:/recovery-output" \
+    -v "$disk:/recovery" \
+    -v /var/tmp/relh-generals-jax-cache:/cache \
+    -v "$w/metta_puffer-device-fused.py:/work/source-normalized-16245/integrations/metta_puffer.py:ro" \
+    -v "$w/puffer_codec-hintreuse.py:/work/source-normalized-16245/integrations/puffer_codec.py:ro" \
+    -v /tmp/relh-generals-gpu/runtime:/work/runtime:ro \
+    -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work \
+    -e HOME=/work -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-normalized-16245:/work/oldsource \
+    -e JAX_LOG_COMPILES=1 -e PYTHONFAULTHANDLER=1 -e JAX_COMPILATION_CACHE_DIR=/cache \
+    relh-generals-b300:20260923b bash /recovery/run_puffer_teacher_transfer.sh train \
+    --config /recovery-output/config.json \
+    --build /recovery/device-context-teacher05-build-23518/build \
+    --output /recovery-output/run > "$out/container.log" 2>&1 &
+pid=$!
+start=$(date +%s)
+status=0
+while kill -0 "$pid" 2>/dev/null; do
+    sleep 15
+    now=$(date +%s)
+    if ! python3 "$disk/monitor_coworld_steady_interval_v4.py" \
+        "$disk" "$job" "$((now-start))" device-context-teacher05 600 262144; then
+        echo "Device bridge smoke stopped by startup or progress guard" >&2
+        status=1
+        cleanup
+        break
+    fi
+done
+wait "$pid" || status=1
+test -f "$out/run/completed.json" || status=1
+exit "$status"
+'

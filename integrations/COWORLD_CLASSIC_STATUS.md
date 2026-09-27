@@ -2834,3 +2834,89 @@ Update, 2026-09-26 live native hour-boundary guard verified
     job, notonlysyntheticunitcoverage. Both23277/23278revalidatedlive,
     heldoutlogsadvancing;335Mstrengthcomparisonsremainpending.
     Nextreadbothresults beforepolicyrecipechanges orhostedsubmission.
+
+Update, 2026-09-26 overnight plateau and verified shutdown
+  * 335M held-out results completed: 23277 Expander perf .489502,
+    score -.020996; 23278 Sentinel perf .322266, score -.355469.
+    Expander .490173 at134M and Sentinel .329346 at67M were better.
+    Same seed1101 and eight1024-game batches; v11 remains stronger.
+  * Archived latest469,762,048 policy/learner/identity/training record
+    before scancel22922. Policy SHA256
+    7dd4031b2d2b7cc65c64cca3afea3c7b284ca66deac51fb8b7cc6eb491d40ca2.
+    Archive device-context-overnight-22922-469m-checkpoint.tar.gz SHA256
+    81668daaaed4232b3d4f8fa0f80aed6fcb81badcaf210d2ffc6ef20622ccd28d.
+  * 22922 canceled intentionally; squeue empty and exact named Docker
+    container absent. Final progress epoch1929, about505.68M new steps;
+    20epoch124,830 SPS, recentGPU83%. Do not restart the flat teacher1 recipe.
+  * Whole stopped run and335M evals archived/verified onmetta0:
+    device-context-overnight-22922-stopped-and-335m-evals.tar.gz SHA256
+    e8a305a0c4b3f7f5c0f80f977d9726f0e8234068144e99ff16baa0aa3a50d482.
+  * Next: teacher coefficient .05, fresh optimizer, exact model/transport
+    transfer from evaluated335M checkpoint. Isolated Metta worktree
+    metta-generals-teacher-transfer based39263f7d84; validate constraints,
+    full package tests and scoped lint before finite B300 probe.
+    Target300k trainingSPS still unmet; best prior276,596. No hosted release.
+
+Update, 2026-09-26 lower-teacher recipe built
+  * B300 build23518 completed; no named container remains. Teacher .05
+    with unchanged graph/environment/transport;22956 state words.
+    BinarySHA41eca0c773fa1fb011d7ce5ff040bbf64d1f6787ce15e3aa7a1c5ae6bb88ba67;
+    modelSHA3f75f84ede08faa047817b7ddab83ff4298c279f43c78c6d22bbebb26a81088b.
+  * New constrained transfer flags permit schedule-only changes and
+    verified published checkpoints from interrupted runs. The historical
+    v11 exception remains exact. New seven schedule tests passed; full
+    corrected package suite pending. Edited-file Ruff check/format pass.
+    Required Bazel fixer attempted but dependency download timed out.
+  * Prepared finite8,388,608-step pilot,8192env/horizon32/minibatch32768,
+    replay1,float32,teacher .05 and entropy .001 (prior .0001),seed1316.
+    Warmstart evaluated335M checkpoint, fresh optimizer. Not launched yet.
+    Runtime puffer.py overlay SHA256
+    f87f50e4617a8fe7f537ab82b848597a06d1351665f3dc2db7020a075ea899fd.
+    Goalactive; no champion/publication proof.
+
+Update, 2026-09-26 verified transfer and finite probe submitted
+  * Corrected full Metta package suite441passed in539.27s; edited-file
+    Ruff check/format pass. Bazel fixer remains download-timeout, notpassed.
+    Transfer implementation committed/pushed166ab703a9 on
+    relh/generals-teacher-transfer. Runtime overlay digest unchanged.
+  * Build23518 archive verified SHA256
+    8780619652a1b88320a468559c20496a5e07f211f6473addfe4c87d7caaea7cc.
+  * Submitted only finite teacher05 pilot23576. Read its final/native
+    logs before claiming throughput or launching long training. Held-out
+    eval script prepared, notsubmitted; requires completed checkpoint.
+    No hostedpublication, no duplicateovernight.
+
+Update, 2026-09-26 initialization fingerprint issue corrected
+  *23576 stopped before training: environment fingerprint hashes every
+    Python file inmetta-training; mounting modifiedpuffer.py inside that
+    package changed fingerprint. No SPS or learning result from23576.
+  *Corrected staging loads the verified run-control module from/recovery
+    through launch_puffer_teacher_transfer.py; archived package and all
+    environment execution files remain unchanged. Actual CLI --help smoke
+    passed. LauncherSHA54d1e79632e2f0d0c08249367f47579a83231be4c2549b1e07825754af81eac1,
+    runnerSHAf25839647a7690652e13f770e2001825831b522b4a426f269486e790eb08d968.
+    No environment hash bypass or build-manifest mutation. Retry submitted
+    onlyafter23576terminal; inspect newjobbeforeanotheraction.
+
+Update, 2026-09-26 corrected finite probe running
+  *23613 authoritativeRUNNING at1:32, native monitor reachedepoch6.
+    Environment initialization passed unchanged fingerprint through the
+    external run-control launcher. Onlythis finite trainingjob isactive.
+    Wait20steadyepochs beyond12warmups for throughput qualification.
+    Target8.39Msteps; heldoutscriptnowreferences23613, notfailed23576.
+
+Update, 2026-09-26 teacher05 finite native probe completed
+  *23613 completed8,388,608 additionalsteps. SingleB300,8192env,
+    horizon32,minibatch32768,replay1,float32. After12warmup epochs,
+    epochs12->32:5,242,880 steps in41.875s =125,203 end-to-endSPS.
+    Consoleuptime63.223->105.098s; clears30k, below300k target.
+    GuardfinalGPUmean60s76.2%; includescompletion idle samples.
+  *FinalcheckpointSHA256
+    1f0ee38cdee14d23cc2a54e0cfd92e27b417016b996f30aae3512aa78b2a3d4f.
+    Publishedcheckpoint/schedule-only transfer executed successfully with
+    original environment fingerprint and fresh optimizer. Notfullresume.
+  *Nextarchive23613,failed23576 and runtime source, then submit distinct
+    held-out Expander comparison,seed1101/eight1024-game batches. New
+    teacher.05 requires matchingCPU-environment build; script constructs
+    target configuration and verifies checkpoint identity. Noovernight
+    extension orhostedpublication until learning evidence is reviewed.
