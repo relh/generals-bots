@@ -4579,3 +4579,18 @@ Both pending at firstpoll, no failures/completions yet. This is runtime smoke,
 not statistically powered skill proof; noleague submission/champion change.
 CPUimage proof preservedlogin archiveSHA
 477865fbf4b54a4aed0db407216cedcabc06c47681e737a93d34da982ec231a1.
+
+
+536M paired26107 terminal (absent fromsqueue),all6evaluation records recovered
+and verifiedarchiveSHA6534898a562432d777e4b5dda0f90b2dc8ec4b47259372861a662f9a13f54578
+on loginandlocal. Seed1361,1024cases/opponent,634uniqueinitialstates; exact
+initialhash/side/opponent arrays equal before pairedanalysis.33M→536M W/L/D:
+Expander449/370/205→451/371/202;Sentinel249/654/121→247/648/129;
+mixed405/443/176→407/442/175. Mapcluster10000resamples seed1362 scoreΔ/95%CI:
+Expander .0009765625/[-.01091297,.01188148],6better4worse1014same;
+Sentinel .00390625/[-.00934689,.01585768],10/6/1008;
+mixed .0029296875/[-.00973710,.01491181],8/5/1011.
+No statistically significant gain/regression, unchanged majorityoutcomes.
+Long26068 continues; prepared next1,073,741,824-newstep qualitycheck with fresh
+seed1363,notyet submitted. Hostedseat1request now4submitted actualjobIDs,
+no completed/failed at latestpoll; runtime proof remains pending.
