@@ -4158,3 +4158,53 @@ Only validation follows this probe; no replacement long run yet.
 Validation25831 submitted with afterok:25828 dependency. This schedules only
 frozen evaluation after successful completion/finite checks, not another
 long training job. Check scheduler/artifacts before any retry.
+
+
+## 2026-09-27 H32 finite and throughput result
+
+Probe25828 COMPLETED134,217,728new steps; all1,213,184native parameters finite.
+Final checkpointSHA256 `366c935b2c576775d4f579072b65bda1f38465d79abfd2a3adff6c812883e94c`.
+OneB300,65,536agents,H32,batch2,097,152,mb65,536,replay4,lr.003,entropy0,
+gamma/shaping_gamma.999, hidden128/4layers. Same3:1opponents with8,192lanes
+per ID/side. Measured epoch40→60 after40warm epochs (following the first
+map-pool refresh):41,943,040steps/122.502s=342,386.573end-to-end SPS.
+GPU96.6% late,211.2/268GB VRAM. Excludes anomalous finalepoch64interval.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-horizon32-probe-25828.tar.gz`
+SHA256 `d3bd4521dce8ad60757f4c1f627298ffee3bb72ef6dde97405b7f555bccfd5c1`.
+Passes30k/300kthroughput and2.6Mfinite gates; these do not prove quality.
+
+Validation25831 RUNNING from this final identity. First512held-out Expander
+cases completed0W502L10D; Sentinel/mixed remain pending. No early claim of
+quality improvement. Native mingru_forward_train source inspection also found
+initial state read-only; scan next_state is separately allocated, so replay
+does not overwrite the saved starting state. This is source inspection, not
+an additional end-to-end fixture. Original25600 at epoch1920 (~2.013B),
+406K current dashboard SPS. Do not duplicate active jobs or promote a policy
+without held-out and hosted improvement. Goal active.
+
+
+### H32 validation terminal result
+
+25831 COMPLETED: Expander0W502L10D, Sentinel0W502L10D, mixed0W501L11D,
+512cases/opponent, same held-out seed1104 and313distinct initialstates.
+No wins among1,536games; no stronger-policy claim or longer-sequence long run.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-horizon32-validation-25831.tar.gz`
+SHA256 `68a5ed226db08d01e249ae2e6cc177b6ca4eb6c010b76b3fa3db8f1c4ffe71bc`.
+
+Original long run now has actual epoch1920 snapshot2,013,265,920new steps,
+SHA256 `30ce76c9efe03e6fe4120b9ebecc38286e9a9a4d69814605af1d9bb07191396b`.
+Submitted frozen2B validation25833 from that identity on the same1,536
+held-out cases. Existing original25600 keeps training; no duplicate long run.
+Inspect this evaluation before changing the learning setup. Longer horizon
+and32xupdate density alone have not recovered wins. Goal active.
+
+H32 paired arrays independently compared from SHA-verified downloaded archives:
+initial state hashes, sides and opponent IDs exactly match1Bparent for each
+opponent. Outcome changes (better/worse/same): Expander6/5/501,Sentinel8/1/503,
+mixed7/3/502. All changes are loss/draw transitions; neither policy won any
+cases. No competitive-strength claim follows from the small draw changes.
+Verified original2Bcheckpoint+learner archive
+`/home/metta/relh-generals-puffer/native-policy-2b-checkpoint-25600-epoch1920.tar.gz`
+SHA256 `dd48974acbdc4a49b3b65d3bdc16c1c241c9d3ce205c4a4cb99277a2bbcdef83`.
+2B validation25833 first two opponents: Expander0W505L7D,Sentinel0W505L7D;
+mixed still running. Original25600 remains live,1h17m. No hosted writes.
