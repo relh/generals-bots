@@ -3133,3 +3133,19 @@ Replacement 24609 uses a fixed build-24499 script and default sbatch environment
 export (no explicit variable export). Same finite training recipe, no duplicate
 trainer. Metta commit 0b0979470e now pushed successfully with isolated-worktree
 hooks disabled after the unconfigured CLI pre-push hook failed. No history edits.
+
+
+### Calibrated PPO 24609 completed successfully
+
+One B300, 16,384 environments, horizon 32, minibatch 131072, replay .25,
+float32. 16,777,216 new steps completed, all gradients finite. After 12 warmup
+epochs, 20 epochs = 10,485,760 steps / 40.155 seconds = 261,132 SPS.
+Native uptime 73.958 -> 114.113 seconds. Recent 60s GPU mean at epoch 30
+80.9%; native final GPU 86%, VRAM 88.5/268G. Native final environment 1.329s
+65%, inference .445s 22%, optimization .240s 11%, misc .025s 1%.
+Entropy now 1.453 (previous saturated recipe ~0). This proves exploration and
+finite training, not stronger match performance or the 300k target.
+Final checkpoint d324f221ef45facebd6c11c165fa93d03a0d77dabdf534c2dc9e9f05ec902412.
+24609 scheduler COMPLETED, exact training container absent. Preserve checkpoint
+and archive before future replacement. Prepared held-out and same-input paired
+audit use fixed job IDs, avoiding Slurm explicit-export retrieval failure.
