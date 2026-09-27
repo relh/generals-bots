@@ -713,7 +713,7 @@ class BatchedGeneralsPufferEnvironment:
             weights.append(moving.astype(jnp.float32))
         return jnp.concatenate((
             values, probabilities.astype(jnp.float32), masks.astype(jnp.float32),
-            jnp.stack(weights, axis=1), jnp.zeros((self.parallel_games, 2), dtype=jnp.float32),
+            jnp.stack(weights, axis=1), jnp.zeros((values.shape[0], 2), dtype=jnp.float32),
         ), axis=1)
 
     def reset_device(self, seed: str):
@@ -833,8 +833,10 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
     def __init__(self, *, context: EnvironmentContext, parallel_games: int = 16, **options):
         if context.mode != "train":
             raise ValueError("Self-play is a training environment; use the one-seat adapter for evaluation")
-        if options.get("teacher_rollouts") or options.get("supervise_teacher") or options.get("sparse_teacher"):
-            raise ValueError("Self-play requires policy actions in both seats without teacher targets")
+        if options.get("teacher_rollouts") or options.get("sparse_teacher"):
+            raise ValueError("Self-play requires policy actions in both seats without replay targets")
+        if options.get("supervise_teacher") and not options.get("prior_hint_features"):
+            raise ValueError("Self-play teacher targets require the public signed action hint")
         if options.get("audit_native_actions"):
             raise ValueError("The one-seat native-action audit does not apply to self-play")
         self._reward_options = {
@@ -849,6 +851,11 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
         if not self.base.factorized_actions:
             raise ValueError("Self-play requires factorized move and split actions")
         self.spec = self.base.spec.model_copy(update={"agents": 2 * parallel_games})
+        if self.base.supervise_teacher:
+            self._self_transport = jax.jit(lambda values, masks: self._device_transport(
+                values, masks,
+                jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values),
+            ))
         self._self_sides = jnp.arange(2, dtype=jnp.int32)
         self._observe_both = jax.jit(jax.vmap(
             lambda state: jax.vmap(lambda side: self.base._observe(state, side))(self._self_sides)
@@ -911,7 +918,11 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
     def reset_device(self, seed: str):
         self._reset_states(seed)
         values, masks = self._observe_both(self.states)
-        return values.reshape((self.spec.agents, -1)), masks.reshape((self.spec.agents, -1)).astype(jnp.uint8)
+        values = values.reshape((self.spec.agents, -1))
+        masks = masks.reshape((self.spec.agents, -1))
+        if self.base.supervise_teacher:
+            values = self._self_transport(values, masks)
+        return values, masks.astype(jnp.uint8)
 
     def step_device(self, actions):
         expected = (self.spec.agents, len(self.spec.action_sizes))
@@ -929,9 +940,13 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
                 self.base.pool, _ = self.base.env.reset(
                     jax.random.fold_in(self._pool_seed, self._pool_generation)
                 )
+        values = values.reshape((self.spec.agents, -1))
+        masks = masks.reshape((self.spec.agents, -1))
+        if self.base.supervise_teacher:
+            values = self._self_transport(values, masks)
         return (
-            values.reshape((self.spec.agents, -1)),
-            masks.reshape((self.spec.agents, -1)).astype(jnp.uint8),
+            values,
+            masks.astype(jnp.uint8),
             rewards.reshape((self.spec.agents,)).astype(jnp.float32),
             jnp.repeat(done, 2).astype(jnp.float32),
             False,

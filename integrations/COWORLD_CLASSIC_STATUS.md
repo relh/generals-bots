@@ -5924,3 +5924,230 @@ No Classic job remains active. Standard compilation is now a viable route
 for larger Fabric graphs, but this weak-prior PPO recipe fails held-out
 play. A stronger model and learning curriculum must pass a small quality
 gate before another 300M-step proposal.
+
+## Width-four supervised hint curriculum (2026-09-27)
+
+A bounded one-seat Classic probe removed the direct public-hint logit prior
+from the standard-compiler two-stage spatial graph and enabled dense
+ExpanderHarvester action targets. The first 4,194,304 steps used teacher
+actions and cross-entropy only; the next 4,194,304 switched to PPO with a
+0.1 teacher coefficient. Job 27678 compiled without taking a step before its
+300-second startup guard and stopped without a checkpoint. Its otherwise
+identical 480-second retry, 27689, completed all 8,388,608 steps on one B300.
+The graph had four site features, eight global features, and one-cell context.
+The environment used 8,192 games, a balanced three-Expander/one-Sentinel
+mix (3,072 Expander and 1,024 Sentinel games on each player side), a 64-map
+pool, and matched learner/shaping gamma 0.999. The learner used horizon 32,
+minibatch 16,384, replay 0.5, LR 0.001, and one process/buffer/thread.
+The warmed epoch-16-to-32 interval completed 4,194,304 agent steps in
+28.662 seconds: **146,337 end-to-end SPS** for the one process and aggregate,
+including rollout and optimization. The final dashboard reported 88% B300
+utilization and 36.5 GiB VRAM. Model SHA256 is
+`56b8fa699a95ffe3c1d562ffc4f1b3c920c4e8b1583d68da342965796449e658`.
+
+Frozen masked-argmax quality job 27703 used 128 held-out seed-1386 games per
+opponent and checkpoint. The 4.19M imitation checkpoint scored **0/128/0**
+W/L/D versus ExpanderHarvester and **0/124/4** versus Sentinel. The 8.39M
+PPO checkpoint scored **0/128/0** versus ExpanderHarvester and **0/126/2**
+versus Sentinel. Checkpoint SHA256s are respectively
+`f0fc88525d4fbdcd69b4e9c9b2fb980bfae93aea1a558be31823048fb049fc27`
+and `90862e375e31a5d1c0a1e02bbfdf399c9ad6c3ac70f8bdf95ae6a3d7ea4ddafc`.
+No hosted test or publication followed.
+
+Matched-state hint audit 27728 forced the scripted public action for 128
+turns on the same 64 held-out games, then measured the frozen logits before
+intervention. Of 8,192 decisions, the imitation checkpoint selected the
+hinted move 1,497 times (18.3%). After PPO this increased to 1,873 (22.9%).
+The later pass-breakdown audit 27741 showed only 383 teacher passes: the
+imitation actor passed 295 times and chose a move for all 7,809 teacher
+move decisions, but matched the exact move on only 1,202 of them. The PPO
+actor matched 1,578 of those 7,809 moves. Both actors matched the teacher's
+split on every non-pass decision. The first audit's raw two-index equality
+excluded passes because their hint split is a -1 placeholder; its 1,202 and
+1,578 values are not semantic joint-action agreement. Thus the failure is
+wrong move selection, not an always-pass policy. These are diagnostic teacher-driven
+states, not independent games or hosted performance. The complete training,
+quality, and first audit archive SHA256 is
+`3c4240765bfe4d8a5910815bca2ad645bfab945d9fa79f6432f21695a02dd173`;
+the pass-breakdown supplement SHA256 is
+`5289071b7e7fe4101e9c3e5fec0fbb5d5349c5fbac5e5313dfa8701631035ae5`.
+Both archives match on metta0 and locally. GPU sample file SHA256 is
+`ee738e026134ed7bc620700dc3cb59d8e2ad19c3b76a839aa695120f8bdfae5a`.
+
+The bounded 32M-step follow-up, job 27745, used the same graph and strong-mix
+settings but a weak 0.5 direct hint connection. It devoted 16,777,216 steps
+to teacher supervision and 16,777,216 to PPO. Model SHA256 was
+`2f075e32c9979c3a550608f015fcef401f1ac1b8b50d02bc67b7a4636c163e8d`.
+The exact warmed PPO epoch-64-to-128 interval completed 16,777,216 steps in
+127.417 seconds: **131,672 end-to-end SPS** on one B300 for its one process
+and aggregate. The final dashboard showed 89% GPU utilization and 36.5 GiB
+VRAM; the recent active-training samples averaged about 84%. The 30K SPS
+guard passed throughout. Effective learner/shaping gamma remained 0.999,
+with 8,192 games, horizon 32, minibatch 16,384, replay 0.5, and LR 0.001
+annealed across the run.
+
+Frozen quality job 27760 evaluated both checkpoints on the same 128 held-out
+seed-1386 Classic games per opponent (78 distinct initial states). The 16.78M
+imitation checkpoint scored ExpanderHarvester **7/101/20** and Sentinel
+**2/121/5** W/L/D. The 33.55M PPO checkpoint improved to **50/54/24** and
+**32/83/13**. The previous public-hint baseline on this exact set scored
+**63/52/13** and **40/81/7**, so this candidate has not beaten it.
+Checkpoint SHA256s were
+`509c37663c726644015f52fa9a9894e1e51b7b7e3515977d301d0ee56f9bd2e5`
+and `9acbf09f3b537550a4abbf3c9881aae2176884452ef865c4779fb2a39c317fd4`.
+Paired outcomes against the baseline were unchanged in 77/128 Expander and
+92/128 Sentinel games; the PPO checkpoint improved 19/16 and worsened 32/20
+games respectively. The paired score differences are -0.1172 and -0.0781;
+these 128-game samples do not establish the sign of a small true difference.
+
+Matched-state GPU audit 27764 used 8,192 early held-out teacher-driven
+decisions. The imitation checkpoint matched the hinted move 7,950 times
+(97.0%), rising to 8,073 (98.5%) after PPO. All 383 teacher passes were
+matched at both checkpoints, and every non-pass teacher split was matched.
+The earlier audit implementation's raw joint count excluded passes because
+its hint split used a -1 placeholder; the meaningful move agreement and
+non-pass split counts above are unaffected. Full-game weakness despite 97%
+early move agreement shows that small action errors accumulate across the
+1,200-turn game. The archive containing the 32M training, build, held-out
+results, action audit, GPU samples, and stopped setup log has SHA256
+`7d014215bfc3d389d31dca856d4de5ee211d863b2a1f42b851aa3cecc6c148f3`;
+login and local copies match. No hosted test or publication followed.
+
+A longer-budget learning-curve test completed as job 27798: the same verified
+build, seed, curriculum, strong-mix environment, and settings, with the total
+budget raised to 134,217,728 steps. This is a fresh run because the native
+learner cannot exactly resume without restorable environment snapshots; its
+longer LR annealing schedule also differs from the 32M run. It will provide
+33.55M, 67.11M, and 134.22M checkpoints for paired held-out evaluation.
+The initial launcher attempt 27786 ended before any training due to shell
+quoting; dependent quality 27787 stopped at its completed-run check. Retry
+27791 also stopped before training because its Docker build path was wrong;
+dependent quality 27793 was canceled. The corrected launcher verified the
+prior build and completed 134,217,728 agent steps in 18m35s, with no
+nonfinite failure. The final warm interval held about 132,000 end-to-end
+SPS on one B300, with approximately 83% GPU utilization. Quality job 27799
+is evaluating the three checkpoints on held-out maps. At 33.55M steps the
+policy scored 58/54/16 W/L/D versus ExpanderHarvester and 38/81/9 versus
+Sentinel. Both the 67.11M and 134.22M checkpoints scored 63/52/13 and
+40/81/7, exactly the public-hint baseline's aggregate results. Each
+checkpoint's 128 per-game outcomes for each opponent also match the baseline
+byte for byte, so the extra PPO training has produced no measured gain. The
+final checkpoint SHA256 is
+`c6cc6db63b3b5855d1ab7f38b99baf8ed25cfcb51f2c34819a43a1d58b51fe3a`.
+The 33.55M and 67.11M checkpoint SHA256s are
+`25c6512a1f01434d7a5a395210be028bc03c6d694325d987c99ea0abf07fb96a`
+and `96c94c9486905963f36f3bd641aa5042fefefd4d8756be0c66d63197c5511935`.
+The complete training/checkpoint, quality, GPU-sample, and failed setup logs
+are archived locally and on metta0 as
+`relh-classic-prior05-134m-27798-27799.tar.gz`, SHA256
+`821f76536449e75783f7c8888b7e5ad8b91637634ab4f2dc38fdd5379e8c85d1`.
+These are bounded tests and give no basis to publish this policy.
+
+A two-seat teacher transport change is ready for a separate self-play pilot.
+The GPU contract smoke job 27827 checked 32 turns and 8 seats on one B300:
+all public-hint teacher targets were legal and matched each seat's own hint,
+including 215 non-pass labels and 108 distinct paired-seat actions. It
+finished in 15 seconds. Earlier smoke launches 27821, 27823, and 27825
+stopped at configuration validation without training. The successful audit
+log is archived locally and on metta0 with SHA256
+`fbfc305f86f0758c5e8cb846f49479e7dc51cd4315b32d011e0088d28c8fa5fc`.
+The bounded H128 teacher-plus-self-play pilot completed as job 27857 after
+quality job 27799 finished. It used 4,096 two-seat games (8,192 policy
+seats), the same width-four policy with 0.5 public-hint prior, a 16.78M-step
+teacher phase followed by 16.78M PPO steps, minibatch 32,768, replay 0.5,
+and matched learner/shaping gamma 0.999. Its model SHA256 was
+`a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd`.
+XLA compilation took several minutes, including 236 seconds to trace a
+128-step gradient graph, but the run completed all 33,554,432 steps without
+nonfinite gradients. Warmed epochs 16–32 completed 16,777,216 agent steps
+at **126,562 end-to-end SPS** for its one process and aggregate, including
+rollout and optimization. Recent B300 utilization was about 91%, with
+103.9 GiB VRAM. Quality job 27876 tested the 16.78M and 33.55M
+checkpoints on the same held-out map/opponent sets. The teacher checkpoint
+scored only 4/117/7 W/L/D versus ExpanderHarvester and 1/125/2 versus
+Sentinel. The final PPO checkpoint scored 9/99/20 and 6/118/4. These are
+well below the public-hint baseline; the recipe should not be extended.
+The checkpoint SHA256s are
+`35cb44f0ddcb182d88fce2bb05acc13c9eeaa2c9a06fa58d345218fe7ff0ca20`
+and `bc1cbebfce3e41c22a4f9795df2ca980e8b360f1921f34d08804232c58c04ee8`.
+Matched-state hint audit 27905 measured 8,192 early held-out teacher-driven
+decisions for each checkpoint. The teacher checkpoint matched the hinted
+move 7,047 times (86.0%); the PPO checkpoint matched 7,924 (96.7%). All
+383 teacher passes and all 7,809 labeled splits were matched at both
+checkpoints. The poor full-game outcomes despite higher late agreement
+suggest that rare move errors and later state distribution matter; this
+fresh self-play initialization is not ready for a long run. The complete
+build, training, quality, audit, and GPU sample archive is stored locally
+and on metta0 as `relh-classic-selfplay-teacher-h128-27857-27905.tar.gz`,
+SHA256 `9ef8e708e16b30df079aac00c5724fe1906624dc691a68392f735ddd39e168f0`.
+
+The stronger one-seat 134.22M checkpoint was tested for policy-only transfer
+into the two-seat build before another run. GPU parity job 27930 applied its
+exact checkpoint bytes to both builds and produced bit-for-bit identical
+1,767-logit outputs and masked actions on 16 held-out observations. The
+builds share 22,956 policy state words; their different model SHA256s reflect
+the teacher phase configuration, while the policy parameter layout agrees.
+A local, pinned Puffer runtime copy adds a narrow transfer exception only
+for source model `2f075e32...`, target model `a5a48d16...`, and checkpoint
+`c6cc6db6...`; it leaves the shared runtime untouched. GPU guard job 27954
+accepted that exact pair and rejected altered checkpoint, model, and factory
+identities.
+
+Bounded B300 initialized self-play pilot 27957 completed with 4,096
+two-seat games, horizon 128, minibatch 32,768, replay 0.5, fresh optimizer,
+LR 0.0003, entropy 0.003, and learner/shaping gamma 0.999. Its first
+16.78M steps reinforce the public teacher; the next 16.78M use PPO with a
+0.01 teacher coefficient. The recorded `initial-policy.bin` SHA256 is exactly
+the parent checkpoint's
+`c6cc6db63b3b5855d1ab7f38b99baf8ed25cfcb51f2c34819a43a1d58b51fe3a`.
+The run completed all 33,554,432 steps in 5m48s without a nonfinite failure.
+Warm epochs 16–32 measured **127,483 end-to-end agent SPS** for one process
+and aggregate; recent B300 utilization was approximately 91%, with
+103.9 GiB VRAM. Held-out quality job 27960 finished on the same 128
+seed-1386 games per opponent. Both the 16.78M and 33.55M checkpoints scored
+**63/52/13** W/L/D versus ExpanderHarvester and **40/81/7** versus Sentinel.
+The final checkpoint's per-game outcomes were byte-identical to the public-hint
+baseline for all 256 games. Thus this policy-only transfer preserved the
+baseline but its bounded self-play updates produced no measured gain. Their SHA256s are
+`640f1b54180e25d35d442eab44ef2fdd19d24e37f537c996a74aeff805bce9e0`
+and `e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf`.
+The complete initialized run, checkpoints, quality outputs, and logs are
+archived locally and on metta0 as
+`relh-classic-selfplay-initialized-h128-27957-27960.tar.gz`, SHA256
+`8c26d0a568b32bea7f8a7c1f67d903ad45e4f3d1e045168aee97b382c44fc8ac`.
+No longer self-play job was released from this result.
+
+Action audit 28020 used 64 independent seed-1387 held-out maps for 128
+teacher-driven turns (8,192 active decisions). The initialized final actor
+matched the public hint's move **8,192/8,192** times, including all 383
+passes, and matched all 7,809 labeled splits. Mean assigned probability
+for the hinted move was 8174.36/8192 = 99.78%. Its actor therefore has
+no measured autonomous move change even though PPO updated its weights.
+The complete audit and log archive SHA256 is
+`c9709d2eb6ff2d3e7a046932d0727f394a4ac971653982675fd0b99973eb29d0`;
+local and metta0 copies match. The exact action agreement, together with
+the byte-identical full-game results, is the concrete reason to stop this
+recipe before a 300M+ continuation.
+
+The live Classic 1v1 leaderboard on 2026-09-27 still placed Daveey's
+`daveey-grl:v7` first at 2230.807 MMR; current champion UUID
+`76b0a083-f0a4-4ec7-9811-038349266633` was verified from league
+membership. Earlier recorded requests against a "public leader" pinned
+Aaron's policy, not Daveey's. Two private eight-episode Classic XP requests
+were therefore created against the exact Daveey version, with our existing
+hosted native 33M Puffer5 candidate UUID
+`f93478a4-e221-41fb-85f7-eff862b892c8` in each seat: seat 0
+`xreq_579ae03c-ee1c-43cd-ba84-848475a1af79`, seat 1
+`xreq_e921049f-7879-4c5a-b54c-461c1fc7005b`. Both were running at
+first readback with eight child episodes each and zero failures. Idempotency
+keys are `relh-native-h512-33m-vs-daveey-grl-v7-20260927-seat{0,1}`.
+Both requests finished with 16/16 completed episodes and zero failures.
+Our candidate scored **0/8** wins from seat 0 and **1/8** from seat 1,
+**1–15 combined** against Daveey, with no draws. Every child episode pinned
+the verified candidate and Daveey UUIDs in the expected seat order and used
+the 1200-turn Classic game config. The request bodies, completed responses,
+and per-seat score summary are archived locally and on metta0 as
+`relh-native-h512-33m-vs-daveey-grl-v7-20260927.tar.gz`, SHA256
+`dd550c72b60df5f0a9c579639bdefe16013a3e7df207168ce1b7c9cc0ef48ce2`.
+These requests quantify the hosted gap; they do not reveal Daveey's recipe or
+justify champion promotion. No upload or champion change followed.

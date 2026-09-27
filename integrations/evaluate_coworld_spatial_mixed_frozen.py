@@ -16,7 +16,7 @@ from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
 from integrations.puffer_codec import hinted_replay_indices
 
 
-def legacy_actions_many(policy: FrozenPolicy, seats: list[int], observation) -> np.ndarray:
+def legacy_actions_many(policy: FrozenPolicy, seats: list[int], observation, *, return_logits: bool = False):
     """Batch the pinned legacy Fabric forward pass used by the training build."""
     values = np.asarray(observation.values, dtype=np.float32)
     masks = np.asarray(observation.action_masks, dtype=bool)
@@ -44,7 +44,8 @@ def legacy_actions_many(policy: FrozenPolicy, seats: list[int], observation) -> 
             raise ValueError("Every frozen-policy head requires a legal action")
         heads.append(np.argmax(np.where(legal, logits[:, offset : offset + size], -np.inf), axis=1))
         offset += size
-    return np.stack(heads, axis=1).astype(np.int32)
+    actions = np.stack(heads, axis=1).astype(np.int32)
+    return (actions, logits) if return_logits else actions
 
 
 def main():
@@ -70,6 +71,8 @@ def main():
     )
     parser.add_argument("--force-hint-move", action="store_true", help="Diagnostic: replace the move head")
     parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the split head")
+    parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
+    parser.add_argument("--audit-turns", type=int, help="Stop a hint audit after this many turns")
     parser.add_argument(
         "--opponent", choices=("random", "expander_harvester", "sentinel", "strong_mixed"), required=True
     )
@@ -78,6 +81,8 @@ def main():
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
     assert not args.native and args.training_pool_episode is None
+    assert args.audit_turns is None or (args.hint_audit and args.audit_turns > 0)
+    assert not args.hint_audit or (args.force_hint_move and args.force_hint_split)
     record = json.loads((args.run / "training.json").read_text())
     completed = json.loads((args.run / "completed.json").read_text())
     assert args.seed != record["config"]["seed"]
@@ -123,6 +128,11 @@ def main():
         total_absolute_clamp_change=0.0,
     )
     intervention = dict(active_steps=0, changed_moves=0, changed_splits=0)
+    hint_audit = dict(active=0, move_match=0, split_labeled=0, split_match=0, joint_match=0,
+                      teacher_pass=0, student_pass=0, both_pass=0,
+                      teacher_move=0, student_move_when_teacher_moves=0, move_match_when_teacher_moves=0,
+                      move_probability_sum=0.0, split_probability_sum=0.0,
+                      move_negative_log_probability_sum=0.0, split_negative_log_probability_sum=0.0)
     try:
         observation = env.reset(reset_seed)
         initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
@@ -137,9 +147,42 @@ def main():
         np.save(args.output / "initial_state_sha256.npy", np.asarray(initial_hashes, dtype="U64"))
         np.save(args.output / "initial_sides.npy", np.asarray(env.sides))
         np.save(args.output / "initial_opponent_ids.npy", np.asarray(env.opponent_ids))
-        for turn in range(env.horizon):
-            actions = legacy_actions_many(policy, seats, observation)
+        for turn in range(min(env.horizon, args.audit_turns or env.horizon)):
+            forward = legacy_actions_many(policy, seats, observation, return_logits=args.hint_audit)
+            actions, logits = forward if args.hint_audit else (forward, None)
             masks = np.asarray(observation.action_masks, dtype=bool)
+            if args.hint_audit:
+                hint = hinted_replay_indices(observation.values, 21, channels=14)
+                active = ~env.finished
+                rows = np.arange(args.games)[active]
+                teacher_pass = hint[active, 0] == 1764
+                teacher_split = np.where(teacher_pass, 0, hint[active, 1])
+                assert masks[rows, hint[active, 0]].all()
+                assert masks[rows, 1765 + teacher_split].all()
+                hint_audit["active"] += len(rows)
+                move_match = actions[active, 0] == hint[active, 0]
+                split_match = actions[active, 1] == teacher_split
+                hint_audit["move_match"] += int(move_match.sum())
+                hint_audit["split_labeled"] += int((~teacher_pass).sum())
+                hint_audit["split_match"] += int((~teacher_pass & split_match).sum())
+                hint_audit["joint_match"] += int((move_match & (teacher_pass | split_match)).sum())
+                student_pass = actions[active, 0] == 1764
+                hint_audit["teacher_pass"] += int(teacher_pass.sum())
+                hint_audit["student_pass"] += int(student_pass.sum())
+                hint_audit["both_pass"] += int((teacher_pass & student_pass).sum())
+                hint_audit["teacher_move"] += int((~teacher_pass).sum())
+                hint_audit["student_move_when_teacher_moves"] += int((~teacher_pass & ~student_pass).sum())
+                hint_audit["move_match_when_teacher_moves"] += int((~teacher_pass & (actions[active, 0] == hint[active, 0])).sum())
+                for head, (offset, size) in enumerate(((0, 1765), (1765, 2))):
+                    labeled = np.ones(len(rows), dtype=bool) if head == 0 else ~teacher_pass
+                    legal_logits = np.where(masks[active, offset:offset + size][labeled],
+                                            logits[active, offset:offset + size][labeled], -np.inf)
+                    chosen = legal_logits[np.arange(int(labeled.sum())), hint[active, head][labeled]]
+                    maximum = legal_logits.max(axis=1)
+                    log_probability = chosen - maximum - np.log(np.exp(legal_logits - maximum[:, None]).sum(axis=1))
+                    key = "move" if head == 0 else "split"
+                    hint_audit[f"{key}_probability_sum"] += float(np.exp(log_probability).sum())
+                    hint_audit[f"{key}_negative_log_probability_sum"] -= float(log_probability.sum())
             if args.force_hint_move or args.force_hint_split:
                 hint = hinted_replay_indices(observation.values, 21, channels=14)
                 active = ~env.finished
@@ -177,7 +220,8 @@ def main():
                 print(json.dumps(dict(turn=turn + 1, finished=int(env.finished.sum()))), flush=True)
             if transition.episode_done:
                 break
-        assert env.finished.all()
+        episode_complete = bool(env.finished.all())
+        assert episode_complete or args.hint_audit and args.audit_turns is not None
         outcomes = env.outcomes.copy()
     finally:
         env.close()
@@ -216,11 +260,14 @@ def main():
         force_hint_move=args.force_hint_move,
         force_hint_split=args.force_hint_split,
         intervention=intervention if args.force_hint_move or args.force_hint_split else None,
-        wins=int((outcomes > 0).sum()),
-        losses=int((outcomes < 0).sum()),
-        draws=int((outcomes == 0).sum()),
-        score=float(outcomes.mean()),
-        perf=float((outcomes.mean() + 1) / 2),
+        hint_audit=hint_audit if args.hint_audit else None,
+        audit_turns=args.audit_turns,
+        episode_complete=episode_complete,
+        wins=int((outcomes > 0).sum()) if episode_complete else None,
+        losses=int((outcomes < 0).sum()) if episode_complete else None,
+        draws=int((outcomes == 0).sum()) if episode_complete else None,
+        score=float(outcomes.mean()) if episode_complete else None,
+        perf=float((outcomes.mean() + 1) / 2) if episode_complete else None,
         turns=turn + 1,
         wall_seconds=time.monotonic() - start,
     )
