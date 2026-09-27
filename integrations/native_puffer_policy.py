@@ -73,11 +73,16 @@ class NativePufferPolicy:
             states.append(next_state)
         return jnp.matmul(x, self.decoder.T, precision=jax.lax.Precision.HIGHEST), jnp.stack(states)
 
-    def actions(self, observations, masks, state):
+    def actions(self, observations, masks, state, key=None):
         if observations.shape != (state.shape[1], 6174) or masks.shape != (state.shape[1], 1767):
             raise ValueError("Unexpected observation/mask dimensions")
         output, state = self.forward(jnp.asarray(observations, dtype=jnp.float32), state)
         logits = jnp.where(jnp.asarray(masks, dtype=bool), output[:, :1767], -jnp.inf)
-        actions = jnp.stack((jnp.argmax(logits[:, :1765], axis=-1),
-                             jnp.argmax(logits[:, 1765:], axis=-1)), axis=-1)
+        if key is None:
+            actions = jnp.stack((jnp.argmax(logits[:, :1765], axis=-1),
+                                 jnp.argmax(logits[:, 1765:], axis=-1)), axis=-1)
+        else:
+            move_key, split_key = jax.random.split(key)
+            actions = jnp.stack((jax.random.categorical(move_key, logits[:, :1765]),
+                                 jax.random.categorical(split_key, logits[:, 1765:])), axis=-1)
         return actions, state

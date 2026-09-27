@@ -28,11 +28,19 @@ def main():
     parser.add_argument("--seed", type=int, default=1101)
     parser.add_argument("--games", type=int, default=1024)
     parser.add_argument("--pool-size", type=int)
+    parser.add_argument("--training-pool-episode", type=int,
+                        help="Diagnostic only: evaluate the latest pool seen by this checkpoint")
+    parser.add_argument("--sample-seed", type=int, help="Native sampling diagnostic instead of hosted argmax")
     parser.add_argument("--opponent", choices=("expander_harvester", "sentinel", "strong_mixed"), required=True)
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
+    assert args.sample_seed is None or args.native
     training = TrainingRecord.model_validate_json((args.run / "training.json").read_text())
-    assert args.seed not in training_lineage_seeds(args.run, training)
+    if args.training_pool_episode is None:
+        assert args.seed not in training_lineage_seeds(args.run, training)
+    else:
+        assert args.native and args.training_pool_episode >= 0
+        assert args.seed == training.config.seed
     manifest = json.loads(args.build.read_text())
     assert manifest["model_sha256"] == training.build.model_sha256
     if args.native:
@@ -46,11 +54,17 @@ def main():
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     options.update(parallel_games=args.games, opponent=args.opponent, supervise_teacher=False)
     if args.pool_size is not None:
+        if args.training_pool_episode is not None:
+            assert args.pool_size == options["coworld_pool_size"]
         options["coworld_pool_size"] = args.pool_size
     args.output.mkdir(parents=True, exist_ok=False)
     context = EnvironmentContext(seed=args.seed, index=0, mode="evaluate", output=args.output)
     env = BatchedGeneralsPufferEnvironment(context=context, **options)
-    reset_seed = f"{args.seed}:0:0"
+    episode = 0 if args.training_pool_episode is None else args.training_pool_episode
+    reset_seed = f"{args.seed}:0:{episode}"
+    if args.training_pool_episode is not None:
+        agents = manifest["config"]["python_environment"]["spec"]["agents"]
+        assert int(args.checkpoint.stem) // (agents * env.horizon) == episode
     if not args.native:
         policy.reset(reset_seed)
     seats = list(range(args.games))
@@ -73,6 +87,8 @@ def main():
             if args.native:
                 actions, recurrent_state = policy.actions(
                     np.asarray(observation.values), np.asarray(observation.action_masks), recurrent_state,
+                    key=(None if args.sample_seed is None else
+                         jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)),
                 )
                 actions = np.asarray(actions, dtype=np.int32)
             else:
@@ -95,8 +111,14 @@ def main():
     finally:
         env.close()
     result = dict(
-        scope="Frozen GPU argmax inference on Classic maps; hosted service startup remains separate",
-        action_selection="argmax_per_head", seed=args.seed, reset_seed=reset_seed,
+        scope=("Training-pool diagnostic; does not establish held-out or hosted performance"
+               if args.training_pool_episode is not None else
+               "Frozen GPU sampling diagnostic; hosted player currently uses argmax"
+               if args.sample_seed is not None else
+               "Frozen GPU argmax inference on Classic maps; hosted service startup remains separate"),
+        held_out=args.training_pool_episode is None, training_pool_episode=args.training_pool_episode,
+        action_selection="argmax_per_head" if args.sample_seed is None else "sample_per_head",
+        sample_seed=args.sample_seed, seed=args.seed, reset_seed=reset_seed,
         games=args.games, opponent=args.opponent, checkpoint_sha256=args.sha256,
         unique_initial_states=len(set(initial_hashes)),
         sampling="Pool samples; initial state hashes, sides and opponent IDs saved",

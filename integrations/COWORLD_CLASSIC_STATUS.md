@@ -4017,11 +4017,13 @@ RMS parameter changes: encoder.00725619,decoder.0286605,recurrent.0453027.
 Allloadedparameters and12kdiagnostic predictions finite. Confirmsactualupdates
 andactionchange; doesnotprove reward learning or strategic strength.
 
-Inspected pool construction/reset: current long training draws from64fixedmaps,
-with independently random dimensions18–21; `dynamic_pool=True` namesvariable
-sizes and doesnotrefreshmaps. Thisisageneralization concern tocheck with a
-training-pool diagnostic and held-out validation at1B; do not assertoverfit
-without train-vs-heldout evidence. Original4–5h run continues intact.
+CORRECTION (verified in the following turn): the pool has64maps at a time,
+but the device bridge rebuilds it every1200turns (78,643,200agent steps).
+`dynamic_pool=True` selects random independent dimensions18–21. The
+BatchedGenerals device step sets episode_done at1200turns and DeviceEnvironment
+calls reset_device with seed:index:episode, creating a new pool. Console
+confirms9resets by~710Msteps. The claim of one fixed pool for the whole run was
+incorrect. No overfitting conclusion follows. Original4–5h run continues.
 
 Verified archive metta1:
 `/home/metta/relh-generals-puffer/native-policy-536m-validation-and-distribution-25720-25721.tar.gz`
@@ -4030,3 +4032,47 @@ Includes536M checkpoint, fullpaired cases and update audit. Localcopy/tmp same
 basename verified. Read-only hosted membershiprefresh: Daveeydaveey-grl:v7,
 relhco-gas-generals-siege-relh:v4,richardco-gas-generals-siege-richard:v2 allactive.
 No hosted writes. HelperRuffclean,bash-n/pycompile/diffchecks pass.Goalactive.
+
+
+## 2026-09-27 pool-refresh correction, sampling and update-density probe
+
+Corrected the previous fixed-pool claim after inspecting actual device bridge
+and console. Every1200turns (78,643,200steps at65,536agents), step_device returns
+episode_done and the bridge resets with seed:index:episode. A new64-map pool is
+built each time; physical source confirmed seed format1336:0:N. Eleven bridge
+reset messages observed around800Msteps. No claim of a single fixed training
+pool or demonstrated overfit remains valid.
+
+Added explicit training-pool diagnostic to evaluator: requires native policy,
+current training seed, original pool size and correct checkpoint episode.
+Maintains held-out seed guard for normal evaluation. Job25751 completed on
+536Mcheckpoint's last seen pool1336:0:6,64distinct initial maps,512cases/opponent:
+Expander0W512L0D; Sentinel0W512L0D; mixed0W512L0D. Weakness exists on seen maps.
+Native sampling diagnostic25766 completed, same held-out cases1104 and separate
+sampling seed1106: Expander0W499L13D;Sentinel0W503L9D;mixed0W501L11D.
+Sampling does not recover useful strength. Hosted player remains argmax.
+
+Archive `/home/metta/relh-generals-puffer/native-policy-training-pool-sampling-and-source-identity-25751-25768.tar.gz`
+SHA256 `45d9d9c7a43ef52b10f016d7412f7e80a7ce7a4a6ad4e69ce72079a9fb756852`.
+Includes pool/sampling results, failed25768startup and536Mlearner identity/state.
+25768 failed before steps because its live parent lacked completed.json.
+Retry25771 uses the existing allow_published_checkpoint interface, which verifies
+policy SHA, learner SHA, run SHA and agent-step identity. Fresh optimizer;
+no fabricated completion record, no exact learner resume or guard bypass.
+
+Update-density probe25771 COMPLETED67,108,864newfinite steps; all1,213,184params
+finite. Warm from536Mcheckpoint,seed1337,65536env,H16,batch1048576,
+mb65536,replay4,lr.003,entropy0,gamma/shaping_gamma.999,balanced3:1opponents
+with8192lanes per opponentID/side.64updates per1M vs2previously. OneB300,
+118.1/268GB VRAM. Measured epoch40→60 (40warm epochs):20,971,520steps/59.686s
+=351,364.14end-to-end SPS; lateGPU96.0%. Excludes anomalous final dashboard
+interval (364k). Passes30kand300kthroughput plus>2.6Mfinite gates.
+FinalcheckpointSHA256 `a73328841e890dbc60f7b318c3671370fc33f773108a82e80810e9a3d61d56fd`.
+Verified archive `/home/metta/relh-generals-puffer/native-policy-update-density-probe-25771.tar.gz`
+SHA256 `62655d74c6a56eb6def96699d788f561c964169a632db577bd1770b6f5e34497`.
+
+Frozen argmax validation25786 now live on512paired cases/opponent,seed1104,
+against stored536Mparent results. Do not replace/release a long run based on
+SPS alone. Current long25600 remains live at epoch1012 (~1.061B),447,402SPS.
+Next actual snapshot1024=1,073,741,824steps; inspect existence before use.
+No new long duplicate job, hosted upload, or champion change. Goal active.
