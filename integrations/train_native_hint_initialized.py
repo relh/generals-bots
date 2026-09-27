@@ -19,7 +19,10 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--logit-scale", type=float, default=24.0)
     parser.add_argument("--seed", type=int, default=1346)
+    parser.add_argument("--entropy-coef", type=float, default=0.0)
     args = parser.parse_args()
+    if not math.isfinite(args.entropy_coef) or args.entropy_coef < 0:
+        raise ValueError("Entropy coefficient must be finite and nonnegative")
     assert not (args.output / "run").exists()
     _, initializer = export(args.build / "build.json", args.output / "initializer", scale=args.logit_scale)
     artifact = args.output / "initializer/initializer.json"
@@ -34,7 +37,7 @@ def main():
         "vec.total_agents": 65536, "vec.num_buffers": 1, "vec.num_threads": 1,
         "base.cudagraphs": -1, "base.checkpoint_interval": 16,
         "policy.hidden_size": 512, "policy.num_layers": 1,
-        "train.learning_rate": .003, "train.ent_coef": 0., "train.replay_ratio": 1.,
+        "train.learning_rate": .003, "train.ent_coef": args.entropy_coef, "train.replay_ratio": 1.,
         "train.horizon": 16, "train.minibatch_size": 524288,
     })
     assert record["overrides"]["train.gamma"] == .999

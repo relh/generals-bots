@@ -4902,3 +4902,26 @@ slightly but not preferred actions here. This sample is neither a complete
 training trajectory audit nor held-out strength evidence. The next bounded
 training comparison should test explicit exploration with otherwise matched
 initialization and recipe, not release another zero-entropy long run.
+
+## Explicit exploration probe
+
+The previous goal turn made progress by completing H512 distribution audit
+26301. Fresh external state showed no live Generals trainer before this new
+submission. The low-rate 2B model sharpened preferences and scarcely changed
+argmax; the next experiment tests exploration directly.
+
+Added optional nonnegative finite --entropy-coef to the bounded initializer
+runner, default 0.0. Submitted B300 probe 26311 once with an exclusive marker.
+Entropy coefficient 0.02 is the only training-recipe change from the completed
+reward-scaled 33M probe 26286: initializer logit scale 24, seed 1346, reward
+scale 0.5, same fresh build 26260, H512/L1, 65536 environments, horizon 16,
+batch 1048576, minibatch 524288, replay 1, lr 0.003 with short cosine schedule,
+gamma and shaping gamma both 0.999, 3:1 Expander/Sentinel with 8192 lanes per
+opponent ID and side. Budget 33,554,432 steps; 300k steady SPS guard retained.
+No long run is released before finite, throughput and paired quality proof.
+
+Immutable runner SHA ee57863e2fbf115e3ead1bb1994724d4a560484b28929ec810cdf0081083d1a2;
+launcher SHA d599e4e251879737f622d83edc5edf012456de67c04b49582364799b2452502f.
+New helpers are embedded in the GPU batch script and written exclusively under
+new names; existing bytes must match if present. No archived helper is changed.
+Ruff and shell syntax checks passed; old runs keep their effective configuration.
