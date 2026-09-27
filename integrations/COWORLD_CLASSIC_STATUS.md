@@ -5872,3 +5872,55 @@ then beat the hint on held-out opponents before a long run. A richer board
 model and training objective are more promising than repeating this tiny
 hint-dominated Fabric graph. No hosted upload, submission, or champion change
 followed this audit.
+
+## Wider Fabric standard compiler and prior ablation (2026-09-27)
+
+A bounded one-seat strong-mix screen tested a wider two-stage local actor:
+four features per site, eight global features, one-cell context radius,
+and direct public-hint strength 0.5. The training mix contains three
+ExpanderHarvester branches and one Sentinel branch. With 8,192 games and
+balanced sides, each reset assigns 3,072 ExpanderHarvester and 1,024 Sentinel
+games to each side. Learner gamma and environment shaping gamma were both
+0.999; horizon 32, minibatch 16,384, replay ratio 0.5, LR 0.001, and
+4,194,304 agent steps were requested.
+
+The default fused Fabric compiler build 27623 produced no completed epoch
+after its 300-second bounded startup window. Its GPU remained effectively
+idle, so the guard stopped it with no checkpoint or dependent evaluation.
+Changing only Fabric's `compiler` setting to `standard` made job 27635
+complete all 4,194,304 steps on one B300. Epochs 8→16 completed 2,097,152
+agent steps in 15.617 seconds, **134,286 warmed end-to-end SPS** for the
+single process and aggregate. The final Puffer dashboard reported 92% GPU
+utilization and about 30.0 GiB VRAM. Compilation still took about 4m23s
+before epoch 1; warm epochs ran in roughly two seconds each. Final checkpoint
+SHA256 is `20f774c783163ad1d36aee6582757b720433900e20c77e20901354561c202b6d`.
+
+The initial quality submission 27645 stopped before GPU evaluation because
+its script named the previous build manifest. Corrected job 27647 checked
+the manifest/checkpoint identity and used frozen masked argmax on 128
+seed-1386 Classic games per opponent, with 78 unique initial maps each.
+The wider weak-prior actor scored **0/121/7** W/L/D against
+ExpanderHarvester and **0/128/0** against Sentinel. It fails the quality
+gate; neither a long continuation nor hosted upload followed.
+
+A separate diagnostic asked whether the earlier 16.78M-step width-2
+self-play checkpoint had useful learned action preferences hidden by its
+strength-2 hint. Job 27658 compared two initializations of the *same*
+graph, with hint strengths 2.0 and 0.5, and applied their difference to
+the trained checkpoint. Exactly 2,646 of 8,044 parameters changed, all
+identified direct hint weights; every learned non-hint parameter was
+preserved. The altered diagnostic checkpoint SHA256 is
+`6adb515689011f704af1868913b13aaf2b7ec87009479e9385c901d6779a4208`.
+On the same 128 held-out ExpanderHarvester games it scored **2/121/5**
+versus the original checkpoint's **63/52/13**. This does not support a
+useful hidden residual; the strong hint was carrying the policy.
+
+The successful build, checkpoint, configs, logs, GPU samples, both quality
+results, failed fused-compiler log, and residual-ablation artifact are
+archived on metta0 as
+`relh-classic-standard-compiler-prior-ablation-27623-27658.tar.gz`, SHA256
+`8dcdd6437095edf4f617eb838e973eda821ef61f6e757f9b2c065d9b94f0b7e7`.
+No Classic job remains active. Standard compilation is now a viable route
+for larger Fabric graphs, but this weak-prior PPO recipe fails held-out
+play. A stronger model and learning curriculum must pass a small quality
+gate before another 300M-step proposal.

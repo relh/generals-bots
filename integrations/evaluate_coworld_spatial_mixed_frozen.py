@@ -54,6 +54,7 @@ def main():
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--native", action="store_true", help="Pinned default Puffer5 MinGRU checkpoint")
+    parser.add_argument("--diagnostic-checkpoint", action="store_true", help="Evaluate an explicitly altered checkpoint")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1101)
     parser.add_argument("--games", type=int, default=1024)
@@ -80,7 +81,8 @@ def main():
     record = json.loads((args.run / "training.json").read_text())
     completed = json.loads((args.run / "completed.json").read_text())
     assert args.seed != record["config"]["seed"]
-    assert args.checkpoint.relative_to(args.run).as_posix() in completed["checkpoints"]
+    if not args.diagnostic_checkpoint:
+        assert args.checkpoint.relative_to(args.run).as_posix() in completed["checkpoints"]
     manifest = json.loads(args.build.read_text())
     assert manifest == record["build"]
     policy = FrozenPolicy(
@@ -183,6 +185,8 @@ def main():
         scope=(
             "Frozen action intervention diagnostic; not the hosted policy"
             if args.force_hint_move or args.force_hint_split
+            else "Explicitly altered checkpoint diagnostic; not the trained or hosted policy"
+            if args.diagnostic_checkpoint
             else "Training-pool diagnostic; does not establish held-out or hosted performance"
             if args.training_pool_episode is not None
             else "Frozen GPU sampling diagnostic; hosted player currently uses argmax"
