@@ -2389,3 +2389,20 @@ outcomes; doesnotclaimnative-samplingprotocolcomparability. Newruntimehelper
 loadsverifiedsame37550...run-controlmoduletointerprettraininglineage while
 archivedphysicalenvironmentfilesremainunchanged. Fourcasesbounded9mineach,
 45minscheduler. Goalactive;nohostedcandidatepublicationorovernightrunyet.
+
+
+### Current authoritative continuation state
+
+metta1 archive of24978 pairedstrong-updateaudit verified:
+device-context-strong-update-action-audit-24978.tar.gz SHA
+271f5d35beefe70da31daaf23f509b57cc89a0c392701ca454afc66d092c937b.
+24994 and24995 confirmedRUNNING onB300. 24994nativeconsole reached9epochs;
+24995Frozengreedyparent-vsExpander reached101turns, nofailure. Poll exactjobs
+via metta1 before any restart; metta0 currentlyunreachable. Slurmcontroller
+metta3 onmettabox. Greedy resultsstillpending; noqualityclaim orpublication.
+Implementationandrunrecords d6fa130 pushed; allwork remainsinownworktrees.
+Next: inspectgreedyparent/strong pairedExpander/Sentinel outcomes; inspect
+strong134Mfinitecheckpoint andactiondifferences. Archive before any replacement.
+Currentqualitygaps: native sampleperf.23053 at134M; argmaxauds still100%teacher
+throughstrong16M. 300kSPS remainsunmet; groupedcandidatewasrejected as slower.
+Do not markgoalcomplete orrestart saturatedteacher recipe merelybecauseGPUbusy.
