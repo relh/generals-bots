@@ -3163,3 +3163,22 @@ inputs, seed 1324, 32 games x 768 turns. Evaluation keeps untouched seed 1101.
 Inspect these exact jobs before any restart; no long training or publication yet.
 Goal remains active: 261k current training SPS and restored exploration, 300k
 and stronger held-out/hosted policy unproven.
+
+
+## Calibrated paired audit 24622: exploration, no greedy learning yet
+
+24622 completed: 24,576 decisions, 24,352 flexible, seed 1324, same actual
+trajectories and calibrated inputs. Teacher actions 100% legal. Parent and new
+policy both 100% greedy teacher agreement, zero greedy differences. Parent/new
+move entropy 1.327559/1.329249, split entropy .078568/.086975, teacher move
+probability .830588/.830330. Mean move hint weight 8.821377 -> 8.820585.
+Thus calibration restored exploration; the 32 optimizer updates in 24609 do
+not yet prove improved greedy play. Expander held-out 24621 confirmed live.
+
+Prepared 134,217,728 NEW steps with unchanged gated recipe, seed 1325, verified
+24609 policy weights, fresh optimizer (no claim of full learner/environment
+resume), checkpoints every 16 epochs. Same build24499, explicit transfer flags
+removed because model/environment now match strictly. One trainer, bounded
+30min scheduler/25min container cap, >=30k steady progress guard retained.
+This longer learning interval is warranted by finite native PPO learning and
+restored exploration; no overnight training or champion publication yet.
