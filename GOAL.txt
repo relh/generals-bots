@@ -1921,3 +1921,11 @@ Update, 2026-09-26 evaluated335Mcheckpoint safely archived
     PolicySHAunchanged081c142c3ff8b9dceb0462582b1d1e3f9b13c743c73a82e99ce798b6e26e00ca.
     Nextinspecthourboundaryguard onactualdashboard and readbothheldout
     resultsbeforeanyrecipechange. No duplicatedjobs orpublication.
+
+Update, 2026-09-26 live native hour-boundary guard verified
+  * 22922stilllive at1709epochs/448.0Msteps. Nativeconsole uptime
+    0d1h0m46s, monitorstillparses16/20epoch123,362/121,927SPS;
+    recent60samples84.2%GPU. Exacthourformatguard tested in realrunning
+    job, notonlysyntheticunitcoverage. Both23277/23278revalidatedlive,
+    heldoutlogsadvancing;335Mstrengthcomparisonsremainpending.
+    Nextreadbothresults beforepolicyrecipechanges orhostedsubmission.
