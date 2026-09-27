@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=relh-classic-native-raw-advnorm-r4-ent0-8m-v5
+#SBATCH --partition=b300
+#SBATCH --nodelist=metta-fabric-b300-1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=96G
+#SBATCH --time=00:20:00
+#SBATCH --nice=100
+#SBATCH --chdir=/tmp
+#SBATCH --output=/var/tmp/relh-generals-recovery/native-raw-advnorm-r4-ent0-8m-v5-%j.log
+set -euo pipefail
+export TMPDIR=/var/tmp/relh-generals-recovery
+mkdir -p "$TMPDIR"
+python3 - /var/tmp/relh-generals-recovery <<'STAGE'
+import base64,sys
+from pathlib import Path
+path=Path(sys.argv[1])/'train_native_raw_ppo-advnorm-20260927.py'
+data=base64.b64decode('IiIiQm91bmRlZCByZXdhcmQtb25seSBQdWZmZXI1IHRyYWluaW5nIG9uIHB1YmxpYyBDb3dvcmxkIENsYXNzaWMgb2JzZXJ2YXRpb25zLiIiIgoKaW1wb3J0IGFyZ3BhcnNlCmltcG9ydCBoYXNobGliCmltcG9ydCBqc29uCmltcG9ydCBtYXRoCmltcG9ydCBzdHJ1Y3QKZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCgpmcm9tIG1ldHRhX3RyYWluaW5nLnB1ZmZlciBpbXBvcnQgUnVuQ29uZmlnLCB0cmFpbl9wdWZmZXIKCgpkZWYgbWFpbigpOgogICAgcGFyc2VyID0gYXJncGFyc2UuQXJndW1lbnRQYXJzZXIoKQogICAgcGFyc2VyLmFkZF9hcmd1bWVudCgiLS10ZW1wbGF0ZSIsIHR5cGU9UGF0aCwgcmVxdWlyZWQ9VHJ1ZSkKICAgIHBhcnNlci5hZGRfYXJndW1lbnQoIi0tYnVpbGQiLCB0eXBlPVBhdGgsIHJlcXVpcmVkPVRydWUpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLW91dHB1dCIsIHR5cGU9UGF0aCwgcmVxdWlyZWQ9VHJ1ZSkKICAgIHBhcnNlci5hZGRfYXJndW1lbnQoIi0tdGltZXN0ZXBzIiwgdHlwZT1pbnQsIGRlZmF1bHQ9OF8zODhfNjA4KQogICAgcGFyc2VyLmFkZF9hcmd1bWVudCgiLS1zZWVkIiwgdHlwZT1pbnQsIGRlZmF1bHQ9MTQwMSkKICAgIHBhcnNlci5hZGRfYXJndW1lbnQoIi0tbGVhcm5pbmctcmF0ZSIsIHR5cGU9ZmxvYXQsIGRlZmF1bHQ9MC4wMDMpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLWVudHJvcHktY29lZiIsIHR5cGU9ZmxvYXQsIGRlZmF1bHQ9MC4wMSkKICAgIHBhcnNlci5hZGRfYXJndW1lbnQoIi0tbm9ybWFsaXplLWFkdmFudGFnZXMiLCBhY3Rpb249InN0b3JlX3RydWUiKQogICAgcGFyc2VyLmFkZF9hcmd1bWVudCgiLS1yZXBsYXktcmF0aW8iLCB0eXBlPWZsb2F0LCBkZWZhdWx0PTEuMCkKICAgIHBhcnNlci5hZGRfYXJndW1lbnQoIi0tY2hlY2twb2ludC1pbnRlcnZhbCIsIHR5cGU9aW50LCBkZWZhdWx0PTEpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLW9wcG9uZW50IiwgY2hvaWNlcz0oInN0cm9uZ19taXhlZCIsICJyYW5kb20iKSwgZGVmYXVsdD0ic3Ryb25nX21peGVkIikKICAgIGFyZ3MgPSBwYXJzZXIucGFyc2VfYXJncygpCiAgICBpZiAoCiAgICAgICAgYXJncy50aW1lc3RlcHMgPD0gMAogICAgICAgIG9yIG5vdCBtYXRoLmlzZmluaXRlKGFyZ3MubGVhcm5pbmdfcmF0ZSkKICAgICAgICBvciBhcmdzLmxlYXJuaW5nX3JhdGUgPD0gMAogICAgICAgIG9yIG5vdCBtYXRoLmlzZmluaXRlKGFyZ3MuZW50cm9weV9jb2VmKQogICAgICAgIG9yIGFyZ3MuZW50cm9weV9jb2VmIDwgMAogICAgICAgIG9yIG5vdCBtYXRoLmlzZmluaXRlKGFyZ3MucmVwbGF5X3JhdGlvKQogICAgICAgIG9yIGFyZ3MucmVwbGF5X3JhdGlvIDw9IDAKICAgICAgICBvciBhcmdzLmNoZWNrcG9pbnRfaW50ZXJ2YWwgPD0gMAogICAgKToKICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJJbnZhbGlkIHRyYWluaW5nIGJ1ZGdldCBvciBsZWFybmluZyByYXRlIikKICAgIGJ1aWxkID0ganNvbi5sb2FkcygoYXJncy5idWlsZCAvICJidWlsZC5qc29uIikucmVhZF90ZXh0KCkpCiAgICBpZiBhcmdzLm5vcm1hbGl6ZV9hZHZhbnRhZ2VzIGFuZCAibm9ybV9hZHYgPSAwIiBub3QgaW4gKGFyZ3MuYnVpbGQgLyAic291cmNlL2NvbmZpZy9kZWZhdWx0LmluaSIpLnJlYWRfdGV4dCgpOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIk5hdGl2ZSBhZHZhbnRhZ2Ugbm9ybWFsaXphdGlvbiByZXF1aXJlcyBpdHMgdmVyaWZpZWQgYnVpbGQiKQogICAgb3B0aW9ucyA9IGJ1aWxkWyJjb25maWciXVsicHl0aG9uX2Vudmlyb25tZW50Il1bIm9wdGlvbnMiXQogICAgaWYgKAogICAgICAgIGJ1aWxkWyJjb25maWciXVsibmF0aXZlX2hpbnRfcHJpb3IiXSBpcyBub3QgTm9uZQogICAgICAgIG9yIG9wdGlvbnNbImhpbnRfZmVhdHVyZXMiXQogICAgICAgIG9yIG9wdGlvbnNbImNvbXBhY3RfZmVhdHVyZXMiXQogICAgICAgIG9yIG9wdGlvbnNbInByaW9yX2hpbnRfZmVhdHVyZXMiXQogICAgICAgIG9yIG9wdGlvbnNbInN1cGVydmlzZV90ZWFjaGVyIl0KICAgICAgICBvciBvcHRpb25zWyJ0ZWFjaGVyX3JvbGxvdXRzIl0KICAgICAgICBvciBvcHRpb25zWyJzaGFwaW5nX2dhbW1hIl0gIT0gMC45OTkKICAgICAgICBvciBub3Qgb3B0aW9uc1siYmFsYW5jZV9vcHBvbmVudF9zaWRlcyJdCiAgICAgICAgb3Igb3B0aW9uc1sib3Bwb25lbnQiXSAhPSBhcmdzLm9wcG9uZW50CiAgICApOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIlVuZXhwZWN0ZWQgcmF3IFJMIGVudmlyb25tZW50IikKICAgIHJlY29yZCA9IGpzb24ubG9hZHMoYXJncy50ZW1wbGF0ZS5yZWFkX3RleHQoKSkKICAgIHJlY29yZFsidG90YWxfdGltZXN0ZXBzIl0gPSBhcmdzLnRpbWVzdGVwcwogICAgcmVjb3JkWyJzZWVkIl0gPSBhcmdzLnNlZWQKICAgIHJlY29yZFsiaW5pdGlhbGl6ZSJdID0gTm9uZQogICAgcmVjb3JkWyJuYXRpdmVfcG9saWN5X2luaXRpYWxpemVyIl0gPSBOb25lCiAgICByZWNvcmRbIm92ZXJyaWRlcyJdLnVwZGF0ZSgKICAgICAgICB7CiAgICAgICAgICAgICJ2ZWMudG90YWxfYWdlbnRzIjogNjU1MzYsCiAgICAgICAgICAgICJ2ZWMubnVtX2J1ZmZlcnMiOiAxLAogICAgICAgICAgICAidmVjLm51bV90aHJlYWRzIjogMSwKICAgICAgICAgICAgImJhc2UuY3VkYWdyYXBocyI6IC0xLAogICAgICAgICAgICAiYmFzZS5jaGVja3BvaW50X2ludGVydmFsIjogYXJncy5jaGVja3BvaW50X2ludGVydmFsLAogICAgICAgICAgICAicG9saWN5LmhpZGRlbl9zaXplIjogNTEyLAogICAgICAgICAgICAicG9saWN5Lm51bV9sYXllcnMiOiAwLAogICAgICAgICAgICAidHJhaW4ubGVhcm5pbmdfcmF0ZSI6IGFyZ3MubGVhcm5pbmdfcmF0ZSwKICAgICAgICAgICAgInRyYWluLmFubmVhbF9sciI6IDAsCiAgICAgICAgICAgICJ0cmFpbi5lbnRfY29lZiI6IGFyZ3MuZW50cm9weV9jb2VmLAogICAgICAgICAgICAidHJhaW4ucmVwbGF5X3JhdGlvIjogYXJncy5yZXBsYXlfcmF0aW8sCiAgICAgICAgICAgICJ0cmFpbi5ob3Jpem9uIjogMTYsCiAgICAgICAgICAgICJ0cmFpbi5taW5pYmF0Y2hfc2l6ZSI6IDUyNDI4OCwKICAgICAgICB9CiAgICApCiAgICBpZiBhcmdzLm5vcm1hbGl6ZV9hZHZhbnRhZ2VzOgogICAgICAgIHJlY29yZFsib3ZlcnJpZGVzIl1bInRyYWluLm5vcm1fYWR2Il0gPSAxCiAgICBhc3NlcnQgcmVjb3JkWyJvdmVycmlkZXMiXVsidHJhaW4uZ2FtbWEiXSA9PSAwLjk5OQogICAgY29uZmlnID0gUnVuQ29uZmlnLm1vZGVsX3ZhbGlkYXRlKHJlY29yZCkKICAgIChhcmdzLm91dHB1dCAvICJjb25maWcuanNvbiIpLndyaXRlX3RleHQoY29uZmlnLm1vZGVsX2R1bXBfanNvbihpbmRlbnQ9MikgKyAiXG4iKQogICAgcmVzdWx0ID0gdHJhaW5fcHVmZmVyKGFyZ3MuYnVpbGQsIGFyZ3Mub3V0cHV0IC8gInJ1biIsIGNvbmZpZykKICAgIGFzc2VydCByZXN1bHQudHJhaW5lZF90aW1lc3RlcHMgPT0gYXJncy50aW1lc3RlcHMKICAgIGNoZWNrcG9pbnQgPSBhcmdzLm91dHB1dCAvICJydW4iIC8gcmVzdWx0LmZpbmFsX2NoZWNrcG9pbnQKICAgIGRhdGEgPSBjaGVja3BvaW50LnJlYWRfYnl0ZXMoKQogICAgYXNzZXJ0IGxlbihkYXRhKSA9PSAoNTEyICogNjE3NCArIDE3NjggKiA1MTIpICogNAogICAgYXNzZXJ0IGFsbChtYXRoLmlzZmluaXRlKHZhbHVlWzBdKSBmb3IgdmFsdWUgaW4gc3RydWN0Lml0ZXJfdW5wYWNrKCI8ZiIsIGRhdGEpKQogICAgcHJpbnQoIk5BVElWRV9SQVdfUFBPX1BJTE9UX09LIiwgcmVzdWx0LnRyYWluZWRfdGltZXN0ZXBzLCBoYXNobGliLnNoYTI1NihkYXRhKS5oZXhkaWdlc3QoKSwgZmx1c2g9VHJ1ZSkKCgppZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgogICAgbWFpbigpCg==')
+if path.exists():
+    assert path.read_bytes()==data
+else:
+    with path.open('xb') as handle: handle.write(data)
+STAGE
+python3 - /var/tmp/relh-generals-recovery <<'LEARNERSTAGE'
+import base64,sys
+from pathlib import Path
+path=Path(sys.argv[1])/'native-advnorm-learner-python-v1-20260927.py'
+data=base64.b64decode('IiIiUGVyc2lzdGVudCB1cHN0cmVhbSBNdW9uIHN0YXRlIGNhcHR1cmVkIGFsb25nc2lkZSBwb2xpY3kgd2VpZ2h0cy4iIiIKCmltcG9ydCBoYXNobGliCmltcG9ydCBtYXRoCmltcG9ydCBvcwppbXBvcnQgc3RydWN0CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApmcm9tIHR5cGluZyBpbXBvcnQgTGl0ZXJhbAoKZnJvbSBweWRhbnRpYyBpbXBvcnQgRmllbGQsIEZpbml0ZUZsb2F0Cgpmcm9tIG1ldHRhX3RyYWluaW5nLmVudmlyb25tZW50IGltcG9ydCBOYXRpdmVFbnZpcm9ubWVudENoZWNrcG9pbnQKZnJvbSBtZXR0YV90cmFpbmluZy5nYW1lIGltcG9ydCBSZWNvcmQKCkxFQVJORVJfSEVBREVSID0gc3RydWN0LlN0cnVjdCgiPDhzUVFRUVFRUVFmZiIpCkFEQU1fSEVBREVSID0gc3RydWN0LlN0cnVjdCgiPDhzUVFRUVFRUVFRZmYiKQoKCmNsYXNzIExlYXJuZXJDaGVja3BvaW50SWRlbnRpdHkoUmVjb3JkKToKICAgIHBvbGljeV9zaGEyNTY6IHN0ciA9IEZpZWxkKHBhdHRlcm49ciJeWzAtOWEtZl17NjR9JCIpCiAgICBzdGF0ZV9zaGEyNTY6IHN0ciA9IEZpZWxkKHBhdHRlcm49ciJeWzAtOWEtZl17NjR9JCIpCiAgICBydW5fc2hhMjU2OiBzdHIgPSBGaWVsZChwYXR0ZXJuPXIiXlswLTlhLWZdezY0fSQiKQogICAgZW52aXJvbm1lbnRfc2hhMjU2OiBsaXN0W3N0cl0KCgpjbGFzcyBMZWFybmVyQ2hlY2twb2ludChSZWNvcmQpOgogICAgb3B0aW1pemVyOiBMaXRlcmFsWyJtdW9uIiwgImFkYW0iXQogICAgZXBvY2g6IGludCA9IEZpZWxkKGdlPTApCiAgICBhZ2VudF9zdGVwczogaW50ID0gRmllbGQoZ2U9MCkKICAgIGxlYXJuaW5nX3JhdGU6IEZpbml0ZUZsb2F0ID0gRmllbGQoZ2U9MCkKICAgIGVudHJvcHlfY29lZmZpY2llbnQ6IEZpbml0ZUZsb2F0ID0gRmllbGQoZ2U9MCkKICAgIHBhcmFtZXRlcl9jb3VudDogaW50ID0gRmllbGQoZ3Q9MCkKICAgIG9wdGltaXplcl9zdGVwOiBpbnQgPSBGaWVsZChnZT0wKQoKICAgIEBjbGFzc21ldGhvZAogICAgZGVmIHJlYWQoY2xzLCBwYXRoOiBQYXRoLCBwYXJhbWV0ZXJfY291bnQ6IGludCkgLT4gIkxlYXJuZXJDaGVja3BvaW50IjoKICAgICAgICBkYXRhID0gcGF0aC5yZWFkX2J5dGVzKCkKICAgICAgICBpZiBsZW4oZGF0YSkgPCBMRUFSTkVSX0hFQURFUi5zaXplOgogICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJMZWFybmVyIGNoZWNrcG9pbnQgaGVhZGVyIGlzIHRydW5jYXRlZCIpCiAgICAgICAgbWFnaWMgPSBkYXRhWzo4XQogICAgICAgIGlmIG1hZ2ljID09IGIiTUVUVEFMMDMiOgogICAgICAgICAgICBvcHRpbWl6ZXIsIG9wdGltaXplcl9zdGVwLCBoZWFkZXIsIHN0YXRlX2NvdW50ID0gIm11b24iLCAwLCBMRUFSTkVSX0hFQURFUiwgMQogICAgICAgIGVsaWYgbWFnaWMgPT0gYiJNRVRUQUwwNCI6CiAgICAgICAgICAgIGlmIGxlbihkYXRhKSA8IEFEQU1fSEVBREVSLnNpemU6CiAgICAgICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJMZWFybmVyIGNoZWNrcG9pbnQgaGVhZGVyIGlzIHRydW5jYXRlZCIpCiAgICAgICAgICAgIG9wdGltaXplciwgaGVhZGVyLCBzdGF0ZV9jb3VudCA9ICJhZGFtIiwgQURBTV9IRUFERVIsIDIKICAgICAgICBlbHNlOgogICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJVbmtub3duIGxlYXJuZXIgY2hlY2twb2ludCBmb3JtYXQiKQogICAgICAgICgKICAgICAgICAgICAgXywKICAgICAgICAgICAgZXBvY2gsCiAgICAgICAgICAgIHN0ZXBzLAogICAgICAgICAgICBjb3VudCwKICAgICAgICAgICAgYnVmZmVycywKICAgICAgICAgICAgYWdlbnRzX3Blcl9idWZmZXIsCiAgICAgICAgICAgIHN0YXRlX2J5dGVzLAogICAgICAgICAgICBhZ2VudHMsCiAgICAgICAgICAgIHJuZ19zdGF0ZV9ieXRlcywKICAgICAgICAgICAgKnRhaWwsCiAgICAgICAgKSA9IGhlYWRlci51bnBhY2tfZnJvbShkYXRhKQogICAgICAgIGlmIG9wdGltaXplciA9PSAiYWRhbSI6CiAgICAgICAgICAgIG9wdGltaXplcl9zdGVwLCBsZWFybmluZ19yYXRlLCBlbnRyb3B5X2NvZWZmaWNpZW50ID0gdGFpbAogICAgICAgICAgICBpZiBvcHRpbWl6ZXJfc3RlcCA9PSAwIGFuZCBzdGVwczoKICAgICAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkxlYXJuZXIgY2hlY2twb2ludCBjb250YWlucyBpbnZhbGlkIG9wdGltaXplciBzdGVwIikKICAgICAgICBlbHNlOgogICAgICAgICAgICBsZWFybmluZ19yYXRlLCBlbnRyb3B5X2NvZWZmaWNpZW50ID0gdGFpbAogICAgICAgIGlmIGNvdW50ICE9IHBhcmFtZXRlcl9jb3VudDoKICAgICAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiTGVhcm5lciBjaGVja3BvaW50IHBhcmFtZXRlciBjb3VudCBkaWZmZXJzIikKICAgICAgICBpZiAoCiAgICAgICAgICAgIG5vdCBidWZmZXJzCiAgICAgICAgICAgIG9yIG5vdCBhZ2VudHNfcGVyX2J1ZmZlcgogICAgICAgICAgICBvciBub3QgYWdlbnRzCiAgICAgICAgICAgIG9yIG5vdCBybmdfc3RhdGVfYnl0ZXMKICAgICAgICAgICAgb3IgYWdlbnRzICE9IGJ1ZmZlcnMgKiBhZ2VudHNfcGVyX2J1ZmZlcgogICAgICAgICk6CiAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkxlYXJuZXIgY2hlY2twb2ludCBydW50aW1lIGRpbWVuc2lvbnMgZGlmZmVyIikKICAgICAgICBleHBlY3RlZCA9IGhlYWRlci5zaXplICsgY291bnQgKiA0ICogc3RhdGVfY291bnQgKyBhZ2VudHMgKiBybmdfc3RhdGVfYnl0ZXMgKyBzdGF0ZV9ieXRlcyArIGFnZW50cyAqIDgKICAgICAgICBpZiBsZW4oZGF0YSkgIT0gZXhwZWN0ZWQ6CiAgICAgICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkxlYXJuZXIgY2hlY2twb2ludCBwYXJhbWV0ZXIgY291bnQgb3IgcGF5bG9hZCBzaXplIGRpZmZlcnMiKQogICAgICAgIG1vbWVudHMgPSBzdHJ1Y3QuaXRlcl91bnBhY2soIjxmIiwgbWVtb3J5dmlldyhkYXRhKVtoZWFkZXIuc2l6ZSA6IGhlYWRlci5zaXplICsgY291bnQgKiA0ICogc3RhdGVfY291bnRdKQogICAgICAgIHJld2FyZHMgPSBzdHJ1Y3QuaXRlcl91bnBhY2soIjxmIiwgbWVtb3J5dmlldyhkYXRhKVtleHBlY3RlZCAtIGFnZW50cyAqIDggOl0pCiAgICAgICAgaWYgKAogICAgICAgICAgICBub3QgbWF0aC5pc2Zpbml0ZShsZWFybmluZ19yYXRlKQogICAgICAgICAgICBvciBsZWFybmluZ19yYXRlIDwgMAogICAgICAgICAgICBvciBub3QgbWF0aC5pc2Zpbml0ZShlbnRyb3B5X2NvZWZmaWNpZW50KQogICAgICAgICAgICBvciBlbnRyb3B5X2NvZWZmaWNpZW50IDwgMAogICAgICAgICAgICBvciBub3QgYWxsKG1hdGguaXNmaW5pdGUodmFsdWUpIGFuZCAoaW5kZXggPCBjb3VudCBvciB2YWx1ZSA+PSAwKSBmb3IgaW5kZXgsICh2YWx1ZSwpIGluIGVudW1lcmF0ZShtb21lbnRzKSkKICAgICAgICAgICAgb3Igbm90IGFsbChtYXRoLmlzZmluaXRlKHZhbHVlKSBmb3IgKHZhbHVlLCkgaW4gcmV3YXJkcykKICAgICAgICApOgogICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJMZWFybmVyIGNoZWNrcG9pbnQgY29udGFpbnMgaW52YWxpZCBvcHRpbWl6ZXIgc3RhdGUiKQogICAgICAgIHJldHVybiBjbHMoCiAgICAgICAgICAgIG9wdGltaXplcj1vcHRpbWl6ZXIsCiAgICAgICAgICAgIGVwb2NoPWVwb2NoLAogICAgICAgICAgICBhZ2VudF9zdGVwcz1zdGVwcywKICAgICAgICAgICAgbGVhcm5pbmdfcmF0ZT1sZWFybmluZ19yYXRlLAogICAgICAgICAgICBlbnRyb3B5X2NvZWZmaWNpZW50PWVudHJvcHlfY29lZmZpY2llbnQsCiAgICAgICAgICAgIHBhcmFtZXRlcl9jb3VudD1jb3VudCwKICAgICAgICAgICAgb3B0aW1pemVyX3N0ZXA9b3B0aW1pemVyX3N0ZXAsCiAgICAgICAgKQoKCmRlZiBwdWJsaXNoX2NoZWNrcG9pbnQocG9saWN5X3BhdGg6IHN0ciwgcnVuX3JlY29yZDogc3RyLCBlbnZpcm9ubWVudF9jb3VudDogaW50KSAtPiBOb25lOgogICAgIiIiUHVibGlzaCBpZGVudGl0eSBsYXN0LCBhZnRlciBuYXRpdmUgYW5kIGF1eGlsaWFyeSBzbmFwc2hvdHMgYXJlIGNsb3NlZC4iIiIKICAgIHBvbGljeSA9IFBhdGgocG9saWN5X3BhdGgpCiAgICByZWNvcmQgPSBQYXRoKHJ1bl9yZWNvcmQpCiAgICBpZiBub3QgcG9saWN5LnJlc29sdmUoKS5pc19yZWxhdGl2ZV90byhyZWNvcmQucmVzb2x2ZSgpLnBhcmVudCAvICJjaGVja3BvaW50cyIpOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkNoZWNrcG9pbnQgbXVzdCBiZWxvbmcgdG8gaXRzIHJlY29yZGVkIHJ1biIpCiAgICBwYXJhbWV0ZXJzID0gcG9saWN5LnJlYWRfYnl0ZXMoKQogICAgaWYgbm90IHBhcmFtZXRlcnMgb3IgbGVuKHBhcmFtZXRlcnMpICUgNDoKICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJDaGVja3BvaW50IG11c3QgY29udGFpbiBub25lbXB0eSBmbG9hdDMyIHBvbGljeSB3ZWlnaHRzIikKICAgIHN0YXRlID0gUGF0aChzdHIocG9saWN5KSArICIubGVhcm5lciIpCiAgICBsZWFybmVyID0gTGVhcm5lckNoZWNrcG9pbnQucmVhZChzdGF0ZSwgbGVuKHBhcmFtZXRlcnMpIC8vIDQpCiAgICBpZiBsZWFybmVyLmFnZW50X3N0ZXBzICE9IGludChwb2xpY3kuc3RlbSk6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcigiTGVhcm5lciBzdGVwIGRpZmZlcnMgZnJvbSBjaGVja3BvaW50IG5hbWUiKQogICAgaWYgZW52aXJvbm1lbnRfY291bnQgPCAwOgogICAgICAgIHJhaXNlIFZhbHVlRXJyb3IoIkVudmlyb25tZW50IGNvdW50IG11c3QgYmUgbm9ubmVnYXRpdmUiKQogICAgZW52aXJvbm1lbnRzID0gW10KICAgIGZvciBpbmRleCBpbiByYW5nZShlbnZpcm9ubWVudF9jb3VudCk6CiAgICAgICAgc25hcHNob3QgPSBQYXRoKGYie3BvbGljeX0uZW52aXJvbm1lbnQue2luZGV4fS5qc29uIikucmVhZF9ieXRlcygpCiAgICAgICAgaWYgTmF0aXZlRW52aXJvbm1lbnRDaGVja3BvaW50Lm1vZGVsX3ZhbGlkYXRlX2pzb24oc25hcHNob3QpLmluZGV4ICE9IGluZGV4OgogICAgICAgICAgICByYWlzZSBWYWx1ZUVycm9yKCJOYXRpdmUgZW52aXJvbm1lbnQgY2hlY2twb2ludCBpbmRleCBkaWZmZXJzIikKICAgICAgICBlbnZpcm9ubWVudHMuYXBwZW5kKGhhc2hsaWIuc2hhMjU2KHNuYXBzaG90KS5oZXhkaWdlc3QoKSkKICAgIGlkZW50aXR5ID0gTGVhcm5lckNoZWNrcG9pbnRJZGVudGl0eSgKICAgICAgICBwb2xpY3lfc2hhMjU2PWhhc2hsaWIuc2hhMjU2KHBhcmFtZXRlcnMpLmhleGRpZ2VzdCgpLAogICAgICAgIHN0YXRlX3NoYTI1Nj1oYXNobGliLnNoYTI1NihzdGF0ZS5yZWFkX2J5dGVzKCkpLmhleGRpZ2VzdCgpLAogICAgICAgIHJ1bl9zaGEyNTY9aGFzaGxpYi5zaGEyNTYocmVjb3JkLnJlYWRfYnl0ZXMoKSkuaGV4ZGlnZXN0KCksCiAgICAgICAgZW52aXJvbm1lbnRfc2hhMjU2PWVudmlyb25tZW50cywKICAgICkKICAgIGRlc3RpbmF0aW9uID0gUGF0aChzdHIoc3RhdGUpICsgIi5qc29uIikKICAgIHRlbXBvcmFyeSA9IFBhdGgoc3RyKGRlc3RpbmF0aW9uKSArIGYiLnRtcC57b3MuZ2V0cGlkKCl9IikKICAgIHRlbXBvcmFyeS53cml0ZV90ZXh0KGlkZW50aXR5Lm1vZGVsX2R1bXBfanNvbigpICsgIlxuIikKICAgIHRlbXBvcmFyeS5yZXBsYWNlKGRlc3RpbmF0aW9uKQo=')
+if path.exists():
+    assert path.read_bytes()==data
+else:
+    with path.open('xb') as handle: handle.write(data)
+LEARNERSTAGE
+srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 bash -s <<'NODE'
+set -euo pipefail
+w=/tmp/relh-generals-coworld
+disk=/var/tmp/relh-generals-recovery
+job=$SLURM_JOB_ID
+out=$disk/native-raw-advnorm-r4-ent0-8m-v5-$job
+mkdir -p "$out"
+printf '%s  %s\n' ff0469effadc46ef35b28b08c1feed77bea8ca537389cf3c25ef7fdc0ff9cb89 "$disk/train_native_raw_ppo-advnorm-20260927.py" | sha256sum -c -
+printf '%s  %s\n' 99cdd3fc87c0aa95b775410aaebf2724b555d583db11051b102837489fd656ab "$disk/native-advnorm-learner-python-v1-20260927.py" | sha256sum -c -
+python3 - "$disk/native-raw-advnorm-build-v5-26943/build/build.json" <<'PYINNER'
+import hashlib,json,sys
+from pathlib import Path
+path=Path(sys.argv[1]); manifest=json.loads(path.read_text()); config=manifest['config']
+assert hashlib.sha256(path.with_name('puffer').read_bytes()).hexdigest()==manifest['binary_sha256']
+assert config['native_hint_prior'] is None and config['fabric'] is None
+assert config['python_environment']['options']['shaping_gamma']==.999
+assert config['python_environment']['options']['balance_opponent_sides']
+PYINNER
+IFS=, read -r -a allocated_gpus <<< "$SLURM_STEP_GPUS"
+test "${#allocated_gpus[@]}" -eq 1
+usage=$(nvidia-smi --query-gpu=uuid,memory.used,utilization.gpu --format=csv,noheader,nounits)
+mapfile -t rows <<< "$usage"
+test "${#rows[@]}" -eq 1
+IFS=, read -r gpu memory utilization <<< "${rows[0]}"
+gpu=${gpu//[[:space:]]/}; memory=${memory//[[:space:]]/}; utilization=${utilization//[[:space:]]/}
+[[ "$gpu" == GPU-* && "$memory" =~ ^[0-9]+$ && "$utilization" =~ ^[0-9]+$ ]]
+(( memory < 2048 && utilization < 20 ))
+name=relh-classic-native-raw-advnorm-r4-ent0-8m-v5-$job
+cleanup() { kill "${sampler:-}" 2>/dev/null || true; docker stop -t 5 "$name" >/dev/null 2>&1 || true; }
+trap cleanup EXIT
+trap 'exit 143' TERM
+(
+    while true; do
+        date -u +%H:%M:%S
+        nvidia-smi -i "$gpu" --query-gpu=utilization.gpu,utilization.memory,memory.used --format=csv,noheader,nounits
+        sleep 1
+    done
+) > "$disk/native-raw-advnorm-r4-ent0-8m-v5-gpu-$job.csv" 2>&1 &
+sampler=$!
+ln -s "$out/run" "$disk/native-raw-advnorm-r4-ent0-8m-v5-pilot-$job-0"
+timeout -k 30s 20m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=8 \
+    --ulimit core=0:0 --user "$(id -u):$(id -g)" \
+    -v "$w:/work" -v "$disk:/recovery" -v "$out:/recovery-output" \
+    -v "$disk/native-hint-prior-puffer.py-v2-20260927:/work/metta-device-wide-source/metta_training/puffer.py:ro" \
+    -v "$disk/native-hint-prior-model_config.py-v2-20260927:/work/metta-device-wide-source/metta_training/model_config.py:ro" \
+    -v "$disk/native-advnorm-native_build-v2-20260927.py:/work/metta-device-wide-source/metta_training/native_build.py:ro" \
+    -v "$disk/native-advnorm-learner-python-v1-20260927.py:/work/metta-device-wide-source/metta_training/learner.py:ro" \
+    -v "$disk/native-hint-prior-hint_prior.cuh-v2-20260927:/work/metta-device-wide-source/metta_training/native/hint_prior.cuh:ro" \
+    -v "$disk/native-advnorm-advantage.cuh-20260927:/work/metta-device-wide-source/metta_training/native/advantage.cuh:ro" \
+    -v "$disk/native-advnorm-learner-v3-20260927.cuh:/work/metta-device-wide-source/metta_training/native/learner.cuh:ro" \
+    -v "$disk/native-advnorm-replay-v2-20260927.cuh:/work/metta-device-wide-source/metta_training/native/replay.cuh:ro" \
+    -v "$disk/native_hint_initializer-feedforward-20260927.py:/work/source-normalized-16245/integrations/native_hint_initializer.py:ro" \
+    -v "$disk/metta_puffer-terminal-boundary-fixed-20260927.py:/work/source-normalized-16245/integrations/metta_puffer.py:ro" \
+    -v "$disk/puffer_codec-calibrated-v1.py:/work/source-normalized-16245/integrations/puffer_codec.py:ro" \
+    -v /var/tmp/relh-generals-jax-cache:/cache \
+    -v /tmp/relh-generals-gpu/runtime:/work/runtime:ro \
+    -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work \
+    -e XDG_CACHE_HOME=/recovery-output/cache \
+    -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-normalized-16245:/work/oldsource \
+    -e JAX_COMPILATION_CACHE_DIR=/cache -e JAX_PLATFORMS=cuda,cpu -e XLA_PYTHON_CLIENT_PREALLOCATE=false \
+    -e LD_LIBRARY_PATH=/work/runtime/nvidia/cu13/lib -e PYTHONFAULTHANDLER=1 \
+    relh-generals-b300:20260923b python /recovery/train_native_raw_ppo-advnorm-20260927.py \
+      --template /work/normalized-clean-pilot-16788/config.json \
+      --build /recovery/native-raw-advnorm-build-v5-26943/build \
+      --output /recovery-output --timesteps 8388608 --replay-ratio 4 --entropy-coef 0 --checkpoint-interval 2 --opponent strong_mixed --normalize-advantages > "$out/container.log" 2>&1 &
+pid=$!
+start=$(date +%s)
+status=0
+while kill -0 "$pid" 2>/dev/null; do
+    sleep 15
+    now=$(date +%s)
+    if ! python3 "$disk/monitor_coworld_steady_interval_v4.py" \
+        "$disk" "$job" "$((now-start))" native-raw-advnorm-r4-ent0-8m-v5 600 1048576 30000; then
+        echo "Raw PPO replay-ratio pilot stopped by startup or progress guard" >&2
+        status=1
+        cleanup
+        break
+    fi
+done
+wait "$pid" || status=1
+test -f "$out/run/completed.json" || status=1
+exit "$status"
+NODE

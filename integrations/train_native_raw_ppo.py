@@ -19,8 +19,10 @@ def main():
     parser.add_argument("--seed", type=int, default=1401)
     parser.add_argument("--learning-rate", type=float, default=0.003)
     parser.add_argument("--entropy-coef", type=float, default=0.01)
+    parser.add_argument("--normalize-advantages", action="store_true")
     parser.add_argument("--replay-ratio", type=float, default=1.0)
     parser.add_argument("--checkpoint-interval", type=int, default=1)
+    parser.add_argument("--opponent", choices=("strong_mixed", "random"), default="strong_mixed")
     args = parser.parse_args()
     if (
         args.timesteps <= 0
@@ -34,6 +36,8 @@ def main():
     ):
         raise ValueError("Invalid training budget or learning rate")
     build = json.loads((args.build / "build.json").read_text())
+    if args.normalize_advantages and "norm_adv = 0" not in (args.build / "source/config/default.ini").read_text():
+        raise ValueError("Native advantage normalization requires its verified build")
     options = build["config"]["python_environment"]["options"]
     if (
         build["config"]["native_hint_prior"] is not None
@@ -44,7 +48,7 @@ def main():
         or options["teacher_rollouts"]
         or options["shaping_gamma"] != 0.999
         or not options["balance_opponent_sides"]
-        or options["opponent"] != "strong_mixed"
+        or options["opponent"] != args.opponent
     ):
         raise ValueError("Unexpected raw RL environment")
     record = json.loads(args.template.read_text())
@@ -69,6 +73,8 @@ def main():
             "train.minibatch_size": 524288,
         }
     )
+    if args.normalize_advantages:
+        record["overrides"]["train.norm_adv"] = 1
     assert record["overrides"]["train.gamma"] == 0.999
     config = RunConfig.model_validate(record)
     (args.output / "config.json").write_text(config.model_dump_json(indent=2) + "\n")

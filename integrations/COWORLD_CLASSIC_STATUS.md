@@ -5391,8 +5391,77 @@ audit 26844 compared raw initial and constant-rate raw policies on 64 games,
 as games developed. These own-policy trajectories are diagnostic, not paired
 held-out outcomes.
 
-Reward-only replay-ratio-4, constant-rate, zero-entropy job 26848 is active
-for 33,554,432 steps; held-out job 26849 depends on its success. This isolates
-the entropy bonus as one possible cause of diffuse action choices. Inspect
-these exact jobs before another trainer. No policy has been published or set
-as champion.
+Reward-only replay-ratio-4, constant-rate, zero-entropy jobs 26848/26849
+remained pending for resources and were canceled before allocation. B300 had
+184/192 CPUs reserved; the trainer uses one environment thread. Replacement
+job 26852 used eight CPUs, completed 33,554,432 steps at about 364k late
+SPS, and produced checkpoint SHA256
+`21afa958d4a745f4fab90200f2d13da1acaf5172d0096eb4ee2035e040367968`.
+Held-out job 26853 still won zero games: W/L/D 0/1011/13 versus Expander,
+0/1015/9 versus Sentinel, and 0/1008/16 versus mixed. Zero entropy alone
+did not fix the policy.
+
+Random-opponent build 26856 used the same native binary as the strong mix.
+Job 26857 trained 33,554,432 steps with replay ratio 4, constant LR .003,
+and zero entropy, at about 592k steady SPS. Final SHA256 was
+`0933388b02611a68566830baae8af2e096c4d89a12c65ef83540f4a6407c72de`.
+Held-out job 26859 got W/L/D 0/6/1018 versus Random and zero wins against
+all three stronger pools. The fixed-prior initializer won 1004/1024 versus
+the same Random seed in job 26866. Random is winnable; this raw policy
+learned to stall rather than finish games.
+
+The native Puffer5 path lacked the minibatch advantage normalizer available
+to Fabric. The Metta worktree now has an opt-in `train.norm_adv` implementation.
+Build 26943 pins the matching Python checkpoint reader and a stateless-policy
+checkpoint fix; its raw binary SHA256 is
+`cb482197035ae3fb2d48f0519f76248ecbe262eb4ae9334ace5a8e31a40dfa14`.
+Raw normalized PPO job 26947 completed 8,388,608 steps on one B300 with
+65,536 environments, horizon 16, minibatch 524,288, replay ratio 4, LR .003,
+and zero entropy. Checkpoint intervals from 2M to 8M measured 360,541
+end-to-end SPS including checkpoint writes. Final SHA256 was
+`55a010ffacd0cf16626425f724971d1294be440506a1703450f36586683b410f`.
+Held-out job 26950 gave W/L/D 0/2/1022 versus Random, 0/1014/10 versus
+Expander, 0/1022/2 versus Sentinel, and 0/1016/8 versus mixed.
+Normalization alone did not rescue the flat raw policy.
+
+The fixed-prior normalized build 26981 uses the original signed-hint
+observation contract. Job 26984 completed 8,388,608 steps with replay ratio 4,
+constant LR .003, and advantage normalization at 296,487 checkpoint-interval
+SPS. Its initializer SHA256
+`e9012401842ab72c72ecf5b4f0252890cde716515a1f8e5f459905d880d163c0`
+is byte-identical to job 26820's initializer. Final SHA256 was
+`6ede7e841d9a90f8a99134974290eb5b609abfde5efed4a70039015002d88bd7`.
+Held-out job 26994 exactly matched the initializer's W/L/D on all four
+opponents: 1004/0/20 Random, 410/424/190 Expander, 316/632/76 Sentinel,
+and 388/466/170 mixed. The weights changed (L2 difference 5.50 against
+initializer norm 59.41), but greedy game outcomes did not.
+
+A bounded prior-scale experiment used build 27009, multiplying the native
+public-hint move/pass/split scales by 0.703125 while preserving their ratios.
+Job 27012 completed 33,554,432 steps with normalization, replay ratio 4, and
+zero entropy. Its late 20-epoch guard measured 290,376 end-to-end SPS and
+its final checkpoint SHA256 was
+`153e060dd94d7d0429e21194f28cde7f69589a74393c6f961985f7bb905620e0`.
+Paired seed-1386 evaluation 27018 scored the identical initializer and the
+8M checkpoint exactly alike on all four opponents. At 33M, W/L/D changed
+from 1004/0/20 to 1004/0/20 versus Random, 410/424/190 to 412/425/187
+versus Expander, 316/632/76 to 315/635/74 versus Sentinel, and 388/466/170
+to 390/468/166 versus mixed. These tiny changes do not establish improvement.
+
+Sampled-policy diagnostic 27022 drew all 1,024 Random games and won zero of
+1,024 Expander games (996 losses, 28 draws) with the raw normalized checkpoint.
+Sampling does not rescue that raw policy.
+
+The effective Puffer `run.ini` for the fixed-prior pilots used
+`gae_lambda=0.90` and `horizon=16`, limiting terminal-outcome credit to a
+short path through a long game. Initial job 27023 correctly rejected a
+runtime game count that differed from its binary's compiled environment
+count. Matching build 27035 and job 27042 tested 16,384 environments,
+horizon 64, GAE lambda .99, the same 1,048,576-step rollout and 524,288-step
+minibatch, with the other fixed-prior settings unchanged. Effective `run.ini`
+confirmed these settings; job 27042 completed 33,554,432 steps. Its late
+20-epoch guard measured 244,238 end-to-end SPS on one B300. Final checkpoint
+SHA256 was
+`30388e1409d48cc62f753aec0660e34c55e3979a4de973d8109696acb3bc9e8c`.
+Paired initial/8M/final held-out evaluation 27049 is running. No longer run
+or policy publication is justified until those outcomes are inspected.

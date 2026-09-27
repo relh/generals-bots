@@ -20,10 +20,29 @@ def main():
     parser.add_argument("--timesteps", type=int, default=8_388_608)
     parser.add_argument("--seed", type=int, default=1394)
     parser.add_argument("--learning-rate", type=float, default=0.0001)
+    parser.add_argument("--replay-ratio", type=float, default=1.0)
+    parser.add_argument("--checkpoint-interval", type=int, default=1)
+    parser.add_argument("--normalize-advantages", action="store_true")
+    parser.add_argument("--total-agents", type=int, default=65536)
+    parser.add_argument("--horizon", type=int, default=16)
+    parser.add_argument("--gae-lambda", type=float, default=0.90)
     args = parser.parse_args()
-    if args.timesteps <= 0 or not math.isfinite(args.learning_rate) or args.learning_rate < 0:
+    if (
+        args.timesteps <= 0
+        or not math.isfinite(args.learning_rate)
+        or args.learning_rate < 0
+        or not math.isfinite(args.replay_ratio)
+        or args.replay_ratio <= 0
+        or args.checkpoint_interval <= 0
+        or args.total_agents <= 0
+        or args.horizon <= 0
+        or not math.isfinite(args.gae_lambda)
+        or not 0 < args.gae_lambda <= 1
+    ):
         raise ValueError("Invalid training budget or learning rate")
     build = json.loads((args.build / "build.json").read_text())
+    if args.normalize_advantages and "norm_adv = 0" not in (args.build / "source/config/default.ini").read_text():
+        raise ValueError("Native advantage normalization requires its verified build")
     options = build["config"]["python_environment"]["options"]
     if (
         build["config"]["native_hint_prior"] is None
@@ -44,21 +63,24 @@ def main():
     )
     record["overrides"].update(
         {
-            "vec.total_agents": 65536,
+            "vec.total_agents": args.total_agents,
             "vec.num_buffers": 1,
             "vec.num_threads": 1,
             "base.cudagraphs": -1,
-            "base.checkpoint_interval": 1,
+            "base.checkpoint_interval": args.checkpoint_interval,
             "policy.hidden_size": 512,
             "policy.num_layers": 0,
             "train.learning_rate": args.learning_rate,
             "train.anneal_lr": 0,
             "train.ent_coef": 0.0,
-            "train.replay_ratio": 1.0,
-            "train.horizon": 16,
+            "train.replay_ratio": args.replay_ratio,
+            "train.horizon": args.horizon,
+            "train.gae_lambda": args.gae_lambda,
             "train.minibatch_size": 524288,
         }
     )
+    if args.normalize_advantages:
+        record["overrides"]["train.norm_adv"] = 1
     assert record["overrides"]["train.gamma"] == 0.999
     config = RunConfig.model_validate(record)
     assert isinstance(config.native_policy_initializer, NativePolicyInitialization)
