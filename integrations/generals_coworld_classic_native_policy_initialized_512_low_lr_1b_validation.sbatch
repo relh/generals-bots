@@ -27,10 +27,10 @@ printf "%s  %s\n" 020dbafc66861496295787330361b07e0492c892805594105fdbb050dcbb37
 disk=/var/tmp/relh-generals-recovery
 out=$disk/native-policy-initialized-512-low-lr-1b-validation-$job
 mkdir -p "$out"
-printf "%s  %s\n" 2de03fae3d9510df635b39c7a0cfce2bd58940fbdcb9251dbbfd4c02c0d7c713 \
-    "$disk/evaluate_coworld_frozen_greedy-native-20260927.py" | sha256sum -c -
-printf "%s  %s\n" b3b46175fde1a332706834cc60166d44c307c6cdc5811e60e8c9c009328f20e8 \
-    "$disk/launch_native_initialized_evaluation-20260927.py" | sha256sum -c -
+printf "%s  %s\n" d9bf712f51556cda413a92aec356aa7cfe3346da6fe8dc1e6e43b48d85862b28 \
+    "$disk/evaluate_coworld_frozen_greedy-reward-20260927.py" | sha256sum -c -
+printf "%s  %s\n" e96fdd1c7238838c84d2a4156cf3b332913e8ab8ec88313f28009c89bfaf9d86 \
+    "$disk/launch_native_reward_diagnostic_evaluation-v2-20260927.py" | sha256sum -c -
 printf "%s  %s\n" 37550f9dea166c0a7f8e6b165a2e52f12b41883f2b7599ac9f57aa5b12ca0eda \
     "$disk/puffer-calibrated-transfer.py" | sha256sum -c -
 printf "%s  %s\n" a0ae63e5ca54953ecbf26324ff94efaeeab2cfc36ef160ef2ab8d885ddb51d0e "$disk/native_puffer_policy-v2-20260927.py" | sha256sum -c -
@@ -99,10 +99,10 @@ timeout -k 30s 9m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=16 
     -e JAX_COMPILATION_CACHE_DIR=/cache \
     -e JAX_PLATFORMS=cuda,cpu -e XLA_PYTHON_CLIENT_PREALLOCATE=false \
     -e LD_LIBRARY_PATH=/work/runtime/nvidia/cu13/lib \
-    relh-generals-b300:20260923b python /recovery/launch_native_initialized_evaluation-20260927.py \
+    relh-generals-b300:20260923b python /recovery/launch_native_reward_diagnostic_evaluation-v2-20260927.py \
     --native --build /recovery/device-context-native-policy-65536-build-25526/build/build.json \
     --run "/recovery/$run/run" --checkpoint "/recovery/$run/run/$relative_checkpoint" \
-    --sha256 "$digest" --games 1024 --pool-size 1024 --seed 1363 --opponent "$opponent" \
+    --sha256 "$digest" --reward-diagnostics --games 1024 --pool-size 1024 --seed 1363 --opponent "$opponent" \
     --output "/recovery-output/$tag-$opponent" > "$out/$tag-$opponent.log" 2>&1
         cat "$out/$tag-$opponent/evaluation.json"
     done

@@ -4639,3 +4639,27 @@ Expander/Sentinel8192lanes/opponentID/side unchanged. 300K targetpassed.
 Nextquality1Bscript stagednot submitted; final1371seed held untouched.
 Goalactive: need stronger learnedcandidate+untouchedheldout+hostedproof before
 leagueentry/championchange. Current33M hostedartifact remains private test.
+
+
+Read-only805,306,368-newstep parameter audit against33M,allpolicy/learner/run
+identityhashes independentlymatched and4,852,736float32paramsfinite. Candidate
+SHA dcd3d23eefb773c9bbd65328923a7c26254cb16c07c21515b23e42867a5906bc.
+EncoderrelativeL2drift.01272738 (3,088,383/3,161,088changed),decoder.00016435
+(862,203/905,216changed),recurrent2.772326(all786,432changed). Parameters
+are updating; don't infer frozenoptimizer from unchangedmatchoutcomes. Large
+initialhintdecoder changeslittle, but causal learningbottleneck notestablished.
+
+Inspected pinnednative rollout-to-update source read-only. Rewardclamp[-1,1]
+occurs after time/batch transpose andbeforeadvantagekernel, so shapedrawreward
+can differ from learnerinput. Sourceinspection also supports precedingreward/
+terminal + currentobservation storage,nextreward/nextterminal GAE indexing;
+not an end-to-end transitionfixture. Added optional --reward-diagnostics to
+evaluator: active-lane rawrewardrange,clippedstep/terminalcounts,absoluteclamp
+change. No changes to rewards,actions,states,trainingorarchivedpackage.
+Defaultnativeargmax now omits optional sampling key for compatibility with
+verifiedv2actions API. New explicitexternal evaluator/launcherhashes:
+d9bf712f51556cda413a92aec356aa7cfe3346da6fe8dc1e6e43b48d85862b28 /
+e96fdd1c7238838c84d2a4156cf3b332913e8ab8ec88313f28009c89bfaf9d86,
+verified physicalcopies; originalhelpers untouched. Ruff/shellsyntax/diff clean.
+1Breward-validation-v2script staged,NOTsubmitted before checkpoint identity
+andfinitecheck. Runtimeverification will use actualGPUpairedqualityjob.

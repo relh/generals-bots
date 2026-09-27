@@ -31,6 +31,8 @@ def main():
     parser.add_argument("--training-pool-episode", type=int,
                         help="Diagnostic only: evaluate the latest pool seen by this checkpoint")
     parser.add_argument("--sample-seed", type=int, help="Native sampling diagnostic instead of hosted argmax")
+    parser.add_argument("--reward-diagnostics", action="store_true",
+                        help="Count raw rewards affected by the native learner's [-1, 1] clamp")
     parser.add_argument("--opponent", choices=("expander_harvester", "sentinel", "strong_mixed"), required=True)
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
@@ -69,6 +71,9 @@ def main():
         policy.reset(reset_seed)
     seats = list(range(args.games))
     start = time.monotonic()
+    reward_diagnostics = dict(active_steps=0, clipped_steps=0, clipped_terminal_steps=0,
+                              min_raw_reward=float("inf"), max_raw_reward=float("-inf"),
+                              total_absolute_clamp_change=0.0)
     try:
         observation = env.reset(reset_seed)
         initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
@@ -87,8 +92,8 @@ def main():
             if args.native:
                 actions, recurrent_state = policy.actions(
                     np.asarray(observation.values), np.asarray(observation.action_masks), recurrent_state,
-                    key=(None if args.sample_seed is None else
-                         jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)),
+                    **({} if args.sample_seed is None else dict(
+                        key=jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn))),
                 )
                 actions = np.asarray(actions, dtype=np.int32)
             else:
@@ -100,7 +105,22 @@ def main():
             masks = np.asarray(observation.action_masks, dtype=bool)
             assert masks[np.arange(args.games), actions[:, 0]].all()
             assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
+            active = ~env.finished.copy() if args.reward_diagnostics else None
             transition = env.step(actions)
+            if args.reward_diagnostics:
+                rewards = np.asarray(transition.rewards, dtype=np.float32)[active]
+                terminals = np.asarray(transition.terminated, dtype=bool)[active]
+                assert np.isfinite(rewards).all()
+                clipped = np.abs(rewards) > 1.0
+                reward_diagnostics["active_steps"] += int(rewards.size)
+                reward_diagnostics["clipped_steps"] += int(clipped.sum())
+                reward_diagnostics["clipped_terminal_steps"] += int((clipped & terminals).sum())
+                reward_diagnostics["min_raw_reward"] = min(
+                    reward_diagnostics["min_raw_reward"], float(rewards.min()))
+                reward_diagnostics["max_raw_reward"] = max(
+                    reward_diagnostics["max_raw_reward"], float(rewards.max()))
+                reward_diagnostics["total_absolute_clamp_change"] += float(
+                    np.abs(rewards - np.clip(rewards, -1.0, 1.0)).sum(dtype=np.float64))
             observation = transition.observation
             if turn % 50 == 0:
                 print(json.dumps(dict(turn=turn + 1, finished=int(env.finished.sum()))), flush=True)
@@ -127,6 +147,10 @@ def main():
         score=float(outcomes.mean()), perf=float((outcomes.mean() + 1) / 2),
         turns=turn + 1, wall_seconds=time.monotonic() - start,
     )
+    if args.reward_diagnostics:
+        result["reward_diagnostics"] = dict(
+            scope="Frozen argmax trajectories; raw environment rewards versus native learner clamp",
+            **reward_diagnostics)
     (args.output / "evaluation.json").write_text(json.dumps(result, indent=2) + "\n")
     np.save(args.output / "outcomes.npy", outcomes)
     print(json.dumps(result), flush=True)
