@@ -4138,3 +4138,23 @@ startup/progress guards and exact container cleanup retained. No dependent
 long job authorized by this launch; first measure finite steps/SPS, then
 frozen held-out validation. Original long run continues. No hosted writes or
 champion changes. Goal active.
+
+
+### Longer sequence allocation outcome and retry
+
+H64 probe25822 FAILED before any steps: alloc_create cudaMalloc assertion.
+No throughput or finite-step result. Exact own container exited and no orphan
+was present. Preserved verified archive
+`/home/metta/relh-generals-puffer/native-policy-horizon64-prestep-memory-failure-25822.tar.gz`
+SHA256 `d905bdda13da4cfbd1f1d0b2f00731cdec30a9bfb7c5c46b29ef2e71ff89f283`.
+H32 retry25828 RUNNING: same verified1B parent/seed1338, same agents/mb/replay,
+batch2,097,152,134,217,728bounded steps. At epoch5:10,485,760steps,
+early dashboard386.1KSPS,100%GPU,211.2/268GB. This is an early reading,
+not the steady-state gate. Original25600 unaffected. Frozen validation script
+prepared for candidate final checkpoint0000000134217728.bin on same1,536
+held-out seed1104cases; it verifies successful completion and final identity.
+Only validation follows this probe; no replacement long run yet.
+
+Validation25831 submitted with afterok:25828 dependency. This schedules only
+frozen evaluation after successful completion/finite checks, not another
+long training job. Check scheduler/artifacts before any retry.
