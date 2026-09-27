@@ -2933,3 +2933,56 @@ Update, 2026-09-26 probe archived and held-out job submitted
     /var/tmp/relh-generals-recovery/device-context-teacher05-eval-23675.
     Nextrevalidate23675 andreadquality beforelongertraining. Goalactive;
     currenttraining125,203SPS, target300k stillunmet. No hostedrelease.
+
+Update, 2026-09-26 throughput scaling probe prepared
+  *Previousgoalturn progress: teacher05 probe completed125,203SPS;
+    held-out23675revalidatedRUNNING at5:53. Noqualityresult yet.
+  *Submitteddistinct B300build23712 for16384context14 lanes with same
+    teacher.05/model,state22956. Native64bit rollout transposefix remains
+    pinned39263f7d84 source. Beforepilot verifybuildterminal+manifest.
+  *Preparedfinite16,777,216-step probe32epochs,12warmups/20measured,
+    horizon32,minibatch32768,replay.25,entropy.001,seed1317. Initialize
+    completed23613 with explicitenvironmenttransfer (lane count only).
+    Usesexternalverifiedrun-control launcher; no environment source edits.
+    GPU selection/telemetry uses allocated GPU IDs and queries their UUID
+    directly, avoiding physical-row vsallocation-list index mismatch when
+    running beside anotherjob. No longtraining orpublication started.
+
+Update, 2026-09-26 16k build verified after GPU namespace correction
+  *23712failed beforecompilation: nvidia-smi -i $SLURM_STEP_GPUS used
+    node index against remapped visible namespace, returned no devices.
+    Confirmedactual allocation: SLURM_STEP_GPUS=4, CUDA_VISIBLE_DEVICES=0;
+    nvidia-smi list oneidleGPU UUID GPU-0c5605ae-e405-99f1-848e-9fa81e41482a.
+  *Corrected scripts querysolevisible GPU and requireoneallocation,
+    onevisibledevice, validUUID/numericusage andidleGPU. No swallowed
+    command failure; Docker andsampleruseUUID. Build23743succeeded.
+    BinarySHA13f201f779a1c8df9e5e0395e9ae204f5c754951af802af06af5f72fa3e4e1a4;
+    modelSHAunchanged3f75f84ede08faa047817b7ddab83ff4298c279f43c78c6d22bbebb26a81088b.
+  *16k finitepilot submittedonlyafter verifiedbuild. RevalidateitsjobID
+    andmeasure20epochs beyond12warmups; no300k claimwithoutnativeproof.
+    23675heldoutstillRUNNING at11:22. No duplicateovernight/hostedrelease.
+
+Update, 2026-09-26 16k training throughput measured; quality still flat
+  *23778 completed16,777,216 newsteps ononeB300.16384env,horizon32,
+    minibatch32768,replay.25,float32,teacher.05,entropy.001,seed1317.
+    After12warmup epochs,20epochs:10,485,760steps/46.194s =226,994SPS
+    (uptime87.048->133.242). Clears30k;300k targetstillunmet. Native
+    dashboardend env1.303s/56%,model.448s/19%, remainingabout25%.
+    GuardGPUmean60s at28epochs86.4%, final77.9% includescompletedidle.
+    Model/codec unchanged; largerlanes andlowerreplay jointlytested.
+  *23778 finalcheckpoint SHA256
+    859e041b1e8b44d515ff3a45fbb007bd16068d944d781564f789d0a4051a1c42.
+    64bit rollout transpose survived full16.78M finiteprobe; no crash.
+  *23675 completedteacher05 checkpoint heldout Expanderperf.489502,
+    score-.020996, exactly sameaggregate asparent335M. No improvement
+    demonstrated after8.39M updates withlowerteacher/higherentropy.
+    Bothweights andquality artifacts requirepreservation; no overnight
+    extension justified bythis evidence, no hostedrelease.
+  *Next inspect real-state actionentropy/teacheragreement and initialvs
+    trainedhint weights: hintprior istrainable ScalarWeighted coupling,
+    itsstrength8 option initializesweights, so changingfactoryoption on
+    warmstartalone wouldnotreduce existingcheckpointprior. Do not make
+    that ineffective recipechange. Nativeenv56%/model19% motivates
+    boundedminibatch65536/131072 profiling withsame replaywork .25 after
+    artifactsarchived, notreducingoptimization merelytohitSPS.
+    Goalactive, strength/hostedpublication unproven.
