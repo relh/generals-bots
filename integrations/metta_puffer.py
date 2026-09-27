@@ -6,6 +6,7 @@ loss, or the explicit finite game horizon.
 """
 
 import hashlib
+import json
 
 import jax
 import jax.numpy as jnp
@@ -400,7 +401,7 @@ class BatchedGeneralsPufferEnvironment:
         self, *, context: EnvironmentContext, parallel_games: int = 16, require_gpu: bool = True,
         sentinel_teacher_fraction: float = 0.0, sentinel_teacher_interval: int = 1,
         sentinel_teacher_only: bool = False, group_device_opponents: bool = False,
-        balance_opponent_sides: bool = False, **options
+        balance_opponent_sides: bool = False, audit_native_actions: bool = False, **options
     ):
         if parallel_games < 1:
             raise ValueError("parallel_games must be positive")
@@ -419,6 +420,23 @@ class BatchedGeneralsPufferEnvironment:
             raise ValueError("Balanced opponent sides are incompatible with interleaved opponent groups")
         self.balance_opponent_sides = balance_opponent_sides
         self.parallel_games = parallel_games
+        self.audit_native_actions = audit_native_actions
+        if audit_native_actions:
+            self._audit_output = context.output / f"native-action-audit-{context.index}.jsonl"
+            self._audit_output.parent.mkdir(parents=True, exist_ok=True)
+            self._audit_steps = 0
+            sizes = jnp.asarray(self.base.spec.action_sizes)
+            offsets = jnp.concatenate((jnp.zeros(1, dtype=jnp.int32), jnp.cumsum(sizes)[:-1]))
+
+            @jax.jit
+            def validate_actions(actions, masks):
+                encoded = jnp.isfinite(actions) & (actions == jnp.floor(actions))
+                bounded = (actions >= 0) & (actions < sizes)
+                indices = jnp.clip(jnp.nan_to_num(actions), 0, sizes - 1).astype(jnp.int32)
+                selected = masks[jnp.arange(parallel_games)[:, None], indices + offsets] != 0
+                return jnp.stack((jnp.sum(~encoded), jnp.sum(~bounded), jnp.sum(~selected)))
+
+            self._validate_native_actions = validate_actions
         self.sentinel_teacher_games = round(parallel_games * sentinel_teacher_fraction) if self.base.training else 0
         self.sentinel_teacher_interval = sentinel_teacher_interval
         self.sentinel_teacher_only = sentinel_teacher_only
@@ -690,6 +708,8 @@ class BatchedGeneralsPufferEnvironment:
         if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher:
             raise ValueError("Device-resident Classic training requires policy rollouts without replay metadata")
         values, masks = self._reset_states(seed)
+        if self.audit_native_actions:
+            self._audit_masks = masks
         if self.base.supervise_teacher:
             if self.base.prior_hint_features:
                 teacher_actions = jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values)
@@ -702,12 +722,33 @@ class BatchedGeneralsPufferEnvironment:
     def step_device(self, actions):
         if not self.base.training or self.base.teacher_rollouts or self.base.sparse_teacher:
             raise ValueError("Device-resident Classic training requires policy rollouts without replay metadata")
+        if self.audit_native_actions:
+            expected_shape = (self.parallel_games, len(self.spec.action_sizes))
+            if actions.shape != expected_shape:
+                raise ValueError(f"Native action shape {actions.shape}; expected {expected_shape}")
+            failures = np.asarray(self._validate_native_actions(actions, self._audit_masks))
+            self._audit_steps += 1
+            if failures.any() or self._audit_steps % 32 == 0:
+                record = {
+                    "device_steps": self._audit_steps,
+                    "agent_actions": self._audit_steps * self.parallel_games,
+                    "head_decisions": self._audit_steps * self.parallel_games * len(self.spec.action_sizes),
+                    "invalid_encoding": int(failures[0]), "out_of_bounds": int(failures[1]),
+                    "masked_actions": int(failures[2]),
+                    "scope": "Synchronized native sampled actions against preceding observation masks",
+                }
+                with self._audit_output.open("a") as output:
+                    output.write(json.dumps(record) + "\n")
+            if failures.any():
+                raise ValueError(f"Native action audit failed: {record}")
         indices = actions[:, 0].astype(jnp.int32)
         splits = actions[:, 1].astype(jnp.int32) if self.base.factorized_actions else jnp.zeros_like(indices)
         self.states, self.keys, values, masks, rewards, done = self._advance_device_states(
             self.states, self.base.pool, self.sides, self.opponent_ids,
             indices, splits, self.keys,
         )
+        if self.audit_native_actions:
+            self._audit_masks = masks
         self.turn += 1
         episode_done = self.turn >= self.horizon
         if episode_done:

@@ -2749,3 +2749,67 @@ submission. Actualevaluationruntimevalidationpendingafter25236completes.
 samepinnedcalibratedwirecodec+player+helper as25128,balancedadapter/build.
 Measureswarmlegalreplydeadline500ms; doesnotreplaceactualhostedstartup/matches.
 Goalactive,300kandstrongheld-out/hostedpublicationremainunproven. Nochampionchange.
+
+
+## Balanced continuation recovered; native sampler audit and overnight budget
+
+25236 completed 134,217,728 new finite steps on one B300, 16,384 environments,
+H32, minibatch 131,072, replay 1, gamma/shaping_gamma .999, balanced opponent
+sides. Final 20 intervals: 10,485,760 steps at 205,052.31 SPS (about 51.137s),
+after compilation and the earlier warmup; final GPU 95%, VRAM 88.5/268 GB.
+Final checkpoint SHA256:
+70a2cf93e2f705264f7f32d144db2c8d4f4aaffda221546e04ab4fdcddba873b.
+Verified complete archive on metta1:
+/home/metta/relh-generals-puffer/device-context-balanced-134m-and-serving-25236-25276.tar.gz
+SHA256 023a4fa0164c4108bc4fb4820cd3490ad37c184a9c66f3b073752e2d72121066.
+25276 exact-checkpoint CPU reply probe: 4 warmups, 32 measured actions,
+17.336ms mean / 18.169ms max, legal replies below 500ms. Synthetic public
+boards only; hosted startup and strength remain unproven.
+
+Effective native run.ini has anneal_lr=1, min_lr_ratio=0. Short 134M runs
+therefore taper learning rate to zero after only 256 epochs / 1024 minibatch
+updates. A 3,221,225,472-step budget spans 6144 epochs (~4.4h at 205k SPS).
+Native source confirms total_timesteps/global_step/train_epochs are long;
+puf_ini_get returns double. The budget is exactly representable. Exact
+learner resume additionally requires environment snapshots absent from this
+run, so the prepared overnight script explicitly warm starts policy weights
+with a fresh optimizer; it does not bypass restoration checks.
+
+New optional audit_native_actions (default false) checks every incoming native
+sampled action against the previous device observation's legal mask, including
+shape, finite integer encoding, per-head bounds and selected mask bits. With
+instrumentation enabled it synchronizes a three-counter result per device step
+and writes aggregate records every 32 steps under the environment output.
+This rules out native action layout/encoding/mask mistakes in the synchronized
+probe; it does not prove absence of all asynchronous races. Production default
+adds no synchronization. No new Ruff findings relative to HEAD; Python compile,
+Bash syntax and git diff whitespace checks passed.
+Immutable adapter metta_puffer-native-audit-20260927.py SHA256:
+cf8577c7f2f754e91057eb5c872c40eb885fd2920435bd60de590c48183269c0.
+25344 diagnostic build passed, same native binary and model hashes as 25200.
+25350 bounded 4,194,304-step actual native training audit is running, seed1330,
+latest 25236 weights, checked environment transfer, no teacher action mix.
+At 1,572,864 actions / 3,145,728 head decisions all audit counters were zero.
+No overnight job submitted before audit completion. The production overnight
+script uses the already qualified 25200 build and uninstrumented balanced
+adapter; checkpoint interval128, 5h30 allocation, 5h15 subprocess bound.
+
+25271 paired held-out remains live; six cases, 512 games/pool512/seed1102.
+Parent results so far: Expander 199W/197L/116D (perf .501953125),
+Sentinel 154W/316L/42D (.341796875), mixed184W/233L/95D (.4521484375).
+321 distinct initial state hashes among 512 games; paired comparisons must
+account for repeated maps. Balanced candidate results are not yet complete.
+No champion change or hosted upload. Goal remains active; 300k SPS and proven
+held-out/hosted improvement are still outstanding.
+
+
+25350 now COMPLETED exit0 in108s. Actual native sampler audited all4,194,304
+agent actions /8,388,608 head decisions across256device steps, withzero
+invalid encodings, out-of-bounds choices, or masked choices; passed beyond
+2.6Mfinite-step gate. This diagnostic's synchronized throughput is not used
+for the production speed qualification. 25356 overnight submitted onlyafter
+that success, exact production25200 build and balanced adapter, policy-only
+warmstart25236, seed1331, 3,221,225,472newsteps, lr.001 annealedacross6144epochs,
+H32/16k/mb131072/replay1/entropy.001, matching discounts. Productionsetup's
+measured205kSPS exceeds30kgate;300k aspirationstillunmet. Checkpoint128epochs
+(~5.5min); final budgetexpected4.4h. No duplicate own overnight trainer.
