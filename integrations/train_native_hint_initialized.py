@@ -20,14 +20,17 @@ def main():
     parser.add_argument("--logit-scale", type=float, default=24.0)
     parser.add_argument("--seed", type=int, default=1346)
     parser.add_argument("--entropy-coef", type=float, default=0.0)
+    parser.add_argument("--timesteps", type=int, default=33_554_432)
     args = parser.parse_args()
+    if args.timesteps <= 0:
+        raise ValueError("Timesteps must be positive")
     if not math.isfinite(args.entropy_coef) or args.entropy_coef < 0:
         raise ValueError("Entropy coefficient must be finite and nonnegative")
     assert not (args.output / "run").exists()
     _, initializer = export(args.build / "build.json", args.output / "initializer", scale=args.logit_scale)
     artifact = args.output / "initializer/initializer.json"
     record = json.loads(args.template.read_text())
-    record["total_timesteps"] = 33_554_432
+    record["total_timesteps"] = args.timesteps
     record["seed"] = args.seed
     record["initialize"] = None
     record["native_policy_initializer"] = dict(
@@ -45,7 +48,7 @@ def main():
     assert isinstance(config.native_policy_initializer, NativePolicyInitialization)
     (args.output / "config.json").write_text(config.model_dump_json(indent=2) + "\n")
     result = train_puffer(args.build, args.output / "run", config)
-    assert result.trained_timesteps == 33_554_432
+    assert result.trained_timesteps == args.timesteps
     copied_sha = hashlib.sha256((args.output / "run/initial-policy.bin").read_bytes()).hexdigest()
     assert copied_sha == initializer["policy_sha256"]
     checkpoint = args.output / "run" / result.final_checkpoint

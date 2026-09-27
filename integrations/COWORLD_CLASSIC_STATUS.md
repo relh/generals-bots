@@ -5006,3 +5006,44 @@ must exceed 78,643,200 agent steps; use matched 134,217,728-step old/new lifecyc
 recipes and the same training seed/initializer/schedule, then paired validation.
 Keep the corrected fingerprint/source binding explicit and test >=300k actual
 steady end-to-end SPS before considering a long run.
+
+## Matched lifecycle training across the refresh boundary
+
+Previous goal turn made progress: entropy recipe rejected by completed paired
+quality, administrative terminal bug reproduced on GPU, correction implemented,
+and corrected GPU terminal/recycling proof passed. No blocking condition exists.
+
+Corrected build/proof 26339 archive SHA
+41d5330103acb0938d06ca7cc63610d82a95bfd05c990899e107e1c8ecf8b7a0
+matched local/login copies. Binary SHA 4344af30b6bdbde7703f1db67be42f4d7cd8822b42ccdd381b1393f2b1809299
+verified against the actual binary. Corrected environment fingerprint:
+e5873fc29e197239a08f51803e914f29a4197c8d67d6208e5839ea84b34c0e1e.
+The same generic binary is valid because it loads the Python bridge; source
+fingerprint differs and each run mounts its matching immutable adapter.
+Both reward trajectory proof and corrected terminal proof verified locally;
+final scheduler log contains NATIVE_POLICY_BUILD_OK. No fabricated run metadata.
+
+Added bounded --timesteps runner argument, default 33554432; checks positive
+budget and actual completed step count. New immutable lifecycle runner SHA
+89d57ff7f0af31646594f1f8836a081c3eb66bfeddb13f35ce75cad981fdad51,
+launcher SHA aa07035068e534f9016697868227c2ce74bed3f85a4dad35b71c8883111b5c7c.
+Both matched probes use genuine scale24 initializer, seed1346, 134217728 steps,
+65536 env/H16/batch1048576/mb524288/H512 L1/replay1/lr.003 short cosine,
+entropy0/reward_scale.5/gamma=shaping_gamma.999. 3:1 Expander/Sentinel,
+8192 lanes per opponent ID and side. 300k steady guard, 25-minute container cap.
+These bounded runs cross the 1200-step refresh at 78643200 agent steps.
+
+Fixed lifecycle job 26349 is live. Original control 26348 failed before training
+on a concurrent exclusive helper-file creation race; its scheduler traceback
+confirmed FileExistsError, and no training artifacts were produced. Added an
+advisory lock for helper staging, preserved failed job and submission records,
+and resubmitted only the confirmed failed control as 26351 with a new ledger
+and name. Job26349 was not restarted. Both new helpers already pass checksums.
+
+At fixed epoch36 the 20-epoch steady guard measured 414498 SPS, GPU mean92.8%;
+this is before the refresh boundary, not the final full-interval gate. Control
+26351 is also live. No overnight run or champion change released.
+Prepared (not yet submitted) paired validation uses seed1382, 2048 games/pool
+per opponent, original reward-scaled best33M versus both matched134M models.
+Read completed identities/finite weights first. Final seed1381 remains untouched.
+Ruff new runner/launcher, bash syntax and git diff checks pass.
