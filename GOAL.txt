@@ -2244,3 +2244,17 @@ Final checkpoint d324f221ef45facebd6c11c165fa93d03a0d77dabdf534c2dc9e9f05ec90241
 24609 scheduler COMPLETED, exact training container absent. Preserve checkpoint
 and archive before future replacement. Prepared held-out and same-input paired
 audit use fixed job IDs, avoiding Slurm explicit-export retrieval failure.
+
+
+### Calibrated checkpoint archived; quality checks submitted
+
+Verified archive /home/metta/relh-generals-puffer/device-context-calibrated-probe-24609.tar.gz
+SHA ecb0770ea9ea4453465b260aca1e6587b8a939a2cbddebbeb391aa0216d86ad4.
+Contains complete build, training run/checkpoints/identities/logs, GPU samples,
+and exact calibration/run-control sources. Held-out Expander evaluation 24621
+and paired action audit 24622 submitted with default sbatch environment. Audit
+compares parent 23778 weights and 24609 weights under identical calibrated
+inputs, seed 1324, 32 games x 768 turns. Evaluation keeps untouched seed 1101.
+Inspect these exact jobs before any restart; no long training or publication yet.
+Goal remains active: 261k current training SPS and restored exploration, 300k
+and stronger held-out/hosted policy unproven.
