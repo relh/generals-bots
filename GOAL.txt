@@ -3550,3 +3550,10 @@ relh co-gas-generals-siege-relh:v4, richard ...richard:v2. Relh remains lower
 eligible destination for a proven improvement. No hosted writes/champion change.
 Goal active: stable learned improvement, final untouched held-out and hosted
 matches remain required; throughput alone does not satisfy completion.
+
+
+25994 confirmed steady training at~376K SPS afterwarmup, GPU~95.7% at epoch44.
+Prepared/staged (NOT submitted) recovery134M paired validation script:
+baseline25880 vs published25994 step134,217,728;1024games/opponent,pool1024,
+freshseed1356. Wait for publication, verify finiteweights and allidentityhashes,
+then submit once; do not duplicate the confirmed live recovery trainer.
