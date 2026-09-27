@@ -2542,3 +2542,41 @@ thus isolates the reward discount against that prior pilot. Assert learner
 and shaping gamma both.999. No long dependent run submitted yet; inspect
 finite throughput after12warm+20epochs, then controlled continuation/evaluation.
 All old artifacts and physical sources retained; no source-fingerprint bypass.
+
+
+## Discount-corrected gate passed; controlled continuation and evaluation
+
+Previous turn classified progress (mismatch diagnosis + controlled probe).
+25057 completed successfully: corrected-independent oldstrong134M scores
+.34375 vsExpander (59W/139L/58D) and .19921875 vsSentinel (39W/193L/24D),
+256games each, versusparent.484375/.333984375. Reject oldstrongcandidate.
+25080 completed33,554,432finite steps: after12warmup+20epochs,
+20,971,520steps/87.474s =239,746SPS ononeB300,32768env,H32,mb262144,replay1,
+recentGPU92.1–92.7%,final173.6/268GB. No300kclaim.
+Checkpoint SHA70d2408f11c7c7c921ad4d4aefa5afbe31b5ed3c959e50cb8c4d3f479dd73989.
+
+25101 completed16,777,216finite steps:12warmup+20epochs,
+10,485,760steps/53.258s =196,886SPS ononeB300,16384env,H32,mb131072,replay1,
+recentGPU87.5%,final88.5/268GB. Effectivelearner/shapingdiscountboth.999.
+Passed2.6Mfinitegate; native completed.json andexactfinalcheckpoint verified,
+matchingcontainerabsent. SHAe46dda904102f80bd9504904f1219772910f086e4ac2b15ddb803d6255598579.
+Verified metta1 archive device-context-aligned-discount-pilot-25101.tar.gz
+SHA5f390bd653819a29bdb06c4e9407047f083251d3d79c67ef71984e2153ffb6ac.
+Archive25057/25080/25098 firstattempt interruptedwhenits overlapping25101
+allocationended; tarverifiedfailed. Originalpartial179MBfile retained.
+Separateallocation retry fullyverified:
+device-context-strong134m-heldout-wide-and-aligned-build-25057-25098-attempt2.tar.gz
+SHA6d0ad46e4c5d19931ae3ccf879e6571302858e7e5d83904a3ef724c36c62c0df.
+
+25118 submittedcorrected134,217,728NEWstepcontinuation fromexact25101weights,
+freshoptimizer,seed1329,same16384/H32/mb131072/replay1/lr.001/entropy.001.
+Bothdiscountsassert.999; same seed/budget/settingsasrejected24994 except
+controlledrewardcorrection andits resultingpilotweights. ConfirmedRUNNING.
+25120 submittedafterok:25118 held-outfrozengreedy256gameseach vsExpander,
+Sentinel,strong_mixed,seed1101. Runtime requirescompleted134Mrecord andexpected
+modelhash,hashesexactfinalcheckpointbefore FrozenPolicyvalidation. Candidate
+usescorrected25098build. Publicfeatures/actionmasks/gameoutcomes unchanged;
+only training shapingdiscountchanged. Hostedstrength/startupstillunproven.
+AGENTS nowrequires explicit matching potential/learnerdiscounts beforetraining.
+Goalactive; nohostedpublication/championchange, overnightbudgetstillconditional
+onactualqualityimprovement ratherthanonlyfiniteSPS.
