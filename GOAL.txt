@@ -3087,3 +3087,41 @@ steady20interval483,070SPS,lateGPU95.6%; checkpoints128M/268M/402M saved.
 Next validation can use536M or1B snapshot after it actually exists; preserve
 and verify before use. Final untouched held-out and hosted proof still pending.
 Goal active. No duplicate training job, external upload, or champion change.
+
+
+## 2026-09-27 native536M validation and update diagnostic
+
+Training25600 is live; epoch622 steady20interval484,588SPS,lateGPU95.6%.
+Native536,870,912checkpoint SHA256:
+`e747d7faee1711c07ce7aeec66ee1652a5c6685d0a1a2fb97eff47c21aba467f`.
+536M validation25721 COMPLETED exit0 in1m46s.512cases/opponent seed1104,
+313distinct initialstates; independently verified initial hashes/sides/opponent
+IDs exactly match prior validation25658 for both starting and134M policies.
+536M outcomes: Expander0W503L9D; Sentinel0W510L2D; mixed0W504L8D.
+Paired vs start: Expander3better/1worse/508equal;Sentinel2/0/510;mixed3/1/508.
+Paired vs134M: Expander2better/4worse/506equal;Sentinel2/4/506;mixed3/3/506.
+No useful strength improvement proven. No hosted candidate/champion release.
+
+Action/weight audit25720 COMPLETED exit0 in32s.12,288shared public decisions,
+12,000withmultiple legal moves,publicExpander hints drive common trajectories.
+Comparedstart33M to536M:82.0167%greedyaction changes,0%pass prediction,
+moveentropy3.37068→3.30257,splitentropy.658606→.197442,
+hint moveprobability.072825→.075984;full source+split hint agreement.000583
+inboth. Do not interpret full agreement as source-only agreement.
+RMS parameter changes: encoder.00725619,decoder.0286605,recurrent.0453027.
+Allloadedparameters and12kdiagnostic predictions finite. Confirmsactualupdates
+andactionchange; doesnotprove reward learning or strategic strength.
+
+Inspected pool construction/reset: current long training draws from64fixedmaps,
+with independently random dimensions18–21; `dynamic_pool=True` namesvariable
+sizes and doesnotrefreshmaps. Thisisageneralization concern tocheck with a
+training-pool diagnostic and held-out validation at1B; do not assertoverfit
+without train-vs-heldout evidence. Original4–5h run continues intact.
+
+Verified archive metta1:
+`/home/metta/relh-generals-puffer/native-policy-536m-validation-and-distribution-25720-25721.tar.gz`
+SHA256 `9c555cff3d863f113bef6bc7b81b35c9d3b0d098cdb1dbbcf4ffbcdbf6f2b6b2`.
+Includes536M checkpoint, fullpaired cases and update audit. Localcopy/tmp same
+basename verified. Read-only hosted membershiprefresh: Daveeydaveey-grl:v7,
+relhco-gas-generals-siege-relh:v4,richardco-gas-generals-siege-richard:v2 allactive.
+No hosted writes. HelperRuffclean,bash-n/pycompile/diffchecks pass.Goalactive.
