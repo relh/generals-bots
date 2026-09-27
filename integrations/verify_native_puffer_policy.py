@@ -140,9 +140,9 @@ def main():
         actual_states.append(np.asarray(state))
         expected_states.append(expected_state)
         max_logits = max(max_logits, float(np.max(np.abs(np.asarray(decoded) - expected_logits))))
-        max_state = max(max_state, float(np.max(np.abs(np.asarray(state) - expected_state))))
+        max_state = max(max_state, float(np.max(np.abs(np.asarray(state) - expected_state), initial=0)))
         differences.append(dict(turn=turn, max_logit=float(np.max(np.abs(np.asarray(decoded) - expected_logits))),
-                                max_state=float(np.max(np.abs(np.asarray(state) - expected_state)))))
+                                max_state=float(np.max(np.abs(np.asarray(state) - expected_state), initial=0))))
         if public_masks is None:
             masks = rng.random((4, 1767)) > .5
             masks[:, 1764:] = True
@@ -154,7 +154,8 @@ def main():
         np.testing.assert_array_equal(actual, expected_actions)
         np.testing.assert_allclose(action_state, expected_state, atol=2e-5, rtol=2e-5)
     result = dict(checkpoint_sha256=args.sha256, hidden_size=policy.hidden, num_layers=policy.layers,
-                  recurrent_steps=24, partial_seat_reset=True,
+                  inference_decisions=24, recurrent_steps=24 if policy.layers else 0,
+                  partial_seat_reset=bool(policy.layers),
                   max_logit_difference=max_logits, max_state_difference=max_state, per_turn=differences,
                   exact_masked_actions=True, public_views=args.public_views,
                   scope="CUDA arch_forward vs frozen JAX logits, values, recurrent states and masked argmax")

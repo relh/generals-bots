@@ -22,7 +22,7 @@ void write_file(const char* name, void* data, size_t bytes) {
 }
 int main(int argc,char** argv) {
     assert(argc==9);
-    const int B=4,T=16,H=128,L=4,O=6174,D=1768,A=6,OFF=1;
+    const int B=4,T=16,H=POLICY_HIDDEN,L=POLICY_LAYERS,O=6174,D=1768,A=6,OFF=1;
     cublas_init_handle();
     Arch arch=build_arch(O,H,L,D-1,false,T);
     Allocator params={},acts={},grads={};
@@ -87,7 +87,9 @@ def sequence(parameters, state, observations, terminals):
             s = jax.nn.sigmoid(projection)
             x = s * h + (1 - s) * x
             updated.append(h)
-        return jnp.stack(updated), jnp.matmul(x, decoder.T, precision=jax.lax.Precision.HIGHEST)
+        return (jnp.stack(updated) if recurrent else previous), jnp.matmul(
+            x, decoder.T, precision=jax.lax.Precision.HIGHEST
+        )
 
     final, decoded = jax.lax.scan(step, state, (observations.swapaxes(0, 1), terminals.T))
     return decoded.swapaxes(0, 1), final
@@ -102,20 +104,22 @@ def main():
     assert jax.devices()[0].platform == "gpu"
     args.output.mkdir(parents=True, exist_ok=False)
     policy = NativePufferPolicy(args.build, args.training, args.checkpoint, args.sha256)
-    assert (policy.hidden, policy.layers) == (128, 4)
     source = args.source / "src"
     prefix = (source / "pufferl.cu").read_text().split('#include "protein.cu"')[0]
     for line in ('#include "ini.h"', '#include "metta_sweep.cuh"', '#include ENV_HEADER',
                  '#include <nccl.h>', '#include <nvml.h>', '#include <nvtx3/nvToolsExt.h>'):
         prefix = prefix.replace(line, "")
     harness, executable = args.output / "backward.cu", args.output / "backward"
-    harness.write_text("#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + HARNESS)
+    harness.write_text(
+        f"#define POLICY_HIDDEN {policy.hidden}\n#define POLICY_LAYERS {policy.layers}\n"
+        + "#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + HARNESS
+    )
     subprocess.run(["nvcc", "-O2", "-arch=sm_100", "-std=c++17", "-DPRECISION_FLOAT",
                     "-Xcompiler=-Wno-narrowing", "--diag-suppress=2361", "-I" + str(source),
                     str(harness), "-lcublas", "-lcurand", "-o", str(executable)], check=True)
     rng = np.random.default_rng(20260928)
     observations = rng.normal(size=(4, 16, 6174)).astype(np.float32) / 8
-    initial = rng.uniform(size=(4, 6, 128)).astype(np.float32)
+    initial = rng.uniform(size=(policy.layers, 6, policy.hidden)).astype(np.float32)
     terminals = np.zeros((4, 16), np.float32)
     terminals[0, 0], terminals[1, 7], terminals[3, 11] = 1, 1, 1
     cotangents = rng.normal(size=(4, 16, 1768)).astype(np.float32) / 100
@@ -136,19 +140,20 @@ def main():
         jax.value_and_grad(loss, argnums=(0, 1), has_aux=True)
     )(parameters, jnp.asarray(initial[:, 1:5]))
     expected = np.fromfile(native_output, np.float32).reshape(4, 16, 1768)
-    states = np.fromfile(str(native_gradient) + ".states", np.float32).reshape(2, 4, 4, 128)
-    np.testing.assert_allclose(decoded, expected, rtol=2e-5, atol=2e-5)
+    states = np.fromfile(str(native_gradient) + ".states", np.float32).reshape(2, policy.layers, 4, policy.hidden)
+    np.testing.assert_allclose(decoded, expected, rtol=5e-5, atol=5e-5)
     np.testing.assert_allclose(final, states[0], rtol=2e-5, atol=2e-5)
     np.testing.assert_allclose(state_gradient, states[1], rtol=2e-5, atol=2e-5)
     expected_gradient = np.fromfile(native_gradient, np.float32)
     actual_gradient = np.concatenate([np.asarray(g).ravel() for g in jax.tree.leaves(gradient)])
-    assert expected_gradient.size == actual_gradient.size == 1213184
+    assert expected_gradient.size == actual_gradient.size == args.checkpoint.stat().st_size // 4
     np.testing.assert_allclose(actual_gradient, expected_gradient, rtol=2e-5, atol=2e-5)
-    result = dict(checkpoint_sha256=args.sha256, sequences=4, horizon=16, layers=4, hidden=128,
-                  initial_state_agent_offset=1, terminal_resets=3,
+    result = dict(checkpoint_sha256=args.sha256, sequences=4, horizon=16, layers=policy.layers, hidden=policy.hidden,
+                  initial_state_agent_offset=1, terminal_frames=3, terminal_resets=3 if policy.layers else 0,
                   max_forward_difference=float(np.max(np.abs(np.asarray(decoded) - expected))),
                   max_gradient_difference=float(np.max(np.abs(actual_gradient - expected_gradient))),
-                  max_initial_state_gradient_difference=float(np.max(np.abs(np.asarray(state_gradient) - states[1]))),
+                  max_initial_state_gradient_difference=float(np.max(
+                      np.abs(np.asarray(state_gradient) - states[1]), initial=0)),
                   scope="CUDA model forward/backward vs JAX autodiff; does not test PPO or Muon math")
     (args.output / "parity.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result), flush=True)

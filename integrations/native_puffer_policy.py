@@ -28,7 +28,7 @@ class NativePufferPolicy:
             raise ValueError("Unsupported native policy contract")
         self.hidden = int(record["config"]["overrides"]["policy.hidden_size"])
         self.layers = int(record["config"]["overrides"]["policy.num_layers"])
-        if self.hidden <= 0 or self.layers <= 0:
+        if self.hidden <= 0 or self.layers < 0:
             raise ValueError("Invalid recurrent dimensions")
         data = checkpoint.read_bytes()
         if hashlib.sha256(data).hexdigest() != sha256:
@@ -71,7 +71,9 @@ class NativePufferPolicy:
             s = jax.nn.sigmoid(projection)
             x = s * next_state + (1 - s) * x
             states.append(next_state)
-        return jnp.matmul(x, self.decoder.T, precision=jax.lax.Precision.HIGHEST), jnp.stack(states)
+        return jnp.matmul(x, self.decoder.T, precision=jax.lax.Precision.HIGHEST), (
+            jnp.stack(states) if self.layers else state
+        )
 
     def actions(self, observations, masks, state, key=None):
         if observations.shape != (state.shape[1], 6174) or masks.shape != (state.shape[1], 1767):

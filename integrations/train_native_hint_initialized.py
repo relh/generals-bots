@@ -21,13 +21,16 @@ def main():
     parser.add_argument("--seed", type=int, default=1346)
     parser.add_argument("--entropy-coef", type=float, default=0.0)
     parser.add_argument("--timesteps", type=int, default=33_554_432)
+    parser.add_argument("--layers", type=int, choices=(0, 1), default=1)
     args = parser.parse_args()
     if args.timesteps <= 0:
         raise ValueError("Timesteps must be positive")
     if not math.isfinite(args.entropy_coef) or args.entropy_coef < 0:
         raise ValueError("Entropy coefficient must be finite and nonnegative")
     assert not (args.output / "run").exists()
-    _, initializer = export(args.build / "build.json", args.output / "initializer", scale=args.logit_scale)
+    _, initializer = export(
+        args.build / "build.json", args.output / "initializer", scale=args.logit_scale, layers=args.layers
+    )
     artifact = args.output / "initializer/initializer.json"
     record = json.loads(args.template.read_text())
     record["total_timesteps"] = args.timesteps
@@ -39,7 +42,7 @@ def main():
     record["overrides"].update({
         "vec.total_agents": 65536, "vec.num_buffers": 1, "vec.num_threads": 1,
         "base.cudagraphs": -1, "base.checkpoint_interval": 16,
-        "policy.hidden_size": 512, "policy.num_layers": 1,
+        "policy.hidden_size": 512, "policy.num_layers": args.layers,
         "train.learning_rate": .003, "train.ent_coef": args.entropy_coef, "train.replay_ratio": 1.,
         "train.horizon": 16, "train.minibatch_size": 524288,
     })

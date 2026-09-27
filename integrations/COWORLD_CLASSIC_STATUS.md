@@ -5157,3 +5157,60 @@ and frozen inference stacks recurrent states. Extend explicit zero-layer layout
 validation and verify native forward/backward/state behavior before any training
 release. Do not disguise the artifact as trained or reuse another architecture's
 checkpoint identity. Final1381 remains untouched; goal active.
+
+## Stateless native policy diagnostic, 2026-09-27
+
+The prior 33M zero-layer launch 26426 terminated before epoch 1 with SIGSEGV.
+Archived failure: `/tmp/relh-native-policy-feedforward-failed-26426-forensics-v1.tar.gz`,
+SHA 27411fae7bf1d1dd55338d20b8638a47aa0007a5d8042b760b8a. Pinned
+Puffer used zero-terminated tensor dimensions and launched a recurrent reset
+kernel with zero blocks. The Metta native driver now skips recurrent buffers,
+state copies, and state kernels when layer count is zero; the exact source patch
+was tested against pinned source in three driver modes. Metta commit d863087919
+is pushed on the existing draft branch. The initial helper script 26481 failed
+before Docker due Linux's shell argument-size limit; v2 stages the large source
+outside the worker shell. No duplicate trainer was launched for either failure.
+
+Feedforward probe 26484 completed exactly 33,554,432 genuine steps, one B300,
+65,536 agents, horizon 16, batch 1,048,576, minibatch 524,288, replay 1,
+H512/L0, gamma/shaping_gamma .999, reward scale .5, balanced mixed opponent
+by side, seed 1346, short cosine LR .003, entropy 0. Epochs 11→31 took
+48.371 seconds for 20,971,520 completed agent steps: **433,556 steady-state
+end-to-end SPS** after warmup. GPU dashboard reached 100% during training;
+final weights were finite. Build binary SHA
+04a1dd31503c8e9e705921956e22f991a9b23a511676f75b287e682c41c01bfe;
+final policy SHA be80b8ad266d43eda19993b40f52bbffc00e307e3fff728444dfc1614b0a6876.
+Verified local/login final archive SHA
+f6a4fa1ad2f4a8eeed8bb9e2d3eee4de6d0b941b514acd54b9279499db6aedff;
+old immutable 26339 build remains intact.
+
+Paired held-out validation 26561, seed 1384, 1,024 games per opponent,
+638 unique initial maps, frozen argmax, same exact initial states/sides/opponent
+IDs and **identical per-game outcomes in all 3,072 pairs** versus the 26286
+H512/L1 33M baseline. Expander both 454W/387L/183D; Sentinel both
+259W/605L/160D; mixed both 408W/439L/177D. Thus all score deltas and
+paired intervals are exactly zero, no improvement. Verified quality archive
+SHA 8fa47348c29ddfb6438f232cb66ee2dd3a3e2b6fe356234c1dc6be5e9ff39309,
+local `/tmp/relh-native-feedforward-quality-26561`. Candidate encoder and
+decoder did update (RMS .000353/.000431), but frozen decisions remained the
+same on these held-out maps. Neither 33M checkpoint is eligible for promotion.
+Final seed 1381 remains untouched.
+
+Native forward/public-view parity 26574 passed exact masked actions, max
+logit difference 1.53e-5. Backward diagnostic stopped before gradients because
+one of 113,152 decoded values exceeded the strict 2e-5 float32 tolerance
+(max absolute difference 2.66e-5). Failed parity archive SHA
+0e57a685c61f909802eba4043152043154cf389484dedd308e47a52136d5930a.
+Dependent 134M diagnostic 26583 was canceled unstarted. A revised diagnostic
+with 5e-5 forward absolute/relative tolerance is running to expose gradient
+comparison; no long run or hosted promotion is authorized by this result.
+
+Revised native parity 26594 completed, verified archive SHA
+bff1a9b703dc876a19c8b03f6b1e02468fcef55588b8f942592b727000f3477d
+on login/local. Public-view forward matched all 24 masked decisions (max logit
+difference 1.53e-5); random-sequence H512/L0 CUDA forward vs JAX differed
+at most 4.01e-5 under 5e-5 float32 tolerance; parameter gradients differed
+at most 4.77e-6 under the original 2e-5 gradient tolerance. This verifies
+model math, not PPO optimizer math. A bounded 134M diagnostic 26604 started
+after parity. Its result is pending; no multi-billion overnight job was
+released and no champion changed.

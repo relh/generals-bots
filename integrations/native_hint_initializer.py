@@ -12,13 +12,16 @@ from pathlib import Path
 import numpy as np
 
 
-def parameters(scale=24.0):
+def parameters(scale=24.0, layers=1):
     if not np.isfinite(scale) or scale <= 0:
         raise ValueError("Scale must be finite and positive")
+    if layers not in (0, 1):
+        raise ValueError("Public-hint initialization requires zero or one recurrent layer")
+    scale = scale if layers else scale * .5
     hidden, cells = 512, 441
     encoder = np.zeros((hidden, 6174), np.float32)
     decoder = np.zeros((1768, hidden), np.float32)
-    recurrent = (np.zeros((3 * hidden, hidden), np.float32),)
+    recurrent = tuple(np.zeros((3 * hidden, hidden), np.float32) for _ in range(layers))
     # Source preference is shared across the four directions; direction
     # preference is shared across every source. Their sum selects both.
     for direction in range(4):
@@ -39,7 +42,7 @@ def parameters(scale=24.0):
     return encoder, decoder, recurrent
 
 
-def export(build, output, scale=24.0):
+def export(build, output, scale=24.0, layers=1):
     manifest = json.loads(build.read_text())
     config = manifest["config"]
     env = config["python_environment"]
@@ -53,7 +56,7 @@ def export(build, output, scale=24.0):
             or options["split_hint_scale"] != .125):
         raise ValueError("Unsupported public-hint native contract")
     output.mkdir(parents=True, exist_ok=False)
-    weights = parameters(scale)
+    weights = parameters(scale, layers)
     policy = output / "policy.bin"
     with policy.open("wb") as handle:
         for tensor in (weights[0], weights[1], *weights[2]):
@@ -63,8 +66,9 @@ def export(build, output, scale=24.0):
                   provenance="Deterministic weights mapping existing public source/direction/pass/split hints",
                   build_sha256=hashlib.sha256(build.read_bytes()).hexdigest(),
                   policy_sha256=hashlib.sha256(policy.read_bytes()).hexdigest(),
-                  hidden_size=512, num_layers=1, observation_size=6174, action_sizes=[1765, 2],
-                  precision="float32", parameter_count=4852736, logit_scale=scale,
+                  hidden_size=512, num_layers=layers, observation_size=6174, action_sizes=[1765, 2],
+                  precision="float32", parameter_count=sum(w.size for w in (weights[0], weights[1], *weights[2])),
+                  logit_scale=scale,
                   trained_steps=0, training_seeds=[], learner_state=False, release_eligible=False)
     assert policy.stat().st_size == result["parameter_count"] * 4
     (output / "initializer.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -75,8 +79,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--build", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--layers", type=int, choices=(0, 1), default=1)
     args = parser.parse_args()
-    _, result = export(args.build, args.output)
+    _, result = export(args.build, args.output, layers=args.layers)
     print(json.dumps(result), flush=True)
 
 
