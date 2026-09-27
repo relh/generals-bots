@@ -4594,3 +4594,17 @@ No statistically significant gain/regression, unchanged majorityoutcomes.
 Long26068 continues; prepared next1,073,741,824-newstep qualitycheck with fresh
 seed1363,notyet submitted. Hostedseat1request now4submitted actualjobIDs,
 no completed/failed at latestpoll; runtime proof remains pending.
+
+
+Hosted smoke8/8episodes COMPLETED,0failed,despite XP topstatus stillpending
+(eventual aggregation). Known33M v1 vsrelhchampion:seat0 2W1L1D,seat1 2W2L0D;
+combined4W3L1D. Scores checked by exactcandidate policyUUID, notposition.
+All8ownagentlogs fetched byepisode-request ID; native normal gameplay
+replies204–1200,maximum reply21.3ms. No episodeerrors/failedpolicyindex.
+This proves actual hostedstartup/gameplay;8episodes do not prove strength.
+Started private64episode baseline benchmark,32perseat,sameopponent/canonical
+Classic rules, freshidempotencykeys relh-native-h512-33m-hosted-baseline64-20260927-seat{0,1}:
+seat0 xreq_984abdb7-e8ee-429b-b184-bf31a40d7586;seat1 xreq_e73e5aa9-920c-4ded-ad72-702489caa7d0.
+Createdpending; poll exactIDs,neverduplicate dueaggregationlag.
+26068 at epoch682715.1Mnewsteps,console415.1K,GPU100%,150.8/268GB;
+no newqualityclaim or championchange.
