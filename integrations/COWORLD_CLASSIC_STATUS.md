@@ -5618,3 +5618,82 @@ No hosted upload or champion change occurred. The stopped run, saved
 checkpoint, GPU samples, and pinned evaluator result are
 archived on metta0 as `relh-classic-spatial-land-gain-replay2-27188-27204.tar.gz`,
 SHA256 `0e53c72597e7ddc52826bd431f44fa778cb2add32e79ba811405c32671eb56ad`.
+
+## Device-resident spatial Puffer5 correction (2026-09-27)
+
+Inspection of the earlier spatial build manifests found
+`environment_backend="cpu"` and `python_environment.device_resident=false`.
+Thus the 28–39K SPS spatial pilots used Puffer's CPU observation bridge even
+though the game itself ran in JAX on a GPU. New-source CPU-bridge job 27218
+confirmed only **39,554 warmed end-to-end SPS** over epochs 8–15 with 8,192
+games, one buffer, horizon 32, minibatch 16,384, replay .125, and a 5.4K
+parameter policy. Its frozen 4.19M checkpoint again scored **0/1/127**
+against held-out Random games (job 27297). A separate device-step profile
+27247 measured a 2.346 ms median over 48 timed 8,192-game JAX steps, or
+3.48M environment-only SPS; that number excludes Puffer inference and updates.
+The CPU-bridge and profile artifacts are archived on metta0 as
+`relh-classic-spatial-device-bridge-27218.tar.gz` (SHA256
+`6c23911a16a9ac188175f60ef688eab85ec9f08e33ea75ca21fd40d2332e5d76`)
+and with the true-device run below.
+
+Job 27280 rebuilt the **same two-feature spatial actor and raw Classic
+observation** with `environment_backend="cuda"`, `device_resident=true`,
+8,192 agents, one buffer, 16 CPUs, horizon 32, minibatch 16,384, replay
+.125, LR .0003, and gamma/shaping gamma .999 on one B300. It completed
+4,194,304 steps and saved checkpoint SHA256
+`33487a4a8668057e89bb77aebf2dc847c316553b6447692d653825a2bbbd69fa`.
+The exact warmed epoch 7→15 interval completed 2,097,152 steps in 3.418 s:
+**613,561 end-to-end SPS** for the one process and in aggregate. Final
+dashboard GPU utilization was 85% and allocated VRAM 25.6 GiB. Its frozen
+held-out Random result remained **0/1/127** (job 27297). The archived train,
+profile, and quality artifacts are on metta0 as
+`relh-classic-spatial-true-device-27280-27297.tar.gz`, SHA256
+`47620a92a38a8c93e3c1f0af66b41f1e1ad4d496d59a65c73169e6e945b2cfa5`.
+This proves the desired 300K+ training speed for a bounded run, not policy
+strength.
+
+The original pilot's Docker preflight heredoc lacked `-i`, so Python read
+EOF and the check did not execute. The versioned scripts now require an
+explicit success marker. A separate B300 Docker check with `-i` successfully
+constructed and validated both the raw and hinted build configurations.
+The old utilization sampler also used CUDA's local GPU index with host
+`nvidia-smi`; its time-series samples do not identify the training GPU.
+The scripts now sample the allocated physical GPU ID. Only the final
+dashboard GPU readings above and below are valid for these completed runs;
+no sustained GPU-utilization claim is made from the old sampler.
+
+## Hinted spatial strong-mix screen (2026-09-27)
+
+The raw spatial policy still stalls, so job 27340 used the same true CUDA
+bridge with two local/global features and the existing public-observation
+Expander move prior. It trained PPO without teacher loss or teacher action
+mixing against the balanced 3:1 ExpanderHarvester/Sentinel strong mix, with
+signed land gain .2, learner/shaping gamma .999, reward scale .5, 8,192
+games, one buffer, 16 CPUs, horizon 32, minibatch 16,384, replay .125, LR
+.0003, and zero entropy coefficient. It completed 8,388,608 steps. Exact
+warmed epoch 16→31 throughput was 3,932,160 steps / 16.995 s = **231,372
+end-to-end SPS** on one B300, also the one-process aggregate. The final
+dashboard showed 78% GPU utilization and 25.6 GiB VRAM. Checkpoint SHA256s
+at 4.19M/8.39M steps are
+`c2e92291e346c320158a3b4f255da5aa8f8b5051a5e8bad019484aab307f24e8`
+and `d9b8df6a2758ccdeb8cf562901bda4d7642dad378a3f4bfe2c86235dd604737a`.
+
+Pinned frozen argmax evaluation 27353 used 128 held-out Classic games per
+opponent at seed 1386. Both checkpoints had **byte-identical per-game outcome
+arrays**, despite different checkpoint weights: Random 125/0/3,
+ExpanderHarvester 63/52/13, Sentinel 40/81/7 W/L/D. Larger frozen final
+screen 27369 on seed 1101 used 1,024 games and 635 unique initial states
+per opponent: ExpanderHarvester **405/435/184**, performance .485352;
+Sentinel **283/652/89**, performance .319824. Those figures are below the
+existing v11 candidate's recorded seed-1101 aggregate performances
+.496338/.337769, with different sample sizes, and establish no advantage.
+No hosted upload, league submission, or champion change was made. The
+successful train/evaluation artifacts and logs from three setup-only width-8
+attempts are archived on metta0 as
+`relh-classic-spatial-hint2-mixed-27340-27369.tar.gz`, SHA256
+`19c947273dc22442be533e43dc4e5d98142b8aad0a5f40c4b0efd3855050b5e2`.
+The width-8 candidate was stopped after more than five minutes of JAX
+compilation with no training steps and idle GPU; it has no checkpoint.
+Another long run on either tested actor is not justified. The next policy
+change needs an outcome-sensitive action architecture or curriculum that
+demonstrably changes held-out strong-opponent results on this fast bridge.
