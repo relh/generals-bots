@@ -4950,3 +4950,44 @@ Submitted paired frozen validation 26316 once after these checks. Seed 1378,
 versus entropy-0.02 26311, both using fresh build 26260 and public argmax
 inference. Results pending. This is tuning validation, not the untouched final
 gate. No new long run or hosted/champion write is released.
+
+## Entropy quality rejection and device lifecycle correction
+
+Previous goal turn made progress by finishing the finite 412k entropy probe and
+launching paired validation. Validation 26316 is now terminal, all six records
+recovered. Seed 1378, 1024 games per opponent, 653 distinct states; hashes,
+sides, and opponent IDs matched. Reward-scaled zero-entropy → entropy-0.02 W/L/D:
+
+- Expander 464/362/198 → 12/980/32; score delta -1.04492,
+  map-cluster 95% CI [-1.11168, -0.97738].
+- Sentinel 251/645/128 → 4/1010/10; delta -0.59766,
+  CI [-0.65975, -0.53585].
+- Mixed 396/440/188 → 11/989/24; delta -0.91211,
+  CI [-0.97434, -0.84810].
+
+10000 cluster resamples, seed 1379. All intervals show regression; reject this
+recipe and do not release a dependent long run. An expired allocation made live
+export unavailable, not a reason to rerun evaluation. Empty exports retained.
+Read-only archive recovery included original boundary-proof output. Verified
+login/local archive aa8cc21ee55b4a1d7b13f2887ff94684fa00af42b659c22effdc5a377f5f55b6.
+
+Source inspection found the device adapter auto-recycles each finished game,
+yet every 1200 batch steps replaced all per-game terminal flags with ones and
+requested a whole-batch reset. Unfinished games in newly recycled lanes could
+be cut short with no game outcome. GPU reproduction 26332 completed: 64 valid
+fresh states, batch clock at 1199, actual game terminals 0, returned terminals
+64, episode_done true. The state transition itself matched the unmodified game
+transition; only administrative terminal flags were manufactured.
+
+Corrected device training to preserve actual per-game terminal flags and ongoing
+states. Refresh the Classic map pool at the same 1200-step interval for future
+recycled games, with deterministic per-reset seed/generation; pool replacement
+must not request whole-batch reset. Per-game 1200-turn game truncation and normal
+terminal recycling remain owned by the game transition.
+New adapter SHA 17171d409be5d618b85ac6578f43576876e96f1e86ade540bb9f2a07c0f661a2.
+Fresh GPU build/proof 26339 submitted once; it checks the corrected boundary
+returns zero artificial terminals and verifies all 64 natural time-limit endings
+still recycle. Also reruns paired reward/state/observation/mask proof. No existing
+binary or environment fingerprint is reused as the corrected build. Await proof
+and new throughput/quality gates before long training. New scripts Ruff pass;
+adapter passes with its existing I001/E501 style findings ignored.

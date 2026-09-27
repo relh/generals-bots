@@ -664,7 +664,9 @@ class BatchedGeneralsPufferEnvironment:
     def _reset_states(self, seed: str):
         numeric_seed = int.from_bytes(hashlib.sha256(seed.encode()).digest()[:4], "little")
         if self.base.coworld_classic:
-            self.base.pool, _ = self.base.env.reset(jax.random.PRNGKey(numeric_seed ^ 0xC0A17D))
+            self._pool_seed = jax.random.PRNGKey(numeric_seed ^ 0xC0A17D)
+            self._pool_generation = 0
+            self.base.pool, _ = self.base.env.reset(self._pool_seed)
         self.turn = 0
         self.finished[:] = False
         self.outcomes[:] = 0
@@ -753,11 +755,16 @@ class BatchedGeneralsPufferEnvironment:
         if self.audit_native_actions:
             self._audit_masks = masks
         self.turn += 1
-        episode_done = self.turn >= self.horizon
-        if episode_done:
+        if self.turn >= self.horizon:
             self.turn = 0
-            done = jnp.ones_like(done)
-        return values, masks.astype(jnp.uint8), rewards.astype(jnp.float32), done.astype(jnp.float32), episode_done
+            if self.base.coworld_classic:
+                self._pool_generation += 1
+                self.base.pool, _ = self.base.env.reset(
+                    jax.random.fold_in(self._pool_seed, self._pool_generation)
+                )
+        # Individual games already recycle on their own terminal flags. A map
+        # pool refresh must not terminate unfinished games or reset their state.
+        return values, masks.astype(jnp.uint8), rewards.astype(jnp.float32), done.astype(jnp.float32), False
 
     def step(self, actions: list[list[int]]) -> NumericTransition:
         if len(actions) != self.parallel_games:
