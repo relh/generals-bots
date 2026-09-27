@@ -3928,3 +3928,31 @@ No duplicate training job. Need confirm live steady progress/finite behavior,
 then legitimate native MinGRU frozen evaluation/serving; existing Fabric-only
 FrozenPolicy cannot read this checkpoint. Strong held-out/hosted proof and
 champion publication remain open. Goal active; no hosted writes.
+
+
+## 2026-09-27 native frozen inference and early validation
+
+Long run25600 remains live: epoch204 steady20interval470,582.74SPS,
+lateGPU95.8%; first checkpoint134,217,728new steps saved and archived.
+SHAde14a870e100fa5e5bb3ae398a3b5caf2f3cb6298e3faafbdc531139fd1a2064.
+NativePufferPolicy parses pinned default MinGRU allocator layout and implements
+encoder, stable recurrent/highway gates and decoder. GPU CUDA arch_forward
+comparison25656 passed24recurrent steps, partial seat reset, logits+values+state
+and masked argmax. Maximum logits difference5.960464477539062e-7, state
+3.5762786865234375e-7. Requires HIGHEST JAX matrix precision: first attempt25638
+failed missing compile-only action-head macros;25651 exposed default JAX matmul
+precision difference~3.4e-4. Immutable earlier helpers/artifacts retained.
+
+Verified archive metta1:
+/home/metta/relh-generals-puffer/native-policy-parity-and-first-checkpoint-25638-25656.tar.gz
+SHA59dc62820bfa8831f3356efd5fb1db6f92545e3e4fee54e5afb0dff5f9bd46d7.
+Paired native starting25532 vs early25600checkpoint134M validation25658 is live,
+seed1104,512games/pool512 per Expander/Sentinel/mixed opponent, both sides.
+Uses native frozen argmax inference, saved hashes/sides/opponent IDs/outcomes;
+current first opponent has reached751turns/500finished. No strength result yet.
+
+Downloaded and independently checked25425paired archiveSHA63558d...4c25d:
+parent vs zeroentropy134M all512initial hashes/sides/IDs equal per opponent;
+all512outcomes equal in each ofthree opponents (1536unchanged games).
+No improvement in that Fabric continuation. No hosted upload/champion change.
+Goal active; native held-out and hosted proof remain open.

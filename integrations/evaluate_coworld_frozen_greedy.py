@@ -14,6 +14,7 @@ from metta_training.model_config import FrozenPolicyConfig
 from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
+from integrations.native_puffer_policy import NativePufferPolicy
 
 
 def main():
@@ -22,6 +23,7 @@ def main():
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--sha256", required=True)
+    parser.add_argument("--native", action="store_true", help="Pinned default Puffer5 MinGRU checkpoint")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1101)
     parser.add_argument("--games", type=int, default=1024)
@@ -33,9 +35,13 @@ def main():
     assert args.seed not in training_lineage_seeds(args.run, training)
     manifest = json.loads(args.build.read_text())
     assert manifest["model_sha256"] == training.build.model_sha256
-    policy = FrozenPolicy(FrozenPolicyConfig(
-        build=args.build, checkpoint=args.checkpoint, sha256=args.sha256, device="cuda:0",
-    ))
+    if args.native:
+        policy = NativePufferPolicy(args.build, args.run / "training.json", args.checkpoint, args.sha256)
+        recurrent_state = policy.initial_state(args.games)
+    else:
+        policy = FrozenPolicy(FrozenPolicyConfig(
+            build=args.build, checkpoint=args.checkpoint, sha256=args.sha256, device="cuda:0",
+        ))
     options = manifest["config"]["python_environment"]["options"].copy()
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     options.update(parallel_games=args.games, opponent=args.opponent, supervise_teacher=False)
@@ -45,7 +51,8 @@ def main():
     context = EnvironmentContext(seed=args.seed, index=0, mode="evaluate", output=args.output)
     env = BatchedGeneralsPufferEnvironment(context=context, **options)
     reset_seed = f"{args.seed}:0:0"
-    policy.reset(reset_seed)
+    if not args.native:
+        policy.reset(reset_seed)
     seats = list(range(args.games))
     start = time.monotonic()
     try:
@@ -63,11 +70,17 @@ def main():
         np.save(args.output / "initial_sides.npy", np.asarray(env.sides))
         np.save(args.output / "initial_opponent_ids.npy", np.asarray(env.opponent_ids))
         for turn in range(env.horizon):
-            predictions = policy.predict_many(seats, observation)
-            actions = np.asarray([
-                (np.argmax(prediction.probabilities[:1765]), np.argmax(prediction.probabilities[1765:]))
-                for prediction in predictions
-            ], dtype=np.int32)
+            if args.native:
+                actions, recurrent_state = policy.actions(
+                    np.asarray(observation.values), np.asarray(observation.action_masks), recurrent_state,
+                )
+                actions = np.asarray(actions, dtype=np.int32)
+            else:
+                predictions = policy.predict_many(seats, observation)
+                actions = np.asarray([
+                    (np.argmax(prediction.probabilities[:1765]), np.argmax(prediction.probabilities[1765:]))
+                    for prediction in predictions
+                ], dtype=np.int32)
             masks = np.asarray(observation.action_masks, dtype=bool)
             assert masks[np.arange(args.games), actions[:, 0]].all()
             assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
@@ -87,7 +100,7 @@ def main():
         games=args.games, opponent=args.opponent, checkpoint_sha256=args.sha256,
         unique_initial_states=len(set(initial_hashes)),
         sampling="Pool samples; initial state hashes, sides and opponent IDs saved",
-        model_sha256=manifest["model_sha256"], options=options,
+        model_sha256=manifest["model_sha256"], native_mingru=args.native, options=options,
         wins=int((outcomes > 0).sum()), losses=int((outcomes < 0).sum()), draws=int((outcomes == 0).sum()),
         score=float(outcomes.mean()), perf=float((outcomes.mean() + 1) / 2),
         turns=turn + 1, wall_seconds=time.monotonic() - start,
