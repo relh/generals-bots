@@ -5828,3 +5828,15 @@ evaluation are archived on metta0 as
 This establishes a fast two-seat and long-horizon path, but not a stronger
 Classic policy. No 300M-step continuation, hosted upload, submission, or
 champion change followed.
+
+A bounded wider spatial self-play probe (job 27580) built a four-feature-per-site,
+16-global-feature graph with a two-cell context radius and strength-2 public
+prior. The build succeeded, but XLA spent the next five minutes compiling
+its training graph with zero completed epochs and near-zero GPU utilization.
+The startup guard stopped it; no checkpoint exists. Dependent held-out job
+27581 was canceled unstarted, and no matching Docker container remained.
+The stopped run, build, GPU samples, and logs are archived on metta0 as
+`relh-classic-selfplay-spatial4-r2-stopped-27580.tar.gz`, SHA256
+`da8ad9b8ad2bf89f92c39bd53a3826af6f4ea0420e11cf22ee4daf1bc6fbaab5`.
+Do not project throughput or quality from this build; a larger actor needs
+a compiler-efficient implementation before further training.
