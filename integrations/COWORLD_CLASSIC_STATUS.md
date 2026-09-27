@@ -4401,3 +4401,57 @@ SHA256 0d5655f7facdeee37c27bbef938cf6b73a44dcb608acda83fadfbfd03b4eae60.
 General changes committed/pushed; MettaHEAD0efdaf292e also pushed normally.
 Goal active; preserve the run, inspect checkpoint quality as it progresses;
 no champion change or hosted match initiated this sequence.
+
+
+## 2026-09-27 early long-run collapse; bounded learning-rate recovery
+
+Prior goal turn made progress: native high-throughput long run, verified
+validation gain, serving parity and CPU wire proof. Current continuation
+validated live25978, published and independently archived its first134,217,728
+new-step checkpoint: 4,852,736 finite parameters, policySHA
+1537f3e05136c965719fd12c45636bb0fc667c5b1a1a5e9bee7879fe4cadf1f7;
+learnerSHA9ecfc004dba57e1573e593cefa54c4ad1c76935549fe0682d9a31ce7f5b923ec;
+trainingSHA568b21e75228d073bf01324bdc124c9edee333dd5d156a8905d89600ddb29a95.
+Archive native-policy-initialized-512-25978-step134217728.tar.gz SHA256
+577a946b71c88b808e7dcb5f3d892ab75b07ccb8722a0c01910a2873a4408f0e.
+
+Paired early validation25987 COMPLETED exit0,4m55s;1024games/opponent,
+seed1353,pool1024,631distinct initial states. Baseline25880→long134M W/L/D:
+Expander442/410/172→94/768/162;
+Sentinel232/676/116→78/907/39;
+mixed390/475/159→86/823/115.
+Map hashes/sides/opponent IDs identical, independently verified. Map-cluster
+bootstrap10,000resamples seed1355: score deltas/95%CI:
+Expander-.689453125 [-.76405764,-.61138371];
+Sentinel-.3759765625 [-.44337114,-.30889066];
+mixed-.63671875 [-.70715668,-.56614786].
+Reject this checkpoint: decisive regressions on all opponents, despite healthy
+~394–403K live SPS. After confirming latest published134M checkpoint already
+preserved, stopped only exact own container
+relh-classic-native-policy-initialized-512-5b-25978, verified no longer running,
+then scancel25978. It stopped after11m27s, not a completed5B learner run; don't
+use stopped steps as completed run provenance or claim overnight success.
+Saved33M policy remains the best verified trained candidate.
+Archive native-policy-initialized-512-stopped-long-and-validation-25978-25987.tar.gz
+SHA25606671766b0412ff4091ff30acd406af8cd9b6de3206599abb76804691b150706.
+
+Source confirms native train.anneal_lr default1,min_lr_ratio0; cosine schedule
+uses current_epoch/total_epochs. 33M probe32epochs decayed .003→0, whereas
+long5B5120epochs stayed near.003 through134M. This schedule mismatch is a
+plausible collapse mechanism, not established optimizer correctness or cause.
+Submitted bounded recovery25994 from genuine completed25880 policy, seed1354,
+268,435,456new steps, lr.0001 and explicittrain.anneal_lr=0 (constant independent
+of budget), other H512/L1/65536env/H16/batch1M/mb524288/replay1/entropy0/vf1
+settings unchanged. Gamma=shaping_gamma=.999 and same balanced3:1 opponent
+counts. Native initializerNone, fresh optimizer, no fabricated completed data.
+B30030minallocation/25mincontainer, checkpoint128epochs,300K throughputguard.
+25994 RUNNING and producing epochs; no dependent long job submitted. Require
+actual steadySPS, finite128/256epoch checkpoints and fresh paired strength
+validation before another long run. Preserve good33M and all rejected evidence.
+
+Read-only league refresh: daveey-grl:v7 displayed asAlpha remainsrank1,
+MMR2240.547; richardrank3/MMR1553.838,relhrank4/MMR1470.749. Champions unchanged:
+relh co-gas-generals-siege-relh:v4, richard ...richard:v2. Relh remains lower
+eligible destination for a proven improvement. No hosted writes/champion change.
+Goal active: stable learned improvement, final untouched held-out and hosted
+matches remain required; throughput alone does not satisfy completion.
