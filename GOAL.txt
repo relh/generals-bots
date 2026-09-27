@@ -2656,3 +2656,51 @@ TerminalSlurmstate/checkpoint/archive stillneedverification nextturn.
 25128 servingarchive fullyverified onmetta1:
 device-context-aligned-discount-serving-probe-25128.tar.gz
 SHA40769d2b2db68419bbc68a8a365012bb3a7f3b49dfd1a68b5add695ed465d716.
+
+
+## Verified opponent/side confounding and controlled correction
+
+Previousgoalturnclassifiedprogress: branch-sharingGPUprobe andcorrectedserved
+latency+firstheld-outresult. 25120nowcompletedallthreecases: correctedfinal
+Expander.5078125 (100W/96L/60D),Sentinel.25390625 (47W/173L/36D),
+strong_mixed.4765625 (96W/108L/52D),256gameseachseed1101. Thischeckpoint
+regressesvsparentSentinel.333984375; nohostedpublication/championpromotion.
+Pairedsavedoutcomes,verifiedsamegames/optionsasidefromrewarddiscount:
+Expander vsparent67better/57worse/132equal,perfdelta+.0234375;
+vsoldstrong94better/34worse/128equal,delta+.1640625.
+Sentinel vsparent46better/70worse/140equal,delta-.080078125;
+vsoldstrong63better/44worse/149equal,delta+.0546875.
+Theseareobservedpairedcounts,notindependent-mapconfidenceclaims:evalpool64
+and256startingstates includesrepeatedmaps. Fullmixedbaseline stillunmeasured.
+
+25148terminalCOMPLETED,exactcheckpointSHA
+b2da408688cd6e2692600f321653ebab2771a2d5daa7199bebefd2228f6fabad.
+Verifiedmetta1archive25120+25146+25148+exactexperimentalsources:
+device-context-corrected-heldout-and-branch-sharing-25120-25148.tar.gz
+SHA46d403e257eeb981e172c53a47354511e5204521897804ebebcf2a9b809a4366.
+Allcurrentowntrainercontainersabsentatpostruninspection. Branchsharingdefaultoff.
+
+Actualarchivedcalibrated-v1.py lines620/621 confirmed sides=(seed+lane)%2,
+opponent_ids=(seed+lane)%4. IDs0/1/2areExpander,ID3Sentinel,soSentinelonly
+getslearner side1 throughout thisrecipe. This isconfirmedconditionalcoverage
+failure,notyetproofitcausesallqualityregression. Newbalance_opponent_sides=False
+optionretainsolddefaults; opt-in assignsopponentindices=lane//2,keeping3:1mix
+whilegivingeachtypebothsides. Requirescompleteopponentpairs; rejectscombining
+withgroup_device_opponentsbecauseinterleavedgroupsassumeconstantIDstrides.
+CPU2seedtestspassed7.23s:equalinitialmaps,observations,masks,sides,keys,states;
+all8opponent-sidepairs exactlycovered. NointroducedRuffissuesvsHEAD;
+newGPUhelpercleanRuff. Existinglintissuesretainedratherthanunrelatedformatting.
+CurrentadapterSHAe75f1862f88847c8893344c8ff26ca0bb35ff284d085ff95b1b000f1c7833d75.
+GPUhelperSHA1afc48b9c576bafe660f75964c3660e052014bfadcfcc10ba80d6ee5519b4777.
+Stagedimmutablemetta_puffer-balanced-20260927.py and
+verify_balanced_device_opponents-v2-20260927.py; originalunusedhelperretained.
+
+25200balancedaligneddiscountbuild+GPUvalidationCOMPLETED48s. Samezero-teacher
+model060fb15a...,binary2e583167...,16kagents. Jointcounts[[4,4]]foreach4IDs
+in32laneGPUcheck. AftergivingcontrolthesamebalancedIDs,384transitions+32
+selectiverecycledlanesexactlyequal; game/codec/actionsemanticsunchanged.
+25211finite16.8MtrainingprobeconfirmedRUNNINGafter25200: exact24646parent,
+seed1328,learner/shapinggamma.999,H32,mb131072,replay1,lr.001,entropy.001,
+checkedenvtransfer. Isolatesopponent-sideassignmentvs25101; branchsharingoff.
+No longdependenttrainyet; inspectfiniteSPSgatefirst. AGENTS requiresconditional
+opponent-sidecoverage. Goalactive,300kSPS/strongmixed/hostedproofstillmissing.

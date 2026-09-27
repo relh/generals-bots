@@ -399,7 +399,8 @@ class BatchedGeneralsPufferEnvironment:
     def __init__(
         self, *, context: EnvironmentContext, parallel_games: int = 16, require_gpu: bool = True,
         sentinel_teacher_fraction: float = 0.0, sentinel_teacher_interval: int = 1,
-        sentinel_teacher_only: bool = False, group_device_opponents: bool = False, **options
+        sentinel_teacher_only: bool = False, group_device_opponents: bool = False,
+        balance_opponent_sides: bool = False, **options
     ):
         if parallel_games < 1:
             raise ValueError("parallel_games must be positive")
@@ -412,6 +413,11 @@ class BatchedGeneralsPufferEnvironment:
         self.base = GeneralsPufferEnvironment(context=context, **options)
         if group_device_opponents and parallel_games % self.base.num_opponents:
             raise ValueError("Grouped device opponents require complete interleaved opponent groups")
+        if balance_opponent_sides and parallel_games % (2 * self.base.num_opponents):
+            raise ValueError("Balanced opponent sides require complete pairs for every opponent")
+        if balance_opponent_sides and group_device_opponents:
+            raise ValueError("Balanced opponent sides are incompatible with interleaved opponent groups")
+        self.balance_opponent_sides = balance_opponent_sides
         self.parallel_games = parallel_games
         self.sentinel_teacher_games = round(parallel_games * sentinel_teacher_fraction) if self.base.training else 0
         self.sentinel_teacher_interval = sentinel_teacher_interval
@@ -644,7 +650,8 @@ class BatchedGeneralsPufferEnvironment:
         self.completed[:] = 0
         indices = np.arange(self.parallel_games, dtype=np.int64)
         self.sides = jnp.asarray((numeric_seed + indices) % 2, dtype=jnp.int32)
-        self.opponent_ids = jnp.asarray((numeric_seed + indices) % self.base.num_opponents, dtype=jnp.int32)
+        opponent_indices = indices // 2 if self.balance_opponent_sides else indices
+        self.opponent_ids = jnp.asarray((numeric_seed + opponent_indices) % self.base.num_opponents, dtype=jnp.int32)
         state_keys = jax.random.split(jax.random.PRNGKey(numeric_seed), self.parallel_games)
         self.keys = jax.random.split(jax.random.PRNGKey(numeric_seed ^ 0xA5A5A5A5), self.parallel_games)
         self.states = self._init_states(self.base.pool, state_keys)

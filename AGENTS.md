@@ -4,6 +4,8 @@
 
 - For potential-based reward shaping, explicitly set the environment `shaping_gamma` equal to the learner `train.gamma`. Inspect both effective values before training; omitted environment options may use a different default. Record both discounts with the run settings.
 
+- Record opponent-by-side counts for mixed-opponent training. Every opponent type must have training samples on both player sides.
+
 - Run training and evaluation Slurm jobs on B200 or B300 GPUs. Do not submit CPU-only Slurm jobs or use metta4.
 - Before any new long training experiment, demonstrate at least **30,000 sustained environment steps per second (SPS)** for the proposed training setup on one allocated GPU. Measure completed Puffer agent steps divided by wall-clock time over a steady-state interval after JAX compilation, including rollout, host/device transfer, and model updates. Report the interval, step counts, GPU model, GPU utilization, environment count, and per-process and aggregate SPS.
 - A short GPU smoke or profiling job may run below the gate to diagnose and improve throughput. Limit these jobs to a bounded step or wall-clock budget, preserve useful output, and release the allocation promptly. Do not start or release a dependent long job merely because GPU utilization is high; throughput must pass the gate.

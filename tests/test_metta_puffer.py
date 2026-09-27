@@ -134,6 +134,29 @@ def test_device_teacher_transport_matches_numeric_training_step(hints, context_h
 
 
 @pytest.mark.parametrize("seed", [1326, 1327])
+def test_balanced_opponents_cover_both_sides_without_changing_initial_games(seed, tmp_path):
+    context = EnvironmentContext(seed=seed, index=0, mode="train", output=tmp_path)
+    options = dict(parallel_games=16, require_gpu=False, opponent="strong_mixed", board_size=6)
+    original = BatchedGeneralsPufferEnvironment(context=context, **options)
+    balanced = BatchedGeneralsPufferEnvironment(context=context, balance_opponent_sides=True, **options)
+    try:
+        first, second = original.reset(str(seed)), balanced.reset(str(seed))
+        np.testing.assert_array_equal(first.values, second.values)
+        np.testing.assert_array_equal(first.action_masks, second.action_masks)
+        np.testing.assert_array_equal(original.sides, balanced.sides)
+        np.testing.assert_array_equal(original.keys, balanced.keys)
+        for a, b in zip(jax.tree.leaves(original.states), jax.tree.leaves(balanced.states), strict=True):
+            np.testing.assert_array_equal(a, b)
+        sides, opponents = np.asarray(balanced.sides), np.asarray(balanced.opponent_ids)
+        for opponent in range(4):
+            for side in range(2):
+                assert np.count_nonzero((opponents == opponent) & (sides == side)) == 2
+    finally:
+        original.close()
+        balanced.close()
+
+
+@pytest.mark.parametrize("seed", [1326, 1327])
 @pytest.mark.parametrize("optimization", ["group_device_opponents", "deduplicate_opponent_branches"])
 def test_device_opponent_optimizations_preserve_transitions_and_recycling(seed, optimization, tmp_path):
     context = EnvironmentContext(seed=seed, index=0, mode="train", output=tmp_path)
