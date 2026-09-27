@@ -59,7 +59,7 @@ def export(build, output, scale=24.0):
         for tensor in (weights[0], weights[1], *weights[2]):
             handle.write(b"\0" * ((-handle.tell()) % 16))
             handle.write(tensor.astype("<f4").tobytes())
-    result = dict(schema="generals-native-public-hint-initializer-v1",
+    result = dict(schema="puffer5-native-policy-initializer-v1",
                   provenance="Deterministic weights mapping existing public source/direction/pass/split hints",
                   build_sha256=hashlib.sha256(build.read_bytes()).hexdigest(),
                   policy_sha256=hashlib.sha256(policy.read_bytes()).hexdigest(),

@@ -3371,3 +3371,49 @@ starting baseline, untouched final held-out and actual hosted proof. Original
 25600 remains RUNNING1h33m32s; no duplicate long job or hosted writes. This
 turn makes progress through new learnability evidence and a verified concrete
 initialization artifact. Ruff/bash-n/diff checks pass. Goal active.
+
+
+## 2026-09-27 native initialized training and paired validation
+
+Added explicit typed native initializer support in Metta puffer.py, with manifest,
+policy, build, dimensions, parameter layout, finite-value and zero-trained-step
+validation. Generic schema puffer5-native-policy-initializer-v1; initializer
+weights unchanged. No fabricated learner or completion records. Metta package
+verification: 452 tests passed in 1102.13 seconds; scoped Bazel formatting and
+Ruff passed. Commit hooks require rebuilding this worktree's Python/Node dev
+install; no hook bypasses.
+
+B300 native H512/L1 probe 25880 COMPLETED with 33,554,432 actual new steps and
+4,852,736 finite parameters. Settings: 65,536 environments, horizon 16,
+1,048,576 rollout batch, 524,288 minibatch, replay ratio 1, learning rate .003,
+entropy 0, gamma=shaping_gamma=.999, seed 1346. Balanced 3:1 Expander/Sentinel:
+8,192 lanes for each opponent ID on each side. After 11 warmup epochs, epochs
+11→31 completed 20,971,520 steps in 50.624 seconds: 414,260.43 end-to-end SPS.
+Late GPU utilization 94%, VRAM 150.8/268 GB. Exclude anomalous final epoch rate.
+Final policy SHA256 61dfb5f6bb06ec1e409f4ae8250d51872be7ff5004900a48deb84b12e52b1a08.
+Probe archive native-policy-initializer-import-and-probe-25866-25880.tar.gz
+SHA256 2c5107b5117aeffb62730fcce3bcb1f415e1a29577e109af2b9857cc0af8df61.
+Pre-step failures 25866 (in-package source fingerprint mismatch) and 25877
+(JAX preallocation OOM) preserved. External control-module import preserves
+archived environment sources; explicit XLA_PYTHON_CLIENT_PREALLOCATE=false.
+
+Paired validation 25891 COMPLETED: 512 games/opponent, fresh seed 1104, pool
+512; 313 distinct initial states. Init→trained wins/losses/draws:
+Expander 199/196/117→226/174/112; Sentinel 134/331/47→125/313/74;
+mixed 181/228/103→195/210/107. Independently verified identical initial hashes,
+sides and opponent IDs. Map-cluster bootstrap (10,000 resamples, seed 1348)
+score deltas and 95% intervals: Expander .09570 [-.01344,.20200], Sentinel
+.01758 [-.07961,.11937], mixed .06250 [-.03666,.16054]. Positive estimates,
+but every interval crosses zero; learned improvement remains inconclusive.
+Archive native-policy-initialized-512-paired-validation-25887-25891.tar.gz
+SHA256 4836999f3b1889df6499ab19254ef9d003f0318343ba704fcf9b19ed8db674e2.
+25887 failed before games from a host path used inside Docker; corrected
+container checkpoint path for 25891. No hosted writes or release claims.
+
+Larger paired validation 25924 RUNNING: 4,096 games/opponent, 4,096 map pool,
+fresh seed 1349, same initializer and trained 33M snapshot. This is validation,
+not the untouched final held-out suite. Original H128/L4 long run 25600 remains
+running; no replacement or duplicate initialized long run yet. Require larger
+validation before choosing the initialized long candidate. Throughput and
+finite gates passed; frozen trained H512 native parity, CPU serving, final
+held-out improvement and actual hosted proof still required. Goal active.
