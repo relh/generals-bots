@@ -3182,3 +3182,22 @@ removed because model/environment now match strictly. One trainer, bounded
 30min scheduler/25min container cap, >=30k steady progress guard retained.
 This longer learning interval is warranted by finite native PPO learning and
 restored exploration; no overnight training or champion publication yet.
+
+
+### Bounded continuation and grouped-opponent performance candidate
+
+134M continuation job 24646 confirmed running on B300. At ~85M new steps,
+steady ~260k SPS, recent GPU ~86%, native entropy ~1.795, gradients finite.
+16M held-out 24621 still live at 13min; 24622 audit complete, not duplicated.
+
+Optional group_device_opponents partitions fixed interleaved opponent lanes
+without changing reset seed, opponent identity, action, state, masks or rewards.
+The opponent switch selector stays scalar inside each vmap, avoiding batched
+execution of unused branches. Returned leaves are interleaved back to original
+lane order. Requires agent count divisible by opponent count; default off.
+Two-seed CPU parity passed across 12 transitions with actual legal moves and
+selective forced Classic-horizon recycling for every lane (28.90s). Initial
+recycling assertion incorrectly assumed Classic accepts short horizons; fixed
+the test to keep true 1200-turn Classic rules and exercise real truncation.
+No GPU performance claim for grouping yet; it remains a finite probe candidate.
+New adapter staged separately, SHA385c933ad2bf540e9106aa441c200e623f3aadd7061755ed750f8fdf38396553.

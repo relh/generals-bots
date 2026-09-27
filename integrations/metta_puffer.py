@@ -394,7 +394,7 @@ class BatchedGeneralsPufferEnvironment:
     def __init__(
         self, *, context: EnvironmentContext, parallel_games: int = 16, require_gpu: bool = True,
         sentinel_teacher_fraction: float = 0.0, sentinel_teacher_interval: int = 1,
-        sentinel_teacher_only: bool = False, **options
+        sentinel_teacher_only: bool = False, group_device_opponents: bool = False, **options
     ):
         if parallel_games < 1:
             raise ValueError("parallel_games must be positive")
@@ -405,6 +405,8 @@ class BatchedGeneralsPufferEnvironment:
         if require_gpu and not jax.devices("cuda"):
             raise RuntimeError("Batched Generals training requires a CUDA JAX device")
         self.base = GeneralsPufferEnvironment(context=context, **options)
+        if group_device_opponents and parallel_games % self.base.num_opponents:
+            raise ValueError("Grouped device opponents require complete interleaved opponent groups")
         self.parallel_games = parallel_games
         self.sentinel_teacher_games = round(parallel_games * sentinel_teacher_fraction) if self.base.training else 0
         self.sentinel_teacher_interval = sentinel_teacher_interval
@@ -502,9 +504,28 @@ class BatchedGeneralsPufferEnvironment:
             return next_state, next_key, values, mask, reward, done, teacher_action
 
         def advance_device(states, pool, sides, opponent_ids, indices, splits, keys):
-            next_states, next_keys, values, masks, rewards, done, teacher_actions = jax.vmap(
-                advance_device_one, in_axes=(0, None, 0, 0, 0, 0, 0)
-            )(states, pool, sides, opponent_ids, indices, splits, keys)
+            if group_device_opponents:
+                # Reset assigns (seed + lane) % num_opponents, so each strided
+                # group has a uniform opponent. Keep that switch argument
+                # unbatched: the other opponent branches need not execute.
+                count = self.base.num_opponents
+                groups = tuple(
+                    jax.vmap(advance_device_one, in_axes=(0, None, 0, None, 0, 0, 0))(
+                        jax.tree.map(lambda field: field[offset::count], states),
+                        pool, sides[offset::count], opponent_ids[offset],
+                        indices[offset::count], splits[offset::count], keys[offset::count],
+                    )
+                    for offset in range(count)
+                )
+                advanced = jax.tree.map(
+                    lambda *parts: jnp.stack(parts, axis=1).reshape((parallel_games, *parts[0].shape[1:])),
+                    *groups,
+                )
+            else:
+                advanced = jax.vmap(
+                    advance_device_one, in_axes=(0, None, 0, 0, 0, 0, 0)
+                )(states, pool, sides, opponent_ids, indices, splits, keys)
+            next_states, next_keys, values, masks, rewards, done, teacher_actions = advanced
             return (
                 next_states, next_keys, self._device_transport(values, masks, teacher_actions),
                 masks, rewards, done,

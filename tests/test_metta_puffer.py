@@ -133,6 +133,52 @@ def test_device_teacher_transport_matches_numeric_training_step(hints, context_h
         device.close()
 
 
+@pytest.mark.parametrize("seed", [1326, 1327])
+def test_grouped_device_opponents_preserve_transitions_and_recycling(seed, tmp_path):
+    context = EnvironmentContext(seed=seed, index=0, mode="train", output=tmp_path)
+    options = dict(
+        parallel_games=8, require_gpu=False, opponent="strong_mixed",
+        coworld_classic=True, coworld_pool_size=16, factorized_actions=True,
+        teacher="expander_harvester", supervise_teacher=True,
+        compact_features=True, lean_features=True, hint_features=True,
+        prior_hint_features=True, expander_hint_features=True, context_hint_features=True,
+        move_hint_scale=.375, split_hint_scale=.125,
+    )
+    baseline = BatchedGeneralsPufferEnvironment(context=context, **options)
+    grouped = BatchedGeneralsPufferEnvironment(context=context, group_device_opponents=True, **options)
+    try:
+        first = baseline.reset_device(str(seed))
+        second = grouped.reset_device(str(seed))
+        for a, b in zip(first, second, strict=True):
+            np.testing.assert_array_equal(np.asarray(a), np.asarray(b))
+        moved = False
+        recycled = 0
+        for step in range(12):
+            if step in (4, 9):
+                resetting = jnp.arange(8) % 2 == (step // 5)
+                for env in (baseline, grouped):
+                    env.states = env.states._replace(
+                        time=jnp.where(resetting, env.horizon - 1, env.states.time)
+                    )
+            legal = np.asarray(first[1])[:, :1765]
+            moves = np.argmax(legal, axis=1)
+            moved |= bool(np.any(moves != 1764))
+            actions = jnp.asarray(np.stack((moves, np.full(8, step % 2)), axis=1), dtype=jnp.float32)
+            first = baseline.step_device(actions)
+            second = grouped.step_device(actions)
+            recycled += int(np.asarray(first[3]).sum())
+            for a, b in zip(first, second, strict=True):
+                np.testing.assert_array_equal(np.asarray(a), np.asarray(b))
+            for a, b in zip(jax.tree.leaves(baseline.states), jax.tree.leaves(grouped.states), strict=True):
+                np.testing.assert_array_equal(np.asarray(a), np.asarray(b))
+            np.testing.assert_array_equal(np.asarray(baseline.keys), np.asarray(grouped.keys))
+        assert moved
+        assert recycled >= 8
+    finally:
+        baseline.close()
+        grouped.close()
+
+
 @pytest.mark.parametrize("opponent", ["random", "hunter", "harvester", "mixed"])
 def test_other_opponents_keep_the_numeric_contract(opponent):
     context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))
