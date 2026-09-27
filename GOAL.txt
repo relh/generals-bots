@@ -2296,3 +2296,30 @@ recycling assertion incorrectly assumed Classic accepts short horizons; fixed
 the test to keep true 1200-turn Classic rules and exercise real truncation.
 No GPU performance claim for grouping yet; it remains a finite probe candidate.
 New adapter staged separately, SHA385c933ad2bf540e9106aa441c200e623f3aadd7061755ed750f8fdf38396553.
+
+
+### 134M completion, failed evaluation preserved, exact GPU grouping parity
+
+24646 COMPLETED 134,217,728 NEW steps, finite gradients, final checkpoint
+SHA a672058d8b3abfc6d8e8430e88b5431fab786cae2bd909e55c1eb36ce901d1be.
+Last20epochs10,485,760steps/37.519s=279,479SPS; native end545.966s,
+start508.447s. Recent GPU at25686.1%, finaldashboard90%,88.5/268G.
+Native final env1.191s63%, inference.448s23%, train.238s12%,misc.025s1%.
+Entropy1.568. Quality still unproven. Earlierintervals ~250-260k.
+
+24621 FAILED at900s subprocess evaluation deadline, after12.1M evalsteps.
+The transferred CPU-environment evaluation retains16384 native agent rows;
+its Python transport is slower than training. No score result was produced.
+Prepared new134Mcheckpoint evaluation with1800s evaluation deadline,
+35min container/45min scheduler bounds; same seed1101 and scoring protocol.
+Exact24621and24646containers absent. Archive ofcomplete134Mtrainer plus
+failed24621andcompleted24622 verified onmetta0:
+device-context-calibrated-134m-24646-and-eval-audit.tar.gz SHA
+873f460b320ec4fc160259076a846749bc5f9209a3108e670a89231e93930666.
+
+Grouped build24750 completed35s, same graph/binary as24499, newenvironmenthash.
+Grouped probe24760 islive; before training, a32-lane GPU check passedexact
+parity across384 transitions and32selectively recycled lanes. GPU cuda:0.
+Finite16.8MnativePufferprobe,16384lanes,mb131072,replay.25,seed1326,
+verified24609parentweights withchecked environment transfer only. No group
+performance result yet. GPU parity helper andprobe script added forreproducibility.
