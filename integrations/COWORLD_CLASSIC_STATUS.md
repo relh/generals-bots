@@ -4925,3 +4925,28 @@ launcher SHA d599e4e251879737f622d83edc5edf012456de67c04b49582364799b2452502f.
 New helpers are embedded in the GPU batch script and written exclusively under
 new names; existing bytes must match if present. No archived helper is changed.
 Ruff and shell syntax checks passed; old runs keep their effective configuration.
+
+Entropy-0.02 probe 26311 completed 33,554,432 steps. Published policy SHA:
+e3509873ae5e84d1cf98a22725d32fb9a2f0f24f90dd4061fa5446558e288317;
+learner SHA 84146f0cc90e48404b25f343e2bc932c884229d64d24d0eb8d68686a8378065c;
+training SHA 45ea6f9acaf39f2a8b3d03dc1242656e75a79110690367cf26b0ae82349d25d9.
+All publication identities matched and 4,852,736 parameters were finite.
+Zero-step initializer metadata and copied weights matched original d990fc...bff.
+Effective entropy coefficient 0.02 and seed 1346 were read from training.json.
+
+Actual steady training epochs 11→31: 20,971,520 steps / 50.916 seconds =
+411,884.67 end-to-end SPS. Same single B300 / 65536 environments / H16 /
+batch 1048576 / minibatch 524288 / H512 L1 / replay 1; last steady guard GPU
+mean 95%. Excluded anomalous final epoch. Throughput and finite gates pass.
+
+Live export failed because node rg was unavailable, rather than a trainer
+failure; empty output was retained. Do not use rg in node export predicates.
+Read-only recovery used a separate two-minute GPU allocation and preserved the
+completed run unchanged. Archive SHA 37e56e6b356ec95c121d592c5cf9dcd5fdd7c981b2a8de71e5ef5df2df566c1c
+matched login and local copies. No duplicate training job was launched.
+
+Submitted paired frozen validation 26316 once after these checks. Seed 1378,
+1024 cases per opponent, pool 1024, reward-scaled zero-entropy baseline 26286
+versus entropy-0.02 26311, both using fresh build 26260 and public argmax
+inference. Results pending. This is tuning validation, not the untouched final
+gate. No new long run or hosted/champion write is released.
