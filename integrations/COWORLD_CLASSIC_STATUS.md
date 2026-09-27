@@ -2986,3 +2986,14 @@ Update, 2026-09-26 16k training throughput measured; quality still flat
     boundedminibatch65536/131072 profiling withsame replaywork .25 after
     artifactsarchived, notreducingoptimization merelytohitSPS.
     Goalactive, strength/hostedpublication unproven.
+
+Update, 2026-09-26 16k probe and quality evidence archived
+  *Verifiedmetta0 archive device-context-teacher05-16k-and-eval-23778.tar.gz,
+    SHA25658f715b5ca84e2a92dabb5bd1c3f0470a99bc2fa1460b9d57971e40c9b806177.
+    Containsfailed23712,successful23743build,23778complete trainer plus
+    checkpoints/logs/GPUcsv, and23675heldout build/result/logs. Exact
+    23778trainer and23675eval Dockercontainers absent beforearchive.
+  *No goal-owned training/evaljobleftactive. Do not repeatcompletedjobs.
+    Next:real-state actionentropy/teacheragreement andtrainedhintweight
+    audit, plus minibatch65536/131072 fixed-replay.25 boundedprofile.
+    Currentcontextmodel226,994SPS;300kandstrongerpolicyremainunproven.
