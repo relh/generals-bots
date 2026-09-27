@@ -319,6 +319,46 @@ def test_optional_teacher_reward_uses_public_action_and_keeps_terminal_score():
     assert rewarded.score == unshaped.score
 
 
+def test_land_gain_reward_credits_capture_without_changing_terminal_score():
+    context = EnvironmentContext(seed=79, index=0, mode="train", output=Path("/tmp"))
+    coached = GeneralsPufferEnvironment(
+        context=context,
+        board_size=6,
+        horizon=30,
+        opponent="random",
+        shaping_weight=0,
+        land_gain_reward_weight=0.2,
+    )
+    baseline = GeneralsPufferEnvironment(
+        context=context, board_size=6, horizon=30, opponent="random", shaping_weight=0
+    )
+    coached.reset("79:0:0")
+    baseline.reset("79:0:0")
+    teacher = ExpanderAgent()
+    cells = coached.size**2
+    gained = False
+    for _ in range(20):
+        before = int(game.get_observation(coached.state, coached.side).owned_land_count)
+        suggestion = np.asarray(teacher.act(game.get_observation(coached.state, coached.side), coached.key))
+        index = 4 * cells if suggestion[0] else (
+            suggestion[4] * 4 * cells
+            + suggestion[3] * cells
+            + suggestion[1] * coached.size
+            + suggestion[2]
+        )
+        reward = coached.step([[int(index)]])
+        reference = baseline.step([[int(index)]])
+        after = int(game.get_observation(coached.state, coached.side).owned_land_count)
+        assert reward.rewards[0] - reference.rewards[0] == pytest.approx(0.2 * (after - before))
+        assert reward.score == reference.score
+        if after > before:
+            gained = True
+            break
+        if reward.episode_done:
+            break
+    assert gained
+
+
 def test_castle_control_margin_tracks_owned_and_enemy_castles():
     state = game.GameState(
         armies=jnp.ones((2, 3), dtype=jnp.int32),

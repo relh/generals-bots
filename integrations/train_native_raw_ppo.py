@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--checkpoint-interval", type=int, default=1)
     parser.add_argument("--opponent", choices=("strong_mixed", "random"), default="strong_mixed")
     parser.add_argument("--expect-imitation-weight", type=float, default=0.0)
+    parser.add_argument("--expect-land-gain-weight", type=float, default=0.0)
     args = parser.parse_args()
     if (
         args.timesteps <= 0
@@ -36,6 +37,8 @@ def main():
         or args.checkpoint_interval <= 0
         or not math.isfinite(args.expect_imitation_weight)
         or args.expect_imitation_weight < 0
+        or not math.isfinite(args.expect_land_gain_weight)
+        or args.expect_land_gain_weight < 0
     ):
         raise ValueError("Invalid training budget or learning rate")
     build = json.loads((args.build / "build.json").read_text())
@@ -53,6 +56,7 @@ def main():
         or not options["balance_opponent_sides"]
         or options["opponent"] != args.opponent
         or options["imitation_weight"] != args.expect_imitation_weight
+        or options.get("land_gain_reward_weight", 0.0) != args.expect_land_gain_weight
     ):
         raise ValueError("Unexpected raw RL environment")
     record = json.loads(args.template.read_text())

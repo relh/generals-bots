@@ -5506,3 +5506,46 @@ averaged 53.5%; peak sampled VRAM was 134,992 MiB. The verified build,
 run, evaluations, GPU samples, and audit are archived on metta0 in
 `relh-native-raw-imitation-diag-27054-27059-27067-27075.tar.gz`, SHA256
 `23a4dd3c61df7f1fad284cb9066c119399f12f9154a04c575ebf21f344f09508`.
+
+## Dense land-gain reward probe (2026-09-27)
+
+To address raw PPO's stall/draw trajectory, an opt-in reward credits the
+signed change in the agent's land count at each step. It keeps the game
+outcome and matched potential-shaping discount unchanged; it uses no
+teacher action, observation hint, or supervised target. A focused GPU
+contract check confirmed that the reward difference between identical
+baseline and land-gain transitions equals the configured weight times
+captured land, with the terminal score unchanged. Build 27090 pinned the
+new environment source and set weight .02 against Random. Native PPO job
+27092 completed 8,388,608 steps, checkpoint SHA256
+`5a45bc4caa4d37321860416471eec48b4255fec197071b5dd7c4a72e973c06bb`.
+On one B300 with 65,536 environments, H16, 1,048,576-step rollouts,
+524,288 minibatches, replay4, gamma/shaping gamma .999, the warmed
+2,097,152-to-7,340,032-step interval took 9.920-to-19.620 seconds:
+540,503 end-to-end SPS including intermediate saves. GPU samples while
+over 100,000 MiB of VRAM was allocated averaged 50.1% utilization. Paired seed-1386
+held-out job 27093 scored W/L/D 0/1/1023 versus Random and 0/1014/10
+versus ExpanderHarvester. This small land-gain signal did not produce wins.
+A single stronger .2-weight bounded probe used build 27099 and B300 job
+27101. It completed 8,388,608 steps with final checkpoint SHA256
+`748198881d9f9598f58237907b1d7567320423e8b353b735ce47ba0ac40c7565`.
+The same warmed 2,097,152-to-7,340,032-step interval took
+10.155-to-19.864 seconds: 540,002 end-to-end SPS including intermediate
+saves. GPU samples while over 100,000 MiB of VRAM was allocated averaged
+57.8% utilization; peak
+sampled VRAM was 132,944 MiB. Held-out job 27105 scored W/L/D 0/1/1023
+versus Random and 0/1013/11 versus ExpanderHarvester. Ten times more land
+reward still did not produce wins. An own-trajectory action audit 27109
+completed on each checkpoint's own 64-game, 192-turn Classic trajectories.
+In turns 150–191, raw baseline pass-with-legal-move fraction was 5.4%,
+while both land-gain policies were 0%. Yet the .02/.2 policies' mean
+move entropy rose to 2.246/2.564 and mean maximum move probability fell
+to .160/.128. The added reward removed optional passing but did not make
+the chosen moves productive. Neither reward setting qualifies for longer
+training or hosted publication. The next policy probe needs spatial
+structure and an own-trajectory quality gate, not another scalar reward
+increase on this flat actor.
+The two verified builds, complete runs, GPU samples, held-out outcomes,
+and own-trajectory audit are archived on metta0 in
+`relh-native-raw-land-gain-27090-27109.tar.gz`, SHA256
+`126c2d598ff19faba7f7460b97c111a00c1bb979a377b137b0b8ac79fd11a21e`.

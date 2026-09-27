@@ -54,6 +54,7 @@ class GeneralsPufferEnvironment:
         army_shaping_weight: float = 0.5,
         land_shaping_weight: float = 0.3,
         castle_shaping_weight: float = 0.0,
+        land_gain_reward_weight: float = 0.0,
         teacher: str | None = None,
         imitation_weight: float = 0.0,
         supervise_teacher: bool = False,
@@ -84,6 +85,8 @@ class GeneralsPufferEnvironment:
     ):
         if min(shaping_weight, army_shaping_weight, land_shaping_weight, castle_shaping_weight) < 0:
             raise ValueError("Shaping weights must be nonnegative")
+        if not np.isfinite(land_gain_reward_weight) or land_gain_reward_weight < 0:
+            raise ValueError("Land gain reward weight must be finite and nonnegative")
         if not 0 < shaping_gamma <= 1:
             raise ValueError("Shaping discount must be in (0, 1]")
         if not np.isfinite(reward_scale) or reward_scale <= 0:
@@ -311,6 +314,10 @@ class GeneralsPufferEnvironment:
             reward = outcome + shaping_weight * (
                 shaping_gamma * new_potential * ~done - old_potential
             )
+            if land_gain_reward_weight:
+                reward += land_gain_reward_weight * (
+                    jnp.float32(final.owned_land_count) - jnp.float32(previous.owned_land_count)
+                )
             if teacher_agent is not None and imitation_weight:
                 suggested = teacher_agent.act(previous, jax.random.fold_in(opponent_key, 37))
                 reward = reward + imitation_weight * jnp.all(ours == suggested) * (suggested[0] == 0)
