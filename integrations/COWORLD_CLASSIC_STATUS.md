@@ -5089,3 +5089,8 @@ and steadySPS gates. Seed1382,2048games/pool per opponent, originalreward-scaled
 Interpret matched control comparison and improvement beyond existing baseline
 separately. No overnight training/champion promotion is released. Final1381
 seed remains unused. Goal active; strength proof remains open.
+
+Control final snapshot archive f174ca6019091a6ba4b6e5d58ba8ec2e97589e6216eff7be04868a4e856fbc19
+matched login/local copies. The original completed node run and all earlier
+checkpoints remain unchanged. Latest authoritative squeue: quality26364 RUNNING
+at1m11s; no duplicate trainer or evaluation was created.
