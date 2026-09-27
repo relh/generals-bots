@@ -2916,3 +2916,75 @@ threeopponents each, freshseed1103, exactmaps/sides metadata toverifypairing.
 25376 16Mvalidation still RUNNING onseed1102, no duplicatejobs/restarts.
 Waitfor actualstrength before any overnight training;300kSPS andheld-out/hosted
 improvementremainunproven. Goalactive; no champion change.
+
+
+## Zero-entropy continuation completed; label-free PPO throughput measured
+
+Previous goal turn made progress through finite gate and distribution evidence.
+25386 now COMPLETED exit0 in12m49s,134,217,728new finite steps. OneB300,
+16,384env,H32,mb131072,replay1,lr.001,entropy0,matched gamma.999,balanced sides.
+Final20 intervals10,485,760steps/50.956s=205780.67352SPS, after compilation and
+warmup. NativefinalGPU95%,88.5/268GB; late sampledGPU87.9%at epoch254.
+CheckpointSHA4972f9685a46dda427a1293ad52c0811e3f0b17c2d2688aca6fe521bc7473a75.
+25414 distribution audit COMPLETED1m46s. On24,576shared decisions /24,328flexible,
+parent moveentropy1.282555/split.185261/teacherprob.836638; entropy.001134M
+moveentropy3.888894/split.692312/prob.269616/greedydisagreement16.9064%;
+zeroentropy134M moveentropy.161643/split9.74e-8/prob.983574/greedydisagreement0.
+The zeroentropy policy sharply reinforces teacher proposals on these sampled
+trajectories. This is not evidence of stronger strategy or held-out improvement.
+
+25376 16Mvalidation COMPLETED15m47s. Allthree512game aggregate results match
+parent25271 exactly: Expander199W/197L/116D; Sentinel154W/316L/42D;
+mixed184W/233L/95D. Per-game equality was not yet checked for this validation.
+25390 freshseed1103paired validation FAILED1s during pre-container GPU checks;
+no match ran. Kept checks, added query diagnostics and bounded30sidle polling.
+25425 v2 retry confirmedRUNNING, first GPU query idle0MB/0%, parentExpander
+case completed203W/215L/94D,325distinct initialmaps; remaining cases continue.
+This is a terminal-state-authorized retry, not a restart after a poll timeout.
+
+Verified metta1 archive with25386,25376,failed25390:
+device-context-zero-entropy-134m-validation-and-launch-failure-25386-25390-25376.tar.gz
+SHA2566af8158ba99646aaf54df83450338858a990345ae07c113fca0bbab5cae95a7b.
+
+Throughput investigation: zero-loss teacher still carried9712floats vs6174
+public featurefloats. Prepared purePPO model with teacher=None and environment
+supervise_teacher=False/spec.teacher=False; graph/feature/hint options unchanged.
+No checkpoint-transfer guard bypass: throughput experiments start cold.
+25404 built32kagent label-free model. TinyB2/T3 GPU parity verifier spent over10m
+inXLAforward compilation (owned process stack captured). It finished justbefore
+cancellation took effect; authoritative job COMPLETED11m52s/exit0 and parity.json
+prove2048GPUtransitions identical, initialparameters/predictions identical,
+maxfullgraphcotangent gradientdifference4.470348e-7. Observations9712→6174.
+Original stagedhelperSHAc074304650ba0f2ef6334ea29274118f1ffa11df49cfc5d6f81f362c1c1810c7.
+Binaryacd029b7533e9ce7ea9512e7d250f5d9eab5ac30b1cf6d27a64ecc6f91fd4bb4,
+model21041354bf2b648617d808aaf72ac68909685f5f823f6654b0d8ef8facc1e5a3,
+state22956words. Root verifier restored to the actually verified immutablev1.
+25407 firstdependent profile CANCELLED after3s during the cancellation race;
+25446 redundant one-step verification retry CANCELLED and exactown containers
+checked/stopped. Unused local v2 verifier scripts removed; external stagedv2
+source/logs retained. None of their partial runs count toward SPS or quality.
+
+25456 coldlabel-free32k profile COMPLETED4m02s,33,554,432finite steps,
+seed1334,H32,mb262144,replay1,lr.001,entropy0,gamma.999,balanced opponents.
+After12warmup epochs, final20interval20,971,520steps/82.453s=254345.14208SPS
+(per-process and aggregate, oneB300). NativefinalGPU100%,145.5/268GB;
+late sampled60sGPU92.5–92.9%. Environment51%,model20%,train28%infinaldashboard.
+This clears30kgate but not300k. Cold initialization differs from prior wide
+runs, so this is a setup measurement, not an isolated causal speedup claim.
+No strength or warm-start equivalence claim for this coldprofilecheckpoint.
+
+25480 label-free65,536agent build COMPLETED, sameverified model21041354... and
+state22956words; binaryb85d881ffac16f234e2fdfd727d02d2daae543142177cf8c02dcdafa104fcb73.
+Nextbounded33.6Mprofiling script uses64kenvs/H16/mb524288/replay1 (same1,048,576
+steps per rollout),seed1334,coldweights,matched discounts and balanced opponents.
+Reuses verified zero-label graph parity; native shape/finite/SPS qualification
+must pass on this newsetup before any long run. No repeatfullgraphparitycompile.
+No overnight or champion release.300k and provenheld-out/hostedstrength stillopen.
+
+Verified archives:
+device-context-label-free-build-compile-diagnosis-and-zero-entropy-audit-25404-25414.tar.gz
+SHA25678a9363e080a09d0924e7b5ec0486c2f3bc8279746111460f8e1543661bc8d03;
+device-context-label-free-32768-pilot-25456.tar.gz
+SHA25630ba556544592d515b32279a01c64724579852dc448b841a9cb81d42d5cd051b.
+AllnewSBATCH scripts pass Bash syntax; verifier passes Ruff and Pythoncompile;
+git whitespace check passes. No Metta package edits or Codex history changes.
