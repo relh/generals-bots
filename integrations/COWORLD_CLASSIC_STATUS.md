@@ -4619,3 +4619,23 @@ if rejected, require a new untouched gate for a changed candidate. Explicitly
 separate validation seeds1361/1363 from final1371. Hostedproof on selected
 candidate against existingchampion remains independently required; current
 33M baseline smoke/benchmark cannot qualify differentfinalweights.
+
+
+64game hostedbaseline completed,0failures:seat0 10W16L6D,seat1 11W16L5D,
+combined21W32L11D,meanscore-.171875,performance.4140625. ExactpolicyUUID/slots
+verified; all episodeerrors/failedpolicyindices null. Separate8gamesmoke excluded.
+Seatstratified episodebootstrap10000,seed1364:score95%CI[-.390625,.046875].
+No hostedimprovement established, no promotion. Preserve actualresults rather
+than favorable8gamesmoke alone. Hostedresults+summary+8agentlogs archiveSHA
+80e18d58e2f9872401d29b70ea1e42002ecf4d1b2bdc859b47c1c9c5553415f0
+independentlyverified local/login copies.
+
+26068live sustainedconsole interval epoch128→774 excludes128warmupepochs:
+677,380,096completedsteps/1723.195s=393,095.44SPS(singleprocess/aggregate),
+includesrollout/transfer/optimization/periodiccheckpoint. Hardware1B300268GB,
+65536env,H16,batch1048576,mb524288,replay1,H512L1,4,852,736params;
+GPU100%,150.8GB at neighboringdashboard. Explicitgamma/shaping.999,3:1
+Expander/Sentinel8192lanes/opponentID/side unchanged. 300K targetpassed.
+Nextquality1Bscript stagednot submitted; final1371seed held untouched.
+Goalactive: need stronger learnedcandidate+untouchedheldout+hostedproof before
+leagueentry/championchange. Current33M hostedartifact remains private test.
