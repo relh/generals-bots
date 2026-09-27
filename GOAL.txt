@@ -2428,3 +2428,30 @@ replay.25,lr.0001,entropy.001,seed1330. Verified24783parentweights,
 checkedenvironmenttransferforagentcountchange,nolearnerrestore.
 Memoryheadroombaseline88.5/268GBsuggestswiderbatchisworthmeasuring;
 no300kclaimuntilactualend-to-endSPSandVRAMareverified.
+
+
+## Completed wider probe and strong 134M continuation
+
+Recovered terminal state without replaying jobs: 24994, 24995 and 25015 all
+completed successfully; no matching trainer containers remained.
+25015: one NVIDIA B300, 32,768 environments, horizon 32, minibatch 131,072,
+replay ratio .25. After 12 warmup epochs, 20 epochs / 20,971,520 steps
+measured 276,574 SPS end to end (75.825s from native interval monitor).
+Recent steady GPU utilization ~91%, final VRAM 139.9/268 GB. Completed
+33,554,432 finite steps. This still falls short of the 300k target.
+24994: 134,217,728 new steps, 16,384 environments, horizon 32, minibatch
+131,072, replay ratio 1, learning rate .001; final 20-epoch interval
+208,473 SPS, recent GPU utilization 88.4%, final VRAM 88.5/268 GB.
+Checkpoint SHA256 1e4eba692af2720c0f569e41c980e672883c522b5be2bc06407a378e3983340c.
+
+24995 all four held-out greedy cases completed. Parent and strong16M both
+scored .484375 vs Expander (99W/107L/50D) and .333984375 vs Sentinel
+(68W/153L/35D), 256 games each, same held-out seed 1101. Aggregate results
+show no improvement; per-game outcome-file comparison remains pending.
+
+25057 submitted paired held-out greedy evaluation of parent vs new strong134M;
+25058 submitted paired action-distribution audit of that checkpoint. Both
+confirmed RUNNING; do not restart without checking exact job state. The long
+training budget remains conditional on evidence that the policy learns useful
+served actions. No new hosted publication; goal remains active.
+Archive of 24994/24995/25006/25015 initiated on metta1; checksum pending.
