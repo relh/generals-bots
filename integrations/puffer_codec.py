@@ -193,6 +193,18 @@ def encode_coworld_hinted_observation(
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
+def calibrate_hint_features(values, board_size: int, *, move_hint_scale: float = 1.0, split_hint_scale: float = 1.0):
+    """Adjust prior confidence while preserving hint decisions, masks, and other features."""
+    if not (0 < move_hint_scale <= 1 and 0 < split_hint_scale <= 1):
+        raise ValueError("Hint confidence scales must be in (0, 1]")
+    if move_hint_scale == 1 and split_hint_scale == 1:
+        return values
+    planes = values.reshape(-1, board_size**2)
+    planes = planes.at[2].multiply(split_hint_scale)
+    planes = planes.at[3:8].multiply(move_hint_scale)
+    return planes.reshape(values.shape)
+
+
 def hinted_replay_indices(values, board_size: int, channels: int = 8):
     """Read the exact scripted action already present in signed hint planes."""
     cells = board_size * board_size

@@ -3,6 +3,7 @@
 import jax
 import jax.numpy as jnp
 import numpy as np
+import pytest
 
 from generals.agents.harvester_agent import expander_harvester_action
 from generals.core import game
@@ -17,6 +18,68 @@ from integrations.puffer_codec import (
 )
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import encode_wire_observation, training_observation
+
+
+@pytest.mark.parametrize("height,width", [(18, 21), (21, 18), (19, 20), (21, 21)])
+def test_calibrated_context_wire_matches_training_and_preserves_teacher_actions(height, width, tmp_path):
+    from metta_training.environment import EnvironmentContext
+
+    from integrations.metta_puffer import GeneralsPufferEnvironment
+
+    kinds = np.ones((height, width), dtype=np.int32)
+    owners = np.zeros((height, width), dtype=np.int32)
+    armies = np.zeros((height, width), dtype=np.int32)
+    kinds[2, 2], owners[2, 2], armies[2, 2] = 4, 1, 20
+    owners[2, 3], armies[2, 3] = 1, 10
+    kinds[-3, -3], owners[-3, -3], armies[-3, -3] = 4, 2, 20
+    message = dict(
+        height=height,
+        width=width,
+        type_grid=kinds.tolist(),
+        owner_grid=owners.tolist(),
+        army_grid=armies.tolist(),
+        my_land=2,
+        my_army=30,
+        opp_land=1,
+        opp_army=20,
+        turn=50,
+    )
+    options = dict(
+        coworld_classic=True,
+        teacher="expander_harvester",
+        factorized_actions=True,
+        hint_features=True,
+        prior_hint_features=True,
+        expander_hint_features=True,
+        context_hint_features=True,
+        compact_features=True,
+        lean_features=True,
+        move_hint_scale=0.375,
+        split_hint_scale=0.125,
+    )
+    env = GeneralsPufferEnvironment(
+        context=EnvironmentContext(seed=1322, index=0, mode="train", output=tmp_path),
+        **options,
+    )
+    try:
+        training_values, training_mask = env._encode(training_observation(message))
+        wire_values, wire_mask = encode_wire_observation(
+            message,
+            expander_context_prior_hinted=True,
+            move_hint_scale=0.375,
+            split_hint_scale=0.125,
+        )
+        original, original_mask = encode_wire_observation(message, expander_context_prior_hinted=True)
+        np.testing.assert_array_equal(wire_values, np.asarray(training_values))
+        np.testing.assert_array_equal(wire_mask, np.asarray(training_mask))
+        np.testing.assert_array_equal(wire_mask, original_mask)
+        np.testing.assert_array_equal(
+            hinted_replay_indices(wire_values, 21, 14),
+            hinted_replay_indices(original, 21, 14),
+        )
+        np.testing.assert_array_equal(wire_values.reshape(14, 441)[8:], original.reshape(14, 441)[8:])
+    finally:
+        env.close()
 
 
 def test_coworld_wire_view_matches_padded_training_view():

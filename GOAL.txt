@@ -2173,3 +2173,31 @@ Update, 2026-09-26 action audit and minibatch probe durably archived
     transfer, host/device/wireencoder parity andboundedGPUlearningprobe.
     Goalremainsactive;255,358SPS currentcontextmodel,300k/strongerhosted
     policy notyetachieved. Codexhistory/rollouts/SQLite untouched.
+
+
+## 2026-09-26 hint confidence calibration prepared
+
+The completed action audit found deterministic teacher copying despite lower
+teacher loss. New shared codec options scale move hint planes 3:8 by 0.375
+and split hint plane 2 by 0.125; masks and other feature planes are unchanged.
+The hosted player and frozen bundle probe read these exact options from the
+manifest. Defaults preserve previous bundles. Four Classic board shape parity
+checks and numeric/device transport checks passed (12 selected tests, then
+4 device teacher transport cases after reducing unrelated formatting diffs).
+
+One B300 build 24499 completed in 34 seconds with 16,384 lanes and zero teacher
+loss (PPO coefficient 1, action mix 0). Model digest
+060fb15a879c290edf54e453a9bf2caea17c610f2d74f7a00e79fd9f613dddf5;
+native binary digest
+13f201f779a1c8df9e5e0395e9ae204f5c754951af802af06af5f72fa3e4e1a4.
+Build: /var/tmp/relh-generals-recovery/device-context-calibrated-16384-build-24499/build.
+New adapter/codec staged separately; previous sources and archives preserved.
+
+A bounded 16,777,216-step probe is prepared with seed 1323, horizon 32,
+minibatch 131072, replay ratio .25, learning rate .0001, entropy .001,
+fresh optimizer and verified 23778 parent weights. Explicit checked environment
+and teacher-schedule transfer are both required. No new quality result or
+300k SPS claim yet. Existing 255,358 SPS result belongs to the saturated recipe.
+Metta focused transfer tests passed (10); full package suite pending. Required
+scoped Bazel lint failed on a GitHub download timeout; direct Ruff on modified
+Metta Python files passed. No long run or hosted policy published.

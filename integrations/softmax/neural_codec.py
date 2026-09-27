@@ -5,6 +5,7 @@ import numpy as np
 
 from generals.core.observation import Observation
 from integrations.puffer_codec import (
+    calibrate_hint_features,
     encode_coworld_directional_observation,
     encode_coworld_hinted_observation,
     encode_coworld_lean_observation,
@@ -15,6 +16,10 @@ from integrations.puffer_codec import (
 
 
 BOARD_SIZE = 21
+_calibrate_hints = jax.jit(
+    calibrate_hint_features,
+    static_argnames=("board_size", "move_hint_scale", "split_hint_scale"),
+)
 _encode_lean = jax.jit(encode_coworld_lean_observation)
 _encode_directional = jax.jit(encode_coworld_directional_observation)
 _encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
@@ -102,6 +107,8 @@ def encode_wire_observation(
     expander_packed_context_prior_hinted: bool = False,
     expander_neighbor_threat_prior_hinted: bool = False,
     expander_general_distance_prior_hinted: bool = False,
+    move_hint_scale: float = 1.0,
+    split_hint_scale: float = 1.0,
 ):
     observation = training_observation(message)
     values, mask = (
@@ -131,4 +138,18 @@ def encode_wire_observation(
         if compact
         else encode_observation(observation, factorized_actions=True, goal_features=True)
     )
+    if move_hint_scale != 1 or split_hint_scale != 1:
+        if not any(
+            (
+                prior_hinted,
+                sprint_prior_hinted,
+                expander_prior_hinted,
+                expander_context_prior_hinted,
+                expander_packed_context_prior_hinted,
+                expander_neighbor_threat_prior_hinted,
+                expander_general_distance_prior_hinted,
+            )
+        ):
+            raise ValueError("Hint calibration requires signed prior features")
+        values = _calibrate_hints(values, 21, move_hint_scale=move_hint_scale, split_hint_scale=split_hint_scale)
     return np.asarray(values, dtype=np.float32), np.asarray(mask, dtype=bool)

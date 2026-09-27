@@ -93,8 +93,11 @@ def test_device_step_matches_numeric_training_step():
         device.close()
 
 
-@pytest.mark.parametrize("hints,context_hints", [(False, False), (True, False), (True, True)])
-def test_device_teacher_transport_matches_numeric_training_step(hints, context_hints):
+@pytest.mark.parametrize(
+    "hints,context_hints,calibrated",
+    [(False, False, False), (True, False, False), (True, True, False), (True, True, True)],
+)
+def test_device_teacher_transport_matches_numeric_training_step(hints, context_hints, calibrated):
     context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
     options = dict(
         parallel_games=4, board_size=6, factorized_actions=True, require_gpu=False,
@@ -103,6 +106,8 @@ def test_device_teacher_transport_matches_numeric_training_step(hints, context_h
         prior_hint_features=hints, expander_hint_features=hints, context_hint_features=context_hints,
         coworld_classic=hints, coworld_pool_size=16,
     )
+    if calibrated:
+        options.update(move_hint_scale=0.375, split_hint_scale=0.125)
     numeric = BatchedGeneralsPufferEnvironment(context=context, **options)
     device = BatchedGeneralsPufferEnvironment(context=context, **options)
     serializer = NativeEnvironment.__new__(NativeEnvironment)

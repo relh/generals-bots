@@ -35,7 +35,12 @@ def main():
     ), bundle)
     policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
     policy.reset("context-hosted-probe")
-    codec = {"expander_context_prior_hinted": True}
+    options = manifest["config"]["python_environment"]["options"]
+    codec = {
+        "expander_context_prior_hinted": True,
+        "move_hint_scale": options.get("move_hint_scale", 1.0),
+        "split_hint_scale": options.get("split_hint_scale", 1.0),
+    }
     messages = []
     for height, width in [(18, 21), (21, 18), (19, 20), (21, 21)]:
         kinds = [[1] * width for _ in range(height)]

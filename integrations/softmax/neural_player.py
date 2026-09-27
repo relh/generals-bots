@@ -54,6 +54,10 @@ async def play(url: str, bundle: Path) -> None:
         else {"directional": True} if options.get("directional_features")
         else {"lean": True}
     )
+    codec_kwargs.update(
+        move_hint_scale=options.get("move_hint_scale", 1.0),
+        split_hint_scale=options.get("split_hint_scale", 1.0),
+    )
     policy = FrozenPolicy(config)
     policy.reset("coworld-classic")
     # Compile both the wire codec and graph before the first 500 ms deadline.

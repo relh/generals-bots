@@ -24,6 +24,7 @@ from generals.agents.harvester_agent import ExpanderHarvesterAgent, HarvesterAge
 from generals.agents.sentinel_agent import SentinelAgent
 from generals.core import game
 from integrations.puffer_codec import (
+    calibrate_hint_features,
     decode_action, encode_coworld_directional_observation, encode_coworld_lean_observation,
     encode_coworld_hinted_observation, encode_coworld_observation,
     encode_coworld_packed_directional_observation, encode_observation,
@@ -70,6 +71,8 @@ class GeneralsPufferEnvironment:
         sprint_hint_features: bool = False,
         expander_hint_features: bool = False,
         context_hint_features: bool = False,
+        move_hint_scale: float = 1.0,
+        split_hint_scale: float = 1.0,
         packed_context_hint_features: bool = False,
         neighbor_threat_hint_features: bool = False,
         general_distance_hint_features: bool = False,
@@ -110,6 +113,10 @@ class GeneralsPufferEnvironment:
             raise ValueError("Expander hints require signed prior hints without sprint hints")
         if context_hint_features and not hint_features:
             raise ValueError("Context hints require hinted observations")
+        if not (0 < move_hint_scale <= 1 and 0 < split_hint_scale <= 1):
+            raise ValueError("Hint confidence scales must be in (0, 1]")
+        if (move_hint_scale != 1 or split_hint_scale != 1) and not prior_hint_features:
+            raise ValueError("Hint calibration requires signed prior features")
         if packed_context_hint_features and (not hint_features or context_hint_features):
             raise ValueError("Packed context hints require hinted observations without full context")
         if neighbor_threat_hint_features and (
@@ -210,6 +217,19 @@ class GeneralsPufferEnvironment:
                 obs, factorized_actions=factorized_actions, goal_features=goal_features
             )
         )
+        if move_hint_scale != 1 or split_hint_scale != 1:
+            uncalibrated_encode = self._encode
+
+            def calibrated_encode(obs):
+                values, mask = uncalibrated_encode(obs)
+                return calibrate_hint_features(
+                    values,
+                    board_size,
+                    move_hint_scale=move_hint_scale,
+                    split_hint_scale=split_hint_scale,
+                ), mask
+
+            self._encode = calibrated_encode
         if mask_pass_when_moves_exist:
             encode = self._encode
             pass_index = (4 if factorized_actions else 8) * board_size**2
