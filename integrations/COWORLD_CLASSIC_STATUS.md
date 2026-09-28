@@ -9272,3 +9272,31 @@ Activation check passed; GPU numerical audit currently compiling, training
 not yet started. Mac stream /tmp/relh-classic-spatial-rows-audit-budget-stream.tar.gz,
 SSH exec3134 holds job. Never replace job on observation timeout.
 No long training/hosted registration/XP/champion change. Goal remains active.
+
+
+## Live30174 forward equivalence and prepared native territory-reward diagnostic
+
+30174 remains the single live Generals allocation. Cached B2/T1 and B2/T3
+forward compilations reused; B6/T1 flattened forward completed and audit
+assert_allclose of all output words passed before generating cotangents.
+Reference gradient lambda traced5.333s and remains in XLA compilation at
+9min allocation age. No audit JSON,trainer/checkpoint/quality yet. Process
+previously active~100%CPU,36.48GiB RAM and only784MiB GPU: compilation is
+CPU work; these observations do not establish GPU training throughput.
+Keep the same bounded job; no observation timeout has been treated as terminal.
+
+Prepared only /tmp/relh-classic-native-land-gain-preparation:
+build-config.json SHA0a27d4c4337252784e060f365da680a66629cc6ec95bb5252fdd4102978ee425,
+config.json SHA48de41caebbd9032a7cd9ba2141fa797042e4dc6d729f0d3871332f09ca1e7c9.
+Derived from actual stable30054 training record, with only environment
+land_gain_reward_weight0→.02 (effective0.01 per net tile with rewardscale.5).
+Native128x4,fresh seed739,4096games,balanced strongmixed both sides,
+gamma/shaping.999,H128/minibatch8192,replay1,LR.0015,normadv1,33.55M.
+Hypothesis: denser land feedback may counter observed learned own-tile
+shuffling/expansion regression; no causal claim or performance proof.
+This changes reward objective,so even high land/return cannot qualify without
+held-out greedy wins. No teacher labels/action intervention. Requires new
+honest environment build manifest and full resource/finite/mask/SPS gates;
+no launcher/job submitted. Spatial30174 must finish and artifacts be preserved
+before any replacement. Goal remains strong held-out+hosted policy,not throughput
+alone. No hosted registry,XP or champion changes.
