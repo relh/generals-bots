@@ -8985,3 +8985,65 @@ physical samples. Current goal remains active: strong held-out and hosted
 performance unmet. Next investigation should measure actual policy behavior
 and sampled-versus-greedy performance using this preserved checkpoint,
 before choosing a learning/observation/model change. No new training job yet.
+
+## Paired native behavior and sampling diagnostic30048
+
+Extended evaluate_coworld_frozen_greedy.py with optional --action-diagnostics,
+reusing the existing directional-codec public action statistics: owned/neutral/
+fog destinations, source versus largest legal army, full/half moves, visible
+enemy attacks and public owned-land/army summaries by game phase. The flag
+requires the known11/12-plane directional layout. No policy/action intervention.
+Evaluations remain GPU-only and enforce every chosen action mask.
+
+First launcher30045 FAILED127 after1s before creating any Docker container:
+copied Python staging files but omitted allocated_gpu_uuid.sh. Corrected the
+copy and moved cleanup/archive trap before preflight; terminal state confirmed
+before replacement.30048 COMPLETED Exit0:0,20:47:39–20:50:56 UTC,3m17s.
+One B300 allocation,nice100,4CPU/32G,time limit30min,3min/panel. Allocated
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a was0MiB/0%,no CUDA apps;
+Docker UUID matched,driver595.91.07,imagebdd4f2...e5,656GiB free.
+Output /var/tmp/relh-generals-recovery/classic-native-behavior-30048.
+No training or sustained-SPS claim from this diagnostic.
+
+Eight128-game panels,seed1386,pool128,sampling seed751:
+
+| Weights | Selection | Opponent | W/L/D |
+| --- | --- | --- | --- |
+| final300M | greedy | ExpanderHarvester | 0/128/0 |
+| final300M | greedy | Sentinel | 0/126/2 |
+| final300M | sample | ExpanderHarvester | 0/127/1 |
+| final300M | sample | Sentinel | 0/127/1 |
+| final300M | greedy | random | 0/0/128 |
+| final300M | sample | random | 0/0/128 |
+| initial29937 | sample | ExpanderHarvester | 0/123/5 |
+| initial29937 | sample | Sentinel | 0/128/0 |
+
+Initial-map hashes,side arrays and opponent IDs exactly match across paired
+strong-opponent panels. Greedy final outcomes also exactly match original29962.
+All raw-reward diagnostics report0 clipped steps; this scope covers these
+evaluation trajectories only. Sampling does not make this a strong candidate.
+
+Final greedy early owned-land average3.3; middle/late3.7–3.8. Owned destinations
+99.0–99.4% of middle/late moves,selected-army/max-legal-army ratio0.27–0.37
+late. Sampling expands more: late owned-land19.6Exp/16.8Sent,but still owned
+destinations93.7–93.8%. Initial sampled weights late owned-land32.8Exp/24.1Sent,
+owned destinations85.7/83.8%,visible-enemy attacks2634/1583 versus final841/450.
+Statistics average active rows in each phase, so survivor conditioning applies;
+visible-enemy measures cover public visible tiles,not hidden enemy totals.
+Evidence supports a local-shuffling failure and regression in expansion on
+these matched trajectories; does not prove a single optimizer/reward cause.
+
+Complete diagnostic archive Mac/controller verified SHA256
+5abe3ce00d5db016e96741e15c242d050b927b6466213d8556a43805271c879e.
+/tmp/relh-classic-native-behavior-30048.tar.gz; inspection
+/tmp/relh-native-behavior-30048-inspect. Compute-node archive hash was written
+by exit trap but not read back before allocation ended; no third-copy hash claim.
+Rendered corrected script /tmp/relh-native-behavior-300m-run-node.sh, evaluator
+SHA256c6f8cc0fc6c0ec7ef7626f9d0ec0fcfbc20d9acd9b2ef9b782af8b1db66cc758.
+
+Next controlled candidate: stable native LR.0015,norm_adv1 against strong_mixed
+scripted opponents on both sides,without teacher actions/targets. Prior native
+strong_mixed29836 used LR.015/norm0; stable low-LR/norm1 runs used current or
+weak frozen neural opposition. Do not assume that untested combination works;
+bounded fresh pilot,finite/30k gate and paired quality required before scaling.
+No further job submitted; no hosted/registry/champion side effects. Goal active.
