@@ -9629,3 +9629,39 @@ regression without disabling verification or changing HOME.
 Output /var/tmp/relh-generals-recovery/classic-spatial-local8-direct-continue-pilot-30375.
 Exec65670 / Macstream /tmp/relh-classic-spatial-local8-direct-continue-cache-stream.tar.gz.
 No hosted policy/XP/champion changes; goal remains active.
+
+
+## 30375 continuation complete, quality regression rejected
+
+30375 terminal exit0; 33,554,432 additional physicalENVsteps, zero illegal
+actions;57,028 final weights finite, initial policy digest verifieddf706173...44ddc.
+Final52407756f73a30067cfa34cd43d352bb1333e97f11e34911327b451be1395698.
+Warmepoch4@47.874s→64@293.984s:31,457,280steps/246.110s
+=127,817.97ENV SPS. PhysicalGPUmean69.13%,69samples, mtime/uptime
+alignmentapprox1suncertainty; training-evidence.json preserves details.
+Export succeeded; first-batchGPUvsNumPy output/action checks and all-turn
+finite/legality gates passed. Same comparison pool128 seed1386:
+Expander0W/126L/2D score-.984375,19.520s;
+Sentinel0W/128L/0D score-1,12.834s. Rejected33M continuation; retain30238
+19Exp/2Sentwins as best current8-local checkpoint. No300M extension.
+Behavior regressed to~85–87% moves into owned tiles, fewer visibleenemy
+attacks and smaller land. All reward clamp counts0 in both panels.
+CompleteMac /tmp/relh-classic-spatial-local8-direct-continue-cache-stream.tar.gz
+and controller /tmp/relh-classic-spatial-local8-direct-continue-30375.tar.gz
+SHA256 ebc5bafd9ceeaade39fc88057fdd3b272a47e4b342aa8f40d6e1e56b77773d07.
+Node SHA/container absence to check in next owned allocation. No liveGeneralsjob.
+
+Implemented SpatialFrozenOpponentPufferEnvironment: exact immutable portable
+30238 actor, batched GPU highest-precision inference, one learner per game,
+balanced seats, no teacher/heuristic override, inherited simultaneous game
+advance/recycled states/pool generation. LocalCPUaudit8games/16mappool:
+5steps40frozen decisions legal and exactly matchNumPy maskedargmax; balanced
+4+4 seats/public4851/[3529]/8learnerrows, finite rewards, pool turnover.
+CPU only structural validation, not performance/training.
+New narrow launcher keeps pinned4d18c06c...ecea6 trainer unchanged;
+adds only verified30238 spatial-model-to-spatial-frozen transfer with
+identical public codec/reward options and modelidentity. Positive test and
+wrongcheckpoint/rewardchange/teacher refusal tests passed. Heldout helper
+removes frozen_bundle option before scripted evaluation.
+Next: one bounded8.39M GPUselfplay pilot, cachedverification,30k gate,
+then same two heldout panels. No hosted/XP/champion change; goalactive.
