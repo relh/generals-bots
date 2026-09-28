@@ -135,7 +135,7 @@ ln -s "$out/run" "$disk/classic-source-route-selfplay-pilot-$SLURM_JOB_ID-0"
             >> "$out/cpu.csv" 2>/dev/null || true
         sleep 2
     done
-) > "$disk/classic-route-prior-selfplay-gpu-$SLURM_JOB_ID.csv" 2>&1 &
+) > "$disk/classic-source-route-selfplay-gpu-$SLURM_JOB_ID.csv" 2>&1 &
 sampler=$!
 mkdir -p "$out/timing"
 timeout -k 30s 26m docker run "${common[@]}" --name "$name" \
@@ -151,7 +151,7 @@ while kill -0 "$pid" 2>/dev/null; do
     sleep 15
     now=$(date +%s)
     if ! python3 "$disk/monitor_coworld_steady_interval-v2.py" \
-        "$disk" "$SLURM_JOB_ID" "$((now-start))" classic-route-prior-selfplay 600 1048576 60000 8 12 20; then
+        "$disk" "$SLURM_JOB_ID" "$((now-start))" classic-source-route-selfplay 600 1048576 60000 8 12 20; then
         echo "Source-route self-play pilot stopped by environment throughput or progress guard" >&2
         cleanup
         wait "$pid" || true
@@ -161,7 +161,7 @@ done
 wait "$pid"
 test -f "$out/run/completed.json"
 python3 "$disk/monitor_coworld_steady_interval-v2.py" \
-    "$disk" "$SLURM_JOB_ID" "$(( $(date +%s)-start ))" classic-route-prior-selfplay 600 1048576 60000 8 12 20
+    "$disk" "$SLURM_JOB_ID" "$(( $(date +%s)-start ))" classic-source-route-selfplay 600 1048576 60000 8 12 20
 for step in 16777216 67108864; do
 for opponent in expander_harvester sentinel; do
     checkpoint=$(printf '%s/run/checkpoints/metta_generals/run/%016d.bin' "$out" "$step")

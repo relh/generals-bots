@@ -6727,3 +6727,20 @@ import. The assigned B300 UUID was
 node-local at `/var/tmp/relh-generals-recovery/classic-source-route-selfplay-pilot-29061`.
 The corrected bundle includes the exact pinned transfer SHA256
 `862a6232b430dd804cf3fdcad62f70f24e778a6a5a233f6c1bdf2b25ea122e3f`.
+
+Corrected-bundle job 29068 reached 22 Puffer epochs and 23,068,672
+two-seat agent steps (11,534,336 Classic environment steps). The monitor
+mistakenly retained the preceding pilot's filename prefix, read epoch zero,
+and stopped the run at its 600-second startup guard. The trainer console
+shows actual completed epochs; epoch 22 was at 9m26.757s uptime. Re-reading
+that console with the corrected prefix yields warmed 16- and 20-epoch
+rates of 116,635 and 115,604 agent SPS, or **58,317 and 57,802 Classic
+environment SPS**. The B300 dashboard reached 100% GPU and 62.2 GiB VRAM;
+later epochs spent about 0.8–0.9 seconds in environment work and 6–8
+seconds in optimization per 1,048,576 agent steps. These rates pass the
+30k environment gate. Job 29068 is terminal `FAILED` (exit 1) because of
+the monitor path; it did not complete the intended 33.55M environment-step
+pilot. Its 16,777,216-agent-step checkpoint exists. Evaluate that saved
+8,388,608-environment-step checkpoint on the paired seed-1386 panels before
+deciding whether to resume training. Do not count the stopped job as a
+completed quality experiment.
