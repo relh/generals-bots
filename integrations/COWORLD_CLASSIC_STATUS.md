@@ -6642,3 +6642,22 @@ Sentinel on the same held-out seed 1386. The prior hint-free self-play actor
 scored zero wins on both panels at 33.55M; any continuation here requires
 actual held-out wins and policy behavior beyond a scripted single move.
 This job is prepared but not yet submitted.
+
+Route-prior self-play job 28977 completed 33,554,432 Classic environment
+steps (67,108,864 two-seat agent steps) on one physically idle assigned B300.
+The final warmed 16-epoch interval measured **137,235 agent SPS = 68,617
+environment SPS**, with about 92% sampled GPU utilization during steady
+training. Its first epoch took several minutes to compile; later batches
+spent roughly 0.8–0.9 seconds in environment work and 5.5–6.0 seconds in
+optimization. The 11-plane graph SHA256 was
+`9c8090b9143c0703277ef57172a39ce801632d84fdc2644222fedf78905ce7f7`.
+Held-out seed-1386 W/L/D at 8.39M environment steps was **0/124/4**
+against ExpanderHarvester and **3/124/1** against Sentinel; at 33.55M it
+was **0/125/3** and **0/124/4**. Final policy SHA256 is
+`da812d9a7d543842110daac36134dfb0600dadb71bd75c8fedfad398e97797f1`.
+The experiment produced exploration but no competitive policy; the prior
+still lacks a useful source-army ranking. The four scores, checkpoint,
+build record, GPU samples, and logs are archived locally and on metta0 as
+`/tmp/relh-classic-route-prior-selfplay-pilot-28977.tar.gz`, SHA256
+`b01b8af7be45ce8182cd9f6f58d51ff0727eb9932c033f47eba9ea1a9bf8abcc`.
+No 300M-step extension or hosted upload follows this negative gate.
