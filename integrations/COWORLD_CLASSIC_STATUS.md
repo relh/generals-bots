@@ -8423,3 +8423,23 @@ checks verify legal full-move captures at distances2/4/8, pass truncation
 after16 turns, finite rewards and recycled observations. The GPU probe
 keeps the same actor and PPO settings and fresh initialization; no
 dependent long run is released on a diagnostic result.
+
+### Multi-step probe29755 submitted
+
+Revisionf332616, one bounded20-minute B300 allocation with8 CPUs/64GiB,
+nice100,4096 rows (512 each direction-by-side layout), distance4 and
+turn limit16. Same physical UUIDfd64...8565 was empty before launch;
+Docker UUID matched. Driver595.91.07, runtime imagebdd4f2...e5,661GiB free.
+Output: `/var/tmp/relh-generals-recovery/classic-sequence-credit-pilot-29755`.
+Full queue still included29602/29663 on B300 and29715 on B200; no other
+Generals training job remained. No physical CUDA contention observed.
+
+The first launch failed before executing because a controller script path
+was not node-local. It released immediately without building or training.
+Replacement29755 streams the rendered script over stdin and streams the
+completed node archive back through the same bounded allocation; it
+does not depend on node-to-controller SSH credentials. Local rendered
+source: `/tmp/relh-sequence-credit-submission-f332616/run-node.sh`, SHA256
+`407dc79629665800989fcb3f9b1567f64b42c9331bcb5ab6ae92ee4a9e5ff9f6`.
+Native build/trainer budgets are5/8 minutes;16,777,216 target steps,
+with the sustained30k SPS guard retained. No dependent long job.
