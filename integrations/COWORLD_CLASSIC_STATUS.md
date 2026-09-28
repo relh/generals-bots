@@ -6716,3 +6716,14 @@ weight at 4.0 and route weights at 0.5, trains at most 33,554,432
 environment steps, and has a warmed 30k environment-SPS guard. An extension
 requires both actual held-out wins and evidence that the actor chooses
 useful large-army sources; throughput alone will not release one.
+
+Initial job 29061 built the graph with SHA256
+`e7c3b4366f27cd4460ab3b037989bcc66596d5db69931ee4eeb2968df0702a8b`,
+but stopped before any training step because its staged bundle omitted
+`puffer_coworld_frozen_transfer.py`, which the pinned launcher checks on
+import. The assigned B300 UUID was
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, physically 0 MiB and
+0% at preflight. Job 29061 is terminal `FAILED` (exit 1); its output is
+node-local at `/var/tmp/relh-generals-recovery/classic-source-route-selfplay-pilot-29061`.
+The corrected bundle includes the exact pinned transfer SHA256
+`862a6232b430dd804cf3fdcad62f70f24e778a6a5a233f6c1bdf2b25ea122e3f`.

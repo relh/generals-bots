@@ -24,6 +24,7 @@ __SOURCE_BUNDLE__
 BUNDLE
 source=$out/staged
 sha256sum "$source"/*
+test -f "$source/puffer_coworld_frozen_transfer.py"
 gpu=$(bash "$source/allocated_gpu_uuid.sh")
 echo "job=$SLURM_JOB_ID node=$(hostname) partition=$SLURM_JOB_PARTITION gpu_uuid=$gpu cpus=$SLURM_CPUS_PER_TASK mem=64G"
 echo "source_revision=$(git -C "$w/source-spatial2" rev-parse HEAD 2>/dev/null || echo snapshot)"
