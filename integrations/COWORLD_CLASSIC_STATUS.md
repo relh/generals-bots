@@ -8083,3 +8083,37 @@ allocation; no peer container/job is modified. Remaining checkpoint
 evaluations will run serially after this trainer finishes, as scheduled
 in the original bounded batch script. No additional shared-GPU evaluation
 is launched. The run remains active toward the 300M budget.
+
+## Prepared public-turn-plane comparison (not submitted)
+
+`generals_coworld_classic_flat_scripted_timed_pilot.sbatch` prepares the
+previously implemented optional public turn plane as a single-change
+comparison to fresh unnormalized control 29432. It keeps seed 739,
+33,554,432 environment steps, opponents/side balance, rewards, both
+discounts 0.999, horizon 128, minibatch 32,768, replay 0.5, LR 0.0003
+and entropy 0.01. No teacher, initialization or action guidance is added.
+Actor advantage normalization is explicitly 0 (the control's default).
+Only the extra observed timestep plane changes: environment and actor
+input 4,851→5,292 values, actor channels 11→12,
+`directional_time_features=true`. It retains the full/half/pass layout.
+
+The actual script's configuration block was executed against archived
+29162 inputs and compared structurally with 29432's recorded config.
+Only these turn-plane build fields differ; budget, seed, reward/opponent
+settings and PPO overrides match, apart from explicit default norm_adv=0.
+Shell syntax and diff checks pass. Expected actor fingerprint computed
+with the archived inference runtime and pinned current factory source is
+`9d11e1a6a8665a578d47ef54df6fd8e582bb41917f5934458beaf2101be8b7c0`.
+Pinned current factory/codec/environment module SHA256s respectively:
+`2889d657bd8315b0f411c9d1dc7f5a1a5a9e978ea640fc13f847c729c873aac1`,
+`64d6fdcb3e0dd9cf3fbb9291a45c99fd0f04a7e7064b3a13e901f277a6bcabd1`,
+`9ad3c0a8b91e69b69eba1de9e79df391c606f5826febb5de683092cc3a40999a`.
+The source bundle must include the builder's pinned normalization header
+even though normalization is off. GPU build, throughput and quality of
+this actor remain untested; it must pass its own 30K guard before scaling.
+
+This is a prepared alternative if the full-budget control fails, not a
+claimed remedy or submitted/dependent job. The sole Generals allocation
+29588 remains on its exact archived 11-plane sources, reaching epoch 313
+(164.10M additional steps), trailing 12-epoch 58,156 SPS and GPU mean
+87.8%. No additional GPU work or hosted side effect was started.
