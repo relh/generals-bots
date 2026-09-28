@@ -7120,3 +7120,28 @@ locally and on metta0 at
 These exact-action comparisons alone do not prove whether Daveey's choice
 is uniquely optimal, but they identify missing pass/half-move behavior
 and show that merely continuing the current flat actor did not learn it.
+
+Offline initialization pilot 29366 then tried twelve epochs of masked
+cross-entropy on the 3,663 Daveey actions from 12 training games, starting
+from the original flat 8.39M-step weights. The remaining four games were
+used only for validation. Its assigned B300 GPU was physically idle at
+preflight. Training top-action accuracy rose from 23.1% to 38.9%, but
+validation accuracy fell from **25.5% to 7.6%** and validation negative
+log-likelihood worsened from **3.699 to 5.128**. No epoch improved the
+baseline validation loss; `best.bin` is byte-identical to the starting
+checkpoint SHA256
+`5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71`.
+No imitation weights are accepted for RL. The source, complete dataset,
+logs and training metrics are archived locally
+and on metta0 as `/tmp/relh-classic-expert-init-pilot-29366.tar.gz`, SHA256
+`e0487039b19306739b2a55ce2bf98977503f3e0e90c25681e4dc77839b6695f0`.
+
+One new private, bounded **16-game Daveey v7 self-play** XP request,
+`xreq_5ae69c48-7423-4f52-9e67-767ad3276a34`, was created after
+checking the visible request list for the unique key
+`relh-daveey-selfplay-16-20260928`. Both seats pin Daveey version UUID
+`76b0a083-f0a4-4ec7-9811-038349266633` on Classic 1v1. The service
+estimated eight credits. At first readback the request was pending with
+zero completed and zero failed episodes. It exists to broaden independent
+expert traces and has not triggered any policy upload, promotion, or
+long-running Generals training job.
