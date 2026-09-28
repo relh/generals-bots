@@ -21,8 +21,8 @@ out=$disk/classic-flat-normalized-300m-pilot-$SLURM_JOB_ID
 mkdir -p "$out"
 parent=$disk/classic-flat-scripted-normalized-pilot-29473
 source=$parent/staged
-ln -s "$parent/build" "$out/build"
-sha256sum "$source"/*
+ln -s "../${parent##*/}/build" "$out/build"
+sha256sum "$source"/*.py
 checkpoint=$parent/run/checkpoints/metta_generals/run/0000000033554432.bin
 test "$(sha256sum "$checkpoint" | cut -d' ' -f1)" = 22d7759f936988270fe483efccf89878844cb8c3eeb272454269ec4a157f6824
 test -f "$parent/run/completed.json"

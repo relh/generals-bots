@@ -7821,3 +7821,17 @@ runtime image bdd4f2a9..., and 699 GiB free Docker/output disk were verified.
 The job remains bounded to one GPU, 8 CPUs, 64 GiB, nice 100, 135 minutes
 on `metta-fabric-b300-1`; trainer limit 110 minutes. Script syntax and
 diff checks pass. Submission details follow after the job is accepted.
+
+### 300M startup correction
+
+First submission 29583 was Slurm FAILED/exit 1:0 after one second, before
+Docker/training. The archived staged source directory contains a Python
+`__pycache__` directory, and the broad checksum glob rejected it under
+`set -e`. Both prepared extension scripts now hash only Python source
+files. Their build links now use relative sibling paths so the same
+archived build resolves under both the host disk path and container
+`/recovery` mount. The failed job is terminal; a subsequent allocated
+physical GPU query showed 0 MiB/0% and no Docker container. No training
+steps or new checkpoint came from 29583. Its terminal record is preserved
+locally as `/tmp/relh-classic-flat-potential-300m-29583-slurm.txt`. The
+corrected script passes syntax and diff checks before a single replacement.
