@@ -18,6 +18,17 @@ from integrations.native_puffer_policy import NativePufferPolicy
 from integrations.puffer_codec import hinted_replay_indices
 
 
+def greedy_declared_heads(predictions, sizes):
+    probabilities = np.asarray([p.probabilities for p in predictions], dtype=np.float32)
+    if probabilities.shape != (len(predictions), sum(sizes)) or not np.isfinite(probabilities).all():
+        raise ValueError("Frozen probabilities differ from the declared action heads")
+    boundaries = np.cumsum((0, *sizes))
+    return np.stack([
+        np.argmax(probabilities[:, start:stop], axis=1)
+        for start, stop in zip(boundaries[:-1], boundaries[1:], strict=True)
+    ], axis=1).astype(np.int32)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--build", type=Path, required=True)
@@ -142,13 +153,7 @@ def main():
                 actions = np.asarray(actions, dtype=np.int32).copy()
             else:
                 predictions = policy.predict_many(seats, observation)
-                actions = np.asarray(
-                    [
-                        (np.argmax(prediction.probabilities[:1765]), np.argmax(prediction.probabilities[1765:]))
-                        for prediction in predictions
-                    ],
-                    dtype=np.int32,
-                )
+                actions = greedy_declared_heads(predictions, env.spec.action_sizes)
             masks = np.asarray(observation.action_masks, dtype=bool)
             if args.force_hint_move or args.force_hint_split:
                 hint = hinted_replay_indices(observation.values, 21, channels=14)
@@ -166,7 +171,8 @@ def main():
                 if args.force_hint_split:
                     actions[active, 1] = np.where(hint[active, 0] == 1764, 0, hint[active, 1])
             offset = 0
-            sizes = policy.action_sizes if args.native else (1765, 2)
+            sizes = tuple(env.spec.action_sizes)
+            assert tuple(policy.action_sizes if args.native else policy.spec.action_sizes) == sizes
             assert actions.shape == (args.games, len(sizes))
             for head, size in enumerate(sizes):
                 assert masks[np.arange(args.games), offset + actions[:, head]].all()

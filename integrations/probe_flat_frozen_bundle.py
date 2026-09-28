@@ -28,13 +28,17 @@ def main():
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--native", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--native", action="store_true")
+    mode.add_argument("--spatial", action="store_true")
     parser.add_argument("--training", type=Path, help="Required for verified native export")
     parser.add_argument("--factory-source", type=Path,
                         help="Exact archived generals_fabric.py used to build this checkpoint")
     args = parser.parse_args()
     if args.native and (args.training is None or args.factory_source is not None):
         parser.error("Native export requires --training and does not use --factory-source")
+    if args.spatial and (args.training is None or args.factory_source is None):
+        parser.error("Spatial export requires --training and --factory-source")
     assert hashlib.sha256(args.checkpoint.read_bytes()).hexdigest() == args.sha256
     manifest = json.loads(args.build.read_text())
     if args.factory_source is not None:
@@ -53,7 +57,13 @@ def main():
     assert manifest["config"]["python_environment"]["options"]["directional_features"]
     args.output.mkdir(parents=True, exist_ok=False)
     bundle = args.output / "bundle"
-    if args.native:
+    if args.spatial:
+        from integrations.export_spatial_policy_bundle import export_bundle
+        from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+
+        export_bundle(args.build, args.training, args.checkpoint, args.sha256, args.factory_source, bundle)
+        policy = SpatialPlayerPolicy(bundle)
+    elif args.native:
         from integrations.native_policy_bundle import NativePlayerPolicy, export_bundle
 
         export_bundle(args.build, args.training, args.checkpoint, args.sha256, bundle)

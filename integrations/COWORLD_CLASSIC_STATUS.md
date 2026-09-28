@@ -9444,3 +9444,51 @@ finiteafter2.6M andSPSgate. Originalrollout/serving path remainsunchanged.
 Currentlyauditstillrunning,notraining/checkpoint/qualityyet. Exec26716holdsjob;
 Macstream /tmp/relh-classic-spatial-local8-direct-stream.tar.gz. Re-pollsame
 jobonobservationtimeout;donotrestart. Goalactive;nohosted/XP/championchange.
+
+
+## 30238 spatial throughput proven; evaluation head slicing fixed
+
+GPU8-localauditpassed18dense tensor-direction centraldifferencechecks of
+originalforward:maxoutput2.98023224e-8/maxdirectionalgradient8.20157093e-7;
+fullCPU4-localallgradientaudit remainsseparatepreviousproof. DirectGPUgradient
+compiled9.231s (forward2.627s),hostRAM~4.3GiB;no87GiBcompilerreplay.
+Trainingcompleted8,388,608physicalENVsteps,4096games/rows,H128,mb8192,
+replay.5,LR.0003,gamma/shaping.999,8local/8global/context1.01.
+Warm4@60.108s→16@111.485s:6,291,456steps/51.377s=122,456.66ENV SPS,
+GPUphysicalmean67.87%(15samples,min63/max85,3.571smeaninterval;nodeconsole
+mtimealignmentabout1suncertainty). Rollout~89%time(Env64%/originalmodel24%),
+optimization~11%(directmodel~10%). All57,028checkpointwordsfinite,
+DEVICE_ACTION_MASK_AUDIT8,388,608actions/0illegal. FinalSHA
+ df706173df2c27fefe2279c8f1252d8eba376ad3a7a2858123d1c749afa44ddc.
+No nonfinitefailurebeyond2.6M. training-evidence.json preservedinthearchive.
+
+FirstevaluationcompiledoriginalB128forward109.953s,then hitillegal-action
+assertion. Rootcause:new evaluate_coworld_frozen_greedy.py Fabricbranch had
+hardcoded1765/2 probabilityheads andmaskoffsets despiteflat3529 contract.
+Correctedto declared environmentheads,validatedagainstpolicy.spec; argmax
+perdeclaredhead. Syntheticflatpass3528 andlegacy1765/2casepassed. Native
+branchwasalreadycorrect. Inspectedarchived29432actualevaluator
+ evaluate_coworld_frozen_opponent_pilot.py:legacy_actions_many usesdeclared
+policyheads,so control23Exp/1Sentresult isnot invalidatedbythisnewhelperbug.
+30238evaluation producedno gamequalityresult;do notclaim0wins orreruntraining.
+Exec26716terminal1,Slurmhandleexpired. Exactowncontainercleanuptrapran.
+
+CompletearchiveMac /tmp/relh-classic-spatial-local8-direct-stream.tar.gz,
+controller /tmp/relh-classic-spatial-local8-direct-30238.tar.gz SHA256
+ e988adfdbec1b96159460b78dc63d82f9d2b87ceaf0aec92896b581c130024b1
+matched;nodecopyhashpendingnextnecessaryownallocation. Localinspection
+/tmp/relh-spatial-direct-30238-inspect. No liveGeneralsjob yet.
+
+Implementedportable spatial_policy_bundle.py NumPyinference and
+export_spatial_policy_bundle.py:realizedverifiedtopology/weights,immutable
+checkpoint/build/training/weights digests,public4851/[3529],stableSiLU,
+crossstencil/matrixproducts/learnedpublicpriors,per-headlegalsoftmax;
+noFabricgraph compileratinference. neural_player recognizes spatialbundle.
+CPUactual30238bundle24realpublicviews matchesverifieddirectJAXoutputs,
+max2.38418579e-7. Report /tmp/relh-spatial8-numpy-parity.json/log.
+Actualwirepath32legalactionsacross4dimensionsafter4warmups:
+mean0.655999ms/max0.802459ms macOSARM,JAX0.11.2(codec);report/bundle
+/tmp/relh-spatial8-30238-numpy-serving-probe. Linuxhostedcoldstartup and
+matchstrength remainunproven. No hostedregistration/XP/championchange.
+Nextwork:onebounded GPUevaluationallocation,correctedheads,preservedcheckpoint,
+originalheldout128Exp/128Sentpanels;no newtraining untilqualityknown.
