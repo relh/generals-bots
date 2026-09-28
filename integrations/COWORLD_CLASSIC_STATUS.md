@@ -9665,3 +9665,22 @@ wrongcheckpoint/rewardchange/teacher refusal tests passed. Heldout helper
 removes frozen_bundle option before scripted evaluation.
 Next: one bounded8.39M GPUselfplay pilot, cachedverification,30k gate,
 then same two heldout panels. No hosted/XP/champion change; goalactive.
+
+
+Submitted30393 spatialfrozen-gen1: b300/metta-fabric-b300-1,8CPU/64G,
+nice100/24min; GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%
+at preflight, UUID matched inside Docker. Pinnedimagebdd4f2a9a125,
+driver595.91.07,652GiBfree/50,709 tmpfreeinodes. Prior30375archive
+ebc5bafd...73d07 nodehash matched and exactpriorcontainerabsent.
+Revision6392e29, script /tmp/relh-classic-spatial-local8-frozen-gen1-run-node.sh
+SHA256 ed8971cd269e9ea56e0c6ba45aebfd2195772ebc29293c956d8c2059903cf4e1.
+Newenvironmentbuild, same actual8local/8global/context1.01spatialarchitecture,
+4,096games/onelearner each/H128/mb8192/replay.5/LR.0003, gamma/shaping.999.
+Initialize30238df706173...44ddc, seed743,8,388,608additionalENVsteps,
+optimizerreset, no teacher. Frozen30238bundle at preserved30342nodepath,
+both learner seats balanced. ExplicitFabricverificationcache,hardDocker64GiB
+andcore0, boundedbuilder5min/trainer12min/startup300s/SPS30k gate.
+Output /var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-gen1-pilot-30393,
+exec86897 / Macstream /tmp/relh-classic-spatial-local8-frozen-gen1-stream.tar.gz.
+Currentlybuilding; no epoch/quality claim yet. Single Generalsjob; repollsame
+handle on observationtimeout. No hosted/XP/champion changes. Goalactive.
