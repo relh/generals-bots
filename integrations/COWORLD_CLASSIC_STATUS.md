@@ -6563,3 +6563,26 @@ build record, and logs are archived locally and on metta0 as
 `/tmp/relh-classic-gen0-long-results-28688.tar.gz`, SHA256
 `8ec92e74e2a2f2e0c4a4c6f5a64673c7d6c74a79443f3242b5f0d7b11ad96038`.
 No hosted upload or policy promotion follows this quality result.
+
+Cached frozen-opponent observation pilot 28890 then completed successfully
+(Slurm `COMPLETED`, exit `0:0`). Its 16-game GPU audit compared cached with
+fresh observations and transitions over 12 turns, including one Classic
+map-pool refresh, and found exact parity. The 12,582,912-step bounded run
+used the same B300, 4,096 games, H128, minibatch 32,768, frozen generation-0
+opponent, and no teacher objective as the uncached pilot 28333. Warmed epochs
+8–24 measured **89,418 end-to-end environment SPS**, versus **78,923 SPS**
+without the cache, a 13.3% improvement. Console timing put environment
+rollout near 2.1 seconds versus roughly 2.8–3.1 seconds per 524,288-step
+batch, while optimization remained around 3.0 seconds. The allocated GPU
+was physically idle at setup; the image, UUID, and source/checkpoint hashes
+matched their expected values. Held-out seed-1386 W/L/D was **63/52/13**
+versus ExpanderHarvester and **40/81/7** versus Sentinel, effectively the
+same quality as uncached 28333/28346's 63/51/14 and 39/82/7. The pilot's
+final policy SHA256 is
+`beb136026b3c7b80d0f684e043f5fb7bbfc0d8e0ac8418e8099a851e516c3c97`.
+The audit, two scores, checkpoint, build/config, GPU/CPU samples, and logs
+are archived locally and on metta0 as
+`/tmp/relh-classic-gen0-cache-pilot-28890.tar.gz`, SHA256
+`ca675e5e57240d5c186e44b6487cf27015e0bd62a124735dd7235bc67cfe5436`.
+The cache source was already committed in `382414c`; this run validates its
+semantics and throughput. It does not justify hosted publication.
