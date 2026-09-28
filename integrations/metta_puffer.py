@@ -976,16 +976,25 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
 
     def __init__(self, *, frozen_build: str, frozen_checkpoint: str, frozen_sha256: str,
                  context: EnvironmentContext, parallel_games: int = 16,
-                 scripted_hint_fraction: float = 0.0, **options):
+                 scripted_hint_fraction: float = 0.0, frozen_codec: str = "same", **options):
         from metta_training.inference import FrozenPolicy
         from metta_training.model_config import FrozenPolicyConfig
         from metta_training.native_fabric import compile_policy
 
         factorized = bool(options.get("factorized_actions", False))
+        if frozen_codec not in ("same", "hinted_gen0"):
+            raise ValueError("Unknown frozen opponent codec")
+        if frozen_codec == "hinted_gen0" and (
+            factorized or not options.get("directional_features", False)
+            or options.get("hint_features", False)
+            or frozen_sha256 != "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf"
+        ):
+            raise ValueError("Generation-0 opponent requires a pinned flat hint-free learner")
         if not factorized and scripted_hint_fraction:
             raise ValueError("Scripted hint mix requires factorized actions")
 
         super().__init__(context=context, parallel_games=parallel_games, **options)
+        self._frozen_codec = frozen_codec
         self.spec = self.spec.model_copy(update={"agents": parallel_games})
         if scripted_hint_fraction not in (0.0, 0.5) or (scripted_hint_fraction and parallel_games % 4):
             raise ValueError("Scripted hint mix requires half of games in balanced four-game groups")
@@ -1009,12 +1018,23 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         model = frozen.policy
         expected_frozen_model = (
             "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
+            if frozen_codec == "hinted_gen0" else
+            "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
             if factorized else
             "c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d"
         )
         if json.loads(Path(frozen_build).read_text())["model_sha256"] != expected_frozen_model:
             raise ValueError("Frozen opponent graph does not match the audited action codec")
-        if model.observation_size != self.base.spec.observation_size or model.action_sizes != self.base.spec.action_sizes:
+        if frozen_codec == "hinted_gen0":
+            if model.observation_size != 14 * self.base.size**2 or model.action_sizes != [4 * self.base.size**2 + 1, 2]:
+                raise ValueError("Generation-0 opponent has the wrong observation or action layout")
+            self._frozen_observe = jax.jit(jax.vmap(
+                lambda state, side: encode_coworld_hinted_observation(
+                    game.get_observation(state, side),
+                    signed_flags=True, expander_hint=True, context_features=True,
+                )
+            ))
+        elif model.observation_size != self.base.spec.observation_size or model.action_sizes != self.base.spec.action_sizes:
             raise ValueError("Frozen opponent model and game codec differ")
         self._frozen_model = model
         self._frozen_function = compile_policy(
@@ -1043,6 +1063,10 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
             logits = model.model_predictions_device(self._frozen_function, prediction)[:, 0]
             moves = model.action_sizes[0]
             move = jnp.argmax(jnp.where(masks[:, :moves], logits[:, :moves], -jnp.inf), axis=1)
+            if frozen_codec == "hinted_gen0":
+                split = jnp.argmax(jnp.where(masks[:, moves:], logits[:, moves:moves + 2], -jnp.inf), axis=1)
+                cells = self.base.size**2
+                return jnp.where(move == 4 * cells, 8 * cells, move + 4 * cells * split)[:, None].astype(jnp.int32)
             if not factorized:
                 return move[:, None].astype(jnp.int32)
             split = jnp.argmax(jnp.where(masks[:, moves:], logits[:, moves:moves + 2], -jnp.inf), axis=1)
@@ -1080,10 +1104,15 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
             raise ValueError(f"Learner action shape {actions.shape}; expected {expected}")
         values, masks = self._cached_values, self._cached_masks
         frozen_sides = 1 - self.sides
-        frozen = self._frozen_actions(
-            values[self._frozen_rows, frozen_sides[self._frozen_rows]],
-            masks[self._frozen_rows, frozen_sides[self._frozen_rows]],
-        )
+        if self._frozen_codec == "hinted_gen0":
+            frozen_states = jax.tree.map(lambda field: field[self._frozen_rows], self.states)
+            frozen_values, frozen_masks = self._frozen_observe(
+                frozen_states, frozen_sides[self._frozen_rows]
+            )
+        else:
+            frozen_values = values[self._frozen_rows, frozen_sides[self._frozen_rows]]
+            frozen_masks = masks[self._frozen_rows, frozen_sides[self._frozen_rows]]
+        frozen = self._frozen_actions(frozen_values, frozen_masks)
         opponent = jnp.zeros((self.parallel_games, len(self.spec.action_sizes)), jnp.int32)
         opponent = opponent.at[self._frozen_rows].set(frozen)
         if self._scripted_rows is not None:
