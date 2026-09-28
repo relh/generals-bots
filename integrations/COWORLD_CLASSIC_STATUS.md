@@ -7009,3 +7009,68 @@ are archived locally and on metta0 at
 `/tmp/relh-classic-flat-destination-counterfactual-29256.tar.gz`, SHA256
 `3ee85cdd7919ffd51fa912b973c4ca0ef3c510909183ac457d05b3f586b94f19`.
 No checkpoint was changed or promoted.
+
+## Hint-free flat learner against frozen generation 0 (2026-09-28)
+
+The one-seat device environment now supports separate public codecs: the
+learner receives the 11-plane flat-action view, while its frozen opponent
+receives generation 0's 14-plane hinted view. The learner is never given
+the opponent's hint planes or an action target. The frozen opponent loads
+checkpoint SHA256
+`e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf`.
+Its historical Fabric source is pinned by SHA256
+`04d317499de676eb74a91deb2e8b52528c97831d5895a0e1f80b991426238992`;
+the loader temporarily registers that source only while constructing the
+frozen actor, then restores the current flat learner module. First audit
+job 29303 stopped after seven seconds because it used the new Fabric source
+for the old checkpoint; it performed no training. Corrected bounded B300
+audit 29311 passed on 16 games with eight games per learner side: the
+generation-0 public observations and masks matched its own codec exactly,
+all converted flat opponent actions were legal and matched the saved
+actor's served actions, and a paired step returned the expected learner
+shapes. Audit 29311 completed exit 0 in 2m46s, with its assigned physical
+GPU idle at preflight. Its source and result are archived locally and on
+metta0 as `/tmp/relh-classic-flat-gen0-frozen-audit-29311.tar.gz`, SHA256
+`cfe7ae08451c4c0f00b36516aa5d6feecc9a614ebf093aab30b0152fc3619326`.
+
+Bounded pilot 29323 initialized the learner from the saved 8.39M-environment-
+step flat checkpoint SHA256
+`5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71`,
+with a fresh optimizer. It used 4,096 one-seat Classic games, H128,
+minibatch 32,768, replay ratio 0.5, LR 0.0003, entropy 0.01, seed 735,
+and learner/environment shaping gamma both 0.999. The assigned B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` was 0 MiB/0% at
+preflight; no same-GPU contention was observed, although an unrelated
+Slurm job occupied another GPU on the node. It completed 12,582,912
+environment steps. Final warm 8/12-epoch end-to-end rates were
+**50,889/50,720 environment SPS**, with the monitor's trailing
+training-window GPU utilization at 68.0%. A monitor prefix typo initially
+reported epoch zero; verified node-local aliases connected it to the live
+console and GPU samples before the throughput decision, and the source
+script is corrected. The batch job then exited 1 only because its inline
+evaluator passed frozen-opponent-only options to the ordinary one-seat
+evaluator. Training and three checkpoints had already completed; no step
+was replayed. The run, checkpoints, GPU samples, and logs are archived
+locally and on metta0 as
+`/tmp/relh-classic-flat-gen0-frozen-training-29323.tar.gz`, SHA256
+`bf5301fd92f0a388ba4113eccfb80c2f2eab252ed1ff23b5f37a0fa43c9d968d`.
+
+Recovery quality job 29345 scored the saved 4.19M- and 12.58M-step
+checkpoints on the seed-1386 held-out 128-game panels. W/L/D was
+**27/96/5** then **20/106/2** against ExpanderHarvester and **1/122/5**
+then **2/120/6** against Sentinel. Initial-state hashes, sides, and
+opponent IDs match the original early flat policy's panels, which scored
+32/92/4 and 3/118/7. From that reference to the 12.58M checkpoint,
+outcomes improved/worsened/tied in 11/25/92 Expander games and
+3/6/119 Sentinel games. Midgame owned land stayed near 33 and 31 tiles
+and visible-enemy attack rates near 19% and 22%; the catastrophic
+symmetric-self-play expansion collapse did not recur, but quality still
+declined. The final checkpoint SHA256 is
+`148894779edb65ca1ff9dfd56009c947c6fec776862f2f522985cb8bb0c4fa34`.
+Quality job 29345 completed exit 0; its four panels and per-game arrays
+are archived locally and on metta0 as
+`/tmp/relh-classic-flat-gen0-frozen-quality-29345.tar.gz`, SHA256
+`5b18818643e26c1932e4986c74b2f04d925a46f937bfb37255ab237a57bac9a2`.
+The run passes 30k environment SPS but loses to both its starting policy
+and the stronger generation-0 reference. No longer run, hosted request,
+upload, or champion change follows it.
