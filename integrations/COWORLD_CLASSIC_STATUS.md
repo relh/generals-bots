@@ -9387,3 +9387,32 @@ layout: shared44input-to-local,80cross-context,32localactionedgeweights,
 expressed as batchedmatrix/convolutionoperations rather than general pooled
 graph compilation. No such replacementimplemented/auditedyet; preserveexact
 actor/optimizer and proveoutput/gradient equivalence before GPUtraining.
+
+
+## Direct spatial optimization implemented and numerically audited on CPU
+
+New integrations/direct_spatial_optimization.py builds exactweightlookups from
+realized Fabric pooleddocumentindices,parameterlayouts,atomsharing partitions,
+and baked/carried edge tables. Implements current-tick inputprojection,cross
+convolution,context/global/action/readout matrixproducts,publicpriors and
+Outputaffine using existingnative parameterwords. Optimizationforward/backward
+only: originalrollout/state,serving,PufferPPO/optimizer/layout unchanged.
+Rejects unknownpopulations,couplings,delays,rates,feedback/auxiliaryobjectives,
+sharedweightconflicts,incomplete dense/stencilmaps andrepeatedendpoints.
+Deferredactivation now accepts oneof two explicitadaptermodules;directmarker
+activationfreshprocess passed. Firstlayoutattempt refused bakedcouplings
+missingoccupancy;fixed using originalclassedges+leafsharingforbaked tables.
+
+FullCPUaudit passed against actual29432f1db428...c359ef trained42584word
+control,B2/T3,sixrealpublicviews,nonemptyincomingstate/selectiveresets:
+maxoutput5.96046448e-7,maxallparametergradient7.74860382e-7,
+referencegradientnorm1.79174292;rolloutoutputs/carriedstateexactequal.
+Report /tmp/relh-direct-spatial-cpu-audit.json/log.
+Independentcentraldifferences of ORIGINALforward,onedense direction in each
+of18paramtensors,also passed: maxdifference6.79125534e-5,
+rtol.02/atol2e-4,epsilon.01;scopeexplicitlynotfullgradientparity.
+Report /tmp/relh-direct-spatial-cpu-directional-audit.json/log.
+This allows GPU8-local audit to compare originalforward andeachparameterfamily
+without replaying the87GiB referencegradient compilation. Four-local full
+referencegradient audit is stronger/scopedseparateevidence;8-localtraining
+finite/throughput/quality remains unproven. No newGPUjob yet.
