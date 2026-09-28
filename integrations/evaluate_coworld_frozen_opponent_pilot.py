@@ -88,6 +88,9 @@ def main():
                         help="Diagnostic: add this logit to legal half-army flat moves")
     parser.add_argument("--pass-logit-bonus", type=float, default=0.0,
                         help="Diagnostic: add this logit to the flat pass action")
+    parser.add_argument("--fabric-sample-seed", type=int,
+                        help="Diagnostic: sample the frozen flat Fabric actor instead of masked argmax")
+    parser.add_argument("--fabric-sample-temperature", type=float, default=1.0)
     parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
     parser.add_argument("--teacher-action-audit", action="store_true",
                         help="Measure agreement with scripted actions from the current public game state")
@@ -101,6 +104,8 @@ def main():
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert min(args.own_destination_logit_penalty, args.source_army_logit_penalty,
                args.half_move_logit_bonus, args.pass_logit_bonus) >= 0
+    assert args.fabric_sample_temperature > 0
+    assert args.fabric_sample_seed is None or not args.native
     flat_intervention = any((args.own_destination_logit_penalty, args.source_army_logit_penalty,
                              args.half_move_logit_bonus, args.pass_logit_bonus))
     assert args.sample_seed is None or args.native
@@ -155,6 +160,7 @@ def main():
         assert int(args.checkpoint.stem) // (agents * env.horizon) == episode
     if not args.native:
         policy.reset(reset_seed)
+    fabric_sample_rng = np.random.default_rng(args.fabric_sample_seed) if args.fabric_sample_seed is not None else None
     seats = list(range(args.games))
     start = time.monotonic()
     reward_diagnostics = dict(
@@ -203,12 +209,20 @@ def main():
             forward = legacy_actions_many(
                 policy, seats, observation,
                 return_logits=args.hint_audit or args.teacher_action_audit
-                or flat_intervention,
+                or flat_intervention or fabric_sample_rng is not None,
                 counterfactual_hint_scale=args.counterfactual_hint_scale,
             )
             actions, logits = forward if args.hint_audit or args.teacher_action_audit \
-                or flat_intervention else (forward, None)
+                or flat_intervention or fabric_sample_rng is not None else (forward, None)
             masks = np.asarray(observation.action_masks, dtype=bool)
+            if fabric_sample_rng is not None:
+                if len(env.spec.action_sizes) != 1 or env.spec.action_sizes[0] != 8 * 21 * 21 + 1:
+                    raise ValueError("Fabric sampling diagnostic requires flat 21x21 actions")
+                uniform = fabric_sample_rng.random(logits.shape)
+                gumbel = -np.log(-np.log(np.clip(uniform, 1e-10, 1 - 1e-10)))
+                actions[:, 0] = np.argmax(
+                    np.where(masks, logits / args.fabric_sample_temperature + gumbel, -np.inf), axis=1
+                )
             if flat_intervention:
                 if len(env.spec.action_sizes) != 1 or env.spec.action_sizes[0] != 8 * 21 * 21 + 1:
                     raise ValueError("Logit interventions require flat 21x21 actions")
@@ -448,6 +462,8 @@ def main():
         source_army_logit_penalty=args.source_army_logit_penalty,
         half_move_logit_bonus=args.half_move_logit_bonus,
         pass_logit_bonus=args.pass_logit_bonus,
+        fabric_sample_seed=args.fabric_sample_seed,
+        fabric_sample_temperature=args.fabric_sample_temperature,
         intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split
         or flat_intervention else None,
         hint_audit=hint_audit if args.hint_audit else None,

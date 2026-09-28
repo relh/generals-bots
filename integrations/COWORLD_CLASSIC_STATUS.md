@@ -7215,3 +7215,23 @@ and `/tmp/relh-classic-source-calibration-result.tar.gz`, SHA256
 `9a07119366470d9e86b8d319a86bfa93a92f727d789943c1f7c4afe245ac077f`.
 No continuation, hosted request, or promotion follows these failed
 counterfactuals.
+
+## Flat policy stochastic-serving screen (2026-09-28)
+
+Frozen Fabric evaluation now has a seeded categorical sampling mode for
+the legal flat-action distribution. Bounded inference-only B300 job 29385
+sampled the saved early flat checkpoint with temperatures 0.5 and 1.0
+on both 128-game seed-1386 held-out panels. Its allocated physical GPU
+was `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, idle at 0 MiB/0% at
+preflight; no same-GPU contention was observed. Initial-state hashes,
+sides, and opponent IDs match the original masked-argmax panels exactly.
+At temperature 0.5, W/L/D was **0/124/4** versus ExpanderHarvester and
+**0/128/0** versus Sentinel; at temperature 1.0, **0/123/5** and
+**0/128/0**. The argmax policy scored 32/92/4 and 3/118/7. Sampling
+introduced half-army moves and weaker source choices but lost more games.
+The complete screen, per-game outcomes, and staged evaluator are archived
+locally and on metta0 as
+`/tmp/relh-classic-flat-sampling-screen-result.tar.gz`, SHA256
+`7fcbbac8b1ec08d877dcd046ff29697e1cf69686a62d5c5cf9893977678a2a6c`.
+Stochastic serving does not rescue this checkpoint; no hosted request or
+promotion follows it.
