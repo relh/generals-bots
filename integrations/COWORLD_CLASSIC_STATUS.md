@@ -7506,3 +7506,15 @@ nice 100 and a 40-minute limit. Output is pinned to
 on `metta-fabric-b300-1`. It is the sole Generals job for this task;
 the 30k warmed SPS guard remains active. Training and score are pending;
 no longer or hosted run is released from the hypothesis alone.
+
+Live recheck at job runtime 6m05s confirmed `RUNNING`, no restart, the
+expected finite graph fingerprint and effective land-change weight zero.
+It passed 14.16M steps and saved its 8.39M checkpoint. After 15 warmup
+epochs, epochs 15→27 completed 6,291,456 environment steps in 108.377
+seconds: **58,052 end-to-end environment SPS**, one process and aggregate.
+The preceding GPU-sample window averaged 88.7% utilization at about
+44.5 GiB VRAM. Epoch work was about 3.25 seconds rollout (2.33 seconds
+environment, 0.92 seconds inference) and 6.12 seconds optimization.
+The throughput gate passes; held-out scores remain pending and this is
+not a quality claim. The scheduled panels run within this same allocation
+after training, without a competing evaluation container.
