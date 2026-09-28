@@ -7835,3 +7835,21 @@ physical GPU query showed 0 MiB/0% and no Docker container. No training
 steps or new checkpoint came from 29583. Its terminal record is preserved
 locally as `/tmp/relh-classic-flat-potential-300m-29583-slurm.txt`. The
 corrected script passes syntax and diff checks before a single replacement.
+
+### Live 300M extension 29588
+
+Corrected replacement **29588** is RUNNING on B300
+`metta-fabric-b300-1`, allocated physical UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, one GPU, 8 CPUs, 64 GiB,
+nice 100, time limit 135 minutes. Checkout revision at submission 80c0f80.
+Output: `/var/tmp/relh-generals-recovery/classic-flat-potential-300m-pilot-29588`;
+batch log has the same prefix with `.log`. Startup physical checks again
+showed 0 MiB/0%, no contention; Docker's UUID matched. It reached actual
+trainer initialization and JAX startup. Its written training record
+confirms budget 300,000,000, seed 743, teacher off, potential-only reward,
+original model SHA c0046141..., and `restore_learner=false`. The actual
+`initial-policy.bin` SHA matches final 29432:
+`f1db428b3a6beae5824dfdd0aa9fec38bb582a9ab6d8b0e579081dc04cc359ef`.
+No duplicate Generals job or dependent job exists. Live throughput is
+still warming up; the parent setup's 56,735 SPS is the pre-run gate, not
+a claimed measurement of this replacement. No hosted side effects.
