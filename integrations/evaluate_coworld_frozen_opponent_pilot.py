@@ -64,6 +64,8 @@ def main():
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--native", action="store_true", help="Pinned default Puffer5 MinGRU checkpoint")
     parser.add_argument("--diagnostic-checkpoint", action="store_true", help="Evaluate an explicitly altered checkpoint")
+    parser.add_argument("--in-progress-checkpoint", action="store_true",
+                        help="Evaluate an immutable saved checkpoint from a live training run")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1101)
     parser.add_argument("--games", type=int, default=1024)
@@ -103,6 +105,7 @@ def main():
         "--opponent", choices=("random", "expander_harvester", "sentinel", "strong_mixed"), required=True
     )
     args = parser.parse_args()
+    assert not (args.diagnostic_checkpoint and args.in_progress_checkpoint)
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert min(args.own_destination_logit_penalty, args.source_army_logit_penalty,
                args.half_move_logit_bonus, args.pass_logit_bonus,
@@ -127,7 +130,15 @@ def main():
     completed_path = args.run / "completed.json"
     completed = json.loads(completed_path.read_text()) if completed_path.exists() else None
     assert args.seed != record["config"]["seed"]
-    if not args.diagnostic_checkpoint:
+    if args.in_progress_checkpoint:
+        checkpoint = args.checkpoint.resolve()
+        assert checkpoint.is_relative_to((args.run / "checkpoints").resolve())
+        assert checkpoint.stem.isdigit() and int(checkpoint.stem) > 0
+        identity = json.loads(Path(str(checkpoint) + ".learner.json").read_text())
+        assert identity["policy_sha256"] == args.sha256
+        assert hashlib.sha256(checkpoint.read_bytes()).hexdigest() == args.sha256
+        assert identity["run_sha256"] == hashlib.sha256((args.run / "training.json").read_bytes()).hexdigest()
+    elif not args.diagnostic_checkpoint:
         assert completed is not None, "Completed run metadata is required outside diagnostic mode"
         assert args.checkpoint.relative_to(args.run).as_posix() in completed["checkpoints"]
     manifest = json.loads(args.build.read_text())
@@ -435,6 +446,8 @@ def main():
             if args.force_hint_move or args.force_hint_split or args.force_full_split or flat_intervention
             else "Explicitly altered checkpoint diagnostic; not the trained or hosted policy"
             if args.diagnostic_checkpoint
+            else "Frozen saved checkpoint from live training; GPU argmax inference on held-out Classic maps"
+            if args.in_progress_checkpoint
             else "Training-pool diagnostic; does not establish held-out or hosted performance"
             if args.training_pool_episode is not None
             else "Frozen GPU sampling diagnostic; hosted player currently uses argmax"
@@ -442,6 +455,7 @@ def main():
             else "Frozen GPU argmax inference on Classic maps; hosted service startup remains separate"
         ),
         held_out=args.training_pool_episode is None,
+        in_progress_checkpoint=args.in_progress_checkpoint,
         training_pool_episode=args.training_pool_episode,
         action_selection=(
             "argmax_with_action_intervention"
