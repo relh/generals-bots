@@ -8819,3 +8819,43 @@ GPU adapter audit PASSED256 exact real transitions, two selective resets,
 finite frozen predictions/carry, balanced four samples per side. Build/train
 follows within this same allocation; no throughput or strength claim yet.
 Mac exit archive /tmp/relh-classic-native-flat-frozen-gen1-eda6ddf-stream.tar.gz.
+
+## Frozen generation129937 completed; requested300M budget prepared
+
+29937 COMPLETED Exit0 in6m49 including GPU transition audit, training,
+CUDA native parity, four tuning panels and archive transfer. Warm epochs20–64:
+23,068,672 physical game steps over121.112s (73.440–194.552s),
+190,473.9 environment SPS, single process/aggregate equal.4096 games,
+4096 learner rows/2048 per side,H128,minibatch8192,replay1,128x4 native
+MinGRU,Muon LR0.0015 annealed,norm_adv1,gamma=shaping_gamma0.999.
+Recent rollout~2.474s (model0.314/env2.160/copy0),train~0.320s.
+Physical utilization varied40–100% during training; no allocated-GPU
+contention. All four1,269,376-word checkpoints finite. Final SHA256
+3ab08100c02dc06a3ffa3888e26487dc87df2d41408c43ae854ac47088d6d3af.
+CUDA parity passes24 public-view decisions/partial reset, max logits2.3842e-7,
+state7.1526e-7, exact masked actions. No arena-strength claim.
+Complete node/Mac archive /tmp/relh-classic-native-flat-frozen-gen1-29937.tar.gz,
+SHA2569cb63856bc8694843e4cfdb4a1c2e8bd15451d298f089dca29b8ff1576c1c11b;
+controller copy underway. Quality panels still0 wins; complete counts to follow.
+
+User requested300M–billions/overnight. This stable setup now qualifies for a
+bounded300M additional-physical-step experiment under the measured throughput
+and finite-gradient gates. Same model/environment/rewards/codec/frozen29907
+opponent and LR/norm settings. Initialize the exact29937 final weights with
+normal identical-build/digest/finiteness guards, fresh optimizer/clocks/seed743;
+this is not exact learner resume. Approx300M/190474=1575s (26.3min) training.
+Allocation60min,train timeout45min,nice100,8CPU/64G/oneB300, native console
+progress/30k SPS guard, mask audit, checkpoints every67.1M steps and final.
+Record timestamped physical GPU samples alongside existing sampler. Compare
+67M/134M/final299,892,736 new-step snapshots on six128-game tuning panels,
+plus final real CUDA parity. Reusing the existing verified build preserves
+its exact source/environment fingerprint. Earlier33M rejection means no
+publication; the requested larger budget now tests insufficient training
+without changing the recipe again. Goal strong/held-out/hosted remains unmet.
+
+Read-only upstream investigation: remote5.0 HEAD is still pinned6ffa5b10.
+Upstream issue622 reset timing is already corrected in this actual algo.cu
+(current terminal[t] in forward/backward). PR691 concerns alignment padding;
+all native128 encoder/decoder/recurrent tensor counts here are16-byte aligned,
+so that issue does not explain these native runs. Neither issue is used as a
+reason to replay completed training.
