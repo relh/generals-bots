@@ -299,7 +299,7 @@ def two_stage_tied_local_action_policy(
     *, observation_size: int, output_size: int, channels: int, height: int, width: int,
     features_per_site: int = 2, global_features: int = 2,
     context_radius: float = 1.01, hint_prior_strength: float = 8.0,
-    broadcast_global_context: bool = False,
+    broadcast_global_context: bool = False, route_prior_strength: float = 0.0,
 ) -> PolicyGraph:
     """Read neighboring learned site features before scoring each move."""
     cells = height * width
@@ -309,6 +309,8 @@ def two_stage_tied_local_action_policy(
         raise ValueError("This policy requires channel-first maps and factorized Generals actions")
     if context_radius < 1:
         raise ValueError("The context layer must reach neighboring sites")
+    if route_prior_strength < 0 or (route_prior_strength and hint_prior_strength):
+        raise ValueError("Route and exact-action priors must be nonnegative and exclusive")
     sense = nn.cluster(
         "sense", nn.atoms.Input(), n=observation_size,
         geometry=nn.geometry.fields(own={
@@ -367,6 +369,8 @@ def two_stage_tied_local_action_policy(
             return ("action", geometry.src.attr(source, "feature"), geometry.dst.attr(target, "direction"))
         if (src_kind, dst_kind) == ("global", "out"):
             return ("global", source[1], geometry.dst.attr(target, "readout_group"))
+        if (src_kind, dst_kind) == ("sense", "out") and route_prior_strength:
+            return ("route", geometry.dst.attr(target, "direction"))
         return ("unique", source, target)
     graph_edges = [
         (sense >> local).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
@@ -399,4 +403,11 @@ def two_stage_tied_local_action_policy(
                 [(2 * cells + cell, 4 * cells + 2) for cell in range(cells)], dtype=np.int32
             ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))),
         )
+    if route_prior_strength:
+        if channels != 11:
+            raise ValueError("The public route prior requires the 11-channel directional observation")
+        graph.add((sense >> out).by(nn.rules.edges(np.asarray(
+            [((7 + direction) * cells + cell, direction * cells + cell)
+             for direction in range(4) for cell in range(cells)], dtype=np.int32
+        ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(route_prior_strength))))
     return PolicyGraph(graph, "sense", ("out",))

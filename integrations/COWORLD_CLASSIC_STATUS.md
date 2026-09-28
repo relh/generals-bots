@@ -6625,3 +6625,20 @@ machine and metta0 as
 `/tmp/relh-classic-gen0-reward-scale-pilot-28938.tar.gz`, SHA256
 `8fcc1bac1e013595de420b2230e3fdd2451739ec932cf313612cb5c89c0024db`.
 No longer continuation or hosted upload follows this negative quality gate.
+
+The next bounded actor test uses an 11-plane public directional observation:
+army, general, castle, obstacle, ownership, opponent, fog, and four
+Harvester route-direction planes. Unlike the hinted generation-0 codec,
+these route planes mark a direction at many board cells rather than one
+chosen action. `two_stage_tied_local_action_policy` now accepts an optional
+four-weight `route_prior_strength` direct path from those public direction
+planes to the corresponding move logits; it excludes the exact-action hint
+prior when enabled. The prepared
+`generals_coworld_classic_route_prior_selfplay_pilot.sbatch` tests this actor
+from scratch in two-seat PPO self-play for 33.55M Classic environment steps,
+with no teacher labels or action mixing and a 30k environment SPS guard.
+It will score 8.39M and 33.55M checkpoints against ExpanderHarvester and
+Sentinel on the same held-out seed 1386. The prior hint-free self-play actor
+scored zero wins on both panels at 33.55M; any continuation here requires
+actual held-out wins and policy behavior beyond a scripted single move.
+This job is prepared but not yet submitted.
