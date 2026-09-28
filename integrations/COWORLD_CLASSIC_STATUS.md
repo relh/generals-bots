@@ -7853,3 +7853,25 @@ original model SHA c0046141..., and `restore_learner=false`. The actual
 No duplicate Generals job or dependent job exists. Live throughput is
 still warming up; the parent setup's 56,735 SPS is the pre-run gate, not
 a claimed measurement of this replacement. No hosted side effects.
+
+### 29588 live throughput and checkpoint gate
+
+The replacement passes its own steady-state measurement: completed
+epochs **9→21**, 6,291,456 environment steps over **106.344 seconds**,
+**59,161 SPS**. One process and aggregate rates are the same. B300,
+4,096 one-seat games, horizon 128, minibatch 32,768 and replay 0.5 are
+unchanged; this interval is after the JAX startup and includes rollout,
+inference/transfer and optimization. Recent rolling 12-epoch intervals
+are around 59K SPS. GPU device memory is about 44.5 GiB, with live GPU
+queries reaching 100%; the monitor's first 60-sample mean includes startup
+and ranged 57–67%, so it is not claimed as warm steady GPU utilization.
+No nonfinite/progress/throughput guard failure is present.
+
+The first saved policy at **8,388,608 additional steps** has all 42,584
+float32 words finite, byte size 170,336 and SHA256
+`5e99bf93cf2d930ce6544a440180ff9af9d0d6eb99b248f0fb0b6f7aa33aa687`.
+It is preserved on the compute node along with its learner file. This is
+checkpoint/throughput evidence, not quality evidence; held-out evaluations
+remain scheduled after the run. Full queue confirms only 29588 belongs
+to this Generals task, with unrelated B200/RTX4090 work left untouched.
+The training job is live and is not restarted.
