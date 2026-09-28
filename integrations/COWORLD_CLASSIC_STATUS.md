@@ -7753,3 +7753,21 @@ the parent's 33.55M, not a reset claim about total lineage training.
 The batch script passes syntax checks. It has not been submitted while
 29515 is active; fresh comparison evidence and a new shared-resource
 preflight are required before submission.
+
+### Interim fresh Expander result (29515 still running)
+
+Normalized final: **92/401/19**, score -0.603515625. Unnormalized final:
+**123/373/16**, score -0.48828125. All 512 initial hashes, player sides
+and opponent IDs match exactly; each side has 256 games. There are 318
+unique initial state hashes (pool sampling repeats maps), so this must not
+be described as 512 independent map samples. Normalized versus control
+paired improved/worsened/tied counts are **48/77/387**, mean outcome delta
+-0.115234375. The normalized policy regressed on both sides: scores
+-0.6171875 versus -0.5703125 on side 0, and -0.58984375 versus -0.40625
+on side 1. The small initial-panel gain has not generalized to Expander.
+
+Normalized Sentinel completed **19/472/21**; its control and the original
+reference panels remain pending. The prepared normalized 300M script is
+not submitted. The locally preserved partial paired evidence is
+`/tmp/relh-classic-fresh-expander-29515.tar.gz`; the complete node-local
+evaluation output will be archived after the job is terminal.
