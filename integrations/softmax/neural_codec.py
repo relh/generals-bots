@@ -44,7 +44,9 @@ _calibrate_hints = jax.jit(
     static_argnames=("board_size", "move_hint_scale", "split_hint_scale"),
 )
 _encode_lean = jax.jit(encode_coworld_lean_observation)
-_encode_directional = jax.jit(encode_coworld_directional_observation, static_argnames=("factorized_actions",))
+_encode_directional = jax.jit(
+    encode_coworld_directional_observation, static_argnames=("factorized_actions", "include_timestep"),
+)
 _encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
 _encode_hinted = jax.jit(encode_coworld_hinted_observation)
 _encode_prior_hinted = jax.jit(lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True))
@@ -133,9 +135,12 @@ def encode_wire_observation(
     move_hint_scale: float = 1.0,
     split_hint_scale: float = 1.0,
     factorized_actions: bool = True,
+    directional_time_features: bool = False,
 ):
     if not factorized_actions and not directional:
         raise ValueError("Flat Coworld serving requires the directional codec")
+    if directional_time_features and not directional:
+        raise ValueError("Directional time features require the directional codec")
     observation = training_observation(message)
     values, mask = (
         _encode_expander_general_distance_prior_hinted(observation)
@@ -156,7 +161,9 @@ def encode_wire_observation(
         if hinted
         else _encode_packed_directional(observation)
         if packed_directional
-        else _encode_directional(observation, factorized_actions=factorized_actions)
+        else _encode_directional(
+            observation, factorized_actions=factorized_actions, include_timestep=directional_time_features,
+        )
         if directional
         else _encode_lean(observation)
         if lean

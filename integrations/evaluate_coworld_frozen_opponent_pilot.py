@@ -195,7 +195,7 @@ def main():
                     own_land_sum=0.0, enemy_land_sum=0.0,
                     own_army_sum=0.0, enemy_army_sum=0.0)
         for phase in ("early_0_99", "middle_100_199", "late_200_plus")
-    } if manifest["config"]["python_environment"]["spec"]["observation_size"] == 11 * 21 * 21 else None
+    } if manifest["config"]["python_environment"]["spec"]["observation_size"] in (11 * 21 * 21, 12 * 21 * 21) else None
     try:
         observation = env.reset(reset_seed)
         initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
@@ -232,7 +232,7 @@ def main():
                 if len(env.spec.action_sizes) != 1 or env.spec.action_sizes[0] != 8 * 21 * 21 + 1:
                     raise ValueError("Logit interventions require flat 21x21 actions")
                 cells = 21 * 21
-                values = np.asarray(observation.values, np.float32).reshape(args.games, 11, cells)
+                values = np.asarray(observation.values, np.float32).reshape(args.games, -1, cells)
                 adjusted = logits.copy()
                 if args.own_destination_logit_penalty:
                     source_cells = np.arange(cells)
@@ -357,7 +357,7 @@ def main():
                 stats["turns"] += len(active_rows)
                 stats["passes"] += int((~moving).sum())
                 stats["moves"] += int(moving.sum())
-                values = np.asarray(observation.values, dtype=np.float32).reshape(args.games, 11, 21 * 21)
+                values = np.asarray(observation.values, dtype=np.float32).reshape(args.games, -1, 21 * 21)
                 armies = np.rint(np.expm1(values[:, 0] * 8.0))
                 own = values[active_rows, 4] > 0
                 enemy = values[active_rows, 5] > 0

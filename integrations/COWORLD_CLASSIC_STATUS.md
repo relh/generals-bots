@@ -7646,3 +7646,24 @@ staged source was not changed. Separately, the current 11-plane observation
 does omit the public turn counter already present in `training_observation`;
 that feature hypothesis remains untested and no observation change is made
 to the normalization comparison.
+
+## Optional public turn plane (prepared 2026-09-28)
+
+The directional codec, environment specification, spatial actor validation,
+wire codec, player and frozen evaluator now support an optional twelfth
+plane controlled by `directional_time_features` (codec `include_timestep`).
+It contains only the public turn count divided by 1,200. The original eleven
+planes and legal masks are unchanged, and the option defaults off. The
+actor reads the new plane through its ordinary local input weights; there
+is no scripted action target or added reward. This exposes an observed
+state variable omitted from the current memoryless flat actor, but does
+not establish that the omission caused its weak early pass/half behavior.
+
+The existing wire/training parity fixture now checks turns 0, 25, 100 and
+1,199 with 5,292 input values, exact preservation of the first 4,851 values,
+and identical 3,529-action masks. All nine locally runnable codec tests
+pass; the four Metta-dependent calibrated-context cases remain unavailable
+locally as recorded above. Python compile and diff checks pass. No timed
+actor is built or trained yet. Job 29473 still uses its pinned original
+11-plane source and remains the only Generals job; its normalization
+comparison is unaffected by these prepared changes.

@@ -139,6 +139,21 @@ def test_coworld_wire_view_matches_padded_training_view():
     assert flat_values.shape == (4851,)
     assert flat_mask.shape == (3529,)
 
+    for turn in (0, 25, 100, 1199):
+        timed_values, timed_mask = encode_wire_observation(
+            dict(message, turn=turn), directional=True, factorized_actions=False,
+            directional_time_features=True,
+        )
+        expected_timed, expected_timed_mask = encode_coworld_directional_observation(
+            expected._replace(timestep=jnp.int32(turn)), factorized_actions=False, include_timestep=True,
+        )
+        np.testing.assert_array_equal(timed_values, np.asarray(expected_timed))
+        np.testing.assert_array_equal(timed_values[:4851], flat_values)
+        np.testing.assert_allclose(timed_values[4851:], turn / 1200.0)
+        np.testing.assert_array_equal(timed_mask, flat_mask)
+        np.testing.assert_array_equal(timed_mask, np.asarray(expected_timed_mask))
+        assert timed_values.shape == (5292,)
+
     packed_values, packed_mask = encode_wire_observation(message, packed_directional=True)
     expected_packed, expected_packed_mask = encode_coworld_packed_directional_observation(expected)
     np.testing.assert_array_equal(packed_values, np.asarray(expected_packed))

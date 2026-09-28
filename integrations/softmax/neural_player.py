@@ -62,6 +62,7 @@ async def play(url: str, bundle: Path) -> None:
         move_hint_scale=options.get("move_hint_scale", 1.0),
         split_hint_scale=options.get("split_hint_scale", 1.0),
         factorized_actions=options.get("factorized_actions", True),
+        directional_time_features=options.get("directional_time_features", False),
     )
     policy = NativePlayerPolicy(bundle) if native else FrozenPolicy(config)
     policy.reset("coworld-classic")
