@@ -9416,3 +9416,31 @@ This allows GPU8-local audit to compare originalforward andeachparameterfamily
 without replaying the87GiB referencegradient compilation. Four-local full
 referencegradient audit is stronger/scopedseparateevidence;8-localtraining
 finite/throughput/quality remains unproven. No newGPUjob yet.
+
+
+## Single live direct-spatial GPU pilot30238
+
+Fullqueue/sinfo/sharedqueue/nodeallocation refreshed, prior30205 terminalhandle
+agedout after previouslyverifiedCOMPLETED0. Artifactsallthreecopiesverified,
+launcherchecks exactold30205containerabsent andnodearchiveSHA. OneGeneralsjob
+30238,nice100,8CPU64G,b300/metta-fabric-b300-1,30minbound,
+22:30:03–23:00:03UTC. UUIDGPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f
+initial0MiB/0%,noCUDAapps,containerUUIDmatched;driver595.91.07/imagebdd4f2...e5,
+653GiB diskfree,/tmp50710inodes. Otherclusterjobsuntouched. Code77d2263,
+script /tmp/relh-classic-spatial-local8-direct-run-node.sh SHA256
+769a51c6ac662332d065cf90a7a4bbec27674e118feeb0a3c1c6ef1aff95d268.
+HardDocker64GiBmemory/swap/core0. Output
+/var/tmp/relh-generals-recovery/classic-spatial-local8-direct-pilot-30238.
+
+Exact30080eight-local/eight-global/context1.01build reused; archivedfactory
+445724d7...6c322,originalpublic4851/[3529] Classic/opponents/rewards/optimizer,
+4096games/rows,H128,mb8192,replay.5,LR.0003,seed739fresh,8.39Mdiagnostic.
+Directoptimizationmodule installedinembeddedprocess, activationmarkerpassed.
+GPUaudit first:originalforwardoutputparity+all18tensorfinite-difference
+checks,nonemptyincomingstate/selectiveresets;nooriginalgradientcompiler.
+10min audit bound,10min trainer,300snoepochguard,steady4/6epochgate8 at30k,
+then128gameExpander/Sentinelheldoutgreedy panels. No longertraininguntil
+finiteafter2.6M andSPSgate. Originalrollout/serving path remainsunchanged.
+Currentlyauditstillrunning,notraining/checkpoint/qualityyet. Exec26716holdsjob;
+Macstream /tmp/relh-classic-spatial-local8-direct-stream.tar.gz. Re-pollsame
+jobonobservationtimeout;donotrestart. Goalactive;nohosted/XP/championchange.
