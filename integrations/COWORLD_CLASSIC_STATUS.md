@@ -7953,3 +7953,31 @@ The larger planned training budget continues to measure the learning
 trend rather than claiming a short-run result predicts the final policy.
 The trainer advanced to epoch 94 (49.28M additional steps), with the
 latest 12-epoch rate 43,295 SPS during shared evaluation; no new GPU job.
+
+### Live 33.55M-additional checkpoint panels complete
+
+Both intermediate panels completed and the evaluation container and
+watcher exited. Only the 29588 training container remains. Sentinel
+scored **0/127/1**, against parent's **1/119/8**. Exact initial hashes,
+sides and opponent IDs match; Sentinel paired improved/worsened/tied is
+**0/8/120**. Expander is 8/116/4 versus parent 23/100/5, paired 4/20/104.
+Each 128-game panel samples 78 unique state hashes. This checkpoint
+regressed on both panels and is not eligible for hosting/publication.
+
+Behavior did change: early half-move fractions are 72.4% Expander and
+72.9% Sentinel (the parent used zero half moves), while about 82% of early
+moves go into owned cells and early mean owned land is 8.91. This proves
+neither a reward bug nor competitive learning; it records why a constant
+policy/teacher-lock explanation does not describe this checkpoint.
+
+Full intermediate evaluator, score JSONs, per-game arrays and logs are
+archived locally and on metta0 as
+`/tmp/relh-classic-live-29588-33554432.tar.gz`, verified SHA256
+`7ec31465bff1959dcfd42e429379fd7dc56b03d08919f7e238786a4bc449e93b`.
+The evaluation was inside the single existing GPU allocation; there was
+no external CUDA contention or extra training job. It slowed training
+to a minimum observed eight-epoch interval around 33.7K SPS, still above
+30K; the 33K evaluation watcher did not need to fire. After it exited,
+trainer epoch 109 showed recovery to eight-epoch 50.4K SPS and 12-epoch
+45.3K SPS (the latter still includes shared evaluation). The planned
+300M run continues; its completion evaluations remain in the batch script.
