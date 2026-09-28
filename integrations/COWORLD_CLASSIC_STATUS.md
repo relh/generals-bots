@@ -7235,3 +7235,47 @@ locally and on metta0 as
 `7fcbbac8b1ec08d877dcd046ff29697e1cf69686a62d5c5cf9893977678a2a6c`.
 Stochastic serving does not rescue this checkpoint; no hosted request or
 promotion follows it.
+
+## Flat actor with whole-board context pilot (2026-09-28)
+
+Bounded job 29388 tested the existing hint-free 11-plane flat actor with
+`broadcast_global_context=True`. This feeds a learned whole-board summary
+back into every local move score. The action codec, source and route priors,
+4,096 two-seat Classic games, H128, minibatch 32,768, seed 733, entropy
+0.01, and learner/environment shaping gamma 0.999 matched the previous
+flat self-play pilot. The balanced `strong_mixed` reset assigns 1,536
+ExpanderHarvester and 512 Sentinel games to each learner side. The graph
+has 56.7K parameters and model SHA256
+`7b2f1933b452d56c31f4e2b65ab99f329fe2c08b33c6bdfba53c84635df29c64`.
+The 32-view flat mask and decoder parity audit passed before training.
+
+Slurm assigned one B300 on `metta-fabric-b300-1`, physical UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, with 8 CPUs, 64 GiB RAM,
+and a 40-minute limit. That GPU was 0 MiB/0% before the container started;
+no same-GPU contention or duplicate Generals job appeared in the full
+queue. The image was `relh-generals-b300:20260923b`, its container saw
+the assigned UUID, CUDA 13.0 and JAX CUDA loaded, and Docker's root had
+704 GiB free. Node-local output was
+`/var/tmp/relh-generals-recovery/classic-flat-global-context-pilot-29388`.
+The job completed exit 0 after 21m36s, including compilation, 16,777,216
+environment steps, and four held-out evaluation panels. The final warm
+20-epoch training interval measured **79,783 agent SPS = 39,892 Classic
+environment SPS**; trailing GPU utilization averaged about 94%, with
+82.2 GiB VRAM. At the final epoch, rollout/evaluation was 2.36 seconds
+and optimization 10.67 seconds per 1,048,576 agent steps. Compilation
+and startup took about seven minutes before the first epoch.
+
+On 128 held-out seed-1386 games per panel, the 8.39M-environment-step
+checkpoint scored **21/102/5** W/L/D versus ExpanderHarvester and
+**0/124/4** versus Sentinel. At 16.78M steps, it scored **19/106/3**
+and **1/119/8**, respectively. The earlier flat policy at 8.39M scored
+32/92/4 and 3/118/7 on identical initial state hashes, sides, and
+opponent IDs. Paired early-checkpoint outcomes improved/worsened/tied in
+14/26/88 Expander games and 2/9/117 Sentinel games versus that reference.
+Within this pilot, final versus early outcomes were 15/17/96 Expander
+and 8/3/117 Sentinel. The added global context passes the throughput
+gate but does **not** pass the quality gate. No longer run, hosted test,
+policy upload, or champion change followed. The complete run and panels
+are archived locally and on metta0 as
+`/tmp/relh-classic-flat-global-context-29388.tar.gz`, SHA256
+`4fc2f78ccadbb49d85c86a3023445200f3f4f435473b189b90cf8c8b88ed1664`.
