@@ -6927,3 +6927,16 @@ No longer job, hosted request, upload, or champion change followed. Further
 work must address move-selection collapse and prove a held-out gain before
 scaling; simply running this PPO setup for 300M+ steps is contradicted by
 the paired decline.
+
+The frozen-opponent device adapter now supports the same flat action head
+and the saved 11-plane graph, with a pinned model digest. Bounded audit job
+29198 loaded the early 8.39M-step flat checkpoint as an opponent in 16
+Classic games on one B300. Its assigned physical GPU was idle at preflight
+(0 MiB, 0%). Every opponent action was legal and matched the independently
+served checkpoint's masked action; a paired one-step transition returned
+the expected learner observation and mask shapes. The audit completed in
+2m45s without training. Its source, log, and result are archived locally
+and on metta0 at `/tmp/relh-classic-flat-frozen-audit-29198.tar.gz`, SHA256
+`c78c050a782ce6ca7df7eac82c1877b74e9acccac352727d8f94696faeaec436`.
+This establishes the action path for a bounded historical-opponent pilot;
+it does not establish training throughput or stronger play.
