@@ -7518,3 +7518,45 @@ environment, 0.92 seconds inference) and 6.12 seconds optimization.
 The throughput gate passes; held-out scores remain pending and this is
 not a quality claim. The scheduled panels run within this same allocation
 after training, without a competing evaluation container.
+
+Job 29432 completed all 33,554,432 steps and four held-out panels with
+Slurm `COMPLETED`/exit `0:0` in 17m20s. The final 12-epoch complete-step
+window, including the final save, measured **56,735 environment SPS**;
+recent sampled GPU use was 86.2%. Both evaluated 42,584-word checkpoints
+were finite. Their 8.39M/final SHA256s are respectively
+`4b87653d094d88736396e95210d83ffcca873c114896b632be139df7e8b4cdd7`
+and `f1db428b3a6beae5824dfdd0aa9fec38bb582a9ab6d8b0e579081dc04cc359ef`.
+
+| Environment steps | ExpanderHarvester W/L/D | Sentinel W/L/D |
+| ---: | ---: | ---: |
+| 8,388,608 | 28/96/4 | 0/126/2 |
+| 33,554,432 | 23/100/5 | 1/119/8 |
+
+All initial state hashes, sides, and opponent IDs match the same-seed
+land-change-reward control (29414) and original early flat reference.
+Against the control's final 30/96/2 and 0/123/5, paired final
+improved/worsened/tied counts are 16/21/91 Expander and 5/0/123 Sentinel.
+Against the original reference's 32/92/4 and 3/118/7, they are
+15/23/90 and 3/5/120. Removing land-change reward gave a small Sentinel
+gain relative to the weak fresh control but reduced Expander wins; it did
+not establish stronger overall quality or beat the original reference.
+The final actor still chose zero half moves, sent about 71% of early moves
+into owned cells, and held about 35/33 mean tiles on turns 100–199 against
+Expander/Sentinel. This reward change alone is not a supported long run.
+No hosted request, policy upload, or promotion followed.
+
+The completed run, build/source, four panels, checkpoints, per-game arrays,
+GPU samples and batch log were retrieved after terminal state; the allocated
+retrieval GPU was physically idle at 0 MiB/0% and the training container had
+stopped. Archive: `/tmp/relh-classic-flat-scripted-potential-29432.tar.gz`,
+SHA256 `665c5c4678bbcd81c892e60bad5ba96d1a2118b6a5af1f31f43c54bc7eb1b15a`.
+
+A read-only check of this run's actual generated trainer source found the
+Fabric `metta_normalize_advantages` callback, but neither the newer native
+`train.norm_adv` default nor its CUDA normalizer. The default Fabric loss
+partition uses no advantage normalization. Its dashboard KL/clip fraction
+stayed near displayed zero and entropy near 3.6–3.9 despite changing weights.
+This identifies a distinct learning-scale setting to inspect next; native
+raw-policy normalization experiments earlier in this document did not test
+this spatial flat actor. No normalization patch or second job was applied
+during the matched reward comparison.
