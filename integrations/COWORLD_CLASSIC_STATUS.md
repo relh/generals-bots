@@ -7174,3 +7174,44 @@ and the baseline best checkpoint returned in the single job output archive
 (also copied to metta0). These two independent replay fits reject naive
 small-sample imitation as the next RL initialization. There is no policy
 upload, promotion, or longer Generals training job from these experiments.
+
+## Flat source, split, and pass counterfactual (2026-09-28)
+
+Inference-only evaluator support now subtracts a configurable multiple
+of the public source-army plane from flat move logits, preserving the
+original quarter-strength half-move scale. It can also add half-move or
+pass logits. This changes no checkpoint or action mask. Two sequential,
+bounded B300 jobs screened the saved 8.39M-step flat checkpoint against
+both 128-game seed-1386 held-out opponents. Job 29373 used eight CPUs,
+64 GiB, and physically idle allocated GPU
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` (0 MiB/0%); 29379
+rechecked and received the same idle UUID. No Generals job overlapped.
+Initial-state hashes, learner sides, and opponent IDs match the original
+checkpoint's panels for every intervention. Baseline W/L/D was **32/92/4**
+versus ExpanderHarvester and **3/118/7** versus Sentinel.
+
+| Source penalty and added logits | Expander W/L/D | Sentinel W/L/D | Midgame chosen-source / strongest legal source versus Expander |
+| --- | ---: | ---: | ---: |
+| 2 | 29/94/5 | 2/121/5 | 0.887 |
+| 2.5 | 20/104/4 | 3/119/6 | 0.785 |
+| 3 | 20/100/8 | 2/126/0 | 0.610 |
+| 3.5 | 0/116/12 | 1/126/1 | 0.318 |
+| 4 | 0/123/5 | 0/127/1 | 0.113 |
+| 3 plus half +1, pass +1 | 20/100/8 | 2/126/0 | 0.610 |
+| 4 plus half +2, pass +1 | 0/124/4 | 0/127/1 | 0.122 |
+
+Penalty 3 brought source selection close to Daveey's **0.541** in his
+separate self-play midgame sample, but reduced wins. At penalty 4, source
+choice collapsed to weak stacks; adding split/pass logits induced many
+half-army moves without any wins. The smaller added logits at penalty 3
+changed no chosen actions on either panel. Thus no tested inference bias
+setting improves this checkpoint's win quality, and merely matching
+Daveey's source or split frequency is an invalid training target.
+Complete results, per-game outcomes, public action counters, preflight
+logs, and the exact evaluator source are archived locally and on metta0
+as `/tmp/relh-classic-source-intervention-result.tar.gz`, SHA256
+`c61f034c61de72e950cfe72ef518fe06002874240ac695b8badc4cdc5174371d`,
+and `/tmp/relh-classic-source-calibration-result.tar.gz`, SHA256
+`9a07119366470d9e86b8d319a86bfa93a92f727d789943c1f7c4afe245ac077f`.
+No continuation, hosted request, or promotion follows these failed
+counterfactuals.

@@ -82,6 +82,12 @@ def main():
     parser.add_argument("--force-full-split", action="store_true", help="Diagnostic: use full-army moves")
     parser.add_argument("--own-destination-logit-penalty", type=float, default=0.0,
                         help="Diagnostic: subtract this logit from moves into a public owned tile")
+    parser.add_argument("--source-army-logit-penalty", type=float, default=0.0,
+                        help="Diagnostic: reduce the flat policy's source-army prior, with its 0.25 half scale")
+    parser.add_argument("--half-move-logit-bonus", type=float, default=0.0,
+                        help="Diagnostic: add this logit to legal half-army flat moves")
+    parser.add_argument("--pass-logit-bonus", type=float, default=0.0,
+                        help="Diagnostic: add this logit to the flat pass action")
     parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
     parser.add_argument("--teacher-action-audit", action="store_true",
                         help="Measure agreement with scripted actions from the current public game state")
@@ -93,7 +99,10 @@ def main():
     )
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
-    assert args.own_destination_logit_penalty >= 0
+    assert min(args.own_destination_logit_penalty, args.source_army_logit_penalty,
+               args.half_move_logit_bonus, args.pass_logit_bonus) >= 0
+    flat_intervention = any((args.own_destination_logit_penalty, args.source_army_logit_penalty,
+                             args.half_move_logit_bonus, args.pass_logit_bonus))
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
     assert not (args.force_full_split and args.force_hint_split)
@@ -194,29 +203,42 @@ def main():
             forward = legacy_actions_many(
                 policy, seats, observation,
                 return_logits=args.hint_audit or args.teacher_action_audit
-                or args.own_destination_logit_penalty > 0,
+                or flat_intervention,
                 counterfactual_hint_scale=args.counterfactual_hint_scale,
             )
             actions, logits = forward if args.hint_audit or args.teacher_action_audit \
-                or args.own_destination_logit_penalty > 0 else (forward, None)
+                or flat_intervention else (forward, None)
             masks = np.asarray(observation.action_masks, dtype=bool)
-            if args.own_destination_logit_penalty:
+            if flat_intervention:
                 if len(env.spec.action_sizes) != 1 or env.spec.action_sizes[0] != 8 * 21 * 21 + 1:
-                    raise ValueError("The destination intervention requires flat 21x21 actions")
+                    raise ValueError("Logit interventions require flat 21x21 actions")
                 cells = 21 * 21
-                source_cells = np.arange(cells)
-                source_r, source_c = divmod(source_cells, 21)
-                dest_r = np.clip(source_r[None, :] + np.asarray((-1, 1, 0, 0))[:, None], 0, 20)
-                dest_c = np.clip(source_c[None, :] + np.asarray((0, 0, -1, 1))[:, None], 0, 20)
-                destination = (dest_r * 21 + dest_c).reshape(-1)
-                owned = np.asarray(observation.values, np.float32).reshape(args.games, 11, cells)[:, 4]
-                owned_destination = np.tile(owned[:, destination], (1, 2))
-                adjusted = logits[:, :8 * cells + 1].copy()
-                adjusted[:, :8 * cells] -= args.own_destination_logit_penalty * owned_destination
+                values = np.asarray(observation.values, np.float32).reshape(args.games, 11, cells)
+                adjusted = logits.copy()
+                if args.own_destination_logit_penalty:
+                    source_cells = np.arange(cells)
+                    source_r, source_c = divmod(source_cells, 21)
+                    dest_r = np.clip(source_r[None, :] + np.asarray((-1, 1, 0, 0))[:, None], 0, 20)
+                    dest_c = np.clip(source_c[None, :] + np.asarray((0, 0, -1, 1))[:, None], 0, 20)
+                    destination = (dest_r * 21 + dest_c).reshape(-1)
+                    owned_destination = np.tile(values[:, 4, destination], (1, 2))
+                    adjusted[:, :8 * cells] -= args.own_destination_logit_penalty * owned_destination
+                if args.source_army_logit_penalty:
+                    source_army = np.tile(values[:, 0], (1, 4))
+                    adjusted[:, :4 * cells] -= args.source_army_logit_penalty * source_army
+                    adjusted[:, 4 * cells:8 * cells] -= 0.25 * args.source_army_logit_penalty * source_army
+                if args.half_move_logit_bonus:
+                    adjusted[:, 4 * cells:8 * cells] += args.half_move_logit_bonus
+                if args.pass_logit_bonus:
+                    adjusted[:, 8 * cells] += args.pass_logit_bonus
                 proposed = np.argmax(np.where(masks[:, :8 * cells + 1], adjusted, -np.inf), axis=1)
                 active = ~env.finished
                 intervention["active_steps"] += int(active.sum())
                 intervention["changed_moves"] += int((active & (actions[:, 0] != proposed)).sum())
+                intervention["changed_splits"] += int((active & (actions[:, 0] < 8 * cells)
+                                                       & (proposed < 8 * cells)
+                                                       & (actions[:, 0] // (4 * cells)
+                                                          != proposed // (4 * cells))).sum())
                 actions[active, 0] = proposed[active]
             if args.teacher_action_audit:
                 keys = jnp.broadcast_to(jax.random.PRNGKey(0), (args.games, 2))
@@ -423,8 +445,11 @@ def main():
         force_hint_split=args.force_hint_split,
         force_full_split=args.force_full_split,
         own_destination_logit_penalty=args.own_destination_logit_penalty,
+        source_army_logit_penalty=args.source_army_logit_penalty,
+        half_move_logit_bonus=args.half_move_logit_bonus,
+        pass_logit_bonus=args.pass_logit_bonus,
         intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split
-        or args.own_destination_logit_penalty else None,
+        or flat_intervention else None,
         hint_audit=hint_audit if args.hint_audit else None,
         teacher_action_audit=teacher_action_audit if args.teacher_action_audit else None,
         action_stats=action_stats,
