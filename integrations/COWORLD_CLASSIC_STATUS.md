@@ -6896,3 +6896,34 @@ The 8.39M and 33.55M environment-step policy SHA256s are respectively
 and `1cc05e71b8612d31c5497f5b07ec3210094e095982b349ff8ab4af0f4c7b3df5`.
 Held-out quality remains unverified until the saved policies are scored;
 no hosted or longer run follows an unscored training artifact.
+
+Quality recovery job 29187 completed on the saved flat-policy checkpoints
+without replaying training. Its assigned physical B300 GPU UUID was
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, idle at preflight
+(0 MiB, 0%); no same-GPU contention was observed. All four panels used
+128 held-out seed-1386 games. The 8.39M-environment-step checkpoint won,
+lost, and drew **32/92/4** against ExpanderHarvester and **3/118/7**
+against Sentinel. The 33.55M checkpoint fell to **0/123/5** and
+**0/127/1**, respectively. Initial-state hashes, sides, and opponent IDs
+match exactly between early and final checkpoints in each panel. From early
+to final, outcomes improved/worsened/tied in 3/35/90 Expander games and
+1/10/117 Sentinel games. Both checkpoints used full-army moves on every
+non-pass action, so the independent split-head failure seen earlier is
+absent here, while policy quality still collapses.
+
+In the Expander turn-100–199 audit, the early actor chose a mean source
+army of 15.03 and attacked visible enemy-owned cells on 2,493/12,265
+moves (20.3%); the final actor chose 42.64 and attacked on 366/12,800
+(2.9%). The corresponding Sentinel rates were 2,803/12,758 (22.0%)
+and 760/12,800 (5.9%). Chosen-source army remained around 97% of the
+largest legal source army in all panels. These are policy-specific
+trajectories, not a causal comparison of individual decisions. The
+evaluation and matched per-game arrays are archived locally and on metta0
+as `/tmp/relh-classic-flat-source-route-quality-29187.tar.gz`, SHA256
+`7778676c3e90a79727ecce39efb160fccaddc5bdc2fd077445363ea3db15fe32`.
+The run met the 30k environment-SPS gate but did not exceed the generation-0
+quality reference (63/51/14 Expander, 39/82/7 Sentinel on this seed).
+No longer job, hosted request, upload, or champion change followed. Further
+work must address move-selection collapse and prove a held-out gain before
+scaling; simply running this PPO setup for 300M+ steps is contradicted by
+the paired decline.
