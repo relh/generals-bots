@@ -9323,3 +9323,13 @@ No liveGenerals job. Next candidate prepared native territory-reward learning
 probe uses known165kSPS stable30054 setup; needsnew honest environmentbuild
 manifest, hardDockerRAMbound matchingSlurm, and verification/quality gates
 before submission. Goalactive,notblocked;no hosted/registry/XP/championchange.
+
+Controller30174 archive SHA verified matching node/Mac81b5614e...5488;threecopies.
+Prepared (not submitted) /tmp/relh-classic-native-land-gain020-run-node.sh
+SHA25620e5f9beb7e6c407ca4fef204fb6673a87adb9f580d0551d74a02422f682ebaa. bash -n passed. Performs new full nativebuild with honest
+landgain.02 environment config, verifies onlythat environmentoption differs
+from actualbaseline/revision/modelcontract, then exact30054freshLR.0015/norm1
+33.55M recipe with early/final128game panels and CUDAservingparity. Copies
+normalizationkernel neededforbuild. Dockerhardmemory64GiB/swap64GiB aligns
+SlurmrequestedRAM;archivesrootfilesystem; verifies old30174stopped/digest.
+Pendingfullfreshclusterpreflight;no newjob submitted.
