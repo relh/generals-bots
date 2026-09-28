@@ -138,7 +138,7 @@ while kill -0 "$pid" 2>/dev/null; do
     sleep 15
     now=$(date +%s)
     if ! python3 "$source/monitor_coworld_steady_interval.py" \
-        "$disk" "$SLURM_JOB_ID" "$((now-start))" classic-flat-frozen 600 524288 30000 8 12 20; then
+        "$disk" "$SLURM_JOB_ID" "$((now-start))" classic-flat-gen0-frozen 600 524288 30000 8 12 20; then
         echo 'Flat frozen pilot stopped by throughput or progress guard' >&2
         cleanup
         wait "$pid" || true
@@ -148,7 +148,7 @@ done
 wait "$pid"
 test -f "$out/run/completed.json"
 python3 "$source/monitor_coworld_steady_interval.py" \
-    "$disk" "$SLURM_JOB_ID" "$(( $(date +%s)-start ))" classic-flat-frozen 600 524288 30000 8 12 20
+    "$disk" "$SLURM_JOB_ID" "$(( $(date +%s)-start ))" classic-flat-gen0-frozen 600 524288 30000 8 12 20
 for step in 4194304 12582912; do
     for opponent in expander_harvester sentinel; do
         checkpoint=$(printf '%s/run/checkpoints/metta_generals/run/%016d.bin' "$out" "$step")

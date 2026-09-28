@@ -122,7 +122,10 @@ def main():
         )
         )
     options = manifest["config"]["python_environment"]["options"].copy()
-    for frozen_asset in ("frozen_build", "frozen_checkpoint", "frozen_sha256", "scripted_hint_fraction"):
+    for frozen_asset in (
+        "frozen_build", "frozen_checkpoint", "frozen_sha256", "frozen_codec",
+        "frozen_legacy_fabric", "scripted_hint_fraction",
+    ):
         options.pop(frozen_asset, None)
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     if args.force_hint_move or args.force_hint_split:
