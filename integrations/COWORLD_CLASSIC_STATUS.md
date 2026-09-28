@@ -7141,7 +7141,31 @@ One new private, bounded **16-game Daveey v7 self-play** XP request,
 checking the visible request list for the unique key
 `relh-daveey-selfplay-16-20260928`. Both seats pin Daveey version UUID
 `76b0a083-f0a4-4ec7-9811-038349266633` on Classic 1v1. The service
-estimated eight credits. At first readback the request was pending with
-zero completed and zero failed episodes. It exists to broaden independent
-expert traces and has not triggered any policy upload, promotion, or
-long-running Generals training job.
+estimated eight credits. It completed all 16 games with zero failures,
+and every child game pinned that same UUID in both seats. Replays and
+the completed request response are archived locally and on metta0 as
+`/tmp/relh-daveey-selfplay-16-20260928-replays.tar.gz`, SHA256
+`6df393cc2cc017f77926b5246c201389fe4c3c8752968f700fe9971e3595480e`.
+Both public seat views and all 13,274 legal actions reproduced their
+recorded engine frames exactly. The dataset
+`/tmp/relh-coworld-daveey-selfplay-expert-16.npz`, SHA256
+`798fda39eb5ed4fc6416fee6abfc0420b8c1b8a8b129eb6dc5f2d53a0f358754`,
+has 10,056 actions in 12 training games and 3,218 in four whole-game
+holdouts. Daveey passed on 23.3% of turns 0–99 and used half-army moves
+on 12.5% of early moves, 7.1% of turns 100–199 moves, and 6.8% later.
+
+One bounded B300 offline initialization job 29372 used this larger
+self-play dataset, LR 0.0003, twelve epochs, and the original flat policy
+as initialization. Its allocated physical GPU
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` was 0 MiB/0% at preflight.
+Training top-action accuracy rose from 19.2% to 26.7%, but independent
+validation accuracy fell from **14.8% to 9.1%** and validation negative
+log-likelihood worsened from **4.292 to 5.266**. No epoch improved the
+initial validation loss; the saved best weights again equal the original
+checkpoint byte-for-byte. Full node-local inputs, source, logs, metrics,
+and the baseline best checkpoint returned in the single job output archive
+`/tmp/relh-classic-selfplay-fit-result.tar.gz`, SHA256
+`a3c8b0e485df3a3bf619f19af5b2ca2addda0a5a0fe53a037b6a2bec9a5058d3`
+(also copied to metta0). These two independent replay fits reject naive
+small-sample imitation as the next RL initialization. There is no policy
+upload, promotion, or longer Generals training job from these experiments.

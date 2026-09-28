@@ -32,14 +32,16 @@ def flat_action(action):
     return half * 4 * BOARD_SIZE**2 + direction * BOARD_SIZE**2 + row * BOARD_SIZE + col
 
 
-def extract(archive_path: Path, output_path: Path, limit: int | None = None):
+def extract(archive_path: Path, output_path: Path, limit: int | None = None, both_seats: bool = False):
     samples = {key: [] for key in ("observations", "action_masks", "actions", "episode", "turn", "seat")}
     episodes = []
     with tarfile.open(archive_path, "r:gz") as archive:
-        manifest_member = next(m for m in archive if m.name.endswith("replay-analysis-20260928.json")
+        manifest_member = next(m for m in archive if
+                               (m.name.endswith("replay-analysis-20260928.json")
+                                or m.name.endswith("expert-manifest.json"))
                                and not Path(m.name).name.startswith("._"))
         manifest = json.load(archive.extractfile(manifest_member))
-        records = sorted(manifest["records"], key=lambda r: (r["seat"], r["episode_index"]))
+        records = sorted(manifest["records"], key=lambda r: (r.get("seat", 0), r["episode_index"]))
         if limit is not None:
             records = records[:limit]
         for record in records:
@@ -50,31 +52,33 @@ def extract(archive_path: Path, output_path: Path, limit: int | None = None):
             match = Match(replay["seed"])
             if any(match.frame()[field] != replay["frames"][0][field] for field in FRAME_FIELDS):
                 raise ValueError(f"Initial state differs: {member.name}")
-            expert_seat = 1 - record["seat"]
+            expert_seats = (0, 1) if both_seats else (1 - record["seat"],)
             start = len(samples["actions"])
             for turn_index, receipt in enumerate(replay["turns"]):
                 if not receipt["applied"] or receipt["turn"] != match.turn:
                     raise ValueError(f"Turn receipt differs: {member.name} turn {turn_index}")
-                public = match.observation(expert_seat)
-                obs = training_observation(public)
-                values, mask = encode_flat(obs)
-                action = flat_action(receipt["actions"][expert_seat])
-                if not 0 <= action < ACTION_COUNT or not bool(mask[action]):
-                    raise ValueError(f"Expert action is masked: {member.name} turn {turn_index}")
-                samples["observations"].append(np.asarray(values, dtype=np.float16))
-                samples["action_masks"].append(np.packbits(np.asarray(mask, dtype=np.uint8)))
-                samples["actions"].append(action)
-                samples["episode"].append(len(episodes))
-                samples["turn"].append(match.turn)
-                samples["seat"].append(expert_seat)
+                for expert_seat in expert_seats:
+                    public = match.observation(expert_seat)
+                    obs = training_observation(public)
+                    values, mask = encode_flat(obs)
+                    action = flat_action(receipt["actions"][expert_seat])
+                    if not 0 <= action < ACTION_COUNT or not bool(mask[action]):
+                        raise ValueError(f"Expert action is masked: {member.name} turn {turn_index} seat {expert_seat}")
+                    samples["observations"].append(np.asarray(values, dtype=np.float16))
+                    samples["action_masks"].append(np.packbits(np.asarray(mask, dtype=np.uint8)))
+                    samples["actions"].append(action)
+                    samples["episode"].append(len(episodes))
+                    samples["turn"].append(match.turn)
+                    samples["seat"].append(expert_seat)
                 match.advance(receipt["actions"])
                 frame = match.frame()
                 if any(frame[field] != replay["frames"][turn_index + 1][field] for field in FRAME_FIELDS):
                     raise ValueError(f"Replay frame differs: {member.name} turn {turn_index}")
             episodes.append({
-                "member": member.name, "seed": replay["seed"], "expert_seat": expert_seat,
-                "candidate_seat": record["seat"], "start": start, "end": len(samples["actions"]),
-                "split": "holdout" if record["episode_index"] >= 6 else "train",
+                "member": member.name, "seed": replay["seed"],
+                "expert_seat": "both" if both_seats else expert_seats[0],
+                "candidate_seat": record.get("seat"), "start": start, "end": len(samples["actions"]),
+                "split": record.get("split", "holdout" if record["episode_index"] >= 6 else "train"),
             })
             print(json.dumps(episodes[-1]), flush=True)
     metadata = {
@@ -97,5 +101,6 @@ if __name__ == "__main__":
     parser.add_argument("archive", type=Path)
     parser.add_argument("output", type=Path)
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--both-seats", action="store_true")
     args = parser.parse_args()
-    extract(args.archive, args.output, args.limit)
+    extract(args.archive, args.output, args.limit, args.both_seats)
