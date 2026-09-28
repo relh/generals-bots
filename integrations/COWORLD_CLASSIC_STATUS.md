@@ -6464,3 +6464,42 @@ and `relh-classic-nohint-dagger-setup-28561.tar.gz` (SHA256
 `511bf5d88c633fd9a0c8de41fd7bdfd544202210044dce7ee7ca198453334d3f`).
 No 300M-step run or hosted upload followed; this policy failed the quality
 gate even though its end-to-end training throughput passed the speed gate.
+
+Packed-route pilot 28641 replaced the compressed route scalar in the
+eight-plane public observation with four separate route-direction planes.
+It still omitted the teacher's chosen action, retained the same 42.5K
+global-context graph, and trained from scratch with 50% teacher action
+mixing for 50,331,648 environment steps. A GPU audit checked public actor
+observations, legal teacher labels, and exact ExpanderHarvester targets.
+On one physically idle assigned B300 GPU 4, 4,096 games, horizon 128, and
+minibatch 32,768, warmed epochs 80–96 reached **68,011 environment SPS**
+with roughly 89% sampled GPU use. Teacher loss averaged 5.62 in the first
+eight epochs and 4.21 in the last eight. Held-out scores at 16.8M steps
+were **0/127/1** versus ExpanderHarvester and **0/119/9** versus Sentinel;
+at 50.3M steps, **0/124/4** and **0/126/2**. Explicit route directions did
+not restore winning play. Archive on this machine and metta0:
+`relh-classic-packed-dagger-pilot-28641.tar.gz`, SHA256
+`eb3a7e8ecf22e6078d7d6445f26668befe06473ba8b3e423866d3d9f31a710a6`.
+No larger run of that actor or hosted upload followed. The earlier
+generation-0 hinted actor remains the stronger local Classic reference.
+
+Following the explicit request to test hundreds of millions of Puffer5 RL
+steps, one bounded **301,989,888-step** generation-0 PPO run, job 28688,
+is in progress on `metta-fabric-b300-1`. It trains one learner seat in 4,096
+Classic games against the exact frozen generation-0 actor, with no teacher
+loss or action mixing, horizon 128, minibatch 32,768, replay ratio 0.5,
+learning rate .0003, and entropy coefficient .003. The initial policy file
+has the exact generation-0 checkpoint SHA256
+`e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf`.
+The one allocated B300 GPU 4 was physically idle at allocation and matched
+the Docker UUID; GPUs 2 and 3 still carry unrelated external CUDA processes.
+The source and output are pinned at
+`/var/tmp/relh-generals-recovery/classic-gen0-long-pilot-28688` on the
+compute node, with log `classic-gen0-long-pilot-28688.log` and GPU sampler
+`classic-gen0-long-gpu-28688.csv` in the parent directory. The 12.6M-step
+pilot of this exact geometry measured 78,923 warmed environment SPS and
+scores 63/51/14 and 39/82/7 versus ExpanderHarvester and Sentinel, close to
+its starting baseline. This run saves checkpoints at 100.7M, 201.3M, and
+302.0M steps and scores each on the same held-out panels after training.
+Training is guarded below 30k environment SPS; no hosted policy change is
+planned without a quality gain.
