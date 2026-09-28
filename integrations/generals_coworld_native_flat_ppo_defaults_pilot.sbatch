@@ -89,7 +89,7 @@ run['overrides']['policy.num_layers']=4
 defaults=ConfigParser();defaults.read(sys.argv[4])
 for key in ('learning_rate','max_grad_norm','vf_coef','ent_coef','momentum','replay_ratio'):
  run['overrides']['train.'+key]=defaults.getfloat('train',key)
-for key in ('minibatch_size','norm_adv','anneal_lr'):
+for key in ('minibatch_size','anneal_lr'):
  run['overrides']['train.'+key]=defaults.getint('train',key)
 run['total_timesteps']=33_554_432
 run['overrides']['base.checkpoint_interval']=16
