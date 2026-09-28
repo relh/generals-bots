@@ -7926,3 +7926,30 @@ epoch 75 (39,321,600 additional steps), sustained trailing 12-epoch
 from sharing the GPU; the trainer's existing guard remains active. Both
 containers belong to the same bounded allocation, with no duplicate
 trainer or second GPU job. Scores remain pending.
+
+### Shared evaluation contention and first intermediate score
+
+Sharing the physical GPU with inference materially slows optimization:
+the trainer's trailing eight-epoch rate reached about **33,671 SPS**,
+12-epoch about **37,475 SPS**, compared with roughly 59–60K before
+inference. It remained above the mandatory 30K training gate, but this is
+actual internal contention and is not reported as a free GPU. A separate
+lightweight watcher inside the same allocation now stops only the own
+evaluation container if either trailing interval falls below **33K SPS**.
+The committed live-evaluation wrapper includes that safeguard and a
+`throughput-stop.json` record, with cleanup for its watcher/container.
+Training's existing 30K/nonfinite/progress guard is unchanged.
+
+Checkpoint 33.55M additional / 67.11M lineage steps scored **8/116/4**
+against Expander on the 128-game seed-1386 panel, versus parent 29432's
+23/100/5. Initial state hashes, sides and opponent IDs match exactly.
+Paired improved/worsened/tied counts are **4/20/104**, outcome delta
+-0.2421875. The result scope correctly says a frozen saved checkpoint
+from live training; all 128 episodes completed and the checkpoint identity
+guards passed. Locally preserved partial evidence:
+`/tmp/relh-classic-live-29588-33554432-expander.tar.gz`. This is an early
+regression, not a hosting/publishing candidate. Sentinel remains pending.
+The larger planned training budget continues to measure the learning
+trend rather than claiming a short-run result predicts the final policy.
+The trainer advanced to epoch 94 (49.28M additional steps), with the
+latest 12-epoch rate 43,295 SPS during shared evaluation; no new GPU job.

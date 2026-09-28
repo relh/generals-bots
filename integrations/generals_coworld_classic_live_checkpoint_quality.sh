@@ -26,7 +26,11 @@ gpu=$(bash "$parent/staged/allocated_gpu_uuid.sh")
 echo "live evaluation job=$SLURM_JOB_ID step=$step gpu_uuid=$gpu node=$(hostname)"
 nvidia-smi --query-gpu=uuid,memory.used,utilization.gpu --format=csv,noheader
 name=relh-classic-live-quality-$SLURM_JOB_ID-$step
-cleanup() { docker stop -t 5 "$name" >/dev/null 2>&1 || true; }
+watcher=
+cleanup() {
+    test -z "$watcher" || kill "$watcher" 2>/dev/null || true
+    docker stop -t 5 "$name" >/dev/null 2>&1 || true
+}
 trap cleanup EXIT
 trap 'exit 143' TERM
 common=(--rm --gpus "device=$gpu" --cpus=2 --ulimit core=0:0
@@ -44,7 +48,30 @@ common=(--rm --gpus "device=$gpu" --cpus=2 --ulimit core=0:0
 test "$(docker run "${common[@]}" --name "$name" --entrypoint nvidia-smi \
     relh-generals-b300:20260923b --query-gpu=uuid --format=csv,noheader)" = "$gpu"
 digest=$(sha256sum "$checkpoint" | cut -d' ' -f1)
+python3 - "$out" "$source" "$step" "$name" > "$evalout/throughput-watch.log" 2>&1 <<'WATCH' &
+import importlib.util,json,subprocess,sys,time
+from pathlib import Path
+root,source=map(Path,sys.argv[1:3]);step,name=sys.argv[3:]
+spec=importlib.util.spec_from_file_location('guard',source/'monitor_coworld_steady_interval.py')
+guard=importlib.util.module_from_spec(spec);spec.loader.exec_module(guard)
+output=root/f'live-{step}'
+while True:
+    times=guard.completed_epoch_times((root/'run/console.log').read_text(errors='replace'))
+    rates=[guard.interval_sps(times,n,524288) for n in (8,12)]
+    if any(rate is not None and rate < 33000 for rate in rates):
+        record=dict(scope='Own shared-GPU evaluation stopped to protect training',
+                    rates=rates,epoch=max(times),container=name)
+        (output/'throughput-stop.json').write_text(json.dumps(record)+'\n')
+        print(json.dumps(record),flush=True)
+        subprocess.run(['docker','stop','-t','5',name],check=False)
+        break
+    if (output/'sentinel/evaluation.json').exists():
+        break
+    time.sleep(5)
+WATCH
+watcher=$!
 for opponent in expander_harvester sentinel; do
+    test ! -f "$evalout/throughput-stop.json"
     timeout -k 30s 5m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
         python "/recovery/classic-flat-potential-300m-pilot-$SLURM_JOB_ID/live-$step/evaluate.py" \
         --build "/recovery/classic-flat-potential-300m-pilot-$SLURM_JOB_ID/build/build.json" \
