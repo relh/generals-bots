@@ -9047,3 +9047,62 @@ strong_mixed29836 used LR.015/norm0; stable low-LR/norm1 runs used current or
 weak frozen neural opposition. Do not assume that untested combination works;
 bounded fresh pilot,finite/30k gate and paired quality required before scaling.
 No further job submitted; no hosted/registry/champion side effects. Goal active.
+
+## Stable native optimization against strong opponents30054: same local-shuffling failure
+
+30054 COMPLETED Exit0:0,2026-09-28 20:55:06–21:01:22 UTC,6m16 allocation.
+One B300,nice100,8CPU/64G,35min bound,12min trainer/four3min panels.
+Reused exact29836 native build and its archived environment source; fresh
+seed739,33,554,432 steps. Only learner LR.015→.0015 and norm_adv0→1 change
+relative29836. Same native128-hidden four-layer MinGRU,4096 games/learner
+rows,H128,mb8192,replay1,anneal1,Muonmomentum.95,entropy.001,vf2,maxgrad1.5.
+Classic independent18–21 dimensions,1200 turns,11-plane public4851/[3529]
+contract,samepotentialreward,learner/shaping gamma both.999. strong_mixed
+distribution1536ExpanderHarvester+512Sentinel per side follows actual archived
+balanced opponent-ID assignment. No teacher,target/action guidance or imitation.
+
+Preflight fullqueue/node reconciled otherCVC30007,own30048 terminal. Actual
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a0MiB/0%,noCUDA apps;containerUUID
+matched,driver595.91.07,imagebdd4f2...e5,656GiB disk/35003tmp inodes free.
+Output /var/tmp/relh-generals-recovery/classic-native-scripted-lr0015-pilot-30054.
+Rendered /tmp/relh-native-scripted-lr0015-run-node.sh SHA256
+502ccd23e1d84f6c38655cf1b79f419425fbbb1da1443add61020a6749017a6f.
+Source revision77b803f. No duplicate job or build regeneration.
+
+Warm epochs20–64:23,068,672 completed environment steps/(212.501−73.295)s
+=165,716.08 end-to-end SPS. Timestamped39physical samples mean64.10%,
+range60–100%,mean3.572s cadence; node console-mtime alignment with about1s
+boundary uncertainty. Rollout typically2.8–3.2s,env2.5–2.9s,inference.315s,
+optimization.321s/copy0. No observed allocated-GPU contention. Evidence
+training-evidence.json includes intervals and all four finite1,269,376-word
+checkpoint digests. FinalSHA256
+15dfa1fd56ec5da7e9739b0c1427d3cfcff7a80ec784dfdf32d380f8420247f4.
+33,554,432 audited actions,0illegal. Actual CUDA/JAX parity on24realpublic
+views/partialreset:maxlogit2.3842e-7/state3.5763e-7,identical masked actions.
+
+| Steps | ExpanderHarvester W/L/D | Sentinel W/L/D |
+| --- | --- | --- |
+| 8,388,608 | 0/128/0 | 0/127/1 |
+| 33,554,432 | 0/128/0 | 0/126/2 |
+
+Total0W509L3D/512. All initial-map/sides/opponent arrays match existingseed1386
+300M panels. Raw rewards0clipped evaluationsteps. Final greedy middle/late
+owned-land3.5–4.1,owned destinations98.8–99.7%; same local-shuffling failure.
+Stable optimizer and stronger opposition are insufficient. Reject unchanged
+extension/publication. Does not prove model architecture is the only cause.
+
+Complete archive Mac/controller verified SHA256
+cd26ed2cb376064dcaa52bc7e1a1d179ee7ab3469cea320870d84b91249c6ad3:
+/tmp/relh-classic-native-scripted-lr0015-30054.tar.gz. Inspection
+/tmp/relh-native-scripted-lr0015-30054-inspect. Node exittrap stopped exactown
+container/sampler,wrote its nodearchivehash; not read beforeallocationended,
+so no third-copy verification claim. Prior30048 nodearchivehash read during
+30054 own metadata step agrees5abe3ce0...c879e.
+
+Next model investigation uses the shared spatial actor that achieved23/128
+Expander wins in29432. Increase local capacity in a narrower variant than
+the rejected27580 four-local/16-global/context-radius2 compile; preserve
+Classic rules/publiccodec/rewards and trainable public-prior initialization,
+no teacher targets. Its compilation,finite gradients,30k SPS and actual
+quality require a bounded GPU pilot before any longrun. No new job yet.
+No hosted/registry/champion changes; full goal remains active.
