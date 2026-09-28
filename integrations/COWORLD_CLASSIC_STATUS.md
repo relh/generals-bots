@@ -6863,3 +6863,11 @@ games, H128, minibatch 32,768, PPO entropy 0.01, gamma and shaping gamma
 on the same seed-1386 ExpanderHarvester and Sentinel panels. A long run or
 hosted test requires a gain over the generation-0 reference, not merely
 legal action parity or faster training.
+
+First flat setup job 29159 stopped in 11 seconds before model build or
+training. Its standalone codec-audit fixture incorrectly requested a
+dynamic pool with fixed `grid_dims=(21,21)`; the environment correctly
+raised `ValueError: A dynamic pool requires variable board sizes`.
+The fixture now uses the production Classic 18–21 variable-size map
+range with padding to 21. Job 29159 is terminal `FAILED`/exit 1 and
+recorded zero training steps; no checkpoint or result was replaced.

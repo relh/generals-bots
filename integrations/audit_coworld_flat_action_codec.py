@@ -10,7 +10,7 @@ from integrations.puffer_codec import decode_action, encode_coworld_directional_
 
 def main():
     env = GeneralsEnv(
-        grid_dims=(21, 21), pad_to=21, truncation=1200,
+        min_grid_size=18, max_grid_size=21, pad_to=21, truncation=1200,
         mountain_density_range=(0.24, 0.26), min_generals_distance=17,
         num_castles_range=(9, 11), castle_val_range=(40, 51),
         build_castles=False, deathtouch_turn=None, pool_size=16, dynamic_pool=True,
