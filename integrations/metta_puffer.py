@@ -1051,6 +1051,7 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
     def reset_device(self, seed: str):
         self._reset_states(seed)
         values, masks = self._observe_both(self.states)
+        self._cached_values, self._cached_masks = values, masks
         learner_values = values[self._rows, self.sides]
         learner_masks = masks[self._rows, self.sides]
         if self.base.supervise_teacher:
@@ -1064,7 +1065,7 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         expected = (self.parallel_games, len(self.spec.action_sizes))
         if actions.shape != expected:
             raise ValueError(f"Learner action shape {actions.shape}; expected {expected}")
-        values, masks = self._observe_both(self.states)
+        values, masks = self._cached_values, self._cached_masks
         frozen_sides = 1 - self.sides
         frozen = self._frozen_actions(
             values[self._frozen_rows, frozen_sides[self._frozen_rows]],
@@ -1083,6 +1084,7 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         self.states, self.keys, values, masks, rewards, done = self._advance_self_states(
             self.states, self.base.pool, paired[:, :, 0], paired[:, :, 1], self.keys
         )
+        self._cached_values, self._cached_masks = values, masks
         self.turn += 1
         if self.turn >= self.horizon:
             self.turn = 0

@@ -6503,3 +6503,13 @@ its starting baseline. This run saves checkpoints at 100.7M, 201.3M, and
 302.0M steps and scores each on the same held-out panels after training.
 Training is guarded below 30k environment SPS; no hosted policy change is
 planned without a quality gain.
+
+While 28688 trains, a one-run cache comparison is prepared in
+`generals_coworld_classic_gen0_cache_pilot.sbatch` and remains unsubmitted.
+The frozen-opponent adapter can reuse the next observations and masks that
+its own transition kernel already encodes, avoiding a second full-board
+encoding before the next opponent action. The paired GPU parity audit checks
+cached versus fresh observations and transition equality over 12 turns,
+including a Classic map-pool refresh. If parity passes, the same bounded
+job trains for 12.6M steps and compares warmed environment SPS and held-out
+scores with job 28333. Only one Generals GPU job is active during 28688.
