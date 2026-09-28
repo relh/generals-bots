@@ -8226,3 +8226,47 @@ finished both seed-1386 panels: Expander/Harvester 0 wins /128 losses /0
 draws; Sentinel 0/128/0. The later and final panels are still pending.
 No scaling, hosted request, publication or replacement training job has
 been launched. Finite weights and high SPS do not qualify policy strength.
+
+
+## Final 300M quality failure and full-replay pilot launched
+
+Job 29588 is terminal COMPLETED, ExitCode=0:0, RunTime=01:36:36;
+training and all six scheduled quality panels finished. Seed 1386, 128
+games per opponent/checkpoint, balanced sides, Classic 18–21 maps,
+argmax frozen inference. Results (wins/losses/draws):
+
+| Additional steps | Expander/Harvester | Sentinel |
+| --- | --- | --- |
+| 67,108,864 | 0/128/0 | 0/128/0 |
+| 134,217,728 | 0/124/4 | 0/127/1 |
+| 299,892,736 | 0/125/3 | 0/128/0 |
+
+Zero wins across 768 games; 760 losses and 8 draws. This continuation
+regressed relative to its parent (23/100/5 and 1/119/8 on these panels).
+It is rejected for scaling/publication. No hosted match request or registry
+side effect was issued. Complete quality outputs, per-panel logs and CPU/GPU
+samples are archived on node/Mac/metta0 as
+`/tmp/relh-classic-flat-potential-300m-quality-29588.tar.gz`, independently
+verified SHA256
+`c67163d1a1e14555db90c9ac9c25f36a9a81418fc28c58675e79b0517baef888`.
+
+Only after the preceding allocation was terminal, submitted one replacement
+bounded pilot: job 29637, B300 metta-fabric-b300-1, 8 CPUs/64G, nice100,
+40-minute Slurm limit and 25-minute trainer timeout, revision
+542dcec87423961f85ac04e7e16980d31cdb4bbd. Node output:
+`/var/tmp/relh-generals-recovery/classic-flat-potential-full-replay-pilot-29637`.
+Allocated physical GPU `GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`, different
+from 29588; preflight observed 0MiB/0% and no CUDA process before launch,
+and the container UUID matched allocation. Driver 595.91.07, image
+`sha256:bdd4f2a9a1251ba57a6a70368e069f45498060d214f6f54d9c2fb70fe1196ae5`,
+663GiB disk free. Full queue/node CPU/memory state inspected; neighboring
+jobs remain untouched. This is the sole live Generals allocation.
+
+Effective generated config was rechecked on node: fresh seed739,
+initialize=null, total33554432, 4096 rows,H128,minibatch32768, replay1.0;
+all other control overrides identical. It reuses the exact archived 29432
+build/sources, matching env/PPO gamma .999 and no teacher. This changes
+only replay ratio to cover every row per epoch. It is warming up; no
+throughput or quality success is claimed. It retains the 30K SPS guard
+and serial final Expander/Harvester and Sentinel panels. No longer job
+is submitted or dependent on it.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Fresh control comparison: replay 1.0; reuse exact archived 29432 build and sources.
-# Not submitted; recheck physical allocation and 30K throughput before scaling.
+# Recheck physical allocation and 30K throughput before scaling.
 #SBATCH --job-name=relh-classic-flat-potential-full-replay-pilot
 #SBATCH --partition=b300
 #SBATCH --nodelist=metta-fabric-b300-1
