@@ -9787,3 +9787,43 @@ initial-policy artifact is backed by a concrete native loadpath.
 Currentremainingissue is fullgamelearning/credit/exploration/capacity;
 sparse capture reward has only8.39Msteps sofar, unlike older failed300M
 Native/PBR recipes. Goal remains active; no registry/XP/champion change.
+
+
+## 30435: requested 300M capture-only frozen training running
+
+After the full pilots and frozen-version control, released one bounded
+300,000,000-additional-step capture-only frozen run (effective native
+final299,892,736 physicalENVsteps at524,288 per epoch). This tests the
+user-requested meaningful trainingbudget on the new sparsewin/loss recipe;
+the8.39M capture pilot is not a strongpolicy, and no quality improvement
+is assumed. Priorfailed300M Native/PBR runs are not repeated.
+Initialize30408capture4449fa41...46e84, same immutable30238opponent,
+seed747, optimizerreset (no restorableenvironment snapshots),
+4,096games/onelearner each/H128/mb8192/replay.5/LR.0003/entropy.01/
+gamma.999/GAE.99/shaping0/rewardscale1/no teacher. Originalrollout/direct
+optimization unchanged. Reuse exact30408build, no duplicate compilation.
+At140,324.66ENV SPS,300M projects35m38 plus startup/evaluation;
+actual live short/long sustainedwindows now146.6–149.3kENV SPS.
+
+30435 running b300/metta-fabric-b300-1,8CPU/64G/nice100/80min,
+hardDocker64GiB/swap64GiB/core0, trainer timeout60min,300snoepochguard
+and30k sustainedgate retained. Physical allocatedUUID
+GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f empty0MiB/0% atpreflight
+and matched inside Docker. No observed physical CUDA contention.
+Prior30419nodearchive73115e70...b7074 matched, priorexactcontainerabsent,
+imagebdd4f2a9a125/driver595.91.07/649GiBfree/50,710tmpfreeinodes.
+Revision754e1fe; script
+/tmp/relh-classic-spatial-local8-frozen-capture-300m-run-node.sh SHA256
+0bf33adfc34ab732df5adb23c67cd9c594b540a4e318ab515c956a9b1ad9d128.
+Nodeoutput /var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-capture-300m-pilot-30435.
+Exec74042; Macstream /tmp/relh-classic-spatial-local8-frozen-capture-300m-stream.tar.gz.
+Verified preparedinitialpolicy SHA4449fa41...46e84 and actualtraining
+record budget300M/shaping0/rewardscale1. Throughputgate passed byepoch10;
+current18completedepochs (~9.44Madditionalsteps), no finite-gradient guard
+failure. Repollsamejob/session on observationtimeout; do notsubmitduplicate.
+
+Checkpoint interval64epochs (~33.55M). After training, sameallocation
+exports/evaluates33,554,432 /100,663,296 /299,892,736 checkpoints:
+128Expander+128Sentinel seed1386 and512parentmatches seed1513 each.
+Retain stronger30238parent independently; no policy registration, XP,
+champion change, or promise of leaderboard performance. Goalactive.
