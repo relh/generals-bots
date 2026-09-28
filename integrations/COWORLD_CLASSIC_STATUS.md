@@ -6603,3 +6603,8 @@ rejected the changed reward option. The guard now permits exactly this
 pinned generation-0 checkpoint transfer when `reward_scale` changes from
 0.5 to 0.02, while retaining all other source/target checks. No training
 or evaluation from 28930 is counted; a corrected job is required.
+Corrected setup job 28936 also stopped before training because the launcher
+pin still named the pre-edit transfer-module SHA256. Its log recorded only
+the launcher assertion and no environment steps. The launcher pin now
+matches the reviewed guard source SHA256
+`862a6232b430dd804cf3fdcad62f70f24e778a6a5a233f6c1bdf2b25ea122e3f`.
