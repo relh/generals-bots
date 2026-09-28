@@ -8869,3 +8869,17 @@ or environment change. Six quality panels have3-minute timeouts; combined
 35-minute trainer/3-minute parity/18-minute panels/archive remain bounded by
 one60-minute allocation. No new GPU job yet; full queue reconciled other
 B300 tasks29940 capacity and29948 SaFa, neither is this task.
+
+300M experiment launched as sole Generals job29962, B300 metta-fabric-b300-1,
+8CPU/64G,nice100,60m allocation/35m train timeout. Revisiona3401d2,
+rendered /tmp/relh-native-flat-frozen-gen1-300m-fe17af2/run-node.sh SHA256
+3c1ea0064ecc2edb180ff23757509de576c748c040c1a4d124c34c66e89a46f3.
+Allocated GPU-0c5605ae-e405-99f1-848e-9fa81e41482a was0MiB/0%, no CUDA apps,
+Docker UUID matched,595.91.07/imagebdd4f2...e5,658GiB free. Other B300
+capacity29940/SaFa29948 were reconciled and left alone. Native trainer
+accepted identical-build initialization; run/initial-policy.bin SHA256
+3ab08100...d6d3af matches29937 exactfinal. Source/model/env guard unchanged.
+Output /var/tmp/relh-generals-recovery/classic-native-flat-frozen-gen1-300m-pilot-29962.
+Mac exit stream /tmp/relh-classic-native-flat-frozen-gen1-300m-a3401d2-stream.tar.gz.
+No steady interval from this new process yet; pilot gate190474 SPS remains
+its preflight evidence. No registry, XP or champion changes.
