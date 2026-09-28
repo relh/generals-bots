@@ -7,6 +7,7 @@ loss, or the explicit finite game horizon.
 
 import hashlib
 import json
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
@@ -957,3 +958,139 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
 
     def step(self, actions):
         raise NotImplementedError("Self-play uses device-resident training only")
+
+
+class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnvironment):
+    """Expose one learner seat per game against a frozen actor and optional scripted mix."""
+
+    def __init__(self, *, frozen_build: str, frozen_checkpoint: str, frozen_sha256: str,
+                 context: EnvironmentContext, parallel_games: int = 16,
+                 scripted_hint_fraction: float = 0.0, **options):
+        from metta_training.inference import FrozenPolicy
+        from metta_training.model_config import FrozenPolicyConfig
+        from metta_training.native_fabric import compile_policy
+
+        super().__init__(context=context, parallel_games=parallel_games, **options)
+        self.spec = self.spec.model_copy(update={"agents": parallel_games})
+        if scripted_hint_fraction not in (0.0, 0.5) or (scripted_hint_fraction and parallel_games % 4):
+            raise ValueError("Scripted hint mix requires half of games in balanced four-game groups")
+        self._rows = jnp.arange(parallel_games)
+        self._frozen_rows = jnp.arange(parallel_games) if not scripted_hint_fraction else jnp.asarray(
+            [row for row in range(parallel_games) if row % 4 < 2], jnp.int32
+        )
+        self._scripted_rows = jnp.asarray(
+            [row for row in range(parallel_games) if row % 4 >= 2], jnp.int32
+        ) if scripted_hint_fraction else None
+        frozen_slots = parallel_games if not scripted_hint_fraction else parallel_games // 2
+        move_scale = options.get("move_hint_scale", 1.0)
+        split_scale = options.get("split_hint_scale", 1.0)
+        if move_scale != split_scale or move_scale not in (0.25, 1.0):
+            raise ValueError("Frozen generation-0 opponent requires the audited hint codecs")
+        frozen_hint_gain = 1.0 / move_scale
+        frozen = FrozenPolicy(FrozenPolicyConfig(
+            build=Path(frozen_build), checkpoint=Path(frozen_checkpoint),
+            sha256=frozen_sha256, device="cuda:0",
+        ))
+        model = frozen.policy
+        if json.loads(Path(frozen_build).read_text())["model_sha256"] != (
+            "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
+        ):
+            raise ValueError("Frozen opponent graph lacks the carried-state parity audit")
+        if model.observation_size != self.base.spec.observation_size or model.action_sizes != self.base.spec.action_sizes:
+            raise ValueError("Frozen opponent model and game codec differ")
+        self._frozen_model = model
+        self._frozen_function = compile_policy(
+            model.graph, inputs=model.inputs, outputs=model.outputs, slots=frozen_slots,
+            output_order=model.output_order, standard=model.standard_compile,
+        )
+        parameters = jnp.asarray(np.frombuffer(frozen.parameters, np.float32).copy())
+        state = jnp.zeros((frozen_slots, model.state_words), jnp.float32)
+        self._frozen_sigma = model.buffers.unpack_device(parameters, state)
+
+        @jax.jit
+        def frozen_actions(values, masks):
+            planes = values[:, :model.observation_size].reshape(frozen_slots, 14, self.base.size**2)
+            planes = jnp.concatenate((planes[:, :2], planes[:, 2:8] * frozen_hint_gain,
+                                      planes[:, 8:]), axis=1)
+            board = planes.reshape(frozen_slots, 1, model.observation_size)
+            board = board.transpose(1, 2, 0)[..., None]
+            board = jnp.pad(board, ((0, 0), (0, model.graph_input_size - model.observation_size),
+                                    (0, 0), (0, 0)))
+            _, prediction = self._frozen_function.forward(
+                self._frozen_sigma, {"observations": board},
+                reset=jnp.zeros((1, frozen_slots), bool),
+            )
+            logits = model.model_predictions_device(self._frozen_function, prediction)[:, 0]
+            moves = model.action_sizes[0]
+            return jnp.stack((
+                jnp.argmax(jnp.where(masks[:, :moves], logits[:, :moves], -jnp.inf), axis=1),
+                jnp.argmax(jnp.where(masks[:, moves:], logits[:, moves:moves + 2], -jnp.inf), axis=1),
+            ), axis=1).astype(jnp.int32)
+
+        self._frozen_actions = frozen_actions
+        if scripted_hint_fraction:
+            @jax.jit
+            def scripted_actions(values):
+                action = jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values)
+                cells = self.base.size**2
+                index = jnp.where(
+                    action[:, 0] == 1, 4 * cells,
+                    action[:, 3] * cells + action[:, 1] * self.base.size + action[:, 2],
+                )
+                return jnp.stack((index, action[:, 4]), axis=1).astype(jnp.int32)
+            self._scripted_actions = scripted_actions
+
+    def reset_device(self, seed: str):
+        self._reset_states(seed)
+        values, masks = self._observe_both(self.states)
+        learner_values = values[self._rows, self.sides]
+        learner_masks = masks[self._rows, self.sides]
+        if self.base.supervise_teacher:
+            learner_values = self._self_transport(learner_values, learner_masks)
+        return (
+            learner_values,
+            learner_masks.astype(jnp.uint8),
+        )
+
+    def step_device(self, actions):
+        expected = (self.parallel_games, len(self.spec.action_sizes))
+        if actions.shape != expected:
+            raise ValueError(f"Learner action shape {actions.shape}; expected {expected}")
+        values, masks = self._observe_both(self.states)
+        frozen_sides = 1 - self.sides
+        frozen = self._frozen_actions(
+            values[self._frozen_rows, frozen_sides[self._frozen_rows]],
+            masks[self._frozen_rows, frozen_sides[self._frozen_rows]],
+        )
+        opponent = jnp.zeros((self.parallel_games, 2), jnp.int32)
+        opponent = opponent.at[self._frozen_rows].set(frozen)
+        if self._scripted_rows is not None:
+            scripted = self._scripted_actions(
+                values[self._scripted_rows, frozen_sides[self._scripted_rows]]
+            )
+            opponent = opponent.at[self._scripted_rows].set(scripted)
+        paired = jnp.zeros((self.parallel_games, 2, len(self.spec.action_sizes)), jnp.int32)
+        paired = paired.at[self._rows, self.sides].set(actions.astype(jnp.int32))
+        paired = paired.at[self._rows, frozen_sides].set(opponent)
+        self.states, self.keys, values, masks, rewards, done = self._advance_self_states(
+            self.states, self.base.pool, paired[:, :, 0], paired[:, :, 1], self.keys
+        )
+        self.turn += 1
+        if self.turn >= self.horizon:
+            self.turn = 0
+            if self.base.coworld_classic:
+                self._pool_generation += 1
+                self.base.pool, _ = self.base.env.reset(
+                    jax.random.fold_in(self._pool_seed, self._pool_generation)
+                )
+        learner_values = values[self._rows, self.sides]
+        learner_masks = masks[self._rows, self.sides]
+        if self.base.supervise_teacher:
+            learner_values = self._self_transport(learner_values, learner_masks)
+        return (
+            learner_values,
+            learner_masks.astype(jnp.uint8),
+            rewards[self._rows, self.sides].astype(jnp.float32),
+            done.astype(jnp.float32),
+            False,
+        )

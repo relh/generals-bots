@@ -6258,3 +6258,116 @@ lane routing with exact paired-seat tests, or let a one-seat JAX
 environment batch a frozen opponent policy on device while exposing only
 learner seats to PPO. Validate seat assignment, episode-boundary swaps,
 checkpoint identity, and steady end-to-end SPS before any long run.
+
+## One-seat frozen-policy pilot and codec correction (2026-09-27/28)
+
+The one-seat GPU environment now controls one player in each of 4,096
+Coworld Classic games, with balanced sides and a generation-0 policy acting
+for the other player through batched device inference. The source checkpoint
+is SHA256 `e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf`;
+the learner starts from generation-1 SHA256
+`d27cb8552a78b083201575a604a1c3f6b2c43336f4e32e45221cf3d11b77a032`.
+GPU inference audit 28183 confirmed all masked actions on 16 states match
+the served frozen policy; logits differed by at most 0.000824 across execution
+paths. Carried state did not alter predictions. The corresponding graph SHA is
+`a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd`.
+
+Pilot 28195 completed 12,582,912 **environment** steps on one B300 in 4,096
+games, horizon 128, minibatch 32,768, replay 0.5, gamma and shaping gamma
+both .999. Warm epochs 8–24 achieved **80,872 environment SPS**; one agent
+acts per environment step. This passes the 30k gate but is below the 300k
+aspiration. GPU memory reached about 58 GiB, while Docker CPU use was about
+1–3 of eight allocated cores. Its final checkpoint SHA256 is
+`9c7daebd3876f63d2311507deee53a247ab8b7f8ad09163445d38a01f5fb9d47`.
+On 128 paired held-out games per opponent, final W/L/D was 31/72/25 versus
+ExpanderHarvester and 17/100/11 versus Sentinel, below its starting
+generation-1 policy (51/51/26 and 28/91/9) and unscaled generation-0
+reference (63/52/13 and 40/81/7). Intermediate checkpoints at 2.1M, 6.3M,
+and 10.5M steps also failed to exceed the original generation-0 reference.
+No long run, hosted upload, or champion change followed.
+
+The pilot exposed a codec error: the frozen generation-0 actor shared the
+learner's .25 hint calibration, though its original build uses 1.0 for both
+move and split hints. Previously, this exact scaling had cut generation-0
+hint agreement to 59.77% and held-out scores to 2/122/4 and 1/126/1. The
+frozen actor now multiplies its hint planes 2–7 by four before inference,
+while learner observations remain at .25. GPU audit 28237 confirmed the
+restored observations are bit-identical to the source codec on 16 matched
+games with identical game states and masks. Job 28237 built the corrected
+environment but stopped before training because its first identity check
+used a nonexistent `FrozenPolicy` attribute. Job 28245 then showed that
+the trainer correctly rejects a build whose adapter source has changed.
+Both jobs recorded zero training steps. Corrected bounded pilot 28247 is
+underway with a fresh matching build; require its held-out quality and
+warmed environment SPS before a longer run.
+
+Pilot 28195 plus setup artifacts were archived locally and on metta0 as
+`relh-classic-frozen-pilot-28170-28195.tar.gz`, SHA256
+`0d18dfc502246a0ab1f2f5286ab40e4c47fc585e323686c98f166f0fd09756de`.
+Intermediate quality results are archived as
+`relh-classic-frozen-trajectory-28211.tar.gz`, SHA256
+`bb6f95c8f4792b5122585fe68842efd01adfc535113c5db1ec07079aace13e9b`.
+
+Corrected frozen-only pilot 28247 restored the opponent's unscaled hint
+features and completed 12,582,912 one-seat environment steps at **79,204
+warmed SPS** over epochs 8–24, with 4,096 Classic games, horizon 128,
+minibatch 32,768, and one B300. It scored **7/81/40** against
+ExpanderHarvester and **13/105/10** against Sentinel on the same 128 paired
+held-out maps. Checkpoints at 2.1M, 6.3M, and 10.5M scored respectively
+42/66/20, 44/56/28, 28/74/26 versus ExpanderHarvester and 31/88/9,
+34/79/15, 17/96/15 versus Sentinel. The 6.3M checkpoint was the best
+in this run but still below original generation 0: paired better/worse/same
+was 18/38/72 Expander and 25/27/76 Sentinel. At the final checkpoint,
+teacher-driven hint agreement was **8,159/8,192** despite poor full games.
+This argues against simply adding more steps to a hint-dominated actor.
+The corrected pilot archive is on this machine and metta0 as
+`relh-classic-frozen-corrected-pilot-28247.tar.gz`, SHA256
+`0ed4d67ea79c6a3da8a75118944b65268925553679a4274f3079a17931a8a86d`.
+The trajectory and hint audit archive is
+`relh-classic-frozen-corrected-trajectory-28271.tar.gz`, SHA256
+`43bd1d3e90cb35f950be808db11c7f57134b58739d080c5306f0813635e378b3`.
+
+Mixed-opponent pilot 28306 put 2,048 learner games against frozen generation
+0 and 2,048 against ExpanderHarvester hint replay. Its 16-game device audit
+verified four games per player side for each opponent type, legal scripted
+actions, and exact ExpanderHarvester agreement. It finished 12,582,912
+environment steps at **72,397 warmed SPS**, horizon 128, minibatch 32,768.
+The corrected held-out evaluation 28325 scored **22/76/30** against
+ExpanderHarvester and **16/101/11** against Sentinel. Its initial inline
+evaluation had passed an environment-only option to the ordinary evaluator;
+the separate evaluation job used the same completed checkpoint and fixed
+only that option handoff. The archive on this machine and metta0 is
+`relh-classic-mixed-pilot-28306-quality-28325.tar.gz`, SHA256
+`13733d8c28245c15e1a96199cc9849a4f55a21fba7f04da681a286732ac1b8b8`.
+
+Unscaled generation-0 pilot 28333 initialized the learner from exact
+generation-0 SHA256
+`e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf`
+against a frozen copy of itself, with teacher coefficient and action mix
+zero. It completed 12,582,912 steps at **78,923 warmed SPS**, but policy
+entropy remained about 0.02. Corrected evaluation 28346 scored **63/51/14**
+and **39/82/7**, essentially the original generation-0 baseline
+(63/52/13 and 40/81/7). The initial evaluator assumed a mixed-only option;
+the separate evaluation job used the completed checkpoint. Archive:
+`relh-classic-gen0-pilot-28333-quality-28346.tar.gz`, SHA256
+`4a3198b74884b2da65bb8ad8cc986a9e33d6b15c42a6b24066ab01491cd33b70`.
+Increasing only PPO entropy coefficient from .003 to .05 on the same build
+and exact generation-0 initialization in pilot 28360 raised measured policy
+entropy to about 0.11 by 12.6M steps, at **79,521 warmed SPS**, but held-out
+scores fell to **55/58/15** and **20/105/3**. Archive:
+`relh-classic-gen0-entropy-pilot-28360.tar.gz`, SHA256
+`b7efa7464674263d6c6e72786ec60c1945a335d6221b63d47e85ad18c48215e0`.
+
+These bounded jobs each used one B300 allocation, eight CPUs, 64 GiB host
+memory, 4,096 games, one learner seat per game, Puffer5 revision
+`6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2`, driver 595.91.07, and
+compute-node output. The assigned physical GPU was idle at allocation;
+GPUs 2 and 3 held unrelated external CUDA processes around 49/47 GiB, so
+Slurm idle status alone was not used as a free-GPU signal. Post-warmup
+rollout was about 2.7–3.4 seconds per 524,288-step epoch, optimization
+about 3.0–3.3 seconds, and Docker CPU use generally 1–3 of eight cores.
+All pilots exceeded the 30k **environment** SPS gate, but none established a
+quality gain over the original generation-0 reference. No 300M-step run,
+hosted upload, or champion change was released. Next training design should
+remove the direct action-hint shortcut, retain public board features and
+legal masks, and use a bounded score gate before scaling.
