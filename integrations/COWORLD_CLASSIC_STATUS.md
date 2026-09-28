@@ -9333,3 +9333,57 @@ from actualbaseline/revision/modelcontract, then exact30054freshLR.0015/norm1
 normalizationkernel neededforbuild. Dockerhardmemory64GiB/swap64GiB aligns
 SlurmrequestedRAM;archivesrootfilesystem; verifies old30174stopped/digest.
 Pendingfullfreshclusterpreflight;no newjob submitted.
+
+
+## Native territory-reward pilot30205 completed; quality rejected
+
+Fullqueue/sinfo/sharedidentity/nodepreflight refreshed,30174terminalverified;
+one Generalsjob30205,nice100,b300/metta-fabric-b300-1,8CPU64G,35minbound,
+22:10:29–22:17:32UTC,COMPLETED0:0,7m03. UUID
+GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f initially0MiB/0%,noCUDAapps,
+containerUUIDmatched;driver595.91.07,imagebdd4f2...e5,654GiB diskfree,
+/tmp50710freeinodes. Dockerhard64GiB memory/swap limit; core dumps disabled.
+Old30174 exactcontainerabsence andnodearchiveSHAchecked. Otherjobstouchednone.
+Computeoutput /var/tmp/relh-generals-recovery/classic-native-land-gain020-pilot-30205.
+ScriptSHA20e5f9beb7e6c407ca4fef204fb6673a87adb9f580d0551d74a02422f682ebaa,
+source991411b(codeunchanged bylaterstatuscommits). Newhonestnativebuild at
+pinnedPuffer6ffa5b10,exactbaselinecontract andonly landgainweight0→.02,
+actualgamma/shaping.999 verified. 4096games/4096rows,1536Exp+512Sent eachside,
+Native128x4,H128,mb8192,replay1,LR.0015,normadv1,seed739fresh,33.55M.
+
+Measured steady20@78.483s→64@212.678s:23,068,672 physicalENV steps /
+134.195s =171,904.11ENV SPS,includingrollout,transfers,optimization.
+PhysicalGPUmean66.18%(38samples,min63/max100,3.573smean spacing;nodeconsole
+mtime alignmentabout1s boundaryuncertainty). Consoleinstantfinal1.2MSPS
+is partialtrain-onlyinterval andnotacceptedthroughput. DashboardsteadyEnv
+~78–80%time,modelrollout~10%,optimization~10–11%;copies0ms.
+DEVICE_ACTION_MASK_AUDIT33554432actions/0illegal. Allfour1,269,376word
+checkpointsfinite. FinalSHA
+18c47adca036b6b6fc0e27228ab4b4328fa5f405a4160db9a5f98446a3cde1c2.
+CUDAservingparity24realpublicviews/partialresets: identicalmaskedactions,
+maxlogit2.38418579e-7/maxstate4.76837158e-7.
+
+Greedyheldoutseed1386,pool128,128games eachpanel:
+8M Exp0/128/0,Sent0/127/1;33M Exp0/127/1,Sent0/125/3.
+Aggregate0W507L5D512. Finalmiddle/lateownedland~3.7/3.8Exp and3.7/3.4Sent;
+~98.5–99.2%movesstillintoownedtiles. Rewardchangefailsstrength/expansion
+criterion;do notscaleor publish unchangedcandidate. No hostedregistry/XP/
+championchanges. Goalactive,notblocked.
+
+ArchiveMac /tmp/relh-classic-native-land-gain020-stream.tar.gz,
+controller /tmp/relh-classic-native-land-gain020-30205.tar.gz,
+node /var/tmp/relh-generals-recovery/relh-classic-native-land-gain020-30205.tar.gz
+SHA25692c4607e75a4482302c422117ba182265ed0b14309532216b0551d564934db2b
+matchedallthree. Localinspection /tmp/relh-native-land-gain020-30205-inspect;
+training-evidence.json fullyrecordsmetrics/checkpointdigests. Exec45056complete0,
+no liveGeneralsjob remains. Artifacts preservedbeforecandidate replacement.
+
+Nextinvestigation is efficient directspatialpolicy evaluation/gradient kernels,
+not another NativeMinGRU reward/step extension. CPUread-only layoutinspection
+/tmp/relh-spatial-buffer-layout-inspection.log confirmed actualcontrol42584word
+layout: shared44input-to-local,80cross-context,32localactionedgeweights,
+14112densecontext-global and28240denseglobal-outputweights; groupedOutput
+10W/b plus learnedpublicroute/source/fullpriors. These canpotentiallybe
+expressed as batchedmatrix/convolutionoperations rather than general pooled
+graph compilation. No such replacementimplemented/auditedyet; preserveexact
+actor/optimizer and proveoutput/gradient equivalence before GPUtraining.
