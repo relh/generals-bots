@@ -105,7 +105,7 @@ ln -s "$out/run" "$disk/classic-native-flat-frozen-gen1-300m-pilot-$SLURM_JOB_ID
 ) > "$disk/classic-native-flat-frozen-gen1-300m-gpu-$SLURM_JOB_ID.csv" 2>&1 &
 sampler=$!
 mkdir -p "$out/timing"
-timeout -k 30s 45m docker run "${common[@]}" --name "$name" \
+timeout -k 30s 35m docker run "${common[@]}" --name "$name" \
     -e METTA_EPOCH_TIMING_DIR="/recovery/classic-native-flat-frozen-gen1-300m-pilot-$SLURM_JOB_ID/timing" \
     relh-generals-b300:20260923b \
     python "/recovery/classic-native-flat-frozen-gen1-300m-pilot-$SLURM_JOB_ID/staged/launch_classic_frozen_opponent_training.py" train \
@@ -143,7 +143,7 @@ for step in 67108864 134217728 299892736; do
         checkpoint=$(printf '%s/run/checkpoints/metta_generals/run/%016d.bin' "$out" "$step")
         digest=$(sha256sum "$checkpoint" | cut -d' ' -f1)
         tag=$step-$opponent
-        timeout -k 30s 5m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
+        timeout -k 30s 3m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
             python "/recovery/classic-native-flat-frozen-gen1-300m-pilot-$SLURM_JOB_ID/staged/evaluate_coworld_frozen_greedy.py" --native \
             --build "/recovery/classic-native-flat-frozen-gen1-300m-pilot-$SLURM_JOB_ID/build/build.json" \
             --run "/recovery/classic-native-flat-frozen-gen1-300m-pilot-$SLURM_JOB_ID/run" \

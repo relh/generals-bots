@@ -8820,7 +8820,7 @@ finite frozen predictions/carry, balanced four samples per side. Build/train
 follows within this same allocation; no throughput or strength claim yet.
 Mac exit archive /tmp/relh-classic-native-flat-frozen-gen1-eda6ddf-stream.tar.gz.
 
-## Frozen generation129937 completed; requested300M budget prepared
+## Frozen generation1 job29937 completed; requested300M budget prepared
 
 29937 COMPLETED Exit0 in6m49 including GPU transition audit, training,
 CUDA native parity, four tuning panels and archive transfer. Warm epochs20–64:
@@ -8844,7 +8844,7 @@ and finite-gradient gates. Same model/environment/rewards/codec/frozen29907
 opponent and LR/norm settings. Initialize the exact29937 final weights with
 normal identical-build/digest/finiteness guards, fresh optimizer/clocks/seed743;
 this is not exact learner resume. Approx300M/190474=1575s (26.3min) training.
-Allocation60min,train timeout45min,nice100,8CPU/64G/oneB300, native console
+Allocation60min,train timeout35min,nice100,8CPU/64G/oneB300, native console
 progress/30k SPS guard, mask audit, checkpoints every67.1M steps and final.
 Record timestamped physical GPU samples alongside existing sampler. Compare
 67M/134M/final299,892,736 new-step snapshots on six128-game tuning panels,
@@ -8859,3 +8859,13 @@ Upstream issue622 reset timing is already corrected in this actual algo.cu
 all native128 encoder/decoder/recurrent tensor counts here are16-byte aligned,
 so that issue does not explain these native runs. Neither issue is used as a
 reason to replay completed training.
+
+29937 complete quality counts:8.39M Exp0/128/0,Sent0/127/1;
+33.55M Exp0/128/0,Sent0/127/1:0 wins510 losses2 draws in512 games.
+Controller complete archive SHA2569cb63856...1c11b verified. Larger-budget
+config generation against actual29937 training.json validated; only training
+budget/seed/weight initialization/checkpoint cadence change, no hyperparameter
+or environment change. Six quality panels have3-minute timeouts; combined
+35-minute trainer/3-minute parity/18-minute panels/archive remain bounded by
+one60-minute allocation. No new GPU job yet; full queue reconciled other
+B300 tasks29940 capacity and29948 SaFa, neither is this task.
