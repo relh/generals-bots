@@ -8363,3 +8363,63 @@ The first completed panel,8.39M checkpoint vs Expander/Harvester, gives
 The early Sentinel and both final-checkpoint panels remain pending.
 The same bounded allocation is now evaluating serially; no scaling or
 hosted/publication action is supported yet.
+
+## Turn-plane comparison finished; native capture credit passes (29728)
+
+Turn-plane29674 completed all four 128-game panels. At8.39M steps it scored
+21/103/4 W/L/D against Expander/Harvester and0/121/7 against Sentinel;
+at33.55M it scored23/101/4 and2/119/7. Final control29432 scored23/100/5
+and1/119/8 on the same panels. Initial-state hashes, player sides and
+opponent IDs match byte for byte. Paired final outcomes favor turn-plane
+15 times versus13 for control against Expander/Harvester, and8 versus7
+against Sentinel. This does not justify scaling or publishing this actor.
+Quality evidence is preserved on node/Mac/metta0 as
+`/tmp/relh-classic-flat-scripted-timed-quality-29674.tar.gz`, SHA256
+`4e2a0d6915a28ae88a68bc067051888b4b26cfb6af11404f0c9c79c89ed0727a`.
+Local paired report: `/tmp/relh-classic-timed-paired-control-29674.json`.
+
+After reconciling the full queue, submitted one bounded diagnostic29728
+fromdd889cd on B300 `metta-fabric-b300-1`, physical GPU
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`,8 CPUs/64GiB, nice100,
+20-minute limit. The allocated UUID was empty before launch and matched
+inside Docker. Output:
+`/var/tmp/relh-generals-recovery/classic-capture-credit-pilot-29728`.
+It completed successfully in3m36s and released the GPU. The capture-only
+fixture uses real game transitions, production observation/codec/masks,
+potential reward, the unchangedc004 actor and actual native PPO. It is
+a diagnostic position, not a Classic arena policy qualification.
+
+4096 parallel rows, one agent each, horizon128, minibatch32768, replay0.5,
+LR0.0003, entropy0.01, norm_adv0, learner/environment gamma0.999 and
+GAE0.99; fresh seed739, no teacher or forced actions. It completed
+16,777,216 environment steps. Capture frequency rose from0.920822 to
+0.999748 across128 windows. Final checkpoint42584 float32 words are
+finite, SHA256
+`db13a4bd7e4350bd56f2d64b4ec537f7b960e29eea755328c77938c24cd1345c`.
+Native action-mask audit:16,777,216 actions,0 illegal.
+
+First completed epoch at39.955s. Warm epoch20 at101.440s to epoch32
+at139.759s:6,291,456 completed steps /38.319s =164,186 environment SPS,
+including rollout and optimization. The final19 utilization samples
+average81.6%; these samples have a roughly2-second cadence and are not
+timestamp-aligned exactly to that interval. Final stage times: rollout
+1.110s (model0.804s, environment0.306s, copy0), train2.075s (model2.058s).
+The simplified fixture's SPS does not replace the measured58.7k full-game
+rate. Native reward-to-action learning is demonstrated for one decision;
+multi-step game learning remains to be established.
+
+Exact build/staged source/configs/checkpoints/learner state/console/metrics
+and resource logs are preserved on node/Mac/metta0 as
+`/tmp/relh-classic-capture-credit-29728.tar.gz`, verified SHA256
+`8bb307bec118c40b177ab791ed89c294710dd79158ec02effb232534f1291e08`.
+Direct node-to-controller SCP failed, so bounded Slurm evidence transfer
+streamed the existing archive to Mac, then copied it to metta0. These
+were evidence recovery allocations and did not repeat training.
+
+Next prepared bounded diagnostic uses real four-move corridors with
+balanced sides and all four directions, passive opponent, production
+potential shaping and terminal/truncation reset contract. Local CPU
+checks verify legal full-move captures at distances2/4/8, pass truncation
+after16 turns, finite rewards and recycled observations. The GPU probe
+keeps the same actor and PPO settings and fresh initialization; no
+dependent long run is released on a diagnostic result.
