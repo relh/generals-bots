@@ -8557,3 +8557,26 @@ not been established. The diagnostic keeps balanced four-move corridors,
 native PPO, teacher-free fresh seed739, H128/minibatch32768/replay0.5,
 matched gamma0.999 and a16.78M-step/8-minute trainer budget. It must show
 reward-driven learning and actual throughput before a full-game long run.
+
+### Stock Puffer5 flat-action probe29819 launched
+
+Confirmed29773 COMPLETED, then submitted only29819 fromcee6248,
+B300 `metta-fabric-b300-1`, physical UUID
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`,8 CPUs/64GiB,nice100,
+20-minute allocation. Queue also included29784 on B300 and other users'
+B200/RTX jobs. Allocated physical UUID was empty (0MiB/0%, no CUDA apps)
+and matched Docker. Driver595.91.07, imagebdd4f2...e5,661GiB free.
+Output:
+`/var/tmp/relh-generals-recovery/classic-native-flat-sequence-credit-pilot-29819`.
+Rendered script SHA256
+`ea9e6e4b2a7df904db9d170d6c7dfe668e00c08abad6981fc82145a98a6b8427`,
+local `/tmp/relh-native-flat-sequence-credit-submission-cee6248/run-node.sh`.
+Native build completed and verified Fabric absent and native model metadata
+empty as prescribed by the native build schema. No fabricated actor hash.
+Training is warming up; no throughput or learning result claimed yet.
+Expected end-of-job stream on Mac:
+`/tmp/relh-classic-native-flat-sequence-credit-cee6248-stream.tar.gz`.
+
+29773 complete archive is now verified on all three locations, including
+metta0, with SHA25664abe400...560f0. Paired comparison JSON was copied
+to the controller as well. No registry or Observatory side effect occurred.
