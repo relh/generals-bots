@@ -6241,3 +6241,20 @@ iteration or launch 300M+ steps from it. The next self-play design should
 hold a versioned opponent fixed during learner updates and test against
 both that snapshot and the original hint reference. No next training job
 was submitted.
+
+The pinned PufferLib commit `6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2`
+has a historical-opponent pool controlled by `selfplay.enabled`,
+`vec.num_policies`, and `vec.hist_policy_percent`, but it is not a direct
+switch for this CUDA device bridge. In `src/pufferl.cu`, the GPU branch of
+`env_setup` sets only `policy_layout[0]=0` and
+`policy_layout[1]=agents_per_buf` before returning; the later CPU branch
+assigns each agent's `policy` to its physical policy partition. Our pinned
+`metta_training/native/device_environment.cuh` bridge allocates one GPU
+environment with all 8,192 agents and has only an unreachable CPU
+`Agent agents[1]` placeholder. Turning on the trainer's CPU-style
+historical pool would not assign one frozen policy to the appropriate
+Generals seats. The next implementation must either extend GPU policy
+lane routing with exact paired-seat tests, or let a one-seat JAX
+environment batch a frozen opponent policy on device while exposing only
+learner seats to PPO. Validate seat assignment, episode-boundary swaps,
+checkpoint identity, and steady end-to-end SPS before any long run.
