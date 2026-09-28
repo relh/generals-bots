@@ -28,9 +28,13 @@ def main():
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--native", action="store_true")
+    parser.add_argument("--training", type=Path, help="Required for verified native export")
     parser.add_argument("--factory-source", type=Path,
                         help="Exact archived generals_fabric.py used to build this checkpoint")
     args = parser.parse_args()
+    if args.native and (args.training is None or args.factory_source is not None):
+        parser.error("Native export requires --training and does not use --factory-source")
     assert hashlib.sha256(args.checkpoint.read_bytes()).hexdigest() == args.sha256
     manifest = json.loads(args.build.read_text())
     if args.factory_source is not None:
@@ -40,19 +44,28 @@ def main():
         module = importlib.util.module_from_spec(spec)
         sys.modules[spec.name] = module
         spec.loader.exec_module(module)
-    assert manifest["config"]["fabric"]["factory"].endswith(":two_stage_tied_local_action_policy")
+    if args.native:
+        assert manifest["config"]["fabric"] is None
+    else:
+        assert manifest["config"]["fabric"]["factory"].endswith(":two_stage_tied_local_action_policy")
     assert manifest["config"]["python_environment"]["spec"]["action_sizes"] == [3529]
     assert manifest["config"]["python_environment"]["options"]["factorized_actions"] is False
     assert manifest["config"]["python_environment"]["options"]["directional_features"]
     args.output.mkdir(parents=True, exist_ok=False)
     bundle = args.output / "bundle"
-    export_frozen_policy(FrozenPolicyConfig(
-        build=args.build, checkpoint=args.checkpoint, sha256=args.sha256, device="cpu",
-    ), bundle)
+    if args.native:
+        from integrations.native_policy_bundle import NativePlayerPolicy, export_bundle
+
+        export_bundle(args.build, args.training, args.checkpoint, args.sha256, bundle)
+        policy = NativePlayerPolicy(bundle)
+    else:
+        export_frozen_policy(FrozenPolicyConfig(
+            build=args.build, checkpoint=args.checkpoint, sha256=args.sha256, device="cpu",
+        ), bundle)
+        policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
     if args.factory_source is not None:
         (bundle / "model-source").mkdir()
         shutil.copyfile(args.factory_source, bundle / "model-source" / "generals_fabric.py")
-    policy = FrozenPolicy(load_frozen_policy_bundle(bundle))
     policy.reset("context-hosted-probe")
     options = manifest["config"]["python_environment"]["options"]
     codec = {

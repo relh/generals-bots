@@ -8883,3 +8883,28 @@ Output /var/tmp/relh-generals-recovery/classic-native-flat-frozen-gen1-300m-pilo
 Mac exit stream /tmp/relh-classic-native-flat-frozen-gen1-300m-a3401d2-stream.tar.gz.
 No steady interval from this new process yet; pilot gate190474 SPS remains
 its preflight evidence. No registry, XP or champion changes.
+
+## 300M job29962 live steady interval and flat native serving fix
+
+29962 confirmed RUNNING; no duplicate task job. Native epochs20–98:
+40,894,464 physical steps over212.667s (60.103–272.770s),192,293.4
+end-to-end environment SPS. Native epoch98 corresponds51,380,224 additional
+steps. Timestamped physical samples aligned using live console mtime minus
+last native uptime:59 samples, mean53.24%, range40–100%,~3.6s cadence;
+allow about1s interval-boundary uncertainty. No allocated-GPU contention.
+Evidence /var/tmp/relh-generals-recovery/classic-native-flat-frozen-gen1-300m-pilot-29962/steady-live-evidence.json.
+This throughput remains above the30k gate; lower physical utilization shows
+room for later profiling, not evidence to interrupt the current fixed-recipe run.
+
+Found that NativePlayerPolicy serving still hardcoded6174 observations/
+1765+2 action heads, although NativePufferPolicy now supports4851/[3529].
+Serving now validates declared observation/logit sizes and legal masks for
+each declared head, then normalizes each head separately. Legacy factorized
+contract remains supported by the same schema-verified native policy loader.
+probe_flat_frozen_bundle.py accepts native --training exports, preserving
+bundle checksums and model/build/training guards. Actual29937 finite checkpoint
+export+CPU serving check passed32 legal actions over18x21,21x18,19x20,21x21
+synthetic public boards, four warmups, mean0.640ms/max0.820ms replies.
+Report/bundle /tmp/relh-native-flat-serving-probe-29937. This is a local ARM
+warm-action check, not hosted AMD64 cold startup or arena strength. No policy
+registration, hosted match or champion side effect occurred.

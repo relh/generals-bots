@@ -48,20 +48,27 @@ class NativePlayerPolicy:
             raise ValueError("Native player supports one seat per process")
         values = np.asarray(observation.values, dtype=np.float32)
         mask = np.asarray(observation.action_masks, dtype=bool)
-        if values.shape != (1, 6174) or mask.shape != (1, 1767):
+        if (values.shape != (1, self.policy.observation_size)
+                or mask.shape != (1, self.policy.logit_size)):
             raise ValueError("Unexpected native player observation")
-        if not mask[:, :1765].any() or not mask[:, 1765:].any():
-            raise ValueError("An action head has no legal actions")
+        start = 0
+        for size in self.policy.action_sizes:
+            if not mask[:, start:start + size].any():
+                raise ValueError("An action head has no legal actions")
+            start += size
         decoded, self.state = self.policy.forward(jax.numpy.asarray(values), self.state)
         output = np.asarray(decoded)[0]
         if not np.isfinite(output).all():
             raise ValueError("Nonfinite native player prediction")
         # Existing player selects argmax per head; normalize only legal logits.
         probabilities = []
-        for start, stop in ((0, 1765), (1765, 1767)):
+        start = 0
+        for size in self.policy.action_sizes:
+            stop = start + size
             logits = np.where(mask[0, start:stop], output[start:stop], -np.inf)
             weights = np.exp(logits - np.max(logits))
             probabilities.extend((weights / weights.sum()).tolist())
+            start = stop
         return SimpleNamespace(probabilities=probabilities)
 
 
