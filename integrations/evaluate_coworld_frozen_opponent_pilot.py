@@ -79,6 +79,7 @@ def main():
     )
     parser.add_argument("--force-hint-move", action="store_true", help="Diagnostic: replace the move head")
     parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the split head")
+    parser.add_argument("--force-full-split", action="store_true", help="Diagnostic: use full-army moves")
     parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
     parser.add_argument("--teacher-action-audit", action="store_true",
                         help="Measure agreement with scripted actions from the current public game state")
@@ -92,6 +93,7 @@ def main():
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
+    assert not (args.force_full_split and args.force_hint_split)
     assert not args.native and args.training_pool_episode is None
     assert args.audit_turns is None or ((args.hint_audit or args.teacher_action_audit) and args.audit_turns > 0)
     assert not (args.hint_audit and args.teacher_action_audit)
@@ -255,6 +257,11 @@ def main():
                     actions[active, 0] = hint[active, 0]
                 if args.force_hint_split:
                     actions[active, 1] = np.where(hint[active, 0] == 1764, 0, hint[active, 1])
+            if args.force_full_split:
+                changed = (~env.finished) & (actions[:, 0] != 1764) & (actions[:, 1] != 0)
+                intervention["active_steps"] += int((~env.finished).sum())
+                intervention["changed_splits"] += int(changed.sum())
+                actions[changed, 1] = 0
             assert masks[np.arange(args.games), actions[:, 0]].all()
             assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
             if action_stats is not None:
@@ -315,7 +322,7 @@ def main():
     result = dict(
         scope=(
             "Frozen action intervention diagnostic; not the hosted policy"
-            if args.force_hint_move or args.force_hint_split
+            if args.force_hint_move or args.force_hint_split or args.force_full_split
             else "Explicitly altered checkpoint diagnostic; not the trained or hosted policy"
             if args.diagnostic_checkpoint
             else "Training-pool diagnostic; does not establish held-out or hosted performance"
@@ -327,8 +334,8 @@ def main():
         held_out=args.training_pool_episode is None,
         training_pool_episode=args.training_pool_episode,
         action_selection=(
-            "argmax_with_hint_intervention"
-            if args.force_hint_move or args.force_hint_split
+            "argmax_with_action_intervention"
+            if args.force_hint_move or args.force_hint_split or args.force_full_split
             else "argmax_per_head"
             if args.sample_seed is None
             else "sample_per_head"
@@ -346,7 +353,8 @@ def main():
         options=options,
         force_hint_move=args.force_hint_move,
         force_hint_split=args.force_hint_split,
-        intervention=intervention if args.force_hint_move or args.force_hint_split else None,
+        force_full_split=args.force_full_split,
+        intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split else None,
         hint_audit=hint_audit if args.hint_audit else None,
         teacher_action_audit=teacher_action_audit if args.teacher_action_audit else None,
         action_stats=action_stats,

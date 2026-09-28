@@ -6802,3 +6802,24 @@ The next bounded diagnostic measures public-observation source army,
 largest legal source army, pass/split use, and moves into visible enemy
 cells on the early and final checkpoints. It will identify which action
 behavior changed during the quality collapse before altering training.
+
+Action audit 29144 completed all four seed-1386 panels on the archived
+8.39M and 33.55M environment-step checkpoints. The assigned B300 physical
+GPU was 0 MiB/0% at preflight. The early actor chose **full-army on every
+move**; the final actor chose **half-army on every move** on both opponent
+panels. Both policies still usually picked a large legal source stack:
+on ExpanderHarvester turns 100–199, mean chosen source army was 15.0 early
+versus 11.0 final, and the mean ratio to the largest legal source army
+was 0.977 versus 0.918. Moves into visible enemy-owned cells in that
+same window dropped from 2,598/12,451 (20.9%) to 626/12,800 (4.9%).
+Sentinel showed the same split saturation and weaker midgame attacks.
+These are own-trajectory descriptive rates; the policies reach different
+states, so they do not by themselves establish the split choice as causal.
+The action audit is archived locally and on metta0 as
+`/tmp/relh-classic-source-route-action-audit-29144.tar.gz`, SHA256
+`957d0f38d84323625dab7bc7de5cc8f11b01c268c993fd09c6002dc98af44157`.
+
+The next frozen counterfactual keeps the final move head unchanged and
+forces only the full-army split choice during held-out play. This tests
+how much of the quality collapse the saturated split head explains; it
+does not modify the published model or justify a hosted test.
