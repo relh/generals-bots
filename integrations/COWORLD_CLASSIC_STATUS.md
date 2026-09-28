@@ -8804,3 +8804,18 @@ bae809d9...9e226, not a published/strong opponent. No teacher or scripted
 actions during training.2048 learner samples per side per tick. This changes
 the opponent process from live-current self-play to a reproducible previous
 generation; quality still requires independent mixed-opponent evaluation.
+
+Frozen gen1 launched as sole Generals job29937, B300,nice100,8CPU/64G,
+40m allocation/12m training limit. Revisioneda6ddf, rendered script SHA256
+6e8a1aba76c06eedaee0ac9d8105d4b8a75a6823785f8659ba7a6775e44767d3;
+source manifest /tmp/relh-native-flat-frozen-gen1-eda6ddf/source-sha256.json.
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a had0MiB/0%, no CUDA apps,
+Docker UUID matched, driver595.91.07/imagebdd4f2...e5,659GiB free.
+Full queue reconciled29927 unrelated SaFa audit (terminal by launch);
+no prior Generals job remained.29924 terminal COMPLETED, controller archive
+SHA256751115a6...c847 verified.
+Output /var/tmp/relh-generals-recovery/classic-native-flat-frozen-gen1-pilot-29937.
+GPU adapter audit PASSED256 exact real transitions, two selective resets,
+finite frozen predictions/carry, balanced four samples per side. Build/train
+follows within this same allocation; no throughput or strength claim yet.
+Mac exit archive /tmp/relh-classic-native-flat-frozen-gen1-eda6ddf-stream.tar.gz.
