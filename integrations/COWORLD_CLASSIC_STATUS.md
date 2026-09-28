@@ -6608,3 +6608,20 @@ pin still named the pre-edit transfer-module SHA256. Its log recorded only
 the launcher assertion and no environment steps. The launcher pin now
 matches the reviewed guard source SHA256
 `862a6232b430dd804cf3fdcad62f70f24e778a6a5a233f6c1bdf2b25ea122e3f`.
+Corrected job 28938 then completed 12,582,912 environment steps on one
+physically idle allocated B300, with 4,096 games, H128, minibatch 32,768,
+and **88,320 warmed end-to-end environment SPS** over epochs 8–24.
+The policy's displayed entropy rose from roughly 0.02 in the cached
+control to 0.087 by the end. Held-out seed-1386 W/L/D was **63/53/12**
+versus ExpanderHarvester and **37/84/7** versus Sentinel, below the cached
+control's 63/52/13 and 40/81/7. The reward diagnostics verified **zero
+clipped steps** in 91,595 and 86,883 active decisions, respectively;
+raw reward extrema stayed within about ±0.84. Reward rescaling therefore
+fixed the measured clamp but did not improve this short policy run. The
+final policy SHA256 is
+`1049b31293288490c192706687b0f7f47000404e2e97119cf3bbf1eac5095acb`.
+The training, score, GPU sample, and configuration archive is on this
+machine and metta0 as
+`/tmp/relh-classic-gen0-reward-scale-pilot-28938.tar.gz`, SHA256
+`8fcc1bac1e013595de420b2230e3fdd2451739ec932cf313612cb5c89c0024db`.
+No longer continuation or hosted upload follows this negative quality gate.
