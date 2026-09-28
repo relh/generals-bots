@@ -6534,3 +6534,32 @@ is `/tmp/relh-classic-gen0-201m-28688.tar.gz` on this machine and metta0,
 verified SHA256
 `cbffc23f85320de8d896b5c6242184cfc7a5da16d2e369d306e96b764137316f`.
 No held-out quality claim is made before the scheduled evaluations.
+
+Job 28688 then completed successfully (Slurm `COMPLETED`, exit `0:0`) after
+all 301,989,888 environment steps and six held-out evaluations. The final
+checkpoint SHA256 is
+`c90e530d8c8ba854c352626611e5322e8fb2f5a6138d4f3ad1e3e58fede088d9`;
+its matching policy/learner/build/config archive is
+`/tmp/relh-classic-gen0-302m-28688.tar.gz` locally and on metta0, SHA256
+`a8456aec44963e32f77cf3228538143a9db878ee64618b3e1939e247ebd68959`.
+The final 20-epoch end-to-end training window measured **77,101
+environment SPS** after warmup on one B300, 4,096 games, H128, minibatch
+32,768. Physical checks found no same-GPU contention. The 128-game
+seed-1386 held-out W/L/D by checkpoint were:
+
+| Environment steps | ExpanderHarvester | Sentinel |
+| ---: | ---: | ---: |
+| 100,663,296 | 64/50/14 | 38/83/7 |
+| 201,326,592 | 62/54/12 | 35/86/7 |
+| 301,989,888 | 66/48/14 | 33/90/5 |
+
+The same-geometry 12.6M-step generation-0 reference was 63/51/14 and
+39/82/7. The final policy added three Expander wins but lost six Sentinel
+wins and two draws; more steps did not establish a robust gain. In final
+held-out trajectories the native learner reward clamp affected 114 of
+93,730 active Expander steps and 123 of 85,710 Sentinel steps, all terminal
+rewards; raw extrema reached about ±19–21. The complete six-panel results,
+build record, and logs are archived locally and on metta0 as
+`/tmp/relh-classic-gen0-long-results-28688.tar.gz`, SHA256
+`8ec92e74e2a2f2e0c4a4c6f5a64673c7d6c74a79443f3242b5f0d7b11ad96038`.
+No hosted upload or policy promotion follows this quality result.
