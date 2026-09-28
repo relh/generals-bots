@@ -8736,3 +8736,34 @@ Output /var/tmp/relh-generals-recovery/classic-native-flat-selfplay-lr0015-pilot
 Mac exit archive /tmp/relh-classic-native-flat-selfplay-lr0015-e53e076-stream.tar.gz.
 Prior29890 controller archive SHA256237a96af...520ca verified; CPU activation
 report copied to controller. No hosted/publication side effects.
+
+## Lower-rate native self-play29907 completed: stable, still no wins
+
+Completed Exit0 in4m49. Warm epochs20–64:23,068,672 physical steps over
+86.058s (44.352–130.410s),268,059.6 environment SPS. Same B300,
+4096 games/8192 rows,H128,8192 minibatch,replay1,4-layer128 MinGRU.
+All four1,269,376-word checkpoints finite; final SHA256
+bae809d9f100293c8e32701535aa0d452d16d8032f0ff5958cc599b46329e226.
+Actual CUDA parity passes with max logits1.7136e-7/state5.9605e-7,
+all24 masked decisions exact. On those views maximum absolute native output
+0.600864, versus~1.56e-31 in high-LR self-play29890. The reduced learning
+rate prevents the observed collapse on checked views, not proof of strategy.
+8.39M physical-step Exp0/128/0,Sent0/124/4;33.55M Exp0/128/0,Sent0/127/1.
+0 wins507 losses5 draws in512 tuning games. Reject publication.
+
+Full node/Mac archive /tmp/relh-classic-native-flat-selfplay-lr0015-29907.tar.gz
+SHA256751a17cd78df07330cb82fc38bf975a80098f756c3b104faabcb2032cc091130.
+Controller copy underway; own GPU/container were0MiB/0%/stopped before
+archive. No duplicate trainer or hosted side effects.
+
+Next controlled pilot retains stable LR0.0015 and changes only actor
+advantage normalization0→1, using the already CUDA-verified pinned kernel
+2e0875e14e85008ffa2f990109355fe0e29204f3e16dec4fd27adc3bd999b63c.
+This tests useful credit scaling relative to entropy on small shaped rewards;
+it is a hypothesis, not an established cause. Critic returns and game rewards
+are unchanged. The normalized setup must establish its own throughput gate.
+The earlier Fabric advantage-normalization trial was a different model and
+opponent setup and did not justify publication; it is not positive evidence
+for this native self-play recipe. Native built-in historical pools assert
+against GPU environment backend; future versioned opponents require the JAX
+adapter rather than enabling unsupported core selfplay flags.
