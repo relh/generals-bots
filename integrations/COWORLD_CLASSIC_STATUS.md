@@ -9236,3 +9236,39 @@ activation and exact8-local GPU output/gradient equivalence,then bounded
 trainer with300sstartup/finite/30k SPS guards;no longrun absent those gates.
 Root-filesystem archive retains allcode/checks/digests. No liveGenerals job,
 hostedregistration,XP request or championchange. Strong-policy goal active.
+
+
+## Optimization audit compilation bound and single live replacement 30174
+
+30155 exited137 during the five-minute numerical audit, before any training.
+The archived JAX log shows B2/T1 forward XLA compilation111.792s and B2/T3
+forward114.173s, then flattened B6/T1 forward still compiling at the bound.
+No numerical mismatch was reported; audit unfinished,0epochs,0checkpoints,
+no trainingSPS/quality. Activation marker passed. Its complete archive is
+/tmp/relh-classic-spatial-local8-optimization-rows-stream.tar.gz on Mac,
+/tmp/relh-classic-spatial-local8-optimization-rows-30155.tar.gz on controller,
+and /var/tmp/relh-generals-recovery/relh-classic-spatial-local8-rows-30155.tar.gz
+on B300. SHA25618869c0ef3f813717adfe91d72b9de79006f63362934ddba266a6e67cf5c49a5
+matched all three copies; replacement verifies node digest and old exact
+container absent. Slurm handle expired; original srun returned137. No duplicate.
+
+Read exact merged Metta tr.slurm-preflight and tr.gpu-throughput skills and
+linked Slurm/training guidance. Refreshed full queue,sinfo,node allocation,
+shared identity queue; unrelated CVC/GOTA/Parley/Safa/Daveey jobs untouched.
+Only replacement30174, nice100, B300/metta-fabric-b300-1,8CPU/64G,45min
+21:57:20–22:42:20UTC. Physical allocated UUID
+GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f initially0MiB/0%,no CUDAapps,
+container UUID matched. Driver595.91.07,imagebdd4f2a9...e5,655GiB free,
+/tmp50710 freeinodes. Source878b522; pinned compute output
+/var/tmp/relh-generals-recovery/classic-spatial-local8-rows-pilot-30174.
+
+Rendered launcher /tmp/relh-classic-spatial-local8-optimization-rows-audit-budget-run-node.sh
+SHA256c261412b9057f52efd7fd7e8829b540cb6dc37d07d416624f51bf5d5c79865e8.
+Changes only audit bound5→20min,trainer bound10→15min,startupguard300→600s
+based on measured independent forward compilation costs; actual actor,
+optimizer,environment,8.39Mdiagnostic budget and30k steady-state gate unchanged.
+45minallocation includes two held-out128game panels and artifact preservation.
+Activation check passed; GPU numerical audit currently compiling, training
+not yet started. Mac stream /tmp/relh-classic-spatial-rows-audit-budget-stream.tar.gz,
+SSH exec3134 holds job. Never replace job on observation timeout.
+No long training/hosted registration/XP/champion change. Goal remains active.
