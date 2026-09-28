@@ -9106,3 +9106,16 @@ Classic rules/publiccodec/rewards and trainable public-prior initialization,
 no teacher targets. Its compilation,finite gradients,30k SPS and actual
 quality require a bounded GPU pilot before any longrun. No new job yet.
 No hosted/registry/champion changes; full goal remains active.
+
+Capacity-preparation audit: actual29432 archived build.json and training.json
+agree on modelc0046141 and **four local/eight global** features,radius1.01.
+Do not confuse factory defaults(two/two) with trained options. No supposed
+two→four upgrade submitted. Prepared exact29432 build-config copy changing
+only features_per_site4→8,keeping globals8/radius1.01 and all public-prior
+initializations. Candidate config/run under
+/tmp/relh-classic-spatial-capacity-preparation; fresh seed739,33.55M step
+budget,same4096games/H128/mb32768/replay.5/LR.0003 asactualcontrol. No build,
+finite check,compile/throughput or quality claim for this candidate yet.
+Archived code/source must stay matched to the control fingerprints. If larger
+actor compile/updates are too slow,profile and change minibatch only with
+separate measured evidence. No new Slurm job submitted.
