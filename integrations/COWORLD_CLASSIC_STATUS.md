@@ -7074,3 +7074,28 @@ are archived locally and on metta0 as
 The run passes 30k environment SPS but loses to both its starting policy
 and the stronger generation-0 reference. No longer run, hosted request,
 upload, or champion change follows it.
+
+## Daveey hosted replay codec audit (2026-09-28)
+
+The prior private 16-game hosted request against pinned Daveey GRL v7
+`76b0a083-f0a4-4ec7-9811-038349266633` has complete action and board
+replays; Daveey won 15 games and lost one. The new
+`integrations/extract_coworld_expert_replays.py` reconstructs each game
+with the Classic engine from its recorded seed, computes Daveey's public
+observation before every recorded action, and checks the subsequent board
+frame and totals against the replay. All **4,509 turns** across 16 games
+matched exactly; every Daveey action was legal in the hint-free 11-plane,
+3,529-action flat codec. This verifies the archived replay action mapping,
+including half-army moves and pass, without revealing hidden board state
+to the learner. The deterministic dataset is
+`/tmp/relh-coworld-daveey-expert-16.npz`, SHA256
+`c8bdbca1904d64100ff922400923f6d22db7098842d177f6ef9927dccdb50e60`.
+It records 3,663 actions in 12 training games and 846 actions in four
+whole-game holdouts, split by seat and game index. The source replay archive
+is `/tmp/relh-vs-daveey-replay-analysis-20260928.tar.gz`, SHA256
+`ff6bdbcfa6e7829b7db017910541882ddbe92ed79eac6e3a8971c22b116563dd`.
+Among turns 0–99, Daveey passed 375/1,600 times and used half-army moves
+on 12.0% of moves; turns 100–199 had no passes and 5.2% half moves.
+This is a small, opponent-specific sample, so any behavioral cloning from
+it needs a game-held-out check and then independent RL and quality gating;
+the replay labels should not become a permanent teacher loss.
