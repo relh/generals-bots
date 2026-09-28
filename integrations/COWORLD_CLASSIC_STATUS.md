@@ -6525,3 +6525,12 @@ machine and metta0, matching SHA256
 `333c490b32715746410ba969f7b0496aebf127b83dbfb564f8c40378e96fe839`.
 Held-out scores remain pending until the job finishes; a changed policy
 checksum alone is not evidence of stronger play.
+
+The second checkpoint was written at 201,326,592 steps; its policy SHA256
+is `551b4b6d2c30556a1dd5a325098b741bb7f4af46db8967001dca8505c686438b`.
+Training continued past epoch 386 with a warmed 20-epoch window near
+75,041 environment SPS. Its matching policy/learner/build/config archive
+is `/tmp/relh-classic-gen0-201m-28688.tar.gz` on this machine and metta0,
+verified SHA256
+`cbffc23f85320de8d896b5c6242184cfc7a5da16d2e369d306e96b764137316f`.
+No held-out quality claim is made before the scheduled evaluations.
