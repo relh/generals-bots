@@ -6661,3 +6661,44 @@ build record, GPU samples, and logs are archived locally and on metta0 as
 `/tmp/relh-classic-route-prior-selfplay-pilot-28977.tar.gz`, SHA256
 `b01b8af7be45ce8182cd9f6f58d51ff0727eb9932c033f47eba9ea1a9bf8abcc`.
 No 300M-step extension or hosted upload follows this negative gate.
+
+## Daveey Classic replay action audit (2026-09-28)
+
+Downloaded and inspected the 16 public replay files from the already
+completed private XP requests against `daveey-grl:v7`; no new XP request or
+GPU job was launched. Each replay's action and frame sequence, seat-ordered
+policy UUIDs, and final score match the archived XP responses. This audit
+is of the **older hosted native H512 33M-step candidate**
+`f93478a4-e221-41fb-85f7-eff862b892c8` (1 win, 15 losses), not the
+later generation-0 or route-prior policies.
+
+Across all 16 games, the two policies had similar mean territory and army
+at turn 100: candidate 43.75 land / 109.06 army, Daveey 42.06 / 105.00.
+Among the 12 games still alive at turn 200, candidate had 67.42 land /
+213.25 army versus Daveey's 75.58 / 249.42. The minimum Manhattan
+distance from owned territory to the opposing general (computed from
+omniscient replay frames) was 9.33 for the candidate and 5.25 for
+Daveey at turn 200; this is a pressure proxy, not proof either policy
+knew the general's location under fog.
+
+The action traces identify a more concrete midgame gap. Through turns
+100–199, the candidate made 1,413 moves, including 190 into enemy-owned
+cells (13.4%), from source cells averaging 9.48 army; Daveey made
+1,444 moves, including 298 into enemy-owned cells (20.6%), from source
+cells averaging 18.57 army. Daveey attacked enemy-owned cells more often
+in 12 of 16 games. In turns 0–99 Daveey passed 375/1,600 times versus
+110/1,600 for the candidate; later Daveey passed 0/1,444 versus the
+candidate's 31/1,444. Daveey used the half-army split action 147 times
+early and 75 times in the midgame, while the candidate used it zero
+times. The candidate's factorized action space supports both split
+choices, so zero is a policy behavior rather than an unavailable action.
+These are descriptive observations from 16 selected hosted games, not a
+claim about Daveey's training recipe or a causal test of split/pass choices.
+
+The replays, exact action-analysis script, and per-episode JSON are archived
+locally and on metta0 as `/tmp/relh-vs-daveey-replay-analysis-20260928.tar.gz`,
+SHA256 `ff6bdbcfa6e7829b7db017910541882ddbe92ed79eac6e3a8971c22b116563dd`.
+Next quality work should measure strategic pass, split, source-army, and
+enemy-territory attack behavior alongside held-out wins before another long
+run; the 392k-SPS native recipe already showed that raw throughput and more
+steps alone do not close the hosted gap.
