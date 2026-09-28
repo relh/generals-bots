@@ -7153,6 +7153,11 @@ recorded engine frames exactly. The dataset
 has 10,056 actions in 12 training games and 3,218 in four whole-game
 holdouts. Daveey passed on 23.3% of turns 0–99 and used half-army moves
 on 12.5% of early moves, 7.1% of turns 100–199 moves, and 6.8% later.
+Its mean chosen-source army as a fraction of the strongest legal source
+was 0.777/0.541/0.598 in those three phases. The original flat actor's
+separate held-out Expander games averaged about 0.971/0.971/0.959,
+respectively; this is an opponent/state-distribution comparison, not
+paired states. The replay audit above supplies the paired action evidence.
 
 One bounded B300 offline initialization job 29372 used this larger
 self-play dataset, LR 0.0003, twelve epochs, and the original flat policy
