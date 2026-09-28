@@ -9119,3 +9119,58 @@ finite check,compile/throughput or quality claim for this candidate yet.
 Archived code/source must stay matched to the control fingerprints. If larger
 actor compile/updates are too slow,profile and change minibatch only with
 separate measured evidence. No new Slurm job submitted.
+
+## Eight-local-feature spatial startup probe30073/30080
+
+Revalidated actual29432 manifests,changed only local features4→8,keeping
+global8/context1.01,Classic/publiccodec/rewards/trainablepublicpriors and
+4096games/H128/mb32768/replay.5/LR.0003. Archived factory445724d7...6c322
+restaged exactly;buildconfig SHA355de896...b145/runconfigd56e6585...1a70.
+No teacher actions/targets. source3411fed. Full queue,nodeand ownterminal
+state checked before each submission. ActualallocatedB300GPU
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a0MiB/0%,noCUDAapps,DockerUUIDmatched,
+driver595.91.07,imagebdd4f2...e5,656GiB free.8CPU/64G,nice100,one40min job;
+build5min,trainer18min plus startup/progress gate300s/four3min quality panels.
+
+30073 failed before trainer because staging copied Python sources and UUID
+helper but omitted puffer_advantage_normalization.cuh required by build.
+FAILED1:0,21:06:46–21:08:31UTC. Corrected explicit header copy,terminal state
+and stopped container verified before replacement. Complete failedartifact
+node/Mac SHA1c8418211ae56119ea05b53bd9faeada9c92347dc0f88e884805186ee0ba5dad,
+Mac /tmp/relh-classic-spatial-local8-stream.tar.gz,preserved.
+
+30080 built successfully with actual modelSHA
+2ca4d0da7ff313ae981f99728be0d1309fe679c8c0ff19fcc13a9a5d731a0c1e,
+30890statewords. Correctedrenderedscript
+/tmp/relh-classic-spatial-local8-run-node.sh SHA
+b40f5c47f155f269b887b69ae6c59d0adec48247c1d1674ecad505294ad5dc00.
+Trainer then took zero completed epochs through300s startup guard. Physical
+GPU0% at inspections,monitorlast60samplemean2.2%,VRAM38–49.9GiB;onepuffer
+hostprocess~107–109%CPU,parentPythonwaiting. No epoch diagnostics,checkpoints,
+finite-gradient gate,SPS or quality result. Guard stopped exactowncontainer
+and sampler;30080FAILED1:0,21:09:20–21:16:07UTC,including archive transfer.
+This is a startup/compilation performance failure,not lowSPS established by
+completed training or evidence of policy strength. No unchanged longrun.
+
+Output /var/tmp/relh-generals-recovery/classic-spatial-local8-pilot-30080.
+Complete build/source/log/physicalsample archive node/MacSHA
+478efcfc0286e7778c5d9fff2f4efa30f5622ddfd60fe394d991af1e2a650dc8,
+/tmp/relh-classic-spatial-local8-30080.tar.gz,copied tocontroller for verification.
+Host/tmp inode headroom fell19289→3577duringprobe,while output/recovery
+filesystem had1.06billion freeinodes;not an observed trainingfailure and no
+unrelatedscratch/history cleanup. Prior30054 nodearchiveSHA read inownstep
+agrees cd26ed2c...6ad3,completing its three-copy verification.
+
+Prepared next bounded diagnostic,not submitted:
+/tmp/relh-classic-spatial-local8-mb8192-profile-run-node.sh SHA
+ee3f758fb8bb449896f632f0e69d44f42eea0c2a4fe2650ee288c3da5fcc9988.
+Reuse actual30080 build,change only optimization minibatch32768→8192;
+shorten budget to8.39M for startup/finite/throughput profiling. Same model,
+environment,optimizer/rewards. Staged sitecustomize enables builtin
+faulthandler every60s into per-process startup-traces,including embedded
+Python if its normal site initialization loads the module. Trace presence
+must be verified before treating silence as evidence.300s startup guard,
+10min trainer,4/6epoch intervals/gate8,no longerun absent30k/finite result.
+This isolates batch size and identifies the Python/JAX stage rather than
+replaying an unsupported idle wider model. Goal remains active;no hosted,
+registry,XP or champion changes. No live Generals job remains.
