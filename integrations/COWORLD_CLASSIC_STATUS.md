@@ -9684,3 +9684,32 @@ Output /var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-gen1-pilot-
 exec86897 / Macstream /tmp/relh-classic-spatial-local8-frozen-gen1-stream.tar.gz.
 Currentlybuilding; no epoch/quality claim yet. Single Generalsjob; repollsame
 handle on observationtimeout. No hosted/XP/champion changes. Goalactive.
+
+
+## 30393 complete: fast frozen self-play, no heldout improvement
+
+30393 terminal exit0; same2ca4d0da...a0c1e spatialmodel,8,388,608additional
+ENVsteps,57,028finiteweights, zeroillegallearneractions. Initialdigestdf706173...44ddc.
+Final1ca6e7f2d5385341fbadbed581caa4653e5280b844b94f19959432b6f86deab0.
+Warmepoch4@51.001s→16@96.009s:6,291,456/45.008s=139,785.28ENV SPS.
+GPUmean67.15% over13samples, approx1s mtime boundaryuncertainty.
+Originalrollout/directoptimization+GPUportablefrozenactor;4,096games/H128/
+mb8192/replay.5/LR.0003/gamma.999, no teacher, balancedlearnerseats.
+Heldout128pool seed1386, GPU/NumPy first-batch output/action and all-turn
+finite/legal gatespassed: Expander9W/118L/1D score-.8515625(20.117s);
+Sentinel0W/128L/0D score-1(19.358s). No checkpointpromotion; retain30238
+19Exp/2Sent as best current8-localcandidate. Rewardclipping0 inbothpanels.
+CompleteMac /tmp/relh-classic-spatial-local8-frozen-gen1-stream.tar.gz
+and controller /tmp/relh-classic-spatial-local8-frozen-gen1-30393.tar.gz
+SHA25620ed5d3d161972fde857d654c6cc409e744cca3f0b406372266f387851c19dac.
+Nodehash/exactpriorcontainerabsence guarded in nextownedallocation.
+
+Nextboundedexperiment isolates reward shaping: same frozen30238opponent,
+samelearnerweights/geometry/optimizer/GAE/gamma, change shaping_weight1→0
+and reward_scale.5→1, i.e. exactgamecapture+1/loss-1/draw0 rewards.
+The reward-bias explanation is an inference, not a demonstratedcause.
+No prior capture-only spatial-frozen experiment found; earlier sparse
+reward27059 was Native exactteacher-action imitation, a different task.
+Narrowtransferguard permits only this specific reward exception and still
+refuses arbitraryreward/teacher/checkpoint changes (CPU schema tests passed).
+No longrun or hosted/XP/champion change; goalactive.

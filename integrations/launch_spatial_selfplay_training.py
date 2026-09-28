@@ -26,6 +26,11 @@ def spatial_transfer(source, target, digest):
     options = after.options.copy()
     if options.pop("frozen_bundle", None) != "/recovery/classic-spatial-local8-direct-eval-pilot-30342/bundle":
         return False
+    # A separate pilot may remove shaping and use the game's exact +/-1
+    # capture outcome; no other reward or public-feature changes are admitted.
+    if options.get("shaping_weight") == 0.0 and options.get("reward_scale") == 1.0:
+        options["shaping_weight"] = before.options["shaping_weight"]
+        options["reward_scale"] = before.options["reward_scale"]
     return options == before.options
 
 
