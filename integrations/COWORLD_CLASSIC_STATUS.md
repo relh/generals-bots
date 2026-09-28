@@ -9757,3 +9757,33 @@ claimed. The full1200step smoke now reaches firstepisodetruncation and
 poolgeneration branch. NextGPUcomparison includes512game identicalactor
 control and both frozen-training candidateversions againstsameparent.
 No trainingreplay/longrun/hosted/XP/champion change. Goalactive.
+
+
+## 30419 frozen-version comparisons complete
+
+30419 terminal exit0, evaluationonly;4CPU/32G/nice100/15min onb300,
+physical GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%
+atpreflight, noCUDAcontention observed. Prior30408archive51a65159...fb741
+matched onnode and priorownedcontainerabsent. All first-batch output/
+argmax parity and every-turn finite/legal gates passed.
+512firstepisodes each, Classic128mappool/freshseed1513/balancedseats,
+exactcapture+/−1/draw0, greedyimmutable actors against30238parent:
+parent230W/249L/33D score-.037109375(36.839s);
+shaped30393 10W/492L/10D score-.94140625(25.327s);
+capture30408 99W/398L/15D score-.583984375(25.706s).
+Capture-only is substantially better than shapedselfplay, but neither
+beats the parent; no candidatepromotion or hostedstrength claim.
+CompleteMac /tmp/relh-classic-spatial-frozen-version-quality-stream.tar.gz
+and controller /tmp/relh-classic-spatial-frozen-version-quality-30419.tar.gz
+SHA25673115e70c8d5a1d0ecb2b375886cf0c2fa02f15a7d36c51aec653fddc46b7074.
+No liveGeneralsjob. ScriptSHA0ef67c1a78e03e1d44b7fa21d380f9764e6fff00ddd7d060b4ce93a65f776683.
+
+Existing29728/29755 realcapture and4-move corridor diagnostics already
+show PPO can increasecapture frequency (99.97% /97.99% respectively).
+Do notreplaythese diagnostics or claim a global gradient-sign failure
+from fullarena regression. Nativebinary source inspected: its actual
+launch calls pufferl_load_policy from METTA_INITIAL_POLICY, so the prepared
+initial-policy artifact is backed by a concrete native loadpath.
+Currentremainingissue is fullgamelearning/credit/exploration/capacity;
+sparse capture reward has only8.39Msteps sofar, unlike older failed300M
+Native/PBR recipes. Goal remains active; no registry/XP/champion change.
