@@ -347,7 +347,13 @@ def verified_classic_gen0_frozen_transfer(
         "/recovery/classic-selfplay-init134-h128-27957/run/checkpoints/metta_generals/run/0000000033554432.bin"
     ):
         return False
-    if options.pop("scripted_hint_fraction", 0.0) != 0.0 or options != source_env.options:
+    if options.pop("scripted_hint_fraction", 0.0) != 0.0:
+        return False
+    # The reward-clamp pilot keeps the actor and game codec unchanged. Permit
+    # only its pinned reward rescaling, then compare every remaining option.
+    if options.get("reward_scale") == 0.02 and source_env.options.get("reward_scale") == 0.5:
+        options["reward_scale"] = 0.5
+    if options != source_env.options:
         return False
     source_phases = source_fabric.model_dump()["teacher"]["phases"]
     target_phases = target_fabric.model_dump()["teacher"]["phases"]

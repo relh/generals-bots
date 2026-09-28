@@ -6597,4 +6597,9 @@ model, and rollout settings of pilot 28890 but changes only the environment
 `reward_scale` from 0.5 to 0.02. On the measured held-out trajectory
 extrema, that would put terminal magnitudes below 1; the subsequent reward
 diagnostic must verify actual clipping. The pilot is limited to 12.6M steps
-and two 128-game held-out panels. It has not yet been submitted.
+and two 128-game held-out panels. Setup job 28930 built the target graph but
+stopped at epoch 0 before training: the existing policy-only transfer guard
+rejected the changed reward option. The guard now permits exactly this
+pinned generation-0 checkpoint transfer when `reward_scale` changes from
+0.5 to 0.02, while retaining all other source/target checks. No training
+or evaluation from 28930 is counted; a corrected job is required.
