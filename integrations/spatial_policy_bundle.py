@@ -50,33 +50,38 @@ class SpatialPlayerPolicy:
         self.features = f
 
     @staticmethod
-    def silu(value):
-        exponent = np.exp(-np.abs(value))
-        sigmoid = np.where(value >= 0, 1 / (1 + exponent), exponent / (1 + exponent))
+    def silu(value, xp=np):
+        exponent = xp.exp(-xp.abs(value))
+        sigmoid = xp.where(value >= 0, 1 / (1 + exponent), exponent / (1 + exponent))
         return value * sigmoid
 
     def forward(self, observations):
         observations = np.asarray(observations, dtype=np.float32)
         if observations.ndim != 2 or observations.shape[1] != 4851 or not np.isfinite(observations).all():
             raise ValueError("Invalid spatial observations")
+        output = self._forward(observations, np)
+        if not np.isfinite(output).all():
+            raise FloatingPointError("Spatial inference produced nonfinite outputs")
+        return output
+
+    def _forward(self, observations, xp):
         w = self.weights
         obs = observations.reshape(-1, 11, 21, 21).transpose(0, 2, 3, 1)
-        local = self.silu((obs @ w["input_kernel"]) * w["local_weight"] + w["local_bias"])
-        padded = np.pad(local, ((0, 0), (1, 1), (1, 1), (0, 0)))
-        context = np.zeros_like(local)
+        local = self.silu((obs @ w["input_kernel"]) * w["local_weight"] + w["local_bias"], xp)
+        padded = xp.pad(local, ((0, 0), (1, 1), (1, 1), (0, 0)))
+        context = xp.zeros_like(local)
         for dy, dx in ((0, 1), (1, 0), (1, 1), (1, 2), (2, 1)):
             context += padded[:, dy:dy + 21, dx:dx + 21] @ w["context_kernel"][dy, dx]
-        context = self.silu(context * w["context_weight"] + w["context_bias"])
+        context = self.silu(context * w["context_weight"] + w["context_bias"], xp)
         global_values = self.silu((context.reshape(-1, 441 * self.features) @ w["global_kernel"])
-                                  * w["global_weight"] + w["global_bias"])
+                                  * w["global_weight"] + w["global_bias"], xp)
         output = global_values @ w["readout_kernel"]
         action = context.reshape(-1, 441, self.features) @ w["action_kernel"]
-        output[:, :3528] += action.transpose(0, 2, 1).reshape(-1, 3528)
+        output = output + xp.concatenate((action.transpose(0, 2, 1).reshape(-1, 3528),
+                                          xp.zeros((observations.shape[0], 2), dtype=observations.dtype)), axis=1)
         for i in range(self.prior_count):
             output += observations[:, w[f"prior_source_{i}"]] * w[f"prior_weight_{i}"]
         output = output * w["output_weight"] + w["output_bias"]
-        if not np.isfinite(output).all():
-            raise FloatingPointError("Spatial inference produced nonfinite outputs")
         return output
 
     def reset(self, seed):

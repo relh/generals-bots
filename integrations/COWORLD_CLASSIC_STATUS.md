@@ -9517,3 +9517,34 @@ Current startup still compiling original forward; no quality result yet.
 Exec7703 holds allocation; Mac stream
 /tmp/relh-classic-spatial-direct-quality-retry-stream.tar.gz.
 Goal active; no hosted policy registration, XP request, or champion change.
+
+
+## Portable GPU quality evaluator after bounded original compile failure
+
+30322 terminated exit137 at 22:56:21UTC after 3m15, during a second
+original Fabric compilation. First original run compilation took106.498s.
+No turns played; exit137 is consistent with the hard32GiB memory bound,
+not proof of poor policy quality. Complete Mac archive
+/tmp/relh-classic-spatial-direct-quality-retry-stream.tar.gz SHA256
+546d8301457caa0b4a331dd72d59cf8d4bb0a0c7587de967511f2519b85eb8fa.
+Do not extend/repeat this original compiler evaluation unchanged.
+
+Portable spatial inference now shares one NumPy/JAX array implementation,
+with pure concatenation instead of in-place readout addition. CPU24realviews
+JAX-vs-NumPy parity max2.3841858e-7. --spatial-bundle evaluator uses GPUjit
+highest matmul precision, verified checkpoint/build identity, first-batch
+NumPy output tolerance and exact masked argmax agreement, then all-turn
+finite outputs and legal-action checks. Full archived original/direct parity
+from30238 and priorCPU checks remain separate numerical evidence.
+
+30338 failed staging before GPU work due a heredoc on the wrong pipeline
+command; fixed and checked decoded bundle tar locally. Its complete archive
+/tmp/relh-classic-spatial-portable-quality-stream.tar.gz SHA256
+db5f5d6385e02edd3593c998e1663f308383e30d3f27572115236792a28f2cab.
+
+30342 is the only live replacement job, same b300 node/UUID, 4CPU/32G,
+nice100/12min, hardDocker32GiB/core0, node output
+/var/tmp/relh-generals-recovery/classic-spatial-local8-direct-eval-pilot-30342.
+Exec58965 / Mac /tmp/relh-classic-spatial-portable-quality-retry-stream.tar.gz.
+First-batch GPU-vs-NumPy output/action gates passed; Expander panel reached
+turn151 with862MiB GPU/33% utilization. No new training, hosted, or XP.

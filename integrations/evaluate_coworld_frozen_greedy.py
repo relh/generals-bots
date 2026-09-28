@@ -34,6 +34,7 @@ def main():
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--native", action="store_true", help="Pinned default Puffer5 MinGRU checkpoint")
+    parser.add_argument("--spatial-bundle", type=Path, help="Verified portable spatial weights with GPU inference")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1101)
     parser.add_argument("--games", type=int, default=1024)
@@ -54,6 +55,7 @@ def main():
         "--opponent", choices=("random", "expander_harvester", "sentinel", "strong_mixed"), required=True
     )
     args = parser.parse_args()
+    assert not (args.native and args.spatial_bundle)
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.native and args.sample_seed is None
@@ -70,6 +72,19 @@ def main():
 
         policy = NativePufferPolicy(args.build, args.run / "training.json", args.checkpoint, args.sha256)
         recurrent_state = policy.initial_state(args.games)
+    elif args.spatial_bundle:
+        import jax.numpy as jnp
+        from types import SimpleNamespace
+        from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+
+        policy = SpatialPlayerPolicy(args.spatial_bundle)
+        assert hashlib.sha256((args.spatial_bundle / "policy.bin").read_bytes()).hexdigest() == args.sha256
+        assert json.loads((args.spatial_bundle / "build.json").read_text()) == manifest
+        policy.spec = SimpleNamespace(action_sizes=manifest["config"]["fabric"]["action_sizes"])
+        @jax.jit
+        def spatial_forward(obs):
+            with jax.default_matmul_precision("highest"):
+                return policy._forward(obs, jnp)
     else:
         policy = FrozenPolicy(
             FrozenPolicyConfig(
@@ -153,6 +168,18 @@ def main():
                     ),
                 )
                 actions = np.asarray(actions, dtype=np.int32).copy()
+            elif args.spatial_bundle:
+                values = np.asarray(observation.values, np.float32)
+                outputs = np.asarray(spatial_forward(jnp.asarray(values)))
+                assert outputs.shape == (args.games, 3530) and np.isfinite(outputs).all()
+                if turn == 0:
+                    reference = policy.forward(values)
+                    assert np.allclose(outputs, reference, rtol=2e-5, atol=2e-5)
+                    legal = np.asarray(observation.action_masks, bool)
+                    assert np.array_equal(np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1),
+                                          np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
+                actions = np.argmax(np.where(np.asarray(observation.action_masks, bool), outputs[:, :3529], -np.inf),
+                                    axis=1).astype(np.int32)[:, None]
             else:
                 predictions = policy.predict_many(seats, observation)
                 actions = greedy_declared_heads(predictions, env.spec.action_sizes)
@@ -290,6 +317,7 @@ def main():
         sampling="Pool samples; initial state hashes, sides and opponent IDs saved",
         model_sha256=manifest["model_sha256"],
         native_mingru=args.native,
+        spatial_bundle_gpu=bool(args.spatial_bundle),
         options=options,
         force_hint_move=args.force_hint_move,
         force_hint_split=args.force_hint_split,
