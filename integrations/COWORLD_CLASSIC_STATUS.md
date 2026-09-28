@@ -8908,3 +8908,17 @@ synthetic public boards, four warmups, mean0.640ms/max0.820ms replies.
 Report/bundle /tmp/relh-native-flat-serving-probe-29937. This is a local ARM
 warm-action check, not hosted AMD64 cold startup or arena strength. No policy
 registration, hosted match or champion side effect occurred.
+
+29962 first67,108,864 additional-step checkpoint saved; node SHA256 and
+.learner identity policy_sha256 matchca7e8744489e9ac1154c8d18327b80240bbae810b95a9ba8bdf52ecbc37edbe5.
+Copied read-only via own allocation overlap step to Mac, hash verified.
+All1,269,376 parameter words finite. CPU NumPy replay of24 actual29937
+CUDA parity public views/partial reset gives output max1.11261 versus
+initial-policy0.79481, state max2.72669 versus1.85625, last-layer max0.79655
+versus0.66334. No observed saturation collapse on those views; no new arena
+score claimed. Report /tmp/relh-native-frozen-gen1-300m-29962-67m-activation.json
+copied to controller. Long job confirmed RUNNING at8m; do not restart.
+Serving report/private exported bundle archive verified Mac/controller:
+/tmp/relh-native-flat-serving-probe-29937.tar.gz SHA256
+db3ac8c9d0033df36901f4b54aa41d3e57b37115ec1a3becc22797193e516dff.
+No publication side effect. Sequential GPU quality panels remain at train end.
