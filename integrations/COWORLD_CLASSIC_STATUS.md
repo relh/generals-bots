@@ -8270,3 +8270,53 @@ only replay ratio to cover every row per epoch. It is warming up; no
 throughput or quality success is claimed. It retains the 30K SPS guard
 and serial final Expander/Harvester and Sentinel panels. No longer job
 is submitted or dependent on it.
+
+
+## Full replay rejected; turn-plane pilot 29674 launched
+
+Job 29637 completed successfully, ExitCode=0:0, runtime19m29s. Training
+completed 33,554,432 steps in native uptime949.78s; final twelve-epoch
+36,737 SPS, generally90–94% GPU. Final native timing: rollout3.48s
+(model.91s, environment2.57s,copy0), optimization11.38s (model11.36s),
+matching doubled update work. All42,584 final float32 weights finite,
+checkpointSHA256 `6aed64a29cbce8c45638f8880f387be115d5c8f481d43c8bbeb7162f24ab9f5b`.
+Training archive onnode/Mac/metta0:
+`/tmp/relh-classic-flat-potential-full-replay-training-29637.tar.gz`,
+SHA256 `4436c85b3d3589edf6412aa5fa3adfc588a3f6ea59aa0ccacce3b51757aa08ba`.
+It explicitly references the already preserved29432 build/source archive;
+actual build files are not duplicated in this training archive.
+
+Final128-game panels: Expander/Harvester3/124/1; Sentinel0/126/2.
+Initial state-hash, side and opponent-ID arrays exactly match control29432
+byte for byte. Paired full-replay/control better/equal:
+Expander1/26/101, Sentinel0/7/121. This rejects full replay as a quality
+improvement despite its passing throughput. Complete quality outputs and
+CPU/GPU/log evidence archived onnode/Mac/metta0:
+`/tmp/relh-classic-flat-potential-full-replay-quality-29637.tar.gz`,
+SHA256 `0e7e5ea5dc1ff6ee207c5e93aa0b5f7236104e607a02875eee2c4e00b879a15f`.
+Paired report `/tmp/relh-classic-full-replay-paired-control-29637.json`.
+
+After29637 was terminal, submitted only bounded turn-plane pilot29674,
+B300 metta-fabric-b300-1,8CPU/64G,nice100,40-minute limit,8-minute build
+and22-minute training timeouts, revisioneea6a63. Node output
+`/var/tmp/relh-generals-recovery/classic-flat-scripted-timed-pilot-29674`.
+PhysicalGPU `GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565` observed0MiB/0%
+and no CUDA process before launch; container UUID matched. Fullqueue
+andnode state rechecked; neighboring jobs untouched. Runtime image/driver
+unchanged,662GiB diskfree. Script retains30K guard and serial checkpoint
+panels; no dependent longer run or hosted/publication action exists.
+
+Source diff against29432 confirms environment changes only optional public
+timestep observation/spec, and actor source changes only allowing optional
+12-plane directional inputs in its prior validation. The explicit source
+bundle also contains the pinned builder/normalization header (norm_adv0).
+Rendered bundleSHA256
+`839fbdd0bb56a12604e61fe70d22334ab547fd23308307f2cd5edb2b859b35be`,
+rendered scriptSHA256
+`44c1a1b2f4ac49db902304d543ea4348b78d26241ddc62cf259d2bd7ae52a2a5`,
+local `/tmp/relh-classic-timed-submission-eea6a63`.
+The actual GPU build passed expected fingerprint
+`9d11e1a6a8665a578d47ef54df6fd8e582bb41917f5934458beaf2101be8b7c0`.
+Fresh seed739,33.55M steps,replay.5 and all reward/opponent/PPO settings
+match control; only public turn plane is added. Training is warming up:
+throughput, finite-gradient range and quality remain unproven for this build.
