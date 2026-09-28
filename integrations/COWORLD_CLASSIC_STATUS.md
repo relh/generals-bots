@@ -8022,3 +8022,40 @@ probe JSON are archived locally and on metta0 as
 Python compile/diff checks pass. The training job stayed healthy during
 this independent CPU probe; at epoch 153 it was 80.22M additional steps
 and trailing 12-epoch 58,576 SPS. No host requests/upload/promotion.
+
+## Container dependency and action-path check (2026-09-28)
+
+Both linux/amd64 and linux/arm64 images built from Dockerfile.neural
+using a minimal 16.4 MB context, the verified parent bundle with exact
+actor source, and archived inference packages. No registry push occurred.
+Local image identities:
+
+- amd64: `sha256:09dcb90c0861f8f5b7986279b5f69431784cb30480701f84cf022185f92b0af3`
+- arm64: `sha256:dbfcb959e4f106ade4b17d6295241ee74e05afd40bab89e9d7bf78c9c8f43105`
+
+The amd64 CPU probe exited at JAX import because this Mac's emulated x86
+CPU lacks AVX. This is an execution-platform limitation; it does not
+establish native amd64 readiness or a policy failure. The native arm64
+container then passed actual bundle loading and 32 player actions across
+four public synthetic board dimensions with pinned **JAX 0.11.0**.
+Two-CPU/4-GiB limits, no network and a 600-second process limit were used,
+and both test containers exited with no lingering probe process. Warm
+actions averaged **35.92 ms**, maximum **39.29 ms**, all matching legal
+full/half/pass mask indices. The 500 ms warm-action gate passes in this
+container. Native amd64 startup and actual hosted play remain unverified.
+
+The temporary container harness reused its per-action `start` variable
+for the raw total/startup field, so that field is invalid and explicitly
+excluded from `verified-report.json`; the original raw report/log remain
+unchanged as evidence. Cold startup is recorded as unmeasured. Warm
+latencies are timed independently per action and remain valid. No
+startup/hosted-performance conclusion is drawn from the raw total.
+
+Build logs, raw/verified reports, harness and image identities are
+archived locally and on metta0:
+`/tmp/relh-classic-flat-container-evidence-29432.tar.gz`, verified SHA256
+`7d7addb217d5a78a0e41ce305cae3958e6317749566db931f5a3268804ab1bfd`.
+GPU job 29588 remained healthy throughout these local CPU checks, at
+epoch 227 (119.01M additional steps), sustained 58,117 SPS, GPU mean
+88.3%. Only its training container remains on the allocated device.
+No extra GPU allocation, hosted request, upload or promotion occurred.
