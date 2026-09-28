@@ -8723,3 +8723,16 @@ SHA256237a96af0a64471d3205544b0a79c875370f97f221e4b259c1b9794855a520ca.
 Mac hash verified and controller copy complete; controller verification follows.
 GPU was0MiB/0% and own container stopped at completed evaluation; unrelated
 relh-cvc-readonly container belongs to another task and was left untouched.
+
+Smaller-LR self-play pilot now sole Generals job29907 (B300,nice100,
+8CPU/64G,40m allocation/12m train limit), revisione53e076.
+Rendered /tmp/relh-native-flat-selfplay-lr0015-e53e076/run-node.sh SHA256
+3480b964ae6c73b106e008f98f6b18ac96f1e197e1506b30c2c09a61c503134d.
+Config comparison confirmed only train.learning_rate0.015→0.0015 changes.
+Full queue/node reconciled; original29890 terminal COMPLETED, own container
+stopped. Allocated physical GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7
+again0MiB/0%, no CUDA apps, Docker UUID matched,660GiB free.
+Output /var/tmp/relh-generals-recovery/classic-native-flat-selfplay-lr0015-pilot-29907.
+Mac exit archive /tmp/relh-classic-native-flat-selfplay-lr0015-e53e076-stream.tar.gz.
+Prior29890 controller archive SHA256237a96af...520ca verified; CPU activation
+report copied to controller. No hosted/publication side effects.
