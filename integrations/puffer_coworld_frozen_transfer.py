@@ -311,6 +311,48 @@ def verified_classic_frozen_opponent_transfer(
     return options == source_env.options
 
 
+def verified_classic_flat_gen0_opponent_transfer(
+    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
+) -> bool:
+    """Initialize the flat learner from its early checkpoint against frozen generation 0."""
+    source_env, target_env = source.config.python_environment, target.config.python_environment
+    if source_env is None or target_env is None:
+        return False
+    if (
+        checkpoint_sha256 != "5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71"
+        or source.model_sha256 != target.model_sha256
+        or source.model_sha256 != "c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d"
+        or source.model_state_words != target.model_state_words
+        or source.revision != target.revision
+        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
+        or target_env.factory != "integrations.metta_puffer:BatchedGeneralsFrozenOpponentPufferEnvironment"
+        or source_env.spec.agents != 8192
+        or target_env.spec.agents != 4096
+        or source_env.spec.model_copy(update={"agents": 4096}) != target_env.spec
+        or source_env.model_dump(exclude={"factory", "spec", "options"})
+        != target_env.model_dump(exclude={"factory", "spec", "options"})
+        or source.config.model_dump(exclude={"python_environment"})
+        != target.config.model_dump(exclude={"python_environment"})
+    ):
+        return False
+    options = dict(target_env.options)
+    required = {
+        "frozen_sha256": "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf",
+        "frozen_build": "/recovery/classic-selfplay-teacher-h128-build-27857/build.json",
+        "frozen_checkpoint": (
+            "/recovery/classic-selfplay-init134-h128-27957/run/checkpoints/"
+            "metta_generals/run/0000000033554432.bin"
+        ),
+        "frozen_codec": "hinted_gen0",
+        "frozen_legacy_fabric": (
+            "/recovery/classic-flat-gen0-frozen-audit-29311/staged/legacy/generals_fabric.py"
+        ),
+    }
+    if any(options.pop(key, None) != value for key, value in required.items()):
+        return False
+    return options == source_env.options
+
+
 def verified_classic_gen0_frozen_transfer(
     source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
 ) -> bool:
@@ -665,6 +707,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
         )
         frozen_transfer = (
             verified_classic_frozen_opponent_transfer(source.build, manifest, reference.sha256)
+            or verified_classic_flat_gen0_opponent_transfer(source.build, manifest, reference.sha256)
             or gen0_frozen_transfer
         )
         policy_only_transfer = reference.allow_policy_only_transfer and (
