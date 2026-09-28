@@ -7894,3 +7894,35 @@ epoch 38 (**19,922,944 additional environment steps**). Its latest
 12-epoch measured rate was **61,462 SPS**, with monitor GPU mean 87.6%.
 The earlier saved checkpoint is finite and training remains live; no
 second training/evaluation job was submitted.
+
+### Intermediate quality evaluation inside allocation 29588
+
+A bounded, read-only evaluation step now uses the existing training
+allocation rather than reserving another GPU/job. The evaluator adds
+`--in-progress-checkpoint`: it checks the policy checksum, saved learner
+identity's policy digest and training-record digest, and checkpoint
+location under the live run's checkpoint tree. It does not fabricate
+completed-run metadata or label an ordinary saved checkpoint as altered.
+Existing completed-run and altered-checkpoint paths retain their guards.
+Python compile and shell syntax/diff checks passed.
+
+The new `generals_coworld_classic_live_checkpoint_quality.sh` runs with
+`--jobid=29588 --overlap`, two CPUs, the same verified physical GPU UUID,
+12-minute step limit and five minutes per opponent. It uses original
+archived source modules/build, stages only the evaluator in a fresh output
+directory, and stops only its own evaluation container. Duplicate output
+is rejected. Checkpoint **33,554,432 additional steps** SHA256:
+`458e4241c8ab97452d15eed1713d91079c97ce421d1fcc954d9a42d73fb693e1`.
+Evaluator SHA256:
+`6974db90feb027f316066e8d635e96b7ae1e7303ce1ba331647aee9b1e754ad5`.
+Submission revision 1250367. Both 128-game seed-1386 panels target the
+existing parent comparison maps. Node-local output is
+`classic-flat-potential-300m-pilot-29588/live-33554432`; local submission
+log `/tmp/relh-classic-live-quality-29588-33554432-submit.log`.
+
+The evaluation reached actual game turns while the trainer advanced to
+epoch 75 (39,321,600 additional steps), sustained trailing 12-epoch
+**59,502 SPS**, monitor GPU mean 87.3%. No observed throughput failure
+from sharing the GPU; the trainer's existing guard remains active. Both
+containers belong to the same bounded allocation, with no duplicate
+trainer or second GPU job. Scores remain pending.
