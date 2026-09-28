@@ -52,6 +52,7 @@ common=(--rm --gpus "device=$gpu" --cpus=8 --ulimit core=0:0
     --user "$(id -u):$(id -g)" -v /tmp/relh-generals-coworld:/work -v "$disk:/recovery"
     -v "$source/metta_puffer.py:/work/source-spatial2/integrations/metta_puffer.py:ro"
     -v "$source/generals_fabric.py:/work/source-spatial2/integrations/generals_fabric.py:ro"
+    -v "$source/native_puffer_policy.py:/work/source-spatial2/integrations/native_puffer_policy.py:ro"
     -v "$source/puffer_codec.py:/work/source-spatial2/integrations/puffer_codec.py:ro"
     -v /tmp/relh-generals-gpu/runtime:/work/runtime:ro
     -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work
