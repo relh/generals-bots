@@ -836,8 +836,6 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
             raise ValueError("Self-play is a training environment; use the one-seat adapter for evaluation")
         if options.get("teacher_rollouts") or options.get("sparse_teacher"):
             raise ValueError("Self-play requires policy actions in both seats without replay targets")
-        if options.get("supervise_teacher") and not options.get("prior_hint_features"):
-            raise ValueError("Self-play teacher targets require the public signed action hint")
         if options.get("audit_native_actions"):
             raise ValueError("The one-seat native-action audit does not apply to self-play")
         self._reward_options = {
@@ -853,10 +851,20 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
             raise ValueError("Self-play requires factorized move and split actions")
         self.spec = self.base.spec.model_copy(update={"agents": 2 * parallel_games})
         if self.base.supervise_teacher:
-            self._self_transport = jax.jit(lambda values, masks: self._device_transport(
-                values, masks,
-                jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values),
-            ))
+            if self.base.prior_hint_features:
+                self._self_transport = jax.jit(lambda values, masks, states: self._device_transport(
+                    values, masks,
+                    jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values),
+                ))
+            else:
+                def teacher_both(states):
+                    return jax.vmap(lambda state: jax.vmap(
+                        lambda side: self.base._teacher(state, side, jax.random.PRNGKey(0))
+                    )(self._self_sides))(states).reshape((self.spec.agents, 5))
+
+                self._self_transport = jax.jit(lambda values, masks, states: self._device_transport(
+                    values, masks, teacher_both(states),
+                ))
         self._self_sides = jnp.arange(2, dtype=jnp.int32)
         self._observe_both = jax.jit(jax.vmap(
             lambda state: jax.vmap(lambda side: self.base._observe(state, side))(self._self_sides)
@@ -922,7 +930,7 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
         values = values.reshape((self.spec.agents, -1))
         masks = masks.reshape((self.spec.agents, -1))
         if self.base.supervise_teacher:
-            values = self._self_transport(values, masks)
+            values = self._self_transport(values, masks, self.states)
         return values, masks.astype(jnp.uint8)
 
     def step_device(self, actions):
@@ -944,7 +952,7 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
         values = values.reshape((self.spec.agents, -1))
         masks = masks.reshape((self.spec.agents, -1))
         if self.base.supervise_teacher:
-            values = self._self_transport(values, masks)
+            values = self._self_transport(values, masks, self.states)
         return (
             values,
             masks.astype(jnp.uint8),
@@ -1046,7 +1054,7 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         learner_values = values[self._rows, self.sides]
         learner_masks = masks[self._rows, self.sides]
         if self.base.supervise_teacher:
-            learner_values = self._self_transport(learner_values, learner_masks)
+            learner_values = self._self_transport(learner_values, learner_masks, self.states)
         return (
             learner_values,
             learner_masks.astype(jnp.uint8),
@@ -1086,7 +1094,7 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         learner_values = values[self._rows, self.sides]
         learner_masks = masks[self._rows, self.sides]
         if self.base.supervise_teacher:
-            learner_values = self._self_transport(learner_values, learner_masks)
+            learner_values = self._self_transport(learner_values, learner_masks, self.states)
         return (
             learner_values,
             learner_masks.astype(jnp.uint8),

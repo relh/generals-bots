@@ -6297,9 +6297,8 @@ games with identical game states and masks. Job 28237 built the corrected
 environment but stopped before training because its first identity check
 used a nonexistent `FrozenPolicy` attribute. Job 28245 then showed that
 the trainer correctly rejects a build whose adapter source has changed.
-Both jobs recorded zero training steps. Corrected bounded pilot 28247 is
-underway with a fresh matching build; require its held-out quality and
-warmed environment SPS before a longer run.
+Both jobs recorded zero training steps. Corrected bounded pilot 28247 used a
+fresh matching build; its held-out results are recorded below.
 
 Pilot 28195 plus setup artifacts were archived locally and on metta0 as
 `relh-classic-frozen-pilot-28170-28195.tar.gz`, SHA256
@@ -6371,3 +6370,97 @@ quality gain over the original generation-0 reference. No 300M-step run,
 hosted upload, or champion change was released. Next training design should
 remove the direct action-hint shortcut, retain public board features and
 legal masks, and use a bounded score gate before scaling.
+
+The first hint-free two-seat self-play pilot 28380 removed all six action-hint
+planes and teacher targets, leaving eight public board planes and legal masks.
+It trained a 28.4K-parameter actor from scratch in 4,096 parallel Classic
+games, horizon 128, minibatch 32,768, for 67,108,864 agent steps or
+33,554,432 environment steps. Warmed epochs 48–64 yielded **78,882
+environment SPS** (157,764 agent SPS) on one B300, with roughly 88–89%
+sampled GPU use. The checkpoint at 8.4M environment steps scored 0/127/1
+versus ExpanderHarvester and 0/125/3 versus Sentinel. The final checkpoint
+scored **0/128/0** and **0/126/2** on the same held-out 128-game panels.
+Training from scratch against an equally unskilled copy therefore did not
+clear the quality gate by 33.6M steps. Archive on this machine and metta0:
+`relh-classic-nohint-selfplay-pilot-28380.tar.gz`, SHA256
+`d68e211abe930206bcbbd143679083cb50aef553db7b25b7c63bdf8df4da2217`.
+
+Bounded pilot 28429 added direct ExpanderHarvester action targets
+to the separate training transport while keeping the actor's eight-plane
+observation free of action hints. A 16-game GPU audit confirmed byte-identical
+public actor observations, legal teacher actions, and exact scripted action
+targets for both seats. It completed 16,777,216 environment steps of teacher
+imitation followed by 33,554,432 environment steps of policy-only self-play,
+with 4,096 games, horizon 128, minibatch 32,768, and a single B300. Warmed
+epochs 80–96 reached **69,907 environment SPS** (139,814 agent SPS), with
+about 88% sampled GPU use and 82.7 GiB device memory. The assigned physical
+GPU was idle at allocation and matched the container UUID; unrelated
+processes occupied GPUs 2 and 3 but did not contend on the assigned GPU.
+The imitation checkpoint scored **0/128/0** versus ExpanderHarvester and
+**0/127/1** versus Sentinel. The final self-play checkpoint scored
+**0/128/0** and **0/125/3** on the same held-out panels. Teacher loss was
+still about 5 after 30M agent steps in the imitation phase. Correct transport
+and high SPS therefore did not yield a competent policy. Archive on this
+machine and metta0: `relh-classic-nohint-bootstrap-pilot-28429.tar.gz`,
+SHA256 `6e9194b3c6e8d9ce8dcb2a38b27b93ddaeddc8d7a02e23faf50862172eb6c11c`.
+
+The two-stage action model only lets global board features supply a common
+bias per direction to each local action. A separate bounded teacher-only
+pilot 28467 tested a global-to-local broadcast path with eight site features
+and 16 global features. Its graph built, but the first training step exceeded
+the 600-second startup guard with one CPU core compiling, about 61 GiB host
+memory used, and no completed epoch. No training steps ran; this is a graph
+compilation bottleneck, not physical GPU contention. Archive on this machine
+and metta0: `relh-classic-nohint-global-pilot-28467.tar.gz`, SHA256
+`10e132cd4555790ef91c2b031aa60271a7265bf8e2e70830553bc6f913ee5740`.
+A narrower bounded teacher-only pilot 28483 kept the global-to-local path
+with four site features and eight global features. Its assigned physical
+B300 GPU 4 was idle at allocation and matched the container UUID. It
+completed 16,777,216 environment steps at **69,370 warmed environment SPS**,
+with 4,096 games, horizon 128, minibatch 32,768, 82.7 GiB GPU memory, about
+34 GiB host memory, and around 87% sampled GPU use. It scored **0/127/1**
+against ExpanderHarvester and **0/126/2** against Sentinel on held-out
+128-game panels. Teacher loss remained about 5.4. Archive on this machine
+and metta0: `relh-classic-nohint-global-small-pilot-28483.tar.gz`, SHA256
+`8448611647c664e93974db5d1050d609f39aeae63079040d73f75739204c6356`.
+
+GPU diagnostic 28540 compared the completed policy to scripted teacher
+actions across the first 128 turns of the same held-out 128-game panel.
+Among 16,368 active decisions, the teacher chose a move 15,953 times, while
+the student passed 3,372 times. The student matched the teacher's chosen
+move only 1,029 times (**6.3%**); mean probability assigned to the teacher
+move was **16.4%**, with mean negative log probability **2.10**. This
+establishes weak action imitation even on early game states; the full-game
+failure is not explained by self-play alone. A policy trained only on
+teacher-led states may also drift off the demonstration distribution after
+its first errors, so a bounded mixed-action data aggregation run is next.
+Audit archive on this machine and metta0:
+`relh-classic-nohint-teacher-action-audit-28540.tar.gz`, SHA256
+`1399df806eee1dc53abf4d6715675150e1b3595bf0bdc1a1e6a9a28b06202d55`.
+
+Data aggregation job 28564 initialized from pilot 28483's exact checkpoint
+(initial policy SHA256 `f075b076cb428b69049e8ce3975284f5b69f837e27c94ec7c59541d26aaf0609`),
+used 50% scripted action mixing with direct teacher labels on all visited
+states, and had no PPO objective. The graph, public actor observation, and
+teacher target transport were unchanged. It completed 50,331,648 environment
+steps with 4,096 games, horizon 128, minibatch 32,768, on one physically
+idle assigned B300 GPU 4. Warmed epochs 80–96 reached **69,028 environment
+SPS**, with about 88% sampled GPU use and 82.7 GiB device memory. Teacher
+loss averaged about 5.06 in the first eight epochs and 3.48 in the last
+eight. Despite that improvement, held-out 128-game results at 16.8M steps
+were **0/124/4** versus ExpanderHarvester and **0/127/1** versus Sentinel;
+at 50.3M they were **0/119/9** and **0/125/3**. More draws are not a
+competitive gain. Archive on this machine and metta0:
+`relh-classic-nohint-dagger-pilot-28564.tar.gz`, SHA256
+`ba30f43ebb867badffb446278865e27b9a55299b7f2fad1f10644fec2bb91ccc`.
+Setup jobs 28554 and 28561 stopped before training: the first had an
+overstrict model-hash assertion when teacher scheduling changed; the second
+hit the trainer's exact checkpoint-transfer guard. The guard now permits
+only the audited 28483 checkpoint into this matching actor/environment with
+the intended teacher schedule. Their setup archives are
+`relh-classic-nohint-dagger-setup-28554.tar.gz` (SHA256
+`55aea7a2751b83b995a12b65493cdf7fde45ff144a81c9aa76ac990c40d3ca0d`)
+and `relh-classic-nohint-dagger-setup-28561.tar.gz` (SHA256
+`511bf5d88c633fd9a0c8de41fd7bdfd544202210044dce7ee7ca198453334d3f`).
+No 300M-step run or hosted upload followed; this policy failed the quality
+gate even though its end-to-end training throughput passed the speed gate.

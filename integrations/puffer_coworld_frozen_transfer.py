@@ -361,6 +361,46 @@ def verified_classic_gen0_frozen_transfer(
     )
 
 
+def verified_classic_nohint_dagger_transfer(
+    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
+) -> bool:
+    """Carry the exact hint-free actor into a changed teacher action schedule."""
+    source_env, target_env = source.config.python_environment, target.config.python_environment
+    source_fabric, target_fabric = source.config.fabric, target.config.fabric
+    if source_env is None or target_env is None or source_fabric is None or target_fabric is None:
+        return False
+    if (
+        checkpoint_sha256 != "f075b076cb428b69049e8ce3975284f5b69f837e27c94ec7c59541d26aaf0609"
+        or source.model_sha256 != "327d1aee8ae7245c60377667f65cbc6d52d1f30f87b890efc52f042a8c77ecb9"
+        or target.model_sha256 != "f64e6030af8ef5f01a44d067f4ac31cd9573c02296a9b7872dce5b33b2ffe627"
+        or source.model_state_words != target.model_state_words
+        or source.model_state_words != 17664
+        or source.revision != target.revision
+        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
+        or source_env != target_env
+        or source_env.spec.agents != 8192
+        or source_env.spec.observation_size != 8 * 21 * 21
+        or source_env.spec.action_sizes != [1765, 2]
+        or source_fabric.model_dump(exclude={"teacher"}) != target_fabric.model_dump(exclude={"teacher"})
+        or source.config.model_dump(exclude={"fabric"}) != target.config.model_dump(exclude={"fabric"})
+    ):
+        return False
+    source_phases = source_fabric.model_dump()["teacher"]["phases"]
+    target_phases = target_fabric.model_dump()["teacher"]["phases"]
+    return (
+        len(source_phases) == len(target_phases) == 2
+        and source_phases[0]["action_mix"] == 1.0
+        and source_phases[1]["agent_steps"] == 33_554_432
+        and target_phases[0]["action_mix"] == 0.5
+        and target_phases[1]["agent_steps"] == 100_663_296
+        and all(
+            {key: value for key, value in source_phase.items() if key not in ("agent_steps", "action_mix")}
+            == {key: value for key, value in target_phase.items() if key not in ("agent_steps", "action_mix")}
+            for source_phase, target_phase in zip(source_phases, target_phases, strict=True)
+        )
+    )
+
+
 class CheckpointInitialization(Configuration):
     """Verified policy initialization, optionally restoring optimizer and learner clocks."""
 
@@ -626,6 +666,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             or verified_classic_iter1_calibrated_transfer(source.build, manifest, reference.sha256)
             or verified_v11_policy_transfer(source.build, manifest, reference.sha256)
             or gen0_frozen_transfer
+            or verified_classic_nohint_dagger_transfer(source.build, manifest, reference.sha256)
         )
         if reference.allow_policy_only_transfer and (
             not reference.allow_environment_transfer

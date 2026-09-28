@@ -7,6 +7,7 @@ import time
 from pathlib import Path
 
 import jax
+import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
 from metta_training.inference import FrozenPolicy
@@ -79,6 +80,8 @@ def main():
     parser.add_argument("--force-hint-move", action="store_true", help="Diagnostic: replace the move head")
     parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the split head")
     parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
+    parser.add_argument("--teacher-action-audit", action="store_true",
+                        help="Measure agreement with scripted actions from the current public game state")
     parser.add_argument("--audit-turns", type=int, help="Stop a hint audit after this many turns")
     parser.add_argument("--counterfactual-hint-scale", type=float, default=1.0,
                         help="Hint audit only: scale public hint planes before frozen policy forward")
@@ -90,7 +93,8 @@ def main():
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
     assert not args.native and args.training_pool_episode is None
-    assert args.audit_turns is None or (args.hint_audit and args.audit_turns > 0)
+    assert args.audit_turns is None or ((args.hint_audit or args.teacher_action_audit) and args.audit_turns > 0)
+    assert not (args.hint_audit and args.teacher_action_audit)
     assert not args.hint_audit or (args.force_hint_move and args.force_hint_split)
     assert args.counterfactual_hint_scale == 1.0 or (
         args.hint_audit and 0.0 <= args.counterfactual_hint_scale < 1.0
@@ -116,7 +120,8 @@ def main():
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     if args.force_hint_move or args.force_hint_split:
         assert options["prior_hint_features"] and options["expander_hint_features"] and options["context_hint_features"]
-    options.update(parallel_games=args.games, opponent=args.opponent, supervise_teacher=False, deduplicate_opponent_branches=False)
+    options.update(parallel_games=args.games, opponent=args.opponent,
+                   supervise_teacher=args.teacher_action_audit, deduplicate_opponent_branches=False)
     if args.pool_size is not None:
         if args.training_pool_episode is not None:
             assert args.pool_size == options["coworld_pool_size"]
@@ -147,6 +152,10 @@ def main():
                       teacher_move=0, student_move_when_teacher_moves=0, move_match_when_teacher_moves=0,
                       move_probability_sum=0.0, split_probability_sum=0.0,
                       move_negative_log_probability_sum=0.0, split_negative_log_probability_sum=0.0)
+    teacher_action_audit = dict(active=0, move_match=0, teacher_move=0,
+                                student_move_when_teacher_moves=0, teacher_pass=0,
+                                student_pass=0, move_probability_sum=0.0,
+                                move_negative_log_probability_sum=0.0)
     try:
         observation = env.reset(reset_seed)
         initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
@@ -163,11 +172,34 @@ def main():
         np.save(args.output / "initial_opponent_ids.npy", np.asarray(env.opponent_ids))
         for turn in range(min(env.horizon, args.audit_turns or env.horizon)):
             forward = legacy_actions_many(
-                policy, seats, observation, return_logits=args.hint_audit,
+                policy, seats, observation, return_logits=args.hint_audit or args.teacher_action_audit,
                 counterfactual_hint_scale=args.counterfactual_hint_scale,
             )
-            actions, logits = forward if args.hint_audit else (forward, None)
+            actions, logits = forward if args.hint_audit or args.teacher_action_audit else (forward, None)
             masks = np.asarray(observation.action_masks, dtype=bool)
+            if args.teacher_action_audit:
+                keys = jnp.broadcast_to(jax.random.PRNGKey(0), (args.games, 2))
+                raw_teacher = np.asarray(env._teacher_actions(env.states, env.sides, keys))
+                cells = env.base.size**2
+                target = np.where(raw_teacher[:, 0] == 1, 4 * cells,
+                                  raw_teacher[:, 3] * cells + raw_teacher[:, 1] * env.base.size + raw_teacher[:, 2])
+                active = ~env.finished
+                rows = np.arange(args.games)[active]
+                assert masks[rows, target[active]].all()
+                teacher_action_audit["active"] += len(rows)
+                teacher_action_audit["move_match"] += int((actions[active, 0] == target[active]).sum())
+                teacher_action_audit["teacher_move"] += int((target[active] != 4 * cells).sum())
+                teacher_action_audit["student_move_when_teacher_moves"] += int(
+                    ((target[active] != 4 * cells) & (actions[active, 0] != 4 * cells)).sum()
+                )
+                teacher_action_audit["teacher_pass"] += int((target[active] == 4 * cells).sum())
+                teacher_action_audit["student_pass"] += int((actions[active, 0] == 4 * cells).sum())
+                legal_logits = np.where(masks[active, :1765], logits[active, :1765], -np.inf)
+                chosen = legal_logits[np.arange(len(rows)), target[active]]
+                maximum = legal_logits.max(axis=1)
+                log_probability = chosen - maximum - np.log(np.exp(legal_logits - maximum[:, None]).sum(axis=1))
+                teacher_action_audit["move_probability_sum"] += float(np.exp(log_probability).sum())
+                teacher_action_audit["move_negative_log_probability_sum"] -= float(log_probability.sum())
             if args.hint_audit:
                 hint = hinted_replay_indices(observation.values, 21, channels=14)
                 active = ~env.finished
@@ -238,7 +270,7 @@ def main():
             if transition.episode_done:
                 break
         episode_complete = bool(env.finished.all())
-        assert episode_complete or args.hint_audit and args.audit_turns is not None
+        assert episode_complete or (args.hint_audit or args.teacher_action_audit) and args.audit_turns is not None
         outcomes = env.outcomes.copy()
     finally:
         env.close()
@@ -278,6 +310,7 @@ def main():
         force_hint_split=args.force_hint_split,
         intervention=intervention if args.force_hint_move or args.force_hint_split else None,
         hint_audit=hint_audit if args.hint_audit else None,
+        teacher_action_audit=teacher_action_audit if args.teacher_action_audit else None,
         audit_turns=args.audit_turns,
         counterfactual_hint_scale=args.counterfactual_hint_scale,
         episode_complete=episode_complete,

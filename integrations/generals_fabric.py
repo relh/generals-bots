@@ -299,6 +299,7 @@ def two_stage_tied_local_action_policy(
     *, observation_size: int, output_size: int, channels: int, height: int, width: int,
     features_per_site: int = 2, global_features: int = 2,
     context_radius: float = 1.01, hint_prior_strength: float = 8.0,
+    broadcast_global_context: bool = False,
 ) -> PolicyGraph:
     """Read neighboring learned site features before scoring each move."""
     cells = height * width
@@ -328,7 +329,10 @@ def two_stage_tied_local_action_policy(
         )
     local = site_layer("local", SiLU())
     context = site_layer("context", ContextSiLU())
-    global_core = nn.cluster("global", GlobalSiLU(), n=global_features)
+    global_core = nn.cluster(
+        "global", NormalizedGlobalSiLU() if broadcast_global_context else GlobalSiLU(),
+        n=global_features,
+    )
     out = nn.cluster(
         "out", nn.atoms.Output(), n=output_size,
         geometry=nn.geometry.fields(own={
@@ -357,17 +361,24 @@ def two_stage_tied_local_action_policy(
             dx, dy = geometry.dst.attr(target, "coord")
             return ("context", geometry.src.attr(source, "feature"), dx - sx, dy - sy,
                     geometry.dst.attr(target, "feature"))
+        if (src_kind, dst_kind) == ("global", "context"):
+            return ("broadcast", source[1], geometry.dst.attr(target, "feature"))
         if (src_kind, dst_kind) == ("context", "out"):
             return ("action", geometry.src.attr(source, "feature"), geometry.dst.attr(target, "direction"))
         if (src_kind, dst_kind) == ("global", "out"):
             return ("global", source[1], geometry.dst.attr(target, "readout_group"))
         return ("unique", source, target)
-    graph.add(
+    graph_edges = [
         (sense >> local).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
         (local >> context).by(nn.rules.stencil(radius=context_radius)).semantics(fixed),
         (context >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
-        (context >> global_core).by(nn.rules.all_to_all()),
+        ((local if broadcast_global_context else context) >> global_core).by(nn.rules.all_to_all()),
         (global_core >> out).by(nn.rules.all_to_all()),
+    ]
+    if broadcast_global_context:
+        graph_edges.append((global_core >> context).by(nn.rules.all_to_all()))
+    graph.add(
+        *graph_edges,
         nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
         nn.tie(context).by(nn.sharing.field("feature")).on("weight", "bias"),
         nn.tie(graph).by(nn.sharing.edge_key(edge_key)),
