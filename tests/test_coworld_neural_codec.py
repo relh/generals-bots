@@ -130,6 +130,15 @@ def test_coworld_wire_view_matches_padded_training_view():
     np.testing.assert_array_equal(directional_mask, np.asarray(expected_directional_mask))
     assert directional_values.shape == (4851,)
 
+    flat_values, flat_mask = encode_wire_observation(message, directional=True, factorized_actions=False)
+    expected_flat_values, expected_flat_mask = encode_coworld_directional_observation(
+        expected, factorized_actions=False,
+    )
+    np.testing.assert_array_equal(flat_values, np.asarray(expected_flat_values))
+    np.testing.assert_array_equal(flat_mask, np.asarray(expected_flat_mask))
+    assert flat_values.shape == (4851,)
+    assert flat_mask.shape == (3529,)
+
     packed_values, packed_mask = encode_wire_observation(message, packed_directional=True)
     expected_packed, expected_packed_mask = encode_coworld_packed_directional_observation(expected)
     np.testing.assert_array_equal(packed_values, np.asarray(expected_packed))
@@ -339,4 +348,32 @@ def test_capture_hint_reinforces_home_against_nearby_enemy_stack():
     np.testing.assert_array_equal(
         np.asarray(expander_harvester_action(jax.random.PRNGKey(0), observation)),
         np.asarray([0, 3, 2, 3, 0]),
+    )
+
+
+@pytest.mark.parametrize('factorized', [True, False])
+def test_hosted_action_decode_matches_training_full_half_and_pass(factorized):
+    from integrations.puffer_codec import decode_action
+    from integrations.softmax.neural_codec import decode_policy_action
+
+    for cell in (0, 220, 440):
+        for direction in range(4):
+            for split in (0, 1):
+                source = direction * 441 + cell
+                probabilities = np.zeros(1767 if factorized else 3529, np.float32)
+                if factorized:
+                    probabilities[source] = 1
+                    probabilities[1765 + split] = 1
+                    expected = decode_action(source, 21, split)
+                else:
+                    index = source + 1764 * split
+                    probabilities[index] = 1
+                    expected = decode_action(index, 21)
+                np.testing.assert_array_equal(
+                    decode_policy_action(probabilities, factorized_actions=factorized), np.asarray(expected),
+                )
+    probabilities = np.zeros(1767 if factorized else 3529, np.float32)
+    probabilities[1764 if factorized else 3528] = 1
+    np.testing.assert_array_equal(
+        decode_policy_action(probabilities, factorized_actions=factorized), [1, 0, 0, 0, 0],
     )

@@ -7622,3 +7622,27 @@ near zero as expected for centered minibatch advantages; displayed KL and
 clip fraction remained near zero. None of these diagnostics establishes
 quality. Job 29473 remains live with the four held-out panels scheduled
 after training; no additional Generals job was submitted.
+
+## Flat action hosting codec correction (2026-09-28)
+
+While 29473 trains, source inspection found that `neural_player` still
+always requested the factorized wire mask and decoded its predictions as
+two heads. This did not affect prior frozen local evaluations, which use
+the environment's correct flat mask/decoder, but would prevent a successful
+flat actor from being served faithfully on Coworld. The wire codec now
+accepts the checkpoint's `factorized_actions` setting and emits the flat
+3,529-entry legal mask for directional flat actors. The player passes that
+setting at warmup and inference, and decodes the joint full/half action
+index or pass according to its declared layout.
+
+Nine locally runnable codec tests pass, including exact flat wire-view
+values/masks against training and all four directions, both army splits,
+three source cells and pass against the training decoder for both layouts.
+Four existing calibrated-context cases cannot run in the Mac environment
+because `metta_training` is absent; these are dependency errors, not passed
+checks. Python compile and diff checks pass. This repairs the future serving
+path; no flat checkpoint has been uploaded or promoted, and the live job's
+staged source was not changed. Separately, the current 11-plane observation
+does omit the public turn counter already present in `training_observation`;
+that feature hypothesis remains untested and no observation change is made
+to the normalization comparison.

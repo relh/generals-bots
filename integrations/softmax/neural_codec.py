@@ -16,12 +16,35 @@ from integrations.puffer_codec import (
 
 
 BOARD_SIZE = 21
+
+
+def decode_policy_action(probabilities, *, factorized_actions: bool = True) -> list[int]:
+    """Convert either trained action layout to the Coworld move tuple."""
+    probabilities = np.asarray(probabilities)
+    expected_size = 1767 if factorized_actions else 3529
+    if probabilities.shape != (expected_size,) or not np.isfinite(probabilities).all():
+        raise ValueError("Policy probabilities differ from the Coworld action layout")
+    if factorized_actions:
+        source = int(np.argmax(probabilities[:1765]))
+        split = int(np.argmax(probabilities[1765:]))
+        if source == 1764:
+            return [1, 0, 0, 0, 0]
+    else:
+        index = int(np.argmax(probabilities))
+        if index == 3528:
+            return [1, 0, 0, 0, 0]
+        split, source = divmod(index, 1764)
+    direction, cell = divmod(source, 441)
+    row, col = divmod(cell, 21)
+    return [0, row, col, direction, split]
+
+
 _calibrate_hints = jax.jit(
     calibrate_hint_features,
     static_argnames=("board_size", "move_hint_scale", "split_hint_scale"),
 )
 _encode_lean = jax.jit(encode_coworld_lean_observation)
-_encode_directional = jax.jit(encode_coworld_directional_observation)
+_encode_directional = jax.jit(encode_coworld_directional_observation, static_argnames=("factorized_actions",))
 _encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
 _encode_hinted = jax.jit(encode_coworld_hinted_observation)
 _encode_prior_hinted = jax.jit(lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True))
@@ -109,7 +132,10 @@ def encode_wire_observation(
     expander_general_distance_prior_hinted: bool = False,
     move_hint_scale: float = 1.0,
     split_hint_scale: float = 1.0,
+    factorized_actions: bool = True,
 ):
+    if not factorized_actions and not directional:
+        raise ValueError("Flat Coworld serving requires the directional codec")
     observation = training_observation(message)
     values, mask = (
         _encode_expander_general_distance_prior_hinted(observation)
@@ -130,7 +156,7 @@ def encode_wire_observation(
         if hinted
         else _encode_packed_directional(observation)
         if packed_directional
-        else _encode_directional(observation)
+        else _encode_directional(observation, factorized_actions=factorized_actions)
         if directional
         else _encode_lean(observation)
         if lean

@@ -10,13 +10,12 @@ import time
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import numpy as np
 from metta_training.environment import NumericObservation
 from websockets.asyncio.client import connect
 
 from integrations.native_policy_bundle import NativePlayerPolicy
 
-from .neural_codec import encode_wire_observation
+from .neural_codec import decode_policy_action, encode_wire_observation
 from .protocol import VERSION
 
 if TYPE_CHECKING:
@@ -28,14 +27,9 @@ def select_action(policy: FrozenPolicy | NativePlayerPolicy, message: dict, code
     prediction = policy.predict(
         0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()])
     )
-    probabilities = np.asarray(prediction.probabilities)
-    source = int(np.argmax(probabilities[:1765]))
-    split = int(np.argmax(probabilities[1765:]))
-    if source == 1764:
-        return [1, 0, 0, 0, 0]
-    direction, cell = divmod(source, 441)
-    row, col = divmod(cell, 21)
-    return [0, row, col, direction, split]
+    return decode_policy_action(
+        prediction.probabilities, factorized_actions=codec_kwargs.get("factorized_actions", True),
+    )
 
 
 async def play(url: str, bundle: Path) -> None:
@@ -67,6 +61,7 @@ async def play(url: str, bundle: Path) -> None:
     codec_kwargs.update(
         move_hint_scale=options.get("move_hint_scale", 1.0),
         split_hint_scale=options.get("split_hint_scale", 1.0),
+        factorized_actions=options.get("factorized_actions", True),
     )
     policy = NativePlayerPolicy(bundle) if native else FrozenPolicy(config)
     policy.reset("coworld-classic")
