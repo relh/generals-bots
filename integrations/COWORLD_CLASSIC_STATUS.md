@@ -9713,3 +9713,19 @@ reward27059 was Native exactteacher-action imitation, a different task.
 Narrowtransferguard permits only this specific reward exception and still
 refuses arbitraryreward/teacher/checkpoint changes (CPU schema tests passed).
 No longrun or hosted/XP/champion change; goalactive.
+
+
+Submitted30408 capture-only frozen pilot: same b300/node/physical UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0% atpreflight,
+8CPU/64G/nice100/24min, hardDocker64GiB/core0. Driver595.91.07/
+imagebdd4f2a9a125,650GiBfree/50,710tmpfreeinodes; previous30393node
+archive20ed5d3d...19dac matched, prior exactownedcontainerabsent.
+Same seed743/4,096games/H128/mb8192/replay.5/LR.0003/gamma.999/GAE.99,
+initial30238df706173...44ddc/frozenimmutable30238/no teacher/balancedseats.
+Onlyreward changes from30393: shaping_weight0, reward_scale1 (capture
++1/loss-1/draw0).8,388,608ENVstep budget, newenvironmentbuild,30k gate.
+Revisionf7db9f6, scriptSHA256
+eba849542e4a130a8a7afe4658462eebe09e771d5edfcb0a210a8a0634385348.
+Output /var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-capture-pilot-30408;
+exec34707 / Macstream /tmp/relh-classic-spatial-local8-frozen-capture-stream.tar.gz.
+Currentstartup, noepoch/quality claim yet; no duplicatejobs. Goalactive.
