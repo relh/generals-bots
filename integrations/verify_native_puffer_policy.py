@@ -17,7 +17,7 @@ void read_file(const char* name, void* data, size_t bytes) {
 }
 int main(int argc, char** argv) {
     assert(argc == 5);
-    const int B=4, H=POLICY_HIDDEN, L=POLICY_LAYERS, T=6, O=6174, D=1768;
+    const int B=4, H=POLICY_HIDDEN, L=POLICY_LAYERS, T=6, O=POLICY_OBSERVATIONS, D=POLICY_OUTPUTS;
     cublas_init_handle();
     Arch arch = build_arch(O, H, L, D-1, false, 16);
     Allocator params={}, acts={};
@@ -77,14 +77,16 @@ def main():
     harness = args.output / "native_forward.cu"
     harness.write_text(
         f"#define POLICY_HIDDEN {policy.hidden}\n#define POLICY_LAYERS {policy.layers}\n"
-        + "#define NUM_ATNS 2\n#define ACT_SIZES {1765,2}\n" + prefix + HARNESS
+        + f"#define POLICY_OBSERVATIONS {policy.observation_size}\n#define POLICY_OUTPUTS {policy.output_size}\n"
+        + f"#define NUM_ATNS {len(policy.action_sizes)}\n#define ACT_SIZES {{{','.join(map(str, policy.action_sizes))}}}\n"
+        + prefix + HARNESS
     )
     executable = args.output / "native_forward"
     subprocess.run(["nvcc", "-O2", "-arch=sm_100", "-std=c++17", "-DPRECISION_FLOAT",
                     "-Xcompiler=-Wno-narrowing", "--diag-suppress=2361", "-I" + str(source),
                     str(harness), "-lcublas", "-lcurand", "-o", str(executable)], check=True)
     rng = np.random.default_rng(20260927)
-    observations = rng.normal(size=(6, 4, 6174)).astype(np.float32) / 8
+    observations = rng.normal(size=(6, 4, policy.observation_size)).astype(np.float32) / 8
     states = rng.uniform(size=(policy.layers, 4, policy.hidden)).astype(np.float32)
     public_masks = None
     if args.public_views:
@@ -122,7 +124,7 @@ def main():
     states.tofile(state_path)
     subprocess.run([str(executable), str(args.checkpoint), str(obs_path), str(state_path),
                     str(output_path)], check=True)
-    native = np.fromfile(output_path, dtype=np.float32).reshape(6, 4 * 1768 + policy.layers * 4 * policy.hidden)
+    native = np.fromfile(output_path, dtype=np.float32).reshape(6, 4 * policy.output_size + policy.layers * 4 * policy.hidden)
     state = jax.numpy.asarray(states)
     max_logits, max_state = 0.0, 0.0
     differences = []
@@ -133,8 +135,8 @@ def main():
             state = state.at[:, 1].set(0)
         before = state
         decoded, state = policy.forward(jax.numpy.asarray(observations[turn]), before)
-        expected_logits = native[turn, :4 * 1768].reshape(4, 1768)
-        expected_state = native[turn, 4 * 1768:].reshape(policy.layers, 4, policy.hidden)
+        expected_logits = native[turn, :4 * policy.output_size].reshape(4, policy.output_size)
+        expected_state = native[turn, 4 * policy.output_size:].reshape(policy.layers, 4, policy.hidden)
         actual_outputs.append(np.asarray(decoded))
         expected_outputs.append(expected_logits)
         actual_states.append(np.asarray(state))
@@ -144,12 +146,19 @@ def main():
         differences.append(dict(turn=turn, max_logit=float(np.max(np.abs(np.asarray(decoded) - expected_logits))),
                                 max_state=float(np.max(np.abs(np.asarray(state) - expected_state), initial=0))))
         if public_masks is None:
-            masks = rng.random((4, 1767)) > .5
-            masks[:, 1764:] = True
+            masks = rng.random((4, policy.logit_size)) > .5
+            offset = 0
+            for size in policy.action_sizes:
+                masks[:, offset + size - 1] = True
+                offset += size
         else:
             masks = public_masks[turn]
-        reference = np.where(masks, expected_logits[:, :1767], -np.inf)
-        expected_actions = np.stack((reference[:, :1765].argmax(-1), reference[:, 1765:].argmax(-1)), -1)
+        reference = np.where(masks, expected_logits[:, :policy.logit_size], -np.inf)
+        heads, offset = [], 0
+        for size in policy.action_sizes:
+            heads.append(reference[:, offset:offset + size].argmax(-1))
+            offset += size
+        expected_actions = np.stack(heads, -1)
         actual, action_state = policy.actions(observations[turn], masks, before)
         np.testing.assert_array_equal(actual, expected_actions)
         np.testing.assert_allclose(action_state, expected_state, atol=2e-5, rtol=2e-5)

@@ -70,6 +70,7 @@ def main():
     options = manifest["config"]["python_environment"]["options"].copy()
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     if args.force_hint_move or args.force_hint_split:
+        assert policy.action_sizes == (1765, 2)
         assert options["prior_hint_features"] and options["expander_hint_features"] and options["context_hint_features"]
     options.update(parallel_games=args.games, opponent=args.opponent, supervise_teacher=False)
     if args.pool_size is not None:
@@ -149,8 +150,12 @@ def main():
                     actions[active, 0] = hint[active, 0]
                 if args.force_hint_split:
                     actions[active, 1] = np.where(hint[active, 0] == 1764, 0, hint[active, 1])
-            assert masks[np.arange(args.games), actions[:, 0]].all()
-            assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
+            offset = 0
+            sizes = policy.action_sizes if args.native else (1765, 2)
+            assert actions.shape == (args.games, len(sizes))
+            for head, size in enumerate(sizes):
+                assert masks[np.arange(args.games), offset + actions[:, head]].all()
+                offset += size
             active = ~env.finished.copy() if args.reward_diagnostics else None
             transition = env.step(actions)
             if args.reward_diagnostics:

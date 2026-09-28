@@ -8580,3 +8580,51 @@ Expected end-of-job stream on Mac:
 29773 complete archive is now verified on all three locations, including
 metta0, with SHA25664abe400...560f0. Paired comparison JSON was copied
 to the controller as well. No registry or Observatory side effect occurred.
+
+## Stock native flat probe29819 completed; optimizer-default mismatch found
+
+29819 completed ExitCode0 in2m07s, including preserved evidence transfer.
+Native MinGRU128x1 trained16,777,216 steps in28.616s native uptime.
+Warm epochs20–32 cover6,291,456 steps in8.871s (19.745–28.616s),
+709,216 environment SPS. This is the corridor fixture, not full-arena
+throughput. Ignore the final zero-rollout dashboard's instantaneous3.1M
+SPS. Native mask audit:16,777,216 actions,0 illegal. Final1,121,920
+float32 parameter words all finite; checkpoint SHA256
+`060de5a8b0a7806fcb50e11e530214b212d3365a88b039fa5629195402881136`.
+Stochastic capture rate rose0.053306→0.178002, below the predeclared
+98% diagnostic threshold. The threshold is not retroactively relaxed.
+
+Frozen CPU argmax from that exact checkpoint captures in32/32 episodes
+over16 decisions on each of eight training layouts (128 legal decisions).
+That confirms learned greedy capture sequencing, not arena strength or
+CUDA inference parity. Report:
+`/tmp/relh-native-flat-frozen-corridor-29819.json` on Mac/controller.
+Full node/Mac/controller archive:
+`/tmp/relh-classic-native-flat-sequence-credit-29819.tar.gz`, SHA256
+`7e1a1f7a474e49a17ed79b55c41f7da9f06ea860e8daadfc038a44031454b3dc`.
+Controller hash verification remains to be read after transfer.
+
+Inspecting the actual pinned upstream `build/source/config/default.ini`
+revealed that the probe inherited Fabric hyperparameters: learning rate
+0.0003 versus Puffer5 default0.015 (50x), replay0.5 versus1, minibatch32768
+versus8192, max-grad-norm0.5 versus1.5, value coefficient1 versus2 and
+entropy0.01 versus0.001. These are configuration differences, not proof
+of a causal explanation for prior weak policies. Native optimizer source
+uses Muon; do not describe this as an Adam/SGD baseline.
+
+Prepared a bounded full-arena native baseline using default128x4 MinGRU
+and those optimizer settings read from the pinned upstream defaults,
+including anneal_lr1 and momentum0.95. Retain task-specific H128,
+learner/shaping gamma0.999 and GAE0.99. Same4096 games/Classic map sampler/
+teacher-free strong_mixed opponents, fresh seed739,33.55M steps.
+The new configuration must establish its own full-game sustained30k SPS
+gate; no dependent long run. It includes actual CUDA arch_forward parity
+and four128-game tuning panels at8.39M/33.55M, then evidence preservation.
+
+Native frozen inference and its CUDA verifier now explicitly support
+the4851/[3529] contract alongside the existing6174/[1765,2] contract;
+unsupported schemas and flat hint priors are rejected. Evaluation checks
+each declared action head, with factorized hint interventions restricted
+to their original contract. Python compilation and actual trained-checkpoint
+CPU argmax check pass; new CUDA numerical parity is still required before
+trusting a full-game frozen result or serving this actor.

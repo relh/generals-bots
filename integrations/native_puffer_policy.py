@@ -21,15 +21,22 @@ class NativePufferPolicy:
             raise ValueError("Training/build manifests differ")
         config = manifest["config"]
         spec = config["python_environment"]["spec"]
+        contract = (spec["observation_size"], tuple(spec["action_sizes"]))
         if (manifest["revision"] != "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2"
                 or config["fabric"] is not None or config["precision"] != "float32"
-                or spec["observation_size"] != 6174 or spec["action_sizes"] != [1765, 2]
+                or contract not in ((6174, (1765, 2)), (4851, (3529,)))
                 or spec["teacher"] or spec["routing"] or spec["replay_metadata_size"]):
             raise ValueError("Unsupported native policy contract")
+        self.observation_size = spec["observation_size"]
+        self.action_sizes = tuple(spec["action_sizes"])
+        self.logit_size = sum(self.action_sizes)
+        self.output_size = self.logit_size + 1
         self.hidden = int(record["config"]["overrides"]["policy.hidden_size"])
         self.layers = int(record["config"]["overrides"]["policy.num_layers"])
         self.hint_prior = config.get("native_hint_prior")
         if self.hint_prior is not None:
+            if contract != (6174, (1765, 2)):
+                raise ValueError("Hint priors require the verified factorized contract")
             prior = self.hint_prior
             if (prior["channels"] * prior["cells"] != 6174 or prior["cells"] != 441
                     or prior["move_channel"] + 4 > prior["channels"]
@@ -53,8 +60,8 @@ class NativePufferPolicy:
                 raise ValueError("Nonfinite checkpoint parameters")
             return jnp.asarray(array)
 
-        self.encoder = take((self.hidden, 6174))
-        self.decoder = take((1768, self.hidden))
+        self.encoder = take((self.hidden, self.observation_size))
+        self.decoder = take((self.output_size, self.hidden))
         self.recurrent = tuple(take((3 * self.hidden, self.hidden)) for _ in range(self.layers))
         if offset != len(data):
             raise ValueError("Unexpected checkpoint length")
@@ -94,15 +101,16 @@ class NativePufferPolicy:
         )
 
     def actions(self, observations, masks, state, key=None):
-        if observations.shape != (state.shape[1], 6174) or masks.shape != (state.shape[1], 1767):
+        if (observations.shape != (state.shape[1], self.observation_size)
+                or masks.shape != (state.shape[1], self.logit_size)):
             raise ValueError("Unexpected observation/mask dimensions")
         output, state = self.forward(jnp.asarray(observations, dtype=jnp.float32), state)
-        logits = jnp.where(jnp.asarray(masks, dtype=bool), output[:, :1767], -jnp.inf)
-        if key is None:
-            actions = jnp.stack((jnp.argmax(logits[:, :1765], axis=-1),
-                                 jnp.argmax(logits[:, 1765:], axis=-1)), axis=-1)
-        else:
-            move_key, split_key = jax.random.split(key)
-            actions = jnp.stack((jax.random.categorical(move_key, logits[:, :1765]),
-                                 jax.random.categorical(split_key, logits[:, 1765:])), axis=-1)
-        return actions, state
+        logits = jnp.where(jnp.asarray(masks, dtype=bool), output[:, :self.logit_size], -jnp.inf)
+        keys = [None] * len(self.action_sizes) if key is None else jax.random.split(key, len(self.action_sizes))
+        actions, offset = [], 0
+        for size, head_key in zip(self.action_sizes, keys, strict=True):
+            head = logits[:, offset:offset + size]
+            actions.append(jnp.argmax(head, axis=-1) if head_key is None
+                           else jax.random.categorical(head_key, head))
+            offset += size
+        return jnp.stack(actions, axis=-1), state
