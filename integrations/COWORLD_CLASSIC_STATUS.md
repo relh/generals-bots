@@ -8059,3 +8059,27 @@ GPU job 29588 remained healthy throughout these local CPU checks, at
 epoch 227 (119.01M additional steps), sustained 58,117 SPS, GPU mean
 88.3%. Only its training container remains on the allocated device.
 No extra GPU allocation, hosted request, upload or promotion occurred.
+
+## 134M-additional checkpoint milestone (29588)
+
+Job 29588 reached epoch 256, **134,217,728 additional environment steps**,
+with trailing 12-epoch **57,698 SPS**, GPU sample mean 89.5%, 44.5 GiB
+device memory and no nonfinite/progress/throughput guard failure. The
+checkpoint contains 42,584 finite float32 words; SHA256
+`ef010594ff0b4aaf296186373c9d542f8c75e77e13c39b3b7f321bde2937997a`.
+It is saved on the node and independently archived with its learner
+state/identity and build/training/initialization metadata locally and on
+metta0: `/tmp/relh-classic-checkpoint-29588-134217728.tar.gz`, verified
+SHA256 `19f6b1dad116b7f7841f8272d2cbff1de354651e8bdfee0bb4156e476cd20a35`.
+This preservation does not claim exact environment resume or quality.
+
+Shared-resource recheck found neighboring B300 job 29602. Its container
+pins physical GPU `GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, different
+from Generals `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`. The only CUDA
+PIDs on the Generals device (495421 Python wrapper, 496338 native puffer)
+exactly match its own container process tree. No external CUDA contention
+was observed on this device. The full queue contains only one Generals
+allocation; no peer container/job is modified. Remaining checkpoint
+evaluations will run serially after this trainer finishes, as scheduled
+in the original bounded batch script. No additional shared-GPU evaluation
+is launched. The run remains active toward the 300M budget.
