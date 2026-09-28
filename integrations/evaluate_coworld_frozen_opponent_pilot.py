@@ -270,7 +270,8 @@ def main():
                 else:
                     actions[changed, 1] = 0
             assert masks[np.arange(args.games), actions[:, 0]].all()
-            assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
+            if len(env.spec.action_sizes) == 2:
+                assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
             if action_stats is not None:
                 phase = "early_0_99" if turn < 100 else "middle_100_199" if turn < 200 else "late_200_plus"
                 stats = action_stats[phase]

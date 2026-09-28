@@ -6871,3 +6871,28 @@ raised `ValueError: A dynamic pool requires variable board sizes`.
 The fixture now uses the production Classic 18–21 variable-size map
 range with padding to 21. Job 29159 is terminal `FAILED`/exit 1 and
 recorded zero training steps; no checkpoint or result was replaced.
+
+Corrected flat job 29162 passed the codec audit on 32 player views from
+16 Classic maps: observation values agreed, both move-mask halves matched
+the factorized legal moves, pass matched, and sampled flat decodings
+matched full/half factorized actions. The flat Fabric graph SHA256 is
+`c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d`
+with 42.6K parameters. Training reached its `completed.json` at
+67,108,864 two-seat agent steps = 33,554,432 Classic environment steps.
+Warmed epochs near the end held **78,276 agent SPS = 39,138 environment
+SPS** over 20 epochs on one B300; sampled GPU utilization was about
+93–95%, VRAM about 82.8 GiB. The environment took around 0.9 seconds
+and optimization around 11 seconds per 1,048,576 agent-step epoch.
+
+The batch job 29162 then exited 1 before held-out scores because the
+evaluation script still asserted a second action head. Flat actions have
+one head; the assertion now runs only for the factorized layout. No
+training replay is needed. The completed run, four checkpoints, codec
+audit, build, GPU samples, and logs were copied to this machine and
+metta0 as `/tmp/relh-classic-flat-source-route-training-29162.tar.gz`,
+SHA256 `74cc99e29b71a0b6ffc5553c145ccb66c5a4e8cd2f2fb5bddc404b0a1d38d4d7`.
+The 8.39M and 33.55M environment-step policy SHA256s are respectively
+`5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71`
+and `1cc05e71b8612d31c5497f5b07ec3210094e095982b349ff8ab4af0f4c7b3df5`.
+Held-out quality remains unverified until the saved policies are scored;
+no hosted or longer run follows an unscored training artifact.
