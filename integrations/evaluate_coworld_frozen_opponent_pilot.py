@@ -80,6 +80,8 @@ def main():
     parser.add_argument("--force-hint-move", action="store_true", help="Diagnostic: replace the move head")
     parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the split head")
     parser.add_argument("--force-full-split", action="store_true", help="Diagnostic: use full-army moves")
+    parser.add_argument("--own-destination-logit-penalty", type=float, default=0.0,
+                        help="Diagnostic: subtract this logit from moves into a public owned tile")
     parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
     parser.add_argument("--teacher-action-audit", action="store_true",
                         help="Measure agreement with scripted actions from the current public game state")
@@ -91,6 +93,7 @@ def main():
     )
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
+    assert args.own_destination_logit_penalty >= 0
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
     assert not (args.force_full_split and args.force_hint_split)
@@ -186,11 +189,32 @@ def main():
         np.save(args.output / "initial_opponent_ids.npy", np.asarray(env.opponent_ids))
         for turn in range(min(env.horizon, args.audit_turns or env.horizon)):
             forward = legacy_actions_many(
-                policy, seats, observation, return_logits=args.hint_audit or args.teacher_action_audit,
+                policy, seats, observation,
+                return_logits=args.hint_audit or args.teacher_action_audit
+                or args.own_destination_logit_penalty > 0,
                 counterfactual_hint_scale=args.counterfactual_hint_scale,
             )
-            actions, logits = forward if args.hint_audit or args.teacher_action_audit else (forward, None)
+            actions, logits = forward if args.hint_audit or args.teacher_action_audit \
+                or args.own_destination_logit_penalty > 0 else (forward, None)
             masks = np.asarray(observation.action_masks, dtype=bool)
+            if args.own_destination_logit_penalty:
+                if len(env.spec.action_sizes) != 1 or env.spec.action_sizes[0] != 8 * 21 * 21 + 1:
+                    raise ValueError("The destination intervention requires flat 21x21 actions")
+                cells = 21 * 21
+                source_cells = np.arange(cells)
+                source_r, source_c = divmod(source_cells, 21)
+                dest_r = np.clip(source_r[None, :] + np.asarray((-1, 1, 0, 0))[:, None], 0, 20)
+                dest_c = np.clip(source_c[None, :] + np.asarray((0, 0, -1, 1))[:, None], 0, 20)
+                destination = (dest_r * 21 + dest_c).reshape(-1)
+                owned = np.asarray(observation.values, np.float32).reshape(args.games, 11, cells)[:, 4]
+                owned_destination = np.tile(owned[:, destination], (1, 2))
+                adjusted = logits[:, :8 * cells + 1].copy()
+                adjusted[:, :8 * cells] -= args.own_destination_logit_penalty * owned_destination
+                proposed = np.argmax(np.where(masks[:, :8 * cells + 1], adjusted, -np.inf), axis=1)
+                active = ~env.finished
+                intervention["active_steps"] += int(active.sum())
+                intervention["changed_moves"] += int((active & (actions[:, 0] != proposed)).sum())
+                actions[active, 0] = proposed[active]
             if args.teacher_action_audit:
                 keys = jnp.broadcast_to(jax.random.PRNGKey(0), (args.games, 2))
                 raw_teacher = np.asarray(env._teacher_actions(env.states, env.sides, keys))
@@ -363,6 +387,7 @@ def main():
         scope=(
             "Frozen action intervention diagnostic; not the hosted policy"
             if args.force_hint_move or args.force_hint_split or args.force_full_split
+            or args.own_destination_logit_penalty
             else "Explicitly altered checkpoint diagnostic; not the trained or hosted policy"
             if args.diagnostic_checkpoint
             else "Training-pool diagnostic; does not establish held-out or hosted performance"
@@ -394,6 +419,7 @@ def main():
         force_hint_move=args.force_hint_move,
         force_hint_split=args.force_hint_split,
         force_full_split=args.force_full_split,
+        own_destination_logit_penalty=args.own_destination_logit_penalty,
         intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split else None,
         hint_audit=hint_audit if args.hint_audit else None,
         teacher_action_audit=teacher_action_audit if args.teacher_action_audit else None,
