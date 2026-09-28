@@ -8628,3 +8628,51 @@ each declared action head, with factorized hint interventions restricted
 to their original contract. Python compilation and actual trained-checkpoint
 CPU argmax check pass; new CUDA numerical parity is still required before
 trusting a full-game frozen result or serving this actor.
+
+## Native defaults baseline29836 and verification29851 completed; rejected
+
+29836 trained33,554,432 real Classic environment steps using native float32
+MinGRU128x4,4096 games,H128,minibatch8192,replay1,Muon LR0.015 annealed,
+entropy0.001,value2,max-grad1.5,momentum0.95,norm_adv0,GAE0.99,
+learner/shaping gamma0.999. Warm epochs20–64:23,068,672 steps over
+139.435s (78.960–218.395 native uptime),165,443.9 environment SPS.
+Rollout~3.045s (environment2.729/model0.315/copy0), update~0.328s;
+physical utilization varies and console100% does not establish physical100%.
+33,554,432 audited actions,0 illegal. Four checkpoints all1,269,376
+finite float32 words. Final SHA256
+3ba4e37956ad5e7539dacdf4b1ae38a4ffd950abbcc6d2cbb1f3f2f089dc4843.
+Training completed; the allocation failed only during subsequent verification
+because the staged native decoder lacked its package namespace mount.
+The pilot now mounts that exact module. No training was replayed.
+
+29851 was one bounded recovery/parity/evaluation allocation, completed Exit0.
+Both jobs used B300 metta-fabric-b300-1,8CPU/64G,nice100,
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a; empty physical GPU and container
+UUID verified. Actual CUDA arch_forward vs frozen JAX parity passed24
+real public-view decisions, four recurrent layers and partial resets:
+max logits1.4305e-6/state1.1444e-5, all masked actions identical.
+Early8.39M Exp/Sent W/L/D0/127/1 each; final33.55M Exp0/128/0,
+Sent0/127/1. Total0 wins,509 losses,3 draws in512 games: reject scale
+and publication. These panels reuse seed1386/control29432 identical maps,
+sides and opponents; they are tuning validation, not an untouched final gate.
+
+Complete training+recovery archive verified on Mac/node/controller:
+/tmp/relh-classic-native-flat-defaults-recovery-29851.tar.gz,
+SHA256 e9f1194209011f1a9f341f603d8c10f84c9d513b89a62e97cc9ebda663aa460c.
+Recovery output /var/tmp/relh-generals-recovery/classic-native-flat-ppo-defaults-eval-29851.
+Recovery script SHA256 e1b67c4e794a9eeeab2b4969150722dc88d32b0ae035c8e1a3a98c97746bf32c.
+No hosted, registry or champion changes.
+
+## Prepared native current-policy self-play gen0
+
+Same native defaults/real Classic map sampler/flat codec; both policy seats
+controlled each tick,4096 games/8192 rows. No teacher targets or historical
+opponent pool. Inherited opponent label is unused by the self-play factory.
+Actual samples per tick:4096 neural player0 and4096 neural player1;
+all rows updated at replay1.67,108,864 agent steps equal33,554,432
+physical game steps. Throughput monitor uses524288 game steps per epoch,
+half the native agent counter, and enforces30k environment SPS. Compare
+8.39M and33.55M physical-step snapshots against identical128-game tuning
+panels plus real CUDA parity. One bounded job, no dependent long run.
+Config generation against actual archived parent/default.ini and bash syntax
+passed; submission must still pass physical occupancy and container checks.
