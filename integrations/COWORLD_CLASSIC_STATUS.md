@@ -6151,3 +6151,93 @@ and per-seat score summary are archived locally and on metta0 as
 `dd550c72b60df5f0a9c579639bdefe16013a3e7df207168ce1b7c9cc0ef48ce2`.
 These requests quantify the hosted gap; they do not reveal Daveey's recipe or
 justify champion promotion. No upload or champion change followed.
+
+## Calibrated versioned self-play iteration (2026-09-27)
+
+User-directed next direction is iterated self-play with less scripted
+guidance. A frozen counterfactual audit of the generation-0 two-seat final
+checkpoint kept the same 8,192 seed-1387 teacher-driven states but multiplied
+public hint planes 2–7 by 0.25 only for policy forward. The actor matched
+the hint move on 4,896/8,192 decisions (59.77%) rather than 8,192/8,192;
+mean probability on the hinted move fell to 3,412.28/8,192 = 41.65%.
+Teacher actions still drove these diagnostic trajectories; this is an
+exploration calibration, not a full-game skill result. Job 28040's audit
+archive is stored locally and on metta0 with SHA256
+`d88997d2903e7f485bcede4db1e90285dd451c98aa7f114e455d31ce3b83236c`.
+Its first attempt 28033 stopped before evaluation because the source file
+was staged on metta0 rather than the B300 node; the corrected launch did
+not replay any completed work.
+
+Generation-1 build 28048 uses the same four-site/eight-global two-stage
+spatial policy, 4,096 two-seat games, and gamma/shaping gamma .999. It
+calibrates both move and split hint channels to 0.25 and sets its only
+training phase to PPO coefficient 1, teacher coefficient 0, and teacher
+action mix 0. Model SHA256 is
+`4f718ad75a43d99e6c33de5a23bdc553443b243f23ad5268f66d9f276bf10a67`,
+with the same 22,956 policy words as generation 0. The build itself
+completed; its sbatch post-build assertion was too strict about normalized
+default teacher fields and exited nonzero after publication. A corrected
+assertion is recorded in the source; no duplicate build was launched.
+GPU parity job 28059 applied the exact generation-0 final checkpoint to
+both builds and obtained bit-for-bit identical logits and masked actions
+on 16 held-out observations. Guard 28072 accepted only the pinned
+generation-0 checkpoint and calibrated target config, and rejected bad
+checkpoint, factory, model, and hint-scale identities.
+The build, parity proof, guard output, and logs are archived locally and
+on metta0 as `relh-classic-selfplay-iter1-preflight-28048-28072.tar.gz`,
+SHA256 `21fdb65317a0e0c61687e5633a5985ceeb0767799948d36e9e04e08c2154d325`.
+
+Bounded generation-1 run 28074 completed, initialized from exact
+generation-0 final SHA256
+`e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf`.
+It has a fresh optimizer, 33,554,432 agent steps, H128, minibatch 32,768,
+replay 0.5, constant LR .0003, entropy .003, and a 30k warmed SPS guard.
+The effective run.ini confirmed `anneal_lr=0`, gamma .999, and those
+batch settings. Warm epochs 16–32 held **128,809 end-to-end agent SPS**
+for one process and aggregate on a B300; GPU utilization was around 90–92%
+while active. All 33,554,432 steps completed; the initial policy bytes
+match generation 0 SHA256 exactly. The final checkpoint SHA256 is
+`d27cb8552a78b083201575a604a1c3f6b2c43336f4e32e45221cf3d11b77a032`.
+Its two seats learn with the same current policy; generation 0 is the
+frozen comparison, not yet a separate opponent during training. Dependent
+quality jobs 28079 (16.78M and final) and 28082 (unaltered initial weights
+under the calibrated observation) were released on completion. The initial
+quality job 28082 stopped before evaluation because the older staged
+evaluator lacks `--diagnostic-checkpoint`; corrected job 28102 uses the
+checksum-verified current evaluator. Both evaluate the same seed-1386
+held-out games. Require paired outcome gains over
+calibrated generation 0 and meaningful move changes before another
+iteration or any long run. No new hosted upload or champion change.
+
+Both held-out quality jobs completed (the unrecognized-flag initial attempt
+28082 produced no scores). Against ExpanderHarvester, calibrated initial,
+16.78M, and final W/L/D were **2/122/4**, **19/82/27**, and **51/51/26**.
+Against Sentinel they were **1/126/1**, **13/110/5**, and **28/91/9**.
+All three checkpoints saw the same per-game initial-state, side, and
+opponent arrays. Final versus calibrated initial improved/worsened/tied
+76/4/48 Expander cases and 36/1/91 Sentinel cases. Self-play PPO therefore
+learned substantially under the calibrated setting. However, the original
+unscaled public-hint policy scored 63/52/13 and 40/81/7 on the same cases.
+Final versus that reference improved/worsened/tied 17/28/83 Expander cases
+and 19/31/78 Sentinel cases. This generation has not surpassed the usable
+baseline and must not be extended into a long run as-is.
+The complete run, three-checkpoint quality, GPU samples, failed initial
+evaluation setup, and logs are archived locally and on metta0 as
+`relh-classic-selfplay-iter1-calibrated-28074-28102.tar.gz`, SHA256
+`80e0dccdadf13a18ca194982de945f8587d8548e9f2b8caefd5b106d365353f4`.
+Final actor hint-agreement audit 28117 used the same 64 seed-1387 maps and
+128 teacher-driven turns as the pretraining calibration audit. The final
+actor chose the hint move on **8,055/8,192** active decisions (98.33%),
+up from 4,896/8,192 (59.77%) at calibrated initialization. Mean assigned
+hint probability rose from 41.65% to 5,913.09/8,192 = 72.18%.
+All 383 teacher passes and 7,809 labeled splits were matched at the final
+checkpoint. This confirms that the PPO updates recovered much of the
+scripted hint behavior, despite different actions early in training; it
+does not establish an improved independent policy. Complete audit archive
+SHA256 is
+`5e48e98d06aa7491e526b1df1d8f6543aa0bfe963d861f658224842257947520`,
+identical locally and on metta0. Do not repeat this symmetric calibrated
+iteration or launch 300M+ steps from it. The next self-play design should
+hold a versioned opponent fixed during learner updates and test against
+both that snapshot and the original hint reference. No next training job
+was submitted.

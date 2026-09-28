@@ -16,9 +16,16 @@ from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
 from integrations.puffer_codec import hinted_replay_indices
 
 
-def legacy_actions_many(policy: FrozenPolicy, seats: list[int], observation, *, return_logits: bool = False):
+def legacy_actions_many(
+    policy: FrozenPolicy, seats: list[int], observation, *, return_logits: bool = False,
+    counterfactual_hint_scale: float = 1.0,
+):
     """Batch the pinned legacy Fabric forward pass used by the training build."""
     values = np.asarray(observation.values, dtype=np.float32)
+    if counterfactual_hint_scale != 1.0:
+        values = values.copy().reshape((-1, 14, 21, 21))
+        values[:, 2:8] *= counterfactual_hint_scale
+        values = values.reshape((values.shape[0], -1))
     masks = np.asarray(observation.action_masks, dtype=bool)
     if values.shape != (len(seats), policy.policy.observation_size):
         raise ValueError("Frozen observation dimensions differ from the policy")
@@ -73,6 +80,8 @@ def main():
     parser.add_argument("--force-hint-split", action="store_true", help="Diagnostic: replace the split head")
     parser.add_argument("--hint-audit", action="store_true", help="Measure frozen action agreement and probability on hint-driven states")
     parser.add_argument("--audit-turns", type=int, help="Stop a hint audit after this many turns")
+    parser.add_argument("--counterfactual-hint-scale", type=float, default=1.0,
+                        help="Hint audit only: scale public hint planes before frozen policy forward")
     parser.add_argument(
         "--opponent", choices=("random", "expander_harvester", "sentinel", "strong_mixed"), required=True
     )
@@ -83,6 +92,9 @@ def main():
     assert not args.native and args.training_pool_episode is None
     assert args.audit_turns is None or (args.hint_audit and args.audit_turns > 0)
     assert not args.hint_audit or (args.force_hint_move and args.force_hint_split)
+    assert args.counterfactual_hint_scale == 1.0 or (
+        args.hint_audit and 0.0 <= args.counterfactual_hint_scale < 1.0
+    )
     record = json.loads((args.run / "training.json").read_text())
     completed = json.loads((args.run / "completed.json").read_text())
     assert args.seed != record["config"]["seed"]
@@ -148,7 +160,10 @@ def main():
         np.save(args.output / "initial_sides.npy", np.asarray(env.sides))
         np.save(args.output / "initial_opponent_ids.npy", np.asarray(env.opponent_ids))
         for turn in range(min(env.horizon, args.audit_turns or env.horizon)):
-            forward = legacy_actions_many(policy, seats, observation, return_logits=args.hint_audit)
+            forward = legacy_actions_many(
+                policy, seats, observation, return_logits=args.hint_audit,
+                counterfactual_hint_scale=args.counterfactual_hint_scale,
+            )
             actions, logits = forward if args.hint_audit else (forward, None)
             masks = np.asarray(observation.action_masks, dtype=bool)
             if args.hint_audit:
@@ -262,6 +277,7 @@ def main():
         intervention=intervention if args.force_hint_move or args.force_hint_split else None,
         hint_audit=hint_audit if args.hint_audit else None,
         audit_turns=args.audit_turns,
+        counterfactual_hint_scale=args.counterfactual_hint_scale,
         episode_complete=episode_complete,
         wins=int((outcomes > 0).sum()) if episode_complete else None,
         losses=int((outcomes < 0).sum()) if episode_complete else None,
