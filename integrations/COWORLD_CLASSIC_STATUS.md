@@ -8940,3 +8940,48 @@ throughput from it. Current300M native result remains the next decision gate;
 if it fails quality, a larger actor needs an efficient implementation and its
 own finite/throughput/quality evidence, rather than another unsupported wide
 Fabric compile or a continuation of an already failed recipe.
+
+## 300M native frozen-generation run29962 completed: throughput passes, quality fails
+
+Slurm29962 COMPLETED ExitCode0:0, 2026-09-28 20:12:53–20:43:09 UTC,
+30m16 allocation including sequential parity, six evaluation panels, and
+archive transfer. Own container stopped; no replacement or duplicate job.
+299,892,736 additional physical game steps, one learner row/game (no factor2).
+Native epoch20 at60.103s to572 at1548.914s:289,406,976 steps/1488.811s =
+194,387.99 steady end-to-end environment SPS. B300,4096 games/learner rows,
+H128,mb8192,replay1,128-hidden four-layer MinGRU,MuonLR.0015,norm_adv1,
+learner/environment gamma both.999; frozen29907 opponent,balanced2048/side.
+Fresh optimizer/clocks with exact29937 weight initialization, no teacher.
+416 timestamped physical samples in the steady interval,mean50.84%,
+range36–100%,mean3.576s cadence; alignment derives from node console mtime
+minus final native uptime,about1s boundary uncertainty. No observed allocated
+GPU contention. Node training-evidence.json preserves interval and settings.
+
+All five checkpoints have1,269,376 finite float words. Final SHA256:
+fa7c677f6e23d7b8d3a4673fb3956b8ce1041cc5632559edb77b09371b148230.
+Action-mask audit:299,892,736 actions,0 illegal. Actual CUDA arch_forward
+versus frozen JAX parity on24 public views with partial recurrent reset:
+max logits1.6093e-6/state2.3842e-6,all masked argmax actions identical.
+
+Reused tuning validation seed1386,128 balanced-side games/panel,greedy:
+
+| Additional steps | ExpanderHarvester W/L/D | Sentinel W/L/D |
+| --- | --- | --- |
+| 67,108,864 | 0/128/0 | 0/127/1 |
+| 134,217,728 | 0/128/0 | 0/127/1 |
+| 299,892,736 | 0/128/0 | 0/126/2 |
+
+Total0 wins764 losses4 draws/768 games. This larger budget did not fix
+learning; do not extend the unchanged recipe to billions or publish it.
+Parity/finiteness/throughput do not establish strong play. No registration,
+XP request,champion change,or Codex archival-data mutation occurred.
+
+Complete archive verified node/Mac/controller SHA256:
+1b84bc441dfff572a192679902a1db340c65b6c89a2606d4e363530d04272f93.
+Mac/controller /tmp/relh-classic-native-flat-frozen-gen1-300m-29962.tar.gz.
+Mac inspection /tmp/relh-native-frozen-300m-29962-inspect contains actual
+build/source/training/config/checkpoints/mask audit/quality arrays/parity and
+physical samples. Current goal remains active: strong held-out and hosted
+performance unmet. Next investigation should measure actual policy behavior
+and sampled-versus-greedy performance using this preserved checkpoint,
+before choosing a learning/observation/model change. No new training job yet.
