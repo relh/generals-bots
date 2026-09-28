@@ -7771,3 +7771,53 @@ reference panels remain pending. The prepared normalized 300M script is
 not submitted. The locally preserved partial paired evidence is
 `/tmp/relh-classic-fresh-expander-29515.tar.gz`; the complete node-local
 evaluation output will be archived after the job is terminal.
+
+## Fresh comparison complete; scale unnormalized control (2026-09-28)
+
+All six seed-1391, pool-512 panels completed with complete episode results:
+
+| Policy | ExpanderHarvester W/L/D | Sentinel W/L/D |
+| --- | ---: | ---: |
+| Normalized final 29473 | 92/401/19 | 19/472/21 |
+| Unnormalized final 29432 | 123/373/16 | 17/477/18 |
+| Original early 29162 | 110/386/16 | 25/455/32 |
+
+All three models have exactly matched initial hashes, sides and opponent
+IDs in each panel, with 256 games per side and 318 unique state hashes.
+Normalized versus control improved/worsened/tied is 48/77/387 Expander
+and 26/21/465 Sentinel; normalized versus original is 58/74/380 and
+21/38/453. Normalization loses to the original on both panels. Its small
+Sentinel advantage over the control does not compensate for the Expander
+regression. The normalized 300M script remains unsubmitted. No model is
+strong enough for publication, and no hosted requests or uploads occurred.
+
+The evaluation allocation is now absent from Slurm. Its terminal record
+had aged out before retrieval; an exit code is not claimed. All six saved
+JSONs report complete games and all six batch summary lines are present.
+Full output and logs are archived locally and on metta0:
+`/tmp/relh-classic-flat-fresh-quality-29515.tar.gz`, verified SHA256
+`71c76d0cecaaf3afd7ec508c50e7946e0a4853e94740916a02dca65856d09e26`.
+Retrieval found its physical GPU idle and no lingering Docker container.
+
+The next test is **300M additional steps from unnormalized control 29432**.
+It has the best fresh Expander result, although the original has the best
+Sentinel result; the larger budget is a learning test, not proof that the
+control dominates the original. Its prior sustained 56,735 environment SPS
+on one B300 passes the 30K gate and projects 300M steps to 88 minutes.
+The script reuses its exact archived build, source modules, launcher and
+verified checkpoint, retaining 4,096 environments, horizon 128, minibatch
+32,768, replay ratio 0.5, LR 0.0003, entropy 0.01, teacher off, scripted
+3:1 mixed opponents balanced across seats, potential-only shaping and
+PPO/shaping gamma 0.999. It initializes policy weights with new seed 743
+and resets learner/optimizer state; total lineage training will approach
+333.55M environment steps. It includes the sustained 30K SPS, progress and
+nonfinite guard and saves/evaluates 67M, 134M and final checkpoints.
+
+Preflight after the evaluation reconciled the full queue: no other Generals
+job, other users' B200/RTX4090 allocations, B300 node idle. Allocated
+physical GPU `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was 0 MiB/0%,
+with no CUDA process or Docker container. Driver 595.91.07, unchanged
+runtime image bdd4f2a9..., and 699 GiB free Docker/output disk were verified.
+The job remains bounded to one GPU, 8 CPUs, 64 GiB, nice 100, 135 minutes
+on `metta-fabric-b300-1`; trainer limit 110 minutes. Script syntax and
+diff checks pass. Submission details follow after the job is accepted.
