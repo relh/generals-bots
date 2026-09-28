@@ -9729,3 +9729,31 @@ eba849542e4a130a8a7afe4658462eebe09e771d5edfcb0a210a8a0634385348.
 Output /var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-capture-pilot-30408;
 exec34707 / Macstream /tmp/relh-classic-spatial-local8-frozen-capture-stream.tar.gz.
 Currentstartup, noepoch/quality claim yet; no duplicatejobs. Goalactive.
+
+
+## 30408 capture-only result; frozen-version match diagnostic prepared
+
+30408 terminal exit0:8,388,608ENVsteps/zeroillegal;57,028finiteweights,
+initialdf706173...44ddc, final4449fa419218dd856a2f47feebea6bc214eca91f254231908066e5c341546e84.
+Warmepoch4@48.407→16@93.242s:6,291,456/44.835=140,324.66ENV SPS;
+physicalGPUmean51.75%/12samples, sameapprox1s boundaryuncertainty.
+Capture-only exactterminalrewards+/−1, no clampchanges. Heldout128pool
+seed1386 Expander6W/120L/2D score-.890625;Sentinel2W/123L/3D score-.9453125.
+No improvement over30238best19Exp/2Sent; shapingremoval alone not a solution.
+CompleteMac /tmp/relh-classic-spatial-local8-frozen-capture-stream.tar.gz
+and controller /tmp/relh-classic-spatial-local8-frozen-capture-30408.tar.gz
+SHA25651a65159b23f6c2a5adcafd63afa716c9f634903b695c85b3435f382bcefb741.
+Nodehash/priorcontainerabsence to guard nextallocation.
+
+Added evaluate_spatial_frozen_match.py: compare immutablegreedy public
+actors against30238frozenopponent, count only eachlane's first capture/
+truncation despite trainingadapter recycling; exactcapture-onlyscoring,
+balancedseats, output/actionNumPyparity firstbatch and allturnslegal/finite.
+CPU smoke8games/16pool seed1513 completed1200turns, outcomes2W/5L/1D
+against identicalactor; tinyCPU smoke is structural evidence only, not
+a strength estimate. Earlier5stepCPU smoke had optionshorizon4, but Classic
+forces1200horizon; it did NOT actually test pool turnover as earlier report
+claimed. The full1200step smoke now reaches firstepisodetruncation and
+poolgeneration branch. NextGPUcomparison includes512game identicalactor
+control and both frozen-training candidateversions againstsameparent.
+No trainingreplay/longrun/hosted/XP/champion change. Goalactive.
