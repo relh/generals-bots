@@ -7279,3 +7279,70 @@ policy upload, or champion change followed. The complete run and panels
 are archived locally and on metta0 as
 `/tmp/relh-classic-flat-global-context-29388.tar.gz`, SHA256
 `4fc2f78ccadbb49d85c86a3023445200f3f4f435473b189b90cf8c8b88ed1664`.
+
+## Daveey replay symmetry and policy-init check (2026-09-28)
+
+Inspection of the verified 16-game Daveey self-play dataset found a split
+confound: all four holdout games have a 21-tile dimension, but none of its
+12 training games do. The earlier 16-game Daveey-versus-candidate dataset
+has 21-tile maps on both sides of its game-level split. A deterministic
+combined dataset joins the two replay sets without changing any action
+or observation; it has 13,719 actions in 24 training games and 4,064
+actions in eight whole-game holdouts, all from pinned Daveey v7. Its
+SHA256 is `204841558a41bfdbdf040f356124ce6c4da25fe8498da0c3d608f77c566864ba`
+at `/tmp/relh-coworld-daveey-combined-32.npz`.
+
+`fit_coworld_expert_initialization.py` now optionally rotates and reflects
+the active variable-size rectangle, all four public route planes, both
+legal move halves, and the flat action label together. Off-board route
+values are retained for the identity transform and zeroed after a nontrivial
+symmetry because those padded cells have no physical counterpart after
+re-anchoring the rectangle at the top-left. This is a diagnostic data
+augmentation; transformed route tie-breaks can differ from a fresh route
+calculation. A 512-case check across 64 saved states verified active-board
+and legal-mask round trips, the pass and split indices, and transformed
+action legality. The identity case preserves all observation values.
+
+Bounded one-B300 job 29400 compared eight epochs of ordinary masked
+cross-entropy to the same fit with random dihedral augmentation, both
+starting from the original 8.39M-step flat checkpoint and using the same
+combined game split, LR 0.0003, batch 64, and anchor 0.001. The allocated
+physical GPU was `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, idle at
+0 MiB/0%; no same-GPU contention or duplicate Generals job was observed.
+The unaugmented control worsened held-out negative log-likelihood from
+4.168 to 4.780, so its best weights remained the starting checkpoint.
+The augmented fit improved held-out loss to **3.990** and top-action
+agreement from **17.0% to 22.1%**. Its best checkpoint SHA256 is
+`8eab956faebf5ca1dab7aeee98bbb910caea9c6908a431250aae7c7a6fe75c74`.
+The complete fit comparison is archived locally and on metta0 at
+`/tmp/relh-classic-dihedral-result.tar.gz`, SHA256
+`e11256b021221d302ab84a79a2c614a3e5971a7b8052c2ee4bef80aba990b461`.
+This offline fit is not an environment-SPS or PPO result.
+
+The first match-evaluation job 29401 stopped in six seconds before any
+game because its CLI included an unsupported `--action-audit` flag. Its
+failure archive is `/tmp/relh-classic-dihedral-quality-failed-29401.tar.gz`,
+SHA256 `843562b1d79f56a9d64ee70a3c610fbf871504026ed65029c1cdef9e8f9fd069`.
+Corrected job 29403 completed the two held-out 128-game seed-1386 panels
+on an idle assigned B300: the augmented checkpoint scored **0/123/5**
+W/L/D versus ExpanderHarvester and **0/124/4** versus Sentinel. It passed
+on 7,788/12,800 and 7,735/12,800 early turns, about 61%, versus the
+expert replay's roughly 23% early pass rate. The saved checkpoint improved
+off-policy action prediction but caused a catastrophic on-policy pass
+distribution shift. Its match archive is local and on metta0 at
+`/tmp/relh-classic-dihedral-quality-result.tar.gz`, SHA256
+`2a72bc6633c0c2ead34f1e69d4a45269fa1e5a1f7afcb001c2e7dc099ca1c88b`.
+
+Bounded job 29405 then evaluated fixed weight interpolations of that
+checkpoint with the original flat actor at 10% and 25%, on the same
+seed-1386 initial hashes, sides, and opponent IDs. The 10% blend scored
+**22/104/2** Expander and **1/118/9** Sentinel; the 25% blend scored
+**28/98/2** and **4/118/6**. The original scored 32/92/4 and 3/118/7.
+Against the original, paired improved/worsened/tied outcome counts were
+7/17/104 and 6/6/116 for 10%, and 12/17/99 and 5/5/118 for 25%.
+Neither blend has a demonstrated quality gain. This result, its source
+checkpoint hashes, and all four panels are archived locally and on metta0
+as `/tmp/relh-classic-dihedral-blend-result.tar.gz`, SHA256
+`8e7cdbdba8ffd31c86dae1718d8d8c442b0b892ee4dcf6750cf77a8b1e95c94a`.
+No imitation weights are accepted for RL; no hosted request, long training,
+or promotion follows these diagnostic fits.

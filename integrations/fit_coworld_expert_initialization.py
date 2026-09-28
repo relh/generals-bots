@@ -16,7 +16,57 @@ from metta_training.inference import FrozenPolicy
 from metta_training.model_config import FrozenPolicyConfig
 
 
-def make_batch(dataset, rows, batch_size, input_size):
+_DIRECTIONS = ((-1, 0), (1, 0), (0, -1), (0, 1))
+
+
+def transform_flat_sample(observation, packed_mask, action, height, width, turns, flip):
+    """Rotate/reflect the active rectangle, its route planes, and flat moves."""
+    source = np.asarray(observation).reshape(11, 21, 21)
+    mask = np.unpackbits(packed_mask, count=3529).astype(bool)
+    source_moves = mask[:-1].reshape(2, 4, 21, 21)
+    transformed = np.zeros((11, 21, 21), np.float32)
+    transformed[3] = 1  # Off-board padding is an impassable mountain.
+    # The route builder can mark off-board cells. They have no physical
+    # counterpart after rotating a variable-size board into the top-left pad.
+    if turns == 0 and not flip:
+        transformed[7:] = source[7:]
+    transformed_moves = np.zeros((2, 4, 21, 21), bool)
+    new_height, new_width = ((height, width) if turns % 2 == 0 else (width, height))
+
+    def spatial(values):
+        rotated = np.rot90(values[..., :height, :width], turns, axes=(-2, -1))
+        return rotated[..., ::-1] if flip else rotated
+
+    transformed[:7, :new_height, :new_width] = spatial(source[:7])
+    direction_map = []
+    for direction, (dr, dc) in enumerate(_DIRECTIONS):
+        for _ in range(turns):
+            dr, dc = -dc, dr
+        if flip:
+            dc = -dc
+        new_direction = _DIRECTIONS.index((dr, dc))
+        direction_map.append(new_direction)
+        transformed[7 + new_direction, :new_height, :new_width] = spatial(source[7 + direction])
+        transformed_moves[:, new_direction, :new_height, :new_width] = spatial(source_moves[:, direction])
+
+    if action == 3528:
+        new_action = action
+    else:
+        split, remainder = divmod(int(action), 4 * 441)
+        direction, cell = divmod(remainder, 441)
+        row, column = divmod(cell, 21)
+        assert row < height and column < width
+        for rotation in range(turns):
+            row, column, height, width = width - 1 - column, row, width, height
+        if flip:
+            column = width - 1 - column
+        new_action = split * 4 * 441 + direction_map[direction] * 441 + row * 21 + column
+    new_mask = np.concatenate((transformed_moves.reshape(-1), mask[-1:]))
+    assert new_mask[new_action]
+    return transformed.reshape(-1), new_mask, new_action
+
+
+def make_batch(dataset, rows, batch_size, input_size, *, transforms=None):
     valid = len(rows)
     obs = np.zeros((batch_size, 1, input_size), np.float32)
     obs[:valid, 0, :dataset["observations"].shape[1]] = dataset["observations"][rows]
@@ -25,6 +75,14 @@ def make_batch(dataset, rows, batch_size, input_size):
     mask[valid:, -1] = True
     label = np.full((batch_size,), 3528, np.int32)
     label[:valid] = dataset["actions"][rows]
+    if transforms is not None:
+        for position, (turns, flip) in enumerate(transforms):
+            row = rows[position]
+            height, width = dataset["dimensions"][row]
+            obs[position, 0, :], mask[position], label[position] = transform_flat_sample(
+                dataset["observations"][row], dataset["action_masks"][row],
+                label[position], int(height), int(width), int(turns), bool(flip),
+            )
     weight = np.zeros((batch_size,), np.float32)
     weight[:valid] = 1
     return jnp.asarray(obs), jnp.asarray(mask), jnp.asarray(label), jnp.asarray(weight)
@@ -42,6 +100,7 @@ def main():
     parser.add_argument("--learning-rate", type=float, default=0.001)
     parser.add_argument("--anchor", type=float, default=0.0001)
     parser.add_argument("--seed", type=int, default=740)
+    parser.add_argument("--dihedral-augment", action="store_true")
     args = parser.parse_args()
     assert args.epochs > 0 and args.batch_size > 0 and args.learning_rate > 0 and args.anchor >= 0
     assert hashlib.sha256(args.checkpoint.read_bytes()).hexdigest() == args.sha256
@@ -57,6 +116,15 @@ def main():
     assert train_games and validation_games and not set(train_games) & set(validation_games)
     train_rows = np.flatnonzero(np.isin(data["episode"], train_games))
     validation_rows = np.flatnonzero(np.isin(data["episode"], validation_games))
+    dimensions = np.empty((len(data["actions"]), 2), np.int16)
+    for episode in metadata["episodes"]:
+        start, end = episode["start"], episode["end"]
+        mountains = data["observations"][start].reshape(11, 21, 21)[3] > 0.5
+        height = int(np.flatnonzero(~np.all(mountains, axis=1))[-1] + 1)
+        width = int(np.flatnonzero(~np.all(mountains, axis=0))[-1] + 1)
+        assert 18 <= height <= 21 and 18 <= width <= 21
+        dimensions[start:end] = (height, width)
+    data["dimensions"] = dimensions
     policy = FrozenPolicy(FrozenPolicyConfig(
         build=args.build, checkpoint=args.checkpoint, sha256=args.sha256, device="cuda:0",
     ))
@@ -119,7 +187,12 @@ def main():
                 break
             shuffled = rng.permutation(train_rows)
             for start in range(0, len(shuffled), args.batch_size):
-                batch = make_batch(data, shuffled[start:start+args.batch_size], args.batch_size, policy.policy.input_size)
+                rows = shuffled[start:start+args.batch_size]
+                transforms = None
+                if args.dihedral_augment:
+                    transforms = zip(rng.integers(0, 4, len(rows)), rng.integers(0, 2, len(rows)))
+                batch = make_batch(data, rows, args.batch_size, policy.policy.input_size,
+                                   transforms=transforms)
                 (_, _), grad = step_fn(params, *batch)
                 norm = jnp.linalg.norm(grad)
                 grad = grad * jnp.minimum(1, 1 / (norm + 1e-6))
@@ -136,6 +209,7 @@ def main():
             "train_games": len(train_games), "validation_games": len(validation_games),
             "train_samples": len(train_rows), "validation_samples": len(validation_rows),
             "batch_size": args.batch_size, "learning_rate": args.learning_rate, "anchor": args.anchor,
+            "dihedral_augment": args.dihedral_augment,
             "seed": args.seed, "best_validation_nll": best, "history": history,
         }, indent=2) + "\n")
 
