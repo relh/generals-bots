@@ -7609,3 +7609,16 @@ The 32,768-element dense case error was 2.04e-7. This verifies the actual
 generated CUDA kernel and its source placement after retrace/before PPO,
 not policy learning. The training process has started after the audit;
 warmed SPS and held-out scores remain pending.
+
+Live recheck confirmed the effective run has `train.norm_adv=1`, both
+discounts 0.999 and land-change reward weight zero. Training passed 2.6M
+steps without nonfinite failure, reached epoch 24 (12.58M environment
+steps), and saved the 8.39M checkpoint. After 12 warmup epochs, epochs
+12→24 completed 6,291,456 steps in 109.606 seconds: **57,401 sustained
+end-to-end environment SPS**, one process and aggregate. The recent
+GPU-sample window averaged 85.5% utilization; VRAM was about 44.5 GiB.
+The added kernel did not cause a throughput failure. Policy loss mean was
+near zero as expected for centered minibatch advantages; displayed KL and
+clip fraction remained near zero. None of these diagnostics establishes
+quality. Job 29473 remains live with the four held-out panels scheduled
+after training; no additional Generals job was submitted.
