@@ -100,9 +100,11 @@ def main():
         args.hint_audit and 0.0 <= args.counterfactual_hint_scale < 1.0
     )
     record = json.loads((args.run / "training.json").read_text())
-    completed = json.loads((args.run / "completed.json").read_text())
+    completed_path = args.run / "completed.json"
+    completed = json.loads(completed_path.read_text()) if completed_path.exists() else None
     assert args.seed != record["config"]["seed"]
     if not args.diagnostic_checkpoint:
+        assert completed is not None, "Completed run metadata is required outside diagnostic mode"
         assert args.checkpoint.relative_to(args.run).as_posix() in completed["checkpoints"]
     manifest = json.loads(args.build.read_text())
     assert manifest == record["build"]

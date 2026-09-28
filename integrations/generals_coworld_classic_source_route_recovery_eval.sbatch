@@ -19,11 +19,14 @@ source=$disk/classic-source-route-selfplay-pilot-29068/staged
 pilot=$disk/classic-source-route-selfplay-pilot-29068
 out=$disk/classic-source-route-recovery-eval-$SLURM_JOB_ID
 mkdir -p "$out"
+base64 -d <<'EVALUATOR' > "$out/evaluate.py"
+__EVALUATOR_BASE64__
+EVALUATOR
 checkpoint=$pilot/run/checkpoints/metta_generals/run/0000000016777216.bin
 build=$pilot/build/build.json
 run=$pilot/run
 test -f "$checkpoint" && test -f "$build" && test -f "$run/training.json"
-test "$(sha256sum "$source/evaluate_coworld_frozen_opponent_pilot.py" | cut -d' ' -f1)" = 297b742580461d148a47e8d2d2453d3f179442e9b24185e8926f2d141b53e7d7
+test "$(sha256sum "$out/evaluate.py" | cut -d' ' -f1)" = 86c0ade6ded61787e0a768d80fe00a14ef328db69f64871ac26f52e207ce43db
 test "$(sha256sum "$source/generals_fabric.py" | cut -d' ' -f1)" = 32ff855f614a2a5102e94433fc3d51b619bfee7f379f5f0490522693913dcfbe
 python3 - "$build" <<'PY'
 import json,sys
@@ -65,7 +68,7 @@ test "$container_uuid" = "$gpu"
 for opponent in expander_harvester sentinel; do
     result=$out/$opponent
     timeout -k 30s 7m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
-        python "/recovery/classic-source-route-selfplay-pilot-29068/staged/evaluate_coworld_frozen_opponent_pilot.py" \
+        python "/recovery/classic-source-route-recovery-eval-$SLURM_JOB_ID/evaluate.py" \
         --build /recovery/classic-source-route-selfplay-pilot-29068/build/build.json \
         --run /recovery/classic-source-route-selfplay-pilot-29068/run \
         --checkpoint /recovery/classic-source-route-selfplay-pilot-29068/run/checkpoints/metta_generals/run/0000000016777216.bin \

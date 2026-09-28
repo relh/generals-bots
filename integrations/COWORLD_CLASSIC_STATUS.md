@@ -6744,3 +6744,12 @@ pilot. Its 16,777,216-agent-step checkpoint exists. Evaluate that saved
 8,388,608-environment-step checkpoint on the paired seed-1386 panels before
 deciding whether to resume training. Do not count the stopped job as a
 completed quality experiment.
+
+First recovery evaluation job 29107 stopped before scoring because the
+evaluator unconditionally read `completed.json` from the intentionally
+partial training run, even in `--diagnostic-checkpoint` mode. The
+checkpoint SHA256 was
+`9dbba5ad998f9904ca58f0b445d9a859ee9f4748d9a405d425ac86822d990e07`;
+job 29107's assigned B300 GPU was again physically idle at preflight.
+The evaluator now permits absent completion metadata only in diagnostic
+mode and still checks checkpoint bytes against the pinned SHA256.
