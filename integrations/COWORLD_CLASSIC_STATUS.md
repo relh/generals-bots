@@ -7099,3 +7099,24 @@ on 12.0% of moves; turns 100–199 had no passes and 5.2% half moves.
 This is a small, opponent-specific sample, so any behavioral cloning from
 it needs a game-held-out check and then independent RL and quality gating;
 the replay labels should not become a permanent teacher loss.
+
+Bounded inference-only B300 job 29364 compared the early 8.39M and final
+frozen-opponent 12.58M flat checkpoints on the same 846 held-out Daveey
+public positions. Its assigned physical GPU was
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, 0 MiB/0% at preflight;
+an unrelated Slurm job occupied another GPU, with no observed same-GPU
+contention. The early/final models agreed with Daveey's top action on
+**22.75%/21.25%** of turns 0–99 and **24.70%/24.70%** of turns
+100–199. Their predicted early pass rate was **5.25%** versus Daveey's
+**24.25%** and both predicted **zero half-army moves**, versus Daveey's
+8.75% early and 4.27% midgame. Their mean probability of Daveey's
+chosen midgame action was only **2.32%/2.33%**. This is a matched-state
+inference comparison, unlike the separate match action counters: the
+frozen-opponent RL continuation barely changed the actions on these
+expert positions. The 29364 inputs, script, logs, and reports are archived
+locally and on metta0 at
+`/tmp/relh-classic-expert-action-audit-29364.tar.gz`, SHA256
+`9ca6bf6ac98f595bcefcfa12a46bf18c3536e12b82a336a76748504a060bef20`.
+These exact-action comparisons alone do not prove whether Daveey's choice
+is uniquely optimal, but they identify missing pass/half-move behavior
+and show that merely continuing the current flat actor did not learn it.
