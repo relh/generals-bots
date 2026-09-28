@@ -8922,3 +8922,21 @@ Serving report/private exported bundle archive verified Mac/controller:
 /tmp/relh-native-flat-serving-probe-29937.tar.gz SHA256
 db3ac8c9d0033df36901f4b54aa41d3e57b37115ec1a3becc22797193e516dff.
 No publication side effect. Sequential GPU quality panels remain at train end.
+
+29962 second134,217,728 additional-step checkpoint saved. Native .learner
+identity and node/Mac SHA256 agree:
+0501c3f19317d323339702da943f130e918230314a6269dd21a69a76fabab0ff.
+All1,269,376 parameter words finite. CPU check on the same24 archived29937
+CUDA parity views/partial reset yields max output1.50427/state3.93733;
+no observed collapse. Report /tmp/relh-native-frozen-gen1-300m-29962-134m-activation.json
+preserved Mac/controller. These are numerical activation checks, not new
+held-out game scores. Job confirmed RUNNING at14m18; leave the same trainer
+in place. Recent12-epoch interval193209 physical SPS; no duplicate GPU job.
+
+Read-only review found prior four-feature/16-global/two-cell Fabric spatial
+probe27580 spent5min compiling without an epoch and was correctly stopped.
+That build had a strength2 public prior. Do not replay that setup or project
+throughput from it. Current300M native result remains the next decision gate;
+if it fails quality, a larger actor needs an efficient implementation and its
+own finite/throughput/quality evidence, rather than another unsupported wide
+Fabric compile or a continuation of an already failed recipe.
