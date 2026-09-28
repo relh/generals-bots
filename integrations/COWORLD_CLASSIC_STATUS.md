@@ -6702,3 +6702,17 @@ Next quality work should measure strategic pass, split, source-army, and
 enemy-territory attack behavior alongside held-out wins before another long
 run; the 392k-SPS native recipe already showed that raw throughput and more
 steps alone do not close the hosted gap.
+
+## Source-army route pilot (2026-09-28)
+
+The next bounded actor graph retains the 11 public directional planes and
+four tied route-direction edges, but adds one tied, trainable connection
+from channel 0's log-scaled army at the selected source cell to each move
+logit. This supplies source-stack ranking without an exact scripted action
+hint or teacher targets. `generals_coworld_classic_source_route_selfplay_pilot.sbatch`
+keeps the previous 4,096-game, two-seat Classic PPO geometry and held-out
+seed-1386 ExpanderHarvester/Sentinel panels. It initializes the source
+weight at 4.0 and route weights at 0.5, trains at most 33,554,432
+environment steps, and has a warmed 30k environment-SPS guard. An extension
+requires both actual held-out wins and evidence that the actor chooses
+useful large-army sources; throughput alone will not release one.
