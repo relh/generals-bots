@@ -8183,3 +8183,46 @@ of runtime. Doubling optimization could reduce throughput materially;
 this comparison retains its own 30K guard and cannot justify a long run
 until its measured steady-state throughput and policy quality pass.
 Config and schedule evidence is `/tmp/relh-classic-full-replay-config-check`.
+
+
+## 300M continuation training completed (29588; evaluations ongoing)
+
+The training subprocess completed successfully at epoch 572, exactly
+299,892,736 additional environment/agent steps (300M budget rounded to
+524,288-step epochs); parent lineage totals 333,447,168 steps. Hardware is
+one pinned B300, 4096 one-seat environments, H128, minibatch 32768, replay
+0.5. Settings remain archived 11-plane actor, no teacher, mixed scripted
+opponents balanced on both sides, LR .0003, entropy .01, gamma and shaping
+gamma .999, potential-only shaping with land-gain reward zero.
+
+Native metrics report uptime 5273.30 seconds and final instantaneous
+58,973 SPS; whole-runtime throughput is approximately 56,871 SPS. A long
+late steady-state interval from native console epoch 385 at uptime 3602s
+to epoch 572 at 5273s covers 98,041,856 completed environment steps over
+1671s: 58,673 SPS, including rollout and optimization. Timing timestamps
+have one-second precision. This is one trainer and aggregate throughput
+is identical. This interval starts well after startup compilation; physical
+GPU samples were generally 87–89%. Final native timing records rollout
+3.19s (model .92s, environment 2.27s, copy 0), optimization 5.69s (model
+5.68s, miscellaneous .017s). Environment score is not emitted by this
+GPU adapter (env/n=0), so quality must come from explicit match panels.
+
+Final checkpoint SHA256
+`58e69d4854091fea834b8b8a56a251cbaadbd0eae9b6cb00e4c87a60fcd604e7`,
+all 42,584 float32 words finite. Completed training metadata, all checkpoint
+and learner artifacts, config, native console/metrics, and dereferenced
+actual parent build are preserved as
+`/tmp/relh-classic-flat-potential-300m-training-29588.tar.gz` on node, Mac
+and metta0, independently verified SHA256
+`ff3dc9544269dd7c83f304c4d0a9b6929983cb156910d150054ac7dbcb56715f`.
+Unlike the live directory's relative build symlink, this archive includes
+actual build files. Evaluation outputs are not included in this completed
+training archive and will be preserved separately when terminal.
+
+The original bounded job is now evaluating its three selected checkpoints
+serially. Its first checkpoint (+67,108,864 steps, SHA256
+`f42874438bd43f01a18319bb22ed32678e5b8d7aedcceff19ae88d36359ee26d`)
+finished both seed-1386 panels: Expander/Harvester 0 wins /128 losses /0
+draws; Sentinel 0/128/0. The later and final panels are still pending.
+No scaling, hosted request, publication or replacement training job has
+been launched. Finite weights and high SPS do not qualify policy strength.
