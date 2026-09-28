@@ -9,8 +9,6 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
-from metta_training.inference import FrozenPolicy
-from metta_training.model_config import FrozenPolicyConfig
 
 from integrations.metta_puffer import (
     BatchedGeneralsFrozenOpponentPufferEnvironment,
@@ -23,6 +21,7 @@ def main():
     parser.add_argument("--learner-build", type=Path, required=True)
     parser.add_argument("--frozen-build", type=Path, required=True)
     parser.add_argument("--frozen-checkpoint", type=Path, required=True)
+    parser.add_argument("--legacy-fabric", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert jax.devices("gpu")
@@ -40,6 +39,7 @@ def main():
         parallel_games=16, coworld_pool_size=16, horizon=8,
         frozen_codec="hinted_gen0", frozen_build=str(args.frozen_build),
         frozen_checkpoint=str(args.frozen_checkpoint), frozen_sha256=frozen_sha,
+        frozen_legacy_fabric=str(args.legacy_fabric),
     )
     frozen_options.update(parallel_games=16, coworld_pool_size=16, horizon=8)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -69,16 +69,12 @@ def main():
         flat_masks = np.asarray(env._cached_masks[env._rows, sides], bool)
         assert flat_masks[np.arange(16), action[:, 0]].all()
 
-        served = FrozenPolicy(FrozenPolicyConfig(
-            build=args.frozen_build, checkpoint=args.frozen_checkpoint,
-            sha256=frozen_sha, device="cuda:0",
-        ))
-        model = served.policy
+        model = env._frozen_model
         transported = np.zeros((16, model.input_size), np.float32)
         transported[:, :model.observation_size] = np.asarray(frozen_values)
-        with jax.default_device(served.device):
+        with jax.default_device(jax.devices("gpu")[0]):
             prediction, _, _ = model.forward(
-                served.parameters, bytes(16 * model.state_words * 4),
+                args.frozen_checkpoint.read_bytes(), bytes(16 * model.state_words * 4),
                 transported.tobytes(), bytes(16 * 4), 16, 1, True,
             )
         logits = np.frombuffer(prediction, np.float32).reshape(16, -1)

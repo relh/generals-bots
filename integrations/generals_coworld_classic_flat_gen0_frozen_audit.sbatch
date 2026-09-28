@@ -23,6 +23,7 @@ base64 -d <<'BUNDLE' | tar -xz -C "$out/staged"
 __SOURCE_BUNDLE__
 BUNDLE
 source=$out/staged
+test "$(sha256sum "$source/legacy/generals_fabric.py" | cut -d' ' -f1)" = 04d317499de676eb74a91deb2e8b52528c97831d5895a0e1f80b991426238992
 build=$old/build/build.json
 frozen_build=$disk/classic-selfplay-teacher-h128-build-27857/build.json
 checkpoint=$disk/classic-selfplay-init134-h128-27957/run/checkpoints/metta_generals/run/0000000033554432.bin
@@ -56,6 +57,7 @@ timeout -k 20s 6m docker run "${common[@]}" --name "$name" relh-generals-b300:20
     --learner-build /recovery/classic-flat-source-route-selfplay-pilot-29162/build/build.json \
     --frozen-build /recovery/classic-selfplay-teacher-h128-build-27857/build.json \
     --frozen-checkpoint /recovery/classic-selfplay-init134-h128-27957/run/checkpoints/metta_generals/run/0000000033554432.bin \
+    --legacy-fabric "/recovery/classic-flat-gen0-frozen-audit-$SLURM_JOB_ID/staged/legacy/generals_fabric.py" \
     --output "/recovery/classic-flat-gen0-frozen-audit-$SLURM_JOB_ID/result" > "$out/audit.log" 2>&1
 cat "$out/result/audit.json"
 NODE

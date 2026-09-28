@@ -976,7 +976,8 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
 
     def __init__(self, *, frozen_build: str, frozen_checkpoint: str, frozen_sha256: str,
                  context: EnvironmentContext, parallel_games: int = 16,
-                 scripted_hint_fraction: float = 0.0, frozen_codec: str = "same", **options):
+                 scripted_hint_fraction: float = 0.0, frozen_codec: str = "same",
+                 frozen_legacy_fabric: str | None = None, **options):
         from metta_training.inference import FrozenPolicy
         from metta_training.model_config import FrozenPolicyConfig
         from metta_training.native_fabric import compile_policy
@@ -1011,10 +1012,36 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         if factorized and (move_scale != split_scale or move_scale not in (0.25, 1.0)):
             raise ValueError("Frozen generation-0 opponent requires the audited hint codecs")
         frozen_hint_gain = 1.0 / move_scale if factorized else 1.0
-        frozen = FrozenPolicy(FrozenPolicyConfig(
+        frozen_config = FrozenPolicyConfig(
             build=Path(frozen_build), checkpoint=Path(frozen_checkpoint),
             sha256=frozen_sha256, device="cuda:0",
-        ))
+        )
+        if frozen_codec == "hinted_gen0":
+            import importlib.util
+            import sys
+
+            legacy_path = Path(frozen_legacy_fabric) if frozen_legacy_fabric else None
+            if legacy_path is None or hashlib.sha256(legacy_path.read_bytes()).hexdigest() != (
+                "04d317499de676eb74a91deb2e8b52528c97831d5895a0e1f80b991426238992"
+            ):
+                raise ValueError("Generation-0 opponent requires its pinned Fabric implementation")
+            module_name = "integrations.generals_fabric"
+            current_module = sys.modules.get(module_name)
+            spec = importlib.util.spec_from_file_location(module_name, legacy_path)
+            if spec is None or spec.loader is None:
+                raise ValueError("Cannot load pinned generation-0 Fabric implementation")
+            legacy_module = importlib.util.module_from_spec(spec)
+            try:
+                sys.modules[module_name] = legacy_module
+                spec.loader.exec_module(legacy_module)
+                frozen = FrozenPolicy(frozen_config)
+            finally:
+                if current_module is None:
+                    sys.modules.pop(module_name, None)
+                else:
+                    sys.modules[module_name] = current_module
+        else:
+            frozen = FrozenPolicy(frozen_config)
         model = frozen.policy
         expected_frozen_model = (
             "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
