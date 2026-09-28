@@ -9548,3 +9548,41 @@ nice100/12min, hardDocker32GiB/core0, node output
 Exec58965 / Mac /tmp/relh-classic-spatial-portable-quality-retry-stream.tar.gz.
 First-batch GPU-vs-NumPy output/action gates passed; Expander panel reached
 turn151 with862MiB GPU/33% utilization. No new training, hosted, or XP.
+
+
+## 30342 complete spatial quality result; bounded continuation prepared
+
+30342 terminal exit0, no training. Portable GPU argmax first-batch NumPy
+output/action parity passed and every-turn finite/legal checks passed.
+Held-out pool128 seed1386, policy30238 df706173...44ddc:
+Expander19W/108L/1D, score-.6953125,1200turns,22.844s evaluation;
+Sentinel2W/117L/9D, score-.8984375,1200turns,20.206s.
+Quality is weak but positive; this wider spatial actor expands/attacks
+unlike zero-win Native runs. No claim of Daveey/hosted strength.
+Complete Mac /tmp/relh-classic-spatial-portable-quality-retry-stream.tar.gz
+and controller /tmp/relh-classic-spatial-portable-quality-30342.tar.gz
+SHA256 3fe4670a02164a729ff0040c0e3b1772cc8db6dc2c34efda7c36f0792939ad58.
+Node hash/exact container absence guarded in next owned allocation.
+
+Prepared one bounded 33,554,432-additional-ENV-step spatial continuation
+from verified30238weights, same4,096/H128/mb8192/replay.5/LR.0003/no teacher
+recipe, seed741. This is a weight initialization with optimizer reset;
+full learner resume unavailable because recorded environment_sha256 is
+empty and no restorable environment snapshots exist. No training prefix
+replay. At122,457ENV SPS projected273.99s (4m34) plus startup and evaluation.
+Same gamma/shaping.999, strong scripted opponents balanced across sides.
+300s noepoch gate,30k sustained gate, all-gradient finite guard; export and
+two portable GPU panels in the same allocation. Original forward for
+training unchanged; direct optimization retains Puffer PPO/optimizer.
+No hosted registration/XP/champion change. Goal remains active.
+
+Submitted30359: b300/metta-fabric-b300-1,8CPU/64G,nice100/24min,
+physical UUID GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f empty0MiB/0%.
+Parent30342nodearchive3fe4670a...ad58 matched, prior exactcontainer absent;
+653GiB disk/50,710 free tmp inodes, pinnedimagebdd4f2a9a125/driver595.91.07.
+Script /tmp/relh-classic-spatial-local8-direct-continue-run-node.sh
+SHA2564eb43f95e3bd14d86913660b14b6bce25edba94c3f153b197245890c5cbfe7cf,
+revision763afed. Output
+/var/tmp/relh-generals-recovery/classic-spatial-local8-direct-continue-pilot-30359.
+Exec69500, Macstream /tmp/relh-classic-spatial-local8-direct-continue-stream.tar.gz.
+Currently startup; re-poll this allocation, never submit duplicate on timeout.
