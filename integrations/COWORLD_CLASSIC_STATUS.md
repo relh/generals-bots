@@ -7471,3 +7471,38 @@ promotion follows this checkpoint. Its full source, build, checkpoints,
 logs, GPU samples, scores, and paired arrays are archived locally and on
 metta0 at `/tmp/relh-classic-flat-scripted-fresh-29414.tar.gz`, SHA256
 `1b799497680ccc3195568704e6da9a7a5f987b6ea8e8c9ffebc4f3f70ed4429e`.
+
+## Matched potential-only reward pilot (2026-09-28)
+
+The previous goal turn made progress by checking the fresh-run checkpoints:
+all 42,584 policy words were finite, and 96.8% changed between 8.39M and
+33.55M steps (parameter-delta L2 4.03). The weak behavior is therefore not
+explained by a byte-frozen optimizer. The separate verified Daveey self-play
+dataset showed 44.7% early moves into owned cells and 12.5% half moves,
+versus roughly 72% and zero for the fresh flat actor. These are different
+trajectory distributions, not a causal prescription for individual actions.
+
+Fresh-run options also retain a signed `land_gain_reward_weight=0.2` term
+on every land change in addition to terminal win/loss and discounted
+potential shaping. Unlike the existing gamma-matched potential term, this
+extra term is not a policy-invariant shaping reward under discounting.
+Whether it diverts this actor from capture is unproven. Bounded job 29432
+tests that hypothesis by changing only that weight to zero from the fresh
+29414 setup: same seed 739, actor, actual 3:1 scripted mix, 4,096 one-seat
+games, H128, minibatch 32,768, replay 0.5, LR 0.0003, entropy 0.01,
+learner/shaping gamma both 0.999, and 33,554,432-step cap. Expander has
+1,536 lanes per side and Sentinel 512 per side. No teacher or checkpoint
+initialization is used. It saves/evaluates 8.39M and 33.55M on seed 1386;
+the evaluation initial hashes and per-game outcomes will be checked against
+29414 and the earlier reference before claiming a quality gain.
+
+Full queue, node allocation, driver, Docker image and disk were inspected.
+Another task's job 29430 appeared on B300 immediately before submission;
+the assigned physical GPU `GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`
+was nevertheless idle at 0 MiB/0%, with no same-GPU process at allocation,
+and its UUID matched Docker. Job 29432 requests one B300, 8 CPUs, 64 GiB,
+nice 100 and a 40-minute limit. Output is pinned to
+`/var/tmp/relh-generals-recovery/classic-flat-scripted-potential-pilot-29432`
+on `metta-fabric-b300-1`. It is the sole Generals job for this task;
+the 30k warmed SPS guard remains active. Training and score are pending;
+no longer or hosted run is released from the hypothesis alone.
