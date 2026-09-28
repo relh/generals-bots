@@ -8767,3 +8767,40 @@ opponent setup and did not justify publication; it is not positive evidence
 for this native self-play recipe. Native built-in historical pools assert
 against GPU environment backend; future versioned opponents require the JAX
 adapter rather than enabling unsupported core selfplay flags.
+
+## Native normalized self-play29924 completed; frozen-generation adapter ready
+
+29924 completed Exit0 in5m14, on B300 GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7,
+8CPU/64G,nice100; physical0MiB/0% before launch and Docker UUID matched.
+Revisiond2ec987, script SHA2568910ef39a5ea282b2c3363e8c70e4f2b836b8929b8e3cb4225fc3bb4df6aa66b.
+Warm epochs20–64:23,068,672 physical game steps over87.896s
+(45.137–133.033s),262,454.2 environment SPS. All four1,269,376-word
+checkpoints finite; final SHA256d2ed3e1c4279593dbed9d83bbeab42e11a687d7a3f5efdf7083d31ebe6df95ee.
+CUDA parity passes24 real public-view decisions including partial reset,
+max logits3.5763e-7/state5.3644e-7, exact masked actions.
+8.39M Exp0/128/0,Sent0/123/5;33.55M Exp0/128/0,Sent0/127/1:
+0 wins506 losses6 draws. Normalization did not demonstrate arena strength.
+Full node/Mac archive /tmp/relh-classic-native-flat-selfplay-normalized-29924.tar.gz
+SHA256751115a6ae6c8a331c04f086c166bd45deab7461eaaadd45c25a4f103db1c847;
+Mac hash verified/controller copy completed, verification follows.
+
+Prepared NativeFrozenOpponentPufferEnvironment: one learner row/game,
+frozen verified native actor in opposite seat, both sides balanced, actual
+recurrent carry reset on each recycled game. Reject codec mismatch, teachers,
+unverified checkpoints and unsupported heads; preserve NativePufferPolicy's
+build/training/digest guards. One-seat quality/parity views drop only the four
+training-only frozen-reference arguments, keeping actual weights/manifests.
+Real 8-game/32-tick CPU adapter audit compared256 game transitions with the
+existing two-seat adapter: exact states/views/masks/rewards/dones,4 learner
+samples per side,2 forced real selective truncations, exact recurrent resets.
+This is API correctness, not CPU training or an arena-strength evaluation.
+Report /tmp/relh-native-frozen-adapter-cpu-audit-29907.json. New GPU audit must
+pass in the next bounded training allocation before accepting this adapter.
+
+Prepared frozen gen1 pilot: native128x4/LR0.0015/norm_adv1/H128/minibatch8192/
+replay1/gamma=shaping_gamma0.999,4096 games and4096 learner rows,33.55M
+physical steps, fresh seed739. Frozen generation is stable29907 final
+bae809d9...9e226, not a published/strong opponent. No teacher or scripted
+actions during training.2048 learner samples per side per tick. This changes
+the opponent process from live-current self-play to a reproducible previous
+generation; quality still requires independent mixed-opponent evaluation.

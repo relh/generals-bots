@@ -95,6 +95,8 @@ def main():
         from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
 
         options = json.loads(args.build.read_text())["config"]["python_environment"]["options"]
+        for key in ("frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
+            options.pop(key, None)
         options.update(parallel_games=64, coworld_pool_size=64, supervise_teacher=False, teacher_rollouts=False)
         env = BatchedGeneralsPufferEnvironment(
             context=EnvironmentContext(seed=1351, index=0, mode="train", output=args.output), **options

@@ -68,6 +68,8 @@ def main():
             )
         )
     options = manifest["config"]["python_environment"]["options"].copy()
+    for key in ("frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
+        options.pop(key, None)
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     if args.force_hint_move or args.force_hint_split:
         assert policy.action_sizes == (1765, 2)
