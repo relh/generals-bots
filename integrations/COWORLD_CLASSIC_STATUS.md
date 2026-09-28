@@ -9586,3 +9586,46 @@ revision763afed. Output
 /var/tmp/relh-generals-recovery/classic-spatial-local8-direct-continue-pilot-30359.
 Exec69500, Macstream /tmp/relh-classic-spatial-local8-direct-continue-stream.tar.gz.
 Currently startup; re-poll this allocation, never submit duplicate on timeout.
+
+
+## 30359 startup guard and explicit Fabric verification cache
+
+30359 terminal exit1 after300s noepoch gate; exact owned Docker absent.
+It performed no completed training epochs and produced no new trained
+checkpoint. Two expensive cached-program verification compiles took
+~107s each, despite original JAX executable cache hits elsewhere.
+Original training console eventually reached cached GPU environment
+advance, but the existing startup guard stopped the run beforeepoch1.
+Memory observed30.47GiB of64GiB,CPU~101%,GPUidle1624MiB while compiling;
+no physical GPU contention observed. Complete Mac
+/tmp/relh-classic-spatial-local8-direct-continue-stream.tar.gz and controller
+/tmp/relh-classic-spatial-local8-direct-continue-30359.tar.gz SHA256
+7fa64e4781bcce227fab72eaa858899decc10d26a872930dc1f9c6ac0d7e93b9.
+
+Identified a separate Fabric compiler-verification verdict cache: its
+_grade_dir uses FABRIC_VERIFY_CACHE or HOME/.cache/fabric-verify, independently
+of JAX_COMPILATION_CACHE_DIR/XDG_CACHE_HOME. Old successful launcher had
+HOME=/recovery; corrected launcher preserves HOME and therefore missed the
+old verdict cache, triggering the expensive claim battery. Existing node
+/var/tmp/relh-generals-recovery/.cache/fabric-verify contains15 verdictJSONs.
+Set FABRIC_VERIFY_CACHE=/recovery/.cache/fabric-verify explicitly, keep
+verification enabled and HOME unchanged. Also fixed sampler basename to
+match the continuation monitor prefix. Same policy/recipe/budget/guards.
+Replacement scriptSHA256
+78e559b97f5f25db19b7fddae63f2ba3eb96425a6e4d3a8ddcbfe8645f5a293b.
+Only replace after terminal state; never replay completed training.
+
+
+30375 replacement confirmed live, single Generals job, physical B300 UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0% at preflight, UUID
+matched inside Docker. Same8CPU/64G/nice100/24min. Prior30359nodearchive
+7fa64e47...93b9 matched and prior exact container absent.
+FABRIC_VERIFY_CACHE explicit old15verdict cache restored normal startup.
+Completed12epochs; monitor epoch10 SPS4=123594.53 / SPS6=123313.52.
+Console epoch8 uptime64.919s →12 uptime81.662s; optimization~11%,
+first physical liveGPU sample45140MiB/67% utilization. No illegal or
+nonfinite error. This resolves the repeated verification-compile startup
+regression without disabling verification or changing HOME.
+Output /var/tmp/relh-generals-recovery/classic-spatial-local8-direct-continue-pilot-30375.
+Exec65670 / Macstream /tmp/relh-classic-spatial-local8-direct-continue-cache-stream.tar.gz.
+No hosted policy/XP/champion changes; goal remains active.
