@@ -7875,3 +7875,22 @@ checkpoint/throughput evidence, not quality evidence; held-out evaluations
 remain scheduled after the run. Full queue confirms only 29588 belongs
 to this Generals task, with unrelated B200/RTX4090 work left untouched.
 The training job is live and is not restarted.
+
+### Local codec dependency gap resolved during 29588
+
+The Mac codec verification now exercises the four previously unavailable
+calibrated-context cases. Adding the existing local Metta training source
+to `PYTHONPATH` first exposed missing `pydantic`; installing pinned
+`pydantic==2.13.5` and `msgpack==1.1.2` into this worktree's ignored `.venv`
+resolved that dependency. The four calibrated-context cases then passed
+(4 passed, 9 deselected), alongside the nine codec cases passed in the
+preceding full invocation. No repo package lock or training image changed.
+This verifies the complete 13-case codec set across the two invocations,
+including flat full/half/pass decoding and wire/training parity. It does
+not claim a frozen-bundle startup/deadline or actual hosted-match result.
+
+Meanwhile 29588 remained the sole Generals allocation, advancing to
+epoch 38 (**19,922,944 additional environment steps**). Its latest
+12-epoch measured rate was **61,462 SPS**, with monitor GPU mean 87.6%.
+The earlier saved checkpoint is finite and training remains live; no
+second training/evaluation job was submitted.
