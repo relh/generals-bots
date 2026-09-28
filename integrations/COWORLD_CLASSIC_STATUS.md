@@ -9300,3 +9300,26 @@ honest environment build manifest and full resource/finite/mask/SPS gates;
 no launcher/job submitted. Spatial30174 must finish and artifacts be preserved
 before any replacement. Goal remains strong held-out+hosted policy,not throughput
 alone. No hosted registry,XP or champion changes.
+
+
+## 30174 reference gradient compilation exceeded reserved memory; stopped
+
+Own read-only overlap step at~9m39 found live audit Python~102%CPU,
+87.77GiB containerRAM,0%GPU/798MiB; subsequentsample88.33GiB. This exceeds
+requested64GiB. Stopped only exactcontainerrelh-classic-spatial-local8-rows-30174
+withdockerstop10s; container absent verified in sameallocation. No unrelated
+job/process touched. SlurmFAILED137:0,21:57:20–22:08:26UTC,11m06 including
+archive/stream. No auditJSON/trainingepoch/checkpoint/quality result.
+Forward equivalence passed; fullgradient equivalence remains unproven.
+Do not replay or extend unchanged reference-gradient compilation: its resource
+cost is unsuitable. Earlier4-localCPUgradient audit remains valid scopeddata.
+
+Full archive /tmp/relh-classic-spatial-rows-audit-budget-stream.tar.gz Mac and
+/var/tmp/relh-generals-recovery/relh-classic-spatial-local8-rows-30174.tar.gz node
+SHA25681b5614e3ad015b8832023035f04f42a8b6ced1c4a3732f503ade814f3015488
+matched,tarlistingcomplete;exec3134terminal137. Controllercopy transferstarted
+/tmp/relh-classic-spatial-local8-rows-30174.tar.gz;digestverify pending.
+No liveGenerals job. Next candidate prepared native territory-reward learning
+probe uses known165kSPS stable30054 setup; needsnew honest environmentbuild
+manifest, hardDockerRAMbound matchingSlurm, and verification/quality gates
+before submission. Goalactive,notblocked;no hosted/registry/XP/championchange.
