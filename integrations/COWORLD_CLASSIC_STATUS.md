@@ -6586,3 +6586,15 @@ are archived locally and on metta0 as
 `ca675e5e57240d5c186e44b6487cf27015e0bd62a124735dd7235bc67cfe5436`.
 The cache source was already committed in `382414c`; this run validates its
 semantics and throughput. It does not justify hosted publication.
+
+The next bounded quality test isolates reward clipping. PufferLib commit
+`6ffa5b10` hard-clamps rollout rewards to ±1 in `src/pufferl.cu`. The
+long-run held-out diagnostics above found raw terminal rewards near ±20,
+so the trainer compresses terminal outcomes while retaining much of the
+dense shaping reward. `generals_coworld_classic_gen0_reward_scale_pilot.sbatch`
+keeps the verified cached adapter, seed 745, initialization, opponent,
+model, and rollout settings of pilot 28890 but changes only the environment
+`reward_scale` from 0.5 to 0.02. On the measured held-out trajectory
+extrema, that would put terminal magnitudes below 1; the subsequent reward
+diagnostic must verify actual clipping. The pilot is limited to 12.6M steps
+and two 128-game held-out panels. It has not yet been submitted.
