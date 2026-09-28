@@ -8689,3 +8689,37 @@ Node output /var/tmp/relh-generals-recovery/classic-native-flat-selfplay-gen0-pi
 Build contract passed; training is compiling. No steady SPS or learning
 result yet. Archive streams on exit, including failure, to
 /tmp/relh-classic-native-flat-selfplay-gen0-703982b-stream.tar.gz on Mac.
+
+## Native self-play29890 completed; recurrent saturation found
+
+Completed Exit0 in5m44 including training, parity,512 games and archive.
+Warm epochs20–64:23,068,672 physical game steps /90.485s (47.841–138.326s),
+254,944.7 environment SPS; agent SPS is twice this and must not be reported
+as game SPS. 4096 games/8192 rows,H128/minibatch8192/replay1.
+Recent epoch63 rollout~1.302s (model0.367/env0.935/copy0),train0.725s.
+Physical utilization samples varied66–100% during training; final evaluation
+samples must not be averaged as training utilization. No contention seen.
+67,108,864 audited agent actions,0 illegal. All four1,269,376-word
+checkpoints finite. Final SHA256
+c126e03bb6901d09dee08595ecfd5685e730b985e6286c2d7363db67ba73109a.
+CUDA parity passes24 public-view decisions including partial reset;
+max logits9.05e-37/state3.66e-4 (relative tolerance), actions identical.
+8.39M physical-step Exp0/128/0,Sent0/124/4;33.55M Exp0/128/0,
+Sent0/126/2:0 wins506 losses6 draws total. Reject scaling/publication.
+
+Finite parameters conceal dead recurrent activations. CPU NumPy inspection
+of the same24 actual CUDA parity views (input range0–1) gives max absolute
+outputs5.695 at8.39M physical steps,4.55e-14 at16.78M,1.56e-31 at25.17M
+and33.55M. Final last-layer turn0 candidate preactivation −464 to−117.5;
+94.14% projection preactivations exceed80. This is direct evidence of
+saturation on those views, not a claim that all trajectories were inspected
+or proof that learning rate caused it. Report
+/tmp/relh-native-selfplay-activation-diagnosis-29890.json.
+A fresh identical self-play pilot changes only LR0.015→0.0015 to test this
+failure. Same seed and evaluation maps; no teacher/historical pool added.
+
+Complete node/Mac archive /tmp/relh-classic-native-flat-selfplay-gen0-29890.tar.gz,
+SHA256237a96af0a64471d3205544b0a79c875370f97f221e4b259c1b9794855a520ca.
+Mac hash verified and controller copy complete; controller verification follows.
+GPU was0MiB/0% and own container stopped at completed evaluation; unrelated
+relh-cvc-readonly container belongs to another task and was left untouched.
