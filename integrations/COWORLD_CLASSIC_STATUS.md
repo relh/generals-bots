@@ -9174,3 +9174,65 @@ must be verified before treating silence as evidence.300s startup guard,
 This isolates batch size and identifies the Python/JAX stage rather than
 replaying an unsupported idle wider model. Goal remains active;no hosted,
 registry,XP or champion changes. No live Generals job remains.
+
+## Smaller-batch compile diagnosis30111 and verified optimization-row adapter
+
+30095 ran the preparedmb8192 diagnostic:8CPU/64G,oneB300,nice100,20min.
+Both launcher/embeddedPython timed-stack files were present. Embeddedtrainer
+SIGSEGV11 at its first60s timed stack dump;stack stopped in JAXpartial_eval/
+pjit. Correlation does not prove the timer caused it. Archive creation then
+failed ENOSPC because host/tmp had0freeinodes (bytes remained1.6TiB),masking
+trainererror with final SlurmFAILED2:0.21:18:40–21:19:58UTC,0epochs/0checkpoints.
+DirectSSHmetta/ec2-user toB300 rejected;recovered actual failure in nextown
+allocation rather than claiming the incomplete trace proved a modelbug.
+
+30111 repeated same8-local actor/mb8192 without timed faulthandler,enabled
+JAX_LOG_COMPILES,and writes archives on /var/tmp/relh-generals-recovery/root
+filesystem. SameGPUUUID0c5605ae...482a empty at start/containerUUIDmatched;
+driver595.91.07/imagebdd4f2...e5,655GiB free,8CPU/64G,nice100,20min bound.
+Own30095 terminal/containers reconciled;other jobs untouched. Native30080
+build reused;no architecture/environment/reward/optimizer change. 8.39M
+step diagnostic budget,H128,mb8192,replay.5,LR.0003,gamma/shaping.999.
+
+30111 JAXlog identifies actual modelstartup stages:initialization,sequence
+forward,and parameter-gradient compilation. Forwarddevice_core at64groups×
+128steps (8192rows) traced9.80s,MLIR1.03s,XLAcompiled104.258s. Gradientlambda
+traced5.87s,MLIR0.919s,still compiling at300s startupguard. No epochs,
+checkpoints,SPS or quality. Guard stopped owncontainer/sampler;FAILED1:0,
+21:22:28–21:28:23UTC,including complete archive transfer. NoSIGSEGV occurred
+before guard inthis run. Minibatch reduction alone does not qualify theactor.
+
+Complete30111 archive preserved Mac/controller:
+/tmp/relh-classic-spatial-local8-mb8192-30111.tar.gz SHA256
+85898c7bd51d1ec7c13d48e33eff80d705bd2c0650fe552022d6a7ba8ff74a09.
+Macinspection /tmp/relh-spatial-mb8192-30111-inspect. Contains recovered30095
+source/logs/stackfiles inprevious-30095.tar.gz (itsbuild reference remains
+preserved separately as complete30080). Compute-node archive hash not read
+before allocation ended;two-copy verification only until nextownmetadata step.
+
+Implemented memoryless_optimization.py:for the pinned mailbox-only spatial
+factory,flatten plainPPO optimization B×T to independent(B*T)×1rows. Restrict
+exact factorySHA445724d7...6c322 and nativebridgeSHA
+c1bed03201af5133badfe8c5fa1566efc3830acc73c68798fbf5b7f7d7e051c1,
+public4851/[3529],no globalfeedback,teacher,auxiliary/temporalobjectives or
+replaymetadata. Rollout/serving path unchanged;optimization advancedstate is
+unused byexisting forward_device. Backward cotangents reshape preserving all
+PufferPPO weights/losses/optimizer ownership. Deferred activation imports the
+adapter after nativebridge loads;CPUactivation marker check passed.
+
+Numerical CPUaudit passed on actual29432 trainedf1db428b...c359ef,42584words,
+six real public29937 parityviews,B2×T3,nonempty incomingstate and selective
+resets. Outputs exactly equal;maxparametergradientdifference1.13249e-6,
+originalgradientnorm1.79174;rolloutoutputs andadvancedstateexactlyequal.
+Report /tmp/relh-memoryless-optimization-cpu-audit.json/log. This verifies
+optimization equivalence for the testedcontrol,not8-local GPUperformance,
+fulltraining stability or arena strength. AuditCLI can also use the native
+initializer to verify the newactor before a checkpoint exists.
+
+Prepared (not submitted) /tmp/relh-classic-spatial-local8-optimization-rows-run-node.sh
+SHA4ce38e90d9eebc86db88c1dab910606754ee778550a1228d613259883ac31b7b.
+Sameactual30080actor/build,mb8192/H128,8.39M budget. First verify embedded
+activation and exact8-local GPU output/gradient equivalence,then bounded
+trainer with300sstartup/finite/30k SPS guards;no longrun absent those gates.
+Root-filesystem archive retains allcode/checks/digests. No liveGenerals job,
+hostedregistration,XP request or championchange. Strong-policy goal active.
