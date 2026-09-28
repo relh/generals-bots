@@ -7667,3 +7667,42 @@ locally as recorded above. Python compile and diff checks pass. No timed
 actor is built or trained yet. Job 29473 still uses its pinned original
 11-plane source and remains the only Generals job; its normalization
 comparison is unaffected by these prepared changes.
+
+## Completed normalized actor comparison (2026-09-28)
+
+Job 29473 completed all 33,554,432 steps and four evaluations with Slurm
+`COMPLETED`/exit `0:0` in 17m17s. The final 12-epoch interval including
+the last save measured **55,981 environment SPS**; recent GPU samples
+averaged 83.7%. Both evaluated checkpoints had 42,584 finite policy words.
+Their early/final SHA256s are respectively
+`0de555bd7df68b9e44d4aa8f93c5ee3416b902bcda26f69c85ea856418dba973`
+and `22d7759f936988270fe483efccf89878844cb8c3eeb272454269ec4a157f6824`.
+The recorded run explicitly used `train.norm_adv=1`.
+
+| Environment steps | ExpanderHarvester W/L/D | Sentinel W/L/D |
+| ---: | ---: | ---: |
+| 8,388,608 | 22/101/5 | 1/123/4 |
+| 33,554,432 | 29/95/4 | 6/112/10 |
+
+All initial state hashes, sides and opponent IDs exactly match both the
+unnormalized potential-only control (29432) and original early flat
+reference. Against the control's final 23/100/5 and 1/119/8, normalized
+final paired improved/worsened/tied counts are **22/14/92** Expander
+and **11/2/115** Sentinel. Against the original reference's 32/92/4
+and 3/118/7, they are 18/18/92 and 10/5/113. Normalization gave a positive
+aggregate score change on both panels relative to its exact control,
+especially Sentinel, while remaining weak in absolute terms. These small,
+repeatedly inspected 128-game panels do not establish competitive strength
+or justify publication. The final actor still used zero half moves, sent
+about 71% of early moves into owned cells, and averaged about 35/32 owned
+tiles on turns 100–199 against Expander/Sentinel. A fresh-map comparison
+is the next quality check before scaling this configuration; the optional
+turn feature remains untrained and is not mixed into this comparison.
+
+After confirmed terminal state, the full source/build/run, CUDA audit,
+checkpoints, four score panels, paired arrays, GPU samples and batch log
+were retrieved. The allocated retrieval GPU was idle at 0 MiB/0% with
+no lingering training container. Archive:
+`/tmp/relh-classic-flat-scripted-normalized-29473.tar.gz`, SHA256
+`0686d40a58a7c731c6c68f7eb8d2a736017905e872185f15255fbd836b954d3b`.
+No longer run, hosted request, policy upload, or promotion has followed.
