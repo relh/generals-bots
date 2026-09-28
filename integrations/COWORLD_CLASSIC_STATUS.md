@@ -8117,3 +8117,40 @@ claimed remedy or submitted/dependent job. The sole Generals allocation
 29588 remains on its exact archived 11-plane sources, reaching epoch 313
 (164.10M additional steps), trailing 12-epoch 58,156 SPS and GPU mean
 87.8%. No additional GPU work or hosted side effect was started.
+
+
+## Native device bridge transition fixture (29588)
+
+A bounded CUDA fixture ran inside the existing 29588 allocation on its
+pinned B300 physical GPU. It compiled the exact archived 29432 production
+`metta_device_environment.cuh`, `metta_python.cuh`, `pufferenv.h`, `ini.h`
+and raylib header, and called the actual archived Python DeviceEnvironment.
+Assertions remained enabled (Python's -DNDEBUG flag explicitly removed).
+The fixture replaced only the game factory with known JAX arrays at the
+production dimensions: 4,096 rows, 4,851 observations, 3,529 mask columns.
+
+Reset and two native steps passed exhaustive observation/mask/reward/done
+comparisons. The patterns include rewards -0.5 through +0.5, row-dependent
+terminal flags, changing one-hot legal masks, and a whole-environment reset
+on the second step. Reset observations/masks were returned while that
+transition's rewards and terminal flags were preserved. The actual callback
+mask audit reports 8,192 actions, zero illegal. This verifies the native
+CUDA/DLPack transport, not Generals reward arithmetic or PPO replay/GAE.
+Source inspection additionally confirms the production batched game callback
+replaces terminal rows with reset observations/masks while retaining rewards
+and dones; its intermediate final-state encoding is not sent on terminal rows.
+
+The first compile attempt failed before GPU execution because nvcc rejected
+Python's host -fno-strict-overflow flag; forwarding host flags fixed compilation.
+No trainer was restarted and no new Slurm allocation was submitted.
+The fixture container exited and the physical GPU again contains only the
+training wrapper and native trainer. At epoch 435 (228,065,280 additional
+environment steps), trailing 12-epoch throughput was 57,720 SPS, GPU mean
+87.8%; no sustained throughput-floor violation was observed.
+
+Full fixture sources, binary, callback output and source hashes are preserved
+on the compute node and independently copied locally and to metta0 as
+`/tmp/relh-classic-device-bridge-fixture-29588.tar.gz`, SHA256
+`d48ffbda4c6c5393541ac85321d3798a62f68c2341777883c4430414324601f7`.
+The 300M run remains the only Generals job. Its already scheduled checkpoint
+quality panels will run serially after training, before any scaling decision.
