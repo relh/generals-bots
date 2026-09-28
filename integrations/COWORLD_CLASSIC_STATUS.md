@@ -6753,3 +6753,21 @@ checkpoint SHA256 was
 job 29107's assigned B300 GPU was again physically idle at preflight.
 The evaluator now permits absent completion metadata only in diagnostic
 mode and still checks checkpoint bytes against the pinned SHA256.
+
+Corrected recovery quality job 29110 completed on the exact checkpoint,
+held-out seed 1386, 128 Classic games per opponent. W/L/D was **23/99/6**
+versus ExpanderHarvester and **1/118/9** versus Sentinel. At the same
+8,388,608 environment steps, route-only job 28977 had **0/124/4** and
+**3/124/1** respectively. The source-army path improves the first opponent
+substantially but is still weaker than the usable generation-0 reference
+(63/51/14 and 39/82/7). No hosted action or promotion follows.
+
+Checkpoint, optimizer snapshot, identity record, build/run manifests, and
+both quality JSONs were copied to this machine and metta0 as
+`/tmp/relh-classic-source-route-8m-checkpoint-quality-29068-29110.tar.gz`,
+SHA256 `d0996459a8f62273a10e867d41b6e4381ab65152fcfebf3ab75bed3d7b62a91a`.
+The recovery script resumes the exact learner/optimizer at agent step
+16,777,216 with the same build, seed 732, PPO overrides, and final
+67,108,864-agent-step budget. It tests the 16.78M and 33.55M environment
+step checkpoints against both held-out panels. A longer run still requires
+quality gains over generation 0, not just this early route-only improvement.
