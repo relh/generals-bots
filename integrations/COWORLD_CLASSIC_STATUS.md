@@ -6823,3 +6823,43 @@ The next frozen counterfactual keeps the final move head unchanged and
 forces only the full-army split choice during held-out play. This tests
 how much of the quality collapse the saturated split head explains; it
 does not modify the published model or justify a hosted test.
+
+Full-army split counterfactual job 29149 completed with the final
+checkpoint unchanged. It replaced **83,290** split decisions against
+ExpanderHarvester and **104,639** against Sentinel, leaving the move-head
+choice untouched. Held-out W/L/D recovered from final policy 0/126/2 and
+0/127/1 to **17/107/4** and **1/119/8**. Initial hashes, sides, and
+opponent IDs were identical across final, forced-full, and early panels.
+Final-to-forced-full outcomes improved/worsened/tied in 21/2/105 Expander
+cases and 8/0/120 Sentinel cases. Compared with the early checkpoint,
+forced-full was still worse: Expander 12/20/96 and Sentinel 7/8/113.
+The split-head saturation therefore causes much of the late collapse,
+but move selection also regressed. The intervention results and logs are
+archived locally and on metta0 as
+`/tmp/relh-classic-source-route-full-split-eval-29149.tar.gz`, SHA256
+`ba4348586eb4d07f40502d27ab1731f3371ef305c0c6b53d478bf8769b57e59a`.
+No model was changed or hosted. A flat move-and-split action representation
+is the next structural experiment because the current independent split
+head cannot condition its choice on the chosen source and direction.
+
+## Flat move-and-split Classic pilot (prepared 2026-09-28)
+
+The 11-plane public directional codec now exposes one legal head with
+`8 × 21² + pass` actions. Full and half moves duplicate the same legal
+source-direction mask; `decode_action` maps the first four direction planes
+to full army and the next four to half army. The two-stage spatial actor
+reads local source features into both action groups, with separate tied
+readouts for each direction and split. Its initial public source-army and
+route weights favor full moves, with a learnable full-move bias on the
+owned-cell plane; it contains no exact scripted action hint or teacher
+target. The factorized actor remains the default for existing checkpoints.
+
+`audit_coworld_flat_action_codec.py` checks observations, all mask fields,
+and sampled decoded moves across both seats of 16 generated Classic maps
+before the new graph builds. The bounded flat pilot uses 4,096 two-seat
+games, H128, minibatch 32,768, PPO entropy 0.01, gamma and shaping gamma
+0.999, seed 733, 33,554,432 Classic environment steps maximum, and a
+30k warmed environment-SPS guard. It scores 8.39M and 33.55M checkpoints
+on the same seed-1386 ExpanderHarvester and Sentinel panels. A long run or
+hosted test requires a gain over the generation-0 reference, not merely
+legal action parity or faster training.

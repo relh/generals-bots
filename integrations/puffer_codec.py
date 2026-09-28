@@ -102,7 +102,7 @@ def encode_coworld_lean_observation(obs):
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
-def encode_coworld_directional_observation(obs):
+def encode_coworld_directional_observation(obs, *, factorized_actions=True):
     """Lean public view with one channel for each Harvester route direction."""
     route = harvester_route_features(obs)
     planes = jnp.stack((
@@ -116,7 +116,11 @@ def encode_coworld_directional_observation(obs):
         route[3], route[4], route[5], route[6],
     )).astype(jnp.float32)
     moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
-    return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
+    mask = (
+        jnp.concatenate((moves, jnp.ones((3,), dtype=bool))) if factorized_actions
+        else jnp.concatenate((moves, moves, jnp.ones((1,), dtype=bool)))
+    )
+    return planes.reshape(-1), mask
 
 
 def encode_coworld_packed_directional_observation(obs):

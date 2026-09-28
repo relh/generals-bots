@@ -104,7 +104,7 @@ class GeneralsPufferEnvironment:
             raise ValueError("Choose one map curriculum")
         if coworld_classic and (coworld_pool_size < 16 or coworld_pool_size % 16):
             raise ValueError("Coworld map pool must contain the 16 board sizes evenly")
-        if compact_features and (not coworld_classic or not factorized_actions or goal_features):
+        if compact_features and (not coworld_classic or (not factorized_actions and not directional_features) or goal_features):
             raise ValueError("Compact observations require Coworld Classic and factorized actions")
         if lean_features and (not compact_features or goal_features):
             raise ValueError("Lean observations require compact Coworld Classic features")
@@ -216,7 +216,9 @@ class GeneralsPufferEnvironment:
             if hint_features
             else encode_coworld_packed_directional_observation
             if packed_directional_features
-            else encode_coworld_directional_observation
+            else (lambda obs: encode_coworld_directional_observation(
+                obs, factorized_actions=factorized_actions
+            ))
             if directional_features
             else encode_coworld_lean_observation
             if lean_features
@@ -847,8 +849,6 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
             )
         }
         super().__init__(context=context, parallel_games=parallel_games, **options)
-        if not self.base.factorized_actions:
-            raise ValueError("Self-play requires factorized move and split actions")
         self.spec = self.base.spec.model_copy(update={"agents": 2 * parallel_games})
         if self.base.supervise_teacher:
             if self.base.prior_hint_features:
@@ -891,7 +891,9 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
 
         def advance_one(state, pool, indices, splits, key):
             next_key, reset_key = jax.random.split(key)
-            actions = jax.vmap(lambda index, split: decode_action(index, size, split))(indices, splits)
+            actions = jax.vmap(lambda index, split: decode_action(
+                index, size, split if self.base.factorized_actions else None
+            ))(indices, splits)
             previous = jax.vmap(lambda side: game.get_observation(state, side))(self._self_sides)
             timestep, next_state = env.step(state, actions, pool)
             final = jax.vmap(lambda side: game.get_observation(timestep.last_state, side))(self._self_sides)
@@ -938,8 +940,9 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
         if actions.shape != expected:
             raise ValueError(f"Self-play action shape {actions.shape}; expected {expected}")
         paired = actions.reshape((self.parallel_games, 2, len(self.spec.action_sizes))).astype(jnp.int32)
+        splits = paired[:, :, 1] if self.base.factorized_actions else jnp.zeros_like(paired[:, :, 0])
         self.states, self.keys, values, masks, rewards, done = self._advance_self_states(
-            self.states, self.base.pool, paired[:, :, 0], paired[:, :, 1], self.keys
+            self.states, self.base.pool, paired[:, :, 0], splits, self.keys
         )
         self.turn += 1
         if self.turn >= self.horizon:
@@ -977,6 +980,9 @@ class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPuff
         from metta_training.inference import FrozenPolicy
         from metta_training.model_config import FrozenPolicyConfig
         from metta_training.native_fabric import compile_policy
+
+        if not options.get("factorized_actions", False):
+            raise ValueError("Frozen generation-0 opponent requires factorized actions")
 
         super().__init__(context=context, parallel_games=parallel_games, **options)
         self.spec = self.spec.model_copy(update={"agents": parallel_games})

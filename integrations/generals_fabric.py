@@ -301,20 +301,29 @@ def two_stage_tied_local_action_policy(
     context_radius: float = 1.01, hint_prior_strength: float = 8.0,
     broadcast_global_context: bool = False, route_prior_strength: float = 0.0,
     source_army_prior_strength: float = 0.0,
+    factorized_actions: bool = True, half_prior_scale: float = 0.25,
+    full_split_prior_strength: float = 0.0,
 ) -> PolicyGraph:
     """Read neighboring learned site features before scoring each move."""
     cells = height * width
     if min(channels, height, width, features_per_site, global_features) < 1:
         raise ValueError("Policy dimensions must be positive")
-    if observation_size != channels * cells or output_size != 4 * cells + 4:
-        raise ValueError("This policy requires channel-first maps and factorized Generals actions")
+    move_logits = (4 if factorized_actions else 8) * cells
+    if observation_size != channels * cells or output_size != move_logits + (4 if factorized_actions else 2):
+        raise ValueError("This policy requires channel-first maps and the matching Generals action layout")
     if context_radius < 1:
         raise ValueError("The context layer must reach neighboring sites")
-    if min(route_prior_strength, source_army_prior_strength) < 0:
+    if min(route_prior_strength, source_army_prior_strength, full_split_prior_strength) < 0:
         raise ValueError("Public action priors must be nonnegative")
-    if hint_prior_strength and (route_prior_strength or source_army_prior_strength):
+    if not 0 <= half_prior_scale <= 1:
+        raise ValueError("Half-army prior scale must be in [0, 1]")
+    if not factorized_actions and hint_prior_strength:
+        raise ValueError("The exact-action hint prior requires factorized actions")
+    if factorized_actions and full_split_prior_strength:
+        raise ValueError("The full-army action prior requires flat actions")
+    if hint_prior_strength and (route_prior_strength or source_army_prior_strength or full_split_prior_strength):
         raise ValueError("Public action priors and the exact-action hint must be exclusive")
-    if (route_prior_strength or source_army_prior_strength) and channels != 11:
+    if (route_prior_strength or source_army_prior_strength or full_split_prior_strength) and channels != 11:
         raise ValueError("Public action priors require the 11-channel directional observation")
     sense = nn.cluster(
         "sense", nn.atoms.Input(), n=observation_size,
@@ -344,10 +353,11 @@ def two_stage_tied_local_action_policy(
         "out", nn.atoms.Output(), n=output_size,
         geometry=nn.geometry.fields(own={
             (f"a_{i}",): {
-                "coord": ((i % cells) % width, (i % cells) // width) if i < 4 * cells else (-100, -100),
-                "direction": i // cells if i < 4 * cells else -1,
-                "move": i < 4 * cells,
-                "readout_group": i // cells if i < 4 * cells else i,
+                "coord": ((i % cells) % width, (i % cells) // width) if i < move_logits else (-100, -100),
+                "direction": (i // cells) % 4 if i < move_logits else -1,
+                "move": i < move_logits,
+                "readout_group": i // cells if i < move_logits else i,
+                **({"split": i // (4 * cells)} if i < move_logits and not factorized_actions else {}),
             }
             for i in range(output_size)
         }),
@@ -371,15 +381,19 @@ def two_stage_tied_local_action_policy(
         if (src_kind, dst_kind) == ("global", "context"):
             return ("broadcast", source[1], geometry.dst.attr(target, "feature"))
         if (src_kind, dst_kind) == ("context", "out"):
-            return ("action", geometry.src.attr(source, "feature"), geometry.dst.attr(target, "direction"))
+            key = ("action", geometry.src.attr(source, "feature"), geometry.dst.attr(target, "direction"))
+            return key if factorized_actions else (*key, geometry.dst.attr(target, "split"))
         if (src_kind, dst_kind) == ("global", "out"):
             return ("global", source[1], geometry.dst.attr(target, "readout_group"))
         if (src_kind, dst_kind) == ("sense", "out"):
             channel = geometry.src.attr(source, "channel")
             if channel == 0 and source_army_prior_strength:
-                return ("source_army",)
+                return ("source_army",) if factorized_actions else ("source_army", geometry.dst.attr(target, "split"))
+            if channel == 4 and full_split_prior_strength:
+                return ("full_split",)
             if route_prior_strength:
-                return ("route", geometry.dst.attr(target, "direction"))
+                key = ("route", geometry.dst.attr(target, "direction"))
+                return key if factorized_actions else (*key, geometry.dst.attr(target, "split"))
         return ("unique", source, target)
     graph_edges = [
         (sense >> local).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
@@ -413,13 +427,24 @@ def two_stage_tied_local_action_policy(
             ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))),
         )
     if route_prior_strength:
-        graph.add((sense >> out).by(nn.rules.edges(np.asarray(
-            [((7 + direction) * cells + cell, direction * cells + cell)
-             for direction in range(4) for cell in range(cells)], dtype=np.int32
-        ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(route_prior_strength))))
+        for split in range(1 if factorized_actions else 2):
+            graph.add((sense >> out).by(nn.rules.edges(np.asarray(
+                [((7 + direction) * cells + cell, (4 * split + direction) * cells + cell)
+                 for direction in range(4) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(
+                weight_init=fl.inits.constant(route_prior_strength * (half_prior_scale if split else 1.0))
+            )))
     if source_army_prior_strength:
+        for split in range(1 if factorized_actions else 2):
+            graph.add((sense >> out).by(nn.rules.edges(np.asarray(
+                [(cell, (4 * split + direction) * cells + cell)
+                 for direction in range(4) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(
+                weight_init=fl.inits.constant(source_army_prior_strength * (half_prior_scale if split else 1.0))
+            )))
+    if full_split_prior_strength:
         graph.add((sense >> out).by(nn.rules.edges(np.asarray(
-            [(cell, direction * cells + cell)
+            [(4 * cells + cell, direction * cells + cell)
              for direction in range(4) for cell in range(cells)], dtype=np.int32
-        ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(source_army_prior_strength))))
+        ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(full_split_prior_strength))))
     return PolicyGraph(graph, "sense", ("out",))

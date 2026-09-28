@@ -258,10 +258,17 @@ def main():
                 if args.force_hint_split:
                     actions[active, 1] = np.where(hint[active, 0] == 1764, 0, hint[active, 1])
             if args.force_full_split:
-                changed = (~env.finished) & (actions[:, 0] != 1764) & (actions[:, 1] != 0)
+                flat = len(env.spec.action_sizes) == 1
+                changed = (
+                    (~env.finished) & (actions[:, 0] >= 4 * 21 * 21) & (actions[:, 0] < 8 * 21 * 21)
+                    if flat else (~env.finished) & (actions[:, 0] != 1764) & (actions[:, 1] != 0)
+                )
                 intervention["active_steps"] += int((~env.finished).sum())
                 intervention["changed_splits"] += int(changed.sum())
-                actions[changed, 1] = 0
+                if flat:
+                    actions[changed, 0] -= 4 * 21 * 21
+                else:
+                    actions[changed, 1] = 0
             assert masks[np.arange(args.games), actions[:, 0]].all()
             assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
             if action_stats is not None:
@@ -269,7 +276,9 @@ def main():
                 stats = action_stats[phase]
                 active_rows = np.flatnonzero(~env.finished)
                 chosen = actions[active_rows, 0]
-                moving = chosen < 1764
+                flat_actions = len(env.spec.action_sizes) == 1
+                move_logits = (8 if flat_actions else 4) * 21 * 21
+                moving = chosen < move_logits
                 stats["turns"] += len(active_rows)
                 stats["passes"] += int((~moving).sum())
                 stats["moves"] += int(moving.sum())
@@ -278,17 +287,21 @@ def main():
                     choices = chosen[moving]
                     cells = 21 * 21
                     source_cells = choices % cells
-                    directions = choices // cells
+                    directions = (choices // cells) % 4
                     values = np.asarray(observation.values, dtype=np.float32).reshape(args.games, 11, cells)
                     armies = np.rint(np.expm1(values[:, 0] * 8.0))
                     selected_armies = armies[rows, source_cells]
-                    legal_sources = masks[:, :1764].reshape(args.games, 4, cells).any(axis=1)
+                    legal_sources = masks[:, :move_logits].reshape(
+                        args.games, 8 if flat_actions else 4, cells
+                    ).any(axis=1)
                     max_armies = np.where(legal_sources[rows], armies[rows], 0).max(axis=1)
                     assert (max_armies >= selected_armies).all() and (selected_armies > 1).all()
                     stats["source_army_sum"] += float(selected_armies.sum())
                     stats["max_legal_source_army_sum"] += float(max_armies.sum())
                     stats["source_to_max_ratio_sum"] += float((selected_armies / max_armies).sum())
-                    stats["split_moves"] += int((actions[rows, 1] == 1).sum())
+                    stats["split_moves"] += int((choices // (4 * cells)).sum()) if flat_actions else int(
+                        (actions[rows, 1] == 1).sum()
+                    )
                     source_r, source_c = divmod(source_cells, 21)
                     dest_r = source_r + np.asarray((-1, 1, 0, 0))[directions]
                     dest_c = source_c + np.asarray((0, 0, -1, 1))[directions]
