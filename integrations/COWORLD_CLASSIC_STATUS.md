@@ -8486,3 +8486,28 @@ Local validation accepts actual archived manifests and rejects a changed
 checkpoint, actor, target environment or reverse transfer. The ordinary
 frozen inference guard remains unchanged. No300M continuation or hosted
 publication is justified yet.
+
+### Full-game curriculum29773 running
+
+After29755 was confirmed COMPLETED, launched only29773 from56bab2f:
+B300 `metta-fabric-b300-1`, physical GPU
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,8 CPUs/64GiB,nice100,
+40-minute allocation,12-minute bounded trainer and serial quality panels.
+Output: `/var/tmp/relh-generals-recovery/classic-flat-sequence-curriculum-pilot-29773`.
+The allocated UUID had0MiB/0% occupancy and no CUDA processes before
+launch; Docker matched it. Source script streamed to the compute node,
+SHA256 `eccbe338e88f5bc1da2a95ddd9c4227d11519fecc439d63f6179cdeab3eb2173`,
+local `/tmp/relh-sequence-curriculum-submission-56bab2f/run-node.sh`.
+At submission full queue also included29602 on B300,29767/29772 on
+B200, and other RTX jobs. No other Generals trainer/evaluator was active.
+
+Effective native record verifies c004 actor, exact production environment
+SHA25678d562...d76f8, seed739,33,554,432 steps and initialization from
+the exact29755 checkpoint with `allow_environment_transfer=true`,
+`allow_policy_only_transfer=false`, `restore_learner=false`; optimizer
+and learner clocks are fresh. Same actor/geometry full-game throughput
+is already established at56–59k; this new run retains the30k sustained
+guard and has no dependent long continuation. Native first rollout is
+currently warming up. Expected terminal evidence stream:
+`/tmp/relh-classic-sequence-curriculum-56bab2f-stream.tar.gz` on Mac,
+with a named29773 archive produced on the compute node at job end.
