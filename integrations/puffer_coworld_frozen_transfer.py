@@ -41,6 +41,46 @@ PUFFER_REPOSITORY = "https://github.com/PufferAI/PufferLib.git"
 PUFFER_REVISION = "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2"
 
 
+def install_advantage_normalization(source: Path) -> None:
+    """Add Metta's opt-in actor normalizer after GAE/retrace, preserving returns."""
+    path = source / "src/pufferl.cu"
+    text = path.read_text()
+    kernel_bytes = Path(__file__).with_name("puffer_advantage_normalization.cuh").read_bytes()
+    if hashlib.sha256(kernel_bytes).hexdigest() != "2e0875e14e85008ffa2f990109355fe0e29204f3e16dec4fd27adc3bd999b63c":
+        raise ValueError("Advantage normalizer differs from the pinned Metta implementation")
+    kernel = kernel_bytes.decode()
+    replacements = (
+        ("    float momentum;\n", "    float momentum;\n    bool norm_adv;\n"),
+        ('        .momentum = puf_ini_get(ini, "train", "momentum"),',
+         '        .momentum = puf_ini_get(ini, "train", "momentum"),\n'
+         '        .norm_adv = puf_ini_get(ini, "train", "norm_adv") != 0,'),
+        ("static void train_epoch_gpu(PuffeRL* pufferl, RolloutBuf src, int slot,",
+         '#include "metta_advantage.cuh"\n\n'
+         "static void train_epoch_gpu(PuffeRL* pufferl, RolloutBuf src, int slot,"),
+        ("        ppo_loss_fwd_bwd(dec, p_logstd, graph,",
+         "        if (hypers->norm_adv) {\n"
+         "            int count = (int)numel(graph.mb_advantages.shape);\n"
+         "            assert(count > 1);\n"
+         "            metta_standardize_ppo_advantages<<<1, 256, 0, stream>>>(\n"
+         "                graph.mb_advantages.data, count);\n"
+         "        }\n"
+         "        ppo_loss_fwd_bwd(dec, p_logstd, graph,"),
+    )
+    ini_path = source / "config/default.ini"
+    ini = ini_path.read_text()
+    if "norm_adv" in text or "norm_adv" in ini:
+        raise ValueError("Expected the pinned trainer without native advantage normalization")
+    for old, new in replacements:
+        if text.count(old) != 1:
+            raise ValueError(f"Advantage normalization anchor changed: {old}")
+        text = text.replace(old, new, 1)
+    if ini.count("momentum = 0.95\n") != 1:
+        raise ValueError("Puffer advantage default anchor changed")
+    path.write_text(text)
+    (source / "src/metta_advantage.cuh").write_text(kernel)
+    ini_path.write_text(ini.replace("momentum = 0.95\n", "momentum = 0.95\nnorm_adv = 0\n", 1))
+
+
 class BuildConfig(Configuration):
     environment: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
     mode: Literal["train", "eval"] = "train"
@@ -620,6 +660,7 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         cooperative_wait=bool(config.python_environment and not config.python_environment.device_resident),
         device_python_env=bool(config.python_environment and config.python_environment.device_resident),
     )
+    install_advantage_normalization(source)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)

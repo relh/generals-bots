@@ -7560,3 +7560,52 @@ This identifies a distinct learning-scale setting to inspect next; native
 raw-policy normalization experiments earlier in this document did not test
 this spatial flat actor. No normalization patch or second job was applied
 during the matched reward comparison.
+
+## Spatial flat actor advantage-normalization pilot (2026-09-28)
+
+The pinned transfer builder now installs an opt-in `train.norm_adv` flag,
+default zero, using the CUDA kernel from merged Metta
+`packages/metta-training/src/metta_training/native/advantage.cuh` (SHA256
+`2e0875e14e85008ffa2f990109355fe0e29204f3e16dec4fd27adc3bd999b63c`).
+It standardizes the actor's minibatch advantages using sample variance
+and epsilon 1e-8 after GAE and retrace and before PPO. It leaves value
+targets, rewards, masks, and inference untouched. Exact source anchors
+and the kernel hash are checked before building; repeating the patch or
+applying it to a changed seam fails. The launcher pins the new transfer
+source hash, and the resulting binary retains its manifest checksum.
+Local Python compile, bash syntax, source-anchor and diff checks pass.
+
+Bounded job 29473 first compiles and runs the actual generated kernel
+against NumPy on two-element, zero, constant, dense, small-magnitude and
+sparse inputs, including the production 32,768-element minibatch size.
+Training is gated on that audit. It then tests fresh seed 739 with the
+same potential-only rewards as 29432, actual 3:1 scripted mix (Expander
+1,536 lanes per side, Sentinel 512 per side), 4,096 one-seat Classic games,
+H128, minibatch 32,768, replay 0.5, LR 0.0003, entropy 0.01 and matching
+learner/shaping gamma 0.999. Only native actor normalization is enabled.
+The cap is 33,554,432 environment steps, with 8.39M and final paired
+seed-1386 evaluations and the usual 30k warmed SPS/finite-progress guard.
+
+Full queue and node allocations were rechecked. Other tasks' B300 jobs
+29430 and 29461 were running, but the assigned GPU
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` was physically idle at
+0 MiB/0% with no CUDA process, and matched Docker's UUID. Driver 595.91.07,
+compute capability 10.3, runtime image
+`sha256:bdd4f2a9a1251ba57a6a70368e069f45498060d214f6f54d9c2fb70fe1196ae5`
+and 700 GiB free on the Docker/output filesystem were verified. Job 29473
+requests one B300, 8 CPUs, 64 GiB, nice 100, and a 40-minute limit.
+Node-local output is
+`/var/tmp/relh-generals-recovery/classic-flat-scripted-normalized-pilot-29473`
+on `metta-fabric-b300-1`. It is the only Generals job for this task. Kernel
+parity, throughput, and quality remain pending at submission; no hosted or
+longer run follows from this change alone.
+
+Job 29473 built successfully with the unchanged actor fingerprint
+`c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d`.
+The GPU normalizer audit passed all six cases. Maximum absolute error
+against independent float64 NumPy mean/sample-standard-deviation was
+4.73e-6 (sparse case); zero and constant vectors produced exact zero.
+The 32,768-element dense case error was 2.04e-7. This verifies the actual
+generated CUDA kernel and its source placement after retrace/before PPO,
+not policy learning. The training process has started after the audit;
+warmed SPS and held-out scores remain pending.
