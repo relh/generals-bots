@@ -8443,3 +8443,46 @@ source: `/tmp/relh-sequence-credit-submission-f332616/run-node.sh`, SHA256
 `407dc79629665800989fcb3f9b1567f64b42c9331bcb5ab6ae92ee4a9e5ff9f6`.
 Native build/trainer budgets are5/8 minutes;16,777,216 target steps,
 with the sustained30k SPS guard retained. No dependent long job.
+
+### Multi-step probe29755 passed; full-game curriculum pilot prepared
+
+29755 completed and released its allocation after4m51s, ExitCode0.
+Capture rate increased from0.769401 to0.980270. Pooling the first/last
+eight report windows gives71,670/96,900 wins (73.96%) versus
+146,975/149,995 (97.99%). This demonstrates multi-step learning in the
+balanced corridor fixture, not Classic arena strength. Native mask audit:
+16,777,216 actions,0 illegal;42584 checkpoint float32 words all finite.
+Checkpoint SHA256:
+`76762ef01e9b115e9ae6b5d97daba5281ff4fe7e4c8d5646f5929fd95e21dc3d`.
+First epoch at41.139s; warm epochs20–32 cover6,291,456 steps in41.285s
+(uptime106.428–147.713s),152,391 end-to-end environment SPS.
+
+Full build/staged source/configs/checkpoints/learner state/console/metrics
+and GPU/CPU logs are preserved on node/Mac/metta0 as
+`/tmp/relh-classic-sequence-credit-29755.tar.gz`, verified SHA256
+`767d61d06dff16b03eedf0fadbfbe5ada0f53b5728582e2446ae47980a9e763a`.
+The node archive streamed back in the original allocation; no follow-up
+recovery job was needed. Native model-state metadata23834 words describes
+activation state; the checkpoint has42584 parameter words. Actor identity
+remainsc0046141...161d.
+
+Prepared one33.55M-step full-game curriculum pilot using that exact
+checkpoint as policy initialization with fresh optimizer, seed739 and
+the unchanged29432 build/config/reward/opponent mixture. This tests
+whether learned capture sequencing improves full-game training relative
+to the already measured fresh control. Both opponent types remain
+represented on both sides (1536 Expander/Harvester +512 Sentinel per
+side). Settings remain4096 games, horizon128, minibatch32768, replay0.5,
+norm_adv0, learner/shaping gamma0.999, GAE0.99, no teacher. Estimated
+training time9.5–10 minutes at the proven56–59k full-game SPS, followed
+by four128-game held-out panels at8.39M/33.55M versus both opponents.
+
+The new launcher adds one explicit environment-transfer equivalence
+pinned to the corridor checkpoint, source/target environment hashes,
+unchanged actor hash, native revision, activation size, observation/action
+specs and complete non-environment config. Existing checkpoint digest,
+parameter finiteness/model identity and learner-state guards remain.
+Local validation accepts actual archived manifests and rejects a changed
+checkpoint, actor, target environment or reverse transfer. The ordinary
+frozen inference guard remains unchanged. No300M continuation or hosted
+publication is justified yet.
