@@ -7706,3 +7706,28 @@ no lingering training container. Archive:
 `/tmp/relh-classic-flat-scripted-normalized-29473.tar.gz`, SHA256
 `0686d40a58a7c731c6c68f7eb8d2a736017905e872185f15255fbd836b954d3b`.
 No longer run, hosted request, policy upload, or promotion has followed.
+
+## Fresh held-out normalization comparison (submitted 2026-09-28)
+
+One bounded evaluation job, **29515**, compares the normalized final
+checkpoint (29473), its unnormalized final control (29432), and the original
+early flat reference (29162). Each runs 512 games against ExpanderHarvester
+and 512 against Sentinel using fresh seed 1391 and pool size 512. All six
+panels use archived original 11-plane sources from 29473, checked checkpoint
+SHA256s, and the same frozen inference path; the optional turn plane is off.
+Initial hashes, sides and opponent IDs will be checked before paired scoring.
+
+The full queue contained unrelated B300 job 29489 and RTX4090 watcher 28119;
+there was no other Generals allocation. Physical preflight and job startup
+both showed allocated GPU `GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` at
+0 MiB and 0% utilization, with no compute process or Docker container.
+B300 driver 595.91.07, runtime image
+`sha256:bdd4f2a9a1251ba57a6a70368e069f45498060d214f6f54d9c2fb70fe1196ae5`,
+and node-local Docker/output disk had 700 GiB free. No actual contention
+was observed on the allocated device. The job requests one B300 GPU,
+8 CPUs, 64 GiB, nice 100 and 30 minutes on `metta-fabric-b300-1`, pinning
+Docker to the verified physical UUID. Its output directory is
+`/var/tmp/relh-generals-recovery/classic-flat-normalized-fresh-quality-29515`.
+Submission used checkout revision 5115c55 plus the committed evaluation
+script. It is evaluation only; no further training or hosted side effects
+were launched. Scores and archived completion evidence are pending.
