@@ -8676,3 +8676,16 @@ half the native agent counter, and enforces30k environment SPS. Compare
 panels plus real CUDA parity. One bounded job, no dependent long run.
 Config generation against actual archived parent/default.ini and bash syntax
 passed; submission must still pass physical occupancy and container checks.
+
+Native self-play gen0 launched as sole Generals job29890 on B300,
+metta-fabric-b300-1,8CPU/64G,nice100,40-minute allocation with12-minute
+training timeout. Revision703982b, rendered script SHA256
+8e65dce76ca32ef66c8a898abd87d3083b2482e3623b76428b33301548276604;
+source bundle /tmp/relh-native-flat-selfplay-gen0-prepared.
+Physical GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 had0MiB/0%,
+no CUDA processes before launch; container UUID matched. Driver595.91.07,
+imagebdd4f2...e5,660GiB free. Full queue showed no other B300 jobs.
+Node output /var/tmp/relh-generals-recovery/classic-native-flat-selfplay-gen0-pilot-29890.
+Build contract passed; training is compiling. No steady SPS or learning
+result yet. Archive streams on exit, including failure, to
+/tmp/relh-classic-native-flat-selfplay-gen0-703982b-stream.tar.gz on Mac.
