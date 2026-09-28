@@ -27,7 +27,7 @@ sha256sum "$source"/*
 checkpoint=$old/run/checkpoints/metta_generals/run/0000000016777216.bin
 test "$(sha256sum "$checkpoint" | cut -d' ' -f1)" = 5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71
 test -f "$old/run/completed.json"
-gpu=$(bash "$source/allocated_gpu_uuid.sh")
+gpu=$(bash "$old/staged/allocated_gpu_uuid.sh")
 echo "job=$SLURM_JOB_ID node=$(hostname) gpu_uuid=$gpu cpus=$SLURM_CPUS_PER_TASK mem=64G"
 nvidia-smi --query-gpu=index,uuid,name,compute_cap,driver_version,memory.used,memory.total,utilization.gpu --format=csv,noheader
 nvidia-smi --query-compute-apps=pid,gpu_uuid,used_gpu_memory,process_name --format=csv,noheader
