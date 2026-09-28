@@ -7243,9 +7243,10 @@ Bounded job 29388 tested the existing hint-free 11-plane flat actor with
 back into every local move score. The action codec, source and route priors,
 4,096 two-seat Classic games, H128, minibatch 32,768, seed 733, entropy
 0.01, and learner/environment shaping gamma 0.999 matched the previous
-flat self-play pilot. The balanced `strong_mixed` reset assigns 1,536
-ExpanderHarvester and 512 Sentinel games to each learner side. The graph
-has 56.7K parameters and model SHA256
+flat self-play pilot. That environment applies the same learner policy in
+both seats. Although its config carries `strong_mixed` and balanced-side
+options, it never calls the scripted opponent branches during training.
+The graph has 56.7K parameters and model SHA256
 `7b2f1933b452d56c31f4e2b65ab99f329fe2c08b33c6bdfba53c84635df29c64`.
 The 32-view flat mask and decoder parity audit passed before training.
 
@@ -7346,3 +7347,127 @@ as `/tmp/relh-classic-dihedral-blend-result.tar.gz`, SHA256
 `8e7cdbdba8ffd31c86dae1718d8d8c442b0b892ee4dcf6750cf77a8b1e95c94a`.
 No imitation weights are accepted for RL; no hosted request, long training,
 or promotion follows these diagnostic fits.
+
+## Pass-only correction of augmented expert init (2026-09-28)
+
+The augmented replay fit above passed on roughly 61% of early held-out
+match turns, much more than Daveey's 23% in the recorded self-play games.
+The frozen evaluator now accepts a nonnegative `--pass-logit-penalty` on
+the flat pass action. It changes only masked argmax inference, records the
+penalty and changed-action counts, and leaves checkpoint bytes and legal
+masks untouched. This isolates whether excess passing caused the zero-win
+failure without replaying training.
+
+One bounded B300 job 29408 ran penalties 1, 2, and 4 against both
+ExpanderHarvester and Sentinel in paired 128-game seed-1386 panels.
+The assigned physical GPU was
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, idle at 0 MiB/0% at
+preflight; no same-GPU contention or duplicate Generals training job
+appeared. All six panels had identical initial state hashes, sides,
+and opponent IDs to the unmodified augmented checkpoint's panels.
+Early pass frequency fell from about 61% to **15.4%, 5.2%, and 4.5%**
+at penalties 1, 2, and 4, respectively. W/L/D versus Expander was
+**0/125/3**, **0/123/5**, and **0/123/5**; Sentinel was the same at
+each respective penalty. At penalty 2 the clone still sent 89.3% of
+early moves into already owned cells, held only 6.4 tiles on average
+in turns 0–99, and won no games. Excess passing therefore does not
+account for its on-policy failure; its move ranking also fails to expand.
+Job 29408 completed exit 0 in 8m17s. Its source, checkpoint, six panels,
+per-game arrays and logs are archived locally and on metta0 at
+`/tmp/relh-classic-pass-penalty-result.tar.gz`, SHA256
+`5448b95cb97fd24fd41548331aaa88d7f207e7a0abb8fe1a6f86d5c658dd9de9`.
+No version of this cloned policy is accepted for PPO initialization or
+hosted testing. The Coworld umbrella is named `generals-competition`,
+but the XP response for Daveey self-play explicitly identifies each
+episode's `variant_name` as `Classic 1v1`; the action/frame reconstructions
+were against the corresponding Classic engine. The XP response exposes
+policy version v7 and outcomes, but no model architecture, weights, or
+training configuration.
+
+## Flat actor against actual scripted opponent mix (2026-09-28)
+
+Source review found that the earlier flat `BatchedGeneralsSelfPlayPufferEnvironment`
+applies the same learner policy to both seats. Its inherited `strong_mixed`
+option controls unused base-environment opponent branches in that class.
+The previous flat self-play and global-context runs therefore did not train
+against ExpanderHarvester or Sentinel, despite those names in their config.
+They still used full Classic maps and valid rewards, and their held-out
+scripted-opponent evaluations remain valid. The new one-seat pilot uses
+`BatchedGeneralsPufferEnvironment`, which calls the actual scripted
+opponent branch each step. Its 4,096 lanes assign ExpanderHarvester to
+1,536 games per learner side and Sentinel to 512 per side at reset.
+There is no teacher action target or imitation coefficient.
+
+`verified_classic_flat_scripted_transfer` permits only the pinned early
+flat checkpoint SHA256
+`5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71`
+to move from the two-seat 8,192-agent environment to this one-seat
+4,096-agent environment with identical observation/action/model settings.
+The target build retained model SHA256
+`c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d`;
+the run's initial-policy bytes matched the source checkpoint exactly.
+
+Bounded job 29411 ran 16,777,216 one-seat Classic environment steps on
+one B300 at `metta-fabric-b300-1`, GPU UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, with 8 CPUs, 64 GiB RAM,
+4,096 games, H128, minibatch 32,768, seed 736, PPO LR 0.0003,
+entropy 0.01, and learner/shaping gamma both 0.999. The physical GPU
+was idle (0 MiB/0%) at preflight; no same-GPU contention or duplicate
+Generals job was observed. The final warmed 12-epoch interval measured
+**57,873 environment SPS** end to end; sampled GPU use near the end was
+about 86–87%. The job completed exit 0 after 12m25s, including four
+held-out panels. Node-local output remains at
+`/var/tmp/relh-generals-recovery/classic-flat-scripted-mixed-pilot-29411`.
+
+On paired 128-game seed-1386 panels, its 4.19M-step checkpoint scored
+**31/96/1** W/L/D versus ExpanderHarvester and **2/121/5** versus
+Sentinel. The 16.78M-step checkpoint scored **20/105/3** and
+**1/115/12**. The original 8.39M-step flat checkpoint scored 32/92/4
+and 3/118/7 on exactly matching initial state hashes, sides, and
+opponent IDs. Relative to that reference, final paired
+improved/worsened/tied outcome counts were 10/23/95 Expander and
+7/4/117 Sentinel. From this pilot's early to final checkpoint,
+Expander was 12/22/94 and Sentinel 9/3/116. Early/midgame land and
+action mix barely moved: the final actor still used zero half-army moves,
+roughly 71% of moves went into already owned cells, and midgame owned
+land stayed near 33 tiles. Training against real scripted opponents
+passed throughput but did not pass the quality gate. The full build,
+source, run, GPU samples, checkpoints, scores and paired arrays are
+archived locally and on metta0 as
+`/tmp/relh-classic-flat-scripted-mixed-29411.tar.gz`, SHA256
+`59733879b427bb98b8b921943f47701f49d3bed2d79ac418f5dda50cea4530ed`.
+No longer continuation, hosted request, or promotion follows this checkpoint.
+
+## Fresh flat actor against actual scripted opponent mix (2026-09-28)
+
+To check whether the two-seat initialization caused that failure, bounded
+B300 job 29414 trained the same flat actor from fresh seed 739 against the
+actual one-seat 3:1 ExpanderHarvester/Sentinel mix, without teacher targets
+or checkpoint initialization. It used 4,096 Classic games, horizon 128,
+minibatch 32,768, PPO LR 0.0003, entropy 0.01, and learner/shaping gamma
+both 0.999. The full Slurm queue showed no other B300 jobs; the assigned
+physical GPU `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was idle at
+0 MiB/0% before the run and retrieval. The job requested 8 CPUs and
+64 GiB RAM, ran on `metta-fabric-b300-1`, wrote to node-local
+`/var/tmp/relh-generals-recovery/classic-flat-scripted-fresh-pilot-29414`,
+and completed 33,554,432 environment steps with exit 0 in 16m39s,
+including four held-out evaluations. The final warmed 12-epoch interval
+measured **58,586 end-to-end environment SPS**; sampled late GPU use was
+about 89%. The 33.55M budget would take about 9.5 minutes at that
+steady rate. One billion steps at the same rate would take about 4.7 hours.
+
+On paired 128-game seed-1386 panels, the 8.39M-step checkpoint scored
+**26/98/4** W/L/D against ExpanderHarvester and **0/123/5** against
+Sentinel. At 33.55M steps it scored **30/96/2** and **0/123/5**. All
+initial state hashes, sides, and opponent IDs match the original early
+flat reference's panels, which scored 32/92/4 and 3/118/7. Final paired
+improved/worsened/tied outcomes relative to that reference were
+20/23/85 against ExpanderHarvester and 3/9/116 against Sentinel. The
+fresh final policy still used zero half-army moves and sent roughly 72%
+of early moves into already owned cells. This run establishes that
+training against the real scripted mix at acceptable throughput does not
+by itself improve this actor. No longer continuation, hosted request, or
+promotion follows this checkpoint. Its full source, build, checkpoints,
+logs, GPU samples, scores, and paired arrays are archived locally and on
+metta0 at `/tmp/relh-classic-flat-scripted-fresh-29414.tar.gz`, SHA256
+`1b799497680ccc3195568704e6da9a7a5f987b6ea8e8c9ffebc4f3f70ed4429e`.

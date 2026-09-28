@@ -353,6 +353,31 @@ def verified_classic_flat_gen0_opponent_transfer(
     return options == source_env.options
 
 
+def verified_classic_flat_scripted_transfer(
+    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
+) -> bool:
+    """Move the pinned early flat actor from two-seat play to scripted one-seat play."""
+    source_env, target_env = source.config.python_environment, target.config.python_environment
+    if source_env is None or target_env is None:
+        return False
+    return (
+        checkpoint_sha256 == "5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71"
+        and source.model_sha256 == target.model_sha256
+        and source.model_sha256 == "c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d"
+        and source.model_state_words == target.model_state_words
+        and source.revision == target.revision
+        and source_env.factory == "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
+        and target_env.factory == "integrations.metta_puffer:BatchedGeneralsPufferEnvironment"
+        and source_env.spec.agents == 8192
+        and target_env.spec.agents == 4096
+        and source_env.spec.model_copy(update={"agents": 4096}) == target_env.spec
+        and source_env.model_dump(exclude={"factory", "spec"})
+        == target_env.model_dump(exclude={"factory", "spec"})
+        and source.config.model_dump(exclude={"python_environment"})
+        == target.config.model_dump(exclude={"python_environment"})
+    )
+
+
 def verified_classic_gen0_frozen_transfer(
     source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
 ) -> bool:
@@ -708,6 +733,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
         frozen_transfer = (
             verified_classic_frozen_opponent_transfer(source.build, manifest, reference.sha256)
             or verified_classic_flat_gen0_opponent_transfer(source.build, manifest, reference.sha256)
+            or verified_classic_flat_scripted_transfer(source.build, manifest, reference.sha256)
             or gen0_frozen_transfer
         )
         policy_only_transfer = reference.allow_policy_only_transfer and (

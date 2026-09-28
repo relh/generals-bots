@@ -88,6 +88,8 @@ def main():
                         help="Diagnostic: add this logit to legal half-army flat moves")
     parser.add_argument("--pass-logit-bonus", type=float, default=0.0,
                         help="Diagnostic: add this logit to the flat pass action")
+    parser.add_argument("--pass-logit-penalty", type=float, default=0.0,
+                        help="Diagnostic: subtract this logit from the flat pass action")
     parser.add_argument("--fabric-sample-seed", type=int,
                         help="Diagnostic: sample the frozen flat Fabric actor instead of masked argmax")
     parser.add_argument("--fabric-sample-temperature", type=float, default=1.0)
@@ -103,11 +105,14 @@ def main():
     args = parser.parse_args()
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert min(args.own_destination_logit_penalty, args.source_army_logit_penalty,
-               args.half_move_logit_bonus, args.pass_logit_bonus) >= 0
+               args.half_move_logit_bonus, args.pass_logit_bonus,
+               args.pass_logit_penalty) >= 0
+    assert not (args.pass_logit_bonus and args.pass_logit_penalty)
     assert args.fabric_sample_temperature > 0
     assert args.fabric_sample_seed is None or not args.native
     flat_intervention = any((args.own_destination_logit_penalty, args.source_army_logit_penalty,
-                             args.half_move_logit_bonus, args.pass_logit_bonus))
+                             args.half_move_logit_bonus, args.pass_logit_bonus,
+                             args.pass_logit_penalty))
     assert args.sample_seed is None or args.native
     assert not (args.force_hint_move or args.force_hint_split) or args.sample_seed is None
     assert not (args.force_full_split and args.force_hint_split)
@@ -245,6 +250,8 @@ def main():
                     adjusted[:, 4 * cells:8 * cells] += args.half_move_logit_bonus
                 if args.pass_logit_bonus:
                     adjusted[:, 8 * cells] += args.pass_logit_bonus
+                if args.pass_logit_penalty:
+                    adjusted[:, 8 * cells] -= args.pass_logit_penalty
                 proposed = np.argmax(np.where(masks[:, :8 * cells + 1], adjusted, -np.inf), axis=1)
                 active = ~env.finished
                 intervention["active_steps"] += int(active.sum())
@@ -425,8 +432,7 @@ def main():
     result = dict(
         scope=(
             "Frozen action intervention diagnostic; not the hosted policy"
-            if args.force_hint_move or args.force_hint_split or args.force_full_split
-            or args.own_destination_logit_penalty
+            if args.force_hint_move or args.force_hint_split or args.force_full_split or flat_intervention
             else "Explicitly altered checkpoint diagnostic; not the trained or hosted policy"
             if args.diagnostic_checkpoint
             else "Training-pool diagnostic; does not establish held-out or hosted performance"
@@ -439,7 +445,7 @@ def main():
         training_pool_episode=args.training_pool_episode,
         action_selection=(
             "argmax_with_action_intervention"
-            if args.force_hint_move or args.force_hint_split or args.force_full_split
+            if args.force_hint_move or args.force_hint_split or args.force_full_split or flat_intervention
             else "argmax_per_head"
             if args.sample_seed is None
             else "sample_per_head"
@@ -462,6 +468,7 @@ def main():
         source_army_logit_penalty=args.source_army_logit_penalty,
         half_move_logit_bonus=args.half_move_logit_bonus,
         pass_logit_bonus=args.pass_logit_bonus,
+        pass_logit_penalty=args.pass_logit_penalty,
         fabric_sample_seed=args.fabric_sample_seed,
         fabric_sample_temperature=args.fabric_sample_temperature,
         intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split

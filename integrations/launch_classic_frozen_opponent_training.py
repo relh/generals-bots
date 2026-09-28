@@ -10,7 +10,7 @@ import jax
 
 source = Path(__file__).with_name("puffer_coworld_frozen_transfer.py")
 assert hashlib.sha256(source.read_bytes()).hexdigest() == (
-    "33c91bc852d01d5eb012888f1bc0428b973325f04ea0faf0403616cfb7169f83"
+    "9674903d7b724d0db696d7fce51f0af0677d5b49994b0bb0457d1778f918b3be"
 )
 if jax.devices()[0] not in jax.devices("cuda") or not jax.devices("cpu"):
     raise RuntimeError("Puffer training requires CUDA and CPU JAX backends")
