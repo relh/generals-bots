@@ -8154,3 +8154,32 @@ on the compute node and independently copied locally and to metta0 as
 `d48ffbda4c6c5393541ac85321d3798a62f68c2341777883c4430414324601f7`.
 The 300M run remains the only Generals job. Its already scheduled checkpoint
 quality panels will run serially after training, before any scaling decision.
+
+
+## PPO row coverage and prepared replay comparison
+
+Inspection of the actual 29432 compiled native `pufferl.cu` found a fixed
+minibatch schedule: total minibatches = replay_ratio * (agents*horizon) /
+minibatch_size, and dest_off = (mb * minibatch_segments) % agent_rows.
+There is no epoch-dependent offset or shuffle in that GPU training loop.
+At 4096 agents, H128, minibatch 32768 and replay 0.5, eight minibatches
+cover rows 0–2047 every epoch; rows 2048–4095 generate rollouts but never
+receive a PPO update. Balanced alternating sides and paired opponent IDs
+still give each opponent samples on both sides in the updated subset.
+This is inefficient use of generated trajectories, not evidence that it
+causes the observed quality regression. Replay 1.0 gives sixteen minibatches
+and covers all 4096 rows once per epoch using the unchanged native loop.
+
+`generals_coworld_classic_flat_potential_full_replay.sbatch` prepares a
+fresh 33,554,432-step comparison with control 29432: same seed 739, exact
+archived 11-plane build/sources, teacher off, no policy initialization,
+same rewards, gamma, opponents, architecture and PPO settings, changing
+only train.replay_ratio 0.5→1.0. The actual config-generating block was
+executed against archived control training.json and its sole override
+difference confirmed. Shell syntax and diff checks pass. It is unsubmitted;
+29588 remains the only Generals allocation. Native console timings near
+235M steps show optimization approximately 62% and rollout/inference 37%
+of runtime. Doubling optimization could reduce throughput materially;
+this comparison retains its own 30K guard and cannot justify a long run
+until its measured steady-state throughput and policy quality pass.
+Config and schedule evidence is `/tmp/relh-classic-full-replay-config-check`.
