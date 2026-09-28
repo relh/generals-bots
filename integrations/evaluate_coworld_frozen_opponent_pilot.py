@@ -163,7 +163,11 @@ def main():
     action_stats = {
         phase: dict(turns=0, passes=0, moves=0, split_moves=0,
                     source_army_sum=0.0, max_legal_source_army_sum=0.0,
-                    source_to_max_ratio_sum=0.0, attacks_visible_enemy=0)
+                    source_to_max_ratio_sum=0.0, attacks_visible_enemy=0,
+                    attacks_visible_enemy_winnable=0, attacks_visible_enemy_unwinnable=0,
+                    moves_into_owned=0, moves_into_neutral=0, moves_into_fog=0,
+                    own_land_sum=0.0, enemy_land_sum=0.0,
+                    own_army_sum=0.0, enemy_army_sum=0.0)
         for phase in ("early_0_99", "middle_100_199", "late_200_plus")
     } if manifest["config"]["python_environment"]["spec"]["observation_size"] == 11 * 21 * 21 else None
     try:
@@ -283,14 +287,20 @@ def main():
                 stats["turns"] += len(active_rows)
                 stats["passes"] += int((~moving).sum())
                 stats["moves"] += int(moving.sum())
+                values = np.asarray(observation.values, dtype=np.float32).reshape(args.games, 11, 21 * 21)
+                armies = np.rint(np.expm1(values[:, 0] * 8.0))
+                own = values[active_rows, 4] > 0
+                enemy = values[active_rows, 5] > 0
+                stats["own_land_sum"] += float(own.sum())
+                stats["enemy_land_sum"] += float(enemy.sum())
+                stats["own_army_sum"] += float((armies[active_rows] * own).sum())
+                stats["enemy_army_sum"] += float((armies[active_rows] * enemy).sum())
                 if moving.any():
                     rows = active_rows[moving]
                     choices = chosen[moving]
                     cells = 21 * 21
                     source_cells = choices % cells
                     directions = (choices // cells) % 4
-                    values = np.asarray(observation.values, dtype=np.float32).reshape(args.games, 11, cells)
-                    armies = np.rint(np.expm1(values[:, 0] * 8.0))
                     selected_armies = armies[rows, source_cells]
                     legal_sources = masks[:, :move_logits].reshape(
                         args.games, 8 if flat_actions else 4, cells
@@ -307,7 +317,23 @@ def main():
                     dest_r = source_r + np.asarray((-1, 1, 0, 0))[directions]
                     dest_c = source_c + np.asarray((0, 0, -1, 1))[directions]
                     assert ((dest_r >= 0) & (dest_r < 21) & (dest_c >= 0) & (dest_c < 21)).all()
-                    stats["attacks_visible_enemy"] += int((values[rows, 5, dest_r * 21 + dest_c] > 0).sum())
+                    dest_cells = dest_r * 21 + dest_c
+                    attacking_enemy = values[rows, 5, dest_cells] > 0
+                    moving_armies = np.where(
+                        (choices // (4 * cells) == 1) if flat_actions else (actions[rows, 1] == 1),
+                        selected_armies // 2, selected_armies - 1,
+                    )
+                    winnable = moving_armies > armies[rows, dest_cells]
+                    stats["attacks_visible_enemy"] += int(attacking_enemy.sum())
+                    stats["attacks_visible_enemy_winnable"] += int((attacking_enemy & winnable).sum())
+                    stats["attacks_visible_enemy_unwinnable"] += int((attacking_enemy & ~winnable).sum())
+                    stats["moves_into_owned"] += int((values[rows, 4, dest_cells] > 0).sum())
+                    stats["moves_into_fog"] += int((values[rows, 6, dest_cells] > 0).sum())
+                    stats["moves_into_neutral"] += int((
+                        (values[rows, 4, dest_cells] == 0)
+                        & (values[rows, 5, dest_cells] == 0)
+                        & (values[rows, 6, dest_cells] == 0)
+                    ).sum())
             active = ~env.finished.copy() if args.reward_diagnostics else None
             transition = env.step(actions)
             if args.reward_diagnostics:
