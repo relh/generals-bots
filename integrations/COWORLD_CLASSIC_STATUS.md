@@ -8320,3 +8320,46 @@ The actual GPU build passed expected fingerprint
 Fresh seed739,33.55M steps,replay.5 and all reward/opponent/PPO settings
 match control; only public turn plane is added. Training is warming up:
 throughput, finite-gradient range and quality remain unproven for this build.
+
+
+## Turn-plane training completed; quality panels ongoing (29674)
+
+The trainer completed64 epochs/33,554,432 environment steps with all42,588
+final float32 weights finite. Final checkpointSHA256
+`9bc5fe25e6a4ff60665029113ed0d1b05464f89a695d57bffba1d8e481ab44ed`.
+First8,388,608 checkpoint also finite, SHA256
+`cf0cb4ee389e4de926628a87f955b0a46c216c5be5e1877c931e24454d29349f`.
+No nonfinite abort occurred past the previous2.6M failure range.
+
+Cold startup was expensive: native first completed epoch at462.948 seconds;
+log confirms measured startup autotuning of two tick forms (first calls
+104.9s and116.6s, steady686.3ms and687.3ms), choosing standard. Native
+CPU memory retained33.4GiB after compilation. The process was live and
+compiling throughout; first steps occurred before the existing600s startup
+guard, which was not extended. No replacement or duplicate was submitted.
+
+Throughput passes: final twelve-epoch57,704 SPS. A longer warm interval,
+epoch20 at636.282s to64 at1029.877s, contains23,068,672 completed environment
+steps over393.595s:58,610 SPS, including rollout and updates. One trainer,
+aggregate identical. Hardware one B300,4096 one-seat games,H128,minibatch
+32768,replay.5, teacher off; bothgamma .999, potential-only shaping, balanced
+opponents/sides. Generally85–87% sampled GPU in this warm interval. Whole
+native runtime1029.877s averages32,581 SPS including cold compilation;
+final native timing rollout3.73s (model.94s,environment2.79s,copy0),
+optimization5.44s(model5.43s). This does not establish policy quality.
+
+New actual build, exact staged sources, effective configs, complete trainer
+checkpoints/learner records, native console/metrics and build/train logs
+are preserved onnode/Mac/metta0 in
+`/tmp/relh-classic-flat-scripted-timed-training-29674.tar.gz`, verifiedSHA256
+`d0d2f4b1145ebefabebad41877d23374f4679d034506b12751379f4314e325a4`.
+Model fingerprint in the archive matches predicted9d11e1a6...8b7c0.
+This archive excludes the still-running quality panels; their terminal
+outputs will be preserved separately. Runtime dependency remains the
+previously verified archived Fabric/metta Python runtime.
+
+The first completed panel,8.39M checkpoint vs Expander/Harvester, gives
+21 wins/103 losses/4 draws; matched control29432 at8.39M gives28/96/4.
+The early Sentinel and both final-checkpoint panels remain pending.
+The same bounded allocation is now evaluating serially; no scaling or
+hosted/publication action is supported yet.
