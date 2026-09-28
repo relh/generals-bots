@@ -14,8 +14,6 @@ from metta_training.model_config import FrozenPolicyConfig
 from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.metta_puffer import BatchedGeneralsPufferEnvironment
-from integrations.native_puffer_policy import NativePufferPolicy
-from integrations.puffer_codec import hinted_replay_indices
 
 
 def greedy_declared_heads(predictions, sizes):
@@ -68,6 +66,8 @@ def main():
     manifest = json.loads(args.build.read_text())
     assert manifest["model_sha256"] == training.build.model_sha256
     if args.native:
+        from integrations.native_puffer_policy import NativePufferPolicy
+
         policy = NativePufferPolicy(args.build, args.run / "training.json", args.checkpoint, args.sha256)
         recurrent_state = policy.initial_state(args.games)
     else:
@@ -84,6 +84,8 @@ def main():
         options.pop(key, None)
     assert options["coworld_classic"] and not options["teacher_rollouts"]
     if args.force_hint_move or args.force_hint_split:
+        from integrations.puffer_codec import hinted_replay_indices
+
         assert policy.action_sizes == (1765, 2)
         assert options["prior_hint_features"] and options["expander_hint_features"] and options["context_hint_features"]
     options.update(parallel_games=args.games, opponent=args.opponent, supervise_teacher=False)

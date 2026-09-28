@@ -9492,3 +9492,28 @@ mean0.655999ms/max0.802459ms macOSARM,JAX0.11.2(codec);report/bundle
 matchstrength remainunproven. No hostedregistration/XP/championchange.
 Nextwork:onebounded GPUevaluationallocation,correctedheads,preservedcheckpoint,
 originalheldout128Exp/128Sentpanels;no newtraining untilqualityknown.
+
+
+## 30318 evaluator startup import fix; 30322 evaluation only
+
+30318 allocated the physical B300 UUID GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f
+with 0 MiB / 0% and no compute processes. Parent 30238 node archive SHA256
+e988adfdbec1b96159460b78dc63d82f9d2b87ceaf0aec92896b581c130024b1
+matched Mac/controller. Evaluator then exited before games: unconditional
+NativePufferPolicy import resolved to the older spatial runtime, where that
+class is absent. Moved Native and hint-only imports into their flag branches.
+No training replayed and no quality inferred from this startup failure.
+30318 exit1 complete Mac archive /tmp/relh-classic-spatial-direct-quality-stream.tar.gz
+SHA256 612da70635daf0f4a29536bb8378083d35d91b7cafdffe39a79d3067d1d7f512.
+
+30322 is the single replacement evaluation-only job, b300/metta-fabric-b300-1,
+nice100, 4CPU/32G, 12min allocation with hard Docker32GiB/swap32GiB, core0.
+Same GPU physically empty at startup, driver595.91.07 and imagebdd4f2a9a125;
+653GiB disk free / 50,710 free tmp inodes. Exact prior owned container absent.
+Output /var/tmp/relh-generals-recovery/classic-spatial-local8-direct-eval-pilot-30322.
+Uses original frozen spatial forward and preserved 8.39M checkpoint df706173...44ddc,
+correct declared flat3529 action head, 128 Expander +128 Sentinel, seed1386.
+Current startup still compiling original forward; no quality result yet.
+Exec7703 holds allocation; Mac stream
+/tmp/relh-classic-spatial-direct-quality-retry-stream.tar.gz.
+Goal active; no hosted policy registration, XP request, or champion change.
