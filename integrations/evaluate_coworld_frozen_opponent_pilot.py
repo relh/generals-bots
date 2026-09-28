@@ -158,6 +158,12 @@ def main():
                                 student_move_when_teacher_moves=0, teacher_pass=0,
                                 student_pass=0, move_probability_sum=0.0,
                                 move_negative_log_probability_sum=0.0)
+    action_stats = {
+        phase: dict(turns=0, passes=0, moves=0, split_moves=0,
+                    source_army_sum=0.0, max_legal_source_army_sum=0.0,
+                    source_to_max_ratio_sum=0.0, attacks_visible_enemy=0)
+        for phase in ("early_0_99", "middle_100_199", "late_200_plus")
+    } if manifest["config"]["python_environment"]["spec"]["observation_size"] == 11 * 21 * 21 else None
     try:
         observation = env.reset(reset_seed)
         initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
@@ -251,6 +257,36 @@ def main():
                     actions[active, 1] = np.where(hint[active, 0] == 1764, 0, hint[active, 1])
             assert masks[np.arange(args.games), actions[:, 0]].all()
             assert masks[np.arange(args.games), 1765 + actions[:, 1]].all()
+            if action_stats is not None:
+                phase = "early_0_99" if turn < 100 else "middle_100_199" if turn < 200 else "late_200_plus"
+                stats = action_stats[phase]
+                active_rows = np.flatnonzero(~env.finished)
+                chosen = actions[active_rows, 0]
+                moving = chosen < 1764
+                stats["turns"] += len(active_rows)
+                stats["passes"] += int((~moving).sum())
+                stats["moves"] += int(moving.sum())
+                if moving.any():
+                    rows = active_rows[moving]
+                    choices = chosen[moving]
+                    cells = 21 * 21
+                    source_cells = choices % cells
+                    directions = choices // cells
+                    values = np.asarray(observation.values, dtype=np.float32).reshape(args.games, 11, cells)
+                    armies = np.rint(np.expm1(values[:, 0] * 8.0))
+                    selected_armies = armies[rows, source_cells]
+                    legal_sources = masks[:, :1764].reshape(args.games, 4, cells).any(axis=1)
+                    max_armies = np.where(legal_sources[rows], armies[rows], 0).max(axis=1)
+                    assert (max_armies >= selected_armies).all() and (selected_armies > 1).all()
+                    stats["source_army_sum"] += float(selected_armies.sum())
+                    stats["max_legal_source_army_sum"] += float(max_armies.sum())
+                    stats["source_to_max_ratio_sum"] += float((selected_armies / max_armies).sum())
+                    stats["split_moves"] += int((actions[rows, 1] == 1).sum())
+                    source_r, source_c = divmod(source_cells, 21)
+                    dest_r = source_r + np.asarray((-1, 1, 0, 0))[directions]
+                    dest_c = source_c + np.asarray((0, 0, -1, 1))[directions]
+                    assert ((dest_r >= 0) & (dest_r < 21) & (dest_c >= 0) & (dest_c < 21)).all()
+                    stats["attacks_visible_enemy"] += int((values[rows, 5, dest_r * 21 + dest_c] > 0).sum())
             active = ~env.finished.copy() if args.reward_diagnostics else None
             transition = env.step(actions)
             if args.reward_diagnostics:
@@ -313,6 +349,7 @@ def main():
         intervention=intervention if args.force_hint_move or args.force_hint_split else None,
         hint_audit=hint_audit if args.hint_audit else None,
         teacher_action_audit=teacher_action_audit if args.teacher_action_audit else None,
+        action_stats=action_stats,
         audit_turns=args.audit_turns,
         counterfactual_hint_scale=args.counterfactual_hint_scale,
         episode_complete=episode_complete,

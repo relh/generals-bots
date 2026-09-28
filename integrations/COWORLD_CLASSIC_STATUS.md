@@ -6771,3 +6771,34 @@ The recovery script resumes the exact learner/optimizer at agent step
 67,108,864-agent-step budget. It tests the 16.78M and 33.55M environment
 step checkpoints against both held-out panels. A longer run still requires
 quality gains over generation 0, not just this early route-only improvement.
+
+Resume job 29117 completed `COMPLETED`/exit 0 at 67,108,864 total agent
+steps = 33,554,432 Classic environment steps, starting from the verified
+16,777,216-agent-step learner snapshot. On one B300 with 4,096 two-seat
+games, H128 and minibatch 32,768, warmed 20-epoch end-to-end throughput
+at epoch 64 was **115,872 agent SPS = 57,936 environment SPS**; sampled
+GPU utilization near steady training was about 92%. The optimizer took
+roughly 6–8 seconds versus 0.8–0.9 seconds environment time per 1,048,576
+agent-step epoch. No same-GPU physical contention was seen at preflight.
+
+Held-out seed-1386 W/L/D at 16,777,216 environment steps was **19/100/9**
+against ExpanderHarvester and **0/120/8** against Sentinel. At final
+33,554,432 environment steps it was **0/126/2** and **0/127/1**.
+All three evaluation stages (8.39M, 16.78M, 33.55M environment steps)
+used identical initial-state hashes, sides, and opponent IDs per panel.
+Relative to the 8.39M checkpoint, final outcomes improved/worsened/tied
+in 2/29/97 Expander cases and 1/10/117 Sentinel cases. The early source
+prior gain was erased by continued PPO. No hosted test, upload, champion
+change, or longer training run is justified for this policy.
+
+The completed run, three retained checkpoints, four quality panels,
+GPU sample, and logs are archived locally and on metta0 as
+`/tmp/relh-classic-source-route-resume-29117.tar.gz`, SHA256
+`080838dbb4b439867cf277f281925b6f1e45edc9ab5b7106acbd0fb2553a5963`.
+The full early paired evaluation arrays are separately archived at
+`/tmp/relh-classic-source-route-8m-full-quality-29110.tar.gz`, SHA256
+`fa8d9ca886d667fd96cc0427a834aa1d8be2d20d02a86fd28b779e79ee5ffbb7`.
+The next bounded diagnostic measures public-observation source army,
+largest legal source army, pass/split use, and moves into visible enemy
+cells on the early and final checkpoints. It will identify which action
+behavior changed during the quality collapse before altering training.
