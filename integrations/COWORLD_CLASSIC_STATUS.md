@@ -8511,3 +8511,49 @@ guard and has no dependent long continuation. Native first rollout is
 currently warming up. Expected terminal evidence stream:
 `/tmp/relh-classic-sequence-curriculum-56bab2f-stream.tar.gz` on Mac,
 with a named29773 archive produced on the compute node at job end.
+
+## Full-game capture curriculum29773 completed and rejected
+
+Native training completed33,554,432 additional environment steps, native
+uptime613.736s. Warm epoch20 at218.434s to64 at613.736s completed
+23,068,672 steps in395.302s =58,357 SPS, including rollout/optimization,
+on one B300/4096 games/H128/minibatch32768/replay0.5. Warm utilization
+was generally84–86%. Native initialization bytes match the declared
+29755 checkpoint. Four saved checkpoints contain42584 finite parameter
+words each; final SHA256
+`286ee0e21dbcb2c418507673e09698a1350ac432fd5a03362c358ff520be1a1f`.
+Native action-mask audit:33,554,432 actions,0 illegal. Batch completed
+ExitCode0 after17m22s, including all four quality panels and preservation.
+
+128-game paired tuning validation (W/L/D), same pool/seed/side assignments:
+
+| checkpoint | curriculum Expander/Harvester | control Expander/Harvester | curriculum Sentinel | control Sentinel |
+| --- | --- | --- | --- | --- |
+|8.39M|20/105/3|28/96/4|1/123/4|0/126/2|
+|33.55M|13/112/3|23/100/5|4/119/5|1/119/8|
+
+Initial-state hash, side and opponent-ID arrays match byte for byte on
+all four panels. Final paired better/worse/equal counts are8/20/100
+versus Expander/Harvester and7/5/116 versus Sentinel. Map-cluster
+bootstrap10k resamples, seed29377: final score deltas -0.171875
+(95% interval[-0.32558,-0.02190]) and+0.023438 ([-0.05926,+0.11364]).
+These reused panels are tuning validation, not an untouched final gate.
+No scaling, hosted run or policy publication is supported by this result.
+Learning capture in a tiny position did not establish full-game strength.
+
+Full actual build/staged sources/configs/checkpoints/learner records/
+native logs/metrics/resource samples/all quality arrays are preserved as
+`/tmp/relh-classic-sequence-curriculum-29773.tar.gz` on node and Mac,
+SHA256 `64abe400bec98b1ec714e1421c511d1f4377fcc4b8f11c4dc2a5fdec1ed560f0`.
+Controller copy is being transferred. Local paired report:
+`/tmp/relh-classic-sequence-curriculum-paired-control-29773.json`.
+
+Next prepared bounded diagnostic changes the actor to the standard pinned
+Puffer5 MinGRU128x1 (native float32, no Fabric graph or fixed action-logit
+priors), while retaining the verified11-plane public observation and
+3529-entry flat codec/mask. Earlier native-policy experiments used
+6174 observations and factorized[1765,2] actions; this combination has
+not been established. The diagnostic keeps balanced four-move corridors,
+native PPO, teacher-free fresh seed739, H128/minibatch32768/replay0.5,
+matched gamma0.999 and a16.78M-step/8-minute trainer budget. It must show
+reward-driven learning and actual throughput before a full-game long run.
