@@ -420,7 +420,8 @@ def main():
         force_hint_split=args.force_hint_split,
         force_full_split=args.force_full_split,
         own_destination_logit_penalty=args.own_destination_logit_penalty,
-        intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split else None,
+        intervention=intervention if args.force_hint_move or args.force_hint_split or args.force_full_split
+        or args.own_destination_logit_penalty else None,
         hint_audit=hint_audit if args.hint_audit else None,
         teacher_action_audit=teacher_action_audit if args.teacher_action_audit else None,
         action_stats=action_stats,

@@ -6975,3 +6975,37 @@ samples, and logs are archived locally and on metta0 as
 `73184539db2aea741d4e78ee58634a18af550fb979eb53b3122fc8d44b0a6b1f`.
 No 300M-step run, hosted test, upload, or champion change follows this
 quality result. The generation-0 reference remains substantially stronger.
+
+Tactical audit 29237 replayed the saved early flat, collapsed flat, and
+fixed-opponent final checkpoints on both 128-game seed-1386 panels. The
+assigned B300 was physically idle at preflight, and the job completed exit
+0. Against ExpanderHarvester on turns 100–199, early flat and fixed-opponent
+final held **34.0/34.3 mean owned tiles**, while collapsed flat held **11.2**.
+Their moves into visible neutral tiles were 1,124/1,195 versus 299;
+their moves into own tiles were 8,648/9,041 versus 12,135. More than 96%
+of visible-enemy attacks in this window were winnable from the public
+source and destination armies for all three. Sentinel showed the same
+expansion collapse. The fixed-opponent run preserved expansion and attack
+rates but still failed the quality gate, so the source-route flat actor has
+additional tactical weaknesses beyond the collapse. These are different
+policy trajectories, not matched state-by-state action comparisons. Full
+public observation counters and per-game arrays are archived locally and
+on metta0 as `/tmp/relh-classic-flat-tactical-audit-29237.tar.gz`, SHA256
+`8538a9a8fc870a97ee4ae4a690fb6fcc253bc8200c432ee799459d675b70e4ac`.
+
+Frozen counterfactual job 29256 then subtracted 2 or 4 logits from flat
+moves whose destination was already owned, using only public observation
+and leaving the saved model unchanged. All eight panels completed on the
+same seed, maps, sides, and opponents. With penalty 2, the early policy's
+midgame owned land rose from 34.0 to **48.1** versus ExpanderHarvester,
+but W/L/D fell from 32/92/4 to **5/106/17**; against Sentinel it was
+3/118/7, unchanged in wins. Penalty 4 scored **1/121/6** and **0/126/2**.
+For the collapsed final policy, penalty 2 restored midgame Expander land
+from 11.2 to **32.9** but still scored **0/118/10**, and penalty 4 scored
+**0/119/9**. Both penalties scored zero wins on final Sentinel. This
+rules out a simple own-destination penalty as a quality fix: land gain
+alone did not recover wins. The counterfactual, per-game arrays, and logs
+are archived locally and on metta0 at
+`/tmp/relh-classic-flat-destination-counterfactual-29256.tar.gz`, SHA256
+`3ee85cdd7919ffd51fa912b973c4ca0ef3c510909183ac457d05b3f586b94f19`.
+No checkpoint was changed or promoted.
