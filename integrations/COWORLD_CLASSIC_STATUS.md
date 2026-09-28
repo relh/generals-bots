@@ -6513,3 +6513,15 @@ cached versus fresh observations and transition equality over 12 turns,
 including a Classic map-pool refresh. If parity passes, the same bounded
 job trains for 12.6M steps and compares warmed environment SPS and held-out
 scores with job 28333. Only one Generals GPU job is active during 28688.
+
+Job 28688 wrote its first checkpoint at 100,663,296 environment steps and
+continued training. The policy SHA256 is
+`e6e534714aa57c5909cff7744c09e800ae59233d26cff1857c950a298ac87a1c`;
+the 16–20 epoch monitor window near epoch 194 measured about 79,917 SPS.
+The allocated physical GPU still had only the training job's processes.
+Its checkpoint, learner state, build/config manifests, and initialization
+record were archived as `/tmp/relh-classic-gen0-100m-28688.tar.gz` on this
+machine and metta0, matching SHA256
+`333c490b32715746410ba969f7b0496aebf127b83dbfb564f8c40378e96fe839`.
+Held-out scores remain pending until the job finishes; a changed policy
+checksum alone is not evidence of stronger play.
