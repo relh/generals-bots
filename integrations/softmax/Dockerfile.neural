@@ -15,6 +15,9 @@ COPY integrations/__init__.py integrations/generals_fabric.py integrations/puffe
 COPY integrations/native_puffer_policy.py integrations/native_policy_bundle.py /app/integrations/
 COPY integrations/softmax/__init__.py integrations/softmax/protocol.py integrations/softmax/neural_codec.py integrations/softmax/neural_player.py /app/integrations/softmax/
 COPY --from=policy / /app/policy/
+RUN if test -f /app/policy/model-source/generals_fabric.py; then \
+        cp /app/policy/model-source/generals_fabric.py /app/integrations/generals_fabric.py; \
+    fi
 RUN chmod -R a+rX /app
 USER 10001:10001
 CMD ["python", "-m", "integrations.softmax.neural_player"]

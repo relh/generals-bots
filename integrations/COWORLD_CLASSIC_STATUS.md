@@ -7981,3 +7981,44 @@ to a minimum observed eight-epoch interval around 33.7K SPS, still above
 trainer epoch 109 showed recovery to eight-epoch 50.4K SPS and 12-epoch
 45.3K SPS (the latter still includes shared evaluation). The planned
 300M run continues; its completion evaluations remain in the batch script.
+
+## Flat frozen bundle CPU action-path probe (2026-09-28)
+
+A separate Mac CPU inference probe now exercises the actual frozen
+policy bundle plus `neural_player.select_action`, not just codec functions.
+Exact Fabric/Metta Python packages were copied read-only from the live
+trainer's runtime. No GPU allocation or training process was added.
+Runtime archive `/tmp/relh-classic-serving-runtime-29588.tar.gz`, SHA256
+`f2d3c3f159861676ee6f5347c45bd3774c502965297a2f0a75e5f59c232fd017`,
+is preserved locally and on metta0. The local ignored `.venv` also has
+pinned websockets 16.0 for the real player import path.
+
+The first export correctly rejected today's actor source: the frozen
+model fingerprint incorporates the complete factory module, and adding
+the optional turn-plane validation changed that module even for the old
+11-plane configuration. The new `probe_flat_frozen_bundle.py` accepts an
+explicit archived factory source, preserves it as
+`bundle/model-source/generals_fabric.py`, and retains the full original
+fingerprint guard. `Dockerfile.neural` uses that exact bundled module
+when present. This resolves the current actor-source packaging mismatch
+without bypassing model identity checks or changing the training source.
+
+The verified 29432 parent policy (SHA f1db428b...) loaded with model
+SHA c0046141... and archived factory SHA
+`445724d7330622ca44a9f81ffb4531013add2596c8eb95ce6d93141fd196c322`.
+On Mac arm64 with JAX 0.11.2, four synthetic rectangular/square public
+board warmups followed by 32 real player actions averaged **30.69 ms**,
+maximum **50.82 ms**. Every action matched a legal joint full/half/pass
+mask index. The 500 ms warm-action deadline passed. CPU graph construction
+took substantially longer; no cold-container startup deadline is claimed.
+The production Docker pins JAX 0.11.0, so an actual image/startup check
+and hosted match remain required. Docker was not built or published here.
+These fixtures establish serving feasibility, not parent-policy strength.
+
+Parent manifest, checkpoint, pinned actor source, exported bundle and
+probe JSON are archived locally and on metta0 as
+`/tmp/relh-classic-flat-serving-parent-29432.tar.gz`, SHA256
+`62ef53e261cad5dd50ee19a28369986de253d1c4ec889f3ef1a2039b955f9588`.
+Python compile/diff checks pass. The training job stayed healthy during
+this independent CPU probe; at epoch 153 it was 80.22M additional steps
+and trailing 12-epoch 58,576 SPS. No host requests/upload/promotion.
