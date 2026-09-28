@@ -6940,3 +6940,38 @@ and on metta0 at `/tmp/relh-classic-flat-frozen-audit-29198.tar.gz`, SHA256
 `c78c050a782ce6ca7df7eac82c1877b74e9acccac352727d8f94696faeaec436`.
 This establishes the action path for a bounded historical-opponent pilot;
 it does not establish training throughput or stronger play.
+
+The first flat frozen-pilot setup, job 29206, built the correct graph but
+stopped before any training step because its staged bundle omitted the
+pinned trainer module. It wrote no checkpoint, and the container exited.
+The corrected single bounded job 29209 included that module. It trained
+from fresh weights against the fixed early 8.39M-step flat checkpoint
+(SHA256 `5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71`),
+one learner seat in each of 4,096 Classic games, H128, minibatch 32,768,
+replay ratio 0.5, LR 0.0003, entropy 0.01, gamma/shaping gamma 0.999,
+and seed 734. On a physically idle assigned B300
+(`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`), it completed
+12,582,912 environment steps. Final warm 8/12-epoch end-to-end rates were
+**59,979/60,131 environment SPS**, above the 30k guard. The monitor's
+trailing training-window GPU utilization was 75.8%; peak sampled VRAM
+was 49,430 MiB. No same-GPU contention was observed at preflight.
+
+Held-out seed-1386 W/L/D at 4.19M steps was **22/101/5** against
+ExpanderHarvester and **1/123/4** against Sentinel. At 12.58M steps it
+was **26/97/5** and **3/122/3**. The saved early symmetric-self-play
+reference, evaluated on identical initial-state hashes, sides, and
+opponent IDs, scored **32/92/4** and **3/118/7**. Relative to that
+reference, final frozen-opponent outcomes improved/worsened/tied in
+22/26/80 Expander games and 2/6/120 Sentinel games. Final midgame
+attacks on visible enemy-owned cells remained 19.7% and 21.2% versus
+the reference's 20.3% and 22.0%; the earlier symmetric-self-play final
+policy had fallen to 2.9% and 5.9%. This fixed-opponent run avoided
+the observed attack-rate collapse over its bounded interval, but it did
+not improve held-out wins. Its final checkpoint SHA256 is
+`3e0fefc7a50a48dcb9558aa8664e826aedaa24aa29330a08e5416c8753bac6e1`.
+The completed run, all three checkpoints, four held-out panels, GPU
+samples, and logs are archived locally and on metta0 as
+`/tmp/relh-classic-flat-frozen-pilot-29209.tar.gz`, SHA256
+`73184539db2aea741d4e78ee58634a18af550fb979eb53b3122fc8d44b0a6b1f`.
+No 300M-step run, hosted test, upload, or champion change follows this
+quality result. The generation-0 reference remains substantially stronger.
