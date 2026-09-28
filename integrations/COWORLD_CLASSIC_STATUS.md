@@ -7731,3 +7731,25 @@ Docker to the verified physical UUID. Its output directory is
 Submission used checkout revision 5115c55 plus the committed evaluation
 script. It is evaluation only; no further training or hosted side effects
 were launched. Scores and archived completion evidence are pending.
+
+## Prepared normalized 300M extension (not submitted)
+
+`generals_coworld_classic_flat_normalized_300m.sbatch` prepares 300 million
+additional environment steps from the verified final 29473 policy using
+its exact archived native build and original 11-plane sources. It keeps
+4,096 one-seat environments, horizon 128, minibatch 32,768, normalized actor
+advantages, no teacher, potential-only shaping and both discounts 0.999.
+Seed 743 creates fresh training maps. This uses policy initialization and
+fresh learner/optimizer state; it does not claim exact resume. The saved
+learner file exists but no `.environment.0.json` was found next to the final
+checkpoint. No source, checkpoint, or completed-run artifact is rewritten.
+
+At the normalized pilot's steady 55,981 SPS, 300M steps project to about
+89 minutes. The one-GPU job has a 135-minute limit, 110-minute trainer
+limit, original sustained 30K SPS/progress/nonfinite guard, node-local GPU
+and CPU samples, and frozen evaluations of approximately 67M, 134M and
+300M checkpoints after completion. These are additional steps following
+the parent's 33.55M, not a reset claim about total lineage training.
+The batch script passes syntax checks. It has not been submitted while
+29515 is active; fresh comparison evidence and a new shared-resource
+preflight are required before submission.
