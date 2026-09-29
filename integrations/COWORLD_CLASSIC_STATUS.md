@@ -14149,3 +14149,22 @@ positive held-out candidate); other quarters remain Expander/Sentinel.
 Previous117,938 SPS projects~2,560s steady training plus startup/evals.
 Same four matched held-out panels, direct versus oldpublic33M and direct
 versus starting234M; no hosted promotion until evidence is reviewed.
+
+While 32505 runs, CPU-side serving contract for held-out-positive234M
+checkpoint was prepared under `/tmp/relh-spatial-selfplay-234m-serving` using
+exact bundle policySHA0025c722...bc84204, pinned official engine source
+SHAs6fea2498...96592/f39e448a...a318, existing runtime tar SHA
+de03d2a9...fae5 and Dockerfile SHA c03713eb...d5a65b. Local Linux ARM
+image `relh-generals-spatial-serving:32477-selfplay-arm64` passed32/32
+legal replies on four board shapes under2CPU/4GiB/networknone: coldready1.152s,
+mean1.405ms/max2.428ms. AMD64 image
+`relh-generals-spatial-serving:32477-selfplay-amd64` built locally; archive
+SHA43dd161b92f620992ab63e287f2b499db47d4d23b34bd08bde7eb62aa6bb34f7
+copied to CPU submit hostmetta0 and loaded under its own tag. Native x86_64
+same32/32 legal wire replies, coldready1.824s, mean3.987ms/max5.189ms,
+same2CPU/4GiB/networknone; container policy.bin SHA exactly0025c722...bc84204.
+Local image ID d3aa0487...c76bf and imported native ID717e3a38...107f4
+are different identifier values; verify archive/policy bytes directly.
+This proves local serving contract for234M, not hosted runtime or leaderboard
+strength. No Observatory registry/XP/champion write. 32505 remains sole
+Generals GPU training job.
