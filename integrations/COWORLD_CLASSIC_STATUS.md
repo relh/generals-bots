@@ -11322,3 +11322,19 @@ comparison-31352-control-mid-audit.json preserved. Finalaudit prepared
 /tmp/relh-audit-weak-prior-comparison-31352.py checks actionmask counter,
 4→16steadyinterval/33,554,432newphysical and finalnativecheckpoint identity.
 Finalcontrol/candidate/evaluation pending SAME31352/main8879; goalactive.
+
+### 31352 strong-prior control completed and audited
+
+Previous turn verifiedwait/savedcheckpoint; currentturn progress completed
+control nativeaudit in live31352/main8879. 33,554,432physical steps,
+warm4@72.108s→16@273.127s,25,165,824/201.019=125,191.270477ENV SPS,
+B300/4096games1learner/H512/mb8192/R.5;56alignedGPU mean53.7321%,
+peak145760MiB. Rewardaudit8192ticks/33,554,432steps/0nonfinite;
+actionmask audit33,554,432/0illegal. Shapedreward signs NOT outcomes.
+Final57028finitewords9dc2525dacea212319e6bb3a0897e38ddd31e18c81312fbd1a0021c00790ea87;
+learnerfb616beecc9af9c1a761805d07908bf707e12f95c5ab9931c4550da3bf9554fd,
+actualpolicy/state/runhashes matchsidecar. Freshregisteredseed6751initial
+cab576c0ddd6b0718ec69893a946ac97f300492f238c959ffbc38b26b2717741.
+Mac /tmp/relh-weak-prior-comparison-31352-strong-audit.json and
+node strong-priors/steady-audit.json preserved. Strongheldout then weak
+arm/evals pending within SAME31352, no duplicatejob. Goalactive.
