@@ -10456,3 +10456,13 @@ Runtimebdd4f2...6ae5/driver595.91.07/compute10.3, actual30597buildcopied.
 Exactprevious30688container absent,nodearchive6a2b7d...9735 verified.
 Selected30597mid checkpoint73b075...9c677 independently hashed beforeGPU.
 FullbatchGPUscaledparity mustpassbefore actualtraining; no strengthclaim.
+
+30728 actualstartup passed scaledGPUrolloutparity4096×4ticks/reset,
+max3.814697265625e-6. Trainerstarted from selected30597mid; noinitfailure.
+At epoch8, fourwindow127754.378 andsixwindow127773.838PHYSICAL ENV SPS
+above30k. Currentreward tick4608=18,874,368native/9,437,184physicaldecisions:
+13561captures/633draws over14194completedphysicalgames, nonfinite0.
+Firstepochdashboard150.8kagent=75.4kphysical was warmup, notsteady;
+steady now supports~39minbudget. FullGPU sample/audit only afterterminal.
+Read-only sameallocation watcherexec51387 samples30sec; this is not another
+GPU job or trainingprocess. Mainexec18783 remains live; archiveincomplete.
