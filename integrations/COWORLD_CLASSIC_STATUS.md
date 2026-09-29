@@ -9827,3 +9827,34 @@ exports/evaluates33,554,432 /100,663,296 /299,892,736 checkpoints:
 128Expander+128Sentinel seed1386 and512parentmatches seed1513 each.
 Retain stronger30238parent independently; no policy registration, XP,
 champion change, or promise of leaderboard performance. Goalactive.
+
+## 30435 live progress and Linux serving packaging
+
+Rechecked the full Slurm queue: 30435 remains the sole Generals allocation;
+30448 shares the B300 node. Observed allocated physical GPU
+GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f at 45,142MiB and 54% utilization.
+No physical CUDA contention was observed. At epoch243, 127,401,984
+additional environment steps are complete; recent four/six-epoch end-to-end
+windows measure 148,818.62 /148,699.03 SPS, sampled recent GPU mean55.7%.
+33.55M/67.11M/100.66M checkpoints exist. Training remains active in the
+original exec74042/job30435; no duplicate job or evaluation was started.
+Reward/score and held-out quality will be reported by the already staged
+post-training evaluations. Throughput is not evidence of policy strength.
+
+Found and fixed Dockerfile.neural omitting spatial_policy_bundle.py even
+though neural_player imports it. Local Linux AMD64 image builds successfully,
+but its JAX runtime cannot execute under the local ARM emulator's missing
+AVX support. AMD64 cold startup remains unverified on physical x86 hardware.
+Local native Linux ARM image passed the actual play() websocket path as
+uid10001 with read-only root, tmpfs /tmp, 2CPU/4GiB limit and core dumps off:
+32 legal replies across all four rectangular board dimensions, cold ready
+1.8092s, first reply2.84ms, mean2.55ms, max4.96ms server-observed latency.
+Policy remains the verified30238 parent df706173...afa44ddc; no quality
+claim or registration follows this packaging check. ARM image manifest
+075c9d578c1330a701efbbdfad540cea7f4ed8ffd90d8ccda69b917abecd2834.
+Artifacts /tmp/relh-spatial-serving-linux-build/{build-arm64.log,
+wire-probe-arm64.log,wire_probe.py,runtime.tar.gz}; the original probe log's
+scope string incorrectly says AMD64 emulation, while its platform records
+aarch64. The probe's scope label is corrected for future invocations; this
+was a native Linux ARM run, not an AMD64 runtime proof. No GPU training
+was added, and the existing B300 training allocation was left running.
