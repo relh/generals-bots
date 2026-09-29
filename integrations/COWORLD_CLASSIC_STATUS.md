@@ -13368,3 +13368,24 @@ unchangedrelhv4 e53e30be.../Richardv2 7a3f30e9.... No externalwrite.
 Stilluse{'top_n':1} andrecord resolvedUUID ifnewpolicyqualifies actualhosted
 comparison; neverinferAlpha versionfromnull/currentrank. Goalactive.
 Continue SAME50123 throughbotharms andheldouts; protectedhistoryuntouched.
+
+### 2026-09-29 — 32015 zero-scalar control completed and audited
+
+Previousgoalturn verifiedwait/progress: sustainednew16channelSPSqualified
+on live50123/32015 andruntimeablation/mix/occupancy verified.
+SAMEjob continues; zeroarm completed33,554,432physicalsteps toepoch16.
+Read-only sealed training snapshot (not activefulljobarchive):
+/tmp/relh-public-scalars-zero-32015-completed-training.tar.gz, gzipverified.
+Audit /tmp/relh-public-scalars-zero-32015-final-training-audit.json.
+Epoch4@85.653s ->16@299.428s:25,165,824physicalsteps/213.775s =
+117,721.0806environmentSPS afterwarmup. OneB3004096games/onelearner/H512/
+batch2M/mb8192/R.5, freshpolicy+optimizer (nooldstategeometrytransfer).
+570668policyvaluesfinite;policy/state/run sidecar SHAsmatch.
+Finalpolicy dbd9bb75eee1683c4586f03a99b07324f9a70c2c0a7d845d2bf17c6bd6141abf;
+optimizer4320d692ce8af69f136f6221980ef63c6d17f29bc7c2ce04aa9f5c91c46b8d8e.
+All33,554,432actionslegal,71,128terminals/zero0/nonfinite0. Reward signs
+are NOT gameoutcomes. Actualzero-scalar7056input/correctrules/2000turns,
+frozen218M50%/scripts25%eachbothseats verified byruntimeaudit.
+Zero frozenheldouts, thenpublicarmparity/sameinitbytes/training/evals anddirect
+comparison remainpending inSAMEallocation. No duplicatejob/settingschange.
+Continue SAME50123. Goalactive; no hostedwrite/promotion; protectedhistorysafe.
