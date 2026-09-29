@@ -13125,3 +13125,20 @@ Continue SAME12072. On terminal, verifyfullarchive and run
 /tmp/relh-coworld-entropy-pair-final-audit.py for entropy001 and
 /tmp/relh-coworld-entropy-pair-quality.py against root containing both branches.
 Goal active; no hosted writes/champion promotion; protected history untouched.
+
+### 2026-09-29 — 31967 entropy branch training live above throughput gate
+
+Previousgoalturn progress: diagnosed pretraining strict-resume rejection,
+implemented narrow explicit entropy-only guard exception, launched ONLY
+missingbranch and verified actual restored policy+optimizer hashes.
+SAME main12072 and queue31967 confirmed live now. Entropy001 branch has
+completed10,485,760 newphysicalsteps, observedepoch269; four-epoch native
+end-to-end window124,513.63environmentSPS. Firstepoch91.4k was warmup,
+not the reported steady rate. Full final interval and quality still pending.
+Actual training manifest override ent_coef=.001, gamma=.999, anneal_lr0,
+norm_adv1; originalseed/rollout/environment/frozenopponent unchanged.
+Rewardaudit10,485,760steps/14,036terminals/18legitimatezero/nonfinite0.
+AssignedGPU CUDA PIDs711039python648MiB/712011puffer160200MiB BOTH
+listed by exact taskcontainer; no actual contention. No new job or settings
+change. Continue SAME12072; completed31832 [correction:31932] control
+artifacts already reused. Goalactive; no hostedwrites/championpromotion.
