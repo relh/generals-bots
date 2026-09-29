@@ -12870,3 +12870,30 @@ resolution. ExistingauthorizedXPschema/helperuses{'top_n':1} andrecords
 resolvedopponentUUIDforeachrequest; usecurrentleaderselectorifnewpolicy
 qualifieshostedtesting. ReadpublicAPIonly,noprivatepeerconfigrequests.
 ContinueSAME32032;final553M/heldout/hosted proofstillpending.Goalactive.
+
+
+### 2026-09-29 — 31866 learning diagnostic while same long job continues
+
+PreviousgoalturnVERIFIEDWAIT onlive31866/main32032. CurrentSAMEhandle
+confirmedlive/latestepoch161 (~337.64Mtotal/85.98Mnew),sixepochENV SPS
+115283,rollingGPU~60.6%;85,983,232rewardsteps/128263terminal/3zero
+draw-or-timeout events/nonfinite0. No duplicatejob/settingschange.
+
+Read-onlyF32parameterdiagnostic: exported251Mportableweights comparedto
+actualfreshGPU initializer6751; directflat sourceprioroffsets570080/570084
+validatedagainstportableNPZ sourceclasses2/3 beforeusing268Mcheckpoint.
+Initialfull/half source-armypriors .25/.2475 ->251M .967024803/.161601916
+->verified268M .994082630/.156851709. ThesepriorsARElearning anddiverging.
+251M full-splitbias(class4) .047913004 versusinitial.125; fullbiasdeclines
+whilefullsourcepriorgrows. Thisisnotcausalproof ofpoorheldout/hostedstrength.
+Artifacts/tmp/relh-coworld-rules-251m-prior-parameters.json and
+/tmp/relh-coworld-rules-source-prior-learning-268m.json. Livepolicyunchanged.
+
+ActualpinnedPufferconfig/default.ini ent_coef=.001; effectiveexistingtrain
+override ent_coef=0. Currentdashboardentropy~.93 after33M->69Mnew.
+Potentialnextone-factorcomparisonIFfull300Mwindowstaysweak: restorepinned
+.001entropycoefficient whilepreservingotherlearner/model/priors/settings.
+DoNOTinferDaveey's privateconfig orclaimentropycausedlosses. Olderweak-ALL-
+priors31352 raisedentropy~3.9butallpanelslost; doNOTrepeatthatfailedcontrol.
+Waitforcurrent301.99Mwindowandfrozenheldoutsbeforechangingtraining.
+Goalactive; protectedhistoryuntouched; no hostedwrite/championpromotion.
