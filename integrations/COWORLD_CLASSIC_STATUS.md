@@ -14242,3 +14242,34 @@ check `[0,1763,1764,3527,3528]→[2full,2half,1pass]` PASS; dummy
 five-agent wrapped step yielded matching reward/action report. This is
 instrumentation for a future temperature/prior pilot, not a measured
 learning/SPS gain. Running32505 staged code is immutable and unchanged.
+
+32505 COMPLETED cleanly: full archive SHA256
+bc57515632500d6f52d3fc4857f870a1daee07201aa4413fbd846538547c484c,
+extracted `/tmp/relh-muon-context-selfplay-long-32505-inspect`; no Generals
+job remains in full Slurm queue. Restored exact234M initial policy
+SHA0025c722...bc84204 and frozen-opponent mix receipt confirms the same
+234M snapshot. New301,989,888 physical actions (absolute536,870,912),
+0illegal,436,768 terminal agents,5zero-reward terminal agents,
+0nonfinite rewards; positive/negative rewards147,289,181/137,593,514
+are not wins. Final policySHA d065b3f59a3929278cfa44458217022f14bbb38805a07d9b4168d2c77e1c1bbc,
+optimizerSHA193d32bcfc1817dd6c423ef3fb13e9a4ce6f256c1682635518aaa4a2ea947981.
+After warmup through epoch116 78.380s, epochs116→256 completed293,601,280
+physical steps in2,410.496s =121,801.2 end-to-end SPS on one B300,
+4096games/H512/batch2,097,152/mb8192. Sampled GPU mean62.3% after
+warmup, allocation preflight0MiB/0%; no throughput contention observed.
+Final environment11.234s/epoch vs model3.417s/train2.768s;
+300k target unmet.
+Held-out final versus best234M on identical maps/seats/opponents:
+Expander19/107/2 vs25/103/0, paired score delta-.0781 map-cluster95%
+[-.2397,.0643]; Sentinel27/100/1 vs27/101/0,+.0078
+[-.1773,.1832]; frozen218M229/262/21 vs266/232/14,-.1309
+[-.2774,.0152]; currentc601224/266/22 vs247/256/9,-.0645
+[-.2364,.1024]. Direct final versus starting234M230/276/6,
+score-.0898 CI[-.2286,.0506]; versus old public33M272/231/9,
+score+.0801 CI[-.0613,.2210]. All per-panel CIs include0; no evidence
+of improvement after extra302M steps. Preserve best234M, reject537M
+for hosted registration/promotion. Frozen537M prior weights further favor
+full moves: route full1.0783/half.5030, source full1.1431/half.2064,
+full-only bias.2107. Next bounded test changes sampling temperature and
+measures actual full/half actions, using best234M state; do not replay
+unchanged long recipe.
