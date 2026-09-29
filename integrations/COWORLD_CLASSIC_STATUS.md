@@ -10502,3 +10502,21 @@ CPUexactmetadataaudit nowpassedall18blockcoverage,padding,23registrations,
 or strength/throughput claimfor thisoption. NextGPUcandidate conditional
 on current300Mresults, withruntimeflag andadapterSHAs pinned and fresh
 optimizerstate; existingcheckpoints retainrawparameterbytes.
+
+30728 milestone100,663,296additionalphysicalsteps checkpointpresent,
+201,326,592agentsteps,57028finitefloatwords, SHA
+be38dce82b938e3196045cffdaf4157359bf6f5378c0ac5364e8cf392ae221ca.
+Independentread-onlycopy /tmp/relh-classic-selfplay-temp16-300m-30728-checkpoint-100m.bin
+verified sameSHA asnode; run remainslive, no cancellation or evaluationoverlap.
+Epoch108fourwindow129461.819ENV SPS/sixwindow128873.103/GPU64.4%,
+rewardtick55808=114,294,784physicalsteps,185880captures/7310draws over
+193190completedphysicalgames; nonfinite0. Nativeepoch95entropy0.346,
+KL0.003,clipfrac0.036; diagnostics aretraining, notstrength.
+
+ActualNativeFabricPolicy constructor with directadapterinstall and
+METTA_SPATIAL_OPTIMIZER_LAYOUT=logical passedCPUintegrationaudit;
+self.shapes exactly derivedlogicalshapes, all18blocks/23registrations/
+57028words, initialchecksum unchanged94ab8926...5681c.
+/tmp/relh-spatial-logical-optimizer-integration-audit.json.
+GPUoptimizer behavior/learning remainunverified; current30728stilluses
+pinnedoldnative registration. No newGPU jobs.
