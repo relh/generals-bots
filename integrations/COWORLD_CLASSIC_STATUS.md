@@ -13733,3 +13733,29 @@ No XP/policy/championwrites. Codec/masksourcefollowup: samplingandPPO use
 same masked logsumexp, invalidlogits finite-1e4 (no0*infinityentropy), saved
 rolloutmask fedto minibatch; existing100Mlegalactionaudit remains actual
 runtimeproof. No newmaskbugestablished. Goalactive,SAME31779/32189live.
+
+32189 CONTROL completed33,554,432NEWphysicalsteps (33M->67,108,864total),
+last6epoch interval117,335.2232SPS (four117,336.3174), warmup/actualepoch20->32
+auditstillpendingfullarchive. Finalmask33,554,432actions/0illegal;
+66,324terminalagents/0zeroterminal/nonfinite0. Rewardpositive20,100,294/
+negative12,573,719 are NOTwins. Controlcheckpoint74dea99a0d3fccf0bb8257bd780b43d4d014ff864cb374dbd22191fe1e7c0a0e;
+optimizerab4498c62f2708df51b9f408befcb5606714dd2c0673e9bcb1b19d2c30ad5226.
+Initialmatchedheldouts (newmaps): parent->control Exp25/103/0->25/101/2,
+Sent15/113/0->16/112/0, frozen218M223/274/15->182/325/5. Preliminary
+rawWLD only; clusterCI/fullpaireddataauditpending. No improvementestablished,
+no promotion or unchangedlongscale. Canonicalarm stillpendinginSAMEallocation.
+
+IndependentCPUcontextstorageaudit completed offGPU: actualpinnedNativeFabric
+7056/F32 model, all5120uniquecontextweights contiguousblock offset564952.
+Neither[160,32] nor[32,160]storage reshape has consistent convolutionaxes.
+Explicitlogicaloutput/input[32,160]gather is a bijection but nonidentity,
+SHA695735db9987c62beb0ed534c6f0c2f7b52c881151175985536e279a74033a04.
+Thus retain currentcontextvector; a convolutionMuontest would require an
+explicitgather/scatter and optimizerstate handling. Geometryproofonly, NOT
+learning/SPSbenefit. /tmp/relh-spatial-context-storage-audit.{py,json,log},
+indices.npy/convolution-gather.npy; controllerbackups scoped
+/tmp/relh-muon-dense-orientation-audits-32189. No runningrecipechange.
+Quality/trainingaudithelpers preparedat /tmp/relh-muon-dense-orientation-*
+andcontrollerbacked. Needmain31779terminal beforefullarchiveextract/backup;
+then run actualfirst-step audit, bothfinaltrainingaudits, pairedqualityCI.
+Goalactive; SAMElive32189/31779; protectedhistory/maincheckout untouched.
