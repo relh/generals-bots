@@ -12161,3 +12161,57 @@ upcoming corrected panels record the instantiated cutoff, even when an old
 checkpoint's training manifest still records its1200-turn origin. Metadata
 only; no action selection or game behavior change. Corrected pilot will also
 stage a narrow metadata/assertion update of the archived scripted evaluator.
+
+## 31620 corrected2000-turn resume pilot running
+
+Previous turn progress: rejected calibrations and corrected contract. Current
+AGENTS read/fetch/full sinfo/queue/node checks complete; no Generals live or
+pending before submission. One bounded B300 allocation **31620**, main
+**53457**, b300/metta-fabric-b300-1,nice100/25min/8CPU/64GiB. Output/TMPDIR
+node-local /var/tmp/relh-generals-recovery/classic-spatial-classic2000-pilot-31620,
+recipe classic2000,core0. Assigned physical UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%/no CUDA processes;
+DockerUUIDmatch. No observed contention. Guard31574 exact container absent and
+node archiveb09b2d...f2a9. Native imagebdd4f2...96ae5 unchanged.
+
+Checked actual staged wrapper versus repo before fix: runtime SHA d2e805...
+601b omits repo's optional directional_time_features interface. Staging full
+repo wrapper would change unrelated interface against the preserved codec.
+Instead patched ONLY its1200->2000 literal, actual corrected runtime SHA
+**b82baff1130dde1fdbb6fc2c32f5d0ce2cc93a662b1cad3bf0543ffc2fbeb33d**.
+Original actual runtime bytes preserved; optional time features not enabled.
+CPU real inherited environment contract for THIS staged variant confirms
+4851/[3529],capture-only/noDeathtouch, continues1200 and1999,truncates2000 and
+resets0; /tmp/relh-classic2000-staged-contract/audit.json and log. Thus earlier
+repo CPU proof and upcoming GPU runtime use consistent corrected semantics.
+
+Native/model sources6069da2 preserved, new wrapper/episode metadata sourced
+frome61e5f0. Actual GPU import confirmed
+/recovery/.../staged/integrations/metta_puffer.py with b82b...eb33d.
+Native binary/model3c809...fa005/state words/factory/CUDA kernel/defaultINI
+unchanged;23logical optimizer shapes and57,028 params verified. New environment
+fingerprint c6b5549a00bf8f91f322f82f4e0d7607fc9387bb41e821fea8a0526485cbd9d4,
+declared horizon2000 and source_modules includes integrations.metta_puffer.
+Only behavioral change is episode limit; frozen parent30342 df706...4ddc,
+scripted mix/rewards/learner settings unchanged. CPU config preflight verified
+actual startingc601 AND29af5f optimizer/run identity, exact overrides/seed6751,
+explicit environment transfer. Target335,544,320->369,098,752 absolute,
+**33,554,432 additional physical**. This is distinct from rejected31512; no
+calibrated or rejected checkpoints used.
+
+Same4096games/onelearner/H512/batch2,097,152/mb8192/R0.5/LR.003/T.0625/norm1/
+gamma=shaping_gamma.999/shaping.5/rewardscale.5,balanced both sides,teacherNone.
+8min trainer timeout/nonfinite/stall/>=30k guards. Corrected throughput remains
+unmeasured until actual post-warmup native epochs complete. After training,
+SAME allocation compares starting335M AND final369M on full2000-turn matched
+128Exp/128Sent seed10686 and512 parent seed10513; final versus starting512
+seed11513. Runtime cutoff recorded in every evaluation result; scripted
+helper asserts2000. No older1200 panels used as corrected baseline.
+
+Script/tmp/relh-classic-spatial-classic2000-run-node.sh SHA
+338c85e9a5a3a57755d907f7d2952df26e6b888468f5b054edc8cb89cb45fd41;
+generator/tmp/relh-build-classic2000-pilot.py. Mac live stream
+/tmp/relh-classic-spatial-classic2000-stream.tar.gz and observer
+/tmp/relh-classic-spatial-classic2000-srun.log. Poll SAME31620/main53457, never
+restart on observer timeout. Training startup now underway; no hosted writes
+or promotion. Goal active, protected histories untouched.
