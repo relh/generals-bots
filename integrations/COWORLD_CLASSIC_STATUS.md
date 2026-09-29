@@ -10898,3 +10898,21 @@ mixed model AND optimizer at checkpoint8, then evaluate its completed target.
 No already-completed training or evaluation is replayed; longer trainer bound
 will account for measured throughput. Same seed5751/overrides required by native
 resume, absolute target33,554,432 steps adds16,777,216 NEW physical steps.
+
+## 31186 mixed JIT resume allocation
+
+Sole Generals allocation31186/main40506, B300 metta-fabric-b300-1,45min,
+8CPU64GiB/nice100, source6069da2. Script
+/tmp/relh-classic-spatial-mix-jit-resume-run-node.sh SHA
+beb3e85a6260049b8c00a5366d81786de6917923e259c4710f22e5f2854e9adc.
+Output /var/tmp/relh-generals-recovery/classic-spatial-mix-jit-resume-pilot-31186;
+container relh-classic-spatial-mix-jit-resume-31186. Full queue checked;
+no other Generals allocation. Direct node SSH denied; preflight inside the sole
+allocation before games/training verified prior31080 archive2cf6...66fd and
+old container absent, imagebdd4...6ae5, assigned physicalGPU
+bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%, no compute process.
+635GiB disk free, /tmp19815freeinodes; all TMPDIR node-local/var/tmp output.
+Retained checkpoint8 panels first (frozen-only and mixed), then fresh actual
+build and policy+optimizer resume mixed5a908...7221, identical5751/overrides,
+absolute33,554,432 target adds16,777,216 NEW physical steps. Twelve-minute
+trainer bound. No long budget released pending completed throughput/quality.
