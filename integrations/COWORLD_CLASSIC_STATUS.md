@@ -10705,3 +10705,37 @@ same initial state arrays in each sampled panel. Diagnostic artifact
 30900 sampled half-move counts were zero: midpoint203840 moves,
 100M201165 moves, final204449 moves across Expander+Sentinel panels. This
 suggests restricted exploration but is not a causal explanation or mask proof.
+
+30986 terminal exit1 after the first recipe's completed training and two script
+panels. Native/T0.0625/LR0.003 checkpoint1f71db0dfde9e59c4e8c359c279b9828f98e2f5a26391e3748d9772d7bd6c8a9,
+57,028 finite words, 16,777,216 physical /33,554,432 agent steps; illegal0.
+Warmup epoch4@38.398s to epoch16@136.916s:12,582,912 physical steps/98.518s
+=127,721.9594 ENV SPS. Rewards23237positive/23237negative, terminal49300agents,
+zero-reward terminal2826agents, nonfinite0:23237captures+1413draws=24650games.
+Held-out greedy Expander22/100/6, Sentinel0/123/5. No strength improvement
+established. Parent panel failed before games because the package copy of
+sample_flat_logits evaluator was missing; root copy existed. Remaining two
+trainers never started. Archive11110108144d4c5bbf6e22a8e33f0bba1bb5dbb4c6dfc94ca95538211d279f0e,
+gzip valid, Mac/controller /tmp/relh-classic-spatial-recipe-comparison-30986.tar.gz,
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-recipe-comparison-30986.tar.gz.
+Extraction /tmp/relh-spatial-recipe-comparison-30986-inspect;
+local detailed audit /tmp/relh-spatial-recipe-comparison-30986-audit.json.
+Timing directory empty in pinned runtime; no separate native timing claim.
+
+Corrected root AND package evaluator are identical. Exact staged package imports
+and match --help passed locally from /tmp (repository cwd would shadow staged
+package, so module origins were explicitly checked). Every embedded Python
+block AST checked. First completed training and script panels excluded from
+retry: evaluate its pending parent panel once, then native/T0.25 and
+logical/T0.25 remaining trainers, same seed/configs. New script
+SHA537215bff2c47780b591289b1c67cbd53eaf23ad95900824ccaabf1696d96936.
+30986 archive and exact-container absence guard added. Full queue/node checked,
+no duplicate Generals allocation. Same one25min/8CPU64GiB/nice100 bound.
+
+Bounded local CPU codec/mask probe executed all3528 move-index decode roundtrips,
+then8 actual Classic games for32ticks, with legal half moves deliberately selected.
+Mask had835 full and835 half legal entries;204 decisions exposed legal half
+moves and all204 half moves executed legally. Audit
+/tmp/relh-spatial-half-mask-codec-probe/audit.json. No strength/throughput claim.
+Initial CPU invocation hit require_gpu guard before state creation; scoped
+require_gpu=False used for the corrected CPU diagnostic only.
