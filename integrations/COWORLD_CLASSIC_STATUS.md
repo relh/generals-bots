@@ -10960,3 +10960,36 @@ Checkpoint/optimizer and allsource preserved; protected Codexhistory untouched.
 Goal remains active: throughput is qualified, strong learning/hosted proof is
 unfinished. Focus next on policy learning and credit/action priors; mask/codec
 roundtrip and legal execution already pass, so do not replay those probes.
+
+## Prior influence probe and sole matched fresh split-prior comparison31254
+
+Previous goalturn progress:31186 completed, improved mixedSPS135676 and
+produced negative strength evidence; goal active, no live Generals before31254.
+Read nearestAGENTS/fetchedorigin. Required exact Metta preflight/throughput
+skills read; fullqueue/sinfo/node checked. One bounded45min B3008CPU64GiB/nice100
+allocation31254/main9356, source6069da2 (journal HEAD76cae7a), output
+/var/tmp/relh-generals-recovery/classic-spatial-split-prior-comparison-pilot-31254.
+Script /tmp/relh-classic-spatial-split-prior-comparison-run-node.sh SHA
+a3fa63b4eae65b0121885eafc7df5b82053501f752c6f0e560e0eff82a80b5a3.
+Prior31186 nodearchive hash and old-container absence gate first. PhysicalGPU
+occupancy/image/disk and DockerUUID guards run before any build/training.
+
+CPU probe /tmp/relh-spatial-prior-influence-probe/audit.json,8actualClassic
+public-observation games×64changingticks/512decisions,seed2486. Child8bc11
+original0half/24passes; counterfactual no_source changed241/512,0half/24passes;
+no_full changed327/512,211half/133passes; all publicpriors removed changed
+488/512 and passed512/512. Counterfactual logits only, not strength evaluation.
+Actual archived weights sourcearmy3.9758,fullbonus1.9787 nearly retained;
+half priorweights unchanged in continuation. Native masks/codec allowhalf.
+Hypothesis: prior split bias severely restricts exploration; not proof of cause.
+
+31254 matched fresh-native initialized policies,seed6751,H512/mb8192/R.5/LR.003,
+T.0625/entropy0/gamma=shaping_gamma.999,4096physicalgames/onelearner,
+teacher-free capture±1, same mixedfrozen50%/Exp25%/Sent25%/bothsides.
+Original:half_prior_scale.25/full_split2. Candidate:half_prior_scale1/full_split.125.
+Other fabricoptions/rewards/opponents/PPO matched. Each33,554,432physicalsteps,
+actualfreshCLI builds, actualinitializer coefficient assertions, fullinitial
+parameterdiff restricted to6splitpriorcoefficients before candidate training.
+This control is a new fresh initialization, unlike prior parent continuations;
+no old completed training is replayed. All original checkpoints left immutable.
+Qualification and heldoutscript/parentpanels gate scaling; no overnight queued.
