@@ -11220,3 +11220,23 @@ GPU sample48%/145760MiB; startup no contention. Completed finalinterval
 audit and heldout scores pending. /tmp/relh-audit-potential-comparison-31328.py
 prepared to verify164→176/25,165,824steady/33,554,432newphysical perarm,
 shapedrewardcounts NOT outcomes. Goal active; same31328/main73529 nextpoll.
+
+### 31328 capture-scaled complete; matched scores preserved
+
+Verified live31328/main73529, no newjob. Control completed33,554,432NEW
+physical steps/absolute369,098,752. Warm164@72.714s→176@262.877s,
+25,165,824physical/190.163s=132,338.173041ENV SPS. 53alignedGPU samples
+mean54.6792%/peak145760MiB. Rewardaudit8192ticks/33,554,432steps,
+0nonfinite;raw15901positive/28637negative/47912terminals/3374zero-ended.
+Final57028finitewords5767248cbe2257a5929f3d33b99604430a638d4bad09df6eb875e214228cad45;
+learner7d57e49dbfd04f0d8af0299201a6f6123edcf166dd2fc4dd1b83af2ecf519f35.
+Actual finalpolicy/state/runhashes matchsidecar. Actualinitial-policy.bin
+and initial-policy.bin.learner match31291 sourcecheckpoint/optimizer,
+so realresume verified. /tmp/relh-potential-comparison-31328-capture-audit.json
+and nodecapture-scaled/steady-audit.json preserve evidence.
+
+Freshheldoutseed5686/parent5513:Exp16/106/6,Sent4/111/13,parent246/198/68.
+Script rewarddiagnostics0clippedsteps,raw+/-.5. No strengthproof against
+scripts, no hosted/publish action. Mac /tmp/relh-potential-comparison-31328-
+control-scores.json preserved. Candidate potential-scaled is next within
+SAME31328 allocation; goalactive, matched candidate/results pending.
