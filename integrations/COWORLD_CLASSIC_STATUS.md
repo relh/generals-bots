@@ -13345,3 +13345,26 @@ Prepared /tmp/relh-public-scalars-32015-quality.py: fourpairedpanels and
 512directrich-vs-zero, matchedmap/seat/opponent/rule/horizon/seed assertions
 plus10,000map-clusterbootstrapdraws. Notyetexecutedagainstpendingpanels.
 No duplicatejob, newsettingschange, hostedwrite orpromotion. Goalactive.
+
+### 2026-09-29 — 32015 zero-scalar control sustained throughput passes
+
+Previousgoalturnprogress: actual16channelGPU/portable/layout/gradientparity
+passed beforezero training. SAMEmain50123/queue32015confirmedlive now.
+Epoch4@85.653s ->8@155.610s:8,388,608physicalsteps/69.957s =
+119,910.9167environmentSPS afterwarmup. OneB3004096games/onelearner/H512/
+batch2M/mb8192/R.5,includesrollout+transfer+optimization. New7056input
+layout passes30kgate; no longscale released. Final4->16auditstillpending.
+Actual runtimeopponentmix receipt:7056observations,public_scalar_featuresTrue,
+public_scalar_ablationTrue,correctrulesTrue/2000turns,frozen218M1024/side,
+Exp512/side,Sent512/side. Reward12,582,912steps/26,040terminals/zero0/
+nonfinite0. CurrentCUDA PIDs802422python648MiB/803924puffer195722MiB
+BOTHlistedbyexacttaskcontainer; nootherCUDA process/actualcontention.
+No duplicatejob/settingschange; secondpublicarm/evals remainpending.
+
+Read-onlyObservatoryrefresh /tmp/relh-generals-hosted-targets-32015:
+Coworld0.3.3; Alpha/DavidB rank1/MMR2190.5413,policylabelNULL;
+Richard1490.2392/relh1462.8158 ->relhstilllowereligible. Ownedchampions
+unchangedrelhv4 e53e30be.../Richardv2 7a3f30e9.... No externalwrite.
+Stilluse{'top_n':1} andrecord resolvedUUID ifnewpolicyqualifies actualhosted
+comparison; neverinferAlpha versionfromnull/currentrank. Goalactive.
+Continue SAME50123 throughbotharms andheldouts; protectedhistoryuntouched.
