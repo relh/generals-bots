@@ -12215,3 +12215,48 @@ generator/tmp/relh-build-classic2000-pilot.py. Mac live stream
 /tmp/relh-classic-spatial-classic2000-srun.log. Poll SAME31620/main53457, never
 restart on observer timeout. Training startup now underway; no hosted writes
 or promotion. Goal active, protected histories untouched.
+
+## 2026-09-29: corrected horizon pilot31620 trained; evaluator recovery31646
+
+31620/main53457 terminal1, allocation released. Trainer itself completed all
+33,554,432 new physical steps (335,544,320 ->369,098,752), epoch176,
+run/completed.json and both checkpoints preserved. Subsequent baseline
+scripted evaluation failed BEFORE games: my broad metadata substitution
+inserted episode_limit=env.horizon into options.update before env existed,
+raising UnboundLocalError. No evaluation scores, no hosted writes. This was
+an evaluator edit error, not a training failure; do NOT replay training.
+
+Mac archive /tmp/relh-classic-spatial-classic2000-stream.tar.gz gzip verified,
+SHA3c6bbbc864a0ee0cbe69daa98cf527147d007da12abd9683e7c9950f738242d4;
+controller /tmp/relh-classic-spatial-classic2000-31620.tar.gz matches. Full
+extract /tmp/relh-spatial-classic2000-31620-inspect. Local final audit
+/tmp/relh-classic2000-31620-final-audit.json passes initial policy AND optimizer,
+final policy/state/run SHA, finite57028 parameters, real33,554,432 actions with
+0 illegal, reward nonfinite0, exact2000-turn runtime and balanced opponents.
+Final policy8c138c1ee3fbafab1e1a9c6a0db5404e5e184c31f623ea2c55af2762868ec63c;
+optimizer8f7c97db84cda4575037a21f78b79979da70414eead81cfb3b6c37e374db9d11.
+Epoch164 warm69.647s ->176 at251.998s:25,165,824 physical/182.351s =
+**138,007.600726 ENV SPS**. Aligned GPU mean55.647%, no occupancy at startup.
+4096games/onelearner/H512/batch2,097,152/mb8192/R.5/LR.003/T.0625,
+normadv1/gamma=shaping_gamma.999/shaping.5/rewardscale.5; no teacher.
+
+Re-read exact Metta preflight/throughput skills, repo AGENTS, fetch current;
+full queue/node inspection confirms no live Generals allocation. Recovery
+**31646**, B300/metta-fabric-b300-1, nice100/8CPU64GiB/25min, mainPTY36340,
+ONLY evaluations of immutable starting335M and completed369M. Assignedphysical
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%, Docker UUID matched,
+no contention observed. Node root
+/var/tmp/relh-generals-recovery/classic-spatial-classic2000-eval-pilot-31646.
+31620 node archive hash and exact old container absence checked before work.
+New staged scripted evaluator explicitly options horizon2000; result still
+records actual env.horizon, runtime assertion2000. Fixed helper SHA
+0a8194ff7d86977fc46a3e787db9d98d73007899ae5d4e2b5c586ae3a50055b7.
+No preserved old source or training artifacts rewritten. Temporary pilot
+generator corrected for future use. Recovery script
+/tmp/relh-classic-spatial-classic2000-eval-run-node.sh SHA
+27a2bf824e4f89be43689fe77a175692b5f2576d860d1cce51b6d65457b3ff19.
+Stream /tmp/relh-classic-spatial-classic2000-eval-stream.tar.gz; observer
+/tmp/relh-classic-spatial-classic2000-eval-srun.log. Same planned seeds,
+128Exp+128Sent+512parent each and512 final vsstarting. Baseline games now
+running successfully. Poll SAME31646/main36340; archive after terminal.
+Goal active; protected histories untouched; no champion promotion.
