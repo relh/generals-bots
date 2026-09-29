@@ -12608,3 +12608,34 @@ SHA/flag andGPUsteadyphysicalSPS>=30k beforelongscaling. Newstagedenv+official
 coremustbemountedintoactualsource-spatial2importpaths; merelyeditingrepofile
 wouldNOTchangeGPUruntime. Nativefactory/model/binary canremainidentical,
 environmentfingerprint MUSTchange. Goalactive,protectedhistoriesuntouched.
+
+
+### 2026-09-29 — Verified hosted-rules pilot31814 launched
+
+One bounded35min B300 allocation31814,8CPU/64GiB/nice100,mainhandle81709.
+Node metta-fabric-b300-1; outputs
+/var/tmp/relh-generals-recovery/classic-spatial-coworld-rules-pilot-31814.
+Full queue inspected; no other Generals job for this task. Physical assigned
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0% before Docker;
+container UUID matches. No contention found. Driver595.91.07/compute10.3,
+runtime bdd4f2a9a1251ba57a6a70368e069f45498060d214f6f54d9c2fb70fe1196ae5.
+Root627GiB free; /tmp99%inodes, all new outputs/TMPDIR on /var/tmp.
+Previous31753 archive/node SHA c26226793e42e913eec6ff359f977ad6375362861f42af5569e700bb6b0ab6ab
+verified and exact prior container absent. No old job replayed.
+
+Prepared scriptSHA5b5bee0bfcb675b9766f91c482c2504d38c57fc4ea70a810a8cafda6cb20040d.
+Restores complete184549376 policy669b5d9d4e77ccb592322f1b1ee7ed8e6114c674e3c725bce672ae71be40993b
+and optimizerbb313085965e953cb2f29cf9334a67c9bc15a3a42e4984e81f63bfd4a9aad98b,
+explicit environment transfer; target218103808/33554432 NEW physical steps.
+4096games/1learner,H512/batch2097152/mb8192/R.5/LR.003/T.0625/normadv1,
+gamma=shaping_gamma=.999,gae_lambda=.999,shape.5/rewardscale.5,no teacher.
+F32/source.25/native model and binary unchanged. Actual new wrapper5aa72dfb,
+actual core env6fea2498 and official gamef39e448a verified in runtime.
+New environment fingerprint
+04d727f2d704b71b161cffaf96a613d191923ff205f2c1abae6ba6bc8de16827.
+
+CPU checkpoint/config preflight passed before launch. Fresh steady-state
+physical SPS must qualify this engine; old-rule SPS does not qualify it.
+Baseline and final evaluations included in same allocation, both seats,
+128Exp/128Sent/512oldparent/512current plus512direct final versus184M.
+No champion/policy promotion. Pilot remains live; follow SAMEhandle81709.
