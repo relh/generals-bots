@@ -11548,3 +11548,19 @@ log /tmp/relh-classic-spatial-width32-srun.log.
 Prepared /tmp/relh-audit-width32-31392.py completionaudit checkswidth/
 33.55Mphysical/legalactions/finalnativeidentity/4→16steadyinterval.
 Goalactive; pollSAME31392/main9149, no duplicatejob.
+
+### 31392 actualwidth32 GPU layout verified;10.5Mphysical progressing
+
+Previous turn progress submitted/builtwiderpilot; current verifiedwait
+live31392/main9149,soleallocation/no newjob. Actual model56fbf25df79f3f74c2e55feee832fb9f9b21d2d3715c7aa2cb12d13403eb4db8
+compiledsource0aba...172b unchangedtrainerlogic; GPU570508words/5priors/
+23logicalblocks exactlymatchCPUnative layout. GPUfresh6751initialSHA
+3e3dd7293f9b1b731082d8d09f592b9dc81c31a7162332b15a655b5a85e43857,
+finite. GPU versusMacCPU initializer hashes differ; no cross-platform
+bitidentityclaim (onlywidth modeltopology/layout validated).
+Actual4096opponentmix BOTH seats:frozen1024/side,Exp512/side,Sent512/side.
+Observedepoch5/10,485,760NEWphysical, rewardnonfinite0. Firstepoch44.951s
+(46.7k includescompile), recent dashboard116.4k instantaneous; completed
+six-epochsteady gate pending. GPUpeak~160886MiB (~157.1GiB), RAM~5.9GiB.
+No scale/strengthclaim untilcompletedintervaland6686/6513heldout.
+Goalactive; SAME31392/main9149 nextpoll; no publication.
