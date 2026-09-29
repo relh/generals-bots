@@ -12260,3 +12260,40 @@ Stream /tmp/relh-classic-spatial-classic2000-eval-stream.tar.gz; observer
 128Exp+128Sent+512parent each and512 final vsstarting. Baseline games now
 running successfully. Poll SAME31646/main36340; archive after terminal.
 Goal active; protected histories untouched; no champion promotion.
+
+## 2026-09-29: corrected2000-turn matched panel complete; no gain
+
+Recovery31646/main36340 terminal0, released, queue absent. All7 evaluation
+panels completed at actual episode_limit2000; no duplicate training or hosted
+writes. Starting335M c601 vs final369M8c138 on matched seed10686 script panels
+and10513 parent, initial map hashes/sides/opponent IDs verified:
+
+| opponent | starting W/L/D | final W/L/D | paired score delta, map-cluster95% |
+|---|---|---|---|
+| Expander128 |32/96/0|28/99/1|-.05469 [-.27614,.16522]|
+| Sentinel128 |20/108/0|17/110/1|-.03906 [-.16794,.08696]|
+| old30238parent512 |388/103/21|403/95/14|+.04492 [-.05546,.14482]|
+
+Direct final versus starting512 seed11513: **226W267L19D**, score-.080078,
+126unique maps, cluster95[-.19343,.03482]. No clearly supported improvement
+on scripts/parent or direct start comparison. Reject this checkpoint for
+scaling, hosted upload, and promotion. Correct2000turn wrapper retained; its
+contract correction does NOT establish why existing policy is weak. Earlier
+335M c601 hosted6/32vsDaveey and11/32vsrelh still stand; no newXP requests.
+
+Audit /tmp/relh-classic2000-31646-matched-scores.json;
+helper /tmp/relh-classic2000-matched-quality.py,10000 cluster resamples.
+Archive /tmp/relh-classic-spatial-classic2000-eval-stream.tar.gz gzip verified,
+SHAc24ab4f55549df35c7ed8e4be8b4e7f38e4bff5a99a549e40b7c2d2b324111c6;
+controller /tmp/relh-classic-spatial-classic2000-eval-31646.tar.gz matches.
+Extract /tmp/relh-spatial-classic2000-eval-31646-inspect. Original31620 archive
+and immutable checkpoints/optimizer separately preserved. Protected histories
+untouched. No live Generals GPU job. Throughput138k established forcorrected
+2000-turn F8 recipe;300k aspiration unmet, envrollout dominant previously.
+
+Next training should change a substantive learning recipe rather than extend
+this unproven continuation. F32 capacity with source prior.25 and corrected
+2000turn arena has not been tested: earlier31392F32 used strongsource4, while
+source.25 improvement was onlyF8. This is a plausible bounded capacity probe,
+NOT a demonstrated fix. Goal active until heldout AND hosted strength proven
+and qualifying policy published. Repo clean/pushed after recording findings.
