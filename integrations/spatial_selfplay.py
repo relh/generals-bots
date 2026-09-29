@@ -1,10 +1,12 @@
 """One learner per Classic game against an immutable portable spatial actor."""
 
+import hashlib
 import json
 from pathlib import Path
 
 import jax
 import jax.numpy as jnp
+import numpy as np
 
 from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
@@ -50,7 +52,7 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
             raise ValueError("Spatial learner requires one flat action per game")
         values, masks = self._cached_values, self._cached_masks
         opposing_sides = 1 - self.sides
-        opposing = self._opposing_actions(values[self._rows, opposing_sides], masks[self._rows, opposing_sides])
+        opposing = self._opposing_indices(values, masks)
         paired = jnp.zeros((self.parallel_games, 2), jnp.int32)
         paired = paired.at[self._rows, self.sides].set(actions[:, 0].astype(jnp.int32))
         paired = paired.at[self._rows, opposing_sides].set(opposing)
@@ -65,3 +67,74 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
             self.base.pool, _ = self.base.env.reset(jax.random.fold_in(self._pool_seed, self._pool_generation))
         return (values[self._rows, self.sides], masks[self._rows, self.sides].astype(jnp.uint8),
                 rewards[self._rows, self.sides].astype(jnp.float32), done.astype(jnp.float32), False)
+
+    def _opposing_indices(self, values, masks):
+        opposing_sides = 1 - self.sides
+        return self._opposing_actions(values[self._rows, opposing_sides], masks[self._rows, opposing_sides])
+
+
+class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvironment):
+    """Half frozen-policy games, one quarter Expander and one quarter Sentinel.
+
+    Adjacent rows share an opponent type and learn opposite player sides.
+    Scripted agents receive their own public observation and supply only the
+    opposing action. They never supply learner actions or training targets.
+    """
+
+    def __init__(self, *, context, parallel_games=4096, **options):
+        if parallel_games % 8:
+            raise ValueError("Mixed spatial opponents require complete eight-game seat groups")
+        super().__init__(context=context, parallel_games=parallel_games, **options)
+        from generals.agents.harvester_agent import ExpanderHarvesterAgent
+        from generals.agents.sentinel_agent import SentinelAgent
+        from generals.core import game
+
+        self._mix_labels = np.tile(np.asarray((0, 0, 0, 0, 1, 1, 2, 2)), parallel_games // 8)
+        self._mix_rows = [
+            jnp.asarray(np.flatnonzero(self._mix_labels == label), jnp.int32) for label in range(3)
+        ]
+        self._scripted_actions = []
+        for agent in (ExpanderHarvesterAgent(), SentinelAgent()):
+            def indices(states, sides, keys, agent=agent):
+                actions = jax.vmap(lambda state, side, key: agent.act(game.get_observation(state, side), key))(
+                    states, sides, keys
+                )
+                moves = (actions[:, 4] * 4 + actions[:, 3]) * 441 + actions[:, 1] * 21 + actions[:, 2]
+                return jnp.where(actions[:, 0] != 0, 3528, moves).astype(jnp.int32)
+
+            self._scripted_actions.append(jax.jit(indices))
+        self._mix_output = context.output / "spatial-opponent-mix.json"
+        self._mix_checkpoint_sha256 = hashlib.sha256(
+            Path(options["frozen_bundle"]).joinpath("policy.bin").read_bytes()
+        ).hexdigest()
+
+    def reset_device(self, seed):
+        result = super().reset_device(seed)
+        sides = np.asarray(self.sides)
+        counts = {
+            label: {str(side): int(np.count_nonzero((self._mix_labels == index) & (sides == side))) for side in (0, 1)}
+            for index, label in enumerate(("frozen", "expander_harvester", "sentinel"))
+        }
+        if any(counts[label]["0"] != counts[label]["1"] or counts[label]["0"] == 0 for label in counts):
+            raise ValueError("Mixed spatial opponent seats are not balanced")
+        record = dict(
+            counts=counts, frozen_checkpoint_sha256=self._mix_checkpoint_sha256, seed=seed,
+            scope="Opponent actions only; no teacher targets or learner action overrides",
+        )
+        self._mix_output.parent.mkdir(parents=True, exist_ok=True)
+        self._mix_output.write_text(json.dumps(record, indent=2) + "\n")
+        print("SPATIAL_OPPONENT_MIX " + json.dumps(record), flush=True)
+        return result
+
+    def _opposing_indices(self, values, masks):
+        sides = 1 - self.sides
+        opponents = jnp.zeros(self.parallel_games, jnp.int32)
+        rows = self._mix_rows[0]
+        opponents = opponents.at[rows].set(
+            self._opposing_actions(values[rows, sides[rows]], masks[rows, sides[rows]])
+        )
+        for rows, act in zip(self._mix_rows[1:], self._scripted_actions, strict=True):
+            states = jax.tree_util.tree_map(lambda leaf: leaf[rows], self.states)
+            keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(self.keys[rows])
+            opponents = opponents.at[rows].set(act(states, sides[rows], keys))
+        return opponents

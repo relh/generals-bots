@@ -10739,3 +10739,62 @@ moves and all204 half moves executed legally. Audit
 /tmp/relh-spatial-half-mask-codec-probe/audit.json. No strength/throughput claim.
 Initial CPU invocation hit require_gpu guard before state creation; scoped
 require_gpu=False used for the corrected CPU diagnostic only.
+
+## Controlled comparison31014 completed; logical layout retained as experiment
+
+31014 exited0; main41976 terminal, allocation released. All remaining panels
+completed. Full archive gzip valid after terminal (an earlier read during
+streaming was incomplete and is not used as archive evidence); re-extracted
+complete output. SHA256 d407e163836e59fc4f820ba5fa15585ad7bcd7306324a47ce51822821fbd8d27.
+Mac /tmp/relh-classic-spatial-recipe-comparison-remaining-stream.tar.gz;
+controller /tmp/relh-classic-spatial-recipe-comparison-31014.tar.gz;
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-recipe-comparison-31014.tar.gz.
+Extraction /tmp/relh-spatial-recipe-comparison-31014-inspect. Node hash and
+container absence will be verified before next trainer. GPU bce8f97b-720b-5afa-cbb7-ad8b68cc14f7
+was empty and UUID-matched, no assigned-GPU contention observed.
+
+| Recipe, parent df706 start, LR0.003 | ENV SPS | Expander128 W/L/D | Sentinel128 W/L/D | Parent512 W/L/D |
+| --- | --- | --- | --- | --- |
+| Native/T0.0625 (30986) |127721.96|22/100/6|0/123/5|214/266/32|
+| Native/T0.25 |125722.26|0/122/6|0/126/2|0/501/11|
+| Logical/T0.25 |130518.66|11/109/8|4/113/11|261/212/39|
+
+Same seed4751,2048 physical games/4096 learner rows,H512,mb8192,replay0.5,
+entropy0,gamma/shaping0.999,GAE0.999,capture-only outcomes,16,777,216 physical
+steps each. Both T0.25 trainers completed16epochs and57,028 finite words,
+33,554,432 action checks/0illegal/nonfinite0. Native checkpoint9368c9121259bc5acbd687cfb0ebfc4714361d19136da752dfa939a37326e8f4;
+logical bedaf5a72ed3b96ea6b1b74000f81d05697ec15cca62069890ddbd664efdfb29.
+Native warm4@39.496 to16@139.581:12,582,912 physical/100.085s;28 steady GPU
+samples mean65.25%,peak144540MiB. Captures6942/draws9573/16515games.
+Logical warm4@37.76 to16@134.167:12,582,912
+physical/96.407s;27 steady GPU samples mean63.7778%,peak144540MiB.
+Captures7833/draws7979/15812games. NativeT16 first recipe27 steady samples
+mean63.1852%,samepeak. Timestamp anchors have about1s uncertainty.
+Each node steady-audit.json and root recipe-audits.json preserve exact intervals,
+settings,rewards,weights, GPU statistics and completed scores. Logical proper
+projection matrices and scalar vectors were verified by actual GPU native
+constructor and used by the trainer. This avoids collapse relative to matched
+nativeT0.25, but does not establish strong script or hosted performance.
+No upload/XP/champion change; goal remains active.
+
+Prepared SpatialMixedFrozenOpponentPufferEnvironment:50% frozen parent,
+25% ExpanderHarvester,25% Sentinel, paired rows ensure every opponent on both
+learner sides. Opponents receive public observations; no learner overrides or
+teacher targets. Default frozen environment keeps its same opposing-action
+calculation through a factored helper. Exact parent transfer remains restricted
+by parent/model SHA, canonical frozen bundle, unchanged codec/options and now
+explicit identical agent spec. New mixed factory is admitted under that same
+parent-only contract; modified digest/teacher flag/agent spec/bundle all rejected
+by local actual BuildRecord checks.
+
+Bounded CPU runtime proof:default frozen and mixed variants,8 real Classic games
+×32ticks each,512 learner and512 opposing legal decisions,finite outputs,
+one learner row/game; default initial opposing-action parity exact. Mixed counts
+frozen2/side,Expander1/side,Sentinel1/side. Artifact
+/tmp/relh-spatial-mixed-opponent-cpu-probe/audit.json;
+/tmp/relh-spatial-mixed-opponent-transfer-audit.json. Initial fixture duplicate
+parallel_games keyword failed before environment creation, corrected by using
+one explicit argument. No GPU throughput claim for the new mix yet.
+Next bounded comparison will use logical layout/T0.0625 with frozen-only vs
+frozen+script mixture, identical one-learner geometry and fresh honest builds;
+no long training until its own throughput and score gates pass.

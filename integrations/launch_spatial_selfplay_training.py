@@ -21,7 +21,12 @@ def spatial_transfer(source, target, digest):
         return False
     if before.factory != "integrations.metta_puffer:BatchedGeneralsPufferEnvironment":
         return False
-    if after.factory != "integrations.spatial_selfplay:SpatialFrozenOpponentPufferEnvironment":
+    if after.factory not in {
+        "integrations.spatial_selfplay:SpatialFrozenOpponentPufferEnvironment",
+        "integrations.spatial_selfplay:SpatialMixedFrozenOpponentPufferEnvironment",
+    }:
+        return False
+    if before.spec != after.spec:
         return False
     options = after.options.copy()
     if options.pop("frozen_bundle", None) != "/recovery/classic-spatial-local8-direct-eval-pilot-30342/bundle":
