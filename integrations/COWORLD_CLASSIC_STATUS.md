@@ -10618,3 +10618,15 @@ SHA2a602e9200b57588732744fb1764b67dadb85abb4582c791158be83904adeefb.
 12minbound/4CPU32GiB/nice100, oneallocatedjob atatime; same3remaining
 policies×3panels. Fullqueue/nodepreflight repeated. TMPDIR host/container
 nowpin to compute-nodeoutputroot toavoid /tmp inodepressure; no cleanup.
+
+30900allocated, soleGenerals12minbound/4CPU32GiB/nice100, exec70044.
+Output /var/tmp/relh-generals-recovery/classic-spatial-temperature16-sampling-pilot-30900,
+exactcontainerrelh-classic-spatial-temperature16-sampling-30900, Macstream
+/tmp/relh-classic-spatial-temperature16-sampling-remaining-stream.tar.gz incomplete.
+PhysicalGPU0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% matchedDocker;
+previous30878exactcontainerabsent/nodearchive5bfc1b...42e7b verified (threecopies).
+Root640GiBfree/1,064,722,979freeinodes; /tmp19818freeinodes.
+HostandDockerTMPDIR pinnedrootoutput/tmp, no cleanup ofothers/history.
+Firstactualchildmid73b075:T0.0625 Exp11/113/4,Sent2/120/6 vspriorgreedy
+27/101/0 and3/111/14. No improvement established. Remainingparentcomparison,
+100M/finalpolicypanels pending. No training or hostedwrites.
