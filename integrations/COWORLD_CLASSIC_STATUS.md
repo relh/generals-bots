@@ -11578,3 +11578,81 @@ width32/mid-checkpoint-audit.json and Mac /tmp/relh-width32-31392-mid-audit.json
 preserveevidence. SameB300/4096games1learner/H512/mb8192/R.5,normalized
 PPO/progressreward. Finaltrainerand6686/6513heldout pending SAME31392.
 Goalactive/no hostedpublication.
+
+## 31392 completed: wider policy remains weak (2026-09-29)
+
+Main session 9149 exited 0; full queue has no live Generals job. The complete
+112 MiB archive passes gzip/extraction checks. Mac and controller copies both
+have SHA256 `129d02e9ea8ff2e59feab2911cd3963a5fb5105dc59a1b87aa56f816d7235a32`.
+Node archive identity and exact container absence must guard the next allocation.
+
+B300, 4096 physical games with one learner per game, horizon 512, rollout batch
+2,097,152, minibatch 8192, replay ratio 0.5. After warmup through epoch 4 at
+98.728 seconds, epochs 4–16 completed 25,165,824 physical environment steps in
+218.362 seconds: **115,248.184 ENV SPS**. 61 aligned GPU samples average 57.72%
+utilization; peak memory 160,886 MiB. Total new steps 33,554,432. All actual
+33,554,432 actions legal, no nonfinite rewards, final 570,508 parameters finite;
+policy, optimizer, and run hashes match the native learner sidecar. Final policy
+SHA256 `5aa8d5bf84e30f1432851349dba83054e9f4d3259dba63aace10c6496fd98362`,
+learner `772e44b37942fd6f356ce998cbc928d60b354610300b533d2fbeecc5765ca577`.
+Reward signs are not match outcomes. Audit: /tmp/relh-width32-31392-final-audit.json.
+
+Held-out initial state hashes and seats exactly match preserved 31389 control:
+
+| Panel | Width 8 normalized control W/L/D | Width 32 W/L/D |
+| --- | --- | --- |
+| Expander, 128 games | 23/103/2 | 16/107/5 |
+| Sentinel, 128 games | 4/124/0 | 6/120/2 |
+| Parent, 512 games | 152/328/32 | 107/369/36 |
+
+No useful improvement, no scaling or hosted promotion. Scores preserved at
+/tmp/relh-width32-31392-matched-scores.json. Full extracted archive:
+/tmp/relh-spatial-width32-31392-inspect/classic-spatial-width32-pilot-31392.
+
+CPU diagnosis /tmp/relh-width32-source-prior-probe/audit.json: 8 Classic games,
+128 ticks, 1024 identical public observations/masks from original-policy
+trajectories, checksum 60c1c48b6aa063c8e8f19207cbf7b03cc4e021a5c5abbc52e01b20fc4eeab26a.
+Only source-army prior contributions varied; route and split priors retained.
+Original selected a maximum-army legal source on 997/1024 decisions, mean
+sampled probability 0.899. Reducing source contribution sixteenfold changed
+198/1024 decisions and lowered that probability to 0.467, without increasing
+passes (24/1024 in every source-only case). This establishes influence on
+choices, not strength or a proven cause of learning failure. Earlier weak-prior
+comparison changed route, source, and split priors together, so it did not
+isolate this source constraint.
+
+Preparing a bounded source-only comparison against preserved 31389 F8 control:
+source_army_prior_strength 4 -> 0.25, all other settings retained, same fresh
+seed 6751 and 33,554,432 steps. Actual native initialization must differ only
+at the two source-prior parameter indices, retain 57,028 words/five prior
+classes/23 logical optimizer blocks, and pass throughput/nonfinite guards.
+No GPU job submitted yet. Goal active; histories untouched.
+
+### 31394 source-only pilot launched; native initialization verified
+
+CPU initializer check /tmp/relh-source-prior-only-preflight.json passed: exactly
+indices 56912 and 56916 change from 4/3.96 to 0.25/0.2475, all other initial
+parameters unchanged, 57,028 words/five prior classes/23 logical blocks.
+
+Full queue and B300 node allocation rechecked. One bounded job **31394**, main
+session **4224**, partition b300/node metta-fabric-b300-1, nice 100, 30 minutes,
+8 CPUs/64 GiB. Output /var/tmp/relh-generals-recovery/classic-spatial-source-prior-only-pilot-31394,
+recipe source-prior-only. Assigned physical GPU UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 was empty (0 MiB/0%/no compute
+process); Docker UUID matched. No observed contention. Previous 31392 node
+archive SHA and exact old container absence verified before building.
+
+Actual GPU model SHA256
+3c8099a63e50e1e7ec5c57d388b79b3093710fcdaeaeb63a0cf4b183a32fa005;
+compiled trainer source/INI/normalizer identical to control. GPU fresh initial
+SHA256 482496b7875c243c0288e6122d39fa775ee4d265642a6c2764e6a74c5c2c007e,
+exactly the same two changed indices; all other GPU initial weights match
+31389 control. No initial GPU/CPU bit-identity claim. Training and matched
+6686/6513 held-out panels pending; do not submit a duplicate job.
+
+Script /tmp/relh-classic-spatial-source-prior-only-run-node.sh SHA256
+50289f20dfa18bbafe316fba572ef111350b1cb3d2c27c113e15232edd6eca25;
+Mac stream /tmp/relh-classic-spatial-source-prior-only-stream.tar.gz (partial
+while live), observer log /tmp/relh-classic-spatial-source-prior-only-srun.log.
+Final audit prepared at /tmp/relh-audit-source-prior-only-31394.py.
+Goal active; no hosted publication.
