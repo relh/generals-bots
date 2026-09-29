@@ -14540,3 +14540,14 @@ this pinned policy-only transfer. Node script
 pins the corrected signed direct-parent evaluator. It trains16,777,216
 new physical steps, measures warmed throughput, exports the policy, and
 runs a512-game signed direct-parent comparison before any scale-up.
+
+First launch33098 was bounded and ended FAILED1 before build/rollout:
+the launcher's explicit SHA pin still named the prior transfer module.
+Its B300 preflight saw allocated UUID
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a at0MiB/0%, driver595.91.07,
+image SHA bdd4f2a9...,357GiB disk available. No physical contention or
+training SPS was measured. Exact node-local archive recovered to
+`/tmp/relh-classic-win-landgain020-33098-recovery.tar.gz`, SHA
+d87e01c78c89008c0c15227611ef835ce2d3459068331c88fe07afe55ad4a0d3.
+The launcher pin was updated to the changed transfer-module SHA before
+any retry; exact job33098 is terminal and its container was absent.
