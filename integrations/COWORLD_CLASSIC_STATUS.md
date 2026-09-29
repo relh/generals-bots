@@ -14366,3 +14366,21 @@ versus247/256/9,delta-.06445 CI[-.194,.066]. Direct versus own
 public33M301/207/4,score+.1836 CI[.038,.323]. No quality
 improvement established; the speed result applies to this geometry,
 but a longer run needs a better learning intervention.
+
+Read-only current234M split-logit decomposition from six owned hosted
+leaderboard replays: official Coworld engine reconstructed each state,
+army grid matched replay frames, then official fog-limited public
+observation encoded16 channels; no hidden state fed to policy. Artifact
+`/tmp/relh-234m-half-margin-replays.json`, checkpoint exact SHA0025c722.
+70 seat/tick observations at turns0/25/50/100/150/200;58 with legal
+moves. Best legal full minus best legal half logit median+.397,
+range[.287,.589], so greedy half selection0/58. On the best-full
+route, full-minus-half mean+.432 = mean prior contribution+.294 +
+learned remainder+.138. The same-route full gap rises by selected
+source army bin:2–4 army+.367,5–9+.408,10–19+.464,20++ .577.
+Counterfactual flat +.3 half-logit offset selects1/58, while+.5
+selects47/58 (81%); that steep threshold matches observed
+catastrophic +.5 held-outs. This is observational inference, not a
+strength test or proof that changing a prior alone fixes quality.
+Future policy learning should preserve conditional split decisions,
+especially with larger source armies, and gate on hosted/held-out wins.
