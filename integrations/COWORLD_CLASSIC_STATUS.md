@@ -13896,3 +13896,27 @@ ConfigsCPUchecked fresh(seed6751,total33,554,432,initializeNone), options
 same32015 publicscalarbaseline. First-stephelper SHA
 f80ed9f01ba52acea049e2c22bfc271e771131ccf9a6739252c5d58af858810d.
 NoGPUjob startedyet; recheckfullqueue/node/physicalGPU inallocation beforeCUDA.
+
+Fresh fullMuon pilot STARTED 32305, SAMEnativeSSHhandle37936 LIVE.
+One50min nice100/8CPU/64G/oneB300 allocation metta-fabric-b300-1;
+output /var/tmp/relh-generals-recovery/classic-spatial-muon-context-fresh-pilot-32305,
+exactcontainer relh-classic-spatial-muon-context-fresh-32305.
+Mac ACTIVEarchive /tmp/relh-classic-spatial-muon-context-fresh-stream.tar.gz;
+stderr sameprefix-srun.log. DoNOTextract/backupfull untilmain37936terminal;
+timeout!=terminal. No duplicatejob. Submittedscript SHAb5e3dca0a3bd724ba290caa2671d800cb4be06cf5dbe9324e6a42b29c70a9ec5.
+Fullqueue/node/sinfo/squeue--mepreflight: peersrelh32291/32232 B300,
+DaveeyB200/rtx4090 untouched. AllocatedphysicalGPU
+GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f NVIDIA B300SXM6AC
+compute10.3/driver595.91.07 wasEMPTY0MiB/0% beforeCUDA. NodeDocker/var/tmp
+~619GiB free,~1billioninodes; /tmp99%inodes (~19,716free), all
+output/TMP/cache pinnednode/var/tmp. Runtimeimagebdd4f2...ae5 pinned.
+One fresh33,554,432physstep teacherfree Classic run; two-stage fullcorrected
+optimizer sourceb83615f, JAX/Puffer5 F32 4096games/H512/batch2097152/mb8192.
+Configurationfromsealed32015 publicbaseline, noinitialize/optimizerresume,
+GPUrandomseed6751 mustyieldidentical2ff612initialbytes. Actualfirststep
+alltensor NumPyreference ahead of sustained training; monitor4/6epochs
+andstopbelow30k afterepoch8; bothseats/strictClassic engine/source/gamma
+checks. Compare toarchived32189public33M heldouts newseeds andnewdirect512.
+Sourcearchive includesfirststephelper SHAf80ed9...updatedto f80ed9? exactfile
+needsfresh SHAfromnode artifact aftersubmission; generatorfullscriptSHAabove.
+No hostedwrite/promotion/protectedhistory mutation; maincheckoutuntouched.
