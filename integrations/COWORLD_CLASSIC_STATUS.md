@@ -10573,3 +10573,26 @@ added. NoGPUfailedprobes.
 Next oneboundedallocation comparesparent,30597mid,current100M/currentfinal
 atT0.0625 againstscripts andgreedyparent; no trainingoverlap ornewlongjob
 untilthis distributioncheck.
+
+## 30878 exact-temperature evaluation allocated
+
+Single15minboundB300 job30878/exec43789,4CPU32GiB/nice100,
+node metta-fabric-b300-1, source6dfb594. Script
+/tmp/relh-classic-spatial-temperature16-sampling-run-node.sh
+SHA55a9ec6f3ebead2eddefef946ab797def6f8b2d6da8b7182c74b8fca854ceb8a.
+Nodeoutput /var/tmp/relh-generals-recovery/classic-spatial-temperature16-sampling-pilot-30878;
+Macstream /tmp/relh-classic-spatial-temperature16-sampling-stream.tar.gz
+incomplete untilterminal. Exactcontainerrelh-classic-spatial-temperature16-sampling-30878.
+Fullsinfo/queue/node checked beforeallocation; noGenerals duplicates. Other
+liveB300 relh30693CVC/30872Safa, retaineduntouched;30874GoTApendingB200.
+PhysicalGPU0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% andmatched
+inDocker. Previous30728exactcontainerabsent, nodearchivee3028a...aef6
+verified. Runtimeimagebdd4f2...6ae5/driver595.91.07/compute10.3.
+Root640GiBfree;node/tmp now99%inodes,19818free; no cleanup or protected
+historytouching. OutputandJAXcache onnode /var/tmp/recovery.
+Fourpolicies(parentdf706/30597mid73b075/current100Mbe38/currentfinal3d4b),
+T0.0625 samplingseed99281,128Exp+128Sent(seed1386/pool128)+512greedyparent
+(seed1513/pool128) each, bothrolesbalanced. No trainingprocess.
+FirstactualGPUparentExp result13/111/4vspriorgreedy19/108/1;
+alllegal/finite andGPU-versusNumPyrawforwardparity passed.
+No inferencequality/conclusion forchildren until allpanelsfinish.
