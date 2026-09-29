@@ -164,3 +164,99 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
         return self._mixed_opposing_indices(
             self.states, 1 - self.sides, self.keys, values, masks
         )
+
+
+class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvironment):
+    """Balanced Classic games against several frozen policies and two scripts."""
+
+    def __init__(self, *, frozen_bundles, context, parallel_games=4096, **options):
+        bundles = tuple(map(Path, frozen_bundles))
+        if len(bundles) < 2 or bundles[0] != Path(options.get("frozen_bundle", "")):
+            raise ValueError("Population requires at least two bundles, starting with frozen_bundle")
+        if parallel_games < 2 * (len(bundles) + 2) or parallel_games % 2:
+            raise ValueError("Population needs a pair of games per opponent")
+        super().__init__(context=context, parallel_games=parallel_games, **options)
+        if not self.base.coworld_classic or not self.base.env.coworld_classic_rules:
+            raise ValueError("Population opponents require official Coworld Classic rules")
+        from generals.agents.harvester_agent import ExpanderHarvesterAgent
+        from generals.agents.sentinel_agent import SentinelAgent
+        from generals.core import game
+
+        frozen = (self._frozen,) + tuple(SpatialPlayerPolicy(path) for path in bundles[1:])
+        flags = ("factorized_actions", "compact_features", "lean_features", "directional_features",
+                 "directional_time_features", "packed_directional_features", "hint_features",
+                 "prior_hint_features", "sprint_hint_features", "expander_hint_features",
+                 "context_hint_features", "coworld_classic")
+        for path, policy in zip(bundles[1:], frozen[1:], strict=True):
+            source = json.loads((path / "build.json").read_text())["config"]["python_environment"]["options"]
+            if any(bool(source.get(key)) != bool(options.get(key)) for key in flags):
+                raise ValueError("Population frozen policy codec differs: " + str(path))
+            if policy.observation_size != self.spec.observation_size and not (
+                policy.channels == 11 and self._public_scalar_features
+            ):
+                raise ValueError("Population frozen policy observation size differs: " + str(path))
+            if policy.channels == 16 and self._public_scalar_ablation and not policy.public_scalar_ablation:
+                raise ValueError("Population frozen policy needs visible scalar features")
+
+        checksums = tuple(hashlib.sha256((path / "policy.bin").read_bytes()).hexdigest() for path in bundles)
+        if len(set(checksums)) != len(checksums):
+            raise ValueError("Population frozen policies must be distinct")
+        count = len(frozen) + 2
+        labels = np.repeat(np.resize(np.arange(count, dtype=np.int32), parallel_games // 2), 2)
+        self._population_labels = labels
+        self._population_rows = tuple(
+            jnp.asarray(np.flatnonzero(labels == label), jnp.int32) for label in range(count)
+        )
+        self._population_checksums = checksums
+
+        def scripted_indices(states, sides, keys, agent):
+            actions = jax.vmap(lambda state, side, key: agent.act(game.get_observation(state, side), key))(
+                states, sides, keys
+            )
+            moves = (actions[:, 4] * 4 + actions[:, 3]) * 441 + actions[:, 1] * 21 + actions[:, 2]
+            return jnp.where(actions[:, 0] != 0, 3528, moves).astype(jnp.int32)
+
+        scripts = (ExpanderHarvesterAgent(), SentinelAgent())
+
+        def opposing_indices(states, sides, keys, values, masks):
+            result = jnp.zeros(parallel_games, jnp.int32)
+            for rows, policy in zip(self._population_rows[:len(frozen)], frozen, strict=True):
+                with jax.default_matmul_precision("highest"):
+                    logits = policy._forward(values[rows, sides[rows], :policy.observation_size], jnp)
+                chosen = jnp.argmax(jnp.where(masks[rows, sides[rows]], logits[:, :3529], -jnp.inf), axis=1)
+                result = result.at[rows].set(chosen.astype(jnp.int32))
+            for rows, agent in zip(self._population_rows[len(frozen):], scripts, strict=True):
+                selected = jax.tree_util.tree_map(lambda leaf: leaf[rows], states)
+                selected_keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(keys[rows])
+                result = result.at[rows].set(scripted_indices(selected, sides[rows], selected_keys, agent))
+            return result
+
+        self._population_opposing_indices = jax.jit(opposing_indices)
+        self._population_output = context.output / "spatial-opponent-population.json"
+
+    def reset_device(self, seed):
+        result = super().reset_device(seed)
+        sides = np.asarray(self.sides)
+        names = tuple("frozen_" + digest[:12] for digest in self._population_checksums) + (
+            "expander_harvester", "sentinel"
+        )
+        counts = {
+            name: {str(side): int(np.count_nonzero((self._population_labels == index) & (sides == side)))
+                   for side in (0, 1)}
+            for index, name in enumerate(names)
+        }
+        if any(item["0"] != item["1"] or item["0"] == 0 for item in counts.values()):
+            raise ValueError("Population opponent seats are not balanced")
+        record = dict(counts=counts, frozen_policy_sha256=self._population_checksums, seed=seed,
+                      episode_limit=self.horizon, coworld_classic_rules=self.base.env.coworld_classic_rules,
+                      observation_size=self.spec.observation_size,
+                      scope="Opponent actions only; no teacher targets or learner action overrides")
+        self._population_output.parent.mkdir(parents=True, exist_ok=True)
+        self._population_output.write_text(json.dumps(record, indent=2) + "\n")
+        print("SPATIAL_OPPONENT_POPULATION " + json.dumps(record), flush=True)
+        return result
+
+    def _opposing_indices(self, values, masks):
+        return self._population_opposing_indices(
+            self.states, 1 - self.sides, self.keys, values, masks
+        )

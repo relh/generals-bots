@@ -166,6 +166,40 @@ class BuildManifest(BaseModel):
         return self
 
 
+def verified_spatial_population_transfer(
+    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
+) -> bool:
+    """Allow only the pinned 234M actor to enter a win-only opponent population."""
+    old, new = source.config.python_environment, target.config.python_environment
+    if old is None or new is None:
+        return False
+    if (
+        checkpoint_sha256 != "0025c722be56c0c6d03044d844f64729008b44c0bacc6f62653508f08bc84204"
+        or old.factory != "integrations.spatial_selfplay:SpatialMixedFrozenOpponentPufferEnvironment"
+        or new.factory != "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment"
+        or old.spec.model_copy(update={"agents": new.spec.agents}) != new.spec
+        or source.model_sha256 != target.model_sha256
+        or source.model_state_words != target.model_state_words
+        or source.revision != target.revision
+        or source.config.model_dump(exclude={"python_environment"})
+        != target.config.model_dump(exclude={"python_environment"})
+    ):
+        return False
+    options = dict(new.options)
+    bundles = options.pop("frozen_bundles", None)
+    if not isinstance(bundles, list) or len(bundles) < 2 or bundles[0] != options.get("frozen_bundle"):
+        return False
+    if options.pop("terminal_reward_mode", None) != "win_only":
+        return False
+    if options.pop("shaping_weight", None) != 0.25 or options.pop("reward_scale", None) != 1.0:
+        return False
+    options["shaping_weight"] = old.options["shaping_weight"]
+    options["reward_scale"] = old.options["reward_scale"]
+    options["frozen_bundle"] = old.options["frozen_bundle"]
+    options["parallel_games"] = old.options["parallel_games"]
+    return options == old.options and old.options["shaping_gamma"] == 0.999
+
+
 def verified_v11_policy_transfer(source: BuildManifest, target: BuildManifest, checkpoint_sha256: str) -> bool:
     """Permit only the archived v11 sparse-teacher policy into its dense-teacher GPU graph."""
     source_env, target_env = source.config.python_environment, target.config.python_environment
@@ -796,10 +830,14 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
         if reference.allow_environment_transfer:
             source_env = source.build.config.python_environment
             target_env = manifest.config.python_environment
+            spatial_population_transfer = verified_spatial_population_transfer(
+                source.build, manifest, reference.sha256
+            )
             compatible_environment = (
                 source_env is not None
                 and target_env is not None
-                and (source_env.factory == target_env.factory or classic_selfplay_transfer or frozen_transfer)
+                and (source_env.factory == target_env.factory or classic_selfplay_transfer
+                     or frozen_transfer or spatial_population_transfer)
                 and (
                     source_env.spec.model_copy(update={"agents": target_env.spec.agents}) == target_env.spec
                     or policy_only_transfer

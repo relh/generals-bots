@@ -52,6 +52,7 @@ class GeneralsPufferEnvironment:
         shaping_weight: float = 0.2,
         shaping_gamma: float = 0.99,
         reward_scale: float = 1.0,
+        terminal_reward_mode: str = "signed",
         army_shaping_weight: float = 0.5,
         land_shaping_weight: float = 0.3,
         castle_shaping_weight: float = 0.0,
@@ -95,6 +96,8 @@ class GeneralsPufferEnvironment:
             raise ValueError("Shaping discount must be in (0, 1]")
         if not np.isfinite(reward_scale) or reward_scale <= 0:
             raise ValueError("Reward scale must be finite and positive")
+        if terminal_reward_mode not in ("signed", "win_only"):
+            raise ValueError("Terminal reward mode must be signed or win_only")
         if imitation_weight < 0 or ((imitation_weight or supervise_teacher or sparse_teacher) and teacher is None):
             raise ValueError("Imitation reward or supervision requires a teacher")
         if sparse_teacher and (supervise_teacher or not factorized_actions):
@@ -176,6 +179,7 @@ class GeneralsPufferEnvironment:
         self.teacher_rollouts = teacher_rollouts and context.mode == "train"
         self.coworld_classic = coworld_classic
         self.training = context.mode == "train"
+        self.terminal_reward_mode = terminal_reward_mode
         if coworld_classic:
             self.env = GeneralsEnv(
                 min_grid_size=6 if coworld_tiny_map_curriculum else 10 if coworld_small_map_curriculum else 18,
@@ -325,7 +329,11 @@ class GeneralsPufferEnvironment:
                 new_potential += castle_shaping_weight * _castle_control_margin(timestep.last_state, side)
             done = timestep.terminated | timestep.truncated
             outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
-            reward = outcome + shaping_weight * (
+            terminal_reward = (
+                jnp.where(timestep.terminated & (timestep.reward[side] > 0), 1.0, 0.0)
+                if terminal_reward_mode == "win_only" else outcome
+            )
+            reward = terminal_reward + shaping_weight * (
                 shaping_gamma * new_potential * ~done - old_potential
             )
             if land_gain_reward_weight:
@@ -859,6 +867,7 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
                 ("castle_shaping_weight", 0.0), ("land_gain_reward_weight", 0.0),
             )
         }
+        self._terminal_reward_mode = options.get("terminal_reward_mode", "signed")
         super().__init__(context=context, parallel_games=parallel_games, **options)
         self.spec = self.base.spec.model_copy(update={"agents": 2 * parallel_games})
         if self.base.supervise_teacher:
@@ -919,7 +928,11 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
                 land_gain = weights["land_gain_reward_weight"] * (
                     jnp.float32(new.owned_land_count) - jnp.float32(old.owned_land_count)
                 )
-                return (outcome + shaped + land_gain) * weights["reward_scale"]
+                terminal_reward = (
+                    jnp.where(timestep.terminated & (timestep.reward[side] > 0), 1.0, 0.0)
+                    if self._terminal_reward_mode == "win_only" else outcome
+                )
+                return (terminal_reward + shaped + land_gain) * weights["reward_scale"]
 
             rewards = jax.vmap(side_reward)(self._self_sides, previous, final)
 

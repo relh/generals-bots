@@ -78,7 +78,7 @@ def main():
         from integrations.environment_reward_audit import activate
         activate()
     source = Path(__file__).with_name("puffer_coworld_frozen_transfer.py")
-    if hashlib.sha256(source.read_bytes()).hexdigest() != "4d18c06c59b4dad321bf61ba4d4aed552dc406159c96072e880cb518162ecea6":
+    if hashlib.sha256(source.read_bytes()).hexdigest() != "3b7b12a77aee26bd7d611a7af0b6dcef2223cfeb074a83cff203ee823ae48b2f":
         raise ValueError("Pinned Puffer trainer changed")
     if jax.devices()[0].platform != "gpu" or not jax.devices("cpu"):
         raise RuntimeError("Spatial self-play requires GPU and CPU JAX backends")

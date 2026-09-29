@@ -38,6 +38,22 @@ def test_fogged_observation_mask_and_finite_episode():
     env.close()
 
 
+def test_win_only_terminal_reward_does_not_credit_a_draw():
+    context = EnvironmentContext(seed=73, index=0, mode="train", output=Path("/tmp"))
+    env = GeneralsPufferEnvironment(
+        context=context, board_size=6, horizon=12, shaping_weight=0,
+        terminal_reward_mode="win_only",
+    )
+    try:
+        env.reset("win-only-draw-73")
+        for _ in range(12):
+            result = env.step([[env.spec.action_sizes[0] - 1]])
+        assert result.episode_done and result.score == 0
+        assert result.rewards == [0.0]
+    finally:
+        env.close()
+
+
 def test_optional_pass_mask_preserves_moves_and_forced_pass():
     context = EnvironmentContext(seed=73, index=0, mode="evaluate", output=Path("/tmp"))
     normal = GeneralsPufferEnvironment(context=context, board_size=6, factorized_actions=True)

@@ -58,7 +58,7 @@ def main():
     policy = SpatialPlayerPolicy(args.bundle)
     record = json.loads((args.bundle / "build.json").read_text())
     options = record["config"]["python_environment"]["options"].copy()
-    for k in ("frozen_bundle", "frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
+    for k in ("frozen_bundle", "frozen_bundles", "frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
         options.pop(k, None)
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
                    shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0)
