@@ -12770,3 +12770,42 @@ Generator/tmp/relh-build-coworld-rules-300m.py;script
 /tmp/relh-classic-spatial-coworld-rules-300m-run-node.sh
 SHA466591ffdf87c6c3a935c5b26f24507267ec64568f7f09596815b6f4a39191d8,
 Bash+embeddedPython syntaxpassed. Protectedhistoryuntouched. Goalactive.
+
+
+### 2026-09-29 — Requested300M continuation31866 LIVE
+
+Fullsinfo/fullqueue/myqueue/nodepreflight rereadMetta exactskills.
+No otherliveGeneralsjob for this task. Single75minjob31866 B300/nice100/
+8CPU64GiB, metta-fabric-b300-1. **Mainhandle32032: poll SAMEhandle.**
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7empty0MiB/0% atstartup;
+DockerUUIDmatches; no physical contention. Driver595.91.07/compute10.3,
+runtimebdd4f2a9...,root626GiB; /tmp99%inodes, outputs/TMPon/var/tmp.
+Prior31851archiveSHAcefbcdc6...verifiedonnode and exact31851containerabsent.
+Actual wrapper5aa72dfb/env6fea2498/officialgamef39e448a checksPASS;
+sourcefingerprint04d727f2 unchangedasexpected, frozen218Mbundle5d8096cc
+explicitSHAcheckPASS. Modeldea66199/nativebinary unchanged.
+Printedcode6cba31a; repository9edab34 addsjournalonly.
+
+Outputs/var/tmp/relh-generals-recovery/classic-spatial-coworld-rules-300m-pilot-31866/width32-source025.
+Macstream/tmp/relh-classic-spatial-coworld-rules-300m-stream.tar.gz;
+stderr/tmp/relh-classic-spatial-coworld-rules-300m-srun.log.
+DoNOTextract/copyactivearchiveuntil32032terminal. Nodefinisharchive
+/var/tmp/relh-generals-recovery/relh-classic-spatial-coworld-rules-300m-31866.tar.gz.
+Restore251658240 policy146cce37+optimizer49e3013f exactsameconfig/seed.
+Target553648128,**301989888 NEWphysical**,144epochs120->264.
+4096games/1learner,H512/2097152batch/8192mb/R.5/LR.003/T.0625/normadv1,
+gamma=shaping_gamma.999/gae.999/shaping.5/rewardscale.5,ent0/noanneal,
+50%frozen218M/25%Exp/25%Sentbothseats,noteachers. EnvironmenttransferFalse.
+Qualifiedbycompleted31851same-setup123578.750945SPS/203.642ssteadyinterval.
+60mintrainercap/nonfinite/stall/30kguards,16.77M checkpoint policyANDoptimizer.
+Projected40.73mintrainingplus~8minheldouts; no heldoutorhostedstrengthclaim.
+Baselinecopiesimmutable31851finalpanels; final128Exp/128Sent/512parent/
+512current/512directvs251M. Allactualcorrectedhostedrules and2000limit.
+
+Preparedafterterminalaudit/tmp/relh-coworld-rules-300m-31866-final-audit.py
+(warm124->264,293601280steadyphysicalsteps;301989888totalnew),
+/tmp/relh-coworld-rules-300m-31866-quality.py (553Mvs251M/seed31866).
+Checkfinalcheckpoint0000000553648128.bin and finite570508/state/runSHA.
+Goalactive; previousturnmadePROGRESS31851completedandgatheredmatchedscores,
+qualifiedrequestedtrainingwindowandsubmitted31866. No hosted writes/promotion,
+protectedrollouts/DB/history untouched.
