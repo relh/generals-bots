@@ -14421,3 +14421,85 @@ This isolates the next learning issue as *conditional* action choice
 and opponent/credit curriculum, not simply training SPS or half-move
 availability. The fastest validated geometry is171–172k SPS, still
 short of the aspirational300k target.
+
+Win-only population pilot began after explicit user direction to improve
+shaped reward, train more, use a richer self-play snapshot pool, and compare
+in Observatory XP. Commit10bfc7b adds opt-in terminal win-only reward:
+win1/loss0/draw0 before potential shaping; training sets shaping_weight.25,
+reward_scale1, shaping_gamma=learner.gamma=.999, teacherNone. Existing
+signed default remains for prior policies. It also adds a balanced
+population opponent adapter with frozen134M SHA d261ac6d..., frozen218M
+5d8096cc..., frozen234M0025c722..., plus Expander and Sentinel. These
+act only as opponents; no teacher targets/learner overrides. A pinned
+policy-only transfer guard allows only the exact234M actor to enter this
+changed environment with fresh optimizer. CPU checks passed 8 population
+transitions, legal opponent actions, balanced seats, finite rewards; a
+terminal draw receives0 with shaping disabled. Nearest AGENTS and both
+Metta tr.slurm-preflight/tr.gpu-throughput skills were read, repository
+fetch completed, full queue/node/physical B300 and node-local bundles/image
+verified before GPU launch.
+
+Setup jobs32949 and32950 failed before build/rollout from, respectively,
+an incomplete hand-copied optimizer SHA and Python3.9 host `zip(strict=)`.
+Both terminal FAILED; archives preserved, no duplicate jobs. Corrected
+single B300 job32951 COMPLETED16,777,216 physical Classic steps using one
+physical UUID GPU-0c5605ae-e405-99f1-848e-9fa81e41482a,8CPU/64GiB,
+8192 games×H256,batch2,097,152/mb8192, source commit10bfc7b. Both
+CPU/GPU portable forward and native gradient parity passed; 5 opponent
+types each had819 or820 games per side. Four-epoch warmed172,222 SPS,
+six-epoch172,126 end-to-end SPS; final env6.570s/train2.777s per epoch.
+All16,777,216 actions legal; sampled full16,629,044,half33,779,pass114,393;
+0 nonfinite rewards,21,856 terminal agents,2zero-reward terminal agents.
+Positive/negative reward signs8,204,611/7,518,558 are not wins. Policy
+SHAea236434e6d0250e21e59ed2a68f4f43a7a07695457562d22325a90c71f9deb6,
+archive `/tmp/relh-classic-win-population-stream.tar.gz`
+SHA0e91b554d054a04878a336e8e6f7e2c19519915a7dccf38671b1a3d3b62d257a.
+Greedy scripted held-outs Expander24/103/1, Sentinel24/104/0.
+
+The original frozen/direct evaluator interpreted the new win-only training
+reward as the match outcome, misreporting every loss as a draw. Commit1996022
+forces signed terminal outcomes for direct evaluation. Discard job32951's
+frozen/current/direct/direct-parent WLD. Signed evaluation job32980 saved
+valid 512-game frozen218M252/244/16 and currentc601265/239/8 outcomes.
+Its next Docker invocation wrote its completed result, then hung at exit;
+the bounded timeout killed it and the job ended FAILED137. Exact node-local
+outputs were independently recovered in
+`/tmp/relh-classic-win-population-signed-eval-32980-recovery.tar.gz`,
+SHAba391b5b72d7a96091a7c9fe9b7b4728aa70f6568fbb5fc8ecb06a82d182888c.
+Follow-on job33015 hung at Docker startup with0MiB GPU use and was
+cancelled terminal; its exact named container was absent afterward.
+B200 preflight found an idle B200 but lacked the pinned Docker image and
+host JAX runtime. No longer training run is justified before the missing
+signed direct-parent gate. Physical preflight saw0MiB/0% on the allocated
+B300 for training; eval preflight helper reported a transient foreign Python
+PID, followed by0MiB/0% and no measured sustained GPU contention.
+
+The saved251M actor passed32/32 legal CPU wire replies in ARM64 and native
+x86_64 Linux containers under2CPU/4GiB. Native x86 embedded policy hash
+matched ea236434...9deb6; local serving prep
+`/tmp/relh-win-population-32951-serving`. Exact-name lookup showed zero
+existing `relh-classic-win-population-251m` versions before upload. The
+authenticated canonical Observatory CLI registered private evaluation
+version3a474be2-ffcf-415f-8d05-84c72beefdf4 (`:v1`), with no champion
+change. Two private one-game balanced hosted runtime smoke XP requests
+against prior234M were created once:
+xreq_069316ff-e605-492f-99fa-1c7d4995498f seat0 and
+xreq_bde410ff-b4f6-4368-9035-5c6d38f357c4 seat1. Both initially pending;
+read exact IDs and do not resubmit. Await hosted runtime and valid quality
+results before leaderboard XP or public league champion promotion.
+
+Both smoke requests completed 1/1 without runtime failures. The251M
+candidate beat the234M parent from both seats; two games only establish
+runtime viability. Existing league memberships were read and did not contain
+candidate version3a474be2-ffcf-415f-8d05-84c72beefdf4. The candidate
+was submitted once under player `richard` to Classic league
+league_8c189954-be68-479c-a092-eeb79c436d12 as submission
+sub_ae359548-e62d-401e-a79c-2d5acafc06a5, `auto-champion=never`;
+placement was pending and no champion promotion requested. Four private
+16-game XP panels were then requested once, balanced by candidate seat:
+parent seat0 xreq_dbc77c4f-be32-462b-a917-3a8b7275103c,
+parent seat1 xreq_1101d893-467e-4419-9450-78f650104631,
+live leader seat0 xreq_45d01d25-a161-4333-bb76-1509d220628b,
+live leader seat1 xreq_242138bb-1b5c-49bd-ae4a-e6474c0abab8.
+All four initially pending. Exact payloads and idempotency keys are in
+`/tmp/relh-win-population-32951-serving`; read IDs and do not resubmit.
