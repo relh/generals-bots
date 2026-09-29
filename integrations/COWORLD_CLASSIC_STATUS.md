@@ -10381,3 +10381,61 @@ Reward audit now hooks the frozen subclass's overridden step as well as paired
 base; inheritance markers checked per-class, avoiding missed or doubled counts.
 CPU isolated8game capturefixture4wins/4losses bothseats passed, exactly8
 terminalagent events and8decisions (onelearner/game), no nonfinite.
+
+## 30688 frozen-parent temperature pilot live
+
+Single bounded20min allocation30688, exec32195, sourcee5b55f5,
+8CPU/64GiB/nice100; no duplicate Generals allocations. Node
+/var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-temperature16-pilot-30688.
+ScriptSHA4b8242ff56610c0cc7553c38b5a50561afb725d4d27948dbce5e8709f9e3abf3.
+4096physicalgames/onelearner/H512/mb8192/replay1/LR0.0003/T0.0625/entropy0/
+gamma=shaping_gamma0.999/GAE0.999, bothseats, immutablegreedyparentdf706.
+Exact30508build copied; original spatial_transfer allowlist admits parent.
+PhysicalGPU0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% preflight,
+matched in Docker; previous30597 nodearchive18ba4b...27ec verified and
+exactpreviouscontainer absent. No physical contention observed.
+Budget33,554,432PHYSICAL/nativeagentsteps (onelearner). Sameallocation
+mid/final128Exp+128Sent+512parent held-out comparisons.
+Epoch15 uptime235.502s,31,457,280 physicalsteps; epoch16 monitor
+fourwindow136697.976/s,sixwindow136858.551/s, above30k floor.
+At7680ticks:25546learnerwins/22079losses/2013draws,49638completedgames,
+nonfinite0. Fullsteady and finalaudit/evaluations pending.
+Read-only publicObservatory metadata lookup for active daveey-grl:v7
+returned empty v2 result and stats404; no config obtained and no writes.
+
+## 30688 complete; proceed with longer paired self-play
+
+Mainexec32195 exit0, queue absent, exactcontainer absent and allocatedGPU
+0MiB/0% before release. Final33,554,432physicalsteps; zeroillegalactions,
+zero nonfinite rewards;57028finitefloatparams,
+SHAef4f04d8413b971e832542b7482b369447b48c0064df85976aad3b7424a1fcdf.
+27281learnerwins/23612losses/2172draws =53065completedphysicalgames.
+Epoch4@65.499s ->16@251.078s:25,165,824physical/185.579s =135607.068ENV SPS.
+51alignedGPU samples mean54.941%,peak145758MiB, ~1smtimeanchoruncertainty.
+Mid16.777M:Exp21/104/3,Sent2/115/11,parent229/256/27 W/L/D,
+SHAada02de31a2cd04f511367013edcc2b3a0a0fc517970ef4794fc543225e80034.
+Final33.554M:Exp15/109/4,Sent4/116/8,parent244/237/31.
+No clear gain over parent; no promotion or hostedwrites.
+Archive6a2b7d7a3eb05fced81b386006380b187fab540aa1b8a4ef5888d0b15fba9735
+verified node, Mac /tmp/relh-classic-spatial-local8-frozen-temperature16-stream.tar.gz
+and controller /tmp/relh-classic-spatial-local8-frozen-temperature16-30688.tar.gz.
+Localfull /tmp/relh-spatial-frozen-temperature16-30688-inspect, audit
+/tmp/relh-spatial-frozen-temperature16-30688-audit.json.
+
+Next longer allocation uses better retained paired30597mid73b075...9c677,
+with exactsame30597build/directrollout/T0.0625/2048physicalgames/4096learners/
+H512/mb8192/replay0.5/LR0.0003/entropy0/gamma=shaping_gamma0.999/GAE0.999.
+Policy-only continuation, optimizer restarts, newtrainingseed1751; no
+transferallowlist or checkpoint edits. Bothsides learning, no teacher.
+600Mrequestedagentsteps floor599,785,472agent =299,892,736NEWphysicalsteps.
+Source snapshotff35adc remains pinned with actualadapter hashes.
+Previously measured samegeometry128244.887ENV SPS, warmepoch4@38.128s ->
+epoch32@267.066s,29,360,128physical/228.938s;64GPU samples mean64.625%.
+Projectedtraining38.97min plus boundedcomparisons,45mintraintimeout and
+55minallocation. Gate30k/noepoch300s/nonfinite guards remain.
+Sameallocation comparisons at33.554M/100.663M/299.893Madditionalphysical,
+128Exp+128Sent+512parent each. Strongpolicy objective notyetachieved.
+Preparedscript /tmp/relh-classic-spatial-local8-selfplay-temperature16-300m-run-node.sh
+SHAfc32519a5d70e9f7eac218a98456d5315917235d98a9e4dfbd11a956262f64df,
+bashsyntaxpassed. Fullqueue/node checked: other relh30693and30702;
+no other Generals pending/running. OwnphysicalUUID guard rechecks afterallocation.
