@@ -27,6 +27,13 @@ def greedy_declared_heads(predictions, sizes):
     ], axis=1).astype(np.int32)
 
 
+@jax.jit
+def sample_flat_logits(key, logits, legal):
+    import jax.numpy as jnp
+
+    return jax.random.categorical(key, jnp.where(legal, logits, -jnp.inf), axis=-1)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--build", type=Path, required=True)
@@ -43,7 +50,7 @@ def main():
         "--training-pool-episode", type=int, help="Diagnostic only: evaluate the latest pool seen by this checkpoint"
     )
     parser.add_argument("--action-diagnostics", action="store_true", help="Record public directional-codec move behavior by game phase")
-    parser.add_argument("--sample-seed", type=int, help="Native sampling diagnostic instead of hosted argmax")
+    parser.add_argument("--sample-seed", type=int, help="Native or spatial sampling diagnostic instead of hosted argmax")
     parser.add_argument(
         "--reward-diagnostics",
         action="store_true",
@@ -57,7 +64,7 @@ def main():
     args = parser.parse_args()
     assert not (args.native and args.spatial_bundle)
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
-    assert args.sample_seed is None or args.native
+    assert args.sample_seed is None or args.native or args.spatial_bundle
     assert not (args.force_hint_move or args.force_hint_split) or args.native and args.sample_seed is None
     training = TrainingRecord.model_validate_json((args.run / "training.json").read_text())
     if args.training_pool_episode is None:
@@ -178,8 +185,13 @@ def main():
                     legal = np.asarray(observation.action_masks, bool)
                     assert np.array_equal(np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1),
                                           np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
-                actions = np.argmax(np.where(np.asarray(observation.action_masks, bool), outputs[:, :3529], -np.inf),
-                                    axis=1).astype(np.int32)[:, None]
+                legal = np.asarray(observation.action_masks, bool)
+                if args.sample_seed is None:
+                    actions = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
+                else:
+                    key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
+                    actions = np.asarray(sample_flat_logits(key, jnp.asarray(outputs[:, :3529]), jnp.asarray(legal)))
+                actions = actions.astype(np.int32)[:, None]
             else:
                 predictions = policy.predict_many(seats, observation)
                 actions = greedy_declared_heads(predictions, env.spec.action_sizes)

@@ -9858,3 +9858,32 @@ scope string incorrectly says AMD64 emulation, while its platform records
 aarch64. The probe's scope label is corrected for future invocations; this
 was a native Linux ARM run, not an AMD64 runtime proof. No GPU training
 was added, and the existing B300 training allocation was left running.
+
+## 30435 checkpoint update audit; spatial sampling diagnostic support
+
+The same job is live with no restart. A read-only stdlib audit of its
+33.55M/67.11M/100.66M/134.22M checkpoints found all57,028 FP32 words finite
+and55,671 words changed from30408initialization. RMS parameter changes
+are .05714/.08127/.09940/.11371 respectively. This proves updates occurred,
+not that policy strength improved. Checkpoint SHA256s in that order:
+a4fbb05872c896d3c40e124c58078891004a8d7ce3b10569643b39548d612d44;
+a873e5be7e15998f97c1da1350772a19db63570d452c9ad993294197bd4e9880;
+41d1ec74cfe2ee25f1147be832688932f6846a96606991dc3faa74371988c1d3;
+a87870b00377dd1e605e2bd52a59282ff20c1a11b1c50954d241df1ed20b89d0.
+At epoch256, native timing attributes about56% of wall time to environment
+stepping,30% to rollout inference,13% to optimization and negligible copies.
+Optimization remains active; tiny rounded dashboard KL does not establish
+a frozen learner or an incorrect PPO implementation.
+
+Extended the evaluator's existing --sample-seed diagnostic to spatial
+bundles. Its previous implementation supported Native only, while spatial
+training samples actions and serving/evaluation use argmax. GPU categorical
+sampling now uses masked spatial logits and reproducible per-turn keys;
+default argmax, serving behavior and the live30435script are unchanged.
+A CPU structural check with8,192 draws from probabilities1:3 produced
+75.0244% on the expected75% action, zero illegal actions despite an illegal
+logit of1000, exact same-seed reproducibility and different-seed variation.
+No sampled spatial arena quality result is claimed. If scheduled greedy
+panels remain weak, the next bounded GPU diagnostic can compare sampled
+and greedy decisions before concluding that the learned distribution is
+weak. No second allocation, policy registration or champion change.
