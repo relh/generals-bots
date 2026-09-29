@@ -11515,3 +11515,36 @@ existing dynamicbundle/parser; actualGPU build/gradients/SPS/heldout pending.
 No newGPUjobsubmittedyet. Reuse31389 F8normalized control/6686/6513panels,
 onlyremainingwidth32arm, require >=30k actualGPU gate before scale.
 Goalactive, preserved histories untouched.
+
+## 31392 width32 remaining-arm pilot submitted
+
+Previous turn progress terminalnormalization comparison/CPU width32proof.
+Sole new bounded31392/main9149 B300/metta-fabric-b300-1,30min/nice100/
+8CPU64GiB; output /var/tmp/relh-generals-recovery/classic-spatial-width32-pilot-31392.
+Fullqueue no otherGeneralsjob. PhysicalUUIDGPU-bce8f97b-720b-5afa-cbb7-
+ad8b68cc14f7 empty0MiB/0%/no computeprocess, driver595.91.07/
+imagebdd4...96ae5 checked; no observedcontention. Prior31389 archive
+e30ee...2025 verifiednode/Mac/controller, exactoldcontainerabsent.
+
+Onlywidth32 arm trains; completed31389F8norm_adv1/control+6686/6513panels
+reused. Fresh6751/33,554,432physical, same topology/public4851/action3529/
+priors/reward/opponents/PPO; features_per_site/global_features8→32.
+CPU actualnative570508words/5priorclasses/23logicalblocks verified,
+GPU actualregistration required. Allother4096games1learner/H512/mb8192/
+R.5/LR.003/T.0625/logical/entropy0/norm_adv1/shaping.5/rewardscale.5/
+gamma=shaping_gamma.999 retained. Modelcapacity changes initialtensor
+dimensions; do NOT claim initialneuralweights matchF8 control.
+Alternate pinnedbuilder, actualtrainerCsource mustmatch0aba...172b,
+ini a483...7a24/header2e087...63c. Preserved31389 identicalnormalizer six
+numericcaseaudit reused with explicitprovenance (notnewwidth32 kerneltest).
+Startup/nonfinite/steady>=30k guards retained; do not scale before actual
+width32GPU gate. Fresh heldout128Exp/128Sent6686,512parent6513 matches
+existingF8control maps/seats. No controlreplay/no hostedpublication.
+
+Script /tmp/relh-classic-spatial-width32-run-node.sh SHA
+91995793e286178084b7328fcbf8cda162bf33994dc64d8e703fa795cff9a244;
+stream /tmp/relh-classic-spatial-width32-stream.tar.gz;
+log /tmp/relh-classic-spatial-width32-srun.log.
+Prepared /tmp/relh-audit-width32-31392.py completionaudit checkswidth/
+33.55Mphysical/legalactions/finalnativeidentity/4→16steadyinterval.
+Goalactive; pollSAME31392/main9149, no duplicatejob.
