@@ -12682,3 +12682,42 @@ Prepared generator/tmp/relh-build-coworld-rules-iterated-pilot.py;
 script/tmp/relh-classic-spatial-coworld-rules-iterated-run-node.sh
 SHA15ce80812c8ca6a8bd1418973fbdbd05a64b42a563de00a690437b011dd17d41,
 Bash+embeddedPython syntax verified. Goal remainsactive.
+
+
+### 2026-09-29 — Iterated-opponent pilot31851 live
+
+31849 stopped pretraining17s: incorrect expected-new-fingerprint assertion.
+Inspected environment_fingerprint implementation: hashes source/assets, NOT
+options. Unchanged verified rules source correctly keeps04d727f2... while
+frozen opponent option/bundleSHA changes. Fixed equality assertion andadded
+explicit final218M bundlepolicySHA5d8096cc check. Failurearchive preserved
+Mac/controller /tmp/relh-coworld-rules-iterated-failed-preflight-31849.tar.gz
+SHA006709522585656f1c4b15efc9ac25cb39058923dc7ee78f25629685b92584a0.
+31850 stopped beforeDocker1s: guard used wrong31849 archivefilename;
+actualnodefile relh-classic-spatial-coworld-rules-iterated-31849.tar.gz.
+Fixed filename; failurearchive preservedMac/controller
+/tmp/relh-coworld-rules-iterated-failed-preflight-31850.tar.gz
+SHAcf9e079eea704ed7ec7573876f85d0511f5ea02e8098ab9279ba8f511e24beaa.
+Both terminalFAILED/released; no training steps duplicated.
+
+CorrectedscriptSHAf224f605eb8c8ddf8801d94b9f97681bd200f40f90fd1a3b5199733ffa115849.
+CPUactualcheckpoint/config preflight passed218M policy+optimizer/target251M.
+Mainhandle19699, **31851 is the ONE live Generals job**,25minB300/8CPU64GiB
+/nice100, metta-fabric-b300-1. Same GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7
+empty0MiB/0% at startup, DockerUUIDmatches; no contention.
+Actualcore/wrapper/source fingerprint and intendedfrozen218M bundleSHA checks
+PASS. Source revision printedec37ae3 reflects stagedunchangedcode; repoHEAD
+containslaterjournal-onlycommit6332486.
+Output/var/tmp/relh-generals-recovery/classic-spatial-coworld-rules-iterated-pilot-31851.
+Mac stream/tmp/relh-classic-spatial-coworld-rules-iterated-final-stream.tar.gz
+(doNOTextract/copyuntilmain19699terminal); stderr same-final-srun.log.
+Restore5d8096cc+bd4e6c7b;218103808->251658240/33554432newphysical.
+Trainingfrozen opponent31814final218M replacesold30238 only; same4096games
+/H512/batch2097152/mb8192/R.5/LR.003/T.0625/gamma.999/shaping.5/normadv1.
+Everyopponentbothseats; no teacher. Same30kphysicalSPS/nonfinite/stallguard.
+Baselinecopiesimmutable31814finalpanels; finalpanels+512direct218M included
+inallocation. 31851freshsteadySPS andscoresstillpending; doNOTclaimdone.
+Sourcefingerprintunchanged04d727f2 isEXPECTED; opponenthashmustnow5d8096cc.
+Nextauditwarm108->120,target251658240/33554432new; compare251Mvs218M,
+bootstrapseed31851; helpers31814needadaptfornewsteps/hash/opponent.
+Goalactive; no upload/championchange; protectedhistoriesuntouched.
