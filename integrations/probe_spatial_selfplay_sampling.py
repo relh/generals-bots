@@ -34,7 +34,7 @@ def main():
         raise ValueError("Require whole Classic batches and finite nonnegative temperatures")
     policy = SpatialPlayerPolicy(args.bundle)
     lineage = TrainingRecord.model_validate_json((args.bundle / "training.json").read_text())
-    if args.seed in training_lineage_seeds(lineage):
+    if args.seed in training_lineage_seeds(args.bundle, lineage):
         raise ValueError("Probe seed overlaps training lineage")
     record = json.loads((args.bundle / "build.json").read_text())
     options = record["config"]["python_environment"]["options"].copy()
