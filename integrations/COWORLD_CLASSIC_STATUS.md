@@ -11179,3 +11179,32 @@ failed; do not replay it or claim shaping already solves learning. With shaping,
 positive/negative trainingrewards are NOT win/losscounts and zero terminal
 rewards are NOT drawcounts; report them as rawrewardstats and independently
 observe matchoutcomes. Goal remains active; strongheldout+hosted proof missing.
+
+## 31328 matched potential reward comparison submitted
+
+One bounded B300 allocation31328/main73529,45min,nice100,8CPU/64GiB,
+node metta-fabric-b300-1; output /var/tmp/relh-generals-recovery/
+classic-spatial-potential-comparison-pilot-31328. Physical UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%/no computeprocess
+before Docker, driver595.91.07/imagebdd4...96ae5 verified. Fullqueue
+no other Generals job. Prior31291 archive23730...85c9 and exact old
+containerabsence passed guards; other users' jobs untouched.
+
+CPU proof /tmp/relh-spatial-potential-reward-probe/audit.json:
+8games33ticks,188changedrewards,8timeouts/16capture both-seat boundaries;
+states/observations/masks/done unchanged, no teacher. Explicit
+shaping_gamma=train.gamma=.999. Native reward clamp+/-1: both recipes
+reward_scale=.5; control shaping0/candidate.5 public army/land potential,
+theoretical abs reward bound.7. Shaped reward signs are NOT game outcomes.
+
+Both restore final31291 policy6c02...ccfd AND optimizer, seed6751/exact
+PPO/model6eb/factory/spec unchanged. Each adds33,554,432 physical steps,
+absolute335,544,320→369,098,752/epochs160→176, not369Mnew.
+4096games/onelearner,H512/mb8192/R.5/LR.003,T.0625/logical, teacherNone.
+Fresh actual CLI builds; completed-epoch>=30k throughput, nonfinite and
+startup guards retained. After training per arm:128Exp/128Sentseed5686,
+512parentseed5513,both sides,greedy. No hosted/publish action.
+Script /tmp/relh-classic-spatial-potential-comparison-run-node.sh;
+stream /tmp/relh-classic-spatial-potential-comparison-stream.tar.gz;
+log /tmp/relh-classic-spatial-potential-comparison-srun.log.
+Do not resubmit while31328/main73529 live. Goal active, learning pending.
