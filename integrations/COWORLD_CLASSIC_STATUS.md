@@ -13534,3 +13534,21 @@ codec/mix/rules checks),quality
 /tmp/relh-public-scalar-continuation-32089-quality.py (map/seat/opponent/seed
 identity and10kmap-clusterbootstrap). Notexecuted againstpendingfinals.
 Continue SAME61910/32089. Goalactive; no hostedwrite/protectedhistorychange.
+
+### 2026-09-29 — 32089 continuation sustained SPS passes
+
+Previousturn PROGRESS: bounded32089 launched, actualemptyUUID/Dockeridentity/
+pinned16channelparity andinitialpolicy+optimizer hashes verified. SAME61910
+polledLIVE now; authoritative32089 queueconfirmedRUNNING, no duplicatejob.
+Native epochs17–19 completed after restoredabsoluteepoch16, confirmingreal
+continuation rather thanfreshtraining. Currentabsoluteepoch27/56,623,104steps.
+Actualcompletedepoch20@76.279s ->27@199.323s:
+14,680,064physicalsteps/123.044s =119,307.4347end-to-endenvironmentSPS.
+OneB300 GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565,4096games/onelearner,
+H512/batch2,097,152/mb8192/R.5/F32global32/16channels, includesrollout/
+transfer/optimization. Newcontinuation passes30kgate afterfournewepochs warmup.
+Monitorlatestepoch26 sixepoch119448.2/fourepoch119276.7SPS; GPUmeanlast60
+samples54.2% (NOT60seconds or exactlyaligned steadyinterval). Source/native/
+policy/reward/opponentmix remain unchanged. Final134M/heldouts pending.
+Local liveconsole snapshot /tmp/relh-public-scalar-continuation-32089-live-console.txt.
+Continue SAME61910/32089; no scaling, hostedwrite, promotion orhistorychange.
