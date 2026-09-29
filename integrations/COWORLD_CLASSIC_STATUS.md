@@ -11781,3 +11781,74 @@ source-prior-only/mid-checkpoint-audit.json. Recent completed six-epoch interval
 at epoch 63: 131,780.319 ENV SPS; GPU monitor ~56%. No new job, hosted writes,
 or promotion. Training continues to 335,544,320 absolute steps; automatic
 mid/final matched evaluations remain pending after training. Goal active.
+
+### 31410 complete, verified 302M continuation and hosted preparation
+
+Main session 29237 terminal exit 0; allocation released, no other Generals job.
+301,989,888 NEW physical environment steps, 335,544,320 absolute. Warmup epoch
+20 at 68.243s ->160 at 2264.496s: 293,601,280 physical /2196.253s =
+**133,682.813 ENV SPS**, including environment/inference/optimization. Same
+B300/4096 games/one learner/H512/rollout2,097,152/mb8192/R0.5; gamma and
+shaping_gamma 0.999, shaping0.5/rewardscale0.5, frozen50%/Exp25%/Sent25%
+interleaved balanced sides. 616 GPU samples mean55.846%, peak145760MiB.
+Actual legality301,989,888/zero illegal, rewards zero nonfinite; terminal-agent
+count476044, reward signs/zero terminal rewards are NOT match outcomes.
+Environment stage ~11.2s versus inference2.5s and optimization1.76s per epoch:
+300k SPS remains unmet. No observed physical GPU contention.
+
+Final all57028 finite policy c601d5578ddb34ff9708bb786e5a24e5cf002c60d6f6249a49749aa6a64261f7;
+optimizer29af5f6294cdd9752f335e29aebd555fb1924d2d97791e57044543c093957d13;
+policy/optimizer/run hashes match native sidecar. Audit
+/tmp/relh-source-prior-only-300m-31410-final-audit.json. Completed archive SHA
+c4ba81ed428826bd3de6b025e2bad2027870d05901b248a3f07454134bb88b0e verified on
+Mac and controller, gzip/extraction passed. Mac
+/tmp/relh-classic-spatial-source-prior-only-300m-stream.tar.gz, controller
+/tmp/relh-classic-spatial-source-prior-only-300m-31410.tar.gz. Before another
+allocation, guard node archive SHA and exact old container absence.
+
+Same held-out seeds6686/6513, initial-state hashes and seats verified, greedy:
+
+| Checkpoint | Expander128 W/L/D | Sentinel128 W/L/D | Parent512 W/L/D |
+| --- | --- | --- | --- |
+| 31394 starting33.55M | 24/97/7 | 4/113/11 | 220/273/19 |
+| Mid134.22M | 13/105/10 | 12/90/26 | 340/137/35 |
+| Final335.54M | 28/88/12 | 21/80/27 | 371/112/29 |
+
+Final paired score changes versus start: Exp+.10156 (86 unique initial states,
+cluster bootstrap95%[-.13078,.32836]); Sentinel+.39063 (86,[.208,.57480]);
+parent+.60938 (125,[.43172,.78782]). Full evidence
+/tmp/relh-source-prior-only-300m-31410-matched-scores.json. Final selected for
+hosted testing; scripted win rates still low, no champion qualification.
+
+Frozen final serving folder /tmp/relh-spatial-source-prior-serving-31410,
+AMD64 config ID0e40f36748985557df0244133da6f6da47c3ecb27dd2a2c5545aab24d8adc5a3.
+ARM64 Linux same policy/code passed32/32 legal websocket replies, four shapes,
+2CPU/4GiB/UID10001/core0: cold-ready1.19823s, mean0.927903ms/max1.562426ms.
+Local ARM64 measurements only; hosted AMD64 startup not yet proven. Codec
+still imports JAX; model forward NumPy. No emulator AMD64 rerun.
+
+Live manifest v0.3.3 confirms competition variant is **Classic 1v1 capture-only**,
+2000-turn cap; castles is a separate variant. Leader Alpha/Daveey remains #1,
+2224.64 MMR; relh1463.54 now below richard1568.17. Existing relh champion remains
+co-gas-generals-siege-relh:v4/e53e30be-0b23-4d62-b944-4dd249a483fe.
+
+Registered evaluation candidate richard/relh-classic-spatial-source025-335m:v1,
+policy dcb8acd4-dc95-43e1-b524-2dee60acd06f, image
+img_475eeb80-3d9d-4ee5-8ade-4fe27d03acb6, registry manifest digest
+8c3713ce3ec5d044124e20cd078148afadf5348f05e400157af19d4b666cc8af.
+Docker29/ECR HEAD403 after successful layer transfer reproduced; reused same
+client hash/image row and committed verified archive manifest directly via
+OCI PUT (same workaround in Metta coworld.upload), ready API verified.
+Temporary registry credentials never printed; task Docker login logged out.
+
+Two private one-game hosted startup requests, balanced seats against relh
+champion, currently pending; do NOT recreate them. Seat0
+xreq_bd931025-c620-4ce7-abd4-5001d7ab9681; seat1
+xreq_b9963407-11e3-4f31-a4ff-fcba25279330. Stable idempotency keys
+relh-source025-335m-c601-20260929-smoke-relh-seat{0,1}.
+Read /tmp/relh-generals-source025-xp.py read, then if both complete without
+runtime failure, panel phase schedules15 more per relh seat and16 per current
+leader seat (top_n1), totaling32 against each. Existing requests read before
+writes, stable panel keys. No champion change. Goal active; histories untouched.
+This goal turn made progress: verified completed training, preserved evidence,
+registered frozen evaluation artifact, started hosted startup tests.
