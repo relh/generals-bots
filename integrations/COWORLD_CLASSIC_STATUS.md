@@ -12402,3 +12402,25 @@ observer sameprefix-srun.log. Finalaudithelper
 Poll SAME31706/main94389; doNOTrelaunch onread timeout. No hostedwrites/
 promotion,protectedhistoriesuntouched,goalactive. Startup/buildguardpassed,
 trainingstartupnext; no currentSPSclaimuntilcompletedintervals.
+
+## 2026-09-29:31706 verified live resumed throughput
+
+Previous goal turn PROGRESS:31666 completed training/heldouts and31706 started.
+Re-read nearest AGENTS/fetch/clean branch. Main94389 remainslive; queue31706
+running, no timeout mistaken for termination or duplicatejob. Exactcurrent
+run/initial-policy.bin SHA0e9ca...e54d6 ANDinitial-policy.bin.learner
+SHA22020...0d164 verified oncompute. Nativeepochs17,18,19,20 confirmactual
+resume frompilot16 rather thanfreshrestart. Instantiatedenvironmentmix
+seed6751:0:0 actualepisode_limit2000,oldparentdf706,balanced1024frozen+
+512Exp+512Sent eachside; allunchanged. Completedsix-epoch intervalat23:
+**120,148.498969 physicalENV SPS**,four-epoch120,086.006728. B300/4096games/
+onelearner/H512/batch2097152/mb8192/R.5/norm1/T.0625/LR.003;
+gamma=shaping_gamma.999/.5shape/.5scale/no teacher. Correctedfullarena/fresh
+F32 pilot finalaudit120046 remainslongrunqualification; thisresumedinterval
+independently confirmsgate. No currentfinalreward/strengthclaim.
+
+Training continues target134,217,728absolute;same31706/main94389,finalepoch64.
+Poll SAMEhandle untilterminal, finalaudithelperwarm20->64. Thenbaseline/final
+script/oldparent/current panels+finalversuspilot under2000turncutoff; no hosted
+writesuntilqualitysupports them. Protectcheckpoint+optimizerandarchiveafter
+terminal. No newjob while31706live. Goalactive; historiesuntouched.
