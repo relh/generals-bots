@@ -12037,3 +12037,40 @@ spending300M more steps blindly. Do not train a new long run or host a
 calibration unless it proves useful. Goal active; this turn made concrete
 progress (completed/rejected self-play pilot, isolated learned bias and
 prepared exactly scoped alternatives). Protected histories untouched.
+
+## 31574 bounded split-prior calibration comparison running
+
+Previous goal turn progress: finished/rejected31512, identified learned source
+bias, prepared calibrated artifacts. Current re-read AGENTS/fetched origin,
+full sinfo/queue/node/controller archive hashes. One new bounded evaluation
+allocation **31574**, main session **67236**, b300/metta-fabric-b300-1,
+nice100/25min/8CPU/64GiB, all4 cases in same job. Node-local output
+/var/tmp/relh-generals-recovery/classic-spatial-split-calibration-pilot-31574;
+TMPDIR under it/core0. No other Generals job. Assigned physical UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 was0MiB/0%/no compute processes;
+Docker UUID matched. Driver595.91.07/compute10.3/runtimebdd4f2...96ae5.
+No observed contention. Previous exact31512 container absent and node archive
+9304b2...bd12 guarded; input calibration archive8f90a1...465b verified node.
+
+Code6069da2 unchanged. No training or optimizer updates in this comparison;
+previous335M source trained133,683 ENV SPS, pilot134,211. Do not label these
+small frozen evaluation panels as training throughput. NEW held-out seeds8686
+for128 Expander/128 Sentinel,8513 for512 parent games, repeated exact same
+initial maps/seats across4 cases. No force-hint actions/splits, no teachers.
+
+Complete native realized-graph decoder checks passed for originalc601,
+equal_at_half18be7a (ONLY56912),equal_at_mean1e5716 (ONLY56912/56916),
+equal_at_full7a94d3 (ONLY56916). All57,028 parameters and every exported tensor
+exactly decode from policy.bin. Archived exactfactory445724...c322 and pinned
+nativebridgec1bed03201af5133badfe8c5fa1566efc3830acc73c68798fbf5b7f7d7e051c1
+verified. Node native-decoder-audit.json and native-decoder.log. This upgrades
+artifact consistency proof, not strength qualification.
+
+First panel original versus Expander32W88L8D on NEW seed8686; other comparisons
+pending. Do NOT repeat completed335M hosted tests or31512 training.
+Script /tmp/relh-classic-spatial-split-calibration-run-node.sh SHA
+32773daeac43f50f853a34be2814eaf009b25d3787b1ec57bb46ca26282bda6b;
+generator/tmp/relh-build-split-calibration-eval.py. Mac live archive
+/tmp/relh-classic-spatial-split-calibration-stream.tar.gz and observer
+/tmp/relh-classic-spatial-split-calibration-srun.log. Poll SAME31574/main67236,
+never restart from observation timeout. Goal active; histories untouched.
