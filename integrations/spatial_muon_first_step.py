@@ -51,6 +51,7 @@ def install(native_module):
             receipt = dict(before_sha256=digest, gradient_sha256=save("gradient.bin", gradient),
                            inputs=inputs, blocks=self.spatial_optimizer_layout_report,
                            orientation=os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION", "storage"))
+            receipt["context_matrix"] = os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX", "0") == "1"
             with (directory / "receipt.json").open("x") as stream:
                 json.dump(receipt, stream, indent=2)
         else:

@@ -13843,3 +13843,34 @@ properconvolutionMuonnormalization with explicit5120-word bijection/gather/
 scatter, preservingphysicalcheckpoint+momentumorder; simplemetadatareshape
 is disproven. PrepareCPUproof first; freshqueue/fullphysicalpreflight before
 oneGPUallocation, no duplicatejobs. Maincheckout/protectedCodexhistory untouched.
+
+### 2026-09-29 — convolution matrix Muon implementation prepared
+
+Previousgoalturn PROGRESS:32189 completedverified pairednativeoptimizer and
+learning experiment; neither qualified. Currentqueue noGenerals jobs; peers
+32232/32225 B300 andDaveey jobs untouched. ReadnearestAGENTS,fetchorigin.
+Newopt-in METTA_SPATIAL_MUON_CONTEXT_MATRIX=1 requirescanonicaldense/logical
+layout. Actual5120context sharing indices map to output/input[32,160] via
+pinnedgather695735db...33a04. CUDAgather temporarilyusesx_buf then copies
+canonicalmatrix into flatgradientscratch; fiveNSsteps; scatterback before
+flatweightupdate. Persistentweights/momentum/checkpoint orderunchanged.
+Onlycontextoffset564952 registration changes[5120]->[32,160]; nativeparam
+words570668/statewords77684 andMuonworkspace[maxM32,maxN14112] stayidentical.
+Sparsepacked5neighbor matrixNS equals full3x3conv withfourzerocorners:
+actualCPU float64maxerror6.66134e-16. Exactaddedindexingkernel compiled as
+HOSTC++ and5120wordgather/scatterroundtrip passed. ThisisnotCUDAexecution.
+RealNativeFabricPolicy plusdirectadapter/logicalregistration confirmsactual
+pinnedsharinggather. Actualoldlearner METTAL01 header16epoch/33M/570668words/
+LR.003, SHA5d2f61...8f3f; finitephysicalmomentumstate retained. Realpinned
+freshinstall_fabric composeddense+contexthooks returns77684; finalalgoSHA
+26b33054496feb99883901197d5894e082daf13e71849f59bae91dc96a81b592.
+Source/receipt/executablemode guards rejectcachedvector/matrix mismatch and
+corruptmapping; defaultcontextvector behavior retained.15guardtestsPASS.
+CPUaudit /tmp/relh-spatial-muon-context-cpu-audit.{py,log}; actualreportroot
+/var/folders/cf/ktmpz65x29v4wfxj_s7vw_140000gn/T/relh-spatial-muon-context-cpu-hnnt77oh.
+NoCUDA/SPS/learningbenefitclaimed. Next oneboundedGPU33Mnewstep runfromsame
+public33Mpolicy+fulloptimizer. ReuseCOMPLETED32189canonical67M control and
+itsheldoutmaps/seats/seeds, no replayofcontroltraining. Verifyactualfirst
+contextupdate against clippedNesterov+NSreference withrestoredmomentum,
+matchinitialobservations/cotangents, require30kphysicalSPS and pairedquality.
+No longscale/hostedwrite/promotion. Stronggoalactive; history/main untouched.

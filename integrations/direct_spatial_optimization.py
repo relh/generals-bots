@@ -208,11 +208,17 @@ def install(native_module=None):
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
         self.spatial_optimizer_layout = os.environ.get("METTA_SPATIAL_OPTIMIZER_LAYOUT", "native")
+        context_mode = os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX", "0")
+        if context_mode not in ("0", "1") or (context_mode == "1" and (
+                self.spatial_optimizer_layout != "logical"
+                or os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION") != "canonical")):
+            raise ValueError("Convolution Muon requires logical layout and canonical dense scaling")
         if self.spatial_optimizer_layout == "logical":
             from integrations.spatial_optimizer_layout import logical_optimizer_shapes
 
             self.shapes, self.spatial_optimizer_layout_report = logical_optimizer_shapes(
                 self.direct_spatial, self.buffers,
+                context_matrix=context_mode == "1",
             )
         elif self.spatial_optimizer_layout != "native":
             raise ValueError("Spatial optimizer layout must be native or logical")

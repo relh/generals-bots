@@ -99,8 +99,14 @@ def main():
         install_build_hook(module)
     elif orientation != "storage":
         raise ValueError("Spatial Muon orientation must be storage or canonical")
+    context_mode = os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX", "0")
+    if context_mode not in ("0", "1") or (context_mode == "1" and orientation != "canonical"):
+        raise ValueError("Convolution matrix mode must be 0 or 1 and requires canonical dense scaling")
+    if context_mode == "1":
+        from integrations.spatial_muon_context import install_build_hook as install_context_build_hook
+        install_context_build_hook(module)
     from integrations.spatial_muon_orientation import install_runtime_guard
-    install_runtime_guard(module, orientation)
+    install_runtime_guard(module, orientation, context_matrix=context_mode == "1")
     original = module.verified_classic_frozen_opponent_transfer
     module.verified_classic_frozen_opponent_transfer = lambda a, b, c: (
         original(a, b, c) or spatial_transfer(a, b, c) or spatial_self_play_transfer(a, b, c)

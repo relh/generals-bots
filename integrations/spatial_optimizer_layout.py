@@ -8,7 +8,7 @@ optimizer tensor metadata only; checkpoint order and policy algebra stay fixed.
 import numpy as np
 
 
-def logical_optimizer_shapes(model, buffers):
+def logical_optimizer_shapes(model, buffers, *, context_matrix=False):
     matrices = {}
 
     def register(name, indices, shape):
@@ -24,6 +24,12 @@ def logical_optimizer_shapes(model, buffers):
     register("action", model.action_kernel.T, model.action_kernel.T.shape)
     register("global", model.global_kernel, model.global_kernel.shape)
     register("readout", model.readout_kernel, model.readout_kernel.shape)
+    if context_matrix:
+        from integrations.spatial_muon_context import OFFSET, SHAPE, validate_model_gather
+        validate_model_gather(model)
+        if OFFSET in matrices:
+            raise ValueError("Convolution optimizer block overlaps another matrix")
+        matrices[OFFSET] = ("context", SHAPE, 5120)
 
     shapes, report = [], []
     offset = 0

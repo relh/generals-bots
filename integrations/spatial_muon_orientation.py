@@ -86,10 +86,14 @@ def install_build_hook(puffer_module):
     puffer_module.install_fabric = install
 
 
-def validate_build_mode(build, mode):
+def validate_build_mode(build, mode, *, context_matrix=False):
     if mode not in ("storage", "canonical"):
         raise ValueError("Spatial Muon orientation must be storage or canonical")
+    if context_matrix and mode != "canonical":
+        raise ValueError("Convolution matrix mode requires canonical dense scaling")
     build = Path(build)
+    from integrations.spatial_muon_context import CONTEXT_ALGO_SHA256, validate_context_build
+    validate_context_build(build, context_matrix)
     marked = MARKER.encode() in (build / "puffer").read_bytes()
     if marked != (mode == "canonical"):
         raise ValueError("Requested Muon orientation does not match the compiled executable")
@@ -99,19 +103,22 @@ def validate_build_mode(build, mode):
     validate_geometry(manifest["config"]["fabric"])
     receipt = json.loads((build / "spatial-muon-orientation.json").read_text())
     source_hash = hashlib.sha256((build / "source/src/algo.cu").read_bytes()).hexdigest()
+    expected_hash = CONTEXT_ALGO_SHA256 if context_matrix else CANONICAL_ALGO_SHA256
     if (receipt["mode"] != "canonical_dense" or receipt["marker"] != MARKER
             or receipt["original_algo_sha256"] != INSTALLED_ALGO_SHA256
             or receipt["patched_algo_sha256"] != source_hash
-            or source_hash != CANONICAL_ALGO_SHA256):
+            or source_hash != expected_hash
+            or bool(receipt.get("context_matrix", False)) != context_matrix
+            or (context_matrix and receipt.get("dense_algo_sha256") != CANONICAL_ALGO_SHA256)):
         raise ValueError("Canonical Muon source and build receipt differ")
 
 
-def install_runtime_guard(puffer_module, mode):
+def install_runtime_guard(puffer_module, mode, *, context_matrix=False):
     original = puffer_module.prepare_run
 
     @functools.wraps(original)
     def prepare(build, output, config, *, name=None):
-        validate_build_mode(build, mode)
+        validate_build_mode(build, mode, context_matrix=context_matrix)
         return original(build, output, config, name=name)
 
     puffer_module.prepare_run = prepare
