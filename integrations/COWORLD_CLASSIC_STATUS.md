@@ -10202,3 +10202,38 @@ max absolute prediction error2.384185791015625e-7. Manual probe
 Added reusable integrations/audit_direct_spatial_rollout.py for an actual
 GPU batch check before enabling this option in a bounded training pilot.
 Neither this change nor corrected audit hook alters live30558 staged code.
+
+
+## 30558 complete: removing entropy alone still regresses
+
+Mainexec96656 exit0; queue absent. 67,108,864 agent /33,554,432 physical
+steps, zero illegal native actions and57028 finite final floats.
+Epoch4 at70.909s ->32 at351.515s:29,360,128 physical /280.606s =
+104,631.148 ENV SPS.79 GPU samples mean67.4937%, peak145568MiB,
+console timestamp anchor uncertainty~1s. Finalcheckpoint
+c2e5b5c9ec1bf383cfca4cca2b1a6e83a15814e535c7ddef4ce3b37ee1c58a72.
+Midpoint Exp1/123/4, Sent4/121/3, parent0/492/20 W/L/D.
+Final Exp0/126/2, Sent0/125/3, parent0/499/13. Same held-out panel seeds,
+game counts and geometry as30532. Reject; no promotion or hosted submission.
+
+Archive f91f635ec81018bbb86eb63e5a49b231b12482fb7bb558592f0b713091f26a6e
+verified Mac /tmp/relh-classic-spatial-local8-selfplay-no-entropy-stream.tar.gz
+and controller /tmp/relh-classic-spatial-local8-selfplay-no-entropy-30558.tar.gz;
+node verified by next30572 allocated preflight. Stream queueheader424bytes
+preserved in separate own .tar.raw file; extracted gzip payload matches archive.
+Localfull /tmp/relh-spatial-selfplay-no-entropy-30558-inspect.
+
+## 30572 live: GPU rollout parity then short throughput/reward probe
+
+Single20min allocation, exec8828,8CPU/64GiB,nice100, source7a1009f.
+Script /tmp/relh-classic-spatial-local8-selfplay-direct-rollout-run-node.sh
+SHA5b0c963053d665b7ad3ddfa612c481531ebcf8c52fabae3edae5dc938187d761.
+Out /var/tmp/relh-generals-recovery/classic-spatial-local8-selfplay-direct-rollout-pilot-30572.
+Same4096agent/2048physical/H512/mb8192/capture-only/entropy0/seed751
+parent initialization. Corrected reward hook staged into sitecustomize for
+native subprocess. Reuse byte-exact actual30558 two-seat build; no manifest
+rewrite or architecture/rules change. GPU batch4096 sequential4tick parity
+must pass before training with optional direct rollout. Budget16,777,216
+native agent =8,388,608 physical env steps; scheduled two snapshot panels.
+Use actual physical1,048,576steps/epoch in steady monitor. No longer run
+until measured throughput and learning quality support one.
