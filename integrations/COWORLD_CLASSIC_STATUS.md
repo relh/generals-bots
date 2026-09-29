@@ -13552,3 +13552,45 @@ samples54.2% (NOT60seconds or exactlyaligned steadyinterval). Source/native/
 policy/reward/opponentmix remain unchanged. Final134M/heldouts pending.
 Local liveconsole snapshot /tmp/relh-public-scalar-continuation-32089-live-console.txt.
 Continue SAME61910/32089; no scaling, hostedwrite, promotion orhistorychange.
+
+### 2026-09-29 — 32089 live; sixteen-channel native Linux serving prerequisites pass
+
+Previousgoalturn PROGRESS: realrestoredtraining/sustained119,307SPS verified.
+SAME61910 stillLIVE,32089RUNNING; currentepoch55/115,343,360absolute steps,
+no newGPUjob. Policy+optimizer checkpoint sidecars at50M/67M observed, all
+finalartifacts/heldoutquality stillpending. No strengthclaimfromdashboard.
+
+Independent prerequisite completed offGPU: rebuilt exact repository
+integrations/softmax/Dockerfile.neural with preserved runtime.tar.gz and sealed
+32015 PUBLIC33M bundle (policy284aac29...ad4ac9, channels16). Sourcecontext
+/tmp/relh-public-scalars-serving-source-32089, no maincheckout changes.
+ARM localimage relh-generals-spatial-serving:32089-public-scalars-arm64-contract
+manifestIDa741fe336c095c1a0c01b245b0d8039e5bf4b25c722d41e514012e1a6a4c3426.
+Local LinuxARM WScontract32/32legal across18x21/21x18/19x20/21x21,
+coldready.7604s/mean1.2555ms/max2.0176ms. First probe mounted/tmp script
+lacked/app importpath; corrected harness PYTHONPATH=/app, no imagecodechange.
+
+AMD64built locally without runningAMD64JAX onMac, thenimagearchive copied to
+CPUsubmit hostmetta0 andloaded under ownuniquetag
+relh-generals-spatial-serving:32089-public-scalars-amd64-contract.
+NativeDockerconfigSHA9b9341b6e662127e16937a77e51ce06095f6341f91f371b03cea773310ea7cbb
+matchesarchiveconfig; localmanifestlist0a91e223875bab76f5daf7e48290c829b566659b7e4c0dc65dca35b4eedd3fa4
+is a different identifier type, not an expected equalconfigSHA.
+Mac/controller imagearchiveSHA1ea1ba4b1d68e1accaaedca39d4d446a91243182070e037fff1cc1aed4992399.
+Runtime tarSHAde03d2a921bd3441edef8257d16301b75e767aa2f743be80cd3dbf2488b7ddc7;
+DockerfileSHA c03713eba4a70d1788464e3b1c41beb0f8361efab83c50afb05e34b8c2d5a65b.
+CPU-onlymetta0 Dockerlimit2CPU/4GiB/networknone/core0; no Slurm/GPUallocation,
+--rm exact owncontainer; peer containers/images left alone. Initialscp imports
+/tmp/image-amd64.tar and/tmp/wire_probe.py were copied into task-specific
+/tmp/relh-public-scalars-serving-contract-32089. Initial nativeprobe denied
+reading600mode mountedfile; chmod644 ONLYownscopedwire_probe.py fixedharness.
+Native Linuxx86_64 WScontract then32/32legal, coldready.7368s/mean1.0479ms/
+max1.7278ms. This is saved33M portable ABI/runtime proof, NOT actualObservatory
+hardwarelatency, final134M policy proof, orplayingstrength. New qualified
+weights must still pass actualfrozenAMD64 wirecheck before hostedregistration.
+
+Audit /tmp/relh-public-scalars-serving-source-32089/serving-contract-audit.json
+andcontroller /tmp/relh-public-scalars-serving-contract-32089/serving-contract-audit.json;
+CPUlogs/image preserved in respective taskdirectories. No externalpolicy/XP/
+championwrites. Continue SAME61910/32089 through134M and allpairedheldouts.
+Goalactive; protected Codex history untouched.
