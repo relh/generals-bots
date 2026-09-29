@@ -70,9 +70,8 @@ def main():
     import os
 
     if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
-        from integrations.environment_reward_audit import install
-        from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
-        install(BatchedGeneralsSelfPlayPufferEnvironment)
+        from integrations.environment_reward_audit import activate
+        activate()
     source = Path(__file__).with_name("puffer_coworld_frozen_transfer.py")
     if hashlib.sha256(source.read_bytes()).hexdigest() != "4d18c06c59b4dad321bf61ba4d4aed552dc406159c96072e880cb518162ecea6":
         raise ValueError("Pinned Puffer trainer changed")

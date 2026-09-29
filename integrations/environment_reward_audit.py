@@ -3,6 +3,9 @@
 import atexit
 import functools
 import json
+import importlib.abc
+import importlib.machinery
+import sys
 
 import jax
 import jax.numpy as jnp
@@ -51,3 +54,36 @@ def install(environment_class):
 
     environment_class.step_device = step
     environment_class._reward_audit_installed = True
+
+
+def activate():
+    """Install in each interpreter, including the native trainer's interpreter."""
+    name = "integrations.metta_puffer"
+    if name in sys.modules:
+        cls = sys.modules[name].BatchedGeneralsSelfPlayPufferEnvironment
+        if not getattr(cls, "_reward_audit_installed", False):
+            install(cls)
+        return
+
+    class Loader(importlib.abc.Loader):
+        def __init__(self, original):
+            self.original = original
+
+        def create_module(self, spec):
+            return self.original.create_module(spec)
+
+        def exec_module(self, module):
+            self.original.exec_module(module)
+            install(module.BatchedGeneralsSelfPlayPufferEnvironment)
+
+    class Finder(importlib.abc.MetaPathFinder):
+        def find_spec(self, fullname, path=None, target=None):
+            if fullname != name:
+                return None
+            spec = importlib.machinery.PathFinder.find_spec(fullname, path, target)
+            if spec is None or spec.loader is None:
+                raise ImportError("Generals environment missing")
+            spec.loader = Loader(spec.loader)
+            return spec
+
+    sys.meta_path.insert(0, Finder())

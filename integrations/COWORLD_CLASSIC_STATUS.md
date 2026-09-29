@@ -10154,3 +10154,34 @@ This is evidence to measure actual capture versus zero-reward timeout counts,
 not proof of an incorrect reward sign or codec. Prepared opt-in device reward
 counter and entropy0 controlled self-play pilot; no architecture/environment
 rule changes. Counter observes transition results and returns them unchanged.
+
+
+## 30558 live: controlled entropy-zero self-play comparison
+
+One30min B300 job30558, exec96656,8CPU/64GiB,nice100. Same parent,
+seed751,2048physicalgames/4096learners,H512,mb8192,GAE0.999,capture-only
+reward,33,554,432physicalstepbudget and scheduled held-out panels as30532.
+Only training hyperparameter change entropy0.01->0.0. ScriptSHA
+716ab2dc5c2a472f0ac71890e8aba39b0866ab11e98df8ebd0b86417bafc97cc.
+Source c49c719. Node outputs
+/var/tmp/relh-generals-recovery/classic-spatial-local8-selfplay-no-entropy-pilot-30558.
+PhysicalGPU GPU-0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0%
+at preflight and matched inside Docker. Other relh30556 SlurmIDX0;
+this jobIDX4. No observed physical GPU contention. Previous30532 exact
+container absent and node archive5c0222...4489 verified; now three copies.
+
+Instrumentation limitation discovered after start: launcher Python patches
+are not inherited by the separate native Puffer subprocess. Therefore30558
+is a valid entropy-only training comparison but does NOT establish actual
+training reward counts. Corrected deferred environment import hook locally
+for the next interpreter startup; do not rewrite live staged inputs or
+restart a duplicate run. A future staged sitecustomize must call
+integrations.environment_reward_audit.activate when
+METTA_AUDIT_DEVICE_REWARDS=1. Both direct install and deferred import pass
+16-seat CPU capture fixture, expected8positive/8negative/16terminal/0nonfinite.
+No strength claim from the CPU fixture.
+
+Local stream contains the preceding squeue header due to submit-command
+stdout; after terminal, preserve raw stream and extract gzip payload into a
+separate file, compare SHA with node archive. Do not mistake this framing
+issue for a trainer failure.
