@@ -10439,3 +10439,20 @@ Preparedscript /tmp/relh-classic-spatial-local8-selfplay-temperature16-300m-run-
 SHAfc32519a5d70e9f7eac218a98456d5315917235d98a9e4dfbd11a956262f64df,
 bashsyntaxpassed. Fullqueue/node checked: other relh30693and30702;
 no other Generals pending/running. OwnphysicalUUID guard rechecks afterallocation.
+
+## 30728 paired continuation allocated
+
+Mainexec18783 live, soleGenerals allocation30728, B30055minbound/nice100/
+8CPU64GiB, node metta-fabric-b300-1. Output
+/var/tmp/relh-generals-recovery/classic-spatial-local8-selfplay-temperature16-300m-pilot-30728,
+adjacentnode .log; Macstream
+/tmp/relh-classic-spatial-local8-selfplay-temperature16-300m-stream.tar.gz
+remains incomplete until terminalexec. Exactcontainer
+relh-classic-spatial-local8-selfplay-temperature16-300m-30728.
+PhysicalGPU0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% preflight,
+containerUUIDmatched; no actualcontention on allocatedGPU. Live otherrelh
+30693CVC/30702Safa retained untouched. Node641GiBfree,/tmp50710freeinodes.
+Runtimebdd4f2...6ae5/driver595.91.07/compute10.3, actual30597buildcopied.
+Exactprevious30688container absent,nodearchive6a2b7d...9735 verified.
+Selected30597mid checkpoint73b075...9c677 independently hashed beforeGPU.
+FullbatchGPUscaledparity mustpassbefore actualtraining; no strengthclaim.
