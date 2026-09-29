@@ -147,7 +147,8 @@ class GeneralsPufferEnvironment:
             raise ValueError("Teacher rollouts require supervised teacher actions")
         if coworld_classic:
             board_size = 21
-            horizon = 300 if coworld_tiny_map_curriculum else 600 if coworld_small_map_curriculum else 1200
+            # The hosted Classic 1v1 competition variant caps games at 2000 turns.
+            horizon = 300 if coworld_tiny_map_curriculum else 600 if coworld_small_map_curriculum else 2000
         self.size = board_size
         self.supervise_teacher = supervise_teacher
         self.sparse_teacher = sparse_teacher

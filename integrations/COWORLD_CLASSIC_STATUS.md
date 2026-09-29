@@ -12074,3 +12074,82 @@ generator/tmp/relh-build-split-calibration-eval.py. Mac live archive
 /tmp/relh-classic-spatial-split-calibration-stream.tar.gz and observer
 /tmp/relh-classic-spatial-split-calibration-srun.log. Poll SAME31574/main67236,
 never restart from observation timeout. Goal active; histories untouched.
+
+### 31574 complete; reject all source-prior calibrations
+
+SAME main67236 terminal0, allocation released. All12 panels completed in one
+bounded job, no hosted writes/promotions. Full native decoder exact for all4
+cases. NEW maps/sides/opponentIDs verified identical across cases;79 unique
+initial states for128 scripted games and127 for512 parent games.
+
+| Case | Expander128 W/L/D | Sentinel128 W/L/D | Parent512 W/L/D |
+| --- | --- | --- | --- |
+| Original335M | 32/88/8 | 25/80/23 | 348/129/35 |
+| Equal at half | 5/117/6 | 7/115/6 | 165/319/28 |
+| Equal at mean | 19/105/4 | 18/96/14 | 262/226/24 |
+| Equal at full | 21/103/4 | 14/93/21 | 311/176/25 |
+
+All paired score changes negative. Against parent: low-.72852,mean-.35742,
+high-.16406; state-cluster bootstrap95%[-.90726,-.55202],[-.51357,-.20833],
+[-.302,-.02788]. Script changes also negative; mean/Sentinel interval reaches
+zero, others strictly negative. Evidence
+/tmp/relh-split-calibration-31574-matched-scores.json. Learned source asymmetry
+influences choices, but equalizing it WEAKENS this policy. Do not infer a
+strength cause from half-move frequency or host any of these calibrations.
+
+Archive3,825,639bytes, gzip/extraction passed, SHA256
+b09b2d79374db3df8b1221ce479d53b24a4534c789043b92617db0a6825ef2a9,
+verified Mac/controller. Mac /tmp/relh-classic-spatial-split-calibration-stream.tar.gz;
+controller/tmp/relh-classic-spatial-split-calibration-31574.tar.gz;
+full Mac/tmp/relh-spatial-split-calibration-31574-inspect. Next allocation
+verify node31574 archive and exact containerrelh-classic-spatial-split-calibration-31574
+absent. All historical trained checkpoints/optimizers preserved unchanged.
+
+## Correction: local Classic wrapper used1200 turns, live arena uses2000
+
+Read live manifest v0.3.3 game_config.max_turns2000. Inspected actual wrapper:
+GeneralsPufferEnvironment forced horizon1200 for coworld_classic, inherited by
+all batched/spatial adapters; current training configs lacked an override.
+This is a concrete contract mismatch. Earlier local training/evaluation panels
+(including31574) used a shortened1200-turn arena, NOT the full published2000
+limit. Their matched relative comparisons remain valid for that shortened
+setup. Previous HOSTED games used actual2000 and their scores remain valid.
+Do not cite legacy local panels as full live-contract qualification. This
+mismatch is NOT proven to explain the low hosted win rate; many losses were
+captures long before1200.
+
+Fixed integrations/metta_puffer.py default full Coworld Classic horizon to2000;
+explicit tiny/small curricula remain separately declared300/600. Captures,
+map18-21dims,fog,castles,noDeathtouch,publiccodec remain unchanged. Added
+actual episode_limit to spatial_selfplay reset's opponent-mix metadata so the
+real instantiated training environment exposes its effective cutoff.
+metta_puffer SHA e9d3683f04da72a2616a44e904e029bdbcba30679ad670df7d6821609fe182bb;
+spatial_selfplay SHA17d07dbac730cc7943e99431f13d692bddbc14186e138d4984dcc2019c0dbaf3.
+
+CPU actual inherited SpatialMixedFrozenOpponentPufferEnvironment instantiated
+in TRAIN mode, eight games, require_gpuFalse; horizon==base.env.truncation2000,
+public4851/[3529], classic capture-only/noDeathtouch. Real game.step pass/pass
+boundary states:1199->1200 NOTtruncated;1200->1201 NOTtruncated;
+1998->1999 NOTtruncated;1999->2000 truncated and auto-resettime0; all
+nonterminated/finite reward. Evidence
+/tmp/relh-coworld-classic-2000-turn-contract/audit.json,
+script/tmp/relh-coworld-classic-2000-turn-contract.py and successful
+/tmp/relh-coworld-classic-2000-turn-contract-training-wrapper.log.
+Initial CPU probe correctly rejected evaluate-mode self-play before stepping;
+its failedlog preserved separately, then mode corrected totrain. git diff check
+passed. This is CPU behavior proof, NOT corrected GPU throughput or strength.
+
+Next safe action: bounded corrected2000-turn pilot, restore BOTH strongest
+335M c601 policy/29af5f optimizer, SAME original30238 frozen/scripted mix and
+learner/rewards, explicit environment transfer. Stage correctedmetta_puffer
+andspatial_selfplay in BOTH actual module locations; add declared horizon2000
+and source_modules integrations.metta_puffer for proper fingerprinting. Verify
+native graph/binary/layout unchanged, hashes/runtime module path, and actual
+reset episode_limit2000. Reuse31574 archive/container guard; same source-policy
+initialSHA. Do NOT carry rejected31512 or calibration policies into learner.
+Demonstrate corrected end-to-end >=30k ENV SPS before long continuation, and
+compare unmodified335M and pilot on same full2000-turn held-out panels. No
+claim that legacy133k is the corrected setup's measured throughput. Do not
+change architecture/rewards/opponent while correcting this contract.
+Goal active; this turn made progress by ruling out calibrations and fixing
+verified contract behavior. Protected agent histories untouched.

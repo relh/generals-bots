@@ -140,6 +140,7 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
             raise ValueError("Mixed spatial opponent seats are not balanced")
         record = dict(
             counts=counts, frozen_checkpoint_sha256=self._mix_checkpoint_sha256, seed=seed,
+            episode_limit=self.horizon,
             scope="Opponent actions only; no teacher targets or learner action overrides",
         )
         self._mix_output.parent.mkdir(parents=True, exist_ok=True)
