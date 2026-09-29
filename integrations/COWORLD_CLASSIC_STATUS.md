@@ -11075,3 +11075,41 @@ container relh-classic-spatial-split-prior-300m-31289. Script
 Physicaloccupancy/DockerUUID/image/disk/previousarchive guards beforetraining.
 Longrun pending actual learner start; no duplicate/replayed training, no Codex
 history mutation. Goalactive; strongheldout+hostedproof still unfinished.
+
+## 31289 mount-link error preserved;31291 actual learner continuation verified
+
+31289/main95481 terminal1 BEFORE trainer initialization or game steps. Own
+host-absolute retained-build symlink resolved for bare-host verifier but not
+inside container's/recovery mount; registration FileNotFoundError. User informed.
+No old/candidate training replayed, policy/optimizer unchanged. Archive
+39a2023343cfb52664d42b96eac8bff39f98c677aed505128835df3aa721f674 gzip/extract/Mac/
+controller verified;31291 nodeguard verifiesnodehash+exactoldcontainerabsence.
+Mac /tmp/relh-classic-spatial-split-prior-300m-stream.tar.gz;
+controller/node relh-classic-spatial-split-prior-300m-31289.tar.gz;
+extraction /tmp/relh-spatial-split-prior-300m-31289-inspect.
+Corrected relative retained-build link resolves identically under hostdisk and
+container/recovery prefixes; shellsyntax/allPythonAST passed before resubmit.
+Originalcontroller script6266...c509 preserved; corrected new recovery script
+/tmp/relh-classic-spatial-split-prior-300m-recovery-run-node.sh SHA
+18a710ce8045ee8fcae12e7a20a6d9b1a2b3a51154d6c0a3f45099203921c509.
+
+Fullqueue/sinfo/node rechecked. Sole Generals31291/main2286,65minB3001GPU/
+8CPU64GiB/nice100,source6069da2, output
+/var/tmp/relh-generals-recovery/classic-spatial-split-prior-300m-pilot-31291,
+container relh-classic-spatial-split-prior-300m-31291. PhysicalGPU bce8f97b...
+empty0MiB/0%,no computeprocess;DockerUUID/imagebdd4verified.632GiBfree,
+/tmp19815freeinodes,TMPDIR pinnedowned/var/tmpout. No actual GPU contention.
+Retained actual6ebbuild accessible in container/native registration passed;
+manifest verifier template prints actual_fresh_build_verified, but this job
+honestly REUSES31283actual CLI build, does not create/editBuildOutcome.
+
+Actual resumed epochs16→18 (37.7Mabsolute,4.2Mnew), dashboard131.9kENV SPS,
+entropy.747,nativeclock39.005s,~37m38remaining. No mere queued/run-state claim:
+completed NEW epochs observed. Fullloaded policyhashca4f...fb73 and optimizer
+hash1585b4025f0e22267297e83623fc87825ae5830e85a562aadd6e931df062b2e1 match
+original checkpoint sidecar exactly; restore_learnertrue/allow_envtransferfalse.
+Artifact /tmp/relh-split-prior-300m-31291-resume-audit.json and node
+resume-identity-audit.json. Exactoldseed6751/overrides;absolute335544320 target
+adds301989888newphysicalsteps, not a restart/countingoldsteps as new.
+Goalactive; verify completion/steady interval/newcounts+freshheldoutpanels before
+hosted/publish. Next poll SAME31291/main2286; no duplicatejobs.
