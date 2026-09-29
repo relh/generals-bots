@@ -57,7 +57,7 @@ def main():
         out = args.output / f"temperature-{temperature:g}"
         out.mkdir()
         env = BatchedGeneralsSelfPlayPufferEnvironment(
-            context=EnvironmentContext(seed=args.seed, index=0, mode="eval", output=out), **options)
+            context=EnvironmentContext(seed=args.seed, index=0, mode="train", output=out), **options)
         finished = np.zeros(args.games, bool)
         outcomes = np.zeros((args.games, 2), np.float32)
         try:

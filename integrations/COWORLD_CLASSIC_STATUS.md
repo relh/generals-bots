@@ -10237,3 +10237,43 @@ must pass before training with optional direct rollout. Budget16,777,216
 native agent =8,388,608 physical env steps; scheduled two snapshot panels.
 Use actual physical1,048,576steps/epoch in steady monitor. No longer run
 until measured throughput and learning quality support one.
+
+
+## 30572 complete: faster rollout and measured sparse capture signal
+
+Mainexec8828 exit0; allocation absent. GPU parity4096actors x4sequential
+ticks/reset maxerror2.384185791015625e-7, teacher-free exact same model.
+8,388,608 physical /16,777,216 agent steps; action audit0illegal;
+57028 final floats finite. Final5ae50a4d790014af756c5e7a812dc98d81e455531eebfefde769d137d144b9d2.
+Epoch4 at37.429s ->8 at70.333s:4,194,304 physical /32.904s =127,470.946 ENV SPS.
+Nine aligned GPU samples mean63%, peak144540MiB, timestamp anchor~1s.
+~22% faster than30558 original rollout. Still below300kENV aspiration.
+
+Actual native-process reward counter:4096ticks,16,777,216 decisions,
+positive1/negative1, terminalagents12288, zero-rewardterminalagents12286,
+nonfinite0. Thus6144 completed physicalgames, only1capture and6143draws.
+Do not scale sparse-reward self-play merely because it is fast.
+Checkpoint4,194,304physical Exp18/105/5, Sent0/123/5, parent201/280/31.
+Final8,388,608physical Exp19/109/0, Sent1/122/5, parent201/291/20 W/L/D.
+Not stronger than retainedparent; no hosted submission or promotion.
+
+Archive87aafc3c518139bb01dd2ea853fd48b76230e7d27f9d8f758eed72eca964b69c
+verified Mac /tmp/relh-classic-spatial-local8-selfplay-direct-rollout-stream.tar.gz,
+controller /tmp/relh-classic-spatial-local8-selfplay-direct-rollout-30572.tar.gz,
+node by30586preflight. Local /tmp/relh-spatial-selfplay-direct-rollout-30572-inspect;
+audit /tmp/relh-spatial-selfplay-direct-rollout-30572-audit.json.
+
+## Sampling probe packaging correction before retry
+
+30586 exited1 before anygames: staged regular integrations package lacked
+puffer_codec.py. Allocation absent and exactcontainer stopped by trap.
+Diagnosticarchive c0960d81ca0a70b14622d4def11aca6153551c2d67e652a148d195554b32ad4a
+preserved Mac/controller /tmp/relh-classic-spatial-selfplay-sampling-30586.tar.gz.
+Local staged import/lineage validation and smallCPU factory map checks then
+caught/fixed lineagehelper's required runpath and invalid contextmode 'eval';
+use 'train' consistently with existing held-out runners.
+Identical initialstates across two independent constructors verified on CPU
+seed1616,8games/pool16, hashb743bc0c6613b614d3e5383788f4eb1e9a12dea13ed95f25ec00adb06744d718.
+Masked temperature sampler8192 draws: T1 class3prob0.74805 (expected0.75),
+T0.25 class3prob0.98730 (expected81/82),0illegal despiteillegal+1000logit.
+These are setup/contract checks, not strength evidence.
