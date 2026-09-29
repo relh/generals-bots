@@ -14273,3 +14273,37 @@ full moves: route full1.0783/half.5030, source full1.1431/half.2064,
 full-only bias.2107. Next bounded test changes sampling temperature and
 measures actual full/half actions, using best234M state; do not replay
 unchanged long recipe.
+
+32602 bounded split-exploration pilot COMPLETED on b300 one physical GPU
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a, 8 CPUs/64 GiB,
+35-minute limit, source revision 78ad341, same 4096 Classic games/H512,
+batch2,097,152/mb8192 and frozen134M50%+Expander25%+Sentinel25% as
+best234M. Restored exact policy0025c722...bc84204 plus learner state,
+changed sampling temperature .0625→.25, and enabled opt-in device
+full/half/pass action audit. Parent archive and model/engine hashes checked;
+GPU physical preflight0MiB/0%, container UUID matched; no observed
+contention. New33,554,432 physical steps, absolute268,435,456; all
+33,554,432 actions legal,0nonfinite rewards,69,125 terminal agents,
+0zero-reward terminal agents. Device sampled actions: full27,066,013
+(80.66%), half6,108,585 (18.21%), pass379,834 (1.13%). This proves
+the temperature intervention reached rollout sampling. After startup,
+epoch116→128:25,165,824 steps in~204.9s, ~122.8k end-to-end SPS;
+four-epoch monitor ended121.4k. GPU sampled~63%, env stage~11.0s
+per epoch versus train~2.8s; 300k target remains unmet.
+
+Final checkpointSHA88a5089255a9d745cffd98741ceb44c22616b526184fa85c9e00e78d3650db60;
+archive `/tmp/relh-classic-spatial-muon-context-split-temp-32602.tar.gz`
+SHA07fe29c980f7d405e32ad201bad57ed23d23f8ea03bda7f1d2daf9ac41a8bd79.
+Paired held-out maps/seats/opponents versus best234M, 10k map-cluster
+bootstrap per panel (unadjusted for multiple panels): Expander25/103/0
+versus25/103/0,delta0 CI[-.167,.165]; Sentinel22/104/2 versus
+27/101/0,delta-.0625 CI[-.220,.094]; frozen218M303/201/8 versus
+266/232/14,delta+.1328 CI[.008,.255]; currentc601264/232/16
+versus247/256/9,delta+.0801 CI[-.086,.248]. Direct versus own parent
+234M250/262/0,score-.0234 CI[-.159,.116]; versus old public33M
+335/167/10,score+.3281 CI[.198,.457]. Frozen panel gain is narrow
+and one of four tested panels; direct parent result is even. Greedy
+Expander and direct-parent evaluation both recorded **zero half moves**,
+despite 18.2% half rollout samples. Policy priors still favor full
+routes/sources. Do not promote or scale this recipe; investigate
+explicit greedy split bias/reward and run a controlled held-out test.
