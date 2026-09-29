@@ -11371,3 +11371,49 @@ learnerab1b24319f0e6d455121751f6bd41a73a5db6ec6f2e98f0bb1aad3af108f054b;
 mid-checkpoint-audit.json and Mac /tmp/relh-weak-prior-comparison-31352-
 weak-mid-audit.json preserved. Finaltrainer/heldout pending SAME31352;
 goalactive/no hostedpublication.
+
+## 31352 terminal0: weak prior comparison fails strength; next normalize PPO
+
+Main8879 terminal0, fullqueue confirmsallocationreleased/noGeneralslive.
+Full Mac gzip/extraction/controller archive SHA
+d089aac3e1b07ada137c039bd5fe4518863946345a008e423cb0dc956dc95879
+verified; nodehash/exactcontainerabsence mustguardnextallocation.
+Mac /tmp/relh-classic-spatial-weak-prior-comparison-stream.tar.gz; controller
+/tmp/relh-classic-spatial-weak-prior-comparison-31352.tar.gz; nodearchive
+/var/tmp/relh-generals-recovery/relh-classic-spatial-weak-prior-comparison-31352.tar.gz.
+Full Mac /tmp/relh-spatial-weak-prior-comparison-31352-inspect. All source,
+checkpoints,learners,panels preserved; Codexhistory untouched.
+
+Weak completed33,554,432NEWphysical steps; warm4@70.258s→16@262.649s,
+25,165,824physical/192.391s=130,805.619806ENV SPS. B300/4096games1learner/
+H512/mb8192/R.5,54alignedGPU mean54.8889%/peak145760MiB.
+33,554,432actions/0illegal,reward8192ticks/0nonfinite/106025terminals;
+shapedrewardsigns NOT outcomes. Final57028finitewords
+ad4a0e1cd88c828797f3c8d8a3f32fd89286a141b7c36980e26d26685c084d57;
+learner2ca05a15aa3166496809e5be47cf3105fe5673fd9c78df5d43deec2ea760b269.
+Actualfinalpolicy/state/runhashes matchsidecar, freshregisteredinitial
+1813eb65749392778830cbebdca54e234a1ed43e8349c51daaf5785c658a68f1.
+Mac /tmp/relh-weak-prior-comparison-31352-weak-audit.json/node steady-audit.
+
+Matchedinitialstatehashes AND seats exactlyequal acrossall3heldoutpanels.
+Strong Exp21/102/5,Sent3/122/3,parent150/313/49;
+weak Exp0/122/6,Sent0/127/1,parent0/508/4. Script6686/parent6513.
+Every scriptpanel0clippedsteps. Mac /tmp/relh-weak-prior-comparison-31352-
+matched-scores.json preservescomparison. Weakpriors changedexploration
+(entropy~3.9vs.9)butallpanelsworse; no scaleunchanged/no hosted/promote.
+
+Next concrete learning investigation: normalized versus unnormalized PPO
+advantages. Actual standardCLI builds/source/config/default.ini andpufferl.cu
+LACKnorm_adv; pinned alternatehelper4d18...a6 build_puffer includesverified
+optionalCUDA normalizer but previous scripts usedstandardCLIbuilder.
+CPU /tmp/relh-spatial-native-advantage-build-preflight/audit.json confirms
+actualbuildschema accepted/pinnedkernel2e087...63c/exactsourceanchors,
+onecall afterretrace/beforePPO, duplicatepatchrejected. No CUDA/SPSclaim.
+Use alternatebuildthrough launch_spatial_selfplay_training.py build so
+actualcompiledtrainercontainsoption; do notsetunsupportedflag onoldbinary.
+Reuse completed31352 STRONGprior control (fresh6751/shaping.5/rewardscale.5)
+and its6686/6513 panels; next GPU run only remaining normalized-advantages
+arm train.norm_adv=1/same fresh6751/allother PPO/model/opponents unchanged.
+Require actualnativeGPUinitialweights exactlymatchcontrolcab576...7741,
+compiledCUDA kernel numeric audit, freshactualbuild>=30k gate before scale.
+No duplicate controltraining/evaluations. Goalactive; no newjobsubmittedyet.
