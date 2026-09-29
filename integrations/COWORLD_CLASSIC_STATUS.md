@@ -12721,3 +12721,52 @@ Sourcefingerprintunchanged04d727f2 isEXPECTED; opponenthashmustnow5d8096cc.
 Nextauditwarm108->120,target251658240/33554432new; compare251Mvs218M,
 bootstrapseed31851; helpers31814needadaptfornewsteps/hash/opponent.
 Goalactive; no upload/championchange; protectedhistoriesuntouched.
+
+
+### 2026-09-29 — Iterated pilot31851 complete; qualify fixed self-play300M continuation
+
+PreviousgoalturnPROGRESS (rules fixed/proved,pilot31814completed and31851started).
+31851main19699 terminal0/SlurmCOMPLETED0:0,12m47s,allocationreleased.
+Completed33554432newphysical ->251658240 total. Epoch108@80.333s ->
+120@283.975s,25165824/203.642 = **123578.750945 environment SPS**.
+4096games/1learner/H512/batch2097152/mb8192,one B300; per-process=aggregate.
+Last60 timestampedtrainingGPUsamplesmean61.5667%,peak160874MiB;
+window~214s approximatealignment. All33554432actionslegal/0illegal;
+no nonfinite reward/zero-reward training terminal.
+Restored5d8096cc andbd4e6c7bverified; finalfinite570508policy
+146cce3745e3942f827c0cab978d6587af29a7279d3a78825f7bf71d0f51638f
+optimizer49e3013f9bda4d52b326b569e4239ca2fd9942bd2da3495c456d129a74ed1230.
+Allpolicy/state/runSHA sidecarsmatch. Mixfrozen218M5d8096cc,50%bothseats,
+25%Exp/25%Sent,bothseats,ruleTrue,2000limit,noteachers.
+
+Matched218M->251M,W/L/D:Exp29/99/0 ->24/103/1;
+Sent16/111/1 ->17/111/0;parent400/103/9 ->415/79/18;
+current242/249/21 ->240/251/21. Direct251Mvs218M259/249/4,
+score+.01953 CI[-.11338,.15121]. AllpairedgainCIsinclude0; no clear
+gain or regression demonstrated. Still weak scriptedperformance,unqualified
+forpublication/promotion. DoNOTcallflat3minpilot proofthatlongerRLcannotlearn.
+
+Archivegzip/SHAverifiedMac/controller
+/tmp/relh-classic-spatial-coworld-rules-iterated-final-stream.tar.gz
+/tmp/relh-classic-spatial-coworld-rules-iterated-31851.tar.gz
+SHAcefbcdc6accace6c65f476cf52ddc0dafd70cbdfbe3777a5a8a6353a87b82b29.
+Extract/tmp/relh-coworld-rules-iterated-31851-inspect.
+Audit/tmp/relh-coworld-rules-iterated-31851-final-audit.json;
+matchedscores/tmp/relh-coworld-rules-iterated-31851-matched-scores.json.
+
+PreparedFULLuserrequestedtrainingwindow:301989888 NEWphysical steps from
+251658240->553648128,exact SAME environment/model/learneroptions.
+Keepfrozen218Mopponentfixedforthiswindow; no new tuning variable.
+Restore146cce37 AND49e3013f,allow_environment_transferFalse. CPUcheckpoint/config
+preflight passed; manifests/configoverrides byte-equivalent semanticconfig.
+Atmeasured123578.75,project2443.70s/40.73min training plus~8min evaluations.
+75minsingleallocation proposed,8CPU64GiB/nice100/node-localoutputs,
+60mintrainer cap,30kphysical/nonfinite/stallguards,checkpointevery16.77M.
+This scalesbecause throughput/rules/numeric/reward/episodegatespassed and
+userrequested300M/billions/overnightRL,NOT because pilot strength wasproven.
+Baselinecopiescompleted31851finalpanels; finalheldouts plus512directstart.
+No champion/upload unless heldoutANDhosted proofpasses.
+Generator/tmp/relh-build-coworld-rules-300m.py;script
+/tmp/relh-classic-spatial-coworld-rules-300m-run-node.sh
+SHA466591ffdf87c6c3a935c5b26f24507267ec64568f7f09596815b6f4a39191d8,
+Bash+embeddedPython syntaxpassed. Protectedhistoryuntouched. Goalactive.
