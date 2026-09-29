@@ -10798,3 +10798,37 @@ one explicit argument. No GPU throughput claim for the new mix yet.
 Next bounded comparison will use logical layout/T0.0625 with frozen-only vs
 frozen+script mixture, identical one-learner geometry and fresh honest builds;
 no long training until its own throughput and score gates pass.
+
+## Frozen versus mixed logical/T0.0625 comparison ready
+
+Exact staged package imports and evaluator --help passed; root/package launcher
+and evaluator byte-identical. CPU regression repeated against actual older
+staged metta_puffer/puffer_codec dependencies used on the node:512 learner and
+512 opponent decisions legal, finite, default frozen parity exact, mixed sides
+balanced. Artifact /tmp/relh-spatial-mixed-opponent-staged-cpu-probe/audit.json.
+Both exact CONFIG transformations executed against actual30688 build/config
+and passed. All embedded CONFIG/BUILD_VERIFY/REGISTER/SCORE Python AST blocks
+and shell syntax passed before submission.
+
+Script /tmp/relh-classic-spatial-mix-layout-comparison-run-node.sh,
+SHA3a9ce0b25d1b2eb3e6a91f2556061f6e26c9ddf7e5d0cacd59d209c58b772a15,
+sourcee7502e4. One35min B300 job,8CPU64GiB/nice100. Sequential frozen-only and
+50%parent/25%Expander/25%Sentinel trainers. Both use fresh actual CLI builds,
+4096 physical games and4096 learner rows (ONE learner/game),H512,mb8192,
+replay0.5,LR0.003,entropy0,gamma=shaping_gamma0.999,GAE0.999,seed5751,
+parentdf706 policy initialization/optimizer restart,capture-only outcomes,
+33,554,432 native agent steps =33,554,432 physical steps each. Checkpoints8/16;
+matching128 Expander+128 Sentinel+512 parent greedy panels. New setup gate
+uses2,097,152 physical steps/epoch, not the paired half-agent conversion.
+35min allocation,5min per fresh build,8min per trainer,throughput/progress/
+nonfinite guards and exact named-container cleanup. Own node-local output/TMPDIR.
+Archive keeps weights,metrics,build metadata and source code; excludes only
+irrelevant build/source/resources media to avoid repeating large video assets.
+No existing archive/source/checkpoint is removed or modified.
+
+Full queue/node preflight refreshed: no Generals allocation/pending job;
+B300 idle in Slurm, physical occupancy will be checked before work inside the
+single allocation. Unrelated relh GoTA30982 now runningB200, untouched.
+31014 Mac/controller archive d407e1...8d27 verified; node hash and exact
+container absence are explicit next-job guards. New mix has no GPU throughput
+proof yet; no dependent longer run submitted. Goal remains active.
