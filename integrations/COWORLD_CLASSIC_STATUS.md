@@ -9940,3 +9940,79 @@ substitution checked), SHA256
 a1f8f2acfde728676ff586e316a7fb909ca67736da16b3f60ecea1c1cc2dc868.
 It is not submitted; inspect scheduled greedy evaluations first and only
 use the next bounded comparison after30435 is terminal and archived.
+
+## 30435 300M complete: sustained throughput, greedy quality rejected
+
+30435 trainer completed299,892,736 additional physical environment steps
+and all nine scheduled quality panels; main exec74042 terminal exit0,
+Slurm queue absent. Accounting is disabled on this cluster. All57,028
+final FP32 parameters finite; DEVICE_ACTION_MASK_AUDIT reports
+299,892,736 actions and zero illegal actions. Final checkpoint SHA256
+729a75c89e7b256c1ac7935a99ba9004dd419ca6f42ac52fc11ef6ae4c0b14a6.
+
+One B300 GPU/4096games/one learner per game/H128/mb8192/replay.5:
+warmup through epoch4 at47.693s, final epoch572 at2061.960s;
+297,795,584 environment steps /2014.267s =147,843.1529 sustained
+end-to-end ENV SPS including rollout, transfers and optimization.
+565 timestamped physical GPU samples in that interval averaged57.9681%
+utilization, peak45,142MiB. Interval23:55:45.626–00:29:19.893 UTC,
+console final mtime/native-uptime alignment has about1s endpoint uncertainty.
+Source, hardware, geometry and sparse reward settings remain those above;
+both gamma and shaping_gamma .999, shaping0/rewardscale1/no teacher.
+
+Held-out greedy results (W/L/D):
+
+| Additional steps | Expander,128 | Sentinel,128 | Parent30238,512 |
+| --- | --- | --- | --- |
+| 33,554,432 | 0/124/4 | 0/127/1 | 0/508/4 |
+| 100,663,296 | 0/125/3 | 0/128/0 | 0/512/0 |
+| 299,892,736 | 0/126/2 | 0/126/2 | 0/507/5 |
+
+Scripted panels use128pool/seed1386; parent panels128pool/seed1513,
+balanced seats and first-episode capture outcomes. Every panel passed
+portable output/masked-argmax parity and legal/finite gates. Final raw
+scripted rewards[-1,0] with zero clipping changes. Late greedy moves into
+owned land account for98.70% against Expander and97.15% against Sentinel,
+with mostly half moves; terminal-only self-play has regressed under
+greedy deployment. Reject all three candidates; retain30238 parent.
+No hosted upload, XP, champion or policy-strength claim.
+
+Complete node/Mac/controller archive SHA256
+234f84a9dc255170f29b3366de88d66283eb3bca572f8f768059c33d4ede6462.
+Mac /tmp/relh-classic-spatial-local8-frozen-capture-300m-stream.tar.gz,
+metta0:/tmp/relh-classic-spatial-local8-frozen-capture-300m-30435.tar.gz,
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-local8-frozen-capture-300m-30435.tar.gz.
+Mac gzip integrity and all three hashes verified; selected reports extracted
+/tmp/relh-spatial-frozen-capture-300m-30435-inspect. Final audit is archived
+as steady-final-audit.json. A final overlap read printed the node digest and
+owned-container-absent result before its step was terminated as the main
+allocation ended; the main job itself exited0. Next job reconfirmed both
+archive integrity/expected digest and exact old-container absence.
+
+## 30500: bounded sampled-spatial comparison running
+
+Full queue/node/resource preflight repeated after30435 terminal. Two srun
+argument validation rejections allocated no jobs (explicit --ntasks and
+--nodes are required here); after correcting both, sole task job30500
+runs4CPU/32GiB/nice100/20min on metta-fabric-b300-1. Hard Docker4CPU/
+32GiB/swap32GiB/core0. Physical allocated
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% at startup and
+matched inside Docker; imagebdd4f2a9a125/driver595.91.07/646GiBfree/
+50,710tmp free inodes. No CUDA contention observed. Relh's30492 and30494
+also run on the node; neither was touched.
+
+Compare sampled decisions for immutable30238 parent and the33M/100M/
+300M candidates,128games each against Expander/Sentinel on the same
+seed1386 maps with reproducible sample seed99281. Same first-batch NumPy
+output/argmax proof and per-turn legality/finite checks remain active;
+sampling changes the decision rule, not training or environment rewards.
+No additional training. First parent/Expander panel is actively progressing.
+Node /var/tmp/relh-generals-recovery/classic-spatial-capture-sampling-pilot-30500;
+exec53073; future Macarchive
+/tmp/relh-classic-spatial-capture-sampling-stream.tar.gz. Script
+/tmp/relh-classic-spatial-capture-sampling-run-node.sh SHA256
+cb95cea48debdbba8ee391312db94e2051196c443f429b601abae00bda55b2b6
+(supersedes prepared a1f8... after adding required expected archive digest).
+Policy/runtime source revision249dffa, exact staged hashes recorded onnode.
+Repoll30500/session53073 on observation timeout; do not submit duplicates.
+Goal remains active; policy strength and hosted promotion remain unproven.
