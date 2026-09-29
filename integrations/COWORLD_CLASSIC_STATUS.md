@@ -12809,3 +12809,41 @@ Checkfinalcheckpoint0000000553648128.bin and finite570508/state/runSHA.
 Goalactive; previousturnmadePROGRESS31851completedandgatheredmatchedscores,
 qualifiedrequestedtrainingwindowandsubmitted31866. No hosted writes/promotion,
 protectedrollouts/DB/history untouched.
+
+
+### 2026-09-29 — 31866 confirmed training; first new checkpoint verified
+
+PreviousgoalturnPROGRESS: completed/audited31851andqualified/submitted300M
+continuation. ThisturnpollsSAMEmain32032: live31866 confirmedbySlurm+console,
+notjustmarkerfile. Startup completedwithoutfailure. At latestobservedepoch132
+(~276.82Mabsolute/25.17Mnew),four/sixepochphysicalSPS114469/115487,
+above30kgate. Earlier6epoch117201. GPU55%/160874MiB atsample, CPU~118%
+(onecore1.18ratherthanCPU8saturated),RSS~3.14GiB. Dashboardepoch122:
+env11.070s/65%,rolloutinference3.373s/18%,optimization2.727s/15%,
+copyreported0ms. Timingidentifiesrollout/envcostforeventual300kSPSwork;
+doNOTchangegeometrymidtrainingorclaimcurrent300k.
+
+Rewardaudit14,680,064newsteps:20,644terminalevents,1zero-rewardterminal,
+nonfinite0. **Zero terminal reward is legitimate for balanced timeout/draw**,
+notanabortcriterion. Actualstepcodeoutcome=0ontruncation;terminalpotential
+removed. Witharmy.5/land.3/castle0, potentialbound.8,shaping.5/scale.5,
+decisivewin/lossrewardmagnitude>=.3;zeroDECISIVEreward impossible byformula.
+Balancedtimeoutoldpotential0 =>reward0. Preservezero count, neverclaimall
+terminalswererewardednonzero. Updatedfinalaudit31866allowsboundedzerodraws,
+recordsminimum_decisive_reward_magnitude,andstillrequiresnonfinite0/
+positiveepisodecount. No livecode/trainsettingchanged. Poolrefreshonlychanges
+futuremapresets;individualgametime2000 owntruncation/done handlesendmask.
+
+Completeepoch128checkpoint **268435456** (16,777,216new) read-onlycopied
+policy+optimizer+sidecar+trainingmanifest toMacwithoutstoppingtraining.
+570508policyvaluesfinite;policy/state/runSHA matchsidecar:
+policy1634a718f80b155c9a94cfd55db6d05cb8b5b1763444b2942f4e3e3b39dac32a
+optimizer9f93681e1dfd752257a3dc42885940d2005ae6c4408295f4d148bece94266b1e
+runSHA c4d0ef64b6eedb256d65a89f41a3d51ed6b242294ea4e2d6f36edf57b0858fc9.
+Snapshot/tmp/relh-coworld-rules-300m-31866-checkpoint-268435456.tar.gz,
+extracted samepathwithout.tar.gz,
+audit/tmp/relh-coworld-rules-300m-31866-checkpoint-268435456-audit.json.
+ThisischeckpointcopyNOTactivefinalarchive; activefullstreamremainsuntouched.
+No duplicatejobs,no hosted writes/promotion,protectedhistoryuntouched.
+KeepgoalactiveandcontinueSAME32032/31866 untilterminal;thenfinal553M
+audit+matchedscores before anycandidatehostedmatch/promotion.
