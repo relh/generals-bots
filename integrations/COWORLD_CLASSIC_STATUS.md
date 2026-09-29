@@ -13264,3 +13264,38 @@ not compare a reset learner to an unreset existingcontrol or spoof manifests.
 Keepcorrectedrules/rewards/opponents/discounts/priors/seed/settings fixed.
 No longtraining untilnewsetup sustains30kphysicalSPS. Goalactive; protected
 historyuntouched; no hostedwrites/championpromotion.
+
+### 2026-09-29 — Matched public scalar GPU pilot prepared
+
+Previousgoalturn progress: implemented16channelcodec/model/serving support,
+CPUcontracts/layout/gradientproof. No taskGPUjoblive/pending atfreshpreflight.
+Prepared /tmp/relh-classic-spatial-public-scalars-run-node.sh SHA
+1ef3f008a235e2c154cc13a674e683ea37074e32a7f12044b9c2977d06040fb4.
+Generator /tmp/relh-build-public-scalar-pilot.py; Bash andembeddedPythonparse.
+CPU configpreflight proves identicalfreshRunConfigs andBuildConfigs differ
+ONLY public_scalar_ablation True/False. SAME16channel7056/3529 model,
+seed6751,freshpolicy ANDfreshoptimizer both arms; neither resumesold553M.
+33,554,432newphysicalsteps/arm, F32/global32/570668words,4096games/onelearner,
+H512/batch2M/mb8192/R.5/LR.003/T.0625/normadv1,entropy0,gamma=shape_gamma.999,
+shape.5/rewardscale.5/priorsunchanged,no teacher,correctCoworld0.3.3/2000turns,
+frozen218M50%/Exp25%/Sent25%,bothseats. Addedruntime scalarflag/size receipt
+to opponentmix logs, so actual environmentablation is observable.
+
+Beforetraining EACHarm: freshbuild kernel/defaultINI/advnorm hashes, pinned
+actualcore/rules and16channelregistrations verified; GPU DirectSpatial forward
+versus portableNumPy tolerance2e-5,finitegradients/newinputgradientnorm0 for
+zero/>0 forpublic, savefreshinitialparameters; publicarm mustmatchzero init
+bytes/modelSHA. Separatefreshbuilds retain EACHenvironment option correctly.
+No nativebinaryreuse assuming embedded environment configuration isdynamic.
+
+One55minB300 allocation including comparisons, nice100/8CPU64GiB/node-local
+/var/tmp outputs; perarm5minbuild/4minparity/12mintraining/3minperpanel bounds.
+Native monitor gate changed24 ->8 because freshpilot has only16epochs;
+six/fourwindowguards cannowactually fire. ≥30kphysicalSPS enforcedafterwarmup,
+no-progress/nonfinite/core0/exactcontainercleanup retained. No longscale yet.
+Freshheldout seeds20686scripts,21513frozen218M,22513currentc601; eachfinal
+128Exp+128Sent+512frozen+512current,matchedmaps/seats. Additional512direct
+publicversuszero seed23513; no repeated31866/31932/31967panels.
+Prior31967archive Mac/controller verifiedSHA5617af3d...f748; node/exactcontainer
+absence andphysicalCUDA preflight remain mandatory atallocationstartup.
+Goalactive; no hostedwrites/championpromotion; protectedhistoryuntouched.

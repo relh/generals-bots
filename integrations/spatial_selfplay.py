@@ -39,6 +39,8 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
         self.spec = self.spec.model_copy(update={"agents": parallel_games})
         self._rows = jnp.arange(parallel_games)
         self._frozen = frozen
+        self._public_scalar_features = bool(options.get("public_scalar_features"))
+        self._public_scalar_ablation = bool(options.get("public_scalar_ablation"))
 
         @jax.jit
         def opposing_actions(values, masks):
@@ -148,6 +150,9 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
             counts=counts, frozen_checkpoint_sha256=self._mix_checkpoint_sha256, seed=seed,
             episode_limit=self.horizon,
             coworld_classic_rules=self.base.env.coworld_classic_rules,
+            observation_size=self.spec.observation_size,
+            public_scalar_features=self._public_scalar_features,
+            public_scalar_ablation=self._public_scalar_ablation,
             scope="Opponent actions only; no teacher targets or learner action overrides",
         )
         self._mix_output.parent.mkdir(parents=True, exist_ok=True)
