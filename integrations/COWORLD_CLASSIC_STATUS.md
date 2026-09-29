@@ -11338,3 +11338,22 @@ cab576c0ddd6b0718ec69893a946ac97f300492f238c959ffbc38b26b2717741.
 Mac /tmp/relh-weak-prior-comparison-31352-strong-audit.json and
 node strong-priors/steady-audit.json preserved. Strongheldout then weak
 arm/evals pending within SAME31352, no duplicatejob. Goalactive.
+
+### 31352 control heldout complete; actualGPU weak initializer matched
+
+Previous turn completedcontrolaudit; current progress preservedcontrolscores
+and verifiedactualGPU candidate initializer in live31352/main8879.
+Strongcontrol 9dc252...ea87 heldout6686/6513:Exp21/102/5,Sent3/122/3,
+parent150/313/49. Script rewardsclippedsteps0 (rawboundswithin+/-.578);
+Mac /tmp/relh-weak-prior-comparison-31352-strong-scores.json preserved.
+No strongpolicy proof/no hosted/publish.
+
+Weak actualCLIbuild model e1f32e4d5ecaeea7d8a5e32184a7ef25e245546c97e036f967980df208db8ede.
+NativeGPU57028words/5priorclasses/logical23optimizerblocks verified;
+actualfresh6751 parametercomparison againstsamejob strongcontrol shows
+ONLY11priorindices differ [56904,56905,56906,56907,56908,56909,56910,
+56911,56912,56916,56920], allotherparameters exactlyequal. Actualweak
+route.0003/sourcearmy.0001/full.0007/halfscale.99 valuesasserted.
+Node weak-priors/optimizer-registration.log andfreshinitialparameters retained.
+Weaktrainer started/compiling, completedepochs notyetobserved; startupguard
+300sec retained. SAME31352/main8879, no duplicatejob; goalactive.
