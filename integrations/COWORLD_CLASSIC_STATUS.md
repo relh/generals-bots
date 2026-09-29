@@ -14098,3 +14098,36 @@ archive/checkpoint/build hash, physical GPU UUID, image/disk/occupancy.
 Prior 116,979 SPS projects ~861 s steady training plus startup/evaluations.
 Same four matched held-out panels, direct versus public33M and direct versus
 starting134M. Gate further scaling on actual results.
+
+32477 COMPLETED cleanly. Full Mac archive SHA256
+cccbad251423fffe21f275e7423e315db2781f04a9975dba376396df224c05e3,
+extracted `/tmp/relh-muon-context-selfplay-32477-inspect`.
+Physical B300 UUID GPU-0c5605ae-e405-99f1-848e-9fa81e41482a was
+0MiB/0% at preflight; post-warmup sampled GPU mean59.5% and ~118k SPS,
+no throughput evidence of contention with other B300 jobs. Warmup through
+absolute epoch68 81.253s; epochs68→112 completed92,274,688 physical steps
+in782.397s =117,938.4 end-to-end SPS. 4096 games, horizon512,
+batch2,097,152, minibatch8192; 300k aspiration still unmet.
+`spatial-opponent-mix.json` verifies frozen policy SHA256
+d261ac6de5f110b73ca1fd02693522e3b10e814aa55e48ded342b429b6f43b7d
+(the 134M learner), 1024 games per side; 512/side each for Expander and
+Sentinel; official Classic capture-only 2000turns, 7056 public-scalar codec,
+teacher-free. New100,663,296 actions all legal; 147,898 terminal agents,
+zero nonfinite/zero-reward terminal; positive/negative reward counts
+51,478,714/45,014,862 are not wins. Final absolute234,881,024 checkpoint
+policySHA0025c722be56c0c6d03044d844f64729008b44c0bacc6f62653508f08bc84204,
+optimizerSHA5b5391ee331eb23dfe60d45d813e522813cea6b341db1c1d3228216e5180738f.
+All matched held-outs on same maps/seats/opponents: Expander25/103/0
+(versus parent134M11/117/0, delta+.2188 map-cluster95%[.0787,.3741]);
+Sentinel27/101/0 (versus19/108/1, +.1172[-.0672,.3025]); frozen218M
+266/232/14 (versus228/267/17, +.1426[.0000,.2887]); currentc601
+247/256/9 (versus190/307/15, +.2109[.0794,.3511]). Versus old
+public33M current delta+.3574[.1960,.5258]; Expander exactly same
+25/103/0. Direct selfplay234M versus oldpublic33M on512 games:
+315/184/13, score+.2559 map-cluster95%[.1178,.3864] across125 maps.
+Direct versus starting134M:266/240/6, score+.0508[-.0717,.1708].
+Per-panel intervals unadjusted for multiple comparisons. This is a
+meaningful held-out gain against current and public baseline, but current
+opponent is near parity; no hosted leaderboard evidence yet. Next bounded
+scale may continue iterative self-play from this exact policy+optimizer,
+then evaluate before hosted promotion.
