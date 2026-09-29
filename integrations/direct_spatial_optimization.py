@@ -1,13 +1,15 @@
 """Evaluate the pinned memoryless actor with convolutions and matrix products.
 
 Build every weight lookup from Fabric's realized topology and sharing tables.
-Puffer still owns PPO, parameter storage, and updates. Rollout stays unchanged.
+Puffer still owns PPO, parameter storage, and updates. Rollout uses the original
+bridge unless METTA_DIRECT_SPATIAL_ROLLOUT=1 explicitly enables the same algebra.
 """
 
 from dataclasses import dataclass
 import functools
 import hashlib
 import importlib
+import os
 
 import jax
 import jax.numpy as jnp
@@ -201,10 +203,11 @@ def install(native_module=None):
         verify_configuration(configuration)
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
+        self.direct_spatial_rollout = os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") == "1"
 
     @functools.wraps(forward)
     def direct_forward(self, parameters, state, transported, terminals, batch, time, rollout):
-        if rollout:
+        if rollout and not self.direct_spatial_rollout:
             return forward(self, parameters, state, transported, terminals, batch, time, rollout)
         if transported.shape != (batch, time, 4851) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")

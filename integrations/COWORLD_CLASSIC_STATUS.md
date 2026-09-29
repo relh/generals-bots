@@ -10185,3 +10185,20 @@ Local stream contains the preceding squeue header due to submit-command
 stdout; after terminal, preserve raw stream and extract gzip payload into a
 separate file, compare SHA with node archive. Do not mistake this framing
 issue for a trainer failure.
+
+
+## Prepared opt-in direct rollout algebra, GPU probe still required
+
+Current timing has original Fabric rollout inference~42%, env~38%, optimization~19%.
+Added METTA_DIRECT_SPATIAL_ROLLOUT=1 optional path to existing verified
+DirectSpatial algebra. Default rollout remains original. The option returns
+unchanged incoming state payload because the allowlisted graph has only
+within-tick dependencies; realized compiler proof states no population reads
+carried state. The existing configuration/topology/bridge checks still apply.
+CPU original-versus-direct sequential12ticks/2actors with real public views,
+selective resets and retained parentdf706 passes rtol/atol2e-5;
+max absolute prediction error2.384185791015625e-7. Manual probe
+/tmp/relh-direct-spatial-rollout-parity.py. No GPU throughput claim yet.
+Added reusable integrations/audit_direct_spatial_rollout.py for an actual
+GPU batch check before enabling this option in a bounded training pilot.
+Neither this change nor corrected audit hook alters live30558 staged code.
