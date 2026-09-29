@@ -61,7 +61,8 @@ def main():
     for k in ("frozen_bundle", "frozen_bundles", "frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
         options.pop(k, None)
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
-                   shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0)
+                   shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0,
+                   terminal_reward_mode="signed")
     if options.get("public_scalar_features"):
         # Each portable actor applies its own ablation; both receive the full
         # public view so a zero-scalar candidate can face a full-scalar actor.
