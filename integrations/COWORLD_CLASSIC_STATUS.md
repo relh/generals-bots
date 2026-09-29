@@ -13784,3 +13784,62 @@ Controllerfinalhelper /tmp/relh-muon-dense-orientation-audits-32189/first-step-a
 Sourceoverlayoriginalhelper cf43064d...5f4d, firststdlib2f5533e1...1b9e;
 finalexactsourceSHA recordedin nodefirst-step-helper-tolerance-sha256.txt.
 SAME31779/32189live; no duplicatejobs, longscale, hostedwrite orpromotion.
+
+### 2026-09-29 —32189 paired dense Muon correction COMPLETED; reject promotion
+
+SAMEmain31779 TERMINALexit0; queue32189absent, GPUallocationreleased. Every
+foreground Docker--rm training/evaluation command completed0 and finish trap
+ran exactcontainercleanup beforearchive; no newGPUjob. A post-expiry readstep
+was refused (no replacementprobe/job); do not claimpost-releasephysicalpeek.
+Fullarchive /tmp/relh-classic-spatial-muon-dense-orientation-stream.tar.gz;
+controller /tmp/relh-classic-spatial-muon-dense-orientation-32189.tar.gz,
+SHAfebbce5bbc402f5127818cd5209be7360664c2011c367faee2740f16f4204236 MATCH.
+Extract /tmp/relh-muon-dense-orientation-32189-inspect/classic-spatial-muon-dense-orientation-pilot-32189.
+Bothfinaltrainingaudits PASS fromfullarchive: strict284aacpolicy+5d2f61optimizer
+restored;67,108,864absolute/33,554,432NEWphysicalsteps each; bothfinite570668
+andpolicy/optimizer/run-sidecarSHAmatch;7056publicfeatures/exactClassicrules/
+2000horizon/gamma=shaping_gamma.999, teacherfree, frozen218M/Exp/Sentmix
+bothseats, model811e8/env1a0cf8same. No architecture/environment/rewardchange.
+ACTUALepoch20->32 excludes4newwarmup epochs;25,165,824physicalsteps each:
+controlwarmup78.522s/final292.042s/steady213.520s =>117,861.6710envSPS;
+canonicalwarmup73.516s/final277.388s/steady203.872s =>123,439.3345envSPS.
+B300GPU-0c5605...,4096physicalgames/onelearner,H512,batch2097152,mb8192.
+Both33,554,432actionslegal/0illegal/nonfinite0; control66,324terminals,
+canonical67,751terminals, zero0. Reward-signcounts do NOTequalwins.
+Controlpolicy74dea99a0d3fccf0bb8257bd780b43d4d014ff864cb374dbd22191fe1e7c0a0e,
+optimizerab4498c62f2708df51b9f408befcb5606714dd2c0673e9bcb1b19d2c30ad5226;
+canonicalpolicy275988c45df15a212e76e101a2fdadcb875168b0d58a620435a6725faa1fe261,
+optimizer168b81fe5e69adefef0cd03a65fe03a36154bad649b5e8d3a4c299b7c36614f6.
+Allintermediate/finalpolicy+optimizers and actualfirst-step arrays/receipt
+preserved. Finalstdlib/Python3.9comparisonhelper SHA
+2ab5f1331142379f56d545121211ca284513ce52804607ca5c5df10d302461be,
+matrixgradsbitwiseidentical, measuredvectorFPbounds explicitlyreported.
+
+Matched /tmp/relh-muon-dense-orientation-32189-matched-scores.json:
+allmaps/seats/opponents/rules/seeds matched;10kmap-clusterbootstrapseed32189.
+Outcome-score differences use[-1,0,+1]; CIsper-panel/unadjustedmultipletests.
+Parent33M/control67M/canonical67M W/L/D:
+Exp25/103/0 ;25/101/2 ;17/110/1 (128each);
+Sent15/113/0 ;16/112/0 ;13/114/1 (128each);
+frozen218M223/274/15 ;182/325/5 ;172/328/12 (512each);
+currentc601150/342/20 ;169/336/7 ;145/359/8 (512each).
+Againstfrozen, control-parent-.17969[-.33333,-.02308],
+canonical-parent-.20508[-.35027,-.05675]: bothregressed.
+Canonical-control pairedfrozen-.02539[-.20157,.14778],
+current-.09180[-.25202,.05905]; no correctionbenefitestablished.
+Directcontrol-parent225/280/7 score-.10742[-.24805,.03400];
+canonical-parent218/285/9 -.13086[-.26895,.00772];
+canonical-control260/247/5 .02539[-.11905,.17495]. All512pairedgames.
+REJECTBOTHforpromotion; no hostedwrite or unchangedlongscale. Dense scaling
+implementation is verified, learningimprovement NOTdemonstrated. Keep33M
+sealedbaseline for futurecontrolled tests, not a strongpublishedpolicy.
+Trainingaudits/qualityhelper/result controllerbacked in scoped
+/tmp/relh-muon-dense-orientation-audits-32189; trainingaudit uses sixteen-digit
+checkpointfilename formatting (fixed an audit-helper padding error, no runchange).
+Currentturn PROGRESS: realtwo-matrixoptimizer mismatch correctedopt-in and
+actualnativeCUDAstepverified, pairedlearning/SPS completed, archivesbacked.
+Stronggoal remainsunachieved/active. Nextboundedfoundationinvestigation:
+properconvolutionMuonnormalization with explicit5120-word bijection/gather/
+scatter, preservingphysicalcheckpoint+momentumorder; simplemetadatareshape
+is disproven. PrepareCPUproof first; freshqueue/fullphysicalpreflight before
+oneGPUallocation, no duplicatejobs. Maincheckout/protectedCodexhistory untouched.
