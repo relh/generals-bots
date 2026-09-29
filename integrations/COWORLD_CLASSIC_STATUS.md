@@ -13098,3 +13098,30 @@ Full queue/node rechecked: B300 allocation0; task has no live/pending job.
 Physical preflight and previous exact container/verified node archive checks
 remain mandatory before actual training. Goal active; no hosted writes or
 champion promotion. Protected history untouched.
+
+### 2026-09-29 — Recovery31967 live; actual full restoration passes
+
+One25minB300 allocation, nice100,8CPU64GiB, node metta-fabric-b300-1,
+main live handle12072. DO NOT duplicate; do not extract/copy activefullstream
+/tmp/relh-classic-spatial-coworld-entropy-recovery-stream.tar.gz.
+Stderr /tmp/relh-classic-spatial-coworld-entropy-recovery-srun.log;
+node /var/tmp/relh-generals-recovery/classic-spatial-coworld-entropy-recovery-pilot-31967.
+Exact container relh-classic-spatial-coworld-entropy-recovery-31967.
+Previous exact31932 container absent/nodearchive SHA matches verified copies.
+PhysicalGPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0% and no
+CUDA process beforelaunch; containerUUID matches. Node626GiBfree output
+/var/tmp, /tmp19814freeinodes untouched. Pinned actual engine/env/wrapper,
+model/nativebinary/fingerprint/logical optimizer registration verified.
+Source echo8cb6574 identifies stagedbase; actuallauncher/entropy_resume
+explicit overlay from repo8b7aff4; source script SHA recordedabove.
+
+Actual preparation emits ENTROPY_RESUME_OVERRIDE source0.0 target.001.
+Actual copied policy SHA c2f648ad96a6a91b860e5c2b8961cbe5cd65330069ed1516db397f4d1ad694da;
+actual copied optimizer169d8d4c5a3597203e770ae2fae817faeda36ad11aedb2981700573272b0ca5c.
+Thus guarded preparation and fullpolicy+optimizer restoration pass at runtime;
+branch is compiling environment, no new steadySPS/strengthclaim yet.
+Immutable31932 control copied into recoveryroot/entropy0; no repeated games.
+Continue SAME12072. On terminal, verifyfullarchive and run
+/tmp/relh-coworld-entropy-pair-final-audit.py for entropy001 and
+/tmp/relh-coworld-entropy-pair-quality.py against root containing both branches.
+Goal active; no hosted writes/champion promotion; protected history untouched.
