@@ -14220,3 +14220,15 @@ full-split prior learned coefficient in exported234M bundle is0.18565,
 which at training T0.0625 may materially suppress half sampling.
 Next bounded experiment should test split exploration/prior while keeping
 official rules and matched held-outs. 32505 remains live unchanged.
+
+Further frozen-weight audit confirms flat decoder maps indices1764..3527
+to half moves correctly, and codec duplicates the same legal move mask for
+full and half. Exported prior scalar progression oldpublic33M→corrected134M
+→selfplay234M: full-split +.12867→+.16947→+.18565;
+source-full +.35107→+.59932→+.80752 versus source-half
++.25395→+.24832→+.22664; route-full+.51096→+.56356→+.65288 versus
+route-half+.49228→+.48858→+.49901. This makes a large full/half logit
+gap before the learned CNN contribution; training policy temperature .0625
+sharpens it further. No proof these priors alone caused the hosted losses,
+but they explain why a split-exploration pilot is higher value than more
+unchanged teacher guidance. Do not alter running32505 settings.
