@@ -11240,3 +11240,16 @@ Script rewarddiagnostics0clippedsteps,raw+/-.5. No strengthproof against
 scripts, no hosted/publish action. Mac /tmp/relh-potential-comparison-31328-
 control-scores.json preserved. Candidate potential-scaled is next within
 SAME31328 allocation; goalactive, matched candidate/results pending.
+
+### 31328 potential-scaled live gate verified
+
+Previous turn progress completedcontrol/audit/scores. Current verifiedwait
+confirmed31328 RUNNING,soleallocation/main73529; candidateactualfreshbuild
+model6eb passed. Candidate observed170/20,971,520NEWphysical steps,
+dense rewardaudit10,387,006positive/9,848,222negative/29,218terminals,
+0nonfinite (signs NOT outcomes). Gate168 four-epoch129,949.1581 and
+six-epoch130,823.9795ENV SPS, passed. Latest170 six-epoch128,448.1784
+ENV SPS; no stall/nonfinite. Same4096/H512/mb8192/R.5 geometry, teacher-free,
+gamma=shaping_gamma=.999/rewardscale.5/shaping.5. Finalcheckpoint/audit
+and matchedheldout pending in SAME31328; do not submitanotherjob.
+Goalactive. No hosted/policypublication.
