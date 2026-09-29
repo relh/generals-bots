@@ -14384,3 +14384,40 @@ catastrophic +.5 held-outs. This is observational inference, not a
 strength test or proof that changing a prior alone fixes quality.
 Future policy learning should preserve conditional split decisions,
 especially with larger source armies, and gate on hosted/held-out wins.
+
+Fresh neutral split-prior pilot: initial job32711 failed before rollout
+because its script pointed at build-only job32305 instead of completed
+fresh33M job32312. Corrected single B300 job32729 COMPLETED with exit0,
+no remaining named Generals job in the full Slurm queue. On one physical
+B300 UUID GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 (idle at launch),
+8 CPUs/64 GiB, Puffer5 trained fresh seed6751 for33,554,432 Classic
+1v1 steps using8192 games×H256, batch2,097,152/mb8192, frozen218M50%
+plus scripted Expander/Sentinel25% each, no teacher, temperature.0625.
+The only policy-prior change from matched fresh33M baseline was
+`half_prior_scale=1.0` and `full_split_prior_strength=0.0`. Native
+policy forward/gradient parity passed. Warmed four-epoch end-to-end
+171,581 SPS, six-epoch172,128 SPS; final GPU utilization92%, VRAM
+196.5 GiB, env6.88s and train2.73s per2.1M-step epoch. All33,554,432
+sampled actions legal,0 nonfinite rewards,79,253 terminal agents,
+0 zero-reward terminal agents. Sampled full17,605,148, half15,629,180
+(46.6%), pass320,104. Positive reward steps20,892,418 and negative
+11,750,531 are reward signs, not win counts.
+
+The greedy neutral-prior policy regressed versus matched fresh33M on
+paired seeds/maps/seats/opponents: Expander27/101/0 versus28/99/1,
+score delta-.0234, map-cluster95%CI[-.217,.164]; Sentinel5/123/0
+versus14/113/1,delta-.1484 CI[-.302,-.008]; frozen218M102/403/7
+versus183/319/10,delta-.3223 CI[-.493,-.144]; currentc601
+85/419/8 versus144/359/9,delta-.2324 CI[-.398,-.069]. Direct
+versus matched fresh33M151/350/11, score-.3887 CI[-.520,-.251];
+versus old public33M145/350/17, score-.4004 CI[-.535,-.257]. It
+learned to use half moves greedily (Expander1655, Sentinel2443),
+but frequency alone hurt strength. Do not continue or host this policy.
+Final policy/checkpointSHA4eae71ad0b5a989ccf69e64a5f7a0b348916380f9e2d450a23e6e503b9d9b20a;
+archive `/tmp/relh-classic-spatial-muon-context-neutral-split-32729.tar.gz`
+SHA0353c0c1b1891ddd35a1b49708b1c8fe821a4daae67b4c15a149110d97c25711;
+paired quality artifact `/tmp/relh-neutral-split-32729-quality.json`.
+This isolates the next learning issue as *conditional* action choice
+and opponent/credit curriculum, not simply training SPS or half-move
+availability. The fastest validated geometry is171–172k SPS, still
+short of the aspirational300k target.
