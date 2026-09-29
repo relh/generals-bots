@@ -10630,3 +10630,46 @@ HostandDockerTMPDIR pinnedrootoutput/tmp, no cleanup ofothers/history.
 Firstactualchildmid73b075:T0.0625 Exp11/113/4,Sent2/120/6 vspriorgreedy
 27/101/0 and3/111/14. No improvement established. Remainingparentcomparison,
 100M/finalpolicypanels pending. No training or hostedwrites.
+
+
+## 30900 completed; controlled recipe comparison prepared
+
+30900 exited 0 and released its allocation. All nine remaining panels completed.
+Temperature 0.0625 sampling (seed 99281), W/L/D:
+
+| Policy | Expander, 128 | Sentinel, 128 | Greedy original parent, 512 |
+| --- | --- | --- | --- |
+| 30597 midpoint | 11/113/4 | 2/120/6 | 247/240/25 |
+| 30728 additional 100.663M physical steps | 20/105/3 | 5/114/9 | 281/213/18 |
+| 30728 additional 299.893M physical steps | 20/105/3 | 11/103/14 | 312/187/13 |
+
+All action legality, finite output and initial GPU/NumPy forward checks passed.
+The final policy improves against its parent but remains weak against scripts;
+matching training temperature does not establish sufficient external strength.
+No promotion, upload or hosted request. Goal remains active.
+Archive SHA256: 939ff7019267492912ea18d02ebbe44ac68f23f16b9330b97237308fb3978413.
+Mac: /tmp/relh-classic-spatial-temperature16-sampling-remaining-stream.tar.gz;
+controller: /tmp/relh-classic-spatial-temperature16-sampling-30900.tar.gz;
+node: /var/tmp/relh-generals-recovery/relh-classic-spatial-temperature16-sampling-30900.tar.gz.
+Mac gzip passed and extracted to /tmp/relh-spatial-temperature16-sampling-30900-inspect.
+Node hash and exact old-container absence will be checked inside next allocation.
+
+One bounded comparison prepared, three sequential trainers in one allocation:
+native optimizer/T0.0625, native optimizer/T0.25, logical optimizer/T0.25.
+All share original parent df706 initialization, optimizer restart, seed 4751,
+2048 physical games / 4096 learning agents, horizon512, minibatch8192,
+replay0.5, learning rate0.003, entropy0, gamma=shaping_gamma=0.999,
+GAE0.999, capture-only +/-1, no teacher. Each is limited to 33,554,432 agent
+steps = 16,777,216 physical steps, checks checkpoints every8 epochs, and
+runs identical greedy held-out 128 Expander +128 Sentinel +512 parent panels.
+The first comparison isolates temperature; the second isolates optimizer tensor
+layout. Higher learning rate is shared and is not isolated against old runs.
+The logical layout remains an experiment, not a demonstrated fix. This is its
+first GPU optimization test. Throughput/progress/nonfinite guard stays active,
+30k physical SPS gate after warmup; no long run is authorized by pilot results
+until measured throughput and held-out quality are examined.
+Script: /tmp/relh-classic-spatial-recipe-comparison-run-node.sh;
+SHA256 5688e1caca5c5a32d479fcf1647393b099af1fa67c8e2260f1afcc789f2e7b4e.
+25min bound, one B300, nice100, 8CPU/64GiB, node-local outputs and TMPDIR.
+Full queue/node checks show no Generals duplicate; previous relh CVC/Safa jobs
+are no longer running. Unrelated GoTA pending job30874 is untouched.
