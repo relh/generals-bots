@@ -13715,3 +13715,21 @@ Source87a4dee; generatedstorage/canonicalconfigsCPUvalidatedIDENTICAL: restore
 Actualnativefirststep snapshot/comparison included. No teacher/rules/reward/
 mix/architecture changes; plain PPO/Muon. Freshqueue reconciled no other
 Generals jobs; relh32078 and allDaveey jobs untouched. Goalactive.
+
+32189 actualallocatedGPU GPU-0c5605ae-e405-99f1-848e-9fa81e41482a
+empty0MiB/0% beforeCUDA, DockerUUIDmatched. B300compute10.3/driver595.91.07;
+runtimebdd4f2...ae5 verified. /var/tmp622GiB/ampleinodes, /tmp99%inodes;
+alltaskTMP/output/cache remain/var/tmp. GPUcontrolparity passedactual16channel
+model/portable/gradient/init: SHA2ff612..., maxpredictionerror5.96e-8,
+scalargradientnorm.007709898985922337, model811e8..., env1a0cf8..., actual
+Classicengine/core hashes match. Controlfirstnativebackward capturedpublic33M
+284aac... exactly; gradientd11391f...0986. Secondcallbackparameters captured
+post-firstnativeCUDAstep. Controltrainingearlyepoch18reports116.6kSPS but
+steadyinterval measurement stillpending; ~55%GPU and196396MiB ownGPU.
+No foreignprocess onourallocatedGPU. Fullbox peersnotchanged orassumedfree.
+Freshread-only Observatory /tmp/relh-generals-leaderboard-32189.json:
+Alpha/DavidB rank1 MMR2240.9151,labelNULL; relh1420.0017/Richard1545.9522.
+No XP/policy/championwrites. Codec/masksourcefollowup: samplingandPPO use
+same masked logsumexp, invalidlogits finite-1e4 (no0*infinityentropy), saved
+rolloutmask fedto minibatch; existing100Mlegalactionaudit remains actual
+runtimeproof. No newmaskbugestablished. Goalactive,SAME31779/32189live.
