@@ -11136,3 +11136,46 @@ Mac /tmp/relh-split-prior-300m-31291-mid-checkpoint-audit.json preserve identity
 No concurrent GPU evaluation or duplicatejob; this frozen midpolicy gets fresh
 heldout4686/4513 panels AFTER trainer finishes, alongside finaltargetpolicy.
 This goalturn is a verified wait plus saved-checkpoint evidence; goalactive.
+
+## 31291 completed302M newsteps; freshheldout remains weak
+
+Main2286 terminal0,31291 allocation released; fullqueue no Generalslive/pending.
+Completed absolute335,544,320,NEW301,989,888physicalsteps. Warm after4newepochs:
+epoch20@71.347s→160@2370.251s,293,601,280physical/2298.904s=
+127,713.588736ENV SPS (B300,4096games/onelearner,H512/mb8192/R.5/LR.003,
+T.0625/logical,seed6751,gamma=shaping_gamma.999,teacher-free capture±1).
+643alignedGPU samples mean53.7792%,peak145760MiB,mtimeanchoruncertainty1s.
+Actualnewrewardaudit301,989,888steps:125660W/302312L/22053draw/450025games,
+0nonfinite;actualactionaudit301,989,888/0illegal. Final57028finitewords SHA
+6c02d8983bf0dc9beabb51d7b76302a731fa4c5bb8dd11db5ee04245fbf9ccfd.
+Audit /tmp/relh-spatial-split-prior-300m-31291-audit.json and archivednodeaudit.
+
+Freshheldout4686scripts/4513parent,128Exp/128Sent/512parent,bothplayersides:
+100,663,296additional b4be7...04ac:18/107/3,1/115/12,212/247/53.
+301,989,888additional6c02...ccfd:16/108/4,6/118/4,217/229/66.
+No strongpolicy proof, no hosted/upload/champion action. More split-exploration
+training at300Mscale does not establish improvement sufficient to scale unchanged.
+Greedy midExp159half/87028moves(59014intoowned),Sent42half/101362moves(70889owned);
+finalExp74half/85747moves(58219owned),Sent101half/105744moves(72212owned).
+Final sourcearmyprior full4.32346/half3.90434/fullbonus.15158, versus initial
+4/3.96/.125. Learner strengthened largest-army/full preferences; priors NOT
+frozen and halfmask/codec NOT disabled. Mostly owned-tile movement persists.
+Actualtrainingmap pool256, no teacher/imitator,shaping0/landgain0.
+
+Terminalarchive23730f8bc4ec8adb789435e897460227f4bd29b693c01f009c2e8d75a3b685c9
+verified gzip/extract/Mac/controller; nodehash/exactcontainerabsence will gate
+nextnodeaccess. Mac /tmp/relh-classic-spatial-split-prior-300m-recovery-stream.tar.gz;
+controller/node relh-classic-spatial-split-prior-300m-31291.tar.gz.
+Full extraction /tmp/relh-spatial-split-prior-300m-31291-inspect.
+Allcheckpoints/learners/source preserved. ProtectedCodexhistory untouched.
+
+Next learning investigation: test dense potential-based public army/land
+progress credit with shaping_gamma exactlytrain.gamma, rather than another
+unchanged sparse-capture budget. Compare matched frozen initial policy/optimizer
+on unchangedClassicmaps/actions/opponents; first bounded CPU reward-formula
+check and actualGPU≥30kpilot, then heldoutscore. Keep teacher-free actions and
+no imitation targets. Prior native land-gain(.02) experiment is distinct and
+failed; do not replay it or claim shaping already solves learning. With shaping,
+positive/negative trainingrewards are NOT win/losscounts and zero terminal
+rewards are NOT drawcounts; report them as rawrewardstats and independently
+observe matchoutcomes. Goal remains active; strongheldout+hosted proof missing.
