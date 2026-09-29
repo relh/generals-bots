@@ -93,6 +93,14 @@ def main():
         exec(compile(entropy_resume_source(source.read_text()), str(source), "exec"), module.__dict__)
     else:
         spec.loader.exec_module(module)
+    orientation = os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION", "storage")
+    if orientation == "canonical":
+        from integrations.spatial_muon_orientation import install_build_hook
+        install_build_hook(module)
+    elif orientation != "storage":
+        raise ValueError("Spatial Muon orientation must be storage or canonical")
+    from integrations.spatial_muon_orientation import install_runtime_guard
+    install_runtime_guard(module, orientation)
     original = module.verified_classic_frozen_opponent_transfer
     module.verified_classic_frozen_opponent_transfer = lambda a, b, c: (
         original(a, b, c) or spatial_transfer(a, b, c) or spatial_self_play_transfer(a, b, c)

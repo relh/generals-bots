@@ -13678,3 +13678,24 @@ contextsharing permutation and layerupdate sensitivity; distinguishverified
 facts from causalhypothesis, and gate anychangedrecipe onnativeGPUparity/SPS
 and pairedshortlearning. No immediate architecture/optimizerchange yet.
 Goalactive; protectedCodexhistoryunchanged; maincheckoutuntouched.
+
+Dense Muon orientation correction prepared (opt-in, not yet a learning result).
+Actual pinned Muon scales sqrt(max(1,R/C)); standard Puffer dense registrations
+are output/input, while spatial global[14112,32] and readout[32,3530] are
+input/output. Their existing scales are21 and1; logical output/input gives1
+and10.5029755. Input/action already follow output/input. Context vector stays
+unchanged. Transposed Newton–Schulz algebra preserves update direction, so
+only these two exact shape scales change; checkpoint/state order stays fixed.
+New spatial_muon_orientation.py pins original installed algo ffce514b...682b0
+and corrected cee5f060...878, fresh-build hook and executable marker/receipt
+checks. Default remains storage. Unknown geometry/objectives/source refused.
+CPU audit /tmp/relh-spatial-muon-orientation-cpu-audit.log: real pinned Fabric
+install hook on fresh source, state_words77684 unchanged; compiled host scales
+[1,10.5029755,sqrt(2),1]; five-step NS transpose errors <=1.95e-16. Archived
+source untouched. Eleven focused guard tests passed. No CUDA/SPS/benefit claim.
+Added optional first-two-backward snapshot hook for actual native first-step
+verification; startup host copies must be excluded from SPS warmup. Next one
+bounded paired B300 allocation: storage vs canonical from SAME33M284aac policy
+and5d2f61 optimizer,33,554,432 new physicalsteps each, fresh held-out maps/seats.
+Do not continue regressed134M or submit duplicate allocations. Full queue
+currently only relh32078 onB300; Daveey B200 running/pending leave untouched.
