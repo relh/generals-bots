@@ -13960,3 +13960,27 @@ GPUactualfirststep and30ksteady/qualitygatespending. MacACTIVEarchive
 doNOTextractuntilmainhandleterminal; no duplicateGPUjob.
 SubmittedscriptSHA5d4c7ca9c0cc2f9a0a7f693d83999c131827ddaed6efbded3cb0b189d5acf93c.
 Goalactive/protectedhistoryuntouched.
+
+32312 correctedGPUregistration PASS. The GPU seed6751 initialized exact
+2ff6121462933d7e5af31b74dc2f08da8f4b878872a95fd71f31e1ac23249576,
+model811e8/env1a0cf8 unchanged; publicscalargradient.007709899 and
+portable/nativeforwardmax5.96e-8, Classicgame/core sourcehashespin. Actual
+compiledbinary/sourceSHAs same32305, runtime guard acceptscontextmarker.
+ACTUAL livefirstnativeGPUupdate all18parameterblocks PASS independent
+NumPyclip+Nesterov+5NSreference, freshzeromomentum, sourcegather
+695735...a04. Initialgradientnorm.2656387345 <maxclip.5, coefficient1.
+GlobalR[14112,32] updateL2 .01697975468/reference-relative1.10414e-6;
+readout[32,3530].1769756834/7.36565e-7;
+CONTEXT[32,160] .01448387395/8.15149e-6;
+input[32,16].01689441248/1.86643e-6;
+action[8,32].00850219550/1.04338e-6. Allscalar/padding
+blocks passwithfloat32roundingbound. Sourcebenchhelper
+/tmp/relh-spatial-muon-context-first-step-audit.py SHAf80ed9...810d;
+resultONNODE /var/tmp/relh-generals-recovery/
+classic-spatial-muon-context-retry-pilot-32312/context-first-step-audit.json.
+ThisprovesactualCUDAoptimizergeometry/direction/persistence onFIRSTstep,
+notlearningbenefit. Traininglive epoch5 ~121,107physicalSPS early4epochinterval;
+steady4->16 andheldoutqualitypending. AllocatedGPUonlyOWN PIDs
+python648MiB+puffer195722MiB, ~56%util/196396MiBused; trainercontainer
+~117%CPU of8CPUcap, noobservedforeignprocess/contention on allocatedGPU.
+No scalability/quality/promotionclaim yet, continueSAME51295/32312.
