@@ -13699,3 +13699,19 @@ bounded paired B300 allocation: storage vs canonical from SAME33M284aac policy
 and5d2f61 optimizer,33,554,432 new physicalsteps each, fresh held-out maps/seats.
 Do not continue regressed134M or submit duplicate allocations. Full queue
 currently only relh32078 onB300; Daveey B200 running/pending leave untouched.
+
+Muon dense paired pilot submitted as32189, SAMEnativeSSHhandle31779 LIVE.
+One50min nice100/8CPU/64GiB/oneB300 allocation, metta-fabric-b300-1;
+output /var/tmp/relh-generals-recovery/classic-spatial-muon-dense-orientation-pilot-32189.
+Exactcontainer relh-classic-spatial-muon-dense-orientation-32189.
+Mac ACTIVEarchive /tmp/relh-classic-spatial-muon-dense-orientation-stream.tar.gz;
+stderr sameprefix-srun.log. DO NOTextract untilmainterminal; timeout is not
+terminal; pollSAMEhandle, no duplicatejobs. Script Mac/controllerSHA
+6c645644657cdeaedb391b510c1f21a7d212ec128955d460834ad66c126a4be9.
+Source87a4dee; generatedstorage/canonicalconfigsCPUvalidatedIDENTICAL: restore
+284aac33Mpolicy+5d2f61optimizer, strictsameenvironment, absolute67,108,864,
+33,554,432NEWstepsperarm. Baseline evaluatedonce, eachfinal onnewpaired
+30687/31514/32514heldouts; eachvsparent33514; canonicalvsstorage34514.
+Actualnativefirststep snapshot/comparison included. No teacher/rules/reward/
+mix/architecture changes; plain PPO/Muon. Freshqueue reconciled no other
+Generals jobs; relh32078 and allDaveey jobs untouched. Goalactive.
