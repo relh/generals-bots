@@ -13164,3 +13164,50 @@ At sameepoch276 dashboard entropycontrol.428 versusentropy001.454,
 consistent with higherexploration but NOT strength orcausalperformanceproof.
 All fivefinal held-out panels andpairedentropy001-minus0 bootstrap remain
 pending. Keep SAME12072; no hostedwrites/championpromotion. Goalactive.
+
+### 2026-09-29 — 31967 terminal; entropy does not establish strength gain
+
+Main12072 exited0,31967 absent fromqueue/allocationreleased. Fullarchive
+gzip verified, Mac/controller SHA matches:
+5617af3d38b0d9c924bab5c384c64df6beb5ccb4631005fcf0570b2dc775f748.
+Mac /tmp/relh-classic-spatial-coworld-entropy-recovery-stream.tar.gz;
+controller /tmp/relh-classic-spatial-coworld-entropy-recovery-31967.tar.gz;
+extract /tmp/relh-coworld-entropy-recovery-31967-inspect.
+Both fullpolicy+optimizer training branches andall5held-out panels complete.
+Paired audit /tmp/relh-coworld-entropy-31932-31967-paired-scores.json
+requires identical maps/seats/opponentIDs-or-frozenSHA/rules/horizon/seeds,
+bothseats64/64scripts or256/256neural,10,000 map-clusterbootstrapdraws.
+Entropy0 ->entropy001 W/L/D; score delta95%CI:
+Exp30/98/0 ->26/102/0,-.0625[-.248,.102];
+Sent26/99/3 ->26/101/1,-.0156[-.153,.118];
+oldparent412/84/16 ->424/66/22,+.0586[-.022,.147];
+currentc601264/218/30 ->239/239/34,-.0898[-.213,.028];
+starting553M276/224/12 ->251/242/19,-.0840[-.235,.066].
+ALL intervals include0. No established entropy benefit, scriptsremainweak;
+no hosted qualification/promotion or scaling this recipe tobillions.
+
+Read-only final parameter diagnostic
+/tmp/relh-coworld-entropy-31932-31967-prior-diagnostic.json:
+controlfull/half1.282283/.135854, entropy0011.284242/.133217;
+finaldashboardentropy.415 versus.440. Raising entropy changed exploration,
+not demonstrated strength. Do not conflate those quantities.
+
+Independent CPU inference decomposition on96publicobservations/8actual
+hostedreplaytrajectories (bothseats,0/25/50/100/150/200turns): official engine
+transition armies checked atsampledframes, then official fog-limited observation
+projection andsame11-channelcodec; fullstate NEVER given toactor.
+/tmp/relh-coworld-entropy-public-decomposition/audit.json andpublic-observations.npz.
+80nontrivialstates: fullpolicy agreesprior-only56.25%control/55%entropy;
+learned-without-priors22.5%both. Median legal-logit std prior.278/.276 versus
+learnedpart.119/.114. Learnednetwork does altermanychoices; thisdoes NOT
+provepriorscausedweakness orqualify anablation. No policy/artifactmutation.
+
+Public-input sensitivity check /tmp/relh-coworld-public-scoreboard-alias/audit.json
+provescurrent4851-word11-channelencoding completely omits publictimestep,
+owned/opponentlandcounts andowned/opponentarmytotals: varyingeach leaves
+observations ANDmaskidentical. Thisis an input-contract fact, not proofevery
+syntheticpair isphysicallyreachable orcausalevidenceofpoorstrength. Missing
+publicinformation is a concrete nextrepresentation investigation before more
+optimizer/same-recipe scaling. Preserve codecs/masks/rules/serving parity and
+measure GPUthroughput/held-outs for any new representation. No newjobyet.
+Goalactive; protectedhistory untouched; no hostedwrite/championpromotion.
