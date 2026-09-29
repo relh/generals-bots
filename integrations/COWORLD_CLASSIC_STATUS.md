@@ -13759,3 +13759,28 @@ Quality/trainingaudithelpers preparedat /tmp/relh-muon-dense-orientation-*
 andcontrollerbacked. Needmain31779terminal beforefullarchiveextract/backup;
 then run actualfirst-step audit, bothfinaltrainingaudits, pairedqualityCI.
 Goalactive; SAMElive32189/31779; protectedhistory/maincheckout untouched.
+
+32189 CANONICAL freshlycompiledbinary containsorientationmarker; actualalgo
+SHAcee5f060a2c381f2a2b245695436c15641b31f971dcc7b87a76ea2916f1cb878.
+Same16channel GPU/portable/gradient/init paritypassed (5.96e-8,maxinit2ff612).
+Canonicalsteady6epochinterval123,669.8445physicalSPS byepoch26; traininglive.
+ACTUAL FIRST-NATIVE-CUDA-STEP comparisonpassed with numericalbounds:
+identical284aacparent bytes ANDobservations/logit/valuecotangent input hashes;
+ALLmatrix gradientsbitwiseidentical. Globalupdate normratio.04761905209
+(expected1/21), directionresidual.0001206244 due float32weightsubtraction;
+readout10.5029751246 (expected10.5029757688), residual7.6066e-6. Othermatrix
+updatesbitwiseidentical. Vectorgradients notbitwiseidentical: fullgradient
+relative3.1532e-7/maxabs4.8429e-8, maxvectorrelative3.9163e-6; unchangedvector
+updateresidual<=7.3267e-7. Explicitguardlimits fullgradrelative1e-6/maxabs1e-7,
+vectorgradrelative1e-5, unchangedupdates1e-5, scaledmatrixupdates.005.
+No claimallgradientsbitwiseidentical. EarlystrictSHAauditfailure preserved in
+first-step-early-audit.log; successfulnumericalaudit in
+first-step-early-numerical-audit.log andfirst-step-audit.json onnode.
+HostPython lacksNumPy and is pre3.10: fixed ONLY stagedCPUcomparisonhelper to
+stdlib array/math with equal-length/finite guards, recordedoriginal/before/
+after/tolerancehelper hashes onnode. Main submittedscript unchanged; no
+training/optimizer/config/code or model/environment fingerprint changes.
+Controllerfinalhelper /tmp/relh-muon-dense-orientation-audits-32189/first-step-audit-final.py.
+Sourceoverlayoriginalhelper cf43064d...5f4d, firststdlib2f5533e1...1b9e;
+finalexactsourceSHA recordedin nodefirst-step-helper-tolerance-sha256.txt.
+SAME31779/32189live; no duplicatejobs, longscale, hostedwrite orpromotion.
