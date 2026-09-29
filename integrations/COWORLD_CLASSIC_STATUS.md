@@ -14326,3 +14326,43 @@ results archive `/tmp/relh-classic-greedy-half-bias-32635-partial.tar.gz`
 SHA9ea9bfa2e49f63e15adaadc6b272b94c6000984762dbf11219fdf50c67cb1f4d.
 Do not deploy this diagnostic offset. The missing behavior is
 conditional split choice, not codec legality or global split frequency.
+
+32655→32665→32674 geometry investigation: first bounded job32655
+stopped before rollout because exact learner resume rejects changed
+native training overrides; second32665 used policy-only initialization
+but reused a 4096-agent Puffer binary and failed its `METTA_AGENTS`
+assertion before rollout. Both terminal FAILED, no leftover named
+containers; no duplicate Generals job. Corrected job32674 compiled
+fresh pinned native CUDA source with `METTA_AGENTS=8192`, binarySHA
+c719a9ed89312a157dea34617fd332fb868cf0b2080e8047cfc34b2badba3182,
+algorithm sourceSHA26b330...a81b592; GPU/portable/model parity PASS.
+Policy-only init was exact best234M policy0025c722...bc84204,
+fresh optimizer (lineage says `restore_learner:false`), same
+Classic rules/model/rewards/frozen134M+scripted mix and
+batch2,097,152/mb8192; geometry changed4096 games×H512 to
+8192 games×H256. Single B300 UUID
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a, 8 CPUs/64 GiB,
+35-minute limit, preflight0MiB/0%, no observed contention.
+
+32674 COMPLETED16,777,216 new physical steps; four-epoch end-to-end
+171,053 SPS, six-epoch171,156 SPS after first-epoch JAX warmup,
+~40% faster than the 4096-game122k baseline and well above30k,
+still below300k. Final epoch env6.680s, model evaluation2.748s,
+train2.806s per2.1M steps; console GPU~91% and VRAM196.5GiB.
+Reward audit:8,303,569 positive,7,514,546 negative reward steps,
+21,287 terminal agents,0zero-reward terminal,0nonfinite;
+full16,628,112,half36,059,pass113,045 sampled actions;
+16,777,216/16,777,216 legal. These reward counts are not wins.
+Final policySHA bf9ceb98c76fdee353d4fe9a81fcebd71d3c884f5569e18346dbd4865a67c33c;
+archive `/tmp/relh-classic-spatial-muon-context-geometry8192-32674.tar.gz`
+SHA63828f3c188230a9d87acd5df58c877882fa8e36ca51cd0fe53a55202c131cf6.
+Held-out paired maps/seats/opponents versus best234M,10k
+map-cluster bootstrap per panel: Expander25/102/1 versus25/103/0,
+delta+.0078 CI[-.126,.137]; Sentinel20/106/2 versus27/101/0,
+delta-.09375 CI[-.229,.037]; frozen218M253/248/11 versus
+266/232/14,delta-.0566 CI[-.188,.070]; currentc601230/272/10
+versus247/256/9,delta-.06445 CI[-.194,.066]. Direct versus own
+234M parent239/268/5,score-.0566 CI[-.185,.076]; versus old
+public33M301/207/4,score+.1836 CI[.038,.323]. No quality
+improvement established; the speed result applies to this geometry,
+but a longer run needs a better learning intervention.
