@@ -14168,3 +14168,20 @@ are different identifier values; verify archive/policy bytes directly.
 This proves local serving contract for234M, not hosted runtime or leaderboard
 strength. No Observatory registry/XP/champion write. 32505 remains sole
 Generals GPU training job.
+
+234M serving contract qualified a private hosted evaluation artifact.
+Authoritative exact-name read before write showed zero prior versions;
+registered `relh-classic-spatial-selfplay-234m:v1` policy latest-version ID
+9fbd6afd-c66e-4685-a90c-bac144642045 (policy row
+de6b40dd-26fe-4830-8dcb-c857bedd01f6). Purpose tag hosted-eval, exact
+checkpoint SHA0025c722...bc84204, steps234,881,024. This is not champion
+promotion. Two new private one-game startup XP requests, balanced seats
+against existing relh champion e53e30be...83fe: seat0
+xreq_b2b3a9b0-d1a9-4ce2-a32b-2a8a3be1339f, seat1
+xreq_e7853c77-d55d-446a-9431-49bd725835ab. Stable distinct keys
+`relh-selfplay234m-0025c722-20260929-smoke-relh-seat{0,1}`; existing
+requests read before POST and neither key existed. Both pending on first
+read,0completed/0failed. Read exact IDs; DO NOT recreate while pending.
+Only after both runtime clean, consider a private balanced live-leader
+`top_n:1` panel that records the resolved opponent policy ID. Full local
+payloads/responses at `/tmp/relh-spatial-selfplay-234m-serving`.
