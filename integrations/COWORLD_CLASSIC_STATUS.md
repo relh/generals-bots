@@ -14131,3 +14131,21 @@ meaningful held-out gain against current and public baseline, but current
 opponent is near parity; no hosted leaderboard evidence yet. Next bounded
 scale may continue iterative self-play from this exact policy+optimizer,
 then evaluate before hosted promotion.
+
+32505 bounded longer iterative self-play continuation STARTED on B300,
+single native SSH/srun handle52838, `--nice=100 --time=75:00 --cpus-per-task=8
+--mem=64G`, one physical allocated GPU. Full queue before submission had
+no Generals job; relh 32472 was on B300. Node-local output
+`/var/tmp/relh-generals-recovery/classic-spatial-muon-context-selfplay-long-pilot-32505`,
+Mac archive stream `/tmp/relh-classic-spatial-muon-context-selfplay-long-stream.tar.gz`.
+Exact script SHA256 8cd57c94c1802295f5a1995dbe91d8f861779845e515e7d2d87dd9acbaabc39a
+at `/tmp/relh-classic-spatial-muon-context-selfplay-long-run-node.sh`.
+Restores both policy and optimizer from 32477 absolute234,881,024 checkpoint;
+targets301,989,888 additional physical steps to absolute536,870,912.
+Same official Classic rules, public-scalar codec, corrected Muon,
+4096 environments, PPO settings, no teacher, balanced seats. Changes the
+half-frozen opponent from 134M snapshot to 234M learner snapshot (the prior
+positive held-out candidate); other quarters remain Expander/Sentinel.
+Previous117,938 SPS projects~2,560s steady training plus startup/evals.
+Same four matched held-out panels, direct versus oldpublic33M and direct
+versus starting234M; no hosted promotion until evidence is reviewed.
