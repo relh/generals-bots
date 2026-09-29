@@ -11357,3 +11357,17 @@ route.0003/sourcearmy.0001/full.0007/halfscale.99 valuesasserted.
 Node weak-priors/optimizer-registration.log andfreshinitialparameters retained.
 Weaktrainer started/compiling, completedepochs notyetobserved; startupguard
 300sec retained. SAME31352/main8879, no duplicatejob; goalactive.
+
+### 31352 weak-prior arm gate and midcheckpoint verified
+
+Previous turn progress:controlscores/GPU initializer; current verifiedwait
+on live31352/main8879, no newjob. Weakarm observed9+/18.87Mnewphysical;
+latestfour130,172.9928/six130,943.7842ENV SPS, gatepassed. Rewardaudit
+16,777,216physical/52,792terminals/0nonfinite (signs NOT outcomes).
+Actionentropy3.941 versusstrongcontrol~.9, exploration changed, no strength
+claim. Saved16,777,216cp598bb7f4892389b9611216550c88c5fe6b12cb41d13a43ad7e3a8a57d9c89c9c,
+learnerab1b24319f0e6d455121751f6bd41a73a5db6ec6f2e98f0bb1aad3af108f054b;
+57028finitewords/actualpolicy,state,runhashes matchsidecar. Nodeweak-priors/
+mid-checkpoint-audit.json and Mac /tmp/relh-weak-prior-comparison-31352-
+weak-mid-audit.json preserved. Finaltrainer/heldout pending SAME31352;
+goalactive/no hostedpublication.
