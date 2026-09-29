@@ -11477,3 +11477,41 @@ normalized-advantages/mid-checkpoint-audit.json and Mac
 /tmp/relh-advantage-normalization-31389-mid-audit.json preserveevidence.
 Finaltrainer and6686/6513heldout stillpending SAME31389/main90234.
 No duplicatecontroltraining/no hostedpublication; goalactive.
+
+## 31389 terminal0: normalization comparison weak; width32 CPU preflight passes
+
+Main90234 terminal0/fullqueue noGeneralslive, allocationreleased. Fullgzip/
+extract/Mac/controller archive SHA e30ee7b109bb9fec42a18d65ba70a18c032069db477153b2f969c63a59882025
+verified; nodehash/exactoldcontainerabsence mustguardnextallocation.
+Mac /tmp/relh-classic-spatial-advantage-normalization-stream.tar.gz;
+controller /tmp/relh-classic-spatial-advantage-normalization-31389.tar.gz;
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-advantage-normalization-31389.tar.gz.
+Full Mac /tmp/relh-spatial-advantage-normalization-31389-inspect.
+
+33,554,432NEWphysical completed, warm4@68.621→16@259.678,
+25,165,824physical/191.057s=131,718.932046ENV SPS (B300/4096games1learner/
+H512/mb8192/R.5/LR.003/T.0625/logical/norm_adv1).54alignedGPU mean56.0926%,
+peak145760MiB. Actual33.55Mactions/0illegal/reward8192ticks/0nonfinite,
+52171terminals; shapedreward signs NOT outcomes. Final57028finitewords
+82235586f51a66de0d2933bb98c2f60613be8d449519aeb60a8314520afbc77d;
+learner8d3d5807e1665c424bd803f98b021b70313fdeba8e9978574d5c6b26060e1693.
+Actualpolicy/state/runhashes matchsidecar, exactfreshinit matches31352control.
+Mac /tmp/relh-advantage-normalization-31389-final-audit.json/node steady-audit.
+Matched allinitialstate hashes AND seats across128Exp/128Sent6686,512parent6513:
+control21/102/5,3/122/3,150/313/49;normalized23/103/2,4/124/0,152/328/32.
+Every scriptpanel0clippedsteps. Mac /tmp/relh-advantage-normalization-31389-
+matched-scores.json. No useful strength improvement/no hosted/promotion.
+
+Next capacity test: features_per_site/global_features32 instead8, same
+spatialtopology/public4851/action3529/strongpriors/progressreward/normalized
+PPO/opponents. CPU /tmp/relh-spatial-width32-layout-preflight/audit.json
+actualNativeFabricPolicy layout570,508words/5priorclasses/23logicalblocks,
+finite DirectSpatial forward+gradient on8realClassicpublicobs. CPUinit6751
+f91019b39eb3d810294acf7027a83335ef9fb26df3360b97761f8815b8d37944.
+Factory445724...c322 archivedversion used. No generic fullFabric gradient
+compile (knownmemoryrisk), no learning/SPSclaim. CPUprobe terminal0/main42186,
+RSS~571MiB observed midbuild on24GiBMac. Widerpolicy remains compatible with
+existing dynamicbundle/parser; actualGPU build/gradients/SPS/heldout pending.
+No newGPUjobsubmittedyet. Reuse31389 F8normalized control/6686/6513panels,
+onlyremainingwidth32arm, require >=30k actualGPU gate before scale.
+Goalactive, preserved histories untouched.
