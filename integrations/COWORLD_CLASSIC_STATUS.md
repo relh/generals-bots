@@ -10313,3 +10313,33 @@ CPU nativeparent2actor proof: scaledactor predictions match original*16 with
 maxerror1.9073486328125e-6, actoroutputbiasgrad32 (2actors*16), criticbiasgrad2,
 valueunchanged. /tmp/relh-policy-temperature-chain-audit.json.
 GPUfullbatch scaledparity still required before the bounded training pilot.
+
+
+## 30597 live: T0.0625 restores native capture rewards
+
+Single20min B300 allocation30597,exec43488,8CPU/64GiB,nice100,
+sourceff35adc. ScriptSHA0377a0962ff71a9cc3d3ca73ceebf21b2518657a0a6ce480bbe51ec507bff49e.
+Node /var/tmp/relh-generals-recovery/classic-spatial-local8-selfplay-temperature16-pilot-30597.
+Physical GPU0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% preflight,
+matched in Docker. Previous30591 exactcontainer absent; nodearchivef68525...638d9
+verified, now three copies. Same2048physicalgames/4096learners/H512/mb8192/
+replay0.5/LR0.0003/entropy0/gamma=shaping_gamma0.999/GAE0.999/capture-only
+reward/seed751 andparentdf706 as30558, with verifieddirectrollout as30572.
+Only policy-distribution change fixedT0.0625, actor/optimization consistent.
+RuntimeT andadapterSHA pinned in policy-runtime.json/actual-config-sha256.txt.
+Budget67,108,864 agent =33,554,432 physical steps; snapshots16.777M/33.554M
+physical followed by same128Exp/128Sent/512parent held-out panels.
+
+GPU scaled fullbatch4096×4sequentialticks/reset parity passed maxerror
+3.814697265625e-6. Native entropy0.881 at epoch2 confirms sharper acting.
+Actualcounter tick1536 =6,291,456 agent /3,145,728 physical steps:
+positive3734/negative3734, terminalagents7734, zero-rewardterminalagents266,
+nonfinite0 =>3734captures/133draws. PPO policyloss-0.035,value0.095,
+KL0.011,clipfrac0.077 at epoch2. Native dashboardagentSPS257.6k, notENV SPS.
+No steady/strength claim until gates and scheduled panels complete.
+
+Actual mounted /work/source-spatial2/generals/agents/hunter_agent.py SHA
+132d23eed7ef2983f434ed4f9062f8c4939f91b6e84d6e752351149d64efbe73.
+BFS already uses convergence-based while_loop, so do not reimplement that
+optimization or assume stale fixed441-iteration code. Codec's two publicroute
+BFSs remain a profile candidate; no code change to them in this pilot.
