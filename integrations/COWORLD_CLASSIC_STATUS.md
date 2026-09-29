@@ -13997,3 +13997,29 @@ ActualGPUfirstall18tensorproofpassed earlier; no unqualified scaling.
 SAMEjob32312/mainhandle51295 currentlyLIVE inGPUbundleexport/frozenheldouts.
 DoNOTextract/backupfullarchive untilterminal; no duplicateGPUs.
 Goalactive, no hostedwrite/promotion/historychange.
+
+32312 terminal audit: all requested training and held-out evaluations completed;
+the process exited 2 only after those results because a stale post-run helper
+(`muon-first-step-audit.py`) was called after the evaluation loop. Do not
+replay this job for that epilogue. Full Mac and controller tar backups have
+matching SHA256 2e2ddf224de0324216e334d7f2b77aeaafbbdf9d61bd7a60c02da226184aa022.
+No Generals Slurm job remained on the full queue at the audit.
+After four warmup epochs (76.479 s), 25,165,824 physical steps took 211.776 s:
+118,832.3 end-to-end SPS on one B300, 4096 games, one learner per game,
+horizon 512, batch 2,097,152, minibatch 8192. Environment stage remained
+the largest epoch component (~11.5 s versus ~2.77 s learner and ~2.65 s
+model); sampled GPU utilization ~56-58%, trainer CPU ~117% of eight CPUs.
+The allocated physical GPU UUID GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f
+showed only our Python and Puffer processes (648 and 195722 MiB) during
+training. No measured GPU contention. 300k SPS remains unmet.
+Matched held-out panel versus the prior public-scalar 33M policy (parent):
+Expander 28/99/1 vs 25/103/0, Sentinel 14/113/1 vs 15/113/0,
+frozen218M 183/319/10 vs 223/274/15, and currentc601 144/359/9 vs
+150/342/20. Paired score deltas new-minus-parent: +.0547, -.0078,
+-.1660 (map-cluster 95% CI [-.3207,-.0079]), -.0449, respectively.
+Direct new versus parent on 512 held-out games: 189/315/8, score -.2461,
+map-cluster 95% CI [-.3883,-.1004] over 125 unique maps.
+The fresh corrected Muon policy is weaker; reject promotion and hosted XP.
+Preserved full archive, optimizer state, and matched outcomes. Next bounded
+question is whether this corrected optimizer improves with more physical
+steps; gate any longer continuation on intermediate held-out quality.
