@@ -13874,3 +13874,25 @@ itsheldoutmaps/seats/seeds, no replayofcontroltraining. Verifyactualfirst
 contextupdate against clippedNesterov+NSreference withrestoredmomentum,
 matchinitialobservations/cotangents, require30kphysicalSPS and pairedquality.
 No longscale/hostedwrite/promotion. Stronggoalactive; history/main untouched.
+
+Fresh-start decision before GPU submission: public33M globalweights grew from
+freshRMS.00084 to.12006 underold21×projectionMuon scaling; resuming that
+policy could obscure the properlyscaled encoder. Planned321xx pilot now trains
+ONE freshlyinitialized fullcorrected dense+context33,554,432-step arm from
+GPUseed6751 and zeroinitialmomentum, not the provisional old33Mresume plan.
+Reusecompletedpublic33M baseline evaluations from32189 (oldpolicy284aac,
+initialGPU2ff612...), with sameheldoutmaps/seats/seeds, and compare equal
+33M steps/identicalfreshweightseed/model/environment/mixture/rewards.
+No duplicatecontroltraining. ContextGPUfirststep will be checked against
+fresh zero-momentum, globalclipping, all18parameterblockMuon references,
+includingcontextpermutation anddenseorientation. NativeactualCUDA,finite
+allactionslegal/30ksteadySPS plusheldoutquality must pass before any longer
+training. CPU proof still verifies fulloptimizerstate can be safelyrestored
+for a laterqualified continuation; nooldartifact touched.
+Preparedsingle bounded B300 script /tmp/relh-classic-spatial-muon-context-fresh-run-node.sh
+SHAb5e3dca0a3bd724ba290caa2671d800cb4be06cf5dbe9324e6a42b29c70a9ec5;
+generator /tmp/relh-build-spatial-muon-context-fresh.py; exactsourceb83615f.
+ConfigsCPUchecked fresh(seed6751,total33,554,432,initializeNone), options
+same32015 publicscalarbaseline. First-stephelper SHA
+f80ed9f01ba52acea049e2c22bfc271e771131ccf9a6739252c5d58af858810d.
+NoGPUjob startedyet; recheckfullqueue/node/physicalGPU inallocation beforeCUDA.
