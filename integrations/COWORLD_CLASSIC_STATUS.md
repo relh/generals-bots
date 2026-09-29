@@ -10277,3 +10277,39 @@ seed1616,8games/pool16, hashb743bc0c6613b614d3e5383788f4eb1e9a12dea13ed95f25ec00
 Masked temperature sampler8192 draws: T1 class3prob0.74805 (expected0.75),
 T0.25 class3prob0.98730 (expected81/82),0illegal despiteillegal+1000logit.
 These are setup/contract checks, not strength evidence.
+
+
+## 30591 complete: sampling temperature explains absent captures
+
+Retry mainexec80039 exit0, queue absent; GPUempty at preflight, UUID0c560...482a
+matched in Docker,4CPU/32GiB,nice100,12minbound,sourceb327e7a.
+ScriptSHAb73a9e027348226f04a561e45f1cbd48a6c8a28636d15cfac2be9ae27df24300.
+Frozenparentdf706,256 firstepisodes on held-out seed1616; identical private
+initialstatehash79449ab3d45b5623ebb387b32761fecbdc0c2452a99c8566845761caa4037e29
+across all four temperaturepanels. No training or hosted write.
+T1:0captures/256draws. T0.25:117captures/139draws (seat0/1wins70/47).
+T0.0625:243captures/13draws (106/137). Greedy:238captures/18draws(118/120).
+This establishes a sampling/discovery issue in initial self-play, not external
+strength. Prior30500stochastic strong-opponent panels already showed parent
+0wins while parentgreedy19Exp; that result should not be used to dismiss
+sampling as a training initialization issue.
+
+Archivef68525c4d6ca85cfa9488945808f815b9818ebeeb1cf014e9bf375968b0638d9
+verified Mac /tmp/relh-classic-spatial-selfplay-sampling-stream.tar.gz and
+controller /tmp/relh-classic-spatial-selfplay-sampling-30591.tar.gz;
+node verification required at next preflight. Localfull
+/tmp/relh-spatial-selfplay-sampling-30591-inspect.
+
+## Prepared consistent temperature in native PPO, no teacher injection
+
+METTA_SPATIAL_POLICY_TEMPERATURE=0.0625 scales actor logits in BOTH direct
+rollout and optimization; value prediction remains unscaled. Backward scales
+actor cotangents by1/T before rawmodel VJP, critic cotangents remain unchanged.
+Reject nonpositive/nonfinite temperature and temperature with originalrollout
+so no acting/training mismatch. DefaultT1 unchanged. Positive scalar leaves
+frozen deployment argmax unchanged; checkpoints store original modelparameters.
+Record effectiveT andadapterhash with everyrun so stochastic resume is reproducible.
+CPU nativeparent2actor proof: scaledactor predictions match original*16 with
+maxerror1.9073486328125e-6, actoroutputbiasgrad32 (2actors*16), criticbiasgrad2,
+valueunchanged. /tmp/relh-policy-temperature-chain-audit.json.
+GPUfullbatch scaledparity still required before the bounded training pilot.

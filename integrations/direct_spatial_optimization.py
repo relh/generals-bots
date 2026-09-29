@@ -204,6 +204,11 @@ def install(native_module=None):
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
         self.direct_spatial_rollout = os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") == "1"
+        self.spatial_policy_temperature = float(os.environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
+        if not np.isfinite(self.spatial_policy_temperature) or self.spatial_policy_temperature <= 0:
+            raise ValueError("Spatial policy temperature must be finite and positive")
+        if self.spatial_policy_temperature != 1 and not self.direct_spatial_rollout:
+            raise ValueError("Temperature requires identical direct rollout and optimization algebra")
 
     @functools.wraps(forward)
     def direct_forward(self, parameters, state, transported, terminals, batch, time, rollout):
@@ -212,9 +217,12 @@ def install(native_module=None):
         if transported.shape != (batch, time, 4851) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
-        if not bool(jnp.isfinite(outputs).all()):
+        acting = outputs
+        if self.spatial_policy_temperature != 1:
+            acting = outputs.at[..., :3529].divide(self.spatial_policy_temperature)
+        if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
-        return outputs, state, DirectTape(parameters, transported, outputs)
+        return acting, state, DirectTape(parameters, transported, outputs)
 
     @functools.wraps(backward)
     def direct_backward(self, tape, logits, values):
@@ -225,7 +233,7 @@ def install(native_module=None):
         self.updates += 1
         self.active_objectives.clear()
         coefficient = self.teacher_phase.ppo_coefficient
-        cotangents = jnp.concatenate((logits, values[..., None]), axis=-1) * coefficient
+        cotangents = jnp.concatenate((logits / self.spatial_policy_temperature, values[..., None]), axis=-1) * coefficient
         gradient = self.direct_spatial.gradient(tape.parameters, tape.observations, cotangents)
         if not bool(jnp.isfinite(gradient).all()):
             raise FloatingPointError("Direct spatial gradients became nonfinite")

@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--batch", type=int, default=2)
     parser.add_argument("--ticks", type=int, default=12)
+    parser.add_argument("--temperature", type=float, default=1.)
     parser.add_argument("--smoke-cpu", action="store_true")
     args = parser.parse_args()
     if args.batch < 2 or args.ticks < 3:
@@ -34,6 +35,7 @@ def main():
     from metta_training.native_fabric import NativeFabricPolicy
 
     os.environ["METTA_DIRECT_SPATIAL_ROLLOUT"] = "1"
+    os.environ["METTA_SPATIAL_POLICY_TEMPERATURE"] = str(args.temperature)
     original, _ = install()
     policy = NativeFabricPolicy(json.dumps(json.loads(args.build.read_text())["config"]["fabric"]))
     raw = args.checkpoint.read_bytes()
@@ -53,6 +55,7 @@ def main():
         # Different reset periods across seats and varying, real input views.
         terminals = jnp.asarray((tick % (np.arange(args.batch) % 5 + 2) == 0)[:, None], jnp.float32)
         expected, state, _ = original(policy, parameters, state, observations, terminals, args.batch, 1, True)
+        expected = expected.at[..., :3529].divide(args.temperature)
         actual, direct_state, _ = policy._forward_arrays(
             parameters, direct_state, observations, terminals, args.batch, 1, True,
         )
@@ -60,6 +63,7 @@ def main():
         maximum_error = max(maximum_error, float(np.max(np.abs(np.asarray(actual) - np.asarray(expected)))))
     result = dict(scope="Sequential rollout equivalence; not training throughput or arena strength",
                   platform=jax.devices()[0].platform, batch=args.batch, ticks=args.ticks,
+                  temperature=args.temperature,
                   checkpoint_sha256=args.sha256, max_absolute_error=maximum_error)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result), flush=True)
