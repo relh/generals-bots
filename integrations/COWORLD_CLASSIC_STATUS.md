@@ -13299,3 +13299,24 @@ publicversuszero seed23513; no repeated31866/31932/31967panels.
 Prior31967archive Mac/controller verifiedSHA5617af3d...f748; node/exactcontainer
 absence andphysicalCUDA preflight remain mandatory atallocationstartup.
 Goalactive; no hostedwrites/championpromotion; protectedhistoryuntouched.
+
+### 2026-09-29 — 32015 public scalar comparison live
+
+One55minB300 job32015, mainhandle50123, nice100/8CPU64GiB, node
+metta-fabric-b300-1. Sourcebase9c6ba9d withbc7ceb9runtime-mix receipt overlay;
+script SHA1ef3f008...0fb4. Node-local output
+/var/tmp/relh-generals-recovery/classic-spatial-public-scalars-pilot-32015.
+Exact container relh-classic-spatial-public-scalars-32015. ActiveMacstream
+/tmp/relh-classic-spatial-public-scalars-stream.tar.gz andstderr
+/tmp/relh-classic-spatial-public-scalars-srun.log; doNOTextract/copy untilterminal.
+Old31967exactcontainer absent andnodearchive matches preservedSHA.
+AssignedGPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%/noCUDA apps;
+DockerUUID matchpasses. Driver595.91.07/compute10.3, runtimeimageverified,
+626GiBfree /var/tmp and19813free /tmpinodes; output/TMPnode/var/tmp only.
+Otherrelh31992 B200 job andpeerjobs untouched. No physicalcontention found.
+Zero arm building new native16channel model now; parity/training notyetpassed.
+Prepared /tmp/relh-audit-public-scalars-32015.py forcompletedartifacts:
+identicalfresh initbytes/modelSHA, actual ablationreceipt, full final policy/
+optimizer/run SHAs, all33.55Mactions/rewards,numericlegality,4->16epoch
+physicalsteadySPS. Preparedhelper isnot completionevidence.
+Continue SAME50123; no duplicatejob. Goalactive; no hostedwrites/promotion.
