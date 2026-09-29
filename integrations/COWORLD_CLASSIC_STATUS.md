@@ -11766,3 +11766,18 @@ Local ARM64 Linux validation only, not production latency or hosted strength.
 Artifacts /tmp/relh-spatial-source-prior-serving-31394 (build and wire logs).
 No policy/image upload, hosted XP, or champion change this turn. Goal active;
 keep polling SAME 31410/main29237 until terminal, then verify archive and panels.
+
+### 31410 midpoint saved at 100.7M additional steps
+
+Previous goal turn was a verified wait; this turn continued SAME live
+31410/main29237 and verified the planned midpoint checkpoint at epoch 64:
+134,217,728 absolute /100,663,296 additional physical steps. All 57,028
+parameters finite; policy, optimizer, and training hashes match native sidecar.
+Policy 24a199e288b0978c1c3d2b797c19cf0f668bca6c8e8521468a0a1a800d7c9bc6;
+learner 5f41f5b24dae3d264f43f7b747fd2d40e9f35918dfd5bbad3112d4879da78115;
+run 3035a398dca70643dc2da5c387013fdd26e00854b55eb0bc203514f4bcbddb43.
+Audit /tmp/relh-source-prior-only-300m-31410-mid-audit.json and node
+source-prior-only/mid-checkpoint-audit.json. Recent completed six-epoch interval
+at epoch 63: 131,780.319 ENV SPS; GPU monitor ~56%. No new job, hosted writes,
+or promotion. Training continues to 335,544,320 absolute steps; automatic
+mid/final matched evaluations remain pending after training. Goal active.
