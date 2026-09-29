@@ -11113,3 +11113,14 @@ resume-identity-audit.json. Exactoldseed6751/overrides;absolute335544320 target
 adds301989888newphysicalsteps, not a restart/countingoldsteps as new.
 Goalactive; verify completion/steady interval/newcounts+freshheldoutpanels before
 hosted/publish. Next poll SAME31291/main2286; no duplicatejobs.
+
+## 31291 live continuation checkpoint verified
+
+Previous goalturn progress (actual restored learner started); this turn verified
+wait on live31291/main2286. Fullqueue confirms soleGenerals allocation. Observed
+epoch29,27,262,976NEWphysicalsteps, four/sixepoch sustained127kENV SPS,0nonfinite
+rewards. Intermediate savedepoch24=50,331,648absolute/16,777,216new checkpoint
+93f17e74f1622030c827db5fdbeb37a79654a2d82819d110ca18eb54fb21ffc4 finite57028words,
+optimizer5b321237ae31c080d2db3e434f5ac17704216a2a0556897b22b37c483aaef826,
+allactualpolicy/state/runhashes matchnative sidecar. No interruption/restart,
+no additionaljob. Training goal remains active; SAME31291/main2286 nextpoll.
