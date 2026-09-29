@@ -12340,3 +12340,65 @@ stream/tmp/relh-classic-spatial-width32-source025-classic2000-stream.tar.gz,
 observer sameprefix-srun.log. Poll SAME31666/main93227, archive onlyafterterminal.
 Audit helper/tmp/relh-audit-width32-source025-classic2000.py prepared.
 Goalactive,no hosted writes/promotion,protectedhistories untouched.
+
+## 2026-09-29: F32 source.25 pilot audited, 100M continuation31706
+
+31666/main93227 terminal0/released/noqueue. Native build/model
+**dea6619952caa5252e7f4ff0d44ea477e2b5b587e92401b8eb15260be652a83f**.
+Actual F32 GPU initialization differs from31392 ONLY cells570080/570084,
+4/3.96 ->.25/.2475,all otherinitialweights match;
+initialSHA dafe7de7e722171145c2becd3e0de30eb707f725109bbf8e5335d4c6e6f88c58.
+Finalpolicy **0e9ca55b0881dc1d36ed96f4bee0a5f6a0c8b5acf109a8fc0af4b2770b6e54d6**,
+optimizer **22020b38adfeabb6a4ecbee893e6ddc8a094dc2797d22e479a196665f2b0d164**.
+Final audit /tmp/relh-width32-source025-classic2000-31666-final-audit.json:
+epoch4@73.878s ->16@283.512s,25,165,824/209.634s =
+**120,046.481010 ENV SPS**;alignedGPU58samples mean59.224%/peak160870MiB.
+33,554,432 actuallegal actions/0illegal,nonfinite0/64411terminalagents,
+0zeroended (reward signs are not game outcomes);finite570508params and
+policy/state/runSHA valid. Actualbalanced50/25/25 mix onbothsides+2000limit.
+
+Full2000heldouts (same seed10686scripts/10513parent as31646baseline):
+Exp24W103L1D;Sent4W124L0D;oldparent285W206L21D.
+Direct versuscurrent335Mc601512 seed12513:146W345L21D,score-.388672,
+124uniquemaps,cluster95[-.52816,-.24548]. Matchedcurrentbaseline scores32/96/0,
+20/108/0,388/103/21. PairedchangesExp-.1172CIincludes0,Sent-.25[-.421,-.095],
+parent-.4023[-.547,-.262]. **No upload/promotion**. Comparisons verify identical
+maphash/side/opponentIDs; unequaltrainingbudgets33.55Mversus335.54M explicitly
+recorded. Healthyfreshpilot beatsoldparentoverall andhasnonzeroscriptwins;
+this qualifies continued learning investigation, not competitive-strengthproof.
+Audit /tmp/relh-width32-source025-classic2000-31666-matched-scores.json.
+
+Archive /tmp/relh-classic-spatial-width32-source025-classic2000-stream.tar.gz
+gzip verified SHAfd37ec1770b6258a3e6a86bd4b17c3a49bdd7bafb83e51b3c65e6d3a9afca21e;
+controller /tmp/relh-classic-spatial-width32-source025-classic2000-31666.tar.gz
+matches. Extract /tmp/relh-spatial-width32-source025-classic2000-31666-inspect.
+Nodearchivehash+oldcontainerabsence checkedbefore31706. Fullqueue/sinfo/me/
+node preflight rechecked;onlyoneGeneralsjob. Originalpilot sources immutable.
+
+**31706**,B300/metta-fabric-b300-1,nice100/8CPU64GiB/35min,
+mainPTY94389,root
+/var/tmp/relh-generals-recovery/classic-spatial-width32-source025-100m-pilot-31706,
+recipewidth32-source025. RestoreEXACT31666policyANDoptimizer,seed6751/overrides
+unchanged;allow_environment_transferFalse;model/binary/CUDAkernel/INI/native
+factory unchanged. ConfigCPUpreflight verifiespolicy/state/runsidecars and
+exactoverrides. ActualruntimeSHA b82...eb33d and unchangedenvironmentfingerprint
+c6b554...bd9d4 confirmedinGPUimport/buildguard. PhysicalallocatedGPU
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%/nocompute,DockerUUIDmatch,
+noobservedcontention. Same4096games/H512/batch2097152/mb8192/R.5/LR.003/T.0625/
+23logicalblocks/normadv1/gamma=shaping_gamma.999/.5shape/.5scale/noteachers.
+**100,663,296 NEW physical** from33,554,432 ->134,217,728. At120046.48SPS,
+projected838.54s (~14min);20mintrainer+35minallocation,core0/nonfinite/stall/
+>=30kguards. Thisintermediatebudget testslearning beforea300M+continuation.
+
+SAMEallocation comparesbaseline33M ANDfinal134M on128Exp128Sentseed10686,
+512oldparent10513,512currentc60112513;finaldirectversuspilot512seed11513.
+Finalexport/run checkpoints and optimizer remainarchived. Fixed2000evaluator
+0a819...55b7. Script/tmp/relh-classic-spatial-width32-source025-100m-run-node.sh
+SHA042f2ed639dd2b9e2b648a1c7b97f8dada990e81552553883ca4ea4464c41e6b;
+generator/tmp/relh-build-width32-source025-100m.py.
+LiveMacstream/tmp/relh-classic-spatial-width32-source025-100m-stream.tar.gz,
+observer sameprefix-srun.log. Finalaudithelper
+/tmp/relh-audit-width32-source025-100m.py prepared (warmepoch20 ->final64).
+Poll SAME31706/main94389; doNOTrelaunch onread timeout. No hostedwrites/
+promotion,protectedhistoriesuntouched,goalactive. Startup/buildguardpassed,
+trainingstartupnext; no currentSPSclaimuntilcompletedintervals.
