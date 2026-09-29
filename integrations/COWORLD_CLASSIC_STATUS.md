@@ -11417,3 +11417,35 @@ arm train.norm_adv=1/same fresh6751/allother PPO/model/opponents unchanged.
 Require actualnativeGPUinitialweights exactlymatchcontrolcab576...7741,
 compiledCUDA kernel numeric audit, freshactualbuild>=30k gate before scale.
 No duplicate controltraining/evaluations. Goalactive; no newjobsubmittedyet.
+
+## 31389 normalized PPO remaining-arm pilot submitted
+
+Previous turn progress terminal31352/audit/sourcehookpreflight. Sole new
+bounded31389/main90234 B300/metta-fabric-b300-1,30min/nice100/8CPU64GiB,
+output /var/tmp/relh-generals-recovery/classic-spatial-advantage-normalization-pilot-31389.
+Fullqueue confirmsno otherGeneralsjob. PhysicalUUIDGPU-bce8f97b-720b-5afa-
+cbb7-ad8b68cc14f7 empty0MiB/0%/no computeprocess,driver595.91.07/
+imagebdd4...96ae5 checked; no contention. Prior31352 archive d089...5879
+verifiedonnode, sameMac/controllerhash; exactoldcontainerabsent.
+
+Onlynormalized-advantages arm trains; reuse completed31352strongcontrol
+and6686/6513panels, no duplicatecontrol. Fresh6751/33,554,432physical,
+model6eb/strongpriors/4096games1learner/H512/mb8192/R.5/LR.003/T.0625/
+logical/entropy0/shaping.5/rewardscale.5/gamma=shaping_gamma.999.
+OnlyPPOflag train.norm_adv=1; alternate pinnedhelper builder THROUGH
+launch_spatial_selfplay_training.py build installsoptionalnativeCUDAhook.
+Actualgeneratedtrainer expected SHA0aba18f9325cbad0e347ef23ba5ee71c54c8e2d4bc995e506960dc7ce942172b
+fromexactCPUpatchofcontrol; ini a483de304403fbb886c4d0a75888c090e346913e395c2eecac458048bdd67a24.
+Guardrejectsothertraining-source changes. ActualGPU initializer mustexactly
+matchcontrolcab576c0ddd6b0718ec69893a946ac97f300492f238c959ffbc38b26b2717741.
+CompiledactualCUDAkernel six numericcasesvsNumPy audit beforetrainer;
+>=30k/nonfinite/startup guards retained. Fresh heldout128Exp/128Sent6686,
+512parent6513 comparepreservedcontrol. No hostedpublication.
+
+Script /tmp/relh-classic-spatial-advantage-normalization-run-node.sh SHA
+322c50dfc2411ed4fee8ed261df4bcca5f1f74f791a7bcc198dead6fec11aa5d;
+stream /tmp/relh-classic-spatial-advantage-normalization-stream.tar.gz;
+log /tmp/relh-classic-spatial-advantage-normalization-srun.log.
+Prepared /tmp/relh-audit-advantage-normalization-31389.py completionaudit
+checks nativeflags/kernelaudit/sourcehash/initmatch/4→16steady/33.55Mlegal
+actions/finalcheckpointlearneridentity. Goalactive; pollSAME31389/main90234.
