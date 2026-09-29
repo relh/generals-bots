@@ -23,7 +23,7 @@ def accumulate(counts, rewards, terminals):
 
 
 def install(environment_class):
-    if getattr(environment_class, "_reward_audit_installed", False):
+    if environment_class.__dict__.get("_reward_audit_installed", False):
         raise RuntimeError("Reward audit already installed")
     original = environment_class.step_device
 
@@ -58,36 +58,40 @@ def install(environment_class):
 
 def activate():
     """Install in each interpreter, including the native trainer's interpreter."""
-    name = "integrations.metta_puffer"
-    if name in sys.modules:
-        cls = sys.modules[name].BatchedGeneralsSelfPlayPufferEnvironment
-        if not getattr(cls, "_reward_audit_installed", False):
-            install(cls)
-        return
+    names = {
+        "integrations.metta_puffer": "BatchedGeneralsSelfPlayPufferEnvironment",
+        "integrations.spatial_selfplay": "SpatialFrozenOpponentPufferEnvironment",
+    }
+    for name, class_name in names.items():
+        if name in sys.modules:
+            cls = getattr(sys.modules[name], class_name)
+            if not cls.__dict__.get("_reward_audit_installed", False):
+                install(cls)
     if any(getattr(finder, "_generals_reward_audit_hook", False) for finder in sys.meta_path):
         return
 
     class Loader(importlib.abc.Loader):
-        def __init__(self, original):
+        def __init__(self, original, class_name):
             self.original = original
+            self.class_name = class_name
 
         def create_module(self, spec):
             return self.original.create_module(spec)
 
         def exec_module(self, module):
             self.original.exec_module(module)
-            install(module.BatchedGeneralsSelfPlayPufferEnvironment)
+            install(getattr(module, self.class_name))
 
     class Finder(importlib.abc.MetaPathFinder):
         _generals_reward_audit_hook = True
 
         def find_spec(self, fullname, path=None, target=None):
-            if fullname != name:
+            if fullname not in names:
                 return None
             spec = importlib.machinery.PathFinder.find_spec(fullname, path, target)
             if spec is None or spec.loader is None:
                 raise ImportError("Generals environment missing")
-            spec.loader = Loader(spec.loader)
+            spec.loader = Loader(spec.loader, names[fullname])
             return spec
 
     sys.meta_path.insert(0, Finder())

@@ -10343,3 +10343,41 @@ Actual mounted /work/source-spatial2/generals/agents/hunter_agent.py SHA
 BFS already uses convergence-based while_loop, so do not reimplement that
 optimization or assume stale fixed441-iteration code. Codec's two publicroute
 BFSs remain a profile candidate; no code change to them in this pilot.
+
+
+## 30597 complete: captures restored, external strength still weak
+
+Mainexec43488 exit0; allocation absent. 33,554,432physical /67,108,864agent
+steps,47,891captures/2,812draws over50,703completed physicalgames; zero
+nonfinite rewards and zero illegalactions. Final57028floatweights finite,
+SHAe51ca2b6a42711c6542a546f96bc429709e921e644ca340d00f4e2b8d3d00807.
+Epoch4@38.128s ->32@267.066s:29,360,128physical /228.938s =128,244.887 ENV SPS.
+64 alignedGPU samples mean64.625%,peak144540MiB, timestampanchor~1s.
+Mid16.777Mphysical: Exp27/101/0, Sent3/111/14, parent251/230/31 W/L/D,
+checkpoint73b075822a0d3b530b21c175c23a1863816ee62985a63dbd3ba74a916a39c677.
+Final33.554Mphysical: Exp12/111/5, Sent4/111/13, parent250/237/25.
+Midpoint retained as a candidate; neither strong/proven, no promotion.
+
+Archive18ba4ba916e85a643ee9c60a23cd714b31d9424cf76e62165c912ed8f5e127ec
+verified Mac /tmp/relh-classic-spatial-local8-selfplay-temperature16-stream.tar.gz
+and controller /tmp/relh-classic-spatial-local8-selfplay-temperature16-30597.tar.gz;
+node verification required before next submission. Localfull
+/tmp/relh-spatial-selfplay-temperature16-30597-inspect and audit
+/tmp/relh-spatial-selfplay-temperature16-30597-audit.json.
+
+## Prepared stable earlier-opponent pilot
+
+Next bounded pilot: learner initialized from originalparentdf706, opposing
+immutable sameparentgreedy, balanced learner seats, fixedT0.0625. Original
+checked spatial_transfer already admits this source/target; no checkpoint or
+history edits. Reuse actual30508 frozen-opponent build byte-for-byte.
+Use replayratio1.0 (Pufferdefault); native train loops dest_off sequentially
+through rows, so ratio0.5 uses firsthalf only. With4096 physicalgames/one
+learner/H512 and16epochs atR1, gradient samplebudget equals prior2048physical/
+twolearners/32epochs atR0.5 for equal33.554M physicalbudget. LR0.0003 remains
+unchanged; upstream uses Muon anddefaultLR0.015, but no unsupported LR change
+without checking parameter registration and an actual pilot.
+Reward audit now hooks the frozen subclass's overridden step as well as paired
+base; inheritance markers checked per-class, avoiding missed or doubled counts.
+CPU isolated8game capturefixture4wins/4losses bothseats passed, exactly8
+terminalagent events and8decisions (onelearner/game), no nonfinite.
