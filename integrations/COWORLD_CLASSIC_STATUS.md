@@ -12297,3 +12297,46 @@ this unproven continuation. F32 capacity with source prior.25 and corrected
 source.25 improvement was onlyF8. This is a plausible bounded capacity probe,
 NOT a demonstrated fix. Goal active until heldout AND hosted strength proven
 and qualifying policy published. Repo clean/pushed after recording findings.
+
+## 2026-09-29: bounded F32/source.25/full2000 capacity pilot31666
+
+Previous goal turn PROGRESS: corrected training/SPS audit and complete matched
+full2000-turn rejection panel changed next action. Repo AGENTS read, fetch
+origin/clean checkout, exact Metta preflight/throughput skills applied. Full
+sinfo/squeue/squeue--me/node state inspected; no other Generals job. Previous
+31646 Mac/controller archive match c24ab4...111c6; node hash and exact old
+container absence checked inside this allocation.
+
+**31666**,B300/metta-fabric-b300-1,nice100/8CPU64GiB/30min,mainPTY93227,
+node /var/tmp/relh-generals-recovery/classic-spatial-width32-source025-classic2000-pilot-31666,
+recipe width32-source025-classic2000. PhysicalGPU
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%,no compute processes;
+DockerUUIDmatch required beforebuild. Driver595.91.07/compute10.3/current
+runtime image bdd4...ae5,628GiB rootfree. Outputs/cache/TMPDIR node-local.
+No observed contention. No CPU-only Slurm work or other-user jobs touched.
+
+Fresh33,554,432 physical steps, seed6751. **F32/global32 with sourceprior.25**
+and actual2000turn runtimeb82...eb33d;570508 parameters,23logical blocks.
+This combination is new:31392F32 usedsource4 and1200;31394F8source.25 used1200.
+Other recipe4096physicalgames/onelearner/H512/batch2097152/mb8192/R.5/LR.003/
+T.0625/normadv1/gamma=shaping_gamma.999/shaping.5/rewardscale.5/frozenold50%+
+Exp25%+Sent25% balancedbothsides/no teachers. Preserved native/model code6069da2,
+correctedwrapper/metadatae61e5f0, fresh Fabric/native build through pinned
+launch helper; build checks exact CUDA trainer/INI/advnorm hashes and native
+registration verifies only2 sourceprior initialization cells differ from
+preserved31392GPUF32, all other initial parameters equal. No optimizer transfer
+across changed widths. 5minbuild+8mintrainer budgets/core0/30k/nonfinite/stall
+monitor. PriorCUDAadvnorm proof reused for unchangedkernel. Throughput not yet
+claimed for this combination; build underway.
+
+Same allocation evaluates128Exp128Sent seed10686 and512oldparent10513,
+matched against preserved31646startingc601 panels;512direct currentc60112513.
+Full2000 evaluator fixedSHA0a819...55b7, stagedbothmodulepaths; actualruntime
+assert and result cutoff. No accidental preconstructenv reference.
+Script /tmp/relh-classic-spatial-width32-source025-classic2000-run-node.sh SHA
+277f8dac8a74adf682dfb5a3f44b9be4b1b60c008c987cdbb50f81682fdcdb93,
+generator/tmp/relh-build-width32-source025-classic2000.py;
+stream/tmp/relh-classic-spatial-width32-source025-classic2000-stream.tar.gz,
+observer sameprefix-srun.log. Poll SAME31666/main93227, archive onlyafterterminal.
+Audit helper/tmp/relh-audit-width32-source025-classic2000.py prepared.
+Goalactive,no hosted writes/promotion,protectedhistories untouched.
