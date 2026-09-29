@@ -12499,3 +12499,37 @@ observer sameprefix-srun.log;
 helper/tmp/relh-audit-width32-source025-300m.py prepared.
 Poll SAME31753/main56362,archiveonlyafterterminal. Startupbuildguardpassed,
 trainingstartupunderway. Goalactive;protectedhistoriesuntouched.
+
+## 2026-09-29:31753 live gate and local F32 serving contract
+
+Previousgoalturn PROGRESS:31706completed134M/fullmatchedheldouts/learninggains
+and31753began201Mcontinuation. Re-readnearestAGENTS/fetch/cleancheckout.
+SAME31753/main56362 verifiedlive; native resumedepochs65..71,
+not restarted. Current completed sixepoch interval71:
+**125,430.251799 physicalENV SPS**,fourepoch125469.02. B300/4096games/
+onelearner/H512/batch2097152/mb8192/R.5/LR.003/T.0625/norm1,
+gamma=shaping_gamma.999/.5shape/.5scale,noteacher;
+initialpolicy9b09ff...fa3bb ANDoptimizer3164ea...57f4a9 exactrestored,
+wrapperb82/environmentfingerprint unchanged asprevious guard. Nativecurrent
+148,897,792absolute,target335,544,320/final160. DoNOTrelaunchwhilelive.
+
+Independentlocalpublicationprep: portable**F32**134M9b09checkpointworkswith
+existingneuralplayer/codec/containerABI. Context
+/tmp/relh-spatial-width32-serving-contract-31706, immutablecopyof31706final
+bundle (not an upload). Base31410ARM64 servingimage, task-onlynewtag
+relh-generals-spatial-serving:31706-contract-arm64,
+configIDsha256:e240ec9fc3347f83757ada4082ce4f23a04909b3e3b03c16faead4efdd0d0e9b.
+Runtime2CPU4GiB/UID10001/core0/networknone, existingwire32replyprobe across
+18x21/21x18/19x20/21x21: **32/32 legal**,cold1.221969834s,
+meanreply.001049653s,max.001407860s. Constructorvalidatesportablefilehashes,
+localcheckpointSHA9b09asserted andmanifestF32/global32/570508confirmed.
+Auditcontext/audit.json,wire-probe-arm64.log andbuild-arm64.log.
+**ScopeonlylocalARMcontract**: no hostedstartup/performance/strength orAMD64
+latencyclaim; futurewinning335Mweightsmustbestagedandqualifiedthen. NoAMD64
+JAXunderMacemulationrepeated. Original31606/31410contexts/imagesuntouched,
+noothers' Dockerresources or protectedhistoryfiles touched. No hostedwrites.
+
+ContinueSAME31753/main56362; finalaudithelperwarm68->160 prepared. Completed
+201,326,592newactions expected; preservepolicyANDoptimizer,waitterminalthen
+archive/verify/extract. Compare134Mbaseline/final335Monfull2000turn scripts,
+oldparent/currentc601/direct134M. Goalactive; notyetstrongqualifyingpolicy.
