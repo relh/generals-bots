@@ -12847,3 +12847,26 @@ ThisischeckpointcopyNOTactivefinalarchive; activefullstreamremainsuntouched.
 No duplicatejobs,no hosted writes/promotion,protectedhistoryuntouched.
 KeepgoalactiveandcontinueSAME32032/31866 untilterminal;thenfinal553M
 audit+matchedscores before anycandidatehostedmatch/promotion.
+
+
+### 2026-09-29 — 31866 verified wait; hosted targets refreshed read-only
+
+PreviousgoalturnPROGRESS: preservedandverified268Mpolicy+optimizercheckpoint,
+correctedlegitimatezero-drawrewardaudit. CurrentauthoritativeSAME32032/31866
+pollsconfirmRUNNING/latestepoch143 (~299.89Mtotal/48.23Mnew),
+four/sixepochENV SPS116418/115454, GPUrollingmean~60.2%. At35,651,584
+newrewardsteps:52,315terminalevents/1legitimatezero/0nonfinite.
+Physicaloccupancy rechecked: assignedGPU-bce8f97b...onlyCUDA PIDs513499
+python648MiB and514453puffer160200MiB; BOTHlistedbyexactownDocker
+containerrelh-classic-spatial-coworld-rules-300m-31866. No actual contention.
+No duplicatejob/settingschange; same75minallocation continues.
+
+Read-onlyObservatoryrefresh/tmp/relh-generals-hosted-targets-31866:
+coworld0.3.3 unchanged;Alpha/DavidB rank1/MMR2206.9723,policylabelNULL.
+Richard1498.5901/relh1456.4481 ->relh stilllowereligible. Ownedchampions
+unchangede53e30be...relhv4/7a3f30e9...Richardv2. Noexternalwrite.
+DoNOTinfercurrentAlpha versionfromrank1 orreuseoldv7ascurrentwithout
+resolution. ExistingauthorizedXPschema/helperuses{'top_n':1} andrecords
+resolvedopponentUUIDforeachrequest; usecurrentleaderselectorifnewpolicy
+qualifieshostedtesting. ReadpublicAPIonly,noprivatepeerconfigrequests.
+ContinueSAME32032;final553M/heldout/hosted proofstillpending.Goalactive.
