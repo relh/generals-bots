@@ -14551,3 +14551,37 @@ training SPS was measured. Exact node-local archive recovered to
 d87e01c78c89008c0c15227611ef835ce2d3459068331c88fe07afe55ad4a0d3.
 The launcher pin was updated to the changed transfer-module SHA before
 any retry; exact job33098 is terminal and its container was absent.
+
+Corrected single B300 job33110 COMPLETED exit0 on physical UUID
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a,8CPU/64GiB,
+source commit6a040d7. Preflight0MiB/0%, driver595.91.07, image
+SHA bdd4f2a9..., node disk357GiB available. A separate read-only
+overlapping `srun` log probe was rejected by the node GPU guard while
+the job ran because it saw Python904MiB on the allocated GPU; attribution
+was not established, so this is not evidence of sustained foreign
+contention. Training completed16,777,216 physical Classic steps,
+8192 games×H256, batch2,097,152/mb8192. Four-epoch warmed165,806
+SPS, six-epoch165,652 end-to-end SPS, above the30k gate. Device audit:
+all16,777,216 actions legal, full16,628,199, half32,778, pass116,239;
+0 nonfinite rewards,21,962 terminal agents,0zero-reward terminal agents.
+Positive/negative reward signs8,516,273/7,434,576 are not win counts.
+Final actor SHA d7bf9981d898b89bab308ebf62c638d1706c22c8fb033cad42ef04a4c2ec6883.
+Direct signed held-out versus best234M,512 games on126 unique initial
+states:249W263L0D, score-.02734. No quality gain established.
+Node-local archive independently recovered to
+`/tmp/relh-classic-win-landgain020-33110-recovery.tar.gz`,
+SHA32be7f4efdefbcb5545f12ad0a977d901705a53248d178f842350574cd642364.
+No league submission or champion change for this actor.
+
+One bounded learning-curve continuation was submitted as job33134:
+100,663,296 new physical Classic steps from the same pinned234M policy-only
+initialization with land-gain0.02 and unchanged five-opponent pool,
+8192×H256, batch2,097,152/mb8192,8CPU/64GiB,45-minute limit,
+source commit6a040d7, script SHA
+a747212d2b68931f8258e0879da513cd8b8b9891db58881aecfe4fd89adeec9f.
+The script keeps the30k warmed SPS gate and runs a512-game signed
+direct-parent comparison after export. Full queue before submission had
+peer Safa jobs32854 and33132 on B300; no other Generals job active.
+The allocated physical GPU check is inside the job and must pass before
+training. Read job33134 state and its node-local archive before any
+follow-up; do not submit a duplicate.
