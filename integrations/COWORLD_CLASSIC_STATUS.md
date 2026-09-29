@@ -11253,3 +11253,58 @@ ENV SPS; no stall/nonfinite. Same4096/H512/mb8192/R.5 geometry, teacher-free,
 gamma=shaping_gamma=.999/rewardscale.5/shaping.5. Finalcheckpoint/audit
 and matchedheldout pending in SAME31328; do not submitanotherjob.
 Goalactive. No hosted/policypublication.
+
+## 31328 matched reward comparison terminal0; weak priors pilot31352
+
+31328/main73529 terminal0, allocationreleased; archive fullgzip/extraction
+SHA6d873022a5d79e24f4179bc8ee487cd6728d2f3307d7160ab7b8cfed2fc31f8c
+verified Mac/controller/node(31352 guard), old exactcontainerabsent.
+Mac /tmp/relh-classic-spatial-potential-comparison-stream.tar.gz; controller
+/tmp/relh-classic-spatial-potential-comparison-31328.tar.gz; node
+/var/tmp/relh-generals-recovery/relh-classic-spatial-potential-comparison-31328.tar.gz.
+Full Mac /tmp/relh-spatial-potential-comparison-31328-inspect.
+Actualinitial policy6c02...ccfd AND optimizer483453d80f7c6fb255cb7db7dda2204b296afbf8035efb93938223d4923f2ff5
+matchsame source31291 for botharms. Finalpolicy/state/runhash sidecarsverified.
+
+Candidate33,554,432NEWphysical/369,098,752absolute, warm164@73.702→176@269.696,
+25,165,824physical/195.994s=128,400.991867ENV SPS. 55alignedGPU samples
+mean53.1818%,peak145760MiB. Rewardaudit8192ticks/33,554,432steps,
+16,543,652positive/15,839,725negative/47,782terminals/292zero-ended,
+0nonfinite; signs NOT outcomes. Final57028finitewords
+8c3066b4ed28f9137a366ec376239247f8d901719eda7c3e59a112de3dbd655d,
+learner2b7bd47b79b83739ed99000b4bb221b8b16b9110ab1098ec40e40947ffa8017c.
+Mac /tmp/relh-potential-comparison-31328-potential-audit.json/node steady-audit.
+
+Heldout matched initialstate hashes AND seats exactlyequal acrossallpanels:
+control Exp16/106/6,Sent4/111/13,parent246/198/68;
+potential Exp18/105/5,Sent5/118/5,parent203/236/73.
+Script seed5686/parent5513;128/128/512games. Every scriptpanel clippedsteps0;
+candidate rawmin/max within+/-.574, actualnative clamp inactive.
+Mac /tmp/relh-potential-comparison-31328-matched-scores.json.
+Progress shaping did not establish useful strength improvement from trained
+policy; no scale unchanged, no hosted/upload/promote.
+
+Next trial fresh PPO from same6751 seed, strong-versus-weak actionpriors,
+same model topology/optimizer/mixedopponents/progressreward. CPU actualnative
+preflight /tmp/relh-spatial-weak-prior-layout-preflight.json proves57028words,
+same logicaloptimizer shapes, only11priorparameters differ; othersidentical.
+Equal tinypriorcoefficients initially mergedclasses and DirectSpatial rejected
+them before anyGPUwork; distincttiny route.0003/sourcearmy.0001/full.0007
+preserves5classes. Halfscale.99 unchanged; strongroute.5/source4/full.125.
+This tests releasefromstronginitialprior preferences; no teacher/imitation.
+
+Sole new bounded allocation31352/main8879, B300/metta-fabric-b300-1,45min,
+nice100/8CPU64GiB. PhysicalUUIDGPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7
+empty0MiB/0%/no computeprocess before work; no contentionobserved.
+Fullqueue verified priorjobterminal/no Generalsduplicate; otherjobs untouched.
+Output /var/tmp/relh-generals-recovery/classic-spatial-weak-prior-comparison-pilot-31352.
+Both fresh(no restore), each33,554,432NEWphysical,4096games/onelearner,
+H512/mb8192/R.5/LR.003/T.0625/logical/entropy0, gamma=shaping_gamma.999,
+shaping.5/rewardscale.5. ActualGPU freshinitmatchand >=30k gate required.
+Heldout each128Exp/128Sentseed6686 and512parentseed6513.
+Script /tmp/relh-classic-spatial-weak-prior-comparison-run-node.sh SHA
+fea65b0dbf7b0694b37f064fc0e65deb7d0ce046376192b6f953b0cde7e19536;
+stream /tmp/relh-classic-spatial-weak-prior-comparison-stream.tar.gz;
+log /tmp/relh-classic-spatial-weak-prior-comparison-srun.log.
+Goalactive; do not replay31328 or duplicate live31352/main8879.
+ProtectedCodexhistory untouched.
