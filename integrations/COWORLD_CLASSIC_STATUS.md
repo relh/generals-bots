@@ -12424,3 +12424,78 @@ Poll SAMEhandle untilterminal, finalaudithelperwarm20->64. Thenbaseline/final
 script/oldparent/current panels+finalversuspilot under2000turncutoff; no hosted
 writesuntilqualitysupports them. Protectcheckpoint+optimizerandarchiveafter
 terminal. No newjob while31706live. Goalactive; historiesuntouched.
+
+## 2026-09-29:31706 completed134M; learning gain, still belowcurrent
+
+Previousgoalturn VERIFIEDWAIT:live31706/main94389+completedsixepochgate.
+Thisturn followedSAMEhandle through terminal0;all9evalpanels complete,
+queue absent/released. No restart fromobservertimeout. Final134,217,728absolute
+policy **9b09ff87b0a24ff4c15b70aa452a163aaf3edf7b29f24de056316b37355fa3bb**,
+optimizer **3164ea2c8e0fd4c5c27c6a64e048cdf3949c18d52ae49ac4bed1c5efb457f4a9**.
+Exactinitial0e9ca+22020 policy/optimizer verified,F32 finite570508 params,
+policy/state/run sidecars valid. Actual100,663,296 actions/0illegal,
+nonfinite0,172112terminalagents/0zeroended;reward signsNOToutcomes.
+Warmepoch20@76s ->64@855.934s:92,274,688/779.934=
+**118,310.892973 physicalENV SPS**,218alignedGPU samples mean60.945%,
+peak160870MiB. SameB300/4096games/onelearner/H512/batch2097152/mb8192/R.5/
+LR.003/T.0625/norm1/gamma=shaping_gamma.999/.5shape/.5scale/no teacher.
+Audit/tmp/relh-width32-source025-100m-31706-final-audit.json.
+
+Matchedfull2000panels pilot33M vsfinal134M:
+| opponent | pilot W/L/D | final W/L/D | pairedscorechange cluster95% |
+|---|---|---|---|
+| Exp128 |24/103/1|20/107/1|-.0625 [-.2636,.1304]|
+| Sent128 |4/124/0|5/123/0|+.0156 [-.0714,.1168]|
+| oldparent512 |285/206/21|398/97/17|+.4336 [.2789,.5874]|
+| current335Mc601512 |146/345/21|192/298/22|+.1816 [.0345,.3353]|
+
+Directfinalversuspilot512 seed11513:312W196L4D,score+.22656,
+126unique maps,cluster95[.08998,.36101]. Strongneurallearninggain supported,
+scriptsnotimproved,currentc601 STILLwinsmajority. **Not eligible forupload or
+promotion**. Currentpolicyhass335Mvs134Munequalbudgets;nextcontinuecomparable
+335M ratherthanclaimstrengthnow. Exactmaps/sides/opponentIDsmatch,
+allbaseline33M scores reproduced31666. Helper
+/tmp/relh-width32-source025-100m-quality.py,10000mapclusterresamples;
+audit/tmp/relh-width32-source025-100m-31706-matched-scores.json.
+
+Archive/tmp/relh-classic-spatial-width32-source025-100m-stream.tar.gz gzip
+verified,SHA **dde845c039d5d255ca04eae2234cc1e28b1ed140d7af365379e668afcd1ac8e8**;
+controller/tmp/relh-classic-spatial-width32-source025-100m-31706.tar.gz matches.
+FullMac/tmp/relh-spatial-width32-source025-100m-31706-inspect.
+Read-onlyhostedrefresh/tmp/relh-generals-targets-31706:Alpha rank1MMR2262.60,
+Richard1504.82/relh1500.79;ownedchampions unchangedRichardv2 7a3f30e...5641
+andrelhv4 e53e30be...83fe. Relhremainslowereligibleaccount. Leaderboardlabel
+null:doNOTinferactualnewDaveeypolicyversionfromrank;oldhostedv7resultstill
+historicalactualresolvedopponent. No newXP/imageupload/championwrite.
+
+## 2026-09-29: bounded comparable335M continuation31753
+
+NearestAGENTSread/fetch/clean;Metta preflight/throughputgatesapplied.
+Fullsinfo/squeue/me/nodepreflight:nootherGeneralsjob/noB300allocations.
+31706 Mac/controllerarchiveSHAmatchandnodearchive/exactoldcontainerabsence
+checkedbeforelaunch. **31753**,B300/metta-fabric-b300-1,nice100/8CPU64GiB/55min,
+mainPTY56362,root
+/var/tmp/relh-generals-recovery/classic-spatial-width32-source025-300m-pilot-31753,
+recipewidth32-source025. Assignedphysical
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%,nocomputeprocesses,
+DockerUUIDmatch,noobservedcontention. Driver595.91.07/runtimebdd4...ae5,
+nodeoutput/TMPDIR/core0 asbefore. SameunchangedF32/source.25 recipe/model
+**dea661...52a83f** andsource6069da2/wrapperb82...eb33d/environmentfingerprint
+c6b554...bd9d4 verifiedbyactualGPUimport/buildguard. RestoreEXACT31706final
+policyANDoptimizer,seed6751/overridesunchanged/allow_environment_transferFalse.
+ConfigCPUpreflightverifiedbothsidecars/runidentity; no optimizerreset.
+
+**201,326,592 NEW physical** from134,217,728 ->335,544,320absolute;
+pilot/resumedSPS118310qualifies;projected1701.67s(~28.4min)training,
+40mintrainer/55minallocation,>=30k/nonfinite/stallguards. Finalepoch160,
+auditwarm68->160. Sameallocationcomparesbaseline134M ANDfinal335M with128Exp/
+128Sent10686/512oldparent10513/512currentF8c60112513 andfinalversus134M512
+seed11513. Correct2000cutoffrecorded/asserted;nohostedwritesyet.
+Script/tmp/relh-classic-spatial-width32-source025-300m-run-node.sh SHA
+6259f331bbcb3d177560acfd132e1178699cd2139dbd2609196092c8318c6a54,
+generator/tmp/relh-build-width32-source025-300m.py;
+stream/tmp/relh-classic-spatial-width32-source025-300m-stream.tar.gz,
+observer sameprefix-srun.log;
+helper/tmp/relh-audit-width32-source025-300m.py prepared.
+Poll SAME31753/main56362,archiveonlyafterterminal. Startupbuildguardpassed,
+trainingstartupunderway. Goalactive;protectedhistoriesuntouched.
