@@ -13389,3 +13389,35 @@ frozen218M50%/scripts25%eachbothseats verified byruntimeaudit.
 Zero frozenheldouts, thenpublicarmparity/sameinitbytes/training/evals anddirect
 comparison remainpending inSAMEallocation. No duplicatejob/settingschange.
 Continue SAME50123. Goalactive; no hostedwrite/promotion; protectedhistorysafe.
+
+### 2026-09-29 — 32015 public arm parity and local 16-channel wire contract
+
+SAME main handle50123/job32015 confirmed live; no new allocation. Exact
+Metta tr.slurm-preflight/tr.gpu-throughput reread; fetch origin completed,
+worktree clean before this journal entry. Full queue includes peer32035 on
+B300 and31992/32022/32023/32033 plus pending B200 jobs; peer jobs untouched.
+Physical allocated UUID GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 lists CUDA
+PIDs862863 python648MiB and863760 puffer174696MiB, BOTH in exact task Docker
+relh-classic-spatial-public-scalars-32015. No foreign CUDA process observed.
+Instantaneous GPU utilization54%; not a steady-interval utilization average.
+
+Control completed heldouts: Expander21/107/0, Sentinel8/120/0;
+frozen218M152/346/14, currentc601147/349/16 (W/L/D). No qualification.
+Public arm actual GPU registration-parity.json passes:570668words/finite,
+NumPy/GPU forward maxerror5.960464477539063e-08, scalar input gradientnorm
+0.007709898985922337. Initial policy SHA2ff6121462933d7e5af31b74dc2f08da8f4b878872a95fd71f31e1ac23249576
+and modelSHA811e8de55c3fe327a670a362b076f88fc8e56b9525a347ed89c945cfe9e8863b
+exactly match control. Public ablationFalse. Training is live; epoch2 dashboard
+118.9kSPS is NOT yet a measured steady-state interval. Finalaudit pending.
+
+Sealed exported control bundle copied read-only from node (not activefullstream)
+to /tmp/relh-public-scalars-zero-32015-serving-bundle.tar.gz, extracted under
+/tmp/relh-public-scalars-zero-32015-serving-contract. Existing wire probe adapted
+only locally to this bundle. Local macOS ARM CPU actual neural_player WebSocket
+contract passed32/32legal replies across four18–21tile rectangular/square shapes;
+coldready0.9567s/meanreply1.282ms/max1.719ms. PolicySHA matches completed control,
+metadata channels16. This is only ABI/codec validation, not Linux production
+latency or strength evidence. Earlier local ARM serving Docker images are absent;
+no peer Docker image mutated, no AMD64 JAX on Mac, no Docker build/hostedwrite.
+Continue SAME50123 for public training/allpanels and direct paired comparison.
+Goal active, protectedhistory untouched.
