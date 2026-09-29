@@ -13480,3 +13480,57 @@ priors unchanged; benchmark starting33M and final on new paired heldout seeds,
 and direct final-vs-start. Expected training~14.3min at117kSPS; recheck full
 queue/node/physical UUID and keep one bounded allocation including comparisons.
 Release no unchanged billions-step run. Protected Codex history untouched.
+
+### 2026-09-29 — public scalar 100M continuation started as32089
+
+Previousgoalturn PROGRESS:32015 botharms/finalstate/matchedheldouts audited,
+archiveMac/controllerSHAmatched; direct/frozen relative improvement justifies
+bounded additional learning. ReadnearestAGENTS,fetchorigin,cleanworktree,
+full sinfo/squeue/squeue--me/scontrolnode preflight completed. No Generals
+job remained. PeerB30032035/32078 andB200/rtx4090jobs untouched.
+One50minute nice100/8CPU/64G B300allocation32089, metta-fabric-b300-1.
+ActualallocatedUUID GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565 empty0MiB/0%
+beforeCUDA; DockerUUIDmatched. Runtimeimagebdd4f2...ae5/driver595.91.07/
+compute10.3 verified. Node /var/tmp has623GiB/ampleinodes; /tmp99%inodes,
+alltaskoutputs/TMP/cache use /var/tmp. No assumptionofphysicalfreenessfromSlurm.
+Output /var/tmp/relh-generals-recovery/classic-spatial-public-scalar-continuation-pilot-32089.
+Exactcontainer relh-classic-spatial-public-scalar-continuation-32089.
+MainnativeSSHhandle61910 LIVE. Stream
+/tmp/relh-classic-spatial-public-scalar-continuation-stream.tar.gz ACTIVE:
+DO NOTextract/copy until61910terminal; stderr sameprefix-srun.log.
+Script /tmp/relh-classic-spatial-public-scalar-continuation-run-node.sh,
+Mac/controllerSHA9db43d4db50c7e76ddef7c68eb1fc195d4060c925feff7e5025e9eb03fd4fad2;
+generator /tmp/relh-build-public-scalar-continuation.py. bash/embeddedPython
+syntax passed andconfiggeneratedlocallyfromsealed32015 exactlymatches
+validated /tmp/relh-public-scalars-continuation-from-32015.json.
+
+100,663,296NEWphysicalsteps:33,554,432 ->134,217,728total. Same4096games/
+onelearner/H512/batch2,097,152/mb8192/R.5/F32global32/channel16/570668;
+same frozen218M50%/scripts25%each, bothseats, gamma=shaping_gamma.999,
+reward/prior/entropysettings unchanged. Full policy+optimizer restore,
+allow_environment_transferFalse. Reusesexact32015 nativebinary/manifest/
+source andactualpinnedcore, no new nativebuild/fingerprint rewrite.
+Changedonlyscript evaluator reporting instantianted rules/horizon; archive
+previous32015 nodeSHAverified andexactpreviouscontainerabsent beforelaunch.
+
+GPUregistrationparity passed, actualmodel/environmentSHAs811e8d.../1a0cf8...,
+freshinit2ff612...match32015;finite570668words, NumPy/GPUmaxerror5.96e-8,
+scalarinputgradientnorm.007709899. Initial savedpolicySHA284aac29ec5134b50495fb2bcc90fa22a3b11037b6f0dc0a5d0d041ffaad4ac9
+andoptimizer5d2f61ae35f26fce1bca434c61551151812de30bdcded04a7d42b6ae2ad38f3f
+matchnode run/initial-policy.bin(.learner). CUDA PIDs921552python648MiB/
+922480puffer183420MiB BOTHinexactDocker; no foreignCUDA process observed.
+Native rolloutcompilation live; firstcompletedepoch/newsteadySPS stillpending.
+30kgatealreadyqualified identicalsetup117k in32015; newmonitor4/6epoch
+windows/absolutegate24/startup300s/no-progress90s/nonfiniteguards remain.
+25mintrainingcap. No dependent billionsscale or promotion.
+
+Aftertraining BOTH starting33M andfinal134M evaluated on NEW pairedheldouts:
+128eachExp/Sentseed30686,512frozen218Mseed31513,512currentc601seed32513;
+512directfinal-vs-startseed33513. No reused32015 games. Allcomparisonsinside
+sameallocation. Prepared finalaudit
+/tmp/relh-public-scalar-continuation-32089-final-audit.py (absolute20->64
+steadyinterval afterfournewwarmupepochs, policy/state/run hash, actions/reward/
+codec/mix/rules checks),quality
+/tmp/relh-public-scalar-continuation-32089-quality.py (map/seat/opponent/seed
+identity and10kmap-clusterbootstrap). Notexecuted againstpendingfinals.
+Continue SAME61910/32089. Goalactive; no hostedwrite/protectedhistorychange.
