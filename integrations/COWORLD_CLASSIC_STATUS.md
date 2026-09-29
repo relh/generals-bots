@@ -13063,3 +13063,38 @@ PPO kernel reads that pointer, including inside CUDA graphs; coefficient
 is not frozen as a host literal in the captured graph. No code changes.
 Keep same68417 through second branch and compare final panels directly.
 Goal active; no additional job, hosted write or promotion.
+
+### 2026-09-29 — 31932 terminal before entropy training; narrow resume fix
+
+Same main68417 now exited1; job31932 disappeared from queue/allocation
+released. Full archive gzip verified; Mac/controller SHA agrees
+ d9eba69b0856adc373dfb284f8e139cc757c0537f7b368e22b889927d7d2a938.
+Mac /tmp/relh-classic-spatial-coworld-entropy-pair-stream.tar.gz;
+controller /tmp/relh-classic-spatial-coworld-entropy-pair-31932.tar.gz.
+Extract /tmp/relh-coworld-entropy-pair-31932-inspect.
+Control training+all5panels complete and already audited. Entropy001 failed
+BEFORE native training or initial-policy write: pinned prepare_run rejects
+any training override difference during learner restoration. This was the
+intended ent_coef0 ->.001 change, not a numeric/GPU/learning failure.
+Do NOT replay entropy0 training/evaluations or edit original manifests.
+
+Added integrations/entropy_resume.py and an explicit opt-in launcher path:
+METTA_ALLOW_ENTROPY_COEFFICIENT_RESUME=1 admits ONLY finite nonnegative
+train.ent_coef changes; rejects other overrides, missing keys, bool/string/
+negative/nonfinite values. Source guard replaced exactly once in memory;
+pinned adapter file/hash, seed/model/environment/checkpoint/state/run SHA/
+geometry/counters/optimizer restoration checks remain intact. Print recorded
+ENTROPY_RESUME_OVERRIDE receipt. Default launcher keeps original strict guard.
+CPU guard checks pass: only entropy differs; LR/horizon/architecture/unknown
+changes and invalid coefficients rejected; source parses with original seed/
+model/environment/state/counter checks retained. Native binary/kernel unchanged.
+
+Prepared missing-branch-only bounded recovery script:
+/tmp/relh-classic-spatial-coworld-entropy-recovery-run-node.sh SHA
+ de0baeaa3bc064ef78c888f0b9496639416e6f4d59c27ae5bb98e7f3671fb5b4.
+Copies immutable completed31932 control artifacts, does NO control games,
+restores same553M full policy+optimizer for entropy00133.55M+held-outs.
+Full queue/node rechecked: B300 allocation0; task has no live/pending job.
+Physical preflight and previous exact container/verified node archive checks
+remain mandatory before actual training. Goal active; no hosted writes or
+champion promotion. Protected history untouched.

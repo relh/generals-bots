@@ -85,7 +85,14 @@ def main():
     spec = importlib.util.spec_from_file_location("metta_training.puffer", source)
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
+    if os.environ.get("METTA_ALLOW_ENTROPY_COEFFICIENT_RESUME") == "1":
+        from integrations.entropy_resume import (
+            entropy_resume_overrides_compatible, entropy_resume_source,
+        )
+        module.entropy_resume_overrides_compatible = entropy_resume_overrides_compatible
+        exec(compile(entropy_resume_source(source.read_text()), str(source), "exec"), module.__dict__)
+    else:
+        spec.loader.exec_module(module)
     original = module.verified_classic_frozen_opponent_transfer
     module.verified_classic_frozen_opponent_transfer = lambda a, b, c: (
         original(a, b, c) or spatial_transfer(a, b, c) or spatial_self_play_transfer(a, b, c)
