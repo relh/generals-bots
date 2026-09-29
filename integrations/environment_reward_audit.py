@@ -64,6 +64,8 @@ def activate():
         if not getattr(cls, "_reward_audit_installed", False):
             install(cls)
         return
+    if any(getattr(finder, "_generals_reward_audit_hook", False) for finder in sys.meta_path):
+        return
 
     class Loader(importlib.abc.Loader):
         def __init__(self, original):
@@ -77,6 +79,8 @@ def activate():
             install(module.BatchedGeneralsSelfPlayPufferEnvironment)
 
     class Finder(importlib.abc.MetaPathFinder):
+        _generals_reward_audit_hook = True
+
         def find_spec(self, fullname, path=None, target=None):
             if fullname != name:
                 return None
