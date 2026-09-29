@@ -12153,3 +12153,11 @@ claim that legacy133k is the corrected setup's measured throughput. Do not
 change architecture/rewards/opponent while correcting this contract.
 Goal active; this turn made progress by ruling out calibrations and fixing
 verified contract behavior. Protected agent histories untouched.
+
+### Effective turn limit is exposed by frozen mirror evaluation
+
+Added episode_limit=env.horizon to evaluate_spatial_frozen_match output so
+upcoming corrected panels record the instantiated cutoff, even when an old
+checkpoint's training manifest still records its1200-turn origin. Metadata
+only; no action selection or game behavior change. Corrected pilot will also
+stage a narrow metadata/assertion update of the archived scripted evaluator.
