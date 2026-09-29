@@ -11907,3 +11907,48 @@ one bounded pilot before another long continuation; compare starting c601 on
 matched held-out panels plus scripted opponents. Do not repeat completed300M,
 old hosted tests, or change priors and opponent simultaneously. Training speed
 is working; hosted strength and300k ENV SPS remain unresolved.
+
+## Iterated frozen-opponent pilot31512 submitted
+
+Previous goal turn made progress: completed training,64 hosted matches and
+replay audit, rejected promotion. Current turn re-read worktree AGENTS, fetched
+origin, exact Metta preflight/throughput skills, full queue/node state. No other
+Generals allocation. Initial main62581 failed exit127 BEFORE training because
+controller-local script path was passed to compute node; allocation terminal
+and absent from queue. Preserve /tmp/relh-classic-spatial-iterated-opponent-
+controller-path-failure.log and empty archive. Corrected by feeding script over
+stdin, not placing another controller-only path on node.
+
+One bounded B300 job **31512**, SAME main session **12360**; b300/node
+metta-fabric-b300-1,nice100,25 minutes,8CPUs/64GiB. Output node-local
+/var/tmp/relh-generals-recovery/classic-spatial-iterated-opponent-pilot-31512,
+recipe iterated-opponent; TMPDIR under it,core0. Assigned physical UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%/no CUDA processes;
+DockerUUIDmatched. Runtime bdd4f2...96ae5. No observed contention.
+Guarded previous31410 exact container absent/node archive SHA c4ba81...b0e.
+
+Restore verified335M c601 policy AND29af5f...57d13 optimizer/run identity,
+seed6751/same overrides, explicit environment transfer. Only environment
+frozen_bundle/assets changed from weak30238 parent to31410 finalc601 bundle.
+CPU config preflight verified checkpoint/optimizer/run hashes and exact
+one-variable configuration comparison. Native graph/model3c809...fa005,
+Puffer binary/CUDA normalizer/defaultINI unchanged; build metadata has new
+Python environment fingerprint bcb9e5609d96120c5bff00909e628f9789fda94d6ca98f4b7af453975d0aba7a.
+57,028 parameters/five priors/23 logical optimizer shapes verified; registration
+fresh-initial check is a compatibility probe, NOT a reset of resumed learner.
+
+Target335,544,320 ->369,098,752 absolute, **33,554,432 NEW physical**.
+Same4096games/onelearner/H512/rollout2,097,152/mb8192/R0.5/LR0.003/T0.0625/
+normadv1/gamma=shaping_gamma0.999/shaping0.5/rewardscale0.5. Mixed frozen50%,
+Exp25%,Sent25%,both seats, no teacher. Bounded train timeout8m; >=30k sustained
+and nonfinite/stall guards. After train, held-out scripts128each seeds6686,
+parent512 seed6513 (same maps/seats as31410), plus startingc601512 seed7513.
+No longer run before measured throughput and meaningful held-out evidence.
+
+Script /tmp/relh-classic-spatial-iterated-opponent-run-node.sh SHA256
+cdeaa58db3ece08289ab64696f42b395c270aef685532a013c9b6b5833b9bf66,
+generator /tmp/relh-build-iterated-opponent-pilot.py. Mac live archive
+/tmp/relh-classic-spatial-iterated-opponent-stream.tar.gz; observer
+/tmp/relh-classic-spatial-iterated-opponent-srun.log. Poll SAME31512/main12360;
+never restart on observer timeout. No hosted writes/promotions this turn yet.
+Goal active; protected histories untouched.
