@@ -12996,3 +12996,24 @@ Compare the two final held-out panels with paired map-cluster bootstrap,
 plus each against immutable553M baseline/direct553M. Do not interpret
 within-branch improvement alone as proof of entropy benefit.
 Goal active. No hosted writes/champion promotion; protected history untouched.
+
+### 2026-09-29 — 31932 control branch starts; restoration verified
+
+Previous goal turn made progress: completed31866 audit/held-outs and started
+controlled job31932. Same main68417 and external queue confirmed live now.
+Entropy0 control reached epoch266 /557,842,432 total /4,194,304 new steps;
+dashboard ~125.8kSPS (not yet a full steady-state qualification interval).
+Actual copied initial-policy and optimizer SHA equal553M c2f648ad.../
+169d8d4c... exactly. No new/random optimizer reset or environment transfer.
+Actual mix frozen1024/side, Exp512/side, Sent512/side, correct2000-turn
+Coworld rules flagTrue and frozen218M SHA verified from runtime log.
+Early reward audit4,194,304steps/4,664terminals/zero0/nonfinite0.
+AssignedGPU CUDA PIDs649030python648MiB/649929puffer147904MiB are BOTH
+in this exact container; no actual contention observed.
+
+Prepared /tmp/relh-coworld-entropy-pair-quality.py for terminal results:
+requires same maps/seats/opponentIDs/rules/horizon/seeds/action-selection
+for both final branches, then10,000 map-cluster bootstrap draws of paired
+entropy001-minus0 outcomes for all five panels. This helper is prepared,
+not executed against pending results. Same job continues; do not duplicate.
+Final branches/SPS/held-outs still pending; goal active.
