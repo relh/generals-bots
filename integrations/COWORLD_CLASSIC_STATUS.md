@@ -14023,3 +14023,20 @@ The fresh corrected Muon policy is weaker; reject promotion and hosted XP.
 Preserved full archive, optimizer state, and matched outcomes. Next bounded
 question is whether this corrected optimizer improves with more physical
 steps; gate any longer continuation on intermediate held-out quality.
+32447 bounded corrected-Muon learning-curve continuation STARTED on B300,
+same native SSH/srun handle 30930, `--nice=100 --time=50:00 --cpus-per-task=8
+--mem=64G`, one physical allocated GPU. Full queue before submission showed
+no Generals job; relh 32434 was running a separate task on B300.
+Script `/tmp/relh-classic-spatial-muon-context-learncurve-run-node.sh` SHA256
+c5608620ba3aaf395b86e1443a4795c56c3c9e0c6594a1945a2af48ea58e5a8e.
+Target: restore both policy and learner from 32312 exact 33,554,432-step
+checkpoint, train 100,663,296 additional physical steps to absolute
+134,217,728, same 4096-game official Classic capture-only recipe,
+corrected dense/context Muon, no teacher. Prior measured 118,832 SPS projects
+~847 s steady training plus startup/evaluation. Node-local output
+`/var/tmp/relh-generals-recovery/classic-spatial-muon-context-learncurve-pilot-32447`;
+Mac archive stream `/tmp/relh-classic-spatial-muon-context-learncurve-stream.tar.gz`.
+Runtime preflight guards physical allocated UUID, memory/utilization,
+image/source/checkpoint SHA; same job includes held-out Expander, Sentinel,
+frozen218M, currentc601, and direct versus public33M. Check outcomes before
+more scaling; no hosted write/promotion authorized by this result alone.
