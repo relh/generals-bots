@@ -10124,3 +10124,33 @@ than the fixed greedy parent. This addresses near-universal losses against
 the fixed opponent, but improvement remains a hypothesis. Physical SPS
 must count each paired game once: native agent steps /2, not dashboard SPS
 directly. No new allocation has been submitted at this point. Goal active.
+
+
+## 30532 complete: two learning seats pass throughput but regress
+
+One B300 allocation, 8 CPU / 64 GiB, 2048 physical games and 4096 learner
+seats; H512 / minibatch8192 / replay0.5, gamma=shaping_gamma=0.999,
+GAE0.999 / entropy0.01 / LR0.0003. Teacher off, shaping0, capture reward1.
+Actual 67,108,864 agent steps =33,554,432 physical environment steps.
+Warmup through epoch4 at72.739s; epoch32 at351.346s. Steady physical
+29,360,128 /278.607s =105,381.875 ENV SPS, twice that agent SPS.
+No duplicate task job remains in the full queue. Main exec68757 returned0.
+Device action mask audit67,108,864 decisions /0 illegal; final57028 floats
+all finite. Final checkpoint1e68d6d38e5858422220700b6c175714bf9e2043cf1ec7547ec16c3b42c64f4b.
+
+Held-out greedy W/L/D: midpoint16,777,216 physical steps Exp0/127/1,
+Sent0/126/2, parent0/507/5. Final33,554,432 Exp0/127/1, Sent0/127/1,
+parent0/499/13. Script panels128 seed1386; parent512 seed1513 balanced.
+Reject both checkpoints; no hosted submission or promotion.
+
+Archive5c0222ce340e9dcf6883d3eaa8d1091815c016666b59b6ad1fd1557039674489
+verified on Mac /tmp/relh-classic-spatial-local8-selfplay-long-credit-stream.tar.gz
+and metta0:/tmp/relh-classic-spatial-local8-selfplay-long-credit-30532.tar.gz.
+Node archive requires verification in the next allocated preflight.
+Local full extract /tmp/relh-spatial-selfplay-long-credit-30532-inspect.
+
+Late displayed policy/value losses round to0 while entropy4.9–5.8 persists.
+This is evidence to measure actual capture versus zero-reward timeout counts,
+not proof of an incorrect reward sign or codec. Prepared opt-in device reward
+counter and entropy0 controlled self-play pilot; no architecture/environment
+rule changes. Counter observes transition results and returns them unchanged.
