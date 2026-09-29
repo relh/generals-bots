@@ -14185,3 +14185,14 @@ read,0completed/0failed. Read exact IDs; DO NOT recreate while pending.
 Only after both runtime clean, consider a private balanced live-leader
 `top_n:1` panel that records the resolved opponent policy ID. Full local
 payloads/responses at `/tmp/relh-spatial-selfplay-234m-serving`.
+
+Both exact smoke IDs completed 1/1 without runtime failure or failed policy.
+Candidate policy9fbd6afd...2045 beat relh champion seat0 and lost seat1:
+combined1W1L, insufficient for strength inference. Two private live-leader
+panel XP requests were then created with `top_n:1`,16games per candidate
+seat, stable keys `relh-selfplay234m-0025c722-20260929-leader-seat{0,1}`:
+seat0 xreq_b20ba410-4a4b-4976-8f46-7d1eb43a571f; seat1
+xreq_6afb5252-721b-4e48-a0bb-fa749857da7f. Existing requests read
+before POST, exact local response filenames checked absent. Both pending
+initially; read these exact IDs and resolved opponent policy version IDs,
+DO NOT resubmit. No champion change. 32505 continues separately.
