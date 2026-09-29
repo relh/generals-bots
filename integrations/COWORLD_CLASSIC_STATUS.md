@@ -10993,3 +10993,41 @@ parameterdiff restricted to6splitpriorcoefficients before candidate training.
 This control is a new fresh initialization, unlike prior parent continuations;
 no old completed training is replayed. All original checkpoints left immutable.
 Qualification and heldoutscript/parentpanels gate scaling; no overnight queued.
+
+## 31254 control preserved; candidate layout assertion fixed before training
+
+31254/main9356 terminal1. Control completed33,554,432physicalsteps; warm4
+68.602s→16 258.248s:25,165,824physical/189.646s=132,698.944349ENV SPS.
+53steadyGPU samples mean54.9245%,peak145760MiB.11164positive/36485negative/
+1714zero terminal=49363games,0nonfinite,33,554,432actionchecks/0illegal.
+Checkpoint c19340aee1085cd60b990f6e4a89be965f5c383d56a1b56b7d20639caeba8ebe
+57028finitewords. Heldout128Exp27/96/5,128Sent2/119/7,512parent136/352/24.
+Control audit /tmp/relh-spatial-split-prior-31254-control-audit.json.
+
+Candidate actual buildb759f84...305 completed; registration failed own
+hardcoded57028count assertion BEFORE training or games. Equal full/half
+coefficient1 causes Fabric to merge public-prior coupling classes, giving
+57024words/3priorclasses, unlike57028/5original. No candidate checkpoint or
+completed metadata fabricated. This was an incorrect assumption in my job
+preflight, not shared-resource contention. User informed; control not replayed.
+
+Bounded local CPU realized NativeFabric initializer check validates near-equal
+ratio.99/fullbonus.125:57028words/5classes, exact seeded initialparam difference
+only6splitpriorindices56908–56911,56916,56920. Artifact
+/tmp/relh-split-prior-layout-preflight.json. No strength/throughput claim.
+
+31254archive60fd309cbe21c2977e04f19ca028a7bde2d8d96d707c782d11cd86fcda63cc58
+verified gzip/extraction/Mac/controller; nodehash/oldcontainerabsence guarded
+by nextjob. Mac /tmp/relh-classic-spatial-split-prior-comparison-stream.tar.gz;
+controller/node relh-classic-spatial-split-prior-comparison-31254.tar.gz.
+Full extraction /tmp/relh-spatial-split-prior-comparison-31254-inspect.
+
+Fullqueue/sinfo/node rechecked; sole Generals31283/main92499,25minB300/8CPU64GiB/
+nice100, source6069da2, output
+/var/tmp/relh-generals-recovery/classic-spatial-split-prior-remaining-pilot-31283.
+Candidate ONLY, freshseed6751, ratio.99/fullbonus.125, otherwise matched control.
+Script /tmp/relh-classic-spatial-split-prior-remaining-run-node.sh SHA
+08da0f8cd592f4f1abc6f896b726fdf2fc7dddb04d7658abb87b563ba960bbcd.
+Native actual GPU registration must repeat exact initialparam matching against
+preserved31254control, then bounded33,554,432steps and heldoutpanels. No second
+control training or completed control evaluation. All output preserved.
