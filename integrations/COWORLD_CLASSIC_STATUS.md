@@ -13037,3 +13037,29 @@ Control held-outs then entropy001 training/evals remain in SAME allocation.
 Prepared paired quality helper handles single frozen opponent panels with
 opponent SHA identity when mixed-opponent-ID arrays are legitimately absent.
 No new allocation, hosted write, or promotion. Goal active.
+
+### 2026-09-29 — 31932 control held-outs complete; entropy branch preparing
+
+Previous goal turn was a verified wait on live31932/main68417. SAMEjob
+continues; sealed entropy0 final+baseline panels copied read-only after all
+five evaluation.json files completed. Gzip verified snapshot
+/tmp/relh-coworld-entropy0-31932-completed-panels.tar.gz.
+Matched audit /tmp/relh-coworld-entropy0-31932-matched-scores.json;
+maps/seats/opponentIDs verified,10,000 map-cluster bootstrap draws.
+Starting553M -> entropy0 control587M W/L/D and paired score delta95%CI:
+Exp26/102/0 ->30/98/0,+.0625[-.111,.245];
+Sent23/104/1 ->26/99/3,+.0625[-.096,.220];
+parent419/84/9 ->412/84/16,-.0137[-.094,.067];
+currentc601238/232/42 ->264/218/30,+.0781[-.056,.211].
+Direct control vs553M276/224/12,+.1016[-.024,.223].
+ALL intervals include0; no clear gain/no hosted qualification.
+
+Second branch entropy001 config now exists on same node/allocation;
+actual ent_coef=.001 and initialization references SAME553M c2f648ad...
+policy/checkpoint, restore_learnerTrue, allow_environment_transferFalse.
+Pinned default.ini anneal_ent_coef=0, so this comparison uses a constant
+coefficient. Exact trainer copies configured scalar to device memory and
+PPO kernel reads that pointer, including inside CUDA graphs; coefficient
+is not frozen as a host literal in the captured graph. No code changes.
+Keep same68417 through second branch and compare final panels directly.
+Goal active; no additional job, hosted write or promotion.
