@@ -11852,3 +11852,58 @@ leader seat (top_n1), totaling32 against each. Existing requests read before
 writes, stable panel keys. No champion change. Goal active; histories untouched.
 This goal turn made progress: verified completed training, preserved evidence,
 registered frozen evaluation artifact, started hosted startup tests.
+
+### Frozen335M hosted comparison complete: no promotion
+
+Both startup games completed, candidate won both seats with no failures.
+Then32 games versus each opponent, balanced16 per seat INCLUDING startup
+against relh. Live top_n1 selector resolved to Alpha/daveey-grl:v7,
+76b0a083-f0a4-4ec7-9811-038349266633. All64 games completed, zero runtime
+failures. Final candidate **Daveey6W26L; relh11W20L1D**. Against Daveey3W13L
+on each seat; versus relh seat0 6W9L1D, seat1 5W11L. No improvement over the
+existing relh champion proven; neither champion changed (both re-read after
+tests: relh siege:v4/e53e30..., richard siege:v2/7a3f30...). No resubmission or
+duplicate XP. Registration is an evaluation artifact, not champion promotion.
+
+Completed panel request IDs (DO NOT repeat):
+- relh seat0 xreq_d139ad82-83ac-4e5a-85d1-2d925fc0b3c2,15 games;
+- relh seat1 xreq_ec9fba24-b218-4167-978d-2b9a773a8351,15 games;
+- leader seat0 xreq_bec15f39-539b-4bfd-b06b-1df49139f563,16 games;
+- leader seat1 xreq_df9b8c31-6a16-444e-80b9-96b7b69bfa66,16 games.
+Stable keys relh-source025-335m-c601-20260929-panel-{relh,leader}-seat{0,1}.
+
+Owned requests'64 replay artifacts downloaded and inspected after games.
+All32 Daveey games ended by general capture,31 relh by capture/1 turn limit.
+No timeouts for candidate or opponents. Candidate31,727 nonpass moves, all
+pass basic per-frame ownership/army/bounds/mountain checks. This is additional
+hosted evidence against a blanket codec/mask problem, not a substitute for
+complete authoritative action-mask parity. Omniscient replay used only for
+post-game analysis; no private observations supplied to policies/training.
+
+Against Daveey candidate13,719 moves:8,721 into owned tiles/1,195 neutral/
+3,803 enemy,22 half moves. Daveey13,069 moves:7,159 owned/2,908 neutral/
+3,002 enemy,1,205 half moves. Candidate average land14.44 versus17.06 at
+turn50 and26.28 versus32.81 at turn100 (all32 games survive those turns).
+Against relh candidate18,008 moves:10,760 owned/1,540 neutral/5,708 enemy,
+39 half; relh17,742 moves:8,669 owned/3,599 neutral/5,474 enemy,769 half.
+Turn50 land14.41 versus20.63 across32 games. This identifies weaker expansion
+and scarce split use, not proof that either metric alone causes losses.
+Full replay-panel evidence /tmp/relh-spatial-source-prior-serving-31410/
+hosted-replay-panel-audit.json; raw64 replays in replays/.
+
+Host evidence archive /tmp/relh-source025-hosted-evidence-31410.tar.gz,
+94 files/1,933,983 bytes, SHA256
+5f2899ffd2f31545e79e77f0215d17dc274e2399ad0d7cda96d14bd8373aafd8,
+verified Mac and metta0 controller. Registry credentials excluded.
+Fresh full Slurm queue rechecked09:30 UTC, NO Generals job; peers onB200 and
+4090 left untouched. No additional GPU allocation this turn.
+
+Goal remains active. Next bounded experiment: iterate the frozen opponent
+from weak30238 parent to verified335M c601 checkpoint while preserving current
+policy AND optimizer, scripted mix/both sides, all learner/reward settings.
+Declare environment transfer for changed opponent, verify exact graph/optimizer
+compatibility and staged bundle SHA. Demonstrate >=30k steady physical SPS on
+one bounded pilot before another long continuation; compare starting c601 on
+matched held-out panels plus scripted opponents. Do not repeat completed300M,
+old hosted tests, or change priors and opponent simultaneously. Training speed
+is working; hosted strength and300k ENV SPS remain unresolved.
