@@ -14196,3 +14196,27 @@ xreq_6afb5252-721b-4e48-a0bb-fa749857da7f. Existing requests read
 before POST, exact local response filenames checked absent. Both pending
 initially; read these exact IDs and resolved opponent policy version IDs,
 DO NOT resubmit. No champion change. 32505 continues separately.
+
+Both exact leader XP requests COMPLETED16/16 each, zero runtime failures.
+Every resolved leader policy version was76b0a083-f0a4-4ec7-9811-038349266633
+(historical Daveey v7, resolved from live `top_n:1`, not inferred from a
+null leaderboard label). Candidate234M won3/lost13 from each seat: total
+6W26L0D across32 hosted games. This does not improve the older c601
+candidate's historical6W26L result; no champion promotion. Exact policy
+IDs, outcome scores, request IDs and seat split in
+`/tmp/relh-spatial-selfplay-234m-serving/xp-leader-summary.json`.
+All32 owned replay artifacts downloaded read-only (1,037,737 compressed
+bytes),SHA manifest in same folder. Post-game omniscient basic legality
+audit:15,354 candidate nonpass moves,0 basic invalid,102 passes,**0 half
+army moves**. Daveey14,701 moves,1,213 half moves,755 passes. Candidate
+averaged40.75 moves toward neutral destinations/game versus Daveey96;
+at turns50/100 average candidate land deficit2.81/8.0 and army deficit
+2.81/10.87 (only games still alive at each turn). All32 ended by general
+capture, no timeouts. Full per-game post-game evidence in
+`/tmp/relh-spatial-selfplay-234m-serving/hosted-replay-audit.json`.
+This is a behavioral diagnostic, not authoritative mask parity or causal
+proof. The flat action mask explicitly repeats legal full/half moves;
+full-split prior learned coefficient in exported234M bundle is0.18565,
+which at training T0.0625 may materially suppress half sampling.
+Next bounded experiment should test split exploration/prior while keeping
+official rules and matched held-outs. 32505 remains live unchanged.
