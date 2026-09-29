@@ -14040,3 +14040,41 @@ Runtime preflight guards physical allocated UUID, memory/utilization,
 image/source/checkpoint SHA; same job includes held-out Expander, Sentinel,
 frozen218M, currentc601, and direct versus public33M. Check outcomes before
 more scaling; no hosted write/promotion authorized by this result alone.
+
+32447 COMPLETED cleanly; full streamed archive SHA256
+fd6d81e1cdef148bdb6dc2c3afdfcb0cc05efa56b6e22a510a7a1d7cc525e7fc,
+extracted `/tmp/relh-muon-context-learncurve-32447-inspect`. Slurm full queue
+subsequently showed no Generals job. Allocation was B300 physical UUID
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a, preflight 0 MiB/0%.
+The 270 timestamped training samples all name that UUID; sampled GPU mean
+53.7% overall, 59.5% after first 60 samples. No observed foreign CUDA
+process on the allocated GPU at preflight; sampled utilization provides no
+per-process contention audit during training. Node disk 618 GB available;
+`/tmp` inode use 99%, but training TMPDIR was node disk and job completed.
+The exact 32312 policy+learner restored (`initialization.json` checksum
+0a9ec143...4444). New 100,663,296 physical actions (absolute 134,217,728),
+all legal/0 illegal, 185,348 terminal agents, zero nonfinite or zero-reward
+terminal agents. Positive/negative reward counts 58,099,917/39,744,114
+are not wins. New policy SHA256 d261ac6de5f110b73ca1fd02693522e3b10e814aa55e48ded342b429b6f43b7d;
+optimizer SHA256 3dc56007857da84e471db7f74b3e083b76808ff6cb500ed359d7b2a6f2d57db3.
+Warmup through absolute epoch20 took 77.552 s; epochs20→64 completed
+92,274,688 physical steps in 788.817 s = 116,978.6 end-to-end SPS.
+4096 environments, one learner/game, horizon512, batch2,097,152,
+minibatch8192 on one B300. Final monitor rollout14.99 s/epoch,
+environment11.57 s, train2.77 s, model2.65 s. 300k target unmet;
+environment remains dominant.
+Matched held-outs new versus fresh corrected 33M, using identical maps,
+seats and opponent hashes: Expander 11/117/0 versus28/99/1, score delta
+-.2734 [map-cluster95% -.4444,-.1190]; Sentinel19/108/1 versus
+14/113/1, +.0781 [-.0645,.2266]; frozen218M228/267/17 versus
+183/319/10, +.1895 [.0270,.3581]; currentc601190/307/15 versus
+144/359/9, +.1914 [.0156,.3603]. Versus old public33M matched panels,
+Expander also regressed -.2188 [-.3740,-.0775]; frozen +.0234
+[-.1361,.1860]; current +.1465 [-.0038,.2983]. Direct new versus old
+public33M was262/238/12 over512 held-out games, score+.0469,
+map-cluster95% [-.0974,.1923] across125 unique maps. Per-panel CIs are
+unadjusted for multiple comparisons. Corrected Muon learns with steps but
+Expander weakness is clear and current advantage is not robust against the
+old public baseline. No hosted promotion/XP submission. Goal remains active;
+next bounded phase should use iterative frozen self-play or diversify the
+opponent mixture, with Expander and current held-outs as gates.
