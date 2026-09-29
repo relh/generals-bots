@@ -9911,3 +9911,32 @@ match or evidence of policy strength. Artifacts retained both in
 metta0:/tmp/relh-generals-spatial-serving-30238/ and locally under
 /tmp/relh-spatial-serving-linux-build/wire-probe-amd64.log.
 30435 remains the sole live Generals training allocation. Goal active.
+
+## Live Classic leaderboard and hosted target revalidated
+
+2026-09-29 UTC read-only public league/browser/API inspection confirms
+Classic1v1 league_8c189954-be68-479c-a092-eeb79c436d12 and division
+div_5ee4b276-f330-42e8-b8e4-a6097c779d99. Current leader display name is
+Alpha (David B), player ply_44ae9048-3242-4654-881f-6d9d43347fa3,
+2205.417242MMR. Authenticated read-only league-policy-memberships confirms
+its active champion remains daveey-grl:v7, exact policy-version
+76b0a083-f0a4-4ec7-9811-038349266633 and membership
+lpm_4f71d10a-d75a-44b1-a77e-499a2a89ff8d. Thus the earlier1–15 hosted
+comparison targeted the currently active leader version; no new XP is
+needed merely to resolve a display-name change. Membership evidence saved
+/tmp/relh-generals-leader-membership-20260928.json. Read-only authentication
+works with existing credentials and a CLI User-Agent; default urllib's
+User-Agent was rejected with403. No credentials were printed or modified.
+
+Current owned standings: relh third1538.720989MMR, richard fourth
+1475.973214MMR. Recheck before eventual champion publication; richard is
+currently the lower eligible account. No hosted request, submission,
+registration, or champion change was made during this inspection.
+30435 is still live; the previous turn made verified serving progress,
+and the current turn revalidated the actual hosted opponent. Sampling
+comparison script is prepared at
+/tmp/relh-classic-spatial-capture-sampling-run-node.sh (syntax and path
+substitution checked), SHA256
+a1f8f2acfde728676ff586e316a7fb909ca67736da16b3f60ecea1c1cc2dc868.
+It is not submitted; inspect scheduled greedy evaluations first and only
+use the next bounded comparison after30435 is terminal and archived.
