@@ -340,6 +340,8 @@ def main():
         native_mingru=args.native,
         spatial_bundle_gpu=bool(args.spatial_bundle),
         options=options,
+        coworld_classic_rules=env.base.env.coworld_classic_rules,
+        episode_limit=env.horizon,
         force_hint_move=args.force_hint_move,
         force_hint_split=args.force_hint_split,
         intervention=intervention if args.force_hint_move or args.force_hint_split else None,

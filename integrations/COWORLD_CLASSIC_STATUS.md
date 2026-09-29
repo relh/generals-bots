@@ -13421,3 +13421,62 @@ latency or strength evidence. Earlier local ARM serving Docker images are absent
 no peer Docker image mutated, no AMD64 JAX on Mac, no Docker build/hostedwrite.
 Continue SAME50123 for public training/allpanels and direct paired comparison.
 Goal active, protectedhistory untouched.
+
+### 2026-09-29 — 32015 completed: public scalars improve matched neural comparison
+
+Previous turn PROGRESS: GPU/portable16channel parity, sealed control audit,
+local32/32legal WebSocket contract. This turn PROGRESS: public finaltraining
+and all matched heldouts audited. SAME50123 terminal0; full queue confirms
+32015 released. No duplicate allocation or hosted writes. Goal remains active.
+Fullstream /tmp/relh-classic-spatial-public-scalars-stream.tar.gz verified and
+extracted /tmp/relh-public-scalars-32015-inspect/classic-spatial-public-scalars-pilot-32015.
+Controller backup /tmp/relh-classic-spatial-public-scalars-32015.tar.gz matches
+Mac SHAa435024b95bedc87a5e14e1b90b2903e93f82a34ecf4c00f74da6cf2edfe143a.
+Actual staged official env/rules SHAs6fea2498.../f39e448a... match pins;
+registration parity executed actual imported env/rules hash assertions.
+Staged metta_puffer SHA997e99ee624ea1be8a1e99b873c243fe5d25b96329408f584ce38d736fabd4a0
+explicitly selects coworld_classic_rules=True/build_castlesFalse/deathtouchNone
+for Classic, including script evaluation. No replay of completed games.
+
+Audit /tmp/relh-public-scalars-32015-final-training-audit.json verifies BOTH
+arms actual identical initialbytes/modelSHA, full policy/optimizer/sidecar/run
+hashes, finite570668parameters, correct16channelablation and bothseatmix.
+Public completed33,554,432physicalsteps; epoch4@80.444 ->16@295.046,
+25,165,824/214.602 =117,267.4253end-to-endenvironmentSPS. OneB300/4096games,
+onelearner/game,H512/batch2,097,152/mb8192/R.5,F32/global32. Control117,721.0806.
+Public policy284aac29ec5134b50495fb2bcc90fa22a3b11037b6f0dc0a5d0d041ffaad4ac9;
+optimizer5d2f61ae35f26fce1bca434c61551151812de30bdcded04a7d42b6ae2ad38f3f.
+All33,554,432actionslegal;70,970terminals/zero0/nonfinite0. Reward sign counts
+are not wins. ActiveGPUmemory>100000MiB samples83:meanGPUutil59.0964%,
+includeswarmup, NOT exactly aligned steadywindow. Env~64–65%epoch,train~15%,
+learnerinference~15%; GPUresident rollout remains primary300kSPS bottleneck.
+No foreignCUDAprocess observed on physicalallocatedUUID during publictraining.
+
+Matched quality /tmp/relh-public-scalars-32015-matched-scores.json and
+full-archive equivalent /tmp/relh-public-scalars-32015-full-archive-matched-scores.json
+are byteidentical. Same maps/seats/opponents/heldoutseeds asserted;10,000
+map-clusterbootstrapdraws (seed32015), outcome scores W=1/L=-1/D=0.
+Zero -> public W/L/D, score difference95%CI:
+Expander21/107/0 ->17/111/0, -.0625[-.272,.15625];
+Sentinel8/120/0 ->14/112/2, +.1094[-.0224,.2689];
+frozen218M152/346/14 ->206/295/11, +.2051[.0422,.3647];
+currentc601147/349/16 ->195/311/6, +.1680[-.0084,.3462].
+Direct public vs zero307/190/15, +.2285[.1102,.3524]. Neural/direct512games,
+scripts128; these are per-panel intervals, not multiple-comparison-adjusted.
+Only direct and frozen neural CIs exclude0; script absolute strength staysweak.
+One matched trainingseed, so no broad claim about seedrobustness or championlevel.
+
+Qualityhelper first stopped on older script evaluation schema (missing top-level
+rules/horizon); corrected to check explicit Classic/optionshorizon and GPUspatial
+selection for that schema, with actual pinned factory/core provenance audited
+above. New repository evaluator now records instantiated rules/horizon directly;
+ast parsing and diffcheck pass. No past output rewritten or games rerun.
+
+Decision: retain full public scalar representation. A further bounded training
+window is justified by same-init direct advantage and frozenbenchmark gain,
+not yet hosted promotion. Next action: prepare a100,663,296newstep continuation
+from public33M policy+optimizer to134,217,728 total, keeping model/mix/rewards/
+priors unchanged; benchmark starting33M and final on new paired heldout seeds,
+and direct final-vs-start. Expected training~14.3min at117kSPS; recheck full
+queue/node/physical UUID and keep one bounded allocation including comparisons.
+Release no unchanged billions-step run. Protected Codex history untouched.
