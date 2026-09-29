@@ -13943,3 +13943,20 @@ generator /tmp/relh-build-spatial-muon-context-fresh-retry.py.
 Freshfullqueue/scontrolpreflight rechecked; peers32291/32232, Daveeyuntouched.
 Goalactive; thisturnPROGRESS: opt-inCUDAcode compiled+GPUinit verified and
 staleprobe discovered/fixed. No learning claim yet or hosted/promotionwrites.
+
+Singleboundedretry 32312 STARTED, SAMEnativeSSHhandle51295 LIVE.
+50min nice100/8CPU/64G oneB300 metta-fabric-b300-1. Exactcontainer
+relh-classic-spatial-muon-context-retry-32312, nodeout
+/var/tmp/relh-generals-recovery/classic-spatial-muon-context-retry-pilot-32312.
+Allocatedactualphysical GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f again
+EMPTY0MiB/0% beforeCUDA; runtime/nodediskpreflightpassed. Freshfullqueue
+andnode checked; peerB30032291/32232 untouched, nootherGenerals job.
+The alreadycompiledbinary SHA8f1a7e...d6ea1a reused/copied fromterminal32305;
+sourcealgo26b330... hashasserted, no duplicateNVCCbuild. Corrected
+probe requestslogical_optimizer_shapes(...,context_matrix=True); olddefault
+vector assertionremoved inrunneronly. Sourcecodecommitb83615f unchanged,
+GPUactualfirststep and30ksteady/qualitygatespending. MacACTIVEarchive
+/tmp/relh-classic-spatial-muon-context-retry-stream.tar.gz andsameprefixsrun.log;
+doNOTextractuntilmainhandleterminal; no duplicateGPUjob.
+SubmittedscriptSHA5d4c7ca9c0cc2f9a0a7f693d83999c131827ddaed6efbded3cb0b189d5acf93c.
+Goalactive/protectedhistoryuntouched.
