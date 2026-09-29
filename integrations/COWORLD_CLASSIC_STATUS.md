@@ -11031,3 +11031,47 @@ Script /tmp/relh-classic-spatial-split-prior-remaining-run-node.sh SHA
 Native actual GPU registration must repeat exact initialparam matching against
 preserved31254control, then bounded33,554,432steps and heldoutpanels. No second
 control training or completed control evaluation. All output preserved.
+
+## 31283 complete; qualified split exploration variant extended to300M scale
+
+31283/main92499 terminal0. Actual GPU initializer confirms57028words, only
+splitprior6indices differ from preserved control. Model6eb67dc6e3b7d886a42f460c4082f42262b67f08175a7bc0b44147623825b68d.
+Completed33,554,432physicalsteps; warm4@65.839→16@250.688:
+25,165,824/184.849=136,142.602881ENV SPS,52alignedGPU mean57.3269%,peak145760MiB.
+Capture6396W/44697L/1284draw=52377games;0nonfinite;33,554,432actions/0illegal.
+Final ca4f9a0713b45af2a29512ff140653c06262ed91c6b2c367a93e82330f9dfb73,
+57028finitewords. Heldout128Exp18/105/5,128Sent0/124/4,512parent158/329/25.
+Control31254Exp27/96/5,Sent2/119/7,parent136/352/24. Candidate still weak;
+no hosted requests/uploads/promotion. Exp greedy diagnostic37halfmoves vs
+zero control, otherwise army-source selection still dominates; sampling entropy
+at6.3M.915vscontrol.525. Behavior/exploration changed, strength unproven.
+Audit /tmp/relh-spatial-split-prior-31283-audit.json and archived nodeaudit.
+
+31283 archive340c918fdd2cad81798f735f3ed99938612c5f61fbe2a422ac74529368a7bd42
+verified terminalgzip/extraction/Mac/controller; nextnodeguard verifiesnodecopy
+and exactoldcontainerabsence. Mac /tmp/relh-classic-spatial-split-prior-remaining-stream.tar.gz;
+controller/node relh-classic-spatial-split-prior-remaining-31283.tar.gz.
+FullMac /tmp/relh-spatial-split-prior-remaining-31283-inspect.
+
+Decision: earlier unchanged-parent weak continuations did not justify blind
+scaling. This matched NEW split exploration variant passed completed≥30k gate,
+finite/illegal checks, and changes exploration. User explicitly requested300M
+or billions;33M pilot is not convergence evidence. Run one bounded300M-scale
+continuation to test learning with greater exposure, NOT claim pilot strength.
+Restore actual policy+optimizer, identicalseed6751/overrides, exactsame original
+actualbuild (symlink retainedbuild, no editedBuildOutcome). Absolute335,544,320
+native/physicaltarget adds301,989,888NEWsteps/144epochs afterepoch16. Atpilot
+136142.6SPS projection2218.19s≈37min (startup/eval additional); trainer50min,
+allocation65min. Checkpoints every8epochs; finalposttrain evaluate134,217,728
+absolute (100,663,296new) and335,544,320 (301,989,888new). Fresh4686script/4513
+parentpanel seeds,128Exp/128Sent/512parent each. No concurrent GPU eval/training.
+
+Fullqueue/sinfo/node rechecked; soleGenerals31289/main95481, B3001GPU/8CPU64GiB/
+nice100/65min, source6069da2, output
+/var/tmp/relh-generals-recovery/classic-spatial-split-prior-300m-pilot-31289,
+container relh-classic-spatial-split-prior-300m-31289. Script
+/tmp/relh-classic-spatial-split-prior-300m-run-node.sh SHA
+6266f2b6d61398b7a6da4e7d5f2b0ec9c0884a4e85192075a4ab23efe795c509.
+Physicaloccupancy/DockerUUID/image/disk/previousarchive guards beforetraining.
+Longrun pending actual learner start; no duplicate/replayed training, no Codex
+history mutation. Goalactive; strongheldout+hostedproof still unfinished.
