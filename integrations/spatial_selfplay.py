@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from pathlib import Path
 
 import jax
@@ -40,6 +41,12 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
             return jnp.argmax(jnp.where(masks, outputs[:, :3529], -jnp.inf), axis=1).astype(jnp.int32)
 
         self._opposing_actions = opposing_actions
+        if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
+            # A built environment can be imported by its source loader before
+            # the startup import hook sees it. Install on the actual class.
+            from integrations.environment_reward_audit import install
+
+            install(type(self))
 
     def reset_device(self, seed):
         self._reset_states(seed)
@@ -103,6 +110,20 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
                 return jnp.where(actions[:, 0] != 0, 3528, moves).astype(jnp.int32)
 
             self._scripted_actions.append(jax.jit(indices))
+
+        def opposing_indices(states, sides, keys, values, masks):
+            opponents = jnp.zeros(self.parallel_games, jnp.int32)
+            rows = self._mix_rows[0]
+            opponents = opponents.at[rows].set(
+                self._opposing_actions(values[rows, sides[rows]], masks[rows, sides[rows]])
+            )
+            for rows, act in zip(self._mix_rows[1:], self._scripted_actions, strict=True):
+                selected = jax.tree_util.tree_map(lambda leaf: leaf[rows], states)
+                selected_keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(keys[rows])
+                opponents = opponents.at[rows].set(act(selected, sides[rows], selected_keys))
+            return opponents
+
+        self._mixed_opposing_indices = jax.jit(opposing_indices)
         self._mix_output = context.output / "spatial-opponent-mix.json"
         self._mix_checkpoint_sha256 = hashlib.sha256(
             Path(options["frozen_bundle"]).joinpath("policy.bin").read_bytes()
@@ -127,14 +148,6 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
         return result
 
     def _opposing_indices(self, values, masks):
-        sides = 1 - self.sides
-        opponents = jnp.zeros(self.parallel_games, jnp.int32)
-        rows = self._mix_rows[0]
-        opponents = opponents.at[rows].set(
-            self._opposing_actions(values[rows, sides[rows]], masks[rows, sides[rows]])
+        return self._mixed_opposing_indices(
+            self.states, 1 - self.sides, self.keys, values, masks
         )
-        for rows, act in zip(self._mix_rows[1:], self._scripted_actions, strict=True):
-            states = jax.tree_util.tree_map(lambda leaf: leaf[rows], self.states)
-            keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(self.keys[rows])
-            opponents = opponents.at[rows].set(act(states, sides[rows], keys))
-        return opponents

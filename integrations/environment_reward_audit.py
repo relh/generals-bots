@@ -23,6 +23,8 @@ def accumulate(counts, rewards, terminals):
 
 
 def install(environment_class):
+    if getattr(environment_class.step_device, "_generals_reward_audit", False):
+        return
     if environment_class.__dict__.get("_reward_audit_installed", False):
         raise RuntimeError("Reward audit already installed")
     original = environment_class.step_device
@@ -52,6 +54,7 @@ def install(environment_class):
             self._reward_audit_report()
         return result
 
+    step._generals_reward_audit = True
     environment_class.step_device = step
     environment_class._reward_audit_installed = True
 

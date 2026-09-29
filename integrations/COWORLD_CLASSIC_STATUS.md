@@ -10847,3 +10847,54 @@ under replay0.5 the native optimized first half of4096rows still contains every
 opponent on both sides (frozen512/side,Expander256/side,Sentinel256/side).
 Full rollout mix is frozen1024/side,Expander512/side,Sentinel512/side. Dynamic
 class emits actual reset-side counts; no teacher targets/actions are provided.
+
+## 31080 preserved; mixed timeout and dispatch batching repair
+
+31080/main37002 terminal137, allocation released. Frozen-only completed its
+33,554,432 physical steps at173,052.57 ENV SPS,41 steady GPU samples mean57.8537%,
+peak145758MiB. Checkpoint bce324507c1413526fb00000f99ce5bbbd4f2d7f95afe5c4948b3b60034ee4d6
+finite57,028words,33,554,432 masks checked/0illegal. Held-out128 Expander21/105/2,
+128 Sentinel1/115/12,512parent222/257/33. This control remains weak.
+
+Mixed trainer's progress intervals were about66k physical SPS/GPU~30%, versus
+173k control. It exceeded the8min trainer wrapper and its30s kill grace, reached
+console epoch14 before exact-container cleanup. This interrupted run is NOT a
+completed throughput qualification. Saved checkpoint8 contains16,777,216 physical
+steps, SHA5a908d4935e33cb4519e83a405de0eeb9fe7fe3db409507c75534ae2e8287221,
+57,028 finitefloatwords. Optimizer sidecar SHA7f34039de3666611d29a0058ecf1507303998a259af2de1dd8c88d93bdf28889
+and training-record identity d79fa5204b642b1dae09f669a440602b01fea2a2e724f7ed3f89048dbf9930ef
+verified against their actual files. No completed.json is fabricated. Native
+restore_learner supports this verified partial checkpoint without requiring a
+completed run; it requires identical seed/overrides and a remaining budget.
+
+Full archive2cf6e0ab6c5ec2ff59cef0e7d4792c4768d7cd70a2ded151b21aaf6b8a5b66fd
+verified gzip/Mac/controller; node verify and old-container absence will gate
+next allocation. Mac /tmp/relh-classic-spatial-mix-layout-comparison-stream.tar.gz;
+controller /tmp/relh-classic-spatial-mix-layout-comparison-31080.tar.gz;
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-mix-layout-comparison-31080.tar.gz.
+Extraction /tmp/relh-spatial-mix-layout-comparison-31080-inspect.
+
+Fresh-build trainers did NOT emit DEVICE_REWARD_AUDIT, despite actual mixed
+reset counts matching frozen1024/side,Expander512/side,Sentinel512/side. Training
+capture/draw/nonfinite reward counts are unavailable; no such count is claimed.
+Frozen-only local audit records null reward fields and actual held-out scores.
+
+Repair: compile the entire mixed opponent selection as one JAX function,
+including state gathers, key folds, policy/script calls and scatters. States,
+sides,keys,values,masks are explicit dynamic arguments to prevent stale capture.
+Prior code dispatched those many operations separately on every game tick;
+GPU performance improvement is a hypothesis until measured.
+Reward audit installs on the actual instantiated frozen/mixed class, handling
+built source loaders that bypass the startup hook. A resolved-method marker
+prevents wrapping an already wrapped inherited step and double-counting.
+
+Bounded CPU8game/32tick comparison with archived e7502e4 eager reference:
+all opposing indices identical everytick, state/mask/reward parity exact within
+1e-6, audit32ticks/256agentsteps, manual reward counts identical, repeated audit
+activation at tick16 causes no double count. Artifact
+/tmp/relh-spatial-mix-jit-counter-probe/audit.json. No GPU or strength claim.
+Next one bounded job will evaluate retained equal-step8 checkpoints, resume the
+mixed model AND optimizer at checkpoint8, then evaluate its completed target.
+No already-completed training or evaluation is replayed; longer trainer bound
+will account for measured throughput. Same seed5751/overrides required by native
+resume, absolute target33,554,432 steps adds16,777,216 NEW physical steps.
