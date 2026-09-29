@@ -11952,3 +11952,88 @@ generator /tmp/relh-build-iterated-opponent-pilot.py. Mac live archive
 /tmp/relh-classic-spatial-iterated-opponent-srun.log. Poll SAME31512/main12360;
 never restart on observer timeout. No hosted writes/promotions this turn yet.
 Goal active; protected histories untouched.
+
+### 31512 complete; no evidence to scale iterated opponent
+
+SAME main12360 terminal0, job now absent (Invalid job id); allocation released.
+Verified full archived results. Completed33,554,432 NEW physical/369,098,752
+absolute, epoch160->176. Warmup through164 at71.889s ->176 at259.399s:
+25,165,824 physical /187.510s = **134,210.570 ENV SPS**. Same B300/4096games/
+onelearner/H512/batch2,097,152/mb8192/R0.5, including environment/inference/
+optimization;52 aligned NVML samples mean57.385%, peak145760MiB. No observed
+contention. Final audit /tmp/relh-iterated-opponent-31512-final-audit.json,
+exactly matches archived node steady-audit.json. Actual33,554,432 actions,
+zero illegal;50242 terminal agents/zero nonfinite rewards/127 zero terminal
+rewards, NOT outcome/draw counts. Initial policy AND optimizer files exactly
+c601/29af5f match. Final57,028 finite policy
+**e136dc47e61f035265977181a1e7dba239846d7dbfd191b4eb3f7c7090cdadb9**,
+learner86c3550ddb48471aca86d8f5816af046b63fe374a4aac79731a66d2c913f1ed2,
+policy/state/run sidecar hashes verified. Mix512/512 scripts,1024/1024 frozen,
+actual frozen SHA c601 verified. No fresh optimizer reset.
+
+| Matched panel | Starting335M W/L/D | Iterated369M W/L/D |
+| --- | --- | --- |
+| Expander128,seed6686 | 28/88/12 | 24/97/7 |
+| Sentinel128,seed6686 | 21/80/27 | 23/81/24 |
+| Old30238 parent512,seed6513 | 371/112/29 | 377/125/10 |
+
+Direct against startingc601,512 games/seed7513/125 unique maps:
+**208W260L44D**,score-.10156, descriptive state-cluster bootstrap95%
+[-.21315,.00990]. Paired changes on exact same states/seats: Exp-.10156
+[-.28906,.07876], Sentinel+.00781[-.14962,.16394], parent-.01367
+[-.12105,.09524]. No useful improvement demonstrated; do NOT scale this
+opponent-only variant or upload/promote369M. Evidence
+/tmp/relh-iterated-opponent-31512-matched-scores.json. No hosted side effects.
+
+Archive104,714,257 bytes, gzip/extraction passed, SHA256
+9304b22bf27f41bd597cc41e920ca94b837061d8ea930cbc0a70336ffcfcbd12.
+Mac /tmp/relh-classic-spatial-iterated-opponent-stream.tar.gz; controller
+/tmp/relh-classic-spatial-iterated-opponent-31512.tar.gz verified sameSHA.
+Full Mac /tmp/relh-spatial-iterated-opponent-31512-inspect.
+Next allocation must verify node31512 archive and exact container absence.
+
+### Learned full/half source bias isolated; calibration artifacts prepared
+
+Source-prior weights started .25/.2475, learned after33M to.44446/.25919,
+after335M to**1.39037/.20488**, after369M to1.43511/.20227. Explicit full-split
+bonus fell to.00274 at335M; source-prior divergence is a different learned
+bias. /tmp/relh-iterated-opponent-31512-prior-comparison.json.
+
+CPU same-state counterfactual on335M public trajectories,8games/128ticks/
+1024 decisions, seed2486, observation+maskSHA
+b0eecf891409a0ae80d019fe130f4bf07eb9c2da60a546654f0c2eaf039de5c2:
+original18 half moves; equalize source gains at half94, at mean104, at full112.
+Changed decisions120/101/94 respectively,24 passes unchanged. This establishes
+influence on action choices, NOT strength improvement. No counterfactual
+learner actions used to advance original trajectory. Scope and evidence
+/tmp/relh-source025-learned-split-prior-probe/audit.json; reusable public
+observations/masks in public-observations.npz. No hidden observations or teacher.
+
+Prepared portable inference-only bundles /tmp/relh-source025-split-calibrations:
+original exactc601; equal_at_half changesONLYflatindex56912, policy
+18be7a7df35169f9f9ef1d9dbee7fc21987ec5e15aeb0fa3d3f1698147b66d7a;
+equal_at_mean changesONLY56912/56916,
+1e571690e7b7557413f117584c33e41e5d214da545135e0ea09d13d589b2dbd4;
+equal_at_full changesONLY56916,
+7a94d3ab999e68e88415039174008bc9ab0c3b03631d8378c1320bff243466cf.
+All other parameter bytes preserved; no optimizer snapshot manufactured;
+training_steps_added0/parentSHA/changedindices explicitly in derivation
+metadata. Model masks/critic unchanged; NumPy logits match intended
+counterfactual maxerror2.38419e-7 on1024 cached public states, all legal replies.
+Native parameter decoder verification STILL REQUIRED before GPU strength eval;
+CPU consistency is not hosted qualification or a new training result.
+
+Archive /tmp/relh-source025-split-calibrations-20260929.tar.gz,1,747,707bytes,
+SHA8f90a1363d8c6acc7d0ec217254a18880f6028ec703ffd67dff8bb6781d7465b,
+verified Mac/controller. Includes3 calibrated+unmodified bundles,preflight,
+counterfactual audit,generator. No serving uploads/champion changes.
+
+Next safe action: one bounded B300 allocation for all4 cases. Guard31512
+archive/container, verify exact native decoder reproduces each exported tensor
+and sole scalar changes, then fresh matched held-out scripts8686 and parent
+8513 (128each/512parent, balanced seats), including unmodified335M control.
+These NEW panels distinguish learned-bias influence from strength without
+spending300M more steps blindly. Do not train a new long run or host a
+calibration unless it proves useful. Goal active; this turn made concrete
+progress (completed/rejected self-play pilot, isolated learned bias and
+prepared exactly scoped alternatives). Protected histories untouched.
