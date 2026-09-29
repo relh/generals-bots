@@ -10832,3 +10832,18 @@ single allocation. Unrelated relh GoTA30982 now runningB200, untouched.
 31014 Mac/controller archive d407e1...8d27 verified; node hash and exact
 container absence are explicit next-job guards. New mix has no GPU throughput
 proof yet; no dependent longer run submitted. Goal remains active.
+
+31080 allocated, sole Generals job, main exec37002,35min B300/8CPU64GiB/nice100.
+Output /var/tmp/relh-generals-recovery/classic-spatial-mix-layout-comparison-pilot-31080,
+exact container relh-classic-spatial-mix-layout-comparison-31080.
+Physical GPU bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%,DockerUUID
+matched; driver595.91.07/10.3/imagebdd4f2...6ae5 verified. Previous31014 exact
+container absent and nodearchive d407e1...8d27 verified (three copies).
+Root637GiB free; /tmp19816freeinodes, TMPDIR on nodeoutput root. No cleanup.
+Frozen-only fresh CLI build completed and actual modelSHA2ca/fabric config,
+4096games/one learner per game, capture reward/options verified. Trainerstarting.
+Mixed groups interleave frozen/frozen/Expander/Sentinel pairs throughout rows;
+under replay0.5 the native optimized first half of4096rows still contains every
+opponent on both sides (frozen512/side,Expander256/side,Sentinel256/side).
+Full rollout mix is frozen1024/side,Expander512/side,Sentinel512/side. Dynamic
+class emits actual reset-side counts; no teacher targets/actions are provided.
