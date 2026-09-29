@@ -51,6 +51,8 @@ def main():
     )
     parser.add_argument("--action-diagnostics", action="store_true", help="Record public directional-codec move behavior by game phase")
     parser.add_argument("--sample-seed", type=int, help="Native or spatial sampling diagnostic instead of hosted argmax")
+    parser.add_argument("--sampling-temperature", type=float, default=1.0,
+                        help="Spatial categorical sampling temperature; match the training runtime")
     parser.add_argument(
         "--reward-diagnostics",
         action="store_true",
@@ -65,6 +67,10 @@ def main():
     assert not (args.native and args.spatial_bundle)
     assert args.games > 0 and jax.devices()[0].platform == "gpu"
     assert args.sample_seed is None or args.native or args.spatial_bundle
+    if not np.isfinite(args.sampling_temperature) or args.sampling_temperature <= 0:
+        raise ValueError("Sampling temperature must be finite and positive")
+    if args.sampling_temperature != 1 and not (args.spatial_bundle and args.sample_seed is not None):
+        raise ValueError("Nondefault sampling temperature requires a sampled spatial policy")
     assert not (args.force_hint_move or args.force_hint_split) or args.native and args.sample_seed is None
     training = TrainingRecord.model_validate_json((args.run / "training.json").read_text())
     if args.training_pool_episode is None:
@@ -190,7 +196,9 @@ def main():
                     actions = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
                 else:
                     key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
-                    actions = np.asarray(sample_flat_logits(key, jnp.asarray(outputs[:, :3529]), jnp.asarray(legal)))
+                    actions = np.asarray(sample_flat_logits(
+                        key, jnp.asarray(outputs[:, :3529]) / args.sampling_temperature, jnp.asarray(legal),
+                    ))
                 actions = actions.astype(np.int32)[:, None]
             else:
                 predictions = policy.predict_many(seats, observation)
@@ -320,6 +328,7 @@ def main():
             else "sample_per_head"
         ),
         sample_seed=args.sample_seed,
+        sampling_temperature=args.sampling_temperature if args.sample_seed is not None else None,
         seed=args.seed,
         reset_seed=reset_seed,
         games=args.games,

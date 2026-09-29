@@ -10520,3 +10520,56 @@ self.shapes exactly derivedlogicalshapes, all18blocks/23registrations/
 /tmp/relh-spatial-logical-optimizer-integration-audit.json.
 GPUoptimizer behavior/learning remainunverified; current30728stilluses
 pinnedoldnative registration. No newGPU jobs.
+
+## 30728 complete: 300M physical continuation, still weak externally
+
+Mainexec18783exit0; watcher51387exit0; Slurmallocation absent.
+299,892,736additionalphysical /599,785,472nativeagentsteps in2342.139s.
+Warmepoch4@38.544 ->286@2342.139:295,698,432physical/2303.595s =
+128363.897ENV SPS.644alignedGPU samples mean63.910%,peak144540MiB,
+~1stimestampanchoruncertainty. Nativeaudit599,785,472actions/illegal0,
+529797captures/16322draws =546119completedphysicalgames; nonfinite0.
+Final57028floatparamsfinite,SHA
+3d4b0aeb81c9c71af2aab99cf41a01a4e3793e006542be8116668da27728d7d8.
+Additional33.554M: Exp7/118/3,Sent3/117/8,parent272/212/28 W/L/D.
+Additional100.663M: Exp21/104/3,Sent6/107/15,parent268/206/38.
+Additional299.893M: Exp16/109/3,Sent12/96/20,parent275/221/16.
+Beatsparent modestly; doesnot establish strongexternalpolicy. No promotion,
+newupload,hostedXP or championchange. Retain bothmid100M/final candidates.
+Archivee3028a86151cd9a52db9e90865d1f395d347390d5243f935a68d50ae13b8aef6
+verifiednode,Mac /tmp/relh-classic-spatial-local8-selfplay-temperature16-300m-stream.tar.gz
+andcontroller /tmp/relh-classic-spatial-local8-selfplay-temperature16-300m-30728.tar.gz.
+Localfull /tmp/relh-spatial-selfplay-temperature16-300m-30728-inspect;
+node steady-audit.json included. Exactoldcontainer cleanup recheck before
+next allocation. ProtectedCodexhistories untouched.
+
+100Mportable export /tmp/relh-classic-selfplay-temp16-300m-30728-bundle-100m
+validatedCPU NumPy all24archivedpublicviews/3530outputsfinite; sameviews
+criticmean parent-0.314117,30597mid-0.438680,current100M-0.090853,
+current100Mrange[-0.289935,0.062109]. Critic notfrozenatparentvalues;
+thisisdiagnostic, notstrength. Artifact
+/tmp/relh-classic-selfplay-temp16-300m-30728-cpu-serving-diagnostic.json.
+
+## Evaluate policy distribution before another training recipe
+
+Training usescategoricalT0.0625, while currentheldout/hosteddecoder uses
+argmax. ExistingT1samplingdiagnostic doesnot cover currentT0.0625policy.
+Added --sampling-temperature forspatial sampledscriptedevaluation and
+sampledchild-vs-greedyparent support. Bothfrozenmatch lineages nowverified
+from actualmatching trainingrun (initializedbundles lackinitialization.json);
+--run/--opponent-run explicit, orautomatic siblingrun whenpresent.
+Savefullinitialprivate-statehashes toverify geometriccontrols acrossmodes.
+No servingbehavior change until heldoutdistributioncomparison.
+CPU16384drawfixture:T0.0625 expected3:1 probability0.75 observed0.748352,
+unscaled0.513489,illegal0,seedreproducible.
+/tmp/relh-spatial-temperature-evaluation-sampler-audit.json.
+CPU8game firstepisode smoke matchesnewCLI, masks, finiteforward/
+GPU-reference-compatible actor andlineage/hash saving. 8uniqueinitialstates,
+all8finished,978ticks/5.81sCPU; scopeexplicitlynotstrengthevidence.
+/tmp/relh-spatial-temperature-match-cpu-smoke8. InitialCPU4game fixture
+failedbeforeepisodes (base mixedopponentrequirescompletepairs); fixedfixture
+to8. Initialmissinglineagefile alsofailedbeforeepisodes; actualrun verification
+added. NoGPUfailedprobes.
+Next oneboundedallocation comparesparent,30597mid,current100M/currentfinal
+atT0.0625 againstscripts andgreedyparent; no trainingoverlap ornewlongjob
+untilthis distributioncheck.
