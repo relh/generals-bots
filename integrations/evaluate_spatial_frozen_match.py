@@ -30,6 +30,8 @@ def main():
     parser.add_argument("--smoke-cpu", action="store_true")
     parser.add_argument("--sample-seed", type=int)
     parser.add_argument("--sampling-temperature", type=float, default=1.0)
+    parser.add_argument("--half-logit-bias", type=float, default=0.0,
+                        help="Diagnostic: add this offset to learner half-move logits before greedy selection")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -37,6 +39,8 @@ def main():
         raise ValueError("Sampling temperature must be finite and positive")
     if args.sampling_temperature != 1 and args.sample_seed is None:
         raise ValueError("Nondefault temperature requires sampled learner actions")
+    if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and args.sample_seed is not None):
+        raise ValueError("Half-logit bias requires greedy learner actions")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
         training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
         run = explicit_run or bundle.parent / "run"
@@ -92,8 +96,10 @@ def main():
             hashes.append(digest.hexdigest())
         np.save(args.output / "initial_state_sha256.npy", np.asarray(hashes, dtype="U64"))
         for turn in range(env.horizon):
-            outputs = np.asarray(forward(values))
+            outputs = np.asarray(forward(values)).copy()
             assert outputs.shape == (args.games, 3530) and np.isfinite(outputs).all()
+            if args.half_logit_bias:
+                outputs[:, 1764:3528] += args.half_logit_bias
             legal = np.asarray(masks, bool)
             if args.sample_seed is None:
                 chosen = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
@@ -106,6 +112,8 @@ def main():
             assert legal[np.arange(args.games), actions[:, 0]].all()
             if turn == 0:
                 reference = policy.forward(np.asarray(values))
+                if args.half_logit_bias:
+                    reference[:, 1764:3528] += args.half_logit_bias
                 assert np.allclose(outputs, reference, rtol=2e-5, atol=2e-5)
                 if args.sample_seed is None:
                     assert np.array_equal(actions[:, 0], np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
@@ -128,6 +136,7 @@ def main():
                   action_selection="argmax" if args.sample_seed is None else "sample",
                   sample_seed=args.sample_seed,
                   sampling_temperature=args.sampling_temperature if args.sample_seed is not None else None,
+                  half_logit_bias=args.half_logit_bias,
                   opponent_action_selection="argmax",
                   checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
                   opponent_sha256=hashlib.sha256((args.opponent_bundle / "policy.bin").read_bytes()).hexdigest(),

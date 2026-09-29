@@ -53,6 +53,8 @@ def main():
     parser.add_argument("--sample-seed", type=int, help="Native or spatial sampling diagnostic instead of hosted argmax")
     parser.add_argument("--sampling-temperature", type=float, default=1.0,
                         help="Spatial categorical sampling temperature; match the training runtime")
+    parser.add_argument("--half-logit-bias", type=float, default=0.0,
+                        help="Diagnostic: add this offset to spatial half-move logits before greedy selection")
     parser.add_argument(
         "--reward-diagnostics",
         action="store_true",
@@ -71,6 +73,9 @@ def main():
         raise ValueError("Sampling temperature must be finite and positive")
     if args.sampling_temperature != 1 and not (args.spatial_bundle and args.sample_seed is not None):
         raise ValueError("Nondefault sampling temperature requires a sampled spatial policy")
+    if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and
+            (not args.spatial_bundle or args.sample_seed is not None)):
+        raise ValueError("Half-logit bias requires deterministic spatial inference")
     assert not (args.force_hint_move or args.force_hint_split) or args.native and args.sample_seed is None
     training = TrainingRecord.model_validate_json((args.run / "training.json").read_text())
     if args.training_pool_episode is None:
@@ -183,10 +188,14 @@ def main():
                 actions = np.asarray(actions, dtype=np.int32).copy()
             elif args.spatial_bundle:
                 values = np.asarray(observation.values, np.float32)
-                outputs = np.asarray(spatial_forward(jnp.asarray(values)))
+                outputs = np.asarray(spatial_forward(jnp.asarray(values))).copy()
                 assert outputs.shape == (args.games, 3530) and np.isfinite(outputs).all()
+                if args.half_logit_bias:
+                    outputs[:, 1764:3528] += args.half_logit_bias
                 if turn == 0:
                     reference = policy.forward(values)
+                    if args.half_logit_bias:
+                        reference[:, 1764:3528] += args.half_logit_bias
                     assert np.allclose(outputs, reference, rtol=2e-5, atol=2e-5)
                     legal = np.asarray(observation.action_masks, bool)
                     assert np.array_equal(np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1),
@@ -329,6 +338,7 @@ def main():
         ),
         sample_seed=args.sample_seed,
         sampling_temperature=args.sampling_temperature if args.sample_seed is not None else None,
+        half_logit_bias=args.half_logit_bias,
         seed=args.seed,
         reset_seed=reset_seed,
         games=args.games,
