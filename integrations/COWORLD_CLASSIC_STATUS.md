@@ -13320,3 +13320,28 @@ identicalfresh initbytes/modelSHA, actual ablationreceipt, full final policy/
 optimizer/run SHAs, all33.55Mactions/rewards,numericlegality,4->16epoch
 physicalsteadySPS. Preparedhelper isnot completionevidence.
 Continue SAME50123; no duplicatejob. Goalactive; no hostedwrites/promotion.
+
+### 2026-09-29 — 32015 zero arm GPU parity passes; training begins
+
+Previousgoalturn progress: launchedsinglebounded32015/main50123 afterfull
+queue/node/physical preflight. SAMEhandle/queueconfirmedlive now.
+Zero-scalar modelbuild/registration/actualGPUparitypass beforetraining.
+Recorded /var/tmp/relh-generals-recovery/classic-spatial-public-scalars-pilot-32015/zero/registration-parity.json:
+570668words,23logicalregistrations/input32x16,finiteforward+gradient;
+portableNumPy versusGPUmaxerror5.960464477539063e-08; scalarinputgradnorm0
+asexpectedforzeroobservationplanes. NewmodelSHA
+811e8de55c3fe327a670a362b076f88fc8e56b9525a347ed89c945cfe9e8863b;
+sourceenvironmentfingerprint
+1a0cf8cb0570c47562c0364ba7e1838cb9d4eeb0d02d23186c64fdc50d0ee127.
+ActualGPUfreshinitseed6751 SHA
+2ff6121462933d7e5af31b74dc2f08da8f4b878872a95fd71f31e1ac23249576.
+GPUinit differsCPUpreflightSHA; doNOTclaim bitwiseCPU/GPUinitialization.
+BothGPUarms MUSTmatch actualGPUinitbytes/modelSHA as alreadyguarded.
+Pinnedactualcore/rules/kernel/defaultINI/advnorm hashes alsoverified.
+Zero arm trainingprocessstarted, environmentcompilation/epoch0currently;
+steadySPS/finaltraining/quality stillpending. SAME50123 continues.
+
+Prepared /tmp/relh-public-scalars-32015-quality.py: fourpairedpanels and
+512directrich-vs-zero, matchedmap/seat/opponent/rule/horizon/seed assertions
+plus10,000map-clusterbootstrapdraws. Notyetexecutedagainstpendingpanels.
+No duplicatejob, newsettingschange, hostedwrite orpromotion. Goalactive.
