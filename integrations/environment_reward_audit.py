@@ -5,6 +5,7 @@ import functools
 import json
 import importlib.abc
 import importlib.machinery
+import os
 import sys
 
 import jax
@@ -22,12 +23,25 @@ def accumulate(counts, rewards, terminals):
     return counts + delta
 
 
+@jax.jit
+def accumulate_flat_splits(counts, actions):
+    """Count sampled flat full, half, and pass actions on the device."""
+    indices = actions[:, 0].astype(jnp.int32)
+    delta = jnp.stack((
+        jnp.sum(indices < 1764),
+        jnp.sum((indices >= 1764) & (indices < 3528)),
+        jnp.sum(indices == 3528),
+    )).astype(jnp.uint32)
+    return counts + delta
+
+
 def install(environment_class):
     if getattr(environment_class.step_device, "_generals_reward_audit", False):
         return
     if environment_class.__dict__.get("_reward_audit_installed", False):
         raise RuntimeError("Reward audit already installed")
     original = environment_class.step_device
+    audit_flat_splits = os.environ.get("METTA_AUDIT_SPATIAL_SPLITS") == "1"
 
     @functools.wraps(original)
     def step(self, actions):
@@ -35,20 +49,32 @@ def install(environment_class):
         if not hasattr(self, "_reward_audit_counts"):
             self._reward_audit_counts = jnp.zeros(5, jnp.int32)
             self._reward_audit_ticks = 0
+            if audit_flat_splits:
+                if tuple(self.spec.action_sizes) != (3529,):
+                    raise ValueError("Spatial split audit requires one 3529-action flat head")
+                self._split_audit_counts = jnp.zeros(3, jnp.uint32)
 
             def report():
                 counts = list(map(int, jax.device_get(self._reward_audit_counts)))
-                print("DEVICE_REWARD_AUDIT " + json.dumps(dict(
+                record = dict(
                     ticks=self._reward_audit_ticks,
                     agent_steps=self._reward_audit_ticks * self.spec.agents,
                     positive_rewards=counts[0], negative_rewards=counts[1],
                     terminal_agents=counts[2], zero_reward_terminal_agents=counts[3],
                     nonfinite_rewards=counts[4],
-                )), flush=True)
+                )
+                if audit_flat_splits:
+                    full, half, passing = map(int, jax.device_get(self._split_audit_counts))
+                    record.update(full_actions=full, half_actions=half, pass_actions=passing)
+                    if full + half + passing != record["agent_steps"]:
+                        raise ValueError("Spatial split audit did not count every action")
+                print("DEVICE_REWARD_AUDIT " + json.dumps(record), flush=True)
 
             self._reward_audit_report = report
             atexit.register(report)
         self._reward_audit_counts = accumulate(self._reward_audit_counts, result[2], result[3])
+        if audit_flat_splits:
+            self._split_audit_counts = accumulate_flat_splits(self._split_audit_counts, actions)
         self._reward_audit_ticks += 1
         if self._reward_audit_ticks % 512 == 0:
             self._reward_audit_report()
