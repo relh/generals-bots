@@ -11308,3 +11308,17 @@ stream /tmp/relh-classic-spatial-weak-prior-comparison-stream.tar.gz;
 log /tmp/relh-classic-spatial-weak-prior-comparison-srun.log.
 Goalactive; do not replay31328 or duplicate live31352/main8879.
 ProtectedCodexhistory untouched.
+
+### 31352 strong-prior arm gate and savedcheckpoint verified
+
+Previous goalturn verifiedwait observed6.3M; current verifiedwait live31352
+(main8879), no newjob. Strongarm observedepoch9/18,874,368newphysical,
+gate8 four-epoch126,850.2646/six-epoch127,654.5805ENV SPS,0nonfinite.
+Saved16,777,216physical checkpoint1fd44442a8397b968fb67de46fe89370d83f0fb10732c5c4dafd41c4ba1f90be
+and learnerf77fe4d69865b9edae523956fa8d950bc2876811b4a828ac1112e73f6a29efe7
+57028finitewords; actualpolicy/state/runhashes matchsidecar. Node
+strong-priors/mid-checkpoint-audit.json and Mac /tmp/relh-weak-prior-
+comparison-31352-control-mid-audit.json preserved. Finalaudit prepared
+/tmp/relh-audit-weak-prior-comparison-31352.py checks actionmask counter,
+4→16steadyinterval/33,554,432newphysical and finalnativecheckpoint identity.
+Finalcontrol/candidate/evaluation pending SAME31352/main8879; goalactive.
