@@ -34,6 +34,38 @@ def spatial_transfer(source, target, digest):
     return options == before.options
 
 
+def spatial_self_play_transfer(source, target, digest):
+    """Admit the verified parent into two learning seats per physical game."""
+    if digest != "df706173df2c27fefe2279c8f1252d8eba376ad3a7a2858123d1c749afa44ddc":
+        return False
+    if source.model_sha256 != "2ca4d0da7ff313ae981f99728be0d1309fe679c8c0ff19fcc13a9a5d731a0c1e":
+        return False
+    if target.model_sha256 != source.model_sha256:
+        return False
+    before, after = source.config.python_environment, target.config.python_environment
+    if before is None or after is None:
+        return False
+    if before.factory != "integrations.metta_puffer:BatchedGeneralsPufferEnvironment":
+        return False
+    if after.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment":
+        return False
+    if before.spec != after.spec or before.spec.agents != 4096:
+        return False
+    if before.options.get("parallel_games") != 4096 or after.options.get("parallel_games") != 2048:
+        return False
+    if before.options.get("teacher") is not None or any(
+        before.options.get(k) for k in ("supervise_teacher", "teacher_rollouts")
+    ):
+        return False
+    options = after.options.copy()
+    if "frozen_bundle" in options or options.get("shaping_weight") != 0 or options.get("reward_scale") != 1:
+        return False
+    options.update(parallel_games=before.options["parallel_games"],
+                   shaping_weight=before.options["shaping_weight"],
+                   reward_scale=before.options["reward_scale"])
+    return options == before.options
+
+
 def main():
     source = Path(__file__).with_name("puffer_coworld_frozen_transfer.py")
     if hashlib.sha256(source.read_bytes()).hexdigest() != "4d18c06c59b4dad321bf61ba4d4aed552dc406159c96072e880cb518162ecea6":
@@ -45,7 +77,9 @@ def main():
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     original = module.verified_classic_frozen_opponent_transfer
-    module.verified_classic_frozen_opponent_transfer = lambda a, b, c: original(a, b, c) or spatial_transfer(a, b, c)
+    module.verified_classic_frozen_opponent_transfer = lambda a, b, c: (
+        original(a, b, c) or spatial_transfer(a, b, c) or spatial_self_play_transfer(a, b, c)
+    )
     runpy.run_module("metta_training.cli", run_name="__main__")
 
 

@@ -10072,3 +10072,55 @@ compiler cache hit and first rollout warming; no completed epoch yet,
 well within the bounded300s startup window. Do not infer throughput or
 strength yet; repoll the same30508/session59626 and do not duplicate jobs.
 Goal active; strong held-out and hosted policy remains unachieved.
+
+## 30508 complete: longer credit alone does not restore strength
+
+30508 terminal mainexec59626 exit0 and queue absent.33,554,432 additional
+physical ENV steps; DEVICE_ACTION_MASK_AUDIT actions33,554,432/illegal0.
+Warm epoch4 at94.416s→epoch16 at276.165s gives25,165,824 ENV steps /
+181.749s =138,464.7178 sustained end-to-end SPS.51 aligned physical GPU
+samples averaged55.3725%, peak145,764MiB. Console mtime/native-uptime
+alignment has about1s endpoint uncertainty.4096games/one learner/H512/
+mb8192/replay.5/GAE.999; all57,028 finalFP32 words finite. FinalSHA256
+a30ad8647b03daead5e1b3da74c2d82d7782101bf017392a4a85137555bbd84a.
+
+Greedy W/L/D (Expander128 /Sentinel128 /parent512):
+16,777,216steps 3/120/5 /2/123/3 /5/507/0;
+33,554,432steps 0/125/3 /0/122/6 /9/494/9.
+All parity/finite/legal gates passed; parent30238 remains stronger. Reject
+both candidates for promotion. No new hosted request or champion change.
+Mac gzip integrity/controllercopy verified, archiveSHA256
+8994f0707cbedd693f22cb22f6fe7ed6e91a49b4de79c58bf4725bec09f14a9a:
+/tmp/relh-classic-spatial-local8-frozen-long-credit-stream.tar.gz and
+metta0:/tmp/relh-classic-spatial-local8-frozen-long-credit-30508.tar.gz.
+Local full extract /tmp/relh-spatial-long-credit-30508-inspect;
+interval/finite audit /tmp/relh-spatial-long-credit-30508-audit.json.
+Node digest/old container absence will be checked by the next allocation.
+
+## Prepared verified parent transfer to two learning seats
+
+Added narrow spatial_self_play_transfer to the existing pinned launcher:
+only30238parent df706173...afa44ddc /model2ca4d0...1a0c1e is allowed,
+onlyBatchedGeneralsPufferEnvironment→BatchedGeneralsSelfPlayPufferEnvironment,
+same public spec4096agents,2048physical games with two learner seats,
+capture-only0shaping/1rewardscale, otherwise identical source options.
+This preserves the trained policy architecture and public input/action
+layout. A typed BuildManifest contract check accepts that case and rejects
+wrong checkpoint, agent count, geometry, teacher, reward scaling, shaping
+discount, factorized codec and a frozen external opponent.
+
+CPU structural audit uses the exact archived30238metta_puffer.py and its
+paired step_device implementation. Eight adjacent-capture fixtures across
+both winning seats yield16legal decisions, +1/-1 rewards for the two seats,
+both terminal flags true, zero-sum reward per game, public4851/[3529]
+observations/masks. Artifact /tmp/relh-spatial-two-seat-reward-audit/audit.json.
+This is reward/seat plumbing evidence, not arena strength. Initial small
+fixture construction triggered existing GPU/map-pool/balanced-batch guards;
+the finalCPU-only structural setup explicitly disables GPU requirement,
+uses16-size pool/eight games and preserves balanced sides.
+
+Next bounded pilot can train both seats against the current learner rather
+than the fixed greedy parent. This addresses near-universal losses against
+the fixed opponent, but improvement remains a hypothesis. Physical SPS
+must count each paired game once: native agent steps /2, not dashboard SPS
+directly. No new allocation has been submitted at this point. Goal active.
