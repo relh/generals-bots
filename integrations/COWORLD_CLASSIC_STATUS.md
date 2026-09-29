@@ -12925,3 +12925,53 @@ window fixed; assess scores before selecting a future entropy comparison.
 About 22 minutes of training remain at the observed rate, then held-outs.
 Final checkpoint, held-out strength, hosted performance, and promotion remain
 unproven. Goal active; protected history untouched; no hosted writes.
+
+### 2026-09-29 — 31866 completed: throughput passes, strength stays flat
+
+Main handle 32032 exited 0. Job 31866 is absent from the full queue and
+B300 allocation is released. Slurm accounting storage is disabled; terminal
+process status, complete artifact stream, and queue state establish completion.
+Gzip and Mac/controller archive SHA agree:
+6c1bbd474434e6d70ea37c3ceefd920baf7d1c5d5f7c8101f0882d875ff4a1ac.
+Mac /tmp/relh-classic-spatial-coworld-rules-300m-stream.tar.gz;
+controller /tmp/relh-classic-spatial-coworld-rules-300m-31866.tar.gz.
+
+Completed 301,989,888 new physical steps, 251,658,240 -> 553,648,128.
+One B300, 4,096 games, one learner/game, horizon 512, batch 2,097,152,
+minibatch 8,192, replay .5. Warmup excluded through epoch124 at77.519s.
+Epoch124->264:293,601,280 physical steps/2,557.299s =114,809.1326 SPS,
+including rollout, transfer, and optimization. Actual game engine is pinned
+Coworld0.3.3 Classic, 2,000 turns; gamma=shaping_gamma=.999; no teachers.
+GPU training samples averaged56.39% including compilation, last60 samples
+53.23%, peak160,874MiB; these are not precisely interval-aligned utilization.
+The physical UUID occupancy audit found only this task's CUDA processes.
+
+Final policy c2f648ad96a6a91b860e5c2b8961cbe5cd65330069ed1516db397f4d1ad694da;
+optimizer169d8d4c5a3597203e770ae2fae817faeda36ad11aedb2981700573272b0ca5c.
+All570,508 values finite, policy/state/run sidecar hashes match. All301,989,888
+actions legal; rewards nonfinite0, terminal449,182, legitimate zero-reward
+draw/timeout147. Restored full/half source priors reached1.262216/.136346.
+Audit /tmp/relh-coworld-rules-300m-31866-final-training-audit.json.
+
+Frozen corrected-rule held-outs, W/L/D (starting251M -> final553M):
+- Expander24/103/1 ->26/102/0, paired score delta+.0234,95%CI[-.163,.211].
+- Sentinel17/111/0 ->23/104/1, +.1016,CI[-.064,.273].
+- Old parent415/79/18 ->419/84/9, -.0020,CI[-.135,.128].
+- Hosted benchmarkc601240/251/21 ->238/232/42, +.0332,CI[-.131,.202].
+- Direct final versus starting251M:241/267/4, score-.0508,CI[-.179,.078].
+Map-cluster bootstrap10,000 draws; paired maps/seats/opponentIDs verified.
+/tmp/relh-coworld-rules-300m-31866-matched-scores.json.
+No clear strength gain after this full302M window. Do not scale the same
+settings to billions or register/promote this policy on this evidence.
+
+Prepared ONE bounded allocation for a controlled entropy comparison:
+restore the SAME553M policy AND optimizer in two sequential33,554,432-step
+branches, ent_coef0 control versus pinned Puffer default.001. All other
+model/environment/opponent/learner/seeds identical; frozen218M opponent
+remains50% and scripts25% each, both seats. Reuse immutable31866 final
+baseline panels; evaluate each final on identical held-outs and directly
+against553M. CPU config preflight proves only entropy coefficient differs;
+Bash/heredoc syntax checked. GPU physical preflight remains mandatory.
+Script /tmp/relh-classic-spatial-coworld-entropy-pair-run-node.sh SHA
+7a1cd92db27dceedc06c86dbb0ec11916955a6e23afecbd4e08edaf5ae4f6c15.
+Goal active; no hosted writes/champion promotion; protected history untouched.
