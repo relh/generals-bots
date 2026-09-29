@@ -13984,3 +13984,16 @@ steady4->16 andheldoutqualitypending. AllocatedGPUonlyOWN PIDs
 python648MiB+puffer195722MiB, ~56%util/196396MiBused; trainercontainer
 ~117%CPU of8CPUcap, noobservedforeignprocess/contention on allocatedGPU.
 No scalability/quality/promotionclaim yet, continueSAME51295/32312.
+
+32312 freshfullcorrectedMuon33,554,432physicalsteps TRAININGCOMPLETED.
+Epoch16/absolute33554432; monitorfinalshort4epoch117,015.5117SPS,
+6epoch117,516.0356SPS, lastGPUmean51.3% inclposttrainidle; fullwarmup4->16
+audit afterarchivepending. All33,554,432actionslegal/0illegal;
+71,279terminalagents/0zeroterminal,nonfinite0;20,530,510positive/
+12,160,408negative rewards areNOT wins.
+FinalpolicySHA0a9ec143e94d75f8e6d8f525373b30297ed7f8e65a7a82c2012d49b259ce4444,
+optimizer aece232f7e145f2966dc53a5dff945d7549552cc380b59bd8bb02b21053796be.
+ActualGPUfirstall18tensorproofpassed earlier; no unqualified scaling.
+SAMEjob32312/mainhandle51295 currentlyLIVE inGPUbundleexport/frozenheldouts.
+DoNOTextract/backupfullarchive untilterminal; no duplicateGPUs.
+Goalactive, no hostedwrite/promotion/historychange.
