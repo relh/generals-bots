@@ -10596,3 +10596,25 @@ T0.0625 samplingseed99281,128Exp+128Sent(seed1386/pool128)+512greedyparent
 FirstactualGPUparentExp result13/111/4vspriorgreedy19/108/1;
 alllegal/finite andGPU-versusNumPyrawforwardparity passed.
 No inferencequality/conclusion forchildren until allpanelsfinish.
+
+30878 terminalexit1; allparentpanels completed before shellselectionbug.
+ParentT0.0625:Exp13/111/4,Sent6/114/8,parent260/240/12 W/L/D.
+Masks/finite/GPU-NumPyparity passed. Frozenmatch verifiedbothlineages,
+125uniqueinitialprivate states among512maps, bothseatsbalanced.
+Failure /usr/bin/bash line75 printf:mid invalidnumber: intendedmidconditional
+wasnot insertedbytemplate substitution. NoGPU/modelfailure; nochildgames.
+Archive5bfc1bd591dc03b21c29e5c6de8085c2089b0819734ead65c5903a1757842e7b
+verifiedMac /tmp/relh-classic-spatial-temperature16-sampling-stream.tar.gz
+andcontroller /tmp/relh-classic-spatial-temperature16-sampling-30878.tar.gz;
+nodeverify/exactcontainerabsent guardaddedtocorrectedsubmission.
+Local /tmp/relh-spatial-temperature16-sampling-30878-inspect.
+
+Correctedselectionusesexplicitcase(mid,201326592,599785472); literal
+selectionblock executedlocally withoutGPU/Slurm, threeexpectedcheckpoint/
+bundlepaths checked. bashsyntaxpasses. Parentpanels excludedfromfollowup,
+no replay ofcompletedresults. Correctedscript
+/tmp/relh-classic-spatial-temperature16-sampling-remaining-run-node.sh
+SHA2a602e9200b57588732744fb1764b67dadb85abb4582c791158be83904adeefb.
+12minbound/4CPU32GiB/nice100, oneallocatedjob atatime; same3remaining
+policies×3panels. Fullqueue/nodepreflight repeated. TMPDIR host/container
+nowpin to compute-nodeoutputroot toavoid /tmp inodepressure; no cleanup.
