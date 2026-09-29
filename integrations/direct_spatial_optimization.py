@@ -203,6 +203,15 @@ def install(native_module=None):
         verify_configuration(configuration)
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
+        self.spatial_optimizer_layout = os.environ.get("METTA_SPATIAL_OPTIMIZER_LAYOUT", "native")
+        if self.spatial_optimizer_layout == "logical":
+            from integrations.spatial_optimizer_layout import logical_optimizer_shapes
+
+            self.shapes, self.spatial_optimizer_layout_report = logical_optimizer_shapes(
+                self.direct_spatial, self.buffers,
+            )
+        elif self.spatial_optimizer_layout != "native":
+            raise ValueError("Spatial optimizer layout must be native or logical")
         self.direct_spatial_rollout = os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") == "1"
         self.spatial_policy_temperature = float(os.environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
         if not np.isfinite(self.spatial_policy_temperature) or self.spatial_policy_temperature <= 0:

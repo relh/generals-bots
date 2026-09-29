@@ -10466,3 +10466,39 @@ Firstepochdashboard150.8kagent=75.4kphysical was warmup, notsteady;
 steady now supports~39minbudget. FullGPU sample/audit only afterterminal.
 Read-only sameallocation watcherexec51387 samples30sec; this is not another
 GPU job or trainingprocess. Mainexec18783 remains live; archiveincomplete.
+
+## Native optimizer tensor registration investigation during30728
+
+Previousgoalturn progress: launched sole300M continuation, verifiedlive
+process and completedepoch8 physicalthroughput gate. Thisturn continues
+samejob; no newGPU allocation or competinginference. At epoch78:
+fourwindow129210.560/s,sixwindow129074.041/s,GPU60smean62.9%, live.
+Rewardtick40448 =165,675,008agent/82,837,504physicalsteps:
+131704captures/5587draws/137291completedphysicalgames; nonfinite0.
+Scheduledpanels still aftertrainercompletion, no strengthclaim.
+
+CPUmetadataaudit of exactfactory445724...6c322 andnativebridgec1bed0...51c1
+reveals15two-dimensional parameterblocks plus8one-dimensional registrations
+(includingpadding),18realblocks/57028floatwords/23totalregistrations.
+The15matrixblocks are allN×1, includingbiases,atomcoefficients andflattened
+densekernels. Exactnative src/algo.cu muon_step applies5NewtonSchulzsteps
+and sqrt(max(1,R/C)) scaling to eachrank>=2block;1Dusesclippedmomentum.
+Thus comparison with defaultnativeMLP learningrates needs actualtensorshape
+evidence. No causalclaim thatthisexplainsweakness, no livejob change.
+Artifacts /tmp/relh-spatial-optimizer-registration-audit.json and
+/tmp/relh-spatial-optimizer-registration-layout-audit.json.
+
+Preparedopt-in METTA_SPATIAL_OPTIMIZER_LAYOUT=logical in directadapter,
+defaultnative preserved. New spatial_optimizer_layout.py derives andchecks
+exactcheckpointindexorder for fourcontiguousprojections:input8×11,action8×8,
+global3528×8,readout8×3530. Other scalarsharinggroups (includingbiases and
+contextstencil) exposedasvectors. Initialattempt at output/tap/input stencil
+reshape failedCPUcontiguityguard; stencilregistrationthereforedoesnot
+pretend itsirregularsharing-groupstoragehas thatmatrixlayout. Explicit
+permutation wouldberequiredfor aconvolutionMuon tensor.
+CPUexactmetadataaudit nowpassedall18blockcoverage,padding,23registrations,
+57028words; initialparamSHA94ab8926a78c2513795383f64a47dddb10759372e03518f1fd7a9a4ea575681c.
+/tmp/relh-spatial-logical-optimizer-layout-audit.json. NoGPU optimizerstep
+or strength/throughput claimfor thisoption. NextGPUcandidate conditional
+on current300Mresults, withruntimeflag andadapterSHAs pinned and fresh
+optimizerstate; existingcheckpoints retainrawparameterbytes.
