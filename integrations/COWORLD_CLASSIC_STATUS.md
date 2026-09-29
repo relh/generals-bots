@@ -14307,3 +14307,22 @@ Expander and direct-parent evaluation both recorded **zero half moves**,
 despite 18.2% half rollout samples. Policy priors still favor full
 routes/sources. Do not promote or scale this recipe; investigate
 explicit greedy split bias/reward and run a controlled held-out test.
+
+32635 greedy half-logit intervention was stopped early after decisive
+negative held-out outcomes. Code commit97bd481 adds opt-in evaluation-only
+`--half-logit-bias` to both spatial evaluators; zero preserves prior
+behavior, positive offsets only half indices1764:3528 before greedy
+argmax. Codec inspection confirms mask duplicates legal routes across
+full/half, decoder maps flat channel//4 to split flag, and Coworld
+executes split=1 as source_army//2. Allocated physical B300
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7,0MiB/0% at start;
+no observed contention. At bias+.5, Expander4/123/1 with59,282
+half moves of70,525 moves, Sentinel1/127/0 with53,801 of60,994;
+frozen218M4/507/1 and currentc6014/503/5. The blanket offset
+overselects half moves and sharply harms captures. The planned +1.0
+arm was not run. Job32635 cancelled after these panels; terminal
+Slurm state CANCELLED and exact Docker container absent. Partial
+results archive `/tmp/relh-classic-greedy-half-bias-32635-partial.tar.gz`
+SHA9ea9bfa2e49f63e15adaadc6b272b94c6000984762dbf11219fdf50c67cb1f4d.
+Do not deploy this diagnostic offset. The missing behavior is
+conditional split choice, not codec legality or global split frequency.
