@@ -12975,3 +12975,24 @@ Bash/heredoc syntax checked. GPU physical preflight remains mandatory.
 Script /tmp/relh-classic-spatial-coworld-entropy-pair-run-node.sh SHA
 7a1cd92db27dceedc06c86dbb0ec11916955a6e23afecbd4e08edaf5ae4f6c15.
 Goal active; no hosted writes/champion promotion; protected history untouched.
+
+### 2026-09-29 — Controlled entropy job 31932 started
+
+One bounded45min allocation, B300/metta-fabric-b300-1, nice100,8CPU/64GiB,
+main live handle68417. Stream /tmp/relh-classic-spatial-coworld-entropy-pair-stream.tar.gz
+and stderr /tmp/relh-classic-spatial-coworld-entropy-pair-srun.log. Do not
+extract/copy the active full archive or submit duplicate jobs.
+Node output /var/tmp/relh-generals-recovery/classic-spatial-coworld-entropy-pair-pilot-31932.
+Exact container relh-classic-spatial-coworld-entropy-pair-31932.
+Physical GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 preflight0MiB/0% and
+no CUDA processes; Docker UUID match passes. Previous31866 exact container
+absent and node archive SHA matches verified Mac/controller copies.
+Pinned engine/wrapper/model/fingerprint/native binary verification passes;
+570508-word logical optimizer registration passes. Control entropy0 branch
+is compiling its environment; no new steady-state SPS or strength claim yet.
+Both branches restore553M policy+optimizer and target587,202,560 total steps.
+Keep polling SAME68417; monitor enforces throughput/numerics/stall bounds.
+Compare the two final held-out panels with paired map-cluster bootstrap,
+plus each against immutable553M baseline/direct553M. Do not interpret
+within-branch improvement alone as proof of entropy benefit.
+Goal active. No hosted writes/champion promotion; protected history untouched.
