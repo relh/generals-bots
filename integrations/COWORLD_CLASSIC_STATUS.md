@@ -11449,3 +11449,16 @@ log /tmp/relh-classic-spatial-advantage-normalization-srun.log.
 Prepared /tmp/relh-audit-advantage-normalization-31389.py completionaudit
 checks nativeflags/kernelaudit/sourcehash/initmatch/4→16steady/33.55Mlegal
 actions/finalcheckpointlearneridentity. Goalactive; pollSAME31389/main90234.
+
+### 31389 actualcompiled normalizer and exactinitialmatch passed
+
+Live31389/main90234, no newjob. Alternate actualbuild model6eb matches
+control; actualpufferl.cu0aba...172b/ini a483...7a24 exactlymatchexpected
+controlplusnormalizer patch, header2e087...63c. No unverifiedtrainerchanges.
+GPU NativeFabricPolicy6751fresh all57028parameters exactlyequal preserved
+31352stronginitialcab576...7741; optimizer23logicalblocks verified.
+ActualcompiledCUDAkernel sixcases(two/zero/constant/dense/small/sparse)
+allmatchNumPy,maxabs4.72691e-6, passed. Nodeadvantage-kernel-audit/audit.json
+and Mac /tmp/relh-advantage-normalization-31389-kernel-audit.json preserve
+evidence. Trainerstarted/compiling; completedepochs/throughput/strength
+stillpending. Same31389/main90234 nextpoll, goalactive/no publication.
