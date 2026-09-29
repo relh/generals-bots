@@ -14232,3 +14232,13 @@ gap before the learned CNN contribution; training policy temperature .0625
 sharpens it further. No proof these priors alone caused the hosted losses,
 but they explain why a split-exploration pilot is higher value than more
 unchanged teacher guidance. Do not alter running32505 settings.
+
+Prepared next split-exploration measurement without touching live32505:
+commit cfe5198 extends existing device reward audit with opt-in
+`METTA_AUDIT_SPATIAL_SPLITS=1`. It counts full/half/pass sampled flat actions
+on GPU and asserts they sum to physical agent steps at each report. Default
+off, so existing runs retain identical audit behavior. CPU JAX function
+check `[0,1763,1764,3527,3528]→[2full,2half,1pass]` PASS; dummy
+five-agent wrapped step yielded matching reward/action report. This is
+instrumentation for a future temperature/prior pilot, not a measured
+learning/SPS gain. Running32505 staged code is immutable and unchanged.
