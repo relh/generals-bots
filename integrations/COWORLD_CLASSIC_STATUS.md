@@ -13140,5 +13140,27 @@ norm_adv1; originalseed/rollout/environment/frozenopponent unchanged.
 Rewardaudit10,485,760steps/14,036terminals/18legitimatezero/nonfinite0.
 AssignedGPU CUDA PIDs711039python648MiB/712011puffer160200MiB BOTH
 listed by exact taskcontainer; no actual contention. No new job or settings
-change. Continue SAME12072; completed31832 [correction:31932] control
+change. Continue SAME12072; completed31932 control
 artifacts already reused. Goalactive; no hostedwrites/championpromotion.
+
+### 2026-09-29 — 31967 entropy001 training completed and audited
+
+Previous goal turn was a verified wait/progress on live12072/31967.
+SAME job continues with final frozen evaluations; no duplicateallocation.
+Entropy001 completed33,554,432newphysicalsteps to587,202,560total.
+Read-only sealed training snapshot (not activefulljobarchive):
+/tmp/relh-coworld-entropy001-31967-completed-training.tar.gz, gzipverified.
+Audit /tmp/relh-coworld-entropy001-31967-final-training-audit.json.
+Epoch268->280:25,165,824physicalsteps/204.026s =123,346.1618environmentSPS.
+OneB3004096games/onelearner/H512/batch2M/mb8192/R.5, samewarmupinterval
+andcontrols. All33,554,432actionslegal; rewards47,742terminal/51legitimate
+zero/nonfinite0. All570508policyvaluesfinite,policy/state/runSHAs match.
+Finalpolicy2bbeb3691b9acea0057e328dea1e25ecb91583fabcf50637bfe6ea8bdac1b86f;
+optimizer c7a6c5dd62b9a242ad343e60ec0bbd8cc8692563b5d8ebe5a7ca39742d7b9cf7.
+Actualentropy_resume sourceSHA40633afa...c3729 andtrainreceiptverified;
+full553M policy ANDoptimizer restored, runtimeconfigent_coef.001, all other
+learner/environment/opponents/settings samecontrol. No numericfailure.
+At sameepoch276 dashboard entropycontrol.428 versusentropy001.454,
+consistent with higherexploration but NOT strength orcausalperformanceproof.
+All fivefinal held-out panels andpairedentropy001-minus0 bootstrap remain
+pending. Keep SAME12072; no hostedwrites/championpromotion. Goalactive.
