@@ -10016,3 +10016,59 @@ cb95cea48debdbba8ee391312db94e2051196c443f429b601abae00bda55b2b6
 Policy/runtime source revision249dffa, exact staged hashes recorded onnode.
 Repoll30500/session53073 on observation timeout; do not submit duplicates.
 Goal remains active; policy strength and hosted promotion remain unproven.
+
+## 30500 sampled decision diagnostic complete: no hidden strong distribution
+
+30500 main exec53073 terminal exit0, queue absent. All eight128game panels
+passed NumPy output parity and per-turn finite/legal checks, sample seed99281
+on paired seed1386 maps. W/L/D against Expander /Sentinel:
+parent30238 0/123/5 /0/128/0;
+33M 0/124/4 /0/128/0;
+100M 0/122/6 /0/127/1;
+300M 0/124/4 /0/127/1.
+Zero wins across1,024 sampled episodes; sampling does not reveal a strong
+distribution hidden by argmax. Do not change serving to sampling or promote
+these checkpoints. Parent's greedy19Exp/2Sent remains the best of this line.
+Mac/controller archives match SHA256
+3878794fcd48b767eb1ec9981450f0dc62cd76d4aae9279e9ea533b99d11ed35:
+/tmp/relh-classic-spatial-capture-sampling-stream.tar.gz and
+metta0:/tmp/relh-classic-spatial-capture-sampling-30500.tar.gz.
+Mac gzip integrity verified; full local extract
+/tmp/relh-spatial-capture-sampling-30500-inspect. Subsequent30508 preflight
+verified the same node archive digest and exact30500 container absence.
+All three copies therefore match. No training replay or hosted side effect.
+
+## 30508: bounded longer reward-credit pilot running
+
+The unchanged H128/GAE.99 terminal-reward recipe regressed over300M and
+both decision rules failed. Next bounded33,554,432-additional-step pilot
+changes rollout horizon128→512 and GAE lambda .99→.999 to carry capture
+outcome credit farther through1200-turn games. This is a hypothesis test,
+not an established diagnosis. Initialize retained30238 parent df706173...
+afa44ddc, optimizer reset, seed751. Exact verified frozen transfer allows
+the existing scripted→immutable30238 opponent/capture-only reward change;
+no architecture, teacher, codec, or PPO implementation change.
+4096games/one learner per game/H512/mb8192/replay.5/LR.0003/entropy.01,
+gamma/shaping_gamma .999, shaping0/rewardscale1. Native batch2,097,152
+physical ENV steps,16epochs total; checkpoints at16.78M/33.55M then the
+same greedy Expander/Sentinel/parent held-out panels. Reuse30408build.
+
+Full queue/node preflight repeated after30500 terminal.30508 sole Generals
+allocation, b300/metta-fabric-b300-1,8CPU/64GiB/nice100/30min;
+hard Docker8CPU/64GiB/swap64GiB/core0, trainer15min,300s no-epoch stop,
+4/6epoch sustained30k SPS gate fromepoch8 and nonfinite guard retained.
+Physical GPU-0c5605ae-e405-99f1-848e-9fa81e41482a empty0MiB/0% atstartup,
+matched inside Docker; imagebdd4f2a9a125/driver595.91.07/645GiBfree/
+50,710tmp free inodes. No observed CUDA contention. Relh30505/30494 also
+run onnode and were left untouched. Source revisionf1dd18b, script
+/tmp/relh-classic-spatial-local8-frozen-long-credit-run-node.sh SHA256
+18711a76e628c8442a5c883d3e36523ad57f1b1a9efac1b63aa963398a424eb6.
+Node /var/tmp/relh-generals-recovery/classic-spatial-local8-frozen-long-credit-pilot-30508;
+exec59626; future Macstream
+/tmp/relh-classic-spatial-local8-frozen-long-credit-stream.tar.gz.
+Effective config readback confirms H512/GAE.999, parent initialization
+digest, budget33.55M and mb8192. At startup GPU145,758MiB/51%, environment
+compiler cache hit and first rollout warming; no completed epoch yet,
+well within the bounded300s startup window. Do not infer throughput or
+strength yet; repoll the same30508/session59626 and do not duplicate jobs.
+Goal active; strong held-out and hosted policy remains unachieved.
