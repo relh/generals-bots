@@ -10916,3 +10916,47 @@ Retained checkpoint8 panels first (frozen-only and mixed), then fresh actual
 build and policy+optimizer resume mixed5a908...7221, identical5751/overrides,
 absolute33,554,432 target adds16,777,216 NEW physical steps. Twelve-minute
 trainer bound. No long budget released pending completed throughput/quality.
+
+## 31186 complete: mixed throughput repair passes; policy remains weak
+
+Main40506 terminal0;31186 released, no Generals allocation in fullqueue. Actual
+freshbuild model2ca/fabric/spec/rewards verified, learner resume restored8→16,
+added16,777,216 NEW physicalsteps (absolute33,554,432). B3004096physicalgames,
+one learner/game,H512/mb8192/R.5/LR.003,T.0625,logical optimizer,seed5751,
+gamma=shaping_gamma.999,no teacher. Steady warm12@73.495s→16@135.323s:
+8,388,608physicalsteps/61.828s=135,676.521964ENV SPS.18alignedGPU samples
+mean54.8333%,peak145760MiB;mtimeanchor uncertainty1s. Epoch diagnostics at14:
+Env11.018s72%,Model2.544s16%,Train1.772s11%; these rounded stage labels are
+native dashboard diagnostics, not an independent profiler. Prior eager mixed
+interrupted progress~66k;JIT batching roughly doubles progress throughput,
+though the interrupted baseline is not a completed SPS qualification.
+
+Newreward audit exactly4096ticks/16,777,216steps:6630positive,14897negative,
+22529terminal,1002zero terminal,0nonfinite. New actionaudit16,777,216/0illegal.
+Final checkpoint8bc11f2fb23437a9e14a291e7986563275099e8f3fb5f74b660acad831d3a100
+57028finitefloatwords. Artifact /tmp/relh-spatial-mix-jit-resume-31186-audit.json;
+node steady-audit.json is in archive. Source/JIT inputs changed only before
+submission. No completed old training/evaluation replayed.
+
+Equal-step checkpoint8 heldout128Exp/128Sent/512parent (W/L/D):
+frozen-only182fed...623:15/108/5,1/116/11,225/256/31.
+mixed5a908...221:15/110/3,2/116/10,213/268/31.
+Completed mixed8bc11...100:12/110/6,0/113/15,243/248/21.
+Both sides included, same panel states/seeds1386/1513, public observation,
+greedy frozen actor. These reused validation seeds support comparison; fresh
+seeds and hosted proof remain required for promotion. More mixed training did
+not establish strength, so unchanged overnight scaling is rejected. No policy
+upload, XP request, champion change, or claim of reaching300kSPS.
+
+Terminal archive033dcc7b15de62b409bbf03a3a438d1630668778306ac27533d900a28aa4f2fb
+verified gzip/extracted Mac and controller hash. Nodehash and exact-container
+absence must be verified on next node access before another run. Archivehash
+file is written AFTER tar creation, hence is not a member (expected; no corrupt
+archive). Mac /tmp/relh-classic-spatial-mix-jit-resume-stream.tar.gz;
+controller /tmp/relh-classic-spatial-mix-jit-resume-31186.tar.gz;
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-mix-jit-resume-31186.tar.gz.
+Full extraction /tmp/relh-spatial-mix-jit-resume-31186-inspect.
+Checkpoint/optimizer and allsource preserved; protected Codexhistory untouched.
+Goal remains active: throughput is qualified, strong learning/hosted proof is
+unfinished. Focus next on policy learning and credit/action priors; mask/codec
+roundtrip and legal execution already pass, so do not replay those probes.
