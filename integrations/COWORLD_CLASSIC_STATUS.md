@@ -13594,3 +13594,38 @@ andcontroller /tmp/relh-public-scalars-serving-contract-32089/serving-contract-a
 CPUlogs/image preserved in respective taskdirectories. No externalpolicy/XP/
 championwrites. Continue SAME61910/32089 through134M and allpairedheldouts.
 Goalactive; protected Codex history untouched.
+
+### 2026-09-29 — 32089 training completed and checkpoint/optimizer audited
+
+Previousgoalturn PROGRESS: ARM/nativeAMD64 public16channel portable ABI
+passed offGPU, immutableimage archive/config hashes verified. SAME61910
+polledLIVE now,32089stillRUNNING for its scheduled comparisons. No newjob.
+Training completed100,663,296NEWphysicalsteps to134,217,728total/epoch64.
+Sealed completedtraining snapshot (not activefulljobstream)
+/tmp/relh-public-scalar-continuation-32089-completed-training.tar.gz;
+Mac/controllerSHAa37aa2e9ec7dbd2afff5996eacc91f577b1afdf54de93c743f2e100f33317665
+verified aftercontrollerbackup. Extracted same-stem/public-continuation.
+Audit /tmp/relh-public-scalar-continuation-32089-final-training-audit.json
+passed; helperfinal-audit/quality andresult backed up tocontroller/tmp with
+same task-specific names. Full activearchive remains untouched untilterminal.
+
+Epoch20@76.279 ->64@865.620:92,274,688physicalsteps/789.341s =
+116,900.9186sustained end-to-endenvironmentSPS afterfournewwarmupepochs.
+OneB300/4096games/onelearner,H512/batch2,097,152/mb8192/R.5,
+F32global32/channel16/570668finitevalues; rollout/transfer/optimization included.
+Initial policy+optimizer hashes matchsealedpublic33M parent; finalpolicy/state/
+run sidecarSHAsmatch. Newfinalpolicy
+832975074f0b66e94d1f5ae4d46c3aa118a9b3e537975ef2fcfb0f76004649cb;
+optimizerccce6496498edef869e30d1e28e0057680252e88ef3e923370557c4e9b38d2fc.
+All100,663,296newactionslegal,186,457terminals/zero0/nonfinite0. Reward
+positive/negative signs NOT gameoutcomes. Actualpublic7056/correctrules/2000turn/
+frozen218M50%/scripts25%each/bothseatcoverage/gamma=shaping_gamma.999 verified.
+Finalcheckpoint/optimizer plusallintermediate50M..117M pairs preserved.
+
+Fresh33M baseline scriptpanels completed: Expander14/112/2,
+Sentinel17/111/0 (W/L/D). New actualGPUevaluator reports instantiated
+coworld_classic_rulesTrue/episode_limit2000 explicitly asintended. Baseline
+neuralpanels/final134M fourmatchedpanels/direct comparison stillpending in
+SAMEallocation. No heldoutstrength inferencefromtrainingrewards/entropy.
+Continue SAME61910/32089; no duplicatejob/settingschange/hostedwrite/promotion.
+Goalactive, protected Codex history unchanged.
