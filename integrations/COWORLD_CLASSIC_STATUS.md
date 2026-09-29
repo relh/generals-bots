@@ -11462,3 +11462,18 @@ allmatchNumPy,maxabs4.72691e-6, passed. Nodeadvantage-kernel-audit/audit.json
 and Mac /tmp/relh-advantage-normalization-31389-kernel-audit.json preserve
 evidence. Trainerstarted/compiling; completedepochs/throughput/strength
 stillpending. Same31389/main90234 nextpoll, goalactive/no publication.
+
+### 31389 normalized arm live gate and savedlearner verified
+
+Previous turn progress compilednormalizer/allinitialweights match; current
+verifiedwait live31389/main90234,soleallocation/no newjob. Actualown Docker
+nativechild command contains--train.norm_adv=1, withallmatchedPPOoverrides;
+flag is usedbylive compiledbinary. Observedepoch10/20,971,520newphysical.
+Fourepoch131,392.2687/six131,692.0501ENV SPS, >=30kgate passed, reward
+0nonfinite. Saved16,777,216checkpointc1d3ded80018855b7cb5a3efa63bf69f3428ea447040db443ccf7f84a7453154
+and learner02d3e803edbb835d764b828a75befe4644649462c6ae369649eec9dceeea0760,
+57028finitewords, actualpolicy/state/runhashes matchsidecar. Node
+normalized-advantages/mid-checkpoint-audit.json and Mac
+/tmp/relh-advantage-normalization-31389-mid-audit.json preserveevidence.
+Finaltrainer and6686/6513heldout stillpending SAME31389/main90234.
+No duplicatecontroltraining/no hostedpublication; goalactive.
