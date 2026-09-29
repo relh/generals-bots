@@ -12897,3 +12897,31 @@ DoNOTinferDaveey's privateconfig orclaimentropycausedlosses. Olderweak-ALL-
 priors31352 raisedentropy~3.9butallpanelslost; doNOTrepeatthatfailedcontrol.
 Waitforcurrent301.99Mwindowandfrozenheldoutsbeforechangingtraining.
 Goalactive; protectedhistoryuntouched; no hostedwrite/championpromotion.
+
+
+### 2026-09-29 — Job 31866 passes halfway; checkpoint preserved
+
+Previous goal turn was a verified wait on main handle 32032/job 31866.
+The same allocation remains live, observed epoch 193 (153M+ new steps),
+about 113,205 environment SPS over six completed epochs, GPU ~59%.
+No training settings changed and no duplicate allocation was submitted.
+
+Halfway checkpoint 402,653,184 total / 150,994,944 new steps was copied
+read-only to the Mac with its optimizer, sidecar, and training manifest.
+All 570,508 policy values are finite. Policy/state/run hashes match the sidecar:
+- Policy: fc49fb91eb919079b3371bff6af4d47e61e170f07733338fded923b36683accb
+- Optimizer: 76ace549297401be9b13efa41f8384a8865a5ff2a6aa1e9b5d1b0a3c98b3c3ca
+- Run: c4d0ef64b6eedb256d65a89f41a3d51ed6b242294ea4e2d6f36edf57b0858fc9
+
+Snapshot /tmp/relh-coworld-rules-300m-31866-checkpoint-402653184.tar.gz;
+audit /tmp/relh-coworld-rules-300m-31866-checkpoint-402653184-audit.json.
+This is a sealed intermediate checkpoint copy, not the active final archive.
+
+Verified full/half source-army priors at offsets 570080/570084 are now
+1.149104595 / 0.144857824, versus 0.994082630 / 0.156851709 at 268M.
+Dashboard entropy is ~0.701. The growing preference is learned; this does
+not establish its effect on held-out strength. Keep the current full training
+window fixed; assess scores before selecting a future entropy comparison.
+About 22 minutes of training remain at the observed rate, then held-outs.
+Final checkpoint, held-out strength, hosted performance, and promotion remain
+unproven. Goal active; protected history untouched; no hosted writes.
