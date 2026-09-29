@@ -13629,3 +13629,52 @@ neuralpanels/final134M fourmatchedpanels/direct comparison stillpending in
 SAMEallocation. No heldoutstrength inferencefromtrainingrewards/entropy.
 Continue SAME61910/32089; no duplicatejob/settingschange/hostedwrite/promotion.
 Goalactive, protected Codex history unchanged.
+
+### 2026-09-29 — 32089 completed: extra100M does not improve strength
+
+Previousgoalturn PROGRESS: final134M training/state/legality/SPS audited.
+SAME61910 terminal0,32089 queueabsent; fulljob finished andreleased. A final
+read overlap returnedexpiredjob; samehandle thenprovedterminal0, no restart.
+Accountingdisabled; do not inferfailurefromunavailable sacct. Fullarchive
+/tmp/relh-classic-spatial-public-scalar-continuation-stream.tar.gz verified and
+extracted /tmp/relh-public-scalar-continuation-32089-inspect/classic-spatial-public-scalar-continuation-pilot-32089.
+Controller backup /tmp/relh-classic-spatial-public-scalar-continuation-32089.tar.gz
+SHA7e63eaa6f84c07d07fda0028cb5dfcdcd4ece05248c0756e5f2ad080bd718533 matchesMac.
+Fullarchive trainingaudit byteidentical tosealedtrainingaudit. Allstates and
+completedcomparisons preserved; no newjob/hostedwrite/promotion.
+
+Matched /tmp/relh-public-scalar-continuation-32089-matched-scores.json:
+newpairedmaps/seats/seeds/opponents checked,10kmap-clusterbootstrap(seed32089).
+33M ->134M W/L/D, outcome scorechange95%per-panelCI:
+Expander14/112/2 ->14/113/1, -.0078[-.1429,.1318];
+Sentinel17/111/0 ->10/117/1, -.1016[-.2443,.0156];
+frozen218M240/257/15 ->235/264/13, -.0234[-.1862,.1407];
+currentc601237/261/14 ->189/311/12, -.1914[-.3757,-.0074].
+Direct finalvs33M219/284/9, -.1270[-.2619,.0079]. Neural/direct512games,
+scripts128. Currentbenchmark regressionCIexcludes0; directCIstillincludes0.
+No improvementestablished; allintervalsper-panel/unadjustedmultiplecomparisons.
+REJECT134Mforpromotion; retainsealed33M publicexperimentbaseline. No further
+unchanged longscale. Goalstrongheldout/hostedpolicy remainsunachieved.
+
+Independent learning-path audit: actualcurrenttrain.gae_lambda=.999,
+gamma=.999,anneal_lr0,normadv1; defaultINI values overridden. Prior30508/
+30532 longercredit and30878/30900 temperaturematchedsampling alreadytested
+without sufficientstrength; do not repeatasnewfix. Pinnedpufferl.cu uses
+metta_muon_step, not Adam. Directrollout/backward temperature chainrule matches
+source; priorGPUall18tensorfinite-difference audit exists (9439 section), so
+no unsupportedclaimthatfiniteforwardaloneproveswholelearningintegration.
+
+Newactualparameterdelta audit /tmp/relh-public-scalar-continuation-32089-parameter-deltas.json:
+GPUfreshinit/33M/134M shapes sumexact570668; comparisonidenticalmodelSHA.
+Globalprojection[14112,32]: initialRMS.0008398 ->33M.12006 ->134M.23701,
+new100MdeltaRMS.21332. Input[32,16]:.05257 ->.08479 ->.36204,delta.33611.
+Contextconv[5120] VECTOR registration:.05117 ->.05054 ->.04910,delta.003709.
+Localaction[8,32]delta.16208;globalreadout[32,3530]delta.02001.
+Context5120 registration is deliberatecurrentadapter behavior (nonrectangular
+sharingorder), not proof of zero learning. This large scale imbalance plus
+matchedregression warrants checking optimizergeometry/normalization before
+another longrun. Next bounded local audit: actualMuon orientation/scaling,
+contextsharing permutation and layerupdate sensitivity; distinguishverified
+facts from causalhypothesis, and gate anychangedrecipe onnativeGPUparity/SPS
+and pairedshortlearning. No immediate architecture/optimizerchange yet.
+Goalactive; protectedCodexhistoryunchanged; maincheckoutuntouched.
