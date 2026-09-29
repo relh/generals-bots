@@ -14503,3 +14503,40 @@ live leader seat0 xreq_45d01d25-a161-4333-bb76-1509d220628b,
 live leader seat1 xreq_242138bb-1b5c-49bd-ae4a-e6474c0abab8.
 All four initially pending. Exact payloads and idempotency keys are in
 `/tmp/relh-win-population-32951-serving`; read IDs and do not resubmit.
+
+All four XP panels COMPLETED with zero failed episodes. Candidate251M
+versus234M parent: seat0 7W8L1D, seat1 8W8L0D; total15W16L1D.
+Against live Classic leader: seat0 2W14L, seat1 2W14L; total4W28L.
+Every resolved leader opponent was version
+76b0a083-f0a4-4ec7-9811-038349266633 (Daveey v7). These are
+independent hosted seeds; compare win rates, not paired per-map deltas.
+The previous234M policy scored6W26L against the same resolved leader
+version on its own32-game panel. Thus this pilot does not establish a
+quality gain and must not replace either owned champion or justify a
+longer unchanged run.
+
+All32 owned leader replay artifacts were downloaded read-only (926,070
+compressed bytes), manifest with SHA256 per artifact at
+`/tmp/relh-win-population-32951-serving/replay-manifest.json`. The
+post-game omniscient replay audit found13,853 candidate nonpass moves,
+zero basic invalid, **zero greedy half moves**,103 passes. Leader
+made13,223 moves,1,155 half moves,733 passes. Candidate averaged41.47
+moves toward neutral destinations/game versus leader94.25, and at
+turn100 had mean land deficit8.91 and army deficit11.63 among all32
+still active games. All32 ended by general capture. This reproduces
+the earlier234M split/expansion failure (zero half moves,40.75 neutral
+moves, land deficit8 at turn100) despite the changed terminal reward
+and richer fixed pool. Replay audit is diagnostic; the basic legality
+screen is not authoritative mask parity or causal proof. Current
+next-step hypothesis is to test explicit early expansion credit and
+conditional split behavior with matched held-outs before any scale-up.
+
+Prepared a controlled second bounded pilot from the same exact234M actor
+and same five-opponent population, adding only signed own land-gain credit
+of0.02 per net tile to the win-only terminal reward and potential shaping.
+The transfer guard now explicitly accepts only land-gain0 or0.02 for
+this pinned policy-only transfer. Node script
+`/tmp/relh-classic-win-landgain020-run-node.sh` is syntax checked and
+pins the corrected signed direct-parent evaluator. It trains16,777,216
+new physical steps, measures warmed throughput, exports the policy, and
+runs a512-game signed direct-parent comparison before any scale-up.

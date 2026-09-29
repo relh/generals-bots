@@ -169,7 +169,7 @@ class BuildManifest(BaseModel):
 def verified_spatial_population_transfer(
     source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
 ) -> bool:
-    """Allow only the pinned 234M actor to enter a win-only opponent population."""
+    """Allow only the pinned 234M actor into the win-only population reward pilots."""
     old, new = source.config.python_environment, target.config.python_environment
     if old is None or new is None:
         return False
@@ -193,8 +193,11 @@ def verified_spatial_population_transfer(
         return False
     if options.pop("shaping_weight", None) != 0.25 or options.pop("reward_scale", None) != 1.0:
         return False
+    if options.pop("land_gain_reward_weight", None) not in (0.0, 0.02):
+        return False
     options["shaping_weight"] = old.options["shaping_weight"]
     options["reward_scale"] = old.options["reward_scale"]
+    options["land_gain_reward_weight"] = old.options["land_gain_reward_weight"]
     options["frozen_bundle"] = old.options["frozen_bundle"]
     options["parallel_games"] = old.options["parallel_games"]
     return options == old.options and old.options["shaping_gamma"] == 0.999
