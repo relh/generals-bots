@@ -13211,3 +13211,56 @@ publicinformation is a concrete nextrepresentation investigation before more
 optimizer/same-recipe scaling. Preserve codecs/masks/rules/serving parity and
 measure GPUthroughput/held-outs for any new representation. No newjobyet.
 Goalactive; protectedhistory untouched; no hostedwrite/championpromotion.
+
+### 2026-09-29 — Public scalar representation implemented; CPU contracts pass
+
+Previous goal turn made progress: completed paired entropy audit (no clear
+strength gain), public inference decomposition and verified missing scalar
+inputs. No Generals job currently live/pending; no new allocation thisturn.
+
+Added opt-in public_scalar_features to directional codec, preserving first
+11planes/actionmask and appending5planes: turn/2000, own/opponentland/441,
+log1p(own/opponentarmy)/8. All are existing publicwire fields; no hiddeninput
+or teacher targets. public_scalar_ablation produces5zeros with identical
+16-channel geometry, enabling a matched information comparison.
+Trainingwrapper declares7056observations; serving flags, portable parser,
+exporter anddirectspatial implementation now handle this layout. Frozen
+11-channel actor explicitly receives preserved4851prefix; mismatched codecs
+are rejected. For full-vs-zero scalar matches, evaluator supplies fullpublic
+values andeachportable actor applies its own ablation. No policy promotion.
+
+Exact archivedfactory445724...c322 extended ONLY by channel guard11 ->(11,16):
+newSHA5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474.
+Memoryless verification admits that specific source only for16channels;
+original11channelsource remains pinned separately. Reproducer
+integrations/public_scalar_factory.py verifies both source/outputSHA and
+writes a new file exclusively; original archivedsource nevermodified.
+Generic repo factoryalso admits16, but GPU mustuse the pinned archivedvariant.
+
+Five new codec checks plus three existingpublic-codec/actiondecode checks
+PASS (8passed): all4arena18-21shapes,7056vector/3529mask, exactoldprefix/mask,
+training/wire scalar values withinfloat32rounding, ablationzero, invalidflags.
+First run's exactnewscalar equality differedby1ULP; testcorrectlytolerates
+float32rounding while retaining exactprefix/masks. Firstenvironmentfixture
+used unsupportedbase require_gpu argument; removed (baseCPUwrapper).
+No productcode inference fromthosefixture failures. gitdiff--checkpasses.
+
+Actual CPU NativeFabric/DirectSpatial preflight on8real Classic publicobs:
+/tmp/relh-spatial-public-scalars-layout-preflight/audit.json and.log;
+helper /tmp/relh-spatial-public-scalars-layout-preflight.py.
+F32/global32,570668parameterwords,23logicalregistrations; inputkernel32x16,
+otherlogicalmatrixshapes unchanged. Forwardfinite anddirectgradientfinite;
+newscalarinputweights have NONZERO gradient. Actualrealizedgraph mailbox
+proof derives no temporalreversewalk. Frozenprefix integration/mixedbothseats
+passed withCoworldrulesTrue/2000horizon. Initseed6751 SHA
+1ca29b2f44749165cf7ab71a54ade6ddda05a4c45007e8a4559e0a9633a3d8fc.
+Thisis CPUlayout/gradientproof only, NOTGPU parity/SPS orstrength.
+
+Next: bounded ONE GPUallocation including16channel model/serving parity,
+steadySPS and matched zero-versus-publicscalar learning/held-outs. Different
+inputparametergeometry means an old553M optimizer cannot be blindly resumed.
+Use identical explicit initialization/optimizer treatment in BOTHarms; do
+not compare a reset learner to an unreset existingcontrol or spoof manifests.
+Keepcorrectedrules/rewards/opponents/discounts/priors/seed/settings fixed.
+No longtraining untilnewsetup sustains30kphysicalSPS. Goalactive; protected
+historyuntouched; no hostedwrites/championpromotion.

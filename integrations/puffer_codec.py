@@ -102,8 +102,15 @@ def encode_coworld_lean_observation(obs):
     return planes.reshape(-1), jnp.concatenate((moves, jnp.ones((3,), dtype=bool)))
 
 
-def encode_coworld_directional_observation(obs, *, factorized_actions=True, include_timestep=False):
+def encode_coworld_directional_observation(
+    obs, *, factorized_actions=True, include_timestep=False,
+    public_scalar_features=False, public_scalar_ablation=False,
+):
     """Lean public view with one channel for each Harvester route direction."""
+    if public_scalar_features and include_timestep:
+        raise ValueError("Public scalar features already include the turn")
+    if public_scalar_ablation and not public_scalar_features:
+        raise ValueError("Scalar ablation requires public scalar features")
     route = harvester_route_features(obs)
     planes = jnp.stack((
         jnp.log1p(jnp.maximum(obs.armies, 0)) / 8.0,
@@ -117,6 +124,19 @@ def encode_coworld_directional_observation(obs, *, factorized_actions=True, incl
     )).astype(jnp.float32)
     if include_timestep:
         planes = jnp.concatenate((planes, jnp.full((1, *obs.armies.shape), obs.timestep / 1200.0)))
+    if public_scalar_features:
+        scalars = jnp.asarray((
+            obs.timestep / 2000.0,
+            obs.owned_land_count / 441.0,
+            obs.opponent_land_count / 441.0,
+            jnp.log1p(jnp.maximum(obs.owned_army_count, 0)) / 8.0,
+            jnp.log1p(jnp.maximum(obs.opponent_army_count, 0)) / 8.0,
+        ), dtype=jnp.float32)
+        if public_scalar_ablation:
+            scalars = jnp.zeros_like(scalars)
+        planes = jnp.concatenate((planes, jnp.broadcast_to(
+            scalars[:, None, None], (5, *obs.armies.shape),
+        )))
     moves = compute_valid_move_mask_obs(obs).transpose(2, 0, 1).reshape(-1)
     mask = (
         jnp.concatenate((moves, jnp.ones((3,), dtype=bool))) if factorized_actions

@@ -46,6 +46,10 @@ class DirectSpatial:
         if pops["SiLU"].n != cells * features or pops["ContextSiLU"].n != cells * features:
             raise ValueError("Spatial population dimensions differ")
         self.features = features
+        self.channels = pops["input"].n // cells
+        self.observation_size = cells * self.channels
+        if self.channels not in (11, 12, 16) or pops["input"].n != self.observation_size:
+            raise ValueError("Unsupported directional spatial observation layout")
         self.global_features = global_features
         leaves = jax.tree_util.tree_flatten_with_path(fn.params(buffers.template))[0]
         layout = {
@@ -119,7 +123,7 @@ class DirectSpatial:
             if pair == ("input", "SiLU"):
                 if not np.all(src % cells == dst // features):
                     raise ValueError("Input coupling reaches another site")
-                self.input_kernel = shared((11, features), (src // cells, dst % features), weights)
+                self.input_kernel = shared((self.channels, features), (src // cells, dst % features), weights)
             elif pair == ("SiLU", "ContextSiLU"):
                 dx = (src // features) % 21 - (dst // features) % 21
                 dy = (src // features) // 21 - (dst // features) // 21
@@ -165,7 +169,7 @@ class DirectSpatial:
 
     def evaluate(self, parameters, observations):
         shape = observations.shape[:-1]
-        obs = observations.reshape(-1, 11, 21, 21).transpose(0, 2, 3, 1)
+        obs = observations.reshape(-1, self.channels, 21, 21).transpose(0, 2, 3, 1)
         local = jnp.matmul(obs, self.weights(parameters, self.input_kernel), precision=jax.lax.Precision.HIGHEST)
         local = jax.nn.silu(local * parameters[self.local_weight[0]] + parameters[self.local_bias[0]])
         context = jax.lax.conv_general_dilated(
@@ -180,7 +184,7 @@ class DirectSpatial:
         action = jnp.matmul(context.reshape(-1, 441, self.features), parameters[self.action_kernel],
                             precision=jax.lax.Precision.HIGHEST)
         outputs = outputs.at[:, :3528].add(action.transpose(0, 2, 1).reshape(-1, 3528))
-        flat_obs = observations.reshape(-1, 4851)
+        flat_obs = observations.reshape(-1, self.observation_size)
         for source, weights in self.priors:
             outputs = outputs + flat_obs[:, source] * self.weights(parameters, weights)
         outputs = outputs * parameters[self.output_weight] + parameters[self.output_bias]
@@ -223,7 +227,7 @@ def install(native_module=None):
     def direct_forward(self, parameters, state, transported, terminals, batch, time, rollout):
         if rollout and not self.direct_spatial_rollout:
             return forward(self, parameters, state, transported, terminals, batch, time, rollout)
-        if transported.shape != (batch, time, 4851) or terminals.shape != (batch, time):
+        if transported.shape != (batch, time, self.direct_spatial.observation_size) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
         acting = outputs

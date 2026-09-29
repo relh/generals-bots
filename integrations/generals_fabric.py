@@ -323,7 +323,7 @@ def two_stage_tied_local_action_policy(
         raise ValueError("The full-army action prior requires flat actions")
     if hint_prior_strength and (route_prior_strength or source_army_prior_strength or full_split_prior_strength):
         raise ValueError("Public action priors and the exact-action hint must be exclusive")
-    if (route_prior_strength or source_army_prior_strength or full_split_prior_strength) and channels not in (11, 12):
+    if (route_prior_strength or source_army_prior_strength or full_split_prior_strength) and channels not in (11, 12, 16):
         raise ValueError("Public action priors require directional observations with an optional turn plane")
     sense = nn.cluster(
         "sense", nn.atoms.Input(), n=observation_size,

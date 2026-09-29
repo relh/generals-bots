@@ -153,7 +153,7 @@ def main():
         for phase in ("early_0_99", "middle_100_199", "late_200_plus")
     } if args.action_diagnostics else None
     if args.action_diagnostics:
-        assert options["directional_features"] and env.spec.observation_size in (4851, 5292)
+        assert options["directional_features"] and env.spec.observation_size in (4851, 5292, 7056)
     try:
         observation = env.reset(reset_seed)
         initial_leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]

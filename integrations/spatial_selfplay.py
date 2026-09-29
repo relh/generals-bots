@@ -23,13 +23,19 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
         frozen = SpatialPlayerPolicy(bundle)
         source = json.loads((bundle / "build.json").read_text())["config"]["python_environment"]["options"]
         flags = ("factorized_actions", "compact_features", "lean_features", "directional_features",
-                 "packed_directional_features", "hint_features", "prior_hint_features", "sprint_hint_features",
+                 "directional_time_features", "packed_directional_features", "hint_features", "prior_hint_features", "sprint_hint_features",
                  "expander_hint_features", "context_hint_features", "coworld_classic")
         if any(bool(source.get(k)) != bool(options.get(k)) for k in flags):
             raise ValueError("Frozen opponent and learner public codecs differ")
         super().__init__(context=context, parallel_games=parallel_games, **options)
-        if (self.spec.observation_size, tuple(self.spec.action_sizes)) != (4851, (3529,)):
+        if self.spec.observation_size not in (4851, 5292, 7056) or tuple(self.spec.action_sizes) != (3529,):
             raise ValueError("Spatial frozen opponents require the public flat codec")
+        if frozen.observation_size != self.spec.observation_size and not (
+            frozen.channels == 11 and options.get("public_scalar_features")
+        ):
+            raise ValueError("Frozen opponent must use the same codec or the preserved eleven-channel prefix")
+        if frozen.channels == 16 and options.get("public_scalar_ablation") and not frozen.public_scalar_ablation:
+            raise ValueError("A full-scalar frozen opponent requires unabbreviated scalar observations")
         self.spec = self.spec.model_copy(update={"agents": parallel_games})
         self._rows = jnp.arange(parallel_games)
         self._frozen = frozen
@@ -37,7 +43,7 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
         @jax.jit
         def opposing_actions(values, masks):
             with jax.default_matmul_precision("highest"):
-                outputs = frozen._forward(values, jnp)
+                outputs = frozen._forward(values[:, :frozen.observation_size], jnp)
             return jnp.argmax(jnp.where(masks, outputs[:, :3529], -jnp.inf), axis=1).astype(jnp.int32)
 
         self._opposing_actions = opposing_actions

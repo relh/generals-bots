@@ -58,6 +58,10 @@ def main():
         options.pop(k, None)
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
                    shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0)
+    if options.get("public_scalar_features"):
+        # Each portable actor applies its own ablation; both receive the full
+        # public view so a zero-scalar candidate can face a full-scalar actor.
+        options["public_scalar_ablation"] = False
     if args.smoke_cpu:
         options.update(require_gpu=False, horizon=4)
     args.output.mkdir(parents=True, exist_ok=False)

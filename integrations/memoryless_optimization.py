@@ -13,6 +13,8 @@ from pathlib import Path
 
 FACTORY = "integrations.generals_fabric:two_stage_tied_local_action_policy"
 FACTORY_SHA256 = "445724d7330622ca44a9f81ffb4531013add2596c8eb95ce6d93141fd196c322"
+# Same archived factory with only its channel-count guard admitting sixteen.
+PUBLIC_SCALAR_FACTORY_SHA256 = "5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474"
 BRIDGE_SHA256 = "c1bed03201af5133badfe8c5fa1566efc3830acc73c68798fbf5b7f7d7e051c1"
 
 
@@ -28,12 +30,14 @@ def verify_configuration(configuration):
     if config["factory"] != FACTORY:
         raise ValueError("Optimization flattening requires the archived spatial actor")
     module = importlib.import_module(FACTORY.split(":")[0])
-    if hashlib.sha256(Path(module.__file__).read_bytes()).hexdigest() != FACTORY_SHA256:
+    channels = config["options"].get("channels")
+    expected_factory = PUBLIC_SCALAR_FACTORY_SHA256 if channels == 16 else FACTORY_SHA256
+    if hashlib.sha256(Path(module.__file__).read_bytes()).hexdigest() != expected_factory:
         raise ValueError("Spatial actor source differs from the mailbox-only proof")
-    if config["observation_size"] != 4851 or config["action_sizes"] != [3529]:
+    if channels not in (11, 16) or config["observation_size"] != channels * 441 or config["action_sizes"] != [3529]:
         raise ValueError("Optimization flattening requires the public flat Classic codec")
     if config.get("compiler") != "standard" or any(
-        config["options"].get(key) != value for key, value in (("channels", 11), ("height", 21), ("width", 21))
+        config["options"].get(key) != value for key, value in (("height", 21), ("width", 21))
     ):
         raise ValueError("Optimization flattening requires the verified compiler and board layout")
     if config["options"].get("broadcast_global_context", False):

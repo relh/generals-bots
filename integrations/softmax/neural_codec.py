@@ -45,7 +45,8 @@ _calibrate_hints = jax.jit(
 )
 _encode_lean = jax.jit(encode_coworld_lean_observation)
 _encode_directional = jax.jit(
-    encode_coworld_directional_observation, static_argnames=("factorized_actions", "include_timestep"),
+    encode_coworld_directional_observation,
+    static_argnames=("factorized_actions", "include_timestep", "public_scalar_features", "public_scalar_ablation"),
 )
 _encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
 _encode_hinted = jax.jit(encode_coworld_hinted_observation)
@@ -136,11 +137,17 @@ def encode_wire_observation(
     split_hint_scale: float = 1.0,
     factorized_actions: bool = True,
     directional_time_features: bool = False,
+    public_scalar_features: bool = False,
+    public_scalar_ablation: bool = False,
 ):
     if not factorized_actions and not directional:
         raise ValueError("Flat Coworld serving requires the directional codec")
     if directional_time_features and not directional:
         raise ValueError("Directional time features require the directional codec")
+    if public_scalar_features and not directional:
+        raise ValueError("Public scalar features require the directional codec")
+    if public_scalar_ablation and not public_scalar_features:
+        raise ValueError("Scalar ablation requires public scalar features")
     observation = training_observation(message)
     values, mask = (
         _encode_expander_general_distance_prior_hinted(observation)
@@ -163,6 +170,7 @@ def encode_wire_observation(
         if packed_directional
         else _encode_directional(
             observation, factorized_actions=factorized_actions, include_timestep=directional_time_features,
+            public_scalar_features=public_scalar_features, public_scalar_ablation=public_scalar_ablation,
         )
         if directional
         else _encode_lean(observation)

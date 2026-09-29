@@ -71,6 +71,8 @@ class GeneralsPufferEnvironment:
         lean_features: bool = False,
         directional_features: bool = False,
         directional_time_features: bool = False,
+        public_scalar_features: bool = False,
+        public_scalar_ablation: bool = False,
         packed_directional_features: bool = False,
         hint_features: bool = False,
         prior_hint_features: bool = False,
@@ -113,6 +115,10 @@ class GeneralsPufferEnvironment:
             raise ValueError("Directional observations require lean Coworld Classic features")
         if directional_time_features and not directional_features:
             raise ValueError("Directional time features require directional observations")
+        if public_scalar_features and (not directional_features or directional_time_features):
+            raise ValueError("Public scalar features require directional features without a separate turn plane")
+        if public_scalar_ablation and not public_scalar_features:
+            raise ValueError("Scalar ablation requires public scalar features")
         if packed_directional_features and (not lean_features or directional_features or goal_features):
             raise ValueError("Packed directional observations require lean Coworld Classic features")
         if hint_features and (not lean_features or directional_features or packed_directional_features or goal_features):
@@ -195,7 +201,7 @@ class GeneralsPufferEnvironment:
                 **map_options,
             )
         self.spec = EnvironmentSpec(
-            observation_size=(14 if context_hint_features else 10 if packed_context_hint_features or neighbor_threat_hint_features or general_distance_hint_features else 12 if directional_time_features else 11 if directional_features else 8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
+            observation_size=(16 if public_scalar_features else 14 if context_hint_features else 10 if packed_context_hint_features or neighbor_threat_hint_features or general_distance_hint_features else 12 if directional_time_features else 11 if directional_features else 8 if lean_features else 14 if compact_features else 21 if goal_features else 14)
             * board_size * board_size,
             action_sizes=[4 * board_size**2 + 1, 2] if factorized_actions else [8 * board_size**2 + 1],
             teacher=supervise_teacher,
@@ -222,6 +228,7 @@ class GeneralsPufferEnvironment:
             if packed_directional_features
             else (lambda obs: encode_coworld_directional_observation(
                 obs, factorized_actions=factorized_actions, include_timestep=directional_time_features,
+                public_scalar_features=public_scalar_features, public_scalar_ablation=public_scalar_ablation,
             ))
             if directional_features
             else encode_coworld_lean_observation

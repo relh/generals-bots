@@ -56,6 +56,7 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output):
              for name in ("build.json", "training.json", "policy.bin", "weights.npz")}
     (output / "spatial-policy.json").write_text(json.dumps(dict(
         schema="puffer5-generals-spatial-v1", files=files, features=model.features,
+        channels=model.channels,
         global_features=model.global_features, prior_count=len(model.priors),
         factory_source_sha256=hashlib.sha256(factory_source.read_bytes()).hexdigest(),
     ), indent=2) + "\n")

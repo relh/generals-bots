@@ -22,12 +22,22 @@ class SpatialPlayerPolicy:
         if training["build"] != build:
             raise ValueError("Spatial training/build manifests differ")
         config = build["config"]["fabric"]
-        if config["observation_size"] != 4851 or config["action_sizes"] != [3529]:
+        self.channels = config["options"]["channels"]
+        self.observation_size = 441 * self.channels
+        if self.channels not in (11, 12, 16) or config["observation_size"] != self.observation_size or config["action_sizes"] != [3529]:
             raise ValueError("Spatial bundle requires the public Classic observation and action contract")
+        codec = build["config"]["python_environment"]["options"]
+        if bool(codec.get("public_scalar_features")) != (self.channels == 16):
+            raise ValueError("Spatial model channels differ from its public scalar codec")
+        if manifest.get("channels", self.channels) != self.channels:
+            raise ValueError("Spatial bundle channel metadata differs from its model")
+        self.public_scalar_ablation = codec.get("public_scalar_ablation", False)
+        if self.public_scalar_ablation and self.channels != 16:
+            raise ValueError("Public scalar ablation requires the sixteen-channel codec")
         with np.load(bundle / "weights.npz", allow_pickle=False) as data:
             self.weights = {name: data[name].copy() for name in data.files}
         f, g = manifest["features"], manifest["global_features"]
-        shapes = dict(input_kernel=(11, f), context_kernel=(3, 3, f, f),
+        shapes = dict(input_kernel=(self.channels, f), context_kernel=(3, 3, f, f),
                       local_weight=(f,), local_bias=(f,), context_weight=(f,), context_bias=(f,),
                       global_kernel=(441 * f, g), global_weight=(g,), global_bias=(g,),
                       readout_kernel=(g, 3530), action_kernel=(f, 8),
@@ -43,7 +53,7 @@ class SpatialPlayerPolicy:
             if value.shape != shape or not np.isfinite(value).all():
                 raise ValueError("Invalid spatial tensor: " + name)
             if name.startswith("prior_source_"):
-                if not np.issubdtype(value.dtype, np.integer) or np.any((value < 0) | (value >= 4851)):
+                if not np.issubdtype(value.dtype, np.integer) or np.any((value < 0) | (value >= self.observation_size)):
                     raise ValueError("Spatial prior source exceeds the observation")
             elif value.dtype != np.float32:
                 raise ValueError("Spatial inference requires float32 weights")
@@ -57,7 +67,7 @@ class SpatialPlayerPolicy:
 
     def forward(self, observations):
         observations = np.asarray(observations, dtype=np.float32)
-        if observations.ndim != 2 or observations.shape[1] != 4851 or not np.isfinite(observations).all():
+        if observations.ndim != 2 or observations.shape[1] != self.observation_size or not np.isfinite(observations).all():
             raise ValueError("Invalid spatial observations")
         output = self._forward(observations, np)
         if not np.isfinite(output).all():
@@ -66,7 +76,9 @@ class SpatialPlayerPolicy:
 
     def _forward(self, observations, xp):
         w = self.weights
-        obs = observations.reshape(-1, 11, 21, 21).transpose(0, 2, 3, 1)
+        if self.public_scalar_ablation:
+            observations = xp.concatenate((observations[:, :4851], xp.zeros_like(observations[:, 4851:])), axis=1)
+        obs = observations.reshape(-1, self.channels, 21, 21).transpose(0, 2, 3, 1)
         local = self.silu((obs @ w["input_kernel"]) * w["local_weight"] + w["local_bias"], xp)
         padded = xp.pad(local, ((0, 0), (1, 1), (1, 1), (0, 0)))
         context = xp.zeros_like(local)
@@ -91,7 +103,7 @@ class SpatialPlayerPolicy:
     def predict(self, seat, observation):
         values = np.asarray(observation.values, np.float32)
         mask = np.asarray(observation.action_masks, bool)
-        if seat != 0 or values.shape != (1, 4851) or mask.shape != (1, 3529) or not mask.any():
+        if seat != 0 or values.shape != (1, self.observation_size) or mask.shape != (1, 3529) or not mask.any():
             raise ValueError("Invalid spatial single-seat observation or mask")
         output = self.forward(values)[0, :3529]
         logits = np.where(mask[0], output, -np.inf)
