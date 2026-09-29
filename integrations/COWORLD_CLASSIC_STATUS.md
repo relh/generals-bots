@@ -13017,3 +13017,23 @@ for both final branches, then10,000 map-cluster bootstrap draws of paired
 entropy001-minus0 outcomes for all five panels. This helper is prepared,
 not executed against pending results. Same job continues; do not duplicate.
 Final branches/SPS/held-outs still pending; goal active.
+
+### 2026-09-29 — 31932 entropy0 control training completed and audited
+
+Previous goal turn was a verified wait on live68417/31932. Same job remains
+live; entropy0 branch completed33,554,432 new steps to587,202,560 total.
+Read-only sealed training file snapshot (not active full job archive):
+/tmp/relh-coworld-entropy0-31932-completed-training.tar.gz, gzip verified.
+Audit /tmp/relh-coworld-entropy0-31932-final-training-audit.json.
+Epoch268->280:25,165,824physical steps/202.741s =124,127.9465 SPS,
+warmup excluded. Same B3004096games/1learner/H512/batch2M/mb8192/R.5.
+All33,554,432actions legal;47,719terminalevents/80 legitimatezero rewards,
+nonfinite0. 570508 policy values finite; policy/optimizer/run hashes match.
+Final control policy6f2a7247101b78681d89c6fd6a001769791538698b71a2e0a4a712c7f6b7861b;
+optimizer9b029aefd27d68244c19204e137bbaa830bd4ae5eb8f1c0504cec530415f1f31.
+Full553M policy+optimizer restoration, actualrules/horizon/discounts,
+frozen218M and mixed opponents on both seats verified by final audit.
+Control held-outs then entropy001 training/evals remain in SAME allocation.
+Prepared paired quality helper handles single frozen opponent panels with
+opponent SHA identity when mixed-opponent-ID arrays are legitimately absent.
+No new allocation, hosted write, or promotion. Goal active.
