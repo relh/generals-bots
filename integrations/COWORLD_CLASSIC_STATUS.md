@@ -11656,3 +11656,69 @@ Mac stream /tmp/relh-classic-spatial-source-prior-only-stream.tar.gz (partial
 while live), observer log /tmp/relh-classic-spatial-source-prior-only-srun.log.
 Final audit prepared at /tmp/relh-audit-source-prior-only-31394.py.
 Goal active; no hosted publication.
+
+## 31394 completed; source-only change improves parent play
+
+Main 4224 exited 0 and allocation released. Full gzip/extraction, local final
+audit and controller archive checks passed. Mac/controller archive SHA256
+bfe6b5b8ea68ae4ac2482f6b1b237cfe5f35d488a151b1832f94e2ae8a9a04e7;
+node hash and exact old container absence verified by subsequent 31410 guard.
+Archive /tmp/relh-classic-spatial-source-prior-only-stream.tar.gz,
+controller /tmp/relh-classic-spatial-source-prior-only-31394.tar.gz;
+extracted /tmp/relh-spatial-source-prior-only-31394-inspect.
+
+B300/4096 physical games/one learner/H512/rollout batch 2,097,152/mb8192/R0.5.
+Warmup epoch 4 at 68.036 seconds -> epoch 16 at 253.743 seconds:
+25,165,824 physical steps /185.707 seconds = **135,513.599 ENV SPS**.
+52 GPU samples average 56.46%, peak 145,760 MiB. Total 33,554,432 new physical
+steps, all actions legal, zero nonfinite rewards, 65,149 terminal agents. Final
+57,028 parameters finite; actual policy/optimizer/run hashes match sidecar.
+Final policy b6e034b856a3be612f2d321aa714852ea4946d7255fb9e2a32621b48661dc082;
+learner 61c42f68d8d2bcf23b61812a3a0deade38dd4730b1235751cd56669eb8b0ac01.
+Node steady-audit and Mac /tmp/relh-source-prior-only-31394-final-audit.json.
+Midpoint 16,777,216 policy c2a21f0e23e571750838c64aa494a1893302b6ecbe5cadbb909237e8939ff7cc,
+learner 4456b2dd350c8a40572b492f06e4fb5d95818502b983053cb709871d2df4a151,
+verified finite and native hashes (/tmp/relh-source-prior-only-31394-mid-audit.json).
+
+Held-out maps and seats exactly match 31389 control (6686/6513):
+
+| Panel | Control W/L/D | Source-only W/L/D |
+| --- | --- | --- |
+| Expander, 128 games | 23/103/2 | 24/97/7 |
+| Sentinel, 128 games | 4/124/0 | 4/113/11 |
+| Parent, 512 games | 152/328/32 | 220/273/19 |
+
+Parent paired score improvement +0.2402; descriptive 10,000 bootstrap samples
+clustered by 125 unique initial state hashes give interval [0.0744, 0.4072].
+Script panels have 86 unique initial states each and intervals include zero.
+These panels establish a useful parent improvement, not hosted qualification;
+scripted opponents remain difficult. Full paired evidence:
+/tmp/relh-source-prior-only-31394-matched-scores.json. No hosted publication.
+
+## 31410 source-only continuation submitted (302M additional steps)
+
+One bounded B300 job **31410**, main session **29237**, partition b300/node
+metta-fabric-b300-1, nice 100, 75 minutes, 8 CPUs/64 GiB. Full queue rechecked,
+no other Generals job. Assigned physical GPU
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty 0 MiB/0%/no compute processes;
+Docker UUID matched, no observed contention. Current full queue also contains
+peer jobs 31395/31405 on B200; those are not this allocation.
+
+Output /var/tmp/relh-generals-recovery/classic-spatial-source-prior-only-300m-pilot-31410,
+recipe source-prior-only. Reuse exact 31394 build via relative symlink; model
+3c8099a63e50e1e7ec5c57d388b79b3093710fcdaeaeb63a0cf4b183a32fa005 verified.
+Restore BOTH verified 31394 final policy and optimizer, exact same seed 6751,
+PPO/rewards/mixed opponents/source revision 6069da2; environment transfer false.
+Absolute 33,554,432 ->335,544,320, **301,989,888 new physical steps**,
+starting epoch 16 ->160. Pilot 135,513.599 ENV SPS projects 2228.5 seconds
+(~37.1 minutes) of training plus warmup/evaluation. Guard >=30k sustained,
+nonfinite/stall; training timeout 50 minutes within 75-minute allocation.
+Evaluate 100M-additional and final checkpoints after training, with same
+6686/6513 panels, 128 Expander/128 Sentinel/512 parent. No control replay.
+
+Script /tmp/relh-classic-spatial-source-prior-only-300m-run-node.sh SHA256
+d28da34a219280aa265e757b2812774593c57c2a6758d5c261487b6137490f54.
+Mac live stream /tmp/relh-classic-spatial-source-prior-only-300m-stream.tar.gz;
+observer /tmp/relh-classic-spatial-source-prior-only-300m-srun.log.
+Continue SAME job/session; do not start another on observer timeout.
+Goal active, histories untouched, 300k SPS target not achieved.
