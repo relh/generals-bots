@@ -13920,3 +13920,26 @@ checks. Compare toarchived32189public33M heldouts newseeds andnewdirect512.
 Sourcearchive includesfirststephelper SHAf80ed9...updatedto f80ed9? exactfile
 needsfresh SHAfromnode artifact aftersubmission; generatorfullscriptSHAabove.
 No hostedwrite/promotion/protectedhistory mutation; maincheckoutuntouched.
+
+32305 TERMINALexit1 beforetraining: actualCUDAcompiledsource26b330... andbinary
+SHA8f1a7eb5fc32bfdfe652eae0b5fe171cf8e83a292efbea3330aa817a0bd6ea1a
+bothmarkers present. ActualGPUfreshseed6751 policyINIT SHA2ff612... matches
+sealed32015; noPuffertrainingsteps/checkpoints/heldoutevals produced.
+Failurewasregistration-probe line12: script comparedopt-incontext[32,160]
+shapes todefaultvectorlayout. This is a staleprobeassertion, not a model
+orcompiled-kernel failure; owner script generatedthewrongexpectedlayout.
+Mainhandle37936exit1, Slurmqueuejobabsent; finishtrap streamedcomplete~100MBarchive
+Mac /tmp/relh-classic-spatial-muon-context-fresh-stream.tar.gz and exact
+controllerbackup /tmp/relh-classic-spatial-muon-context-fresh-failed-32305.tar.gz,
+SHA4d41eb0a9ca5302933eddb0f8aec5c984a2193bd14da97b4f5332188efbef433 MATCH.
+Extract /tmp/relh-muon-context-fresh-32305-inspect; trace andCUDA buildpreserved.
+No liveGPUjob/taskcontainer assumed; newattemptrequiresfreshpreflight, one
+boundedallocation only. Fixedprobe to requestcontext_matrix=True. Reuse
+completecompiledbuild fromsameB300 node, verifiedexactELFSHA/sourceSHA;
+no duplicatecompile ortrainerjobs. Retry script
+/tmp/relh-classic-spatial-muon-context-retry-run-node.sh
+SHA5d4c7ca9c0cc2f9a0a7f693d83999c131827ddaed6efbded3cb0b189d5acf93c,
+generator /tmp/relh-build-spatial-muon-context-fresh-retry.py.
+Freshfullqueue/scontrolpreflight rechecked; peers32291/32232, Daveeyuntouched.
+Goalactive; thisturnPROGRESS: opt-inCUDAcode compiled+GPUinit verified and
+staleprobe discovered/fixed. No learning claim yet or hosted/promotionwrites.
