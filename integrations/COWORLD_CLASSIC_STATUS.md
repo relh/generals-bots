@@ -9887,3 +9887,27 @@ No sampled spatial arena quality result is claimed. If scheduled greedy
 panels remain weak, the next bounded GPU diagnostic can compare sampled
 and greedy decisions before concluding that the learned distribution is
 weak. No second allocation, policy registration or champion change.
+
+## Physical AMD64 serving startup verified on metta0
+
+Transferred the exact locally built AMD64 serving image to metta0, which
+has an idle x86 CPU Docker runtime (load .07/.45/1.70 and1.6TiB free at
+inspection). No GPU or Slurm allocation was added. Image archive SHA256
+d171902800e434d4ad1a43418fc86ad08e225a9966311b2c56dd10b3797e3e0e
+matched before loading; image config
+b1c6a91d29b754ef291da2f5b056bd0ccd41e73ab384950acd5a81e4cd7bc12e
+is amd64/uid10001. The first probe failed because its separately mounted
+test script was mode600; granting read access to that owned probe file
+resolved it. No serving image or policy change was required for that issue.
+
+The actual play() websocket path now passes on physical x86 Linux:
+32 legal replies across18x21/21x18/19x20/21x21, cold-ready0.71682s,
+first/max server-observed reply1.21668ms, mean0.83695ms. Container hard
+limits2CPU/4GiB, root filesystem read-only, tmpfs /tmp256MiB, core dumps
+disabled, timeout2min; terminal exit0 and exact owned container absent.
+This closes the AMD64 startup/packaging gap for the retained30238bundle;
+it is a synthetic websocket check on metta0, not a hosted Observatory
+match or evidence of policy strength. Artifacts retained both in
+metta0:/tmp/relh-generals-spatial-serving-30238/ and locally under
+/tmp/relh-spatial-serving-linux-build/wire-probe-amd64.log.
+30435 remains the sole live Generals training allocation. Goal active.
