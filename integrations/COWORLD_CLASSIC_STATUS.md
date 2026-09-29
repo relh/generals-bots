@@ -12533,3 +12533,78 @@ ContinueSAME31753/main56362; finalaudithelperwarm68->160 prepared. Completed
 201,326,592newactions expected; preservepolicyANDoptimizer,waitterminalthen
 archive/verify/extract. Compare134Mbaseline/final335Monfull2000turn scripts,
 oldparent/currentc601/direct134M. Goalactive; notyetstrongqualifyingpolicy.
+
+## 2026-09-29: FOUND AND CORRECTED actual hosted engine mismatch
+
+Previousgoalturn PROGRESS:live31753gate+F32localservingcontract. Thisturn
+publicread-onlyforum/wiki refresh foundnoconfigposts (emptyforum), but wiki
+wrv_ea642... Sep27 specifiesownedmovesfirst/generalattackslast/LARGERarmy/
+oddturnseat-tiereversal. DeployedCoworldstill0.3.3. Actual31753Dockerimport
+CPU-onlyintrospection proves old /work/source-spatial2/generals/core/game.py
+SHA33bb026b1cddea9f79190c16c9d9e9e47f70f037707311d97c45c0c4864b3f3f:
+chasing>reinforcing>SMALLERarmy/alwaystieindex. Actualenv8ef396de...bc060
+legacy_move_priorityFalse. Thesearealsoexactpre-editrepo sourcehashes.
+Independentofficialsoftmaxfetch (NOmerge/rebase/branchswitch) sourcecommit
+**0fcb5a00226387670624d2f326f6d5ad61914584** confirmsdifferentpublishedrule.
+PinnedofficialgameSHA **f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318**.
+
+Verifiedcheckpoint167.77MpolicyANDoptimizer BEFOREstoppingownexactDocker
+container5s. Main31753/56362terminal137, allocationreleased, tartrapcompleted.
+Stoppedforrulemismatch,notnonfinitegradients;doNOTtreatthisascompletedtraining
+orcorrect-rulesSPSqualification. ArchivegzipverifiedMac
+/tmp/relh-classic-spatial-width32-source025-300m-stream.tar.gz SHA
+**c26226793e42e913eec6ff359f977ad6375362861f42af5569e700bb6b0ab6ab**,
+controller/tmp/relh-classic-spatial-width32-source025-300m-31753.tar.gzmatches.
+Extract/tmp/relh-spatial-width32-source025-300m-31753-inspect. Finalarchive
+containsnewercompleteepoch88 **184,549,376** checkpoint, verifiedfinite570508,
+policy/state/runSHAs match. Policy
+**669b5d9d4e77ccb592322f1b1ee7ed8e6114c674e3c725bce672ae71be40993b**,
+optimizer
+**bb313085965e953cb2f29cf9334a67c9bc15a3a42e4984e81f63bfd4a9aad98b**.
+Older150.99/167.77M also preserved. Audit
+/tmp/relh-stopped-old-rules-31753-checkpoint-audit.json. No currentGPUjob.
+
+**Earlierlocalpanelsunderthissameenginecannotqualifyhosted-rulesstrength**,
+evenafter2000turnfix. Theirrelativetrainingcomparisonsremainold-engineevidence.
+Actualhosted6/32vsDaveeyv7 and11/32vsrelh remainvalidhostedoutcomes.
+DoNOTclaimrulemismatchcausedmostlosses: evidencebelowolddiverges4/64 games.
+DoNOTpromote oldcheckpoints oruseold125k ascorrectedenginequalification.
+
+Implementedseparatepinnedofficialgenerals/core/coworld_game.py byte-identical
+toupstream. ExistingGeneralsEnvdynamicpool retainedwith explicit
+coworld_classic_rules=True selectingofficialstep/general_tradeFalse and
+batchedofficialobservations. Conflictingbuild/deathtouch/legacy flags and
+non2playerClassicreject. Genericengine/rulesets/replayaid unchanged.
+ClassicPufferwrapperselectsTrueautomatically;mixrecord+mirrorresults record
+flag. AGENTS nowrequireinstantiatedflag+enginehash;provenance
+core/COWORLD_ENGINE.md. Existingnative/model/codecshape unaffected.
+
+**17tests pass** (newtest_coworld_classic_rules + existingtest_game_jax),
+coverlarger-firstcombatresult4vsold6,odd-tiereversal,ownedmergepriority,
+generalattacklast,chasingdependency/headonswap,selectedEnvstep+obsparity,
+conflictingmodes. Initialtwofixturefailures correctedneutralgarrison1vs0;
+noenginecodealteredtofit tests. ActualstagedGPUwrappervariantpatchedfromb82
+-> **5aa72dfb6acd9cce4b1b63484584b6c4df3c5a92bb3ab1a7f294dd7b94500556**.
+CPUreal4maps32ticks:227legalmoves incl107half,1664statefieldcomparisons,
+allstate/publicobs matchofficial;4851/[3529]/2000,continues1200/1999,
+truncates2000andresets0. Audit
+/tmp/relh-coworld-rules-staged-contract/audit.json;
+helper/tmp/relh-coworld-rules-staged-contract.py;
+log/tmp/relh-coworld-rules-staged-contract-legal-moves.log.
+
+**Actualhostedreplayparity provesdeployedbehavior**,notjustwikidescription:
+All64preservedownXPgames,**31,919transitions**,exacttype/owner/armygrids,
+turn/army/land/eliminated matchpinnedofficialstep. Oldengine diverges4/64.
+Postgamefullstatesonly,neverpolicyinputs/teacherlabels. Helper
+/tmp/relh-coworld-hosted-transition-parity.py;
+audit/tmp/relh-coworld-hosted-transition-parity/audit.json;
+log/tmp/relh-coworld-hosted-transition-parity-correct-grid.log.
+Initialprobeincorrectlyencodedneutralcastlewithnegativearmy;failureartifact
+retained,correctpositivegridencoding rerunpassedall64. No replay fileschanged.
+
+Nextneeded: boundedGPUpilotofVERIFIEDofficialrules, explicitenvironmenttransfer
+oflastcompletepolicyANDoptimizer ifresuming, initialmatch+actualselectedengine
+SHA/flag andGPUsteadyphysicalSPS>=30k beforelongscaling. Newstagedenv+official
+coremustbemountedintoactualsource-spatial2importpaths; merelyeditingrepofile
+wouldNOTchangeGPUruntime. Nativefactory/model/binary canremainidentical,
+environmentfingerprint MUSTchange. Goalactive,protectedhistoriesuntouched.

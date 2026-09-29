@@ -2,6 +2,7 @@
 
 ## GPU throughput gate
 
+- Coworld Classic training and evaluation must select `coworld_classic_rules=True` in the instantiated `GeneralsEnv`. Record the selected engine source hash and verify it against the pinned official Softmax engine. The generic engine's chasing/smaller-army priority is a different ruleset and cannot qualify a hosted policy. Public observation/action dimensions and a 2,000-turn limit alone do not establish rule parity.
 - For potential-based reward shaping, explicitly set the environment `shaping_gamma` equal to the learner `train.gamma`. Inspect both effective values before training; omitted environment options may use a different default. Record both discounts with the run settings.
 
 - Record opponent-by-side counts for mixed-opponent training. Every opponent type must have training samples on both player sides.

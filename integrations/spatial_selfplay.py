@@ -141,6 +141,7 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
         record = dict(
             counts=counts, frozen_checkpoint_sha256=self._mix_checkpoint_sha256, seed=seed,
             episode_limit=self.horizon,
+            coworld_classic_rules=self.base.env.coworld_classic_rules,
             scope="Opponent actions only; no teacher targets or learner action overrides",
         )
         self._mix_output.parent.mkdir(parents=True, exist_ok=True)

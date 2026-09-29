@@ -30,6 +30,7 @@ import jax.numpy as jnp
 import jax.random as jrandom
 
 from generals.core import game
+from generals.core import coworld_game
 from generals.core.game import GameInfo, GameState, create_initial_state
 from generals.core.grid import generate_grid
 from generals.core.observation import Observation
@@ -146,6 +147,8 @@ class GeneralsEnv:
         # of the current chasing > reinforcing > smaller-army rule. Only for
         # reproducing archived generals.io replays; see game._determine_move_order.
         legacy_move_priority: bool = False,
+        # Capture-only Classic rules from the official Softmax engine.
+        coworld_classic_rules: bool = False,
         # Named ruleset preset (e.g. "competition"); overrides the args above.
         mode: str | None = None,
         # Players. num_players=N is an N-way free-for-all; teams=(N,) team ids
@@ -214,6 +217,9 @@ class GeneralsEnv:
             raise ValueError("legacy_move_priority is a plain-ruleset replay aid; "
                              "it cannot be combined with build_castles or deathtouch_turn")
         self.legacy_move_priority = legacy_move_priority
+        if coworld_classic_rules and (build_castles or deathtouch_turn is not None or legacy_move_priority):
+            raise ValueError("Coworld Classic rules require capture-only play without legacy priority")
+        self.coworld_classic_rules = coworld_classic_rules
 
         if teams is None:
             num_players = 2 if num_players is None else int(num_players)
@@ -226,6 +232,8 @@ class GeneralsEnv:
                 raise ValueError(f"num_players={num_players} does not match teams of length {teams.shape[0]}")
         self.teams = teams
         self.num_players = int(teams.shape[0])
+        if self.coworld_classic_rules and self.num_players != 2:
+            raise ValueError("Coworld Classic rules require two players")
         if self.deathtouch_turn is not None and self.num_players != 2:
             raise NotImplementedError("the deathtouch modifier is defined for two players only")
 
@@ -393,6 +401,9 @@ class GeneralsEnv:
         # Step game (deathtouch wraps the base step when configured)
         if self.deathtouch_turn is not None:
             new_state, info = _deathtouch.step(state, actions, self.deathtouch_turn)
+        elif self.coworld_classic_rules:
+            # Pinned official softmax revision 0fcb5a00226387670624d2f326f6d5ad61914584.
+            new_state, info = coworld_game.step(state, actions, general_trade=False)
         else:
             new_state, info = game.step(state, actions, legacy_move_priority=self.legacy_move_priority)
 
@@ -420,9 +431,13 @@ class GeneralsEnv:
         )
 
         # Get observations (perfect-info skips fog-of-war masking), one per player
-        get_obs = game.get_full_observation if self.perfect_info else game.get_observation
-        per_player = [get_obs(final_state, i) for i in range(self.num_players)]
-        observation = jax.tree.map(lambda *xs: jnp.stack(xs, axis=0), *per_player)
+        if self.coworld_classic_rules:
+            get_obs = coworld_game.get_full_observations if self.perfect_info else coworld_game.get_observations
+            observation = get_obs(final_state)
+        else:
+            get_obs = game.get_full_observation if self.perfect_info else game.get_observation
+            per_player = [get_obs(final_state, i) for i in range(self.num_players)]
+            observation = jax.tree.map(lambda *xs: jnp.stack(xs, axis=0), *per_player)
 
         timestep = TimeStep(
             observation=observation,

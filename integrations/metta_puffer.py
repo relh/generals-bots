@@ -179,7 +179,7 @@ class GeneralsPufferEnvironment:
                 min_generals_distance=4 if coworld_tiny_map_curriculum else 8 if coworld_small_map_curriculum else 17,
                 num_castles_range=(0, 3) if coworld_tiny_map_curriculum else (2, 5) if coworld_small_map_curriculum else (9, 11),
                 castle_val_range=(10, 21) if coworld_tiny_map_curriculum else (20, 41) if coworld_small_map_curriculum else (40, 51),
-                build_castles=False, deathtouch_turn=None,
+                build_castles=False, deathtouch_turn=None, coworld_classic_rules=True,
                 pool_size=coworld_pool_size, dynamic_pool=True,
             )
         else:

@@ -128,6 +128,7 @@ def main():
                   checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
                   opponent_sha256=hashlib.sha256((args.opponent_bundle / "policy.bin").read_bytes()).hexdigest(),
                   episode_limit=env.horizon,
+                  coworld_classic_rules=env.base.env.coworld_classic_rules,
                   pool_generation=int(env._pool_generation),
                   wins=int((outcomes > 0).sum()), losses=int((outcomes < 0).sum()), draws=int((outcomes == 0).sum()),
                   score=float(outcomes.mean()), turns=turn + 1, wall_seconds=time.monotonic() - start)
