@@ -12639,3 +12639,46 @@ physical SPS must qualify this engine; old-rule SPS does not qualify it.
 Baseline and final evaluations included in same allocation, both seats,
 128Exp/128Sent/512oldparent/512current plus512direct final versus184M.
 No champion/policy promotion. Pilot remains live; follow SAMEhandle81709.
+
+
+### 2026-09-29 — Verified hosted-rules pilot31814 complete
+
+Main81709 terminal0; Slurm COMPLETED0:0,16m24s/released. No duplicate job.
+Checkpoint218103808 finite570508, policy
+5d8096ccf2c5763a8ebe1a8553fc2461018f41601be82c29b3c70733d76df1ac
+optimizerbd4e6c7b06a589076916ecca597d4ae7240bebdc849e7e8d7711e436d72a1754,
+policy/state/runSHA sidecars match; initial669b5d9d ANDbb313085 verified.
+Completed33554432 NEW physical steps, all33554432 legal/0illegal,
+no nonfinite reward or zero-reward terminal training events.
+Steady epoch92@78.298s ->104@288.760s:25165824/210.462 =
+**119574.193916 verified hosted-rules environment SPS**,1learner/4096games.
+Last60 timestamped training GPU samples mean55.25%,peak160870MiB;
+samplingwindow~214s,not exact console-uptime alignment.
+Action mask, actual rule flag, both seats/allopponents passedaudit.
+
+Matched corrected-rule panels184M ->218M (W/L/D):
+Exp20/108/0 ->29/99/0;Sent5/123/0 ->16/111/1;
+oldparent395/101/16 ->400/103/9;current233/264/15 ->242/249/21.
+Directfinal versusstarting246/260/6,score-.02734,clusterCI[-.1525,.1000].
+Paired Sentinel score+.17969 CI[.04724,.31708];all other gainCIsinclude0.
+No demonstrated neural-strength gain, still weak scripted performance.
+No upload/championpromotion and no larger run justified by these results.
+
+Archive gzip+SHAverified onMac/controller:
+/tmp/relh-classic-spatial-coworld-rules-stream.tar.gz
+/tmp/relh-classic-spatial-coworld-rules-31814.tar.gz
+SHA082f88ae64771b53dbf4994a75b760dd3930793f7aa503bd4a16b9efd83160e5.
+Extract/tmp/relh-coworld-rules-31814-inspect.
+Audit/tmp/relh-coworld-rules-31814-final-audit.json;
+matchedscores/tmp/relh-coworld-rules-31814-matched-scores.json.
+Protected history untouched; original rollout/DBs untouched.
+
+Next bounded iteration: frozen opponent old30238->latest218M policy,
+50%frozen/25%Exp/25%Sent,bothseats; restore218MpolicyANDoptimizer,
+33554432newsteps->251658240. Same model/reward/learner settings,
+explicit opponent environment transfer/newfingerprint. Reuse immutable31814
+final panels as baseline, avoiding repeat completed comparisons.
+Prepared generator/tmp/relh-build-coworld-rules-iterated-pilot.py;
+script/tmp/relh-classic-spatial-coworld-rules-iterated-run-node.sh
+SHA15ce80812c8ca6a8bd1418973fbdbd05a64b42a563de00a690437b011dd17d41,
+Bash+embeddedPython syntax verified. Goal remainsactive.
