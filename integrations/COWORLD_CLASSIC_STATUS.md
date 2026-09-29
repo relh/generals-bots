@@ -11722,3 +11722,47 @@ Mac live stream /tmp/relh-classic-spatial-source-prior-only-300m-stream.tar.gz;
 observer /tmp/relh-classic-spatial-source-prior-only-300m-srun.log.
 Continue SAME job/session; do not start another on observer timeout.
 Goal active, histories untouched, 300k SPS target not achieved.
+
+### 31410 verified progress and serving preparation
+
+Previous goal turn completed source-only pilot and launched the continuation:
+progress. This turn verified the SAME live 31410/main29237, no new GPU job.
+Latest completed epoch 42 /88,080,384 absolute /54,525,952 NEW physical steps.
+Warmup through epoch 20 at 68.243 seconds ->42 at 415.290 seconds:
+46,137,344 physical steps /347.047 seconds = **132,942.639 ENV SPS**.
+Actual reward audit 54,525,952 steps/93,073 terminal agents/zero nonfinite;
+reward signs are not match outcomes. Same B300/4096 games/one learner/H512/
+rollout batch 2,097,152/mb8192/R0.5. Recent aligned monitor GPU utilization
+~55%, model inference ~2.53s/environment ~11.2s/optimization ~1.76s per epoch.
+CPU container ~127% (about 1.27 cores), ~2.28 GiB RSS. Environment stepping
+remains the dominant measured stage; 300k ENV SPS not demonstrated.
+Mac /tmp/relh-source-prior-only-300m-31410-steady-progress.json and node
+source-prior-only/continuation-steady-audit.json preserve interval evidence.
+
+Verified new checkpoint at epoch 24/50,331,648 absolute/16,777,216 added:
+57,028 finite parameters, policy/optimizer/run hashes match native sidecar.
+Policy ad93cacb62d9d02f9c980de25b472249f8e941cfc869499addcac84dcaffa57f;
+learner 0fd971c1d8467038a7b6c5d11b43f51ce062265734bb444315e1e0b28708453b.
+Mac /tmp/relh-source-prior-only-300m-31410-epoch24-audit.json; node
+source-prior-only/epoch24-checkpoint-audit.json. Final audit prepared at
+/tmp/relh-audit-source-prior-only-300m-31410.py (only run after training completes).
+
+Local serving work reuses the verified archived parent serving image tar
+SHA d171902800e434d4ad1a43418fc86ad08e225a9966311b2c56dd10b3797e3e0e.
+Loaded AMD64 image config ID d999ccb1dd352bab717f7b27777f4f563d12a3e60d1e9e3c8847595968e584e4;
+actual embedded parent checkpoint df706...4ddc and serving/parser/codec file
+hashes exactly match current repo. Derived 31394 AMD64 candidate config ID
+5548d36df6b5c3f19e2106226d69a8dee193eb29af43dc1c275c7aef662666d6,
+only exported policy files replaced, same UID10001. Local AMD64 probe failed
+before policy load because Mac x86 emulation lacks AVX required by jaxlib;
+this is not a hosted startup result. Existing parent code had passed actual
+x86 Linux serving in prior work. No serving code changed to hide this result.
+
+Fresh ARM64 Linux image with same candidate b6e034...dc082 and current serving
+code config ID e0b8f006f0ba69097f3818d5e61d483e8c78f56b41e766e3d7665180d8c99892
+passed complete websocket exchange: 32/32 legal replies, four board shapes,
+2 CPU/4 GiB/core0/UID10001, cold-ready 1.03054s, mean reply 1.744ms/max2.259ms.
+Local ARM64 Linux validation only, not production latency or hosted strength.
+Artifacts /tmp/relh-spatial-source-prior-serving-31394 (build and wire logs).
+No policy/image upload, hosted XP, or champion change this turn. Goal active;
+keep polling SAME 31410/main29237 until terminal, then verify archive and panels.
