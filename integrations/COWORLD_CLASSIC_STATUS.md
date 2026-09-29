@@ -11208,3 +11208,15 @@ Script /tmp/relh-classic-spatial-potential-comparison-run-node.sh;
 stream /tmp/relh-classic-spatial-potential-comparison-stream.tar.gz;
 log /tmp/relh-classic-spatial-potential-comparison-srun.log.
 Do not resubmit while31328/main73529 live. Goal active, learning pending.
+
+### 31328 control live throughput verified
+
+Previous goalturn progress: submitted comparison and preserved settings.
+Current verified wait: fullqueue/scontrol confirms31328 RUNNING/main73529,
+sole Generals allocation; no restart or newjob. Control resumed160 and
+observed169/18,874,368newphysical. At168 monitor four-epoch131,792.7416
+and six-epoch132,241.5109ENV SPS, gate passed; rewards0nonfinite.
+GPU sample48%/145760MiB; startup no contention. Completed finalinterval
+audit and heldout scores pending. /tmp/relh-audit-potential-comparison-31328.py
+prepared to verify164→176/25,165,824steady/33,554,432newphysical perarm,
+shapedrewardcounts NOT outcomes. Goal active; same31328/main73529 nextpoll.
