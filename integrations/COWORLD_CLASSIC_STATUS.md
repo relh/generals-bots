@@ -10673,3 +10673,19 @@ SHA256 5688e1caca5c5a32d479fcf1647393b099af1fa67c8e2260f1afcc789f2e7b4e.
 25min bound, one B300, nice100, 8CPU/64GiB, node-local outputs and TMPDIR.
 Full queue/node checks show no Generals duplicate; previous relh CVC/Safa jobs
 are no longer running. Unrelated GoTA pending job30874 is untouched.
+
+30981 exited 1 before any trainer or evaluation game started: Python string
+escaping in generated CONFIG block failed. Allocation released. Physical GPU
+bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 was empty0MiB/0%; prior30900 archive
+and exact-container absence verified. Failed-job archive preserved, gzip valid,
+SHA5909aa253fc1945a078eafc2f167972b4ce8078e92d39d5c3ee87f81e8a,
+Mac/controller /tmp/relh-classic-spatial-recipe-comparison-30981.tar.gz,
+node /var/tmp/relh-generals-recovery/relh-classic-spatial-recipe-comparison-30981.tar.gz.
+Corrected generator uses raw strings; AST parsing passed every CONFIG,
+REGISTER and SCORE block. All three exact CONFIG transforms executed locally
+against actual 30597 build/config, including assertions, and passed.
+No completed side effects will be replayed. Previous30981 archive verification
+and exact-container absence guards are included in corrected script.
+Corrected script SHA697e8ff5df62291b24f677cd100f8df618322de78ad8a504cd570dca30b64007.
+Full queue/node preflight repeated; no Generals jobs, B300 idle, unrelated GoTA
+now30982 pending B200 retained untouched. Same25min/8CPU64GiB bound.
