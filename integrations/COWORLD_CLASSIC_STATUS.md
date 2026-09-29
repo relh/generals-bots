@@ -14078,3 +14078,23 @@ Expander weakness is clear and current advantage is not robust against the
 old public baseline. No hosted promotion/XP submission. Goal remains active;
 next bounded phase should use iterative frozen self-play or diversify the
 opponent mixture, with Expander and current held-outs as gates.
+
+32477 bounded iterative frozen-self-play phase STARTED, same native SSH/srun
+handle41486, one B300 physical GPU, eight CPUs/64GB, `--nice=100`,50m limit.
+Full queue before submission showed no Generals job; relh 32472 occupied a
+separate B300 allocation. Node-local output
+`/var/tmp/relh-generals-recovery/classic-spatial-muon-context-selfplay-pilot-32477`;
+Mac stream `/tmp/relh-classic-spatial-muon-context-selfplay-stream.tar.gz`.
+Exact script `/tmp/relh-classic-spatial-muon-context-selfplay-run-node.sh`
+SHA256 269a01327928bab03748c6518ba94564dcf79fcdfdba5382e7f7b8766752cf01.
+Restores policy+learner from 32447 absolute134,217,728 checkpoint; target
+100,663,296 additional physical steps, absolute234,881,024. Same Classic
+rules, codec, architecture, corrected Muon, seed, PPO, no teacher, 4096
+environments. Changes only half the frozen-opponent games from archived
+218M opponent to frozen copy of the 134M learner; still one quarter Expander
+and one quarter Sentinel, balanced seats. Uses the explicit environment
+transfer flag because the frozen opponent changed. Runtime checks prior
+archive/checkpoint/build hash, physical GPU UUID, image/disk/occupancy.
+Prior 116,979 SPS projects ~861 s steady training plus startup/evaluations.
+Same four matched held-out panels, direct versus public33M and direct versus
+starting134M. Gate further scaling on actual results.
