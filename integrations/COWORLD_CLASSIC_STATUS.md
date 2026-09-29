@@ -11564,3 +11564,17 @@ Observedepoch5/10,485,760NEWphysical, rewardnonfinite0. Firstepoch44.951s
 six-epochsteady gate pending. GPUpeak~160886MiB (~157.1GiB), RAM~5.9GiB.
 No scale/strengthclaim untilcompletedintervaland6686/6513heldout.
 Goalactive; SAME31392/main9149 nextpoll; no publication.
+
+### 31392 width32 steadygate and midpointlearner verified
+
+Previous turn verifiedwait/GPUlayout/10.5M; current verifiedwait live31392/
+main9149,soleallocation/no newjob. Observedepoch9/18,874,368newphysical;
+completedfour115,561.4823/six115,886.0932ENV SPS, gatepassed.
+Actualrewardaudit16,777,216physical/25,382terminals/0nonfinite (signs NOT
+outcomes). Saved16,777,216cp0de0c27bd1cd7b193ab38eb9dbb8c233da1539770d752c95a7d75e6d534b23d7,
+learner0f148ee4d0634368eb3dec28aa3bee38abd73d1c61f2cfdc4ad3f8a39dffb12e;
+570508finitewords/actualpolicy,state,runhashes matchsidecar. Node
+width32/mid-checkpoint-audit.json and Mac /tmp/relh-width32-31392-mid-audit.json
+preserveevidence. SameB300/4096games1learner/H512/mb8192/R.5,normalized
+PPO/progressreward. Finaltrainerand6686/6513heldout pending SAME31392.
+Goalactive/no hostedpublication.
