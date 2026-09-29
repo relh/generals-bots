@@ -11124,3 +11124,15 @@ rewards. Intermediate savedepoch24=50,331,648absolute/16,777,216new checkpoint
 optimizer5b321237ae31c080d2db3e434f5ac17704216a2a0556897b22b37c483aaef826,
 allactualpolicy/state/runhashes matchnative sidecar. No interruption/restart,
 no additionaljob. Training goal remains active; SAME31291/main2286 nextpoll.
+
+## 31291 selected100M-additional checkpoint preserved and verified
+
+Live31291/main2286 continues, epoch64+,102.76Mnewobserved at127.7ksteadyENV SPS,
+rewardaudit0nonfinite. Selected134,217,728absolute/100,663,296additional checkpoint
+b4be7ba86a49cb3fdb4c617104ac0681a93521e2667d8dd8e7d2714ea39b04ac
+57028finitewords;optimizer e010fb5676d0f9f749f5000eb5bd8e51091c8145c8cb9f6a4e66e91901bef882.
+Actualpolicy/state/runhashes matchsidecar. Node mid-checkpoint-audit.json and
+Mac /tmp/relh-split-prior-300m-31291-mid-checkpoint-audit.json preserve identity.
+No concurrent GPU evaluation or duplicatejob; this frozen midpolicy gets fresh
+heldout4686/4513 panels AFTER trainer finishes, alongside finaltargetpolicy.
+This goalturn is a verified wait plus saved-checkpoint evidence; goalactive.
