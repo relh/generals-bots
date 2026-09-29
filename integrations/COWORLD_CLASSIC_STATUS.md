@@ -10689,3 +10689,19 @@ and exact-container absence guards are included in corrected script.
 Corrected script SHA697e8ff5df62291b24f677cd100f8df618322de78ad8a504cd570dca30b64007.
 Full queue/node preflight repeated; no Generals jobs, B300 idle, unrelated GoTA
 now30982 pending B200 retained untouched. Same25min/8CPU64GiB bound.
+
+Corrected sole job30986 allocated, main exec79413, 25min B300/8CPU64GiB/nice100.
+Output /var/tmp/relh-generals-recovery/classic-spatial-recipe-comparison-pilot-30986;
+exact container relh-classic-spatial-recipe-comparison-30986. GPU
+bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 empty0MiB/0%, matched Docker;
+30981 and30900 archives verified on node, both exact old containers absent.
+Runtime image bdd4f2...6ae5 verified, root639GiB free, TMPDIR pinned node output.
+Native first recipe parameter registrations saved; original 15 Nx1 matrix
+blocks and 8 vectors observed, 57,028 words. Initial compilation in progress.
+Local30900 comparison additionally passed12 exact initial-state/side/opponent
+array checks against30728 greedy panels. All three child policies share the
+same initial state arrays in each sampled panel. Diagnostic artifact
+/tmp/relh-spatial-temperature16-sampling-30900-controls.json.
+30900 sampled half-move counts were zero: midpoint203840 moves,
+100M201165 moves, final204449 moves across Expander+Sentinel panels. This
+suggests restricted exploration but is not a causal explanation or mask proof.
