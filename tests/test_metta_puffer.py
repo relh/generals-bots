@@ -1,6 +1,7 @@
 """Contract checks for the optional native PufferLib bridge."""
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import jax
 import jax.numpy as jnp
@@ -14,7 +15,8 @@ from metta_training.environment import EnvironmentContext, NativeEnvironment
 from generals.agents import ExpanderAgent
 from generals.core import game
 from integrations.metta_puffer import (
-    BatchedGeneralsPufferEnvironment, GeneralsPufferEnvironment, _castle_control_margin,
+    BatchedGeneralsPufferEnvironment, GeneralsPufferEnvironment,
+    _castle_control_margin, _frontier_control_margin,
 )
 from integrations.puffer_codec import decode_action, hinted_replay_indices
 
@@ -52,6 +54,36 @@ def test_win_only_terminal_reward_does_not_credit_a_draw():
         assert result.rewards == [0.0]
     finally:
         env.close()
+
+
+def test_frontier_potential_credits_a_second_expansion_army_without_wrapping_edges():
+    owned = np.zeros((2, 3, 4), dtype=bool)
+    owned[0, 1, 1:3] = True
+    owned[1, 2, 3] = True
+    neutral = ~owned.any(axis=0)
+    armies = np.zeros((3, 4), dtype=np.int32)
+    armies[1, 1], armies[1, 2], armies[2, 3] = 1, 7, 2
+
+    def margin(current_armies, current_owned=owned, current_neutral=neutral):
+        state = SimpleNamespace(
+            ownership=jnp.asarray(current_owned), ownership_neutral=jnp.asarray(current_neutral),
+            passable=jnp.ones((3, 4), dtype=bool), armies=jnp.asarray(current_armies),
+        )
+        return float(_frontier_control_margin(state, jnp.asarray(0)))
+
+    full = margin(armies)
+    split = armies.copy()
+    split[1, 1], split[1, 2] = 4, 4
+    assert split.sum() == armies.sum()
+    assert margin(split) > full
+
+    edge_owned = np.zeros_like(owned)
+    edge_owned[0, 0, 0] = True
+    edge_neutral = np.zeros((3, 4), dtype=bool)
+    edge_neutral[2, 0] = True
+    edge_armies = np.zeros_like(armies)
+    edge_armies[0, 0] = 8
+    assert margin(edge_armies, edge_owned, edge_neutral) == 0.0
 
 
 def test_optional_pass_mask_preserves_moves_and_forced_pass():

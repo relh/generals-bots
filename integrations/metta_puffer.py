@@ -40,6 +40,20 @@ def _castle_control_margin(state: game.GameState, side: jnp.ndarray) -> jnp.ndar
     return (owned - opposing) / (jnp.sum(state.castles) + 1)
 
 
+def _frontier_control_margin(state: game.GameState, side: jnp.ndarray) -> jnp.ndarray:
+    """Compare owned armies that can expand into an adjacent neutral cell."""
+    neutral = state.ownership_neutral & state.passable
+    adjacent = (
+        jnp.pad(neutral[1:, :], ((0, 1), (0, 0)))
+        | jnp.pad(neutral[:-1, :], ((1, 0), (0, 0)))
+        | jnp.pad(neutral[:, 1:], ((0, 0), (0, 1)))
+        | jnp.pad(neutral[:, :-1], ((0, 0), (1, 0)))
+    )
+    ready = state.ownership & (state.armies[None, :, :] >= 2) & adjacent[None, :, :]
+    counts = jnp.sum(ready, axis=(-2, -1))
+    return (counts[side] - counts[1 - side]) / (jnp.sum(counts) + 1)
+
+
 class GeneralsPufferEnvironment:
     def __init__(
         self,
@@ -56,6 +70,7 @@ class GeneralsPufferEnvironment:
         army_shaping_weight: float = 0.5,
         land_shaping_weight: float = 0.3,
         castle_shaping_weight: float = 0.0,
+        frontier_shaping_weight: float = 0.0,
         land_gain_reward_weight: float = 0.0,
         teacher: str | None = None,
         imitation_weight: float = 0.0,
@@ -88,7 +103,8 @@ class GeneralsPufferEnvironment:
         teacher_rollouts: bool = False,
         goal_features: bool = False,
     ):
-        if min(shaping_weight, army_shaping_weight, land_shaping_weight, castle_shaping_weight) < 0:
+        if min(shaping_weight, army_shaping_weight, land_shaping_weight,
+               castle_shaping_weight, frontier_shaping_weight) < 0:
             raise ValueError("Shaping weights must be nonnegative")
         if not np.isfinite(land_gain_reward_weight) or land_gain_reward_weight < 0:
             raise ValueError("Land gain reward weight must be finite and nonnegative")
@@ -327,6 +343,9 @@ class GeneralsPufferEnvironment:
             if castle_shaping_weight:
                 old_potential += castle_shaping_weight * _castle_control_margin(state, side)
                 new_potential += castle_shaping_weight * _castle_control_margin(timestep.last_state, side)
+            if frontier_shaping_weight:
+                old_potential += frontier_shaping_weight * _frontier_control_margin(state, side)
+                new_potential += frontier_shaping_weight * _frontier_control_margin(timestep.last_state, side)
             done = timestep.terminated | timestep.truncated
             outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
             terminal_reward = (
@@ -864,7 +883,8 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
             for name, default in (
                 ("shaping_weight", 0.2), ("shaping_gamma", 0.99), ("reward_scale", 1.0),
                 ("army_shaping_weight", 0.5), ("land_shaping_weight", 0.3),
-                ("castle_shaping_weight", 0.0), ("land_gain_reward_weight", 0.0),
+                ("castle_shaping_weight", 0.0), ("frontier_shaping_weight", 0.0),
+                ("land_gain_reward_weight", 0.0),
             )
         }
         self._terminal_reward_mode = options.get("terminal_reward_mode", "signed")
@@ -907,6 +927,8 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
             )
             if weights["castle_shaping_weight"]:
                 value += weights["castle_shaping_weight"] * _castle_control_margin(state, side)
+            if weights["frontier_shaping_weight"]:
+                value += weights["frontier_shaping_weight"] * _frontier_control_margin(state, side)
             return value
 
         def advance_one(state, pool, indices, splits, key):

@@ -195,6 +195,8 @@ def verified_spatial_population_transfer(
         return False
     if options.pop("land_gain_reward_weight", None) not in (0.0, 0.02):
         return False
+    if options.pop("frontier_shaping_weight", 0.0) not in (0.0, 1.0):
+        return False
     options["shaping_weight"] = old.options["shaping_weight"]
     options["reward_scale"] = old.options["reward_scale"]
     options["land_gain_reward_weight"] = old.options["land_gain_reward_weight"]

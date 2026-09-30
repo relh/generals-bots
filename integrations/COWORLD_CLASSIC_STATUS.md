@@ -14635,3 +14635,33 @@ xreq_6d61a4de-19de-465e-8cb9-4502e91fa1b0, seat1
 xreq_d4eed8ab-78a4-4a73-a1fa-0ef7c4a18fb6. Both initially
 pending; exact payloads/idempotency keys in
 `/tmp/relh-win-landgain50m-serving`. Read these IDs and do not resubmit.
+
+Both exact50M leader XP requests COMPLETED16/16, zero failures. Resolved
+opponent version76b0a083-f0a4-4ec7-9811-038349266633 in all games:
+candidate seat0 1W15L, seat1 3W13L; total4W28L0D. It does not beat
+the234M parent's historical6W26L against this leader. All32 owned
+replays downloaded read-only (1,150,915 compressed bytes), SHA manifest
+and audit in `/tmp/relh-win-landgain50m-serving`. Candidate made17,115
+nonpass moves with0 basic invalid and **0 half moves**; Daveey made
+16,510 moves with1,368 half moves. Candidate neutral-target moves/game
+46.47 versus Daveey96.66; mean candidate land deficit at turn100
+was5.10 among31 live games, smaller than prior win-only251M's8.91
+deficit but insufficient to improve win rate. On the same fog-limited
+replay observations, median best-full minus best-half logit gap:
+234M+.397, land-gain50M+.501, land-gain100M+.576. Learned same-route
+full advantage mean rose+.138→+.280→+.409, while prior same-route
+gap fell+.294→+.277→+.232. This local diagnostic supports the
+conditional split/expansion failure; it is not causal proof or an
+authoritative action-mask audit. No champion promotion or longer run
+from the land-gain actor.
+
+Prepared opt-in `frontier_shaping_weight=1.0` for a next bounded pilot.
+Its potential compares owned armies with at least2 units adjacent to a
+neutral passable tile, normalized across both sides. A half move that
+captures neutral land while retaining an expandable source can raise
+this potential; a full move and half move with the same captured land
+need not receive the same immediate shaping. Potential differences
+still use learner gamma and zero terminal potential, preserving the
+win1/loss0 base objective. CPU unit check verifies the extra frontier
+and no wraparound at board edges; exact234M policy-only transfer guard
+accepts only frontier weight0 or1 and rejects2.
