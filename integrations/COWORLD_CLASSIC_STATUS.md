@@ -14751,3 +14751,20 @@ Slurm cap. Script SHA
 31e2d5981d11b41220b1e79d06c87f29a7cec38c800761dceb51523ff2eb17d4.
 Read exact job33257 and node-local archive; do not duplicate or keep
 retrying this branch if startup still stalls.
+
+Job33257 ended FAILED1 after its 900-second first-epoch limit, again
+without a completed epoch or checkpoint. The verified archive is
+`/tmp/relh-classic-win-entropy-split-diagnostic-33257-recovery.tar.gz`,
+SHA `869a07feb4ef097762ad197673b583103b3d4080beac7157d004835e127987be`.
+The JAX trace reached `jit(device_core)` for 8,192 agents with
+77,684 model-state words, finished its JAX-to-MLIR conversion in 4.98s,
+then never logged completed XLA compilation before the monitor stopped
+the job. Across 349 two-second physical GPU samples, utilization was
+nonzero only twice (maximum 7%); memory reached 185,080MiB. There was
+no measurable training SPS, reward, or score. This is a compiler/startup
+failure of the entropy-regularized configuration, not demonstrated
+shared GPU contention. The zero-entropy population configuration on
+the same B300 completed prior pilots at 165–174k end-to-end SPS.
+Stop retrying this exact entropy branch. A new experiment must change
+the expensive compilation geometry or the objective and pass a bounded
+first-epoch/throughput gate before any long run.
