@@ -14895,3 +14895,40 @@ continuation lost ground from the early checkpoint. No long run,
 hosted submission, or champion promotion followed. A billion-step
 run is contingent on a new learning setup passing successive frozen
 held-out gates and then hosted XP.
+
+One iterated-population pilot replaced the oldest134M frozen actor
+with the best16.8M entropy actor, keeping frozen218M/234M and both
+scripts. Its first bounded job33740 failed during the native build
+before any training: `TMPDIR` pointed to a new node-local directory
+that had not been created, so `nvcc` could not open its output file.
+Archive `/tmp/relh-classic-win-iterated-pool-33740-recovery.tar.gz`,
+SHA `b4641fc91db516a6019a6854df030341ecb36bca0ec7fab600000ddb137cfee7`.
+The retry33741 created that directory and finished the build, then
+stopped at an overstrict assertion that the environment implementation
+hash must change when only opponent bundle paths changed. The hash
+correctly remained the same; build config records the changed paths.
+Its model SHA `811e8de5...868bc`, native binary SHA
+`c719a9ed...b2badba3182`, and environment implementation SHA
+`e80b1c5d...8d938bc` matched the earlier verified build. Archive
+`/tmp/relh-classic-win-iterated-pool2-33741-recovery.tar.gz`,
+SHA `0b6780120c7927e0bb0d42aa5fa45e2b4ffe38d30909a98ffb05f1faff5dfc92`.
+No training step was replayed. The repository launcher now creates
+configured `TMPDIR` before importing JAX or invoking native build.
+
+Job33742 reused that completed build, verified unchanged native/model
+hashes and the changed opponent paths, and COMPLETED16,777,216 new
+physical steps on one B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,8CPU/64GiB,
+8192 games×H256, mb8192/replay.5, gamma and shaping gamma.999,
+LR.003, entropy.001, temperature.25. Warm six epochs166,791
+end-to-end SPS, console GPU93%, VRAM196.5GiB; all actions legal,
+0 nonfinite rewards. The three frozen snapshots and Expander/Sentinel
+opponents each had819 or820 games on **each** player side at reset.
+Final actor SHA
+`c09e99911b2e1f24745d4d1e57bb0d26fdf293640073118d6a4bf356bb994a78`;
+signed512-game direct parent222W290L0D, score-.1328125,
+worse than its starting16.8M actor247W265L0D on the same maps.
+Verified archive `/tmp/relh-classic-win-iterated-pool2-33742-recovery.tar.gz`,
+SHA `4587e15746b97d691c5ec01771c3804c76d068002edf69f065051a26d996a303`.
+The refreshed snapshot pool did not produce an improving policy, so
+no longer run or hosted submission followed.

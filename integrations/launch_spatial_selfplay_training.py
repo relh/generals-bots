@@ -8,9 +8,6 @@ import runpy
 import sys
 from pathlib import Path
 
-import jax
-
-
 def validate_training_geometry(argv=sys.argv, environ=os.environ):
     """Fail before GPU compilation if the verified wide trainer omits row flattening."""
     if len(argv) < 2 or argv[1] != "train" or "--config" not in argv:
@@ -26,6 +23,13 @@ def validate_training_geometry(argv=sys.argv, environ=os.environ):
             "Wide spatial PPO requires METTA_MEMORYLESS_OPTIMIZATION=1; "
             "without it JAX compiles the unflattened 8192-game device_core"
         )
+
+
+def prepare_temporary_directory(environ=os.environ):
+    """Create the configured compiler scratch directory before JAX or nvcc starts."""
+    location = environ.get("TMPDIR")
+    if location:
+        Path(location).mkdir(parents=True, exist_ok=True)
 
 
 def spatial_transfer(source, target, digest):
@@ -92,6 +96,9 @@ def spatial_self_play_transfer(source, target, digest):
 
 def main():
     validate_training_geometry()
+    prepare_temporary_directory()
+
+    import jax
 
     if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
         from integrations.environment_reward_audit import activate
