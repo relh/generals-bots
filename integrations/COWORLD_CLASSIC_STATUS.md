@@ -14702,3 +14702,17 @@ decisions, near parent+.397 and below land-gain50M+.501. Archive
 `/tmp/relh-classic-win-frontier-33176-recovery.tar.gz`, SHA
 6b2eae3d50a5ad238bbbec696afb2e9fbc9576e51e952373acf56472eae444d5.
 No promotion or long extension of frontier reward alone.
+
+Next bounded exploration pilot submitted as B300 job33184,
+8CPU/64GiB,30-minute limit, node script SHA
+244720d962185dc0d83c5873ef31ade922c790cc7427be350ba75f5ad3a05ba6.
+It returns to the win-only, potential-only five-opponent population
+from exact234M policy-only init, changes sampling temperature
+.0625→.25 and native entropy coefficient0→.001, and trains
+33,554,432 physical Classic steps (8192×H256,batch2,097,152/mb8192).
+This combines split exploration with entropy regularization after a
+prior temperature-only pilot sampled18.2% half actions but did not
+change greedy behavior. The job enforces warmed30k SPS and then runs
+a signed512-game direct-parent comparison. Full queue before
+submission had peer Safa jobs32854/33182 and no Generals job.
+Read exact job33184 state and its node-local archive; do not duplicate.
