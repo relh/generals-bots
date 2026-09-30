@@ -14585,3 +14585,44 @@ peer Safa jobs32854 and33132 on B300; no other Generals job active.
 The allocated physical GPU check is inside the job and must pass before
 training. Read job33134 state and its node-local archive before any
 follow-up; do not submit a duplicate.
+
+Job33134 trained all100,663,296 physical steps and wrote the exact
+final checkpoint before exiting FAILED1: the export line mistakenly
+constructed a17-digit checkpoint filename during its textual timestep
+substitution. Node log showed warmed six-epoch174,465 SPS at epoch48,
+GPU sampler roughly70% across the long training interval (Puffer console
+at final GPU92%, VRAM196.5GiB). Environment6.809s and train2.787s
+per2,097,152-step epoch; zero illegal actions, zero nonfinite rewards,
+146,589 terminal agents, full99,881,541, half197,725, pass584,030.
+Reward signs50,569,816 positive/45,541,162 negative are not WLD.
+Final checkpoint SHA fed25d600678581b0d6c0a2b372634c1277e199d5607adb4549e0b691236b9e6.
+The completed run and all six scheduled checkpoints are preserved in
+`/tmp/relh-classic-win-landgain100m-33134-recovery.tar.gz`,
+SHA4cc8800178131e0972ff0bacb5be2c7bc2d412e8e76df26fb99f93485f4bb0ef.
+The training itself succeeded; no duplicate training run was submitted.
+
+Single bounded post-evaluation job33161 COMPLETED, exported exact100M
+checkpoint and ran signed512-game held-out versus best234M:
+208W275L29D, score-.13086. Exported policy SHA matched the learner
+sidecar and checkpoint. Post-eval archive
+`/tmp/relh-classic-win-landgain100m-posteval-33161-recovery.tar.gz`,
+SHAd1ef50ddfc8b03e5f1e144a223f29ac70775665433f805c2520ff2c293eb5b7e.
+No scale-up or champion change from this regressed final policy.
+
+One batch checkpoint panel job33169 COMPLETED with five signed512-game
+matches against the same234M parent/seed35514. Steps→W/L/D/score:
+16.8M 226/281/5/-.10742;33.6M 251/259/2/-.01563;
+50.3M 251/252/9/-.00195;67.1M 241/255/16/-.02734;
+83.9M 239/247/26/-.01563. This scan is selection-biased and none
+proves a gain. Archive
+`/tmp/relh-classic-win-landgain100m-curve-33169-recovery.tar.gz`,
+SHA229413a6a164c13f101cc2d0d817a384a193c9aa4f2d115924e899defa5020b3.
+The50.3M actor SHA32269351a12486ae954d1f81563d6072626233b5cd5e2900125669f38731f1ff
+was chosen for an independent hosted check. AMD64 serving image built
+with exact policy bytes; private Observatory version
+`relh-classic-win-landgain-50m:v1` ID9373fced-2a6b-4a9d-a2ed-a41a9e7c9759.
+Two private one-game balanced hosted runtime smoke requests against234M
+were created once: seat0 xreq_5846ee45-a3c9-4d19-834b-17a7f93900fc,
+seat1 xreq_89530701-0387-4c99-b3f5-a084ebff7c50. Both initially
+pending; read exact IDs, do not resubmit. No league submission/champion
+change for this version.
