@@ -15043,3 +15043,57 @@ bounded B300 job will verify JAX VJP parity, measure the parent's
 actual sampled wins at split temperatures 0.25/0.15/0.10, select only
 a passing sampler, and then gate a 16.8M-step training pilot on SPS and
 paired quality. No longer run or hosted promotion has started.
+
+Job 33978 completed that structured-sampler pilot on one idle B300.
+JAX and NumPy transformed logits agreed, and the exact JAX VJP versus
+`raw_cotangents` differed by at most `5.96e-8`. In 512 source-policy
+self-matches on 126 unique maps against the frozen greedy source,
+split T=0.25 won 71, T=0.15 won 144, and T=0.10 won 210; the
+predeclared source gate selected T=0.15, with route T=0.05. The
+16,777,216-step teacher-free win-only population run used 8192 games,
+H256, minibatch8192, replay0.5, entropy0.001, and gamma=shaping
+gamma0.999. Native final end-to-end training SPS was 172,423 after
+warmup; GPU dashboard 89%, 196.5 GiB VRAM, zero nonfinite rewards,
+22,708 terminal agents, and 926,530 half moves (5.52% of steps).
+Checkpoint SHA256 `982ca9f2ebee8237cdcb2c73aacc570515efa897cb6401d4dfd9aa73ee3fb1db`.
+Held-out greedy source243W/266L/3D versus child230W/279L/3D was
+inconclusive, paired score delta -0.0508, map-cluster 95% interval
+[-0.1561,+0.0530]. At the actual rollout sampler, source144W/366L/2D
+versus child181W/330L/1D improved, paired score delta +0.1426,
+interval [+0.0553,+0.2288]. The initial-state hashes, rules, seats,
+opponent, and modes match. Archive
+`/tmp/relh-classic-structured-split-pilot-result.tar.gz` SHA256
+`87b21598f5031947679af9f4e3d8ab3eda33472942c5a9ab6316f8aef800b3f9`.
+
+The first continuation wrapper, job 33989, verified an idle B300 and
+source self-match gate (greedy230W/282L/0D versus sampled182W/328L/2D),
+then stopped with zero training steps. Its config wrote the compute
+node's `/var/tmp/relh-generals-recovery/...` source-run path into
+Docker, where the same directory is mounted at `/recovery/...`.
+The corrected wrapper translates that path and reuses the exact
+gate report SHA256 `158e890b81550c368707088cedd484f4dcfbfba784b8b52cb46a9648f1d34c95`.
+Failed-job archive `/tmp/relh-classic-split-continuation-result.tar.gz`
+SHA256 `efe3d077ab11ab97770cc03acf7ca2bea574211d41c74840b74fe5d454978d1e`.
+
+Corrected job 33991 completed 50,331,648 **additional** physical
+steps from the job33978 actor, with a fresh optimizer and seed6752,
+making 67,108,864 cumulative steps across those two runs. Its one
+B300 UUID `GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` was idle
+at allocation (0 MiB, 0%) and Docker matched that UUID. Same
+8192-game population, H256, minibatch8192, replay0.5, entropy0.001,
+win-only terminal reward, shaping0.25, route T=0.05, split T=0.15.
+Native final end-to-end SPS was 167,564 after startup; GPU dashboard
+88%, 196.5 GiB VRAM, 71,681 terminal agents, zero nonfinite rewards,
+and 1,686,376 half moves (3.35%). Checkpoint SHA256
+`9628d34aa3afabda17874fb7612d916e32ef8d279881968eb505acc29f1fd0be`.
+Held-out greedy source230W/279L/3D versus child232W/279L/1D was
+inconclusive, paired score delta +0.0039, map-cluster 95% interval
+[-0.1257,+0.1307]. Sampled source181W/330L/1D versus child
+221W/289L/2D improved, paired score delta +0.1582, interval
+[+0.0567,+0.2609], on the same 512 games and 126 unique maps.
+Archive `/tmp/relh-classic-split-continuation-retry-result.tar.gz`
+SHA256 `1fa3d313362ae4ffd2dd5c0bf3764d940e5a80cce123d5a59aeacf1d05373a49`.
+The sampled policy improved twice under the same frozen parent; its
+greedy policy has not yet shown a significant gain. Continue only
+with bounded checkpoints and paired held-out quality gates before
+long training or hosted promotion.
