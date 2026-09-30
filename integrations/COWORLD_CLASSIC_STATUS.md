@@ -14823,3 +14823,75 @@ image and `/tmp/relh-generals-coworld` runtime still exist, and
 Mac/controller task archives contain the missing roots. Job33707
 produced no training result or checkpoint. Restore only verified task
 artifacts inside the next bounded GPU allocation before retrying.
+
+The five required task roots were restored within bounded job33716 from
+verified Mac/controller archives (win pilot, parent234M, earlier134M
+and218M snapshots, and the portable bundle). The pinned Docker image
+and `/tmp/relh-generals-coworld` survived. Job33716 stopped before
+training because a current launcher file was overlaid on an older
+archived Puffer source; their explicit source hash check rejected the
+mismatch. Archive
+`/tmp/relh-classic-win-temperature-memoryless-33716-recovery-clean.tar.gz`,
+SHA `998516cfd1d2df78c69b4fed0bb2da75959bef7a7a1609500cf4914c7ce035d4`.
+No model update or score came from this job. The archived launcher
+and Puffer source were restored as an exact matching pair.
+
+Corrected bounded B300 job33726 COMPLETED16,777,216 physical Classic
+steps using the restored exact build and `METTA_MEMORYLESS_OPTIMIZATION=1`.
+This confirms the missing runtime flag caused the wide startup stall:
+the same model/environment/native-binary hashes stalled without it,
+then produced8 epochs and a final checkpoint with it. One B300
+SXM6 AC UUID `GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f`,8CPU/64GiB,
+8192 games×horizon256, minibatch8192/replay.5, gamma and shaping
+gamma both.999, entropy0, temperature.25; after compilation, six
+epochs averaged176,387 end-to-end SPS. Console GPU93%, VRAM196.6GiB;
+GPU sampler peak100%, no sustained physical contention detected.
+All16,777,216 actions legal,0 nonfinite rewards,36,609 terminal
+agents; sampled full13,853,362, half2,692,843, pass231,011.
+Final actor SHA `c0836d3165b8fced0cfb4072ba0d3eef8974b530ab0dd9b3640dfaee75ed07eb`.
+Signed512-game held-out direct parent:186W318L8D, score-.2578125.
+The runtime is fixed; this temperature-only actor is weaker than its
+234M source. Verified archive
+`/tmp/relh-classic-win-memoryless-fixed-33726-recovery.tar.gz`,
+SHA `e3e989b1d65038ca386c7d73adfea27748eec17aae21a23d94ad46494f13c44a`.
+
+The intended entropy.001+temperature.25 variant job33730 then
+COMPLETED33,554,432 physical steps on one B300 UUID
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`,8CPU/64GiB,
+same8192×256/mb8192 geometry and five-opponent pool. Warmed six
+epochs167,900 end-to-end SPS, console GPU91%, VRAM196.5GiB;
+33,554,432/33,554,432 legal actions,0 nonfinite rewards,73,612
+terminal agents, half4,593,480 sampled. All three frozen opponents
+and both scripted types were initially balanced across both sides
+(820 or819 games each per side; population record in archive).
+Final actor SHA `ede66313b82c2e90445726aee2665730ec46cce68420c1a6b70b1fd5191ff1ee`;
+direct parent226W282L4D, score-.109375. Verified archive
+`/tmp/relh-classic-win-entropy-memoryless-33730-recovery.tar.gz`,
+SHA `df889f1f5e4d7b3d58111ffd6093c2105789c461d300e452b98df07ae77501ca`.
+
+Its saved16,777,216-step checkpoint SHA
+`9d030755dbf9ee76d61625906098bdb37b26c40963c2b82a19bdc382327abaea`
+was exported and evaluated in bounded job33731 on the **same**
+held-out512-game seed/map pool. It scored247W265L0D,
+score-.03515625, then declined to226W282L4D at33.6M. Verified
+curve archive `/tmp/relh-classic-win-entropy-curve16-33731-recovery.tar.gz`,
+SHA `27e064f278cde416c1e4c0d961f6ef83cf47b3a6e02d8ea940a8587ed94a5273`.
+
+A tenfold lower-rate policy-only continuation from that16.8M
+checkpoint (LR.0003 vs.003, seed6752, same entropy, temperature,
+win-only reward, and opponent pool) job33732 COMPLETED another
+33,554,432 steps on one B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,8CPU/64GiB.
+Warm six epochs172,425 end-to-end SPS, console GPU94%, VRAM196.5GiB;
+all actions legal,0 nonfinite rewards. Final actor SHA
+`ae9780141d05be150273bf4e7af2a01e1ad30496e444e034770ca8f31bff1b5d`;
+direct parent204W308L0D, score-.203125 on the same evaluation.
+Verified archive `/tmp/relh-classic-win-low-lr-33732-recovery.tar.gz`,
+SHA `9c5d4e247771d37e16800a719c3350392195770668d3c21a3bdb634aba2978dd`.
+
+These measurements establish healthy training throughput and an
+unhealthy policy trend: both same-recipe continuation and a lower-rate
+continuation lost ground from the early checkpoint. No long run,
+hosted submission, or champion promotion followed. A billion-step
+run is contingent on a new learning setup passing successive frozen
+held-out gates and then hosted XP.
