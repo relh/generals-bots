@@ -15097,3 +15097,29 @@ The sampled policy improved twice under the same frozen parent; its
 greedy policy has not yet shown a significant gain. Continue only
 with bounded checkpoints and paired held-out quality gates before
 long training or hosted promotion.
+
+Stage 3 job 34018 started from the job33991 actor with a fresh optimizer
+and seed6753, using the same five-opponent population and structured
+route T=0.05 / split T=0.15 sampler. Its pre-training 512-game
+self-match gate passed: source greedy244W/267L/1D versus sampled
+235W/273L/4D. One B300 UUID `GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`
+was physically idle (0 MiB, 0%) at allocation. It completed
+50,331,648 additional physical steps, totaling 117,440,512 across
+the three structured-sampler stages. Final native end-to-end training
+SPS was 165,800 after startup, GPU dashboard 89%, VRAM196.5 GiB,
+73,826 terminal agents, zero nonfinite rewards, and 1,108,766 half
+moves (2.20%). Checkpoint SHA256
+`4d4c46d78c24dde44d98e1218891244cda39fea76aa5b9db26d9a248f6641060`.
+
+Paired 512-game held-out evaluation on the same 126 unique maps,
+rules, sides, opponent, and action modes found a plateau. Greedy
+prior232W/279L/1D versus child231W/280L/1D: score delta -0.0039,
+map-cluster 95% interval [-0.1224,+0.1219]. Sampled prior
+221W/289L/2D versus child221W/291L/0D: score delta -0.0039,
+interval [-0.1115,+0.1043]. The archive is
+`/tmp/relh-classic-split-stage3-result.tar.gz` SHA256
+`9fa4017734070af5035abc980980464c3aeacc8e5594d084db471b4afaec6ad3`.
+No longer training job was started. The best measured sampled actor
+remains job33991 (221W/289L/2D); the deterministic actor's strength
+has not materially changed. Further training needs a changed
+curriculum or inference objective and another bounded paired test.
