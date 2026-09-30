@@ -14932,3 +14932,114 @@ Verified archive `/tmp/relh-classic-win-iterated-pool2-33742-recovery.tar.gz`,
 SHA `4587e15746b97d691c5ec01771c3804c76d068002edf69f065051a26d996a303`.
 The refreshed snapshot pool did not produce an improving policy, so
 no longer run or hosted submission followed.
+
+### 2026-09-30 — sampled rollout collapse in the current population recipe
+
+The 16.8M and 33.6M greedy checkpoint matches are exactly paired: their
+saved initial-state hashes and player sides match byte for byte. The
+33.6M-minus-16.8M score change is -0.07422, but 512 games contain only
+126 unique initial maps. A 10,000-resample map-clustered paired interval
+is [-0.22869, +0.07966]. That panel does not establish a decline from
+16.8M to 33.6M. The new `analyze_spatial_frozen_match_pair.py` checks
+checkpoint identity, rules, maps, seats, action mode, and saved outcomes before
+reporting a paired map-cluster interval.
+
+The stronger defect is the rollout action distribution. Two sequential,
+bounded B300 jobs (33938 and 33940) replayed held-out Classic games
+against the immutable 234M parent with the same seed 35514, 512 games,
+128-map pool, and balanced seats. The allocated physical UUIDs were
+`GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f` and
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`, each 0 MiB/0% before
+launch and UUID-matched inside Docker; no GPU contention was observed.
+Jobs completed and released their allocations; no training or hosted
+write occurred. Actual first-episode wins/losses/draws:
+
+| Learner | Argmax | Sample T=0.25 | Sample T=0.05 | Sample T=0.01 | Sample T=0.0025 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 234M parent | pending | 1/510/1 | pending | pending | pending |
+| 16.8M win-only checkpoint | 247/265/0 | 3/506/3 | 216/294/2 | 243/267/2 | 227/281/4 |
+| 33.6M win-only checkpoint | 226/282/4 | 3/507/2 | pending | pending | pending |
+
+The 16.8M checkpoint's paired T=0.25-minus-greedy score difference is
+-0.94727, map-clustered 95% interval [-1.07156, -0.82480]. Training
+used T=0.25, so its sampled actor almost never beat the fixed parent
+despite a competitive greedy actor. That makes win-only terminal
+examples scarce and leaves shaping as the main frequent signal. This is
+a measured failure of this source policy and opponent pairing, not a
+claim that every high-temperature flat-action model fails. Earlier
+30591/30878/30900 diagnostics found the same sensitivity in another
+spatial recipe, but the current 234M population source had not been
+sampled and gated before its T=0.25 continuation.
+
+Archives: `/tmp/relh-classic-sampling-debug-result.tar.gz` SHA256
+`57978185afc8bbdc56f0265cec374f83c1d2c52c7561d78902669b0da34cf94c`;
+`/tmp/relh-classic-temperature-sweep-result.tar.gz` SHA256
+`a74c148f6bdc703aa35715cd0a5598cc6b19361ed5e742bcb30e15b3cef3bb1e`.
+The new launcher guard requires a paired greedy/sample receipt for the
+exact initialized win-only flat actor at its actual rollout temperature,
+against its own frozen checkpoint. It refuses training when sampling
+retains fewer than half the source's greedy wins or wins fewer than a
+quarter of its self-matches. Focused guard tests pass. A bounded T=0.05 learning pilot is
+prepared with the same build, parent, reward, pool, optimizer, and
+geometry; it will evaluate the parent's T=0.05 sampled win rate before
+training and compare both greedy and sampled final policies. The first
+full queue check found all eight B300 GPUs allocated, so no Generals
+job was submitted then. After six allocations cleared, a fresh full
+preflight showed six GPUs available and the sole bounded Generals job
+33959 was submitted (one B300, 8 CPUs, 64 GiB, nice 100, 25-minute
+limit). Its physical GPU preflight, source-policy sampling gate,
+training SPS, and checkpoint quality are pending. No long run or
+champion change is justified yet.
+
+### 2026-09-30 — viable route sampler still starves half moves
+
+Job 33959 passed the parent policy's paired T=0.05 sampling gate:
+243W/266L/3D greedy versus 213W/298L/1D sampled on the same 512 games
+and 126 maps. It then stopped before the first PPO step because its
+new launcher pinned Puffer transfer source SHA `9e09bbd9...d63e`, while
+the old staged copy was SHA `71250a94...13790`. The only source
+difference was an allowed frontier-shaping transfer guard, not the
+optimizer or environment. No training step was duplicated. Archive
+`/tmp/relh-classic-temperature05-pilot-result.tar.gz` SHA256
+`fff27fd4ad7d5dbe41b074e09778485b1bfa35c837e8391af0cc82c441c1d613`.
+Node `/tmp` briefly had only four free inodes during this job; Docker
+and evaluation completed, and the next job saw available inodes recover.
+
+Corrected job 33961 reused those exact parent evaluations and
+completed 16,777,216 Classic training steps with the current pinned
+transfer file. One B300 UUID `GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`
+was 0 MiB/0% at allocation, Docker UUID matched, and no physical
+contention was observed. 8192 games, H256, minibatch8192, replay0.5,
+entropy0.001, route temperature0.05, gamma=shaping gamma0.999,
+teacher-free win-only population. From epoch 2 to epoch 8,
+12,582,912 steps took 71.705 seconds: **175,482 end-to-end SPS**
+(the native final dashboard reported 175,106 SPS).
+GPU console 92–93%, VRAM196.5 GiB; 16,777,216 legal actions,
+0 illegal/0 nonfinite rewards, 22,121 terminal agents. Initial three
+frozen snapshots and Expander/Sentinel each had 819 or 820 games per
+learner side. Final checkpoint SHA256 `2ca91fe93e12cfc2a10b394c09bc5796da751e61d6a7d1c2abdd31a08cce2385`.
+
+The final policy did not improve against the starting parent on paired
+maps: greedy parent243W/266L/3D versus child226W/286L/0D, score
+delta -0.07227 with map-cluster 95% interval [-0.21223,+0.06314];
+sampled T=0.05 parent213W/298L/1D versus child203W/306L/3D,
+delta -0.03516 interval [-0.12176,+0.04919]. More steps of this
+unchanged recipe are not justified. Critically, sharpening the 3529-way
+softmax made half moves almost disappear: 11,898 of 16,777,216 sampled
+actions (0.071%) were half moves, versus millions at T=0.25. The
+training temperature can preserve winning routes or sample full/half
+often under this flat parameterization, but the tested single
+temperatures have not done both. Verified archive
+`/tmp/relh-classic-temperature05-pilot-retry-result.tar.gz` SHA256
+`398e0f34ee28c8fd2c634a8bdce35f80be2381d155a41ab51a5cabb0860a31d7`.
+
+An opt-in structured flat sampler is now prepared: route logits use
+T=0.05, while conditional full/half logits use an independently tested
+temperature. The same transformed categorical is used in rollout and
+PPO, with its exact chain-rule cotangents back to raw model outputs;
+the native 3529-action codec, masks, and checkpoint layout stay the
+same. NumPy finite differences and route-marginal tests pass. The next
+bounded B300 job will verify JAX VJP parity, measure the parent's
+actual sampled wins at split temperatures 0.25/0.15/0.10, select only
+a passing sampler, and then gate a 16.8M-step training pilot on SPS and
+paired quality. No longer run or hosted promotion has started.

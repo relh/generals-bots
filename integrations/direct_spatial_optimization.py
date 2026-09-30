@@ -226,7 +226,12 @@ def install(native_module=None):
         self.spatial_policy_temperature = float(os.environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
         if not np.isfinite(self.spatial_policy_temperature) or self.spatial_policy_temperature <= 0:
             raise ValueError("Spatial policy temperature must be finite and positive")
-        if self.spatial_policy_temperature != 1 and not self.direct_spatial_rollout:
+        split_temperature = os.environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE")
+        self.spatial_split_temperature = float(split_temperature) if split_temperature is not None else None
+        if self.spatial_split_temperature is not None and (
+                not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0):
+            raise ValueError("Spatial split temperature must be finite and positive")
+        if (self.spatial_policy_temperature != 1 or self.spatial_split_temperature is not None) and not self.direct_spatial_rollout:
             raise ValueError("Temperature requires identical direct rollout and optimization algebra")
 
     @functools.wraps(forward)
@@ -237,7 +242,12 @@ def install(native_module=None):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
         acting = outputs
-        if self.spatial_policy_temperature != 1:
+        if self.spatial_split_temperature is not None:
+            from integrations.spatial_action_sampling import acting_logits
+
+            acting = acting_logits(outputs, self.spatial_policy_temperature,
+                                  self.spatial_split_temperature, jnp)
+        elif self.spatial_policy_temperature != 1:
             acting = outputs.at[..., :3529].divide(self.spatial_policy_temperature)
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
@@ -252,7 +262,15 @@ def install(native_module=None):
         self.updates += 1
         self.active_objectives.clear()
         coefficient = self.teacher_phase.ppo_coefficient
-        cotangents = jnp.concatenate((logits / self.spatial_policy_temperature, values[..., None]), axis=-1) * coefficient
+        if self.spatial_split_temperature is not None:
+            from integrations.spatial_action_sampling import raw_cotangents
+
+            cotangents = raw_cotangents(tape.predictions, logits, values,
+                                       self.spatial_policy_temperature,
+                                       self.spatial_split_temperature, jnp) * coefficient
+        else:
+            cotangents = jnp.concatenate((logits / self.spatial_policy_temperature,
+                                          values[..., None]), axis=-1) * coefficient
         gradient = self.direct_spatial.gradient(tape.parameters, tape.observations, cotangents)
         if not bool(jnp.isfinite(gradient).all()):
             raise FloatingPointError("Direct spatial gradients became nonfinite")

@@ -13,6 +13,7 @@ from metta_training.environment import EnvironmentContext
 from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.evaluate_coworld_frozen_greedy import sample_flat_logits
+from integrations.spatial_action_sampling import acting_logits
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
 
@@ -30,6 +31,8 @@ def main():
     parser.add_argument("--smoke-cpu", action="store_true")
     parser.add_argument("--sample-seed", type=int)
     parser.add_argument("--sampling-temperature", type=float, default=1.0)
+    parser.add_argument("--split-sampling-temperature", type=float,
+                        help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
                         help="Diagnostic: add this offset to learner half-move logits before greedy selection")
     args = parser.parse_args()
@@ -39,6 +42,10 @@ def main():
         raise ValueError("Sampling temperature must be finite and positive")
     if args.sampling_temperature != 1 and args.sample_seed is None:
         raise ValueError("Nondefault temperature requires sampled learner actions")
+    if args.split_sampling_temperature is not None and (
+            args.sample_seed is None or not np.isfinite(args.split_sampling_temperature)
+            or args.split_sampling_temperature <= 0):
+        raise ValueError("Split sampling requires sampled actions and a positive finite temperature")
     if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and args.sample_seed is not None):
         raise ValueError("Half-logit bias requires greedy learner actions")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
@@ -81,6 +88,7 @@ def main():
     start = time.monotonic()
     finished = np.zeros(args.games, bool)
     outcomes = np.zeros(args.games, np.float32)
+    action_counts = np.zeros(3, np.int64)
     try:
         values, masks = env.reset_device(f"{args.seed}:0:0")
         sides = np.asarray(env.sides)
@@ -106,11 +114,17 @@ def main():
                 chosen = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
             else:
                 key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
+                logits = (acting_logits(jnp.asarray(outputs), args.sampling_temperature,
+                                       args.split_sampling_temperature, jnp)[:, :3529]
+                          if args.split_sampling_temperature is not None
+                          else jnp.asarray(outputs[:, :3529]) / args.sampling_temperature)
                 chosen = np.asarray(sample_flat_logits(
-                    key, jnp.asarray(outputs[:, :3529]) / args.sampling_temperature, jnp.asarray(legal),
+                    key, logits, jnp.asarray(legal),
                 ))
             actions = chosen.astype(np.int32)[:, None]
             assert legal[np.arange(args.games), actions[:, 0]].all()
+            action_counts += np.bincount(np.where(chosen < 1764, 0,
+                                                  np.where(chosen < 3528, 1, 2))[~finished], minlength=3)
             if turn == 0:
                 reference = policy.forward(np.asarray(values))
                 if args.half_logit_bias:
@@ -137,7 +151,10 @@ def main():
                   action_selection="argmax" if args.sample_seed is None else "sample",
                   sample_seed=args.sample_seed,
                   sampling_temperature=args.sampling_temperature if args.sample_seed is not None else None,
+                  split_sampling_temperature=args.split_sampling_temperature,
                   half_logit_bias=args.half_logit_bias,
+                  first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
+                                             pass_actions=int(action_counts[2])),
                   opponent_action_selection="argmax",
                   checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
                   opponent_sha256=hashlib.sha256((args.opponent_bundle / "policy.bin").read_bytes()).hexdigest(),

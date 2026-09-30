@@ -25,6 +25,59 @@ def validate_training_geometry(argv=sys.argv, environ=os.environ):
         )
 
 
+def validate_sampling_gate(argv=sys.argv, environ=os.environ):
+    """Require source-policy wins under the actual rollout sampler before PPO."""
+    if len(argv) < 2 or argv[1] != "train" or "--config" not in argv or "--build" not in argv:
+        return
+    build = Path(argv[argv.index("--build") + 1]) / "build.json"
+    if not build.exists():
+        return  # The normal build loader reports its missing artifact.
+    record = json.loads(build.read_text())
+    environment = record["config"].get("python_environment") or {}
+    options = environment.get("options") or {}
+    if (environment.get("factory") not in {
+            "integrations.spatial_selfplay:SpatialFrozenOpponentPufferEnvironment",
+            "integrations.spatial_selfplay:SpatialMixedFrozenOpponentPufferEnvironment",
+            "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
+        } or environment.get("spec", {}).get("action_sizes") != [3529]
+            or options.get("terminal_reward_mode") != "win_only"):
+        return
+    training = json.loads(Path(argv[argv.index("--config") + 1]).read_text())
+    initialization = training.get("initialize")
+    if not initialization:
+        return
+    path = environ.get("METTA_SPATIAL_SAMPLING_GATE_REPORT")
+    if not path:
+        raise ValueError("Win-only flat-action transfer requires METTA_SPATIAL_SAMPLING_GATE_REPORT")
+    report = json.loads(Path(path).read_text())
+    source = initialization["sha256"]
+    temperature = float(environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
+    split_temperature = environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE")
+    split_temperature = float(split_temperature) if split_temperature is not None else None
+    if (report.get("baseline_sha256") != source or report.get("candidate_sha256") != source
+            or report.get("opponent_sha256") != source
+            or report.get("baseline_action_selection") != "argmax"
+            or report.get("candidate_action_selection") != "sample"
+            or report.get("baseline_sampling_temperature") is not None
+            or report.get("candidate_sampling_temperature") != temperature
+            or report.get("candidate_split_sampling_temperature") != split_temperature
+            or report.get("games", 0) < 256 or report.get("unique_initial_maps", 0) < 64):
+        raise ValueError("Sampling gate must compare greedy and rollout-temperature play of the exact source policy")
+    greedy_wins = report["baseline_wld"][0]
+    sampled_wins = report["candidate_wld"][0]
+    if greedy_wins < report["games"] / 4:
+        raise ValueError(
+            f"Greedy source wins only {greedy_wins}/{report['games']} in its self-match; "
+            "verify the checkpoint and opponent before PPO"
+        )
+    minimum_wins = max(16, report["games"] / 4, greedy_wins / 2)
+    if sampled_wins < minimum_wins:
+        raise ValueError(
+            f"Rollout sampling wins only {sampled_wins}/{report['games']} versus "
+            f"greedy {greedy_wins}/{report['games']}; collect useful winning trajectories before PPO"
+        )
+
+
 def prepare_temporary_directory(environ=os.environ):
     """Create the configured compiler scratch directory before JAX or nvcc starts."""
     location = environ.get("TMPDIR")
@@ -96,6 +149,7 @@ def spatial_self_play_transfer(source, target, digest):
 
 def main():
     validate_training_geometry()
+    validate_sampling_gate()
     prepare_temporary_directory()
 
     import jax
