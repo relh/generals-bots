@@ -14734,3 +14734,20 @@ No duplicate build or rollout. Resume script SHA
 a0410b1c50e5d7d5031fa72ffcfd3f87b58e4c0b6a96ce6547c4b92d8b140b42,
 8CPU/64GiB,30-minute limit, one B300 GPU, warmed30k SPS monitor.
 Read job33224/node-local archive before further work; do not duplicate.
+
+Job33224 ended FAILED1 before the first completed epoch. The in-job
+monitor's300-second first-epoch limit stopped it. Training stdout had
+started the five-opponent model setup, but no checkpoint was written;
+the GPU sampler observed185,080MiB allocated and0% utilization over
+149 two-second samples. This is a startup/compile stall, not a measured
+steady-state SPS below30k. Exact archived output
+`/tmp/relh-classic-win-entropy-split-resume-33224-recovery.tar.gz`,
+SHA69c6c0aea3d771fff560a6cbba8fd969cc0500cabb7e1d4ea80cc5e4895217f4.
+No policy-quality result. One last diagnostic job33257 reuses the
+verified build, starts a **fresh `run2` output** (the prior attempt had
+zero trained steps), logs JAX compilation, and allows up to900 seconds
+for the first epoch while keeping the warmed30k SPS gate and a30-minute
+Slurm cap. Script SHA
+31e2d5981d11b41220b1e79d06c87f29a7cec38c800761dceb51523ff2eb17d4.
+Read exact job33257 and node-local archive; do not duplicate or keep
+retrying this branch if startup still stalls.
