@@ -14802,3 +14802,24 @@ Verified archive `/tmp/relh-classic-win-temperature-only-33295-recovery.tar.gz`,
 SHA `7b6db3153600ae6fa0aa1326645bb37ea8659532f50fb8f24c1b4157f3a52ace`.
 Do not repeat temperature0.25 with8,192 games without a changed
 compile geometry and a bounded first-epoch gate.
+
+Follow-up startup audit found a launcher regression: successful
+8,192-game job32951 passed `METTA_MEMORYLESS_OPTIMIZATION=1` to
+Puffer, whereas jobs33184/33224/33257/33295 omitted it. The
+model, environment, and native binary hashes for successful32951 and
+stalled33295 are identical. This flag flattens the verified mailbox
+actor's optimization sequence into independent rows; omitting it
+allows the expensive unflattened `device_core` compilation. A new
+launcher guard now fails before GPU compilation when this exact wide
+context-matrix geometry lacks the flag. The guard passed local
+missing/present/smaller-geometry checks; a corrected GPU pilot is
+still needed to confirm the causal diagnosis.
+
+Corrected job33707 failed in1 second before its script began: the
+compute node's `/var/tmp/relh-generals-recovery` had been cleared,
+including all required checkpoints and opponent bundles. Its Slurm
+stdout records failure opening the node-local log. The pinned Docker
+image and `/tmp/relh-generals-coworld` runtime still exist, and
+Mac/controller task archives contain the missing roots. Job33707
+produced no training result or checkpoint. Restore only verified task
+artifacts inside the next bounded GPU allocation before retrying.
