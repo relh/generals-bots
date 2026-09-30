@@ -14626,3 +14626,12 @@ were created once: seat0 xreq_5846ee45-a3c9-4d19-834b-17a7f93900fc,
 seat1 xreq_89530701-0387-4c99-b3f5-a084ebff7c50. Both initially
 pending; read exact IDs, do not resubmit. No league submission/champion
 change for this version.
+
+Both exact50M hosted smoke requests completed 1/1 with zero runtime
+failures; candidate lost both one-game matches to234M, which is too small
+for a strength conclusion. Private balanced live-leader XP was requested
+once,16games per candidate seat: seat0
+xreq_6d61a4de-19de-465e-8cb9-4502e91fa1b0, seat1
+xreq_d4eed8ab-78a4-4a73-a1fa-0ef7c4a18fb6. Both initially
+pending; exact payloads/idempotency keys in
+`/tmp/relh-win-landgain50m-serving`. Read these IDs and do not resubmit.
