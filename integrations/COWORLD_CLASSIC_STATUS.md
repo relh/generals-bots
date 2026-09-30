@@ -14716,3 +14716,21 @@ change greedy behavior. The job enforces warmed30k SPS and then runs
 a signed512-game direct-parent comparison. Full queue before
 submission had peer Safa jobs32854/33182 and no Generals job.
 Read exact job33184 state and its node-local archive; do not duplicate.
+
+Job33184 ended FAILED137 before any training. Build and actual16-game
+GPU/portable/gradient parity passed and wrote
+`registration-parity.json`, but the Docker client remained alive after
+the parity program printed PASS; the bounded4-minute timeout killed it.
+Node preflight had physical B300 UUID
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a at0MiB/0%, driver595.91.07,
+image pinned; no sustained training SPS or quality measured. Exact
+node-local archive recovered to
+`/tmp/relh-classic-win-entropy-split-33184-recovery.tar.gz`,
+SHAb89ccfc5a40352d02a673486687c15b06bad269071b08da2ff8736abc0068110.
+Job33224 is a single bounded continuation of this exact build/config:
+it reuses preserved parity and starts at training,33,554,432
+physical steps, then export and signed512-game parent evaluation.
+No duplicate build or rollout. Resume script SHA
+a0410b1c50e5d7d5031fa72ffcfd3f87b58e4c0b6a96ce6547c4b92d8b140b42,
+8CPU/64GiB,30-minute limit, one B300 GPU, warmed30k SPS monitor.
+Read job33224/node-local archive before further work; do not duplicate.
