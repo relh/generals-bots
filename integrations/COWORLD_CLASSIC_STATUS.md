@@ -14686,3 +14686,19 @@ their duplicate extracted scratch trees
 `/tmp/relh-win-population-32951-inspect`; archives remain intact.
 Afterward the volume reported2.2GiB free. Protected Codex
 sessions/rollouts/SQLite were untouched.
+
+Frontier job33176 COMPLETED exit0 on one B300 UUID
+GPU-0c5605ae-e405-99f1-848e-9fa81e41482a,8CPU/64GiB.
+Four-epoch warmed173,562 SPS, six-epoch173,624 end-to-end SPS;
+16,777,216 physical Classic steps,0 illegal actions,0 nonfinite
+rewards,22,104 terminal agents, sampled full16,622,012,
+half39,496, pass115,708. Reward signs7,785,753 positive/8,401,091
+negative are not WLD. Final actor SHA
+f2aeebbc6a0f8fc0a587e4821da9a8a73065e650fc0f85333607e02f4f616557.
+Signed512-game direct held-out versus234M:230W279L3D,
+score-.09570; no quality gain. Same replay-observation logit probe
+found best-full minus best-half median+.411 and zero greedy half
+decisions, near parent+.397 and below land-gain50M+.501. Archive
+`/tmp/relh-classic-win-frontier-33176-recovery.tar.gz`, SHA
+6b2eae3d50a5ad238bbbec696afb2e9fbc9576e51e952373acf56472eae444d5.
+No promotion or long extension of frontier reward alone.
