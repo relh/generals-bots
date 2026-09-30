@@ -14768,3 +14768,37 @@ the same B300 completed prior pilots at 165–174k end-to-end SPS.
 Stop retrying this exact entropy branch. A new experiment must change
 the expensive compilation geometry or the objective and pass a bounded
 first-epoch/throughput gate before any long run.
+
+A single bounded temperature-only isolation job33295 was submitted to
+B300 after full Slurm queue/node review. It reuses the parity-verified
+build and exact234M actor, retains the 8,192-game win-only,
+potential-only five-opponent population and temperature0.25, changes
+native entropy coefficient back to0, and trains16,777,216 new
+physical steps. This tests temperature without the failing entropy
+objective. CPU/memory8/64GiB,30-minute limit, `--nice=100`; the
+compute-node script checks the physical allocated UUID, driver,
+image digest, GPU memory/utilization, and absent task containers
+before launching. It enforces a300-second first-epoch timeout and
+warmed30k SPS; successful output is exported and compared in signed
+512-game direct-parent matches. Source script SHA
+`f0607c8fe57b8b4e27ff81df3a9beb222dcfd2bdcfc1b6746931141cc1f394f7`.
+The controller cannot read node-local Docker/image/output or physical
+GPU state directly; those checks are inside this single allocation.
+Read exact job33295 and its node-local archive before any other job.
+
+Job33295 ended FAILED1 after9m14s, with the300-second no-epoch gate
+stopping training at zero completed steps and no checkpoint. Physical
+preflight observed its allocated B300 UUID
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` at0MiB/0% before
+launch. Its build binary, model, and environment hashes exactly match
+successful job32951; only training config and runtime temperature
+changed. The zero-entropy control still stalled after the graph
+`reverse_walk=none` setup. Among149 two-second GPU samples, only4
+showed any GPU utilization (maximum3%); memory peaked185,080MiB.
+The outcome rules out entropy coefficient as the sole startup cause,
+but does not isolate sampling temperature from a fresh XLA compile or
+host/container effects. No SPS or policy score exists for this run.
+Verified archive `/tmp/relh-classic-win-temperature-only-33295-recovery.tar.gz`,
+SHA `7b6db3153600ae6fa0aa1326645bb37ea8659532f50fb8f24c1b4157f3a52ace`.
+Do not repeat temperature0.25 with8,192 games without a changed
+compile geometry and a bounded first-epoch gate.
