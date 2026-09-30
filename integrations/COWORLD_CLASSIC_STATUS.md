@@ -14665,3 +14665,24 @@ still use learner gamma and zero terminal potential, preserving the
 win1/loss0 base objective. CPU unit check verifies the extra frontier
 and no wraparound at board edges; exact234M policy-only transfer guard
 accepts only frontier weight0 or1 and rejects2.
+
+Single bounded frontier pilot submitted as B300 job33176,8CPU/64GiB,
+30-minute limit, source commit e643051, node script SHA
+6f146e06074ca0fa150211aaf461123a5b9e5a41ae30c2513330d8ba9a18273e.
+It initializes from the same exact234M actor with fresh optimizer,
+win-only terminal reward, shaping_weight.25, frontier potential weight1,
+land-gain reward0, unchanged balanced five-opponent pool and
+8192 games×H256/batch2,097,152/mb8192. Planned16,777,216 physical
+steps, warmed30k SPS gate, corrected signed512-game direct-parent
+evaluation after export. Physical GPU check and output are on the
+compute node. Full queue before submission had peer Safa job32854 on
+B300 and no Generals job. Read exact job33176 and node-local archive
+before follow-up; do not duplicate.
+
+The Mac's Data volume had only161MiB free, so a journal write failed.
+Verified the two existing task archives by SHA256 and removed only
+their duplicate extracted scratch trees
+`/tmp/relh-win-landgain020-33110-inspect` and
+`/tmp/relh-win-population-32951-inspect`; archives remain intact.
+Afterward the volume reported2.2GiB free. Protected Codex
+sessions/rollouts/SQLite were untouched.
