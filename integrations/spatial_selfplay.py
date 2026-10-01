@@ -10,7 +10,8 @@ import jax.numpy as jnp
 import numpy as np
 
 from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
-from integrations.spatial_action_sampling import acting_logits, public_neutral_route_bonus
+from integrations.spatial_action_sampling import (acting_logits, public_doomed_attack_route_penalty,
+                                                  public_neutral_route_bonus, public_weak_owned_route_penalty)
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
 
@@ -22,6 +23,14 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
             if observations is None:
                 raise ValueError("Neutral route bias requires frozen public observations")
             logits += public_neutral_route_bonus(observations, policy.neutral_route_bias, jnp)
+        if getattr(policy, "weak_owned_route_penalty", 0.0):
+            if observations is None:
+                raise ValueError("Weak owned route penalty requires frozen public observations")
+            logits += public_weak_owned_route_penalty(observations, policy.weak_owned_route_penalty, jnp)
+        if getattr(policy, "doomed_attack_route_penalty", 0.0):
+            if observations is None:
+                raise ValueError("Doomed attack route penalty requires frozen public observations")
+            logits += public_doomed_attack_route_penalty(observations, policy.doomed_attack_route_penalty, jnp)
         legal_logits = jnp.where(masks, logits, -jnp.inf)
         random_keys = jax.vmap(lambda key: jax.random.fold_in(key, 834))(keys)
         return jax.vmap(jax.random.categorical)(random_keys, legal_logits).astype(jnp.int32)
@@ -239,7 +248,11 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         self._population_action_selection = tuple(
             ({"mode": policy.action_mode, "move_temperature": policy.move_temperature,
               "split_temperature": policy.split_temperature,
-              "neutral_route_bias": policy.neutral_route_bias}
+              "neutral_route_bias": policy.neutral_route_bias,
+              **({"weak_owned_route_penalty": policy.weak_owned_route_penalty}
+                 if policy.weak_owned_route_penalty else {}),
+              **({"doomed_attack_route_penalty": policy.doomed_attack_route_penalty}
+                 if policy.doomed_attack_route_penalty else {})}
              if policy.action_mode == "structured_sample" else {"mode": "argmax"})
             for policy in frozen
         )

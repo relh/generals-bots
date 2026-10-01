@@ -14,7 +14,8 @@ from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.evaluate_coworld_frozen_greedy import sample_flat_logits
 from integrations.spatial_action_sampling import (acting_logits, public_neutral_route_bonus,
-                                                  public_owned_split_bias, public_weak_owned_route_penalty)
+                                                  public_owned_split_bias, public_weak_owned_route_penalty,
+                                                  public_doomed_attack_route_penalty)
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
 
@@ -46,6 +47,8 @@ def main():
                         help="Diagnostic conditional half-move bonus on owned routes from stacks >=5")
     parser.add_argument("--weak-owned-route-penalty", type=float, default=0.0,
                         help="Diagnostic route penalty for small-stack owned moves before 15 owned tiles")
+    parser.add_argument("--doomed-attack-route-penalty", type=float, default=0.0,
+                        help="Diagnostic route penalty when full army cannot capture a visible enemy")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -72,6 +75,9 @@ def main():
     if not np.isfinite(args.weak_owned_route_penalty) or args.weak_owned_route_penalty < 0 or (
             args.weak_owned_route_penalty and args.split_sampling_temperature is None):
         raise ValueError("Weak owned route penalty requires structured actions and a finite nonnegative value")
+    if not np.isfinite(args.doomed_attack_route_penalty) or args.doomed_attack_route_penalty < 0 or (
+            args.doomed_attack_route_penalty and args.split_sampling_temperature is None):
+        raise ValueError("Doomed attack route penalty requires structured actions and a finite nonnegative value")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
         training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
         run = explicit_run or bundle.parent / "run"
@@ -176,6 +182,8 @@ def main():
                         logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
                     if args.weak_owned_route_penalty:
                         logits += public_weak_owned_route_penalty(np.asarray(values), args.weak_owned_route_penalty, np)
+                    if args.doomed_attack_route_penalty:
+                        logits += public_doomed_attack_route_penalty(np.asarray(values), args.doomed_attack_route_penalty, np)
                     chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
                 else:
                     chosen = biased_greedy
@@ -193,6 +201,9 @@ def main():
                 if args.weak_owned_route_penalty:
                     logits += jnp.asarray(public_weak_owned_route_penalty(
                         np.asarray(values), args.weak_owned_route_penalty, np))
+                if args.doomed_attack_route_penalty:
+                    logits += jnp.asarray(public_doomed_attack_route_penalty(
+                        np.asarray(values), args.doomed_attack_route_penalty, np))
                 chosen = np.asarray(sample_flat_logits(
                     key, logits, jnp.asarray(legal),
                 ))
@@ -244,6 +255,7 @@ def main():
                   neutral_route_bias=args.neutral_route_bias,
                   owned_split_bias=args.owned_split_bias,
                   weak_owned_route_penalty=args.weak_owned_route_penalty,
+                  doomed_attack_route_penalty=args.doomed_attack_route_penalty,
                   first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
                                              pass_actions=int(action_counts[2])),
                   first_episode_vs_raw_greedy=dict(route_changes=int(action_disagreements[0]),

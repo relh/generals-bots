@@ -12,7 +12,8 @@ import numpy as np
 
 def export_bundle(build, training, checkpoint, sha256, factory_source, output, *,
                   serving_move_temperature=None, serving_split_temperature=None,
-                  serving_neutral_route_bias=0.0):
+                  serving_neutral_route_bias=0.0, serving_weak_owned_route_penalty=0.0,
+                  serving_doomed_attack_route_penalty=0.0):
     if (serving_move_temperature is None) != (serving_split_temperature is None):
         raise ValueError("Structured serving requires both action temperatures")
     if serving_move_temperature is not None and not all(
@@ -22,6 +23,12 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
     if not np.isfinite(serving_neutral_route_bias) or serving_neutral_route_bias < 0 or (
             serving_neutral_route_bias and serving_move_temperature is None):
         raise ValueError("Neutral route bias requires structured serving and a finite nonnegative value")
+    if not np.isfinite(serving_weak_owned_route_penalty) or serving_weak_owned_route_penalty < 0 or (
+            serving_weak_owned_route_penalty and serving_move_temperature is None):
+        raise ValueError("Weak owned route penalty requires structured serving and a finite nonnegative value")
+    if not np.isfinite(serving_doomed_attack_route_penalty) or serving_doomed_attack_route_penalty < 0 or (
+            serving_doomed_attack_route_penalty and serving_move_temperature is None):
+        raise ValueError("Doomed attack route penalty requires structured serving and a finite nonnegative value")
     spec = importlib.util.spec_from_file_location("integrations.generals_fabric", factory_source)
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -72,6 +79,10 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
     )
     if serving_neutral_route_bias:
         serving_action_selection["neutral_route_bias"] = serving_neutral_route_bias
+    if serving_weak_owned_route_penalty:
+        serving_action_selection["weak_owned_route_penalty"] = serving_weak_owned_route_penalty
+    if serving_doomed_attack_route_penalty:
+        serving_action_selection["doomed_attack_route_penalty"] = serving_doomed_attack_route_penalty
     (output / "spatial-policy.json").write_text(json.dumps(dict(
         schema="puffer5-generals-spatial-v1", files=files, features=model.features,
         channels=model.channels,
@@ -89,11 +100,15 @@ def main():
     parser.add_argument("--serving-move-temperature", type=float)
     parser.add_argument("--serving-split-temperature", type=float)
     parser.add_argument("--serving-neutral-route-bias", type=float, default=0.0)
+    parser.add_argument("--serving-weak-owned-route-penalty", type=float, default=0.0)
+    parser.add_argument("--serving-doomed-attack-route-penalty", type=float, default=0.0)
     args = parser.parse_args()
     export_bundle(args.build, args.training, args.checkpoint, args.sha256, args.factory_source, args.output,
                   serving_move_temperature=args.serving_move_temperature,
                   serving_split_temperature=args.serving_split_temperature,
-                  serving_neutral_route_bias=args.serving_neutral_route_bias)
+                  serving_neutral_route_bias=args.serving_neutral_route_bias,
+                  serving_weak_owned_route_penalty=args.serving_weak_owned_route_penalty,
+                  serving_doomed_attack_route_penalty=args.serving_doomed_attack_route_penalty)
 
 
 if __name__ == "__main__":

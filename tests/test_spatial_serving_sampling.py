@@ -3,7 +3,8 @@ import pytest
 
 from integrations.spatial_policy_bundle import structured_action_probabilities
 from integrations.spatial_action_sampling import (acting_logits, public_owned_split_bias,
-                                                  public_weak_owned_route_penalty)
+                                                  public_weak_owned_route_penalty,
+                                                  public_doomed_attack_route_penalty)
 
 
 def test_structured_serving_probabilities_follow_route_and_split_logits():
@@ -95,3 +96,59 @@ def test_weak_owned_route_penalty_requires_early_land_and_small_stack():
     public[source] = np.log1p(4) / 8
     public[4 * 441:4 * 441 + 15] = 1
     assert public_weak_owned_route_penalty(public, 4.0, np)[up] == 0
+
+
+def test_serving_weak_owned_penalty_changes_route_not_split():
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    outputs = np.full(3530, -100.0, np.float32)
+    outputs[[up, right]] = 0
+    outputs[[1764 + up, 1764 + right]] = -.3
+    legal = np.zeros(3529, bool)
+    legal[[up, right, 1764 + up, 1764 + right]] = True
+    public = np.zeros(16 * 441, np.float32)
+    public[source] = np.log1p(4) / 8
+    public[4 * 441 + source] = 1
+    public[4 * 441 + source - 21] = 1
+    before = structured_action_probabilities(outputs, legal, .05, .15)
+    after = structured_action_probabilities(outputs, legal, .05, .15,
+                                            observations=public, weak_owned_route_penalty=4.0)
+    assert (after[up] + after[1764 + up]) / (after[right] + after[1764 + right]) == pytest.approx(np.exp(-4))
+    assert after[up] / after[1764 + up] == pytest.approx(before[up] / before[1764 + up])
+    with pytest.raises(ValueError, match="public observations"):
+        structured_action_probabilities(outputs, legal, .05, .15, weak_owned_route_penalty=4.0)
+
+
+def test_doomed_attack_penalty_uses_visible_army_balance():
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    public = np.zeros(16 * 441, np.float32)
+    public[source] = np.log1p(5) / 8
+    public[source - 21] = np.log1p(4) / 8
+    public[5 * 441 + source - 21] = 1
+    penalty = public_doomed_attack_route_penalty(public, 4.0, np)
+    assert penalty[up] == penalty[1764 + up] == -4.0
+    assert penalty[right] == penalty[3528] == 0
+    public[source] = np.log1p(6) / 8
+    assert public_doomed_attack_route_penalty(public, 4.0, np)[up] == 0
+
+
+def test_serving_doomed_attack_penalty_changes_route_not_split():
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    outputs = np.full(3530, -100.0, np.float32)
+    outputs[[up, right]] = 0
+    outputs[[1764 + up, 1764 + right]] = -.3
+    legal = np.zeros(3529, bool)
+    legal[[up, right, 1764 + up, 1764 + right]] = True
+    public = np.zeros(16 * 441, np.float32)
+    public[source] = np.log1p(5) / 8
+    public[source - 21] = np.log1p(4) / 8
+    public[5 * 441 + source - 21] = 1
+    before = structured_action_probabilities(outputs, legal, .05, .15)
+    after = structured_action_probabilities(outputs, legal, .05, .15,
+                                            observations=public, doomed_attack_route_penalty=4.0)
+    assert (after[up] + after[1764 + up]) / (after[right] + after[1764 + right]) == pytest.approx(np.exp(-4))
+    assert after[up] / after[1764 + up] == pytest.approx(before[up] / before[1764 + up])
+    with pytest.raises(ValueError, match="public observations"):
+        structured_action_probabilities(outputs, legal, .05, .15, doomed_attack_route_penalty=4.0)

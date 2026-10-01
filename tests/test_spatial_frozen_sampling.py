@@ -67,3 +67,53 @@ def test_frozen_neutral_route_bonus_matches_serving_distribution():
     with pytest.raises(ValueError, match="public observations"):
         frozen_action_indices(policy, jnp.asarray(outputs[None]), jnp.asarray(legal[None]),
                               keys[:1])
+
+
+def test_frozen_weak_owned_route_penalty_matches_serving_distribution():
+    count = 10_000
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    outputs = np.zeros(3530, np.float32)
+    legal = np.zeros(3529, bool)
+    legal[[up, right]] = True
+    public = np.zeros(16 * 441, np.float32)
+    public[source] = np.log1p(4) / 8
+    public[4 * 441 + source] = 1
+    public[4 * 441 + source - 21] = 1
+    expected = structured_action_probabilities(outputs, legal, .05, .15,
+                                               observations=public, weak_owned_route_penalty=4.0)
+    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+                             split_temperature=.15, neutral_route_bias=0.0,
+                             weak_owned_route_penalty=4.0)
+    keys = jax.random.split(jax.random.PRNGKey(110), count)
+    sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(
+        policy, jnp.broadcast_to(outputs, (count, 3530)),
+        jnp.broadcast_to(legal, (count, 3529)), k,
+        jnp.broadcast_to(public, (count, public.size)),
+    ))(keys))
+    assert abs(np.mean(sampled == up) - expected[up]) < .02
+
+
+def test_frozen_doomed_attack_route_penalty_matches_serving_distribution():
+    count = 10_000
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    outputs = np.zeros(3530, np.float32)
+    legal = np.zeros(3529, bool)
+    legal[[up, right]] = True
+    public = np.zeros(16 * 441, np.float32)
+    public[source] = np.log1p(5) / 8
+    public[source - 21] = np.log1p(4) / 8
+    public[5 * 441 + source - 21] = 1
+    expected = structured_action_probabilities(outputs, legal, .05, .15,
+                                               observations=public, doomed_attack_route_penalty=4.0)
+    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+                             split_temperature=.15, neutral_route_bias=0.0,
+                             doomed_attack_route_penalty=4.0)
+    keys = jax.random.split(jax.random.PRNGKey(111), count)
+    sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(
+        policy, jnp.broadcast_to(outputs, (count, 3530)),
+        jnp.broadcast_to(legal, (count, 3529)), k,
+        jnp.broadcast_to(public, (count, public.size)),
+    ))(keys))
+    assert abs(np.mean(sampled == up) - expected[up]) < .02

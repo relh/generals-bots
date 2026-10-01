@@ -236,6 +236,16 @@ def install(native_module=None):
             raise ValueError("Neutral route bias must be finite and nonnegative")
         if self.spatial_neutral_route_bias and self.spatial_split_temperature is None:
             raise ValueError("Neutral route bias requires structured route and split sampling")
+        self.spatial_weak_owned_route_penalty = float(os.environ.get("METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY", "0"))
+        if not np.isfinite(self.spatial_weak_owned_route_penalty) or self.spatial_weak_owned_route_penalty < 0:
+            raise ValueError("Weak owned route penalty must be finite and nonnegative")
+        if self.spatial_weak_owned_route_penalty and self.spatial_split_temperature is None:
+            raise ValueError("Weak owned route penalty requires structured route and split sampling")
+        self.spatial_doomed_attack_route_penalty = float(os.environ.get("METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY", "0"))
+        if not np.isfinite(self.spatial_doomed_attack_route_penalty) or self.spatial_doomed_attack_route_penalty < 0:
+            raise ValueError("Doomed attack route penalty must be finite and nonnegative")
+        if self.spatial_doomed_attack_route_penalty and self.spatial_split_temperature is None:
+            raise ValueError("Doomed attack route penalty requires structured route and split sampling")
         if (self.spatial_policy_temperature != 1 or self.spatial_split_temperature is not None) and not self.direct_spatial_rollout:
             raise ValueError("Temperature requires identical direct rollout and optimization algebra")
 
@@ -259,6 +269,16 @@ def install(native_module=None):
 
             bonus = public_neutral_route_bonus(transported, self.spatial_neutral_route_bias, jnp)
             acting = acting.at[..., :3529].add(bonus)
+        if self.spatial_weak_owned_route_penalty:
+            from integrations.spatial_action_sampling import public_weak_owned_route_penalty
+
+            penalty = public_weak_owned_route_penalty(transported, self.spatial_weak_owned_route_penalty, jnp)
+            acting = acting.at[..., :3529].add(penalty)
+        if self.spatial_doomed_attack_route_penalty:
+            from integrations.spatial_action_sampling import public_doomed_attack_route_penalty
+
+            penalty = public_doomed_attack_route_penalty(transported, self.spatial_doomed_attack_route_penalty, jnp)
+            acting = acting.at[..., :3529].add(penalty)
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
         return acting, state, DirectTape(parameters, transported, outputs)

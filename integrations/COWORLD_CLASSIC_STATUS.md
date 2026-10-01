@@ -16065,3 +16065,184 @@ seat1 `xreq_64594c42-2298-46b2-902f-2b900389b9bb`.
 They were pending at submission; inspect these IDs before any further
 request. The main Coworld CLI user identity was restored. No league
 submission or champion change.
+
+All four hosted panels completed with zero failures. The aligned bias6
+child scored6W/26L against pinned Daveey v7 (seat0 4W/12L,
+seat1 2W/14L), compared with the prior bias3 hosted result
+13W/49L/2D on a separate64-game panel. This does not establish
+improvement against the leader. Against the prior relh bias3 actor
+directly, it scored19W/12L/1D (seat0 6W/9L/1D,
+seat1 13W/3L), suggestive but not conclusive with only32 games. The two one-game
+smokes were losses to the prior actor but are not included in the
+32-game panel. All 64 panel replays were downloaded once and audited
+read-only. Daveey panel audit
+`/tmp/relh-classic-neutralsix-serving/leader-hosted-replay-audit.json`:
+zero basic invalid actions, candidate54.34 neutral targets/game
+versus Daveey94.72, turn50 land/army margins -2.28/-2.91,
+turn100 -8.75/-14.97. Prior-actor direct panel audit
+`/tmp/relh-classic-neutralsix-serving/prior-hosted-replay-audit.json`:
+candidate55.53 neutral targets/game versus prior39.34;
+turn50 land/army margins +1.28/+1.28, turn100 +2.88/+5.50.
+The bias improved neutral expansion within our actor pool but did not resolve the
+leader opening. No champion promotion.
+
+B300 job34879 screened a public early weak-owned-route penalty,
+keeping the original184M checkpoint and neutral bias6 fixed. The
+penalty subtracts4 from full and half route logits for moves from
+visible source stacks below five into owned cells while fewer than15
+cells are owned. It uses only the actor's public planes and does not
+alter conditional full/half choice. Fresh seed35541/2048 paired
+Classic games/889 maps versus frozen234M gave baseline
+1419W/615L/14D and candidate1466W/567L/15D. Paired score delta
++0.04639,95% map-bootstrap CI[+0.00198,+0.09104]. Neutral
+targets121,620→123,928; passes8793→11,685; turn50 land margin
+sum2986→4856. This is a modest local gain with a near-zero lower
+CI bound, and hosted transfer remains unverified. Archive
+`/tmp/relh-classic-weak-owned-six-screen-result.tar.gz` SHA256
+`b9cfb26e571d124aeb66e39763a4ced20dfd3b8e85c66ba1927dfab27a8c33b9`.
+The selected physical B300 GPU was0MiB/0% at startup; job terminal.
+The same opt-in penalty is being wired through PPO and serving before
+any trained or hosted candidate uses it.
+
+The penalty is now opt-in in native direct PPO rollout/optimization via
+`METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY`, portable sampled serving,
+frozen sampled opponents, and bundle export. Local serving tests pass
+(6 passed); frozen JAX sampling tests skip locally because JAX is not
+installed. One bounded B300 pilot job34881 is checking exact GPU
+NumPy/JAX parity, 16,777,216 additional steps from the bias6 201M
+checkpoint, warmed end-to-end SPS, exported serving manifest, and fresh
+paired source/child quality with both evaluated under neutral bias6
+and weak-owned penalty4. The weighted opponent pool, Classic engine,
+win-only reward, and gamma/shaping gamma0.999 remain pinned. Script
+`/tmp/relh-classic-weakowned-train-node.sh` SHA256
+`04eb48e7a41d360680f64e1c253987f9a192c524e1f4eb37b55d44ef32c79497`,
+node output `/var/tmp/relh-generals-recovery/classic-weakowned-pilot-34881`,
+Mac archive `/tmp/relh-classic-weakowned-train-result.tar.gz`.
+Check this job before any further GPU allocation; no duplicate job.
+
+Job34881 completed exit0. Its allocated B300 physical UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was0MiB/0% at
+startup. The run completed16,777,216 additional steps from the
+bias6 child at final121,800 end-to-end SPS, using8,192 parallel
+games, minibatch8,192, horizon256 and replay ratio0.5. This is
+15.5% slower than the bias6 run at144,200 SPS but remains above
+the30,000 gate. Final epoch timing: environment7.664s (44%),
+model4.169s (24%), optimization4.289s (24%). There were zero
+illegal actions across16.8M and zero nonfinite rewards; the
+weighted pool had balanced seat counts for each opponent.
+GPU probe verified exact source modules and NumPy/JAX parity for
+both public route adjustments. The exported manifest declares
+move/split temperatures0.05/0.15, neutral bias6, and weak-owned
+penalty4, exactly matching native PPO. Checkpoint/bundle SHA256
+`fff930fd304a43a6f3875d20dc71509e4a5c482bd10d10b9b7187a1755247938`.
+
+Fresh seed35542/2048 paired Classic games/910 unique maps versus
+frozen234M, with both 201M source and new ~218M child under bias6
+plus weak-owned penalty4, gave source1429W/592L/27D and child
+1417W/602L/29D. Paired score delta-0.01074,95% map-bootstrap
+CI[-0.05250,+0.03023], inconclusive for the extra training.
+The source targeted115,394 neutral cells versus child111,191;
+turn50 land margin sum4278 versus4196. No longer continuation
+is justified solely by this block. Archive
+`/tmp/relh-classic-weakowned-train-result.tar.gz` SHA256
+`b2684ba7cadc0a8d22227915e894f1d424ed6039e7d67b5241379616c09006f6`.
+No Generals GPU job remains from34881. The aligned child is being
+built for private hosted XP testing.
+
+The exact ~218M child bundle was built into Linux AMD64 image
+`relh-classic-weakowned-218m:eval`, image ID
+`sha256:1af40f63fb19cb9fd889bbfe1a193a21542658ed8b20afec4e817cb0eb013ee9`.
+An AMD64 CPU serving smoke loaded bias6 plus penalty4 and selected
+a legal pass. The image was uploaded once under relh as
+`relh-classic-weakowned-218m:v1`, policy version
+`2aa4b839-94d7-4e0a-876d-bd481fe61a7d`. Private one-game
+hosted runtime smokes against prior bias6 were submitted once:
+seat0 `xreq_a3af9077-310d-4aa6-a330-07fa7cd6d80b`, seat1
+`xreq_9a00bec6-1a72-4ec5-9f2b-4872ea2cb47d`. Both were
+pending on first read; inspect exact IDs before resubmission.
+
+Both hosted runtime smokes completed without failures and were wins
+over the prior bias6 actor (too few games for a strength conclusion).
+Four private balanced 16-game XP panels were then submitted once,
+with unique idempotency keys: versus pinned Daveey v7 seat0
+`xreq_e01f73b6-8920-421f-8ad9-d82d00aebb62`, seat1
+`xreq_7e961bfb-55f1-4059-bef5-d163b208aadf`; versus the prior
+bias6 actor seat0 `xreq_eb8ea2d2-a83a-4441-ad1b-f5780f7054cd`,
+seat1 `xreq_f2ff6ca5-27af-4aa0-b7c6-a0dd670a93bc`.
+All were pending at submission. The main Coworld CLI identity was
+restored. No champion or league submission.
+
+All four hosted panels completed with zero runtime failures. The
+~218M weak-owned actor scored6W/26L versus pinned Daveey v7
+(seat0 5W/11L, seat1 1W/15L), and15W/17L versus the prior bias6
+actor (seat0 10W/6L, seat1 5W/11L). Thus the local weak-owned
+screen's small positive result did not transfer to hosted wins.
+All 64 panel replays were downloaded once and audited. Against
+Daveey: candidate53.19 visible neutral targets/game versus
+95.94, turn50 land margin-0.78, turn100-4.56, zero basic invalid
+actions. Against prior bias6 directly: candidate54.72 neutral
+targets/game versus58.91, turn50 land margin+0.88,
+turn100-0.81. Audit files
+`/tmp/relh-classic-weakowned-serving/leader-hosted-replay-audit.json`
+and `/tmp/relh-classic-weakowned-serving/prior-hosted-replay-audit.json`.
+No league or champion promotion.
+
+A more specific combat audit of the32 Daveey replays counted visible
+enemy-tile attacks where the sent army could not capture the tile
+(full sends source-1, half sends floor(source/2)). The weak-owned
+actor made643 such attacks in4438 enemy attacks (14.5%); Daveey
+made42 in3600 (1.2%). In the previous bias6 Daveey panel the
+actor made699 in3996 (17.5%) versus Daveey44 in3065 (1.4%).
+Losing attacks can occasionally soften a defended tile, so this is
+an observed strategy gap rather than a legality bug. A public
+route-logit penalty for visible enemy targets that a full move cannot
+capture is being screened on the same checkpoint before training.
+
+One bounded B300 evaluation job34901 is running from the preserved
+~218M checkpoint with neutral bias6 and weak-owned penalty4 on both
+arms; only the candidate adds doomed-attack penalty4. Job script
+`/tmp/relh-classic-doomed-screen-node.sh` SHA256
+`ab8488a4e0947a4bdcc0d801fd73ac2ce9a8e525ff8bb4f49ad8952aa637743e`,
+node output `/var/tmp/relh-generals-recovery/classic-doomed-attack-screen-34901`,
+Mac archive `/tmp/relh-classic-doomed-screen-result.tar.gz`.
+The full queue included another relh job34891 and user1002 job34882
+on B300; the job's physical UUID guard will verify its allocated GPU
+has under2GiB and20% utilization before work. Check this existing job
+and its archive before any further Generals allocation.
+
+Job34901 completed successfully on physical B300
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`, initially0MiB and0%
+utilization, with no competing Generals allocation. Its archive
+`/tmp/relh-classic-doomed-screen-result.tar.gz` has SHA256
+`6aa92434c2082f679febdff0e33aebffb7838271747d032de148a657932345c0`.
+On2048 paired games,890 unique Classic maps, seed35543 and sample
+seed31337, unchanged~218M actor versus frozen234M opponent,
+the baseline neutral6+weak-owned4 scored1466W/553L/29D and the
+candidate with public doomed-attack penalty4 scored
+1509W/515L/24D. Paired score delta+0.03955 with clustered
+95% CI[+0.00913,+0.06955]; better160, worse120, same1768.
+Turn50 land margin increased4389 to4422 in the2048 games;
+turn100 increased5766 to5984 in the active games. Both
+arms used identical model weights and structured action sampling.
+
+The optional doomed-attack adjustment is now wired into native PPO,
+frozen opponents, bundle export, and serving with the same public
+observation formula. The serving sampling tests pass locally
+(8 passed; JAX frozen sampling skipped on this Mac). The same
+~218M weights were copied into an immutable diagnostic bundle with
+neutral6, weak-owned4, and doomed-attack4; its AMD64 image
+`relh-classic-doomed-218m:eval` has ID
+`sha256:88d12662cd98342ad92f2a6724961d4b8a460461b9206da73aa43956f500f68e`.
+The AMD64 bundle smoke passed. Uploaded once as
+`relh-classic-doomed-218m:v1`, version
+`aea4cb45-f9c6-4b44-93a0-8a007d087ae1`, under relh identity,
+then restored the main Coworld CLI identity.
+Four private16-game Classic XP requests, each with a distinct
+idempotency key, are pending: Daveey v7 seat0
+`xreq_c31ee53a-ce4f-4bb4-ba62-1053044ca3db`, seat1
+`xreq_11ff4a53-8ce0-409e-9a66-59896d031b06`; previous
+weak-owned actor seat0 `xreq_9b24fc35-54d1-4a78-b991-e8e32f54e137`,
+seat1 `xreq_3055240d-d14d-4d38-8ac3-27d81882e90d`.
+This is an inference-only diagnostic screen. Do not promote it
+or treat it as train/serving aligned until PPO uses the same
+adjustment and the hosted panel demonstrates strength.

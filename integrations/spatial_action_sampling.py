@@ -76,6 +76,28 @@ def public_weak_owned_route_penalty(observations, strength, xp):
     return xp.concatenate((penalty, penalty, xp.zeros_like(penalty[..., :1])), axis=-1)
 
 
+def public_doomed_attack_route_penalty(observations, strength, xp):
+    """Discourage attacks on visible enemies that a full move cannot capture."""
+    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:
+        raise ValueError("Attack route penalty requires public 21x21 observations")
+    planes = observations.reshape((*observations.shape[:-1], -1, 441))
+    routes = xp.arange(MOVE_COUNT)
+    source = routes % 441
+    direction = routes // 441
+    row, col = source // 21, source % 21
+    target_row = row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
+    target_col = col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
+    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
+    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
+    source_army = xp.floor(xp.expm1(xp.take(planes[..., 0, :], source, axis=-1) * 8) + .5)
+    target_army = xp.floor(xp.expm1(xp.take(planes[..., 0, :], target, axis=-1) * 8) + .5)
+    doomed = (on_board &
+              (xp.take(planes[..., 5, :], target, axis=-1) > .5) &
+              (source_army - 1 <= target_army))
+    penalty = -doomed.astype(observations.dtype) * strength
+    return xp.concatenate((penalty, penalty, xp.zeros_like(penalty[..., :1])), axis=-1)
+
+
 def acting_logits(predictions, move_temperature, split_temperature, xp, split_bias=None):
     full = predictions[..., :MOVE_COUNT]
     half = predictions[..., MOVE_COUNT:PASS_INDEX]
