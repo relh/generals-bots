@@ -17168,3 +17168,24 @@ bundles, evaluates 8192 paired first episodes on seed35567 with a
 node output `/var/tmp/relh-generals-recovery/classic-v5pool-holdout-35149`,
 Mac archive `/tmp/relh-classic-v5pool-holdout-result.tar.gz`.
 Inspect this job before any retry or scaling decision.
+
+Job 35149 completed exit0 on physical B300 UUID
+`GPU-5cd839f7-0d99-f113-f4fe-3243cdaaa043`, idle at entry
+(0 MiB, 0%, no compute process). The 8192 new first episodes had
+matched initial hashes, seats, and opponent labels. Source scored
+3628W/4468L/96D; V5-pool child scored 3673W/4419L/100D.
+Paired outcome-score delta was +0.01147 with map-cluster 95% interval
+[-0.00900,+0.03200]. Script-only delta was +0.00482 over 4772
+games, interval [-0.02243,+0.03135]. Pooled across the two independent
+fresh panels (11264 games, 4929 unique starts), overall delta was
++0.01252, interval [-0.00466,+0.03029]; script-only delta
++0.01417, interval [-0.00848,+0.03740]. No subgroup shows a
+resolved transfer gain. Archive
+`/tmp/relh-classic-v5pool-holdout-result.tar.gz` SHA256
+`5a73a55c593665122f5efe7c2cc16bf686598fa22193cb1bc7a5af0e6bf7f2a4`.
+The V5-pool checkpoint is not uploaded, promoted, or extended for
+billions of steps. The 218M source remains the better hosted reference;
+the existing relh league champion remains unchanged. The next
+investigation needs to address the late neutral-expansion and army
+deficit visible in the Daveey replays rather than merely reweighting
+similar frozen or scripted opponents.
