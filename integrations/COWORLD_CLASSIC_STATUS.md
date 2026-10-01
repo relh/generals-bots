@@ -15342,3 +15342,52 @@ Verified archive `/tmp/relh-classic-iterated-lr001-separated-result.tar.gz`
 SHA256 `1e43491c6c7441ce4e6cf5bfcdc2f779ffb3a1d81e71381c9343647bf79cbbd7`.
 No hosted or champion claim yet. Continue the lower-rate recipe in
 bounded blocks with fresh independent map gates; stop on plateau.
+
+## 2026-10-01: sampled-serving 50.3M continuation and fresh held-out gate
+
+Job34707 completed a single bounded 50,331,648-step continuation from
+the16.8M lower-rate actor SHA `a5aef925...2215ba5d`, with fresh
+optimizer seed6757 and otherwise the same six-opponent, win-only,
+gamma/shaping-gamma0.999, 8192-game/H256/minibatch8192/replay0.5,
+route/split-temperature0.05/0.15 recipe. The exact source sampled
+self-match gate passed at244W/263L/5D against itself on512 games.
+One physically idle B300 UUID
+`GPU-d8f786b6-25e6-1199-8523-0d38073df48c` was allocated with
+8CPU/64GiB; other users' jobs had no observed physical GPU contention.
+Warm end-to-end training was about164k environment SPS, final163,700,
+with GPU88%, VRAM196.5GiB, rollout about9.74s and optimization3.03s
+per warm epoch. Final audit:74,746 terminal agents,728,923 half
+moves,0 nonfinite rewards, and0 illegal actions. Checkpoint and
+sampled-serving bundle SHA256
+`6834e6a79f69f08a0b2e120c0b2ad0517536a0e41d6ecdd0230d8f9296b438a8`.
+The verified exported manifest declares structured sampling at0.05/0.15.
+
+On a fresh2048-game/874-map held-out panel against frozen234M,
+the source sampled actor scored1006W/1027L/15D and the new actor
+1033W/1002L/13D. Paired score delta was+0.02539, map-cluster95%
+CI[-0.01765,+0.06912], therefore inconclusive for incremental gain.
+Candidate sampled play made15,393 half moves and changed159,408
+routes versus raw greedy on that panel. Exact archive
+`/tmp/relh-classic-iterated-lr001-stage2-result.tar.gz` has SHA256
+`613abfe8adb64ec2abf80a39f7b819cf4fbfb6107bcc28b0bcd3665ee5df092d`.
+Job exited0 and released the allocation. Local serving-image and
+hosted XP checks are next; no champion change or longer training run
+is justified by this panel alone.
+
+The first AMD64 image wire probe exposed a missing
+`spatial_action_sampling.py` copy in `Dockerfile.neural`; the sampled
+policy could not import without it. The Dockerfile now includes the
+module. Rebuilt exact image ID
+`sha256:84308c8c0a0e9bbc7a68de005ffb321afaeeb0ee74503ae55863ac48d5a2f750`
+passed32/32 legal Linux x86 replies under2CPU/4GiB: cold ready1.336s,
+first reply2.664ms, slowest reply2.664ms. This is a local wire check,
+not hosted performance proof. Registered this exact image once as
+`relh-classic-lr001-sampled-67m:v1`, version
+`54286092-476e-4ee6-96ed-cb1e315ab91f`, bound to the relh player.
+Private balanced one-game hosted smoke requests against frozen234M were
+created once: seat0 `xreq_1b253b0a-b647-417f-899f-55505796b513`,
+seat1 `xreq_67a664b6-a33d-455c-9e86-7db628d60ee0`. Both were
+pending on first read,0 complete/0 failed; read these IDs and do not
+resubmit. Payloads/responses are retained in
+`/tmp/relh-classic-lr001-stage2-serving`. No league submission or
+champion change yet; hosted runtime must complete cleanly first.
