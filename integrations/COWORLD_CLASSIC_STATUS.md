@@ -15662,3 +15662,43 @@ gates. The new training archive
 `7c56b76bb3d7d9e4483d1d4fcdd380ea0c74b9877beab85f37a116b9abce2954`.
 No league submission or champion change yet; no Generals GPU job
 remains from34815.
+
+Hosted serving image built from the exact new bundle SHA `776900bb...cba01e`
+using the same known AMD64 neural Dockerfile and pinned runtime tar;
+local image `relh-classic-weighted-184m:eval` ID
+`sha256:72a32d28d86ada8347f1570f6bfce9c82dff55e184da6dd84f8767e6c3b99815`.
+Uploaded once under the existing relh player as
+`relh-classic-weighted-184m:v1`, resolved version ID
+`83291c64-2df5-48c0-885c-64db29530fe3`. Main user identity was
+restored afterward. Two private one-game wire smokes versus frozen234M
+completed0 failures from both seats (both losses), proving hosted
+startup and action delivery for this exact bundle.
+
+Four private16-game hosted panels completed0 failed episodes each.
+Against frozen234M version `9fbd6afd-c66e-4685-a90c-bac144642045`,
+candidate scored7W9L from each seat, combined14W18L. Against the
+live top Daveey v7 version
+`76b0a083-f0a4-4ec7-9811-038349266633`, candidate scored6W10L
+from seat0 and2W14L from seat1, combined8W24L. The older sampled67M
+had10W22L against that version on separate hosted seeds; no secure
+relative claim. Candidate was **not** submitted to the league or
+promoted as champion. XP IDs: frozen parent
+`xreq_1fa0d2d7-fc0f-4208-89d7-d9de65716193`,
+`xreq_c8315c22-b84a-4fe4-b9cd-668e166f8ca4`; leader
+`xreq_346844e2-cb9b-4a26-965d-938af1321921`,
+`xreq_590664ed-a75e-4d3b-95e8-d1bf538e83f6`.
+
+All64 owned panel replays were downloaded read-only and audited after
+completion. Against frozen234M, candidate made19,648 moves with148
+half moves and0 basic invalid; parent made19,680 moves with0 half.
+Against Daveey, candidate made13,959 moves with151 half moves and
+0 basic invalid; Daveey made12,938 moves with1,160 half. Candidate
+averaged40.59 neutral-target moves/game versus Daveey90.06. Its mean
+turn50/100 land deficits were1.91/4.56 and army deficits1.91/6.44.
+All32 leader games ended by general capture,0 timeouts. Replay
+manifests with SHA256 and audits are in
+`/tmp/relh-classic-weighted-50m-serving`. The ~1.08% hosted half
+rate matches the train/eval sampled policy order of magnitude. The
+heldout gain against the argmax234M reference did not translate to
+leader strength; the next training change must target split-supported
+expansion, and hosted performance must gate any champion promotion.
