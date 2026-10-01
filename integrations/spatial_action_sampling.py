@@ -94,6 +94,36 @@ def public_safe_owned_split_bias(observations, strength, xp):
     return eligible.astype(observations.dtype) * strength
 
 
+def public_guided_owned_split_bias(observations, strength, xp):
+    """Diagnostic split bias on a public route cue joining two owned stacks.
+
+    The source has 5–19 armies and the destination has at least five. This
+    only changes full versus half probability on a route; it cannot change
+    the probability of choosing that route.
+    """
+    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 11:
+        raise ValueError("Guided split bias requires directional public 21x21 observations")
+    planes = observations.reshape((*observations.shape[:-1], -1, 441))
+    routes = xp.arange(MOVE_COUNT)
+    source = routes % 441
+    direction = routes // 441
+    row, col = source // 21, source % 21
+    target_row = row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
+    target_col = col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
+    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
+    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
+    source_army = xp.take(planes[..., 0, :], source, axis=-1)
+    target_army = xp.take(planes[..., 0, :], target, axis=-1)
+    directional_cue = xp.concatenate(tuple(planes[..., 7 + i, :] for i in range(4)), axis=-1)
+    eligible = (on_board &
+                (source_army >= math.log1p(5) / 8 - 1e-6) &
+                (source_army < math.log1p(20) / 8 - 1e-6) &
+                (target_army >= math.log1p(5) / 8 - 1e-6) &
+                (xp.take(planes[..., 4, :], target, axis=-1) > .5) &
+                (directional_cue > .5))
+    return eligible.astype(observations.dtype) * strength
+
+
 def public_weak_owned_route_penalty(observations, strength, xp):
     """Discourage early shuffling of small armies between owned cells."""
     if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:

@@ -4,6 +4,7 @@ import pytest
 from integrations.spatial_policy_bundle import structured_action_probabilities
 from integrations.spatial_action_sampling import (acting_logits, public_owned_split_bias,
                                                   public_safe_owned_split_bias,
+                                                  public_guided_owned_split_bias,
                                                   public_weak_owned_route_penalty,
                                                   public_doomed_attack_route_penalty)
 
@@ -102,6 +103,27 @@ def test_safe_owned_split_bias_requires_interior_middle_stack():
     assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
     public[source] = np.log1p(20) / 8
     assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
+
+
+def test_guided_owned_split_bias_uses_public_route_and_two_stacks():
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    public = np.zeros(16 * 441, np.float32)
+    public[0 * 441 + source] = np.log1p(10) / 8
+    public[0 * 441 + source - 21] = np.log1p(6) / 8
+    public[4 * 441 + source - 21] = 1
+    public[7 * 441 + source] = 1
+    bias = public_guided_owned_split_bias(public, 2.0, np)
+    assert bias[up] == 2.0 and bias[right] == 0.0
+    before = acting_logits(np.zeros(3530, np.float32), .05, .15, np)
+    after = acting_logits(np.zeros(3530, np.float32), .05, .15, np, bias)
+    assert np.logaddexp(after[up], after[1764 + up]) == pytest.approx(
+        np.logaddexp(before[up], before[1764 + up]), abs=1e-6)
+    public[7 * 441 + source] = 0
+    assert public_guided_owned_split_bias(public, 2.0, np)[up] == 0
+    public[7 * 441 + source] = 1
+    public[0 * 441 + source - 21] = np.log1p(4) / 8
+    assert public_guided_owned_split_bias(public, 2.0, np)[up] == 0
 
 
 def test_weak_owned_route_penalty_requires_early_land_and_small_stack():

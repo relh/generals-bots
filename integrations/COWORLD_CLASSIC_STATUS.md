@@ -17210,3 +17210,59 @@ unreliable, provided the exact opponent checkpoint matches. Four
 targeted tests passed, including a changed-sampler rejection and a
 legacy-record compatibility check. No GPU job, XP request, upload, or
 champion change was made.
+
+### 2026-10-01 — public-cued owned split screen
+
+The already archived 16 Daveey-v7 self-play games contain 13,274
+pre-action public 11-plane observations and legal actions reconstructed
+with the official Classic engine. In those observations, 303/12,530
+nonpass actions selected an owned-to-owned route with a 5–19-army
+source, a destination holding at least five armies, and the public
+Harvester directional cue pointing along that route. Daveey split on
+176/303 such actions (149/255 training games, 27/48 game-level
+holdouts). The checked-in NumPy public-observation helper exactly
+reproduced those counts. This is an observed action pattern, not proof
+that copying it improves wins.
+
+An opt-in evaluator-only `--guided-owned-split-bias` now adds to the
+conditional half-vs-full logit for exactly that public condition. It
+preserves route probability mass and changes neither the actor weights
+nor the serving bundle. Local targeted tests passed (14 total across
+the sampling and evaluation modules). One bounded B300 job **35183**
+screened values 0, 2, and 4 from the exact 218M policy SHA
+`fff930fd304a43a6f3875d20dc71509e4a5c482bd10d10b9b7187a1755247938`.
+The assigned NVIDIA B300 SXM6 AC UUID
+`GPU-165f3adf-7f27-3302-db15-d13da6a28b10` was physically idle
+(0 MiB, 0%) before the Docker process; the pinned official Classic
+engine SHA was verified. Job exit was zero and the GPU was released.
+No training SPS is claimed from this evaluation-only job.
+
+Each opponent panel used 1,024 first episodes, balanced learner seats,
+512-map pools, and identical initial state hashes across bias arms.
+Against frozen234M, bias0 scored 740W/271L/13D with 5,822 half moves;
+bias2 scored 740W/273L/11D with 6,248 half moves, paired outcome-score
+delta -0.00195, map-cluster 95% CI [-0.01300,+0.00859]; bias4 scored
+739W/269L/16D with 8,088 half moves, delta +0.00098,
+CI [-0.01238,+0.01413]. Against a sampled copy of the exact218M
+policy, bias0 scored 496W/499L/29D with 6,808 half moves; bias2
+scored 493W/498L/33D with 7,778 half moves, delta -0.00195,
+CI [-0.01677,+0.01258]; bias4 scored 498W/498L/28D with 11,409
+half moves, delta +0.00293, CI [-0.01889,+0.02424]. Only 14–55
+game outcomes changed in the paired comparisons, and turn50/100 land
+and army margins barely moved. This narrow rule has no demonstrated
+strength or expansion benefit; do not put it in training or serving,
+upload it, or extend it as a long run. The single complete node archive
+is `/tmp/relh-classic-guided-owned-split-screen-result.tar.gz`, SHA256
+`3fde8a3e5432fe8648a0108494af2c0ab41985779f884d4db10118a3846194a3`;
+node script `/tmp/relh-classic-guided-owned-split-screen-node.sh` SHA256
+`968fd0f09755c5fc73cb659e1a685794ad0bdbcf7fff9ee5baba258cc1cb07c5`.
+
+The completed script-heavy and V5-pool training dashboards show PPO
+old-KL near 0.002 and clip fraction about 0.026–0.028, with no
+nonfinite or illegal actions. In the V5-pool 8,192-game/H256 run,
+the final warmed 2,097,152-step epoch spent about 14 s in environment
+work, 5 s in model evaluation, and 4 s in optimization; end-to-end
+SPS was 84.3k. Adding Sentinel-v5 lowered throughput versus the
+two-script 119.6k-SPS pilot without a resolved strength gain. The next
+training intervention should address strategic expansion and harder
+opponent quality while retaining a measured above-30k path.

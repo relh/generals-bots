@@ -44,6 +44,8 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         raise ValueError("Match settings differ: owned_split_bias")
     if not allow_policy_mode_change and records[0].get("safe_owned_split_bias", 0.0) != records[1].get("safe_owned_split_bias", 0.0):
         raise ValueError("Match settings differ: safe_owned_split_bias")
+    if not allow_policy_mode_change and records[0].get("guided_owned_split_bias", 0.0) != records[1].get("guided_owned_split_bias", 0.0):
+        raise ValueError("Match settings differ: guided_owned_split_bias")
     if not allow_policy_mode_change and records[0].get("weak_owned_route_penalty", 0.0) != records[1].get("weak_owned_route_penalty", 0.0):
         raise ValueError("Match settings differ: weak_owned_route_penalty")
     if not allow_policy_mode_change and records[0].get("doomed_attack_route_penalty", 0.0) != records[1].get("doomed_attack_route_penalty", 0.0):
@@ -110,6 +112,8 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         candidate_owned_split_bias=records[1].get("owned_split_bias", 0.0),
         baseline_safe_owned_split_bias=records[0].get("safe_owned_split_bias", 0.0),
         candidate_safe_owned_split_bias=records[1].get("safe_owned_split_bias", 0.0),
+        baseline_guided_owned_split_bias=records[0].get("guided_owned_split_bias", 0.0),
+        candidate_guided_owned_split_bias=records[1].get("guided_owned_split_bias", 0.0),
         baseline_weak_owned_route_penalty=records[0].get("weak_owned_route_penalty", 0.0),
         candidate_weak_owned_route_penalty=records[1].get("weak_owned_route_penalty", 0.0),
         baseline_doomed_attack_route_penalty=records[0].get("doomed_attack_route_penalty", 0.0),
