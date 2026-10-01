@@ -30,6 +30,8 @@ def main():
     parser.add_argument("--seed", type=int, default=1513)
     parser.add_argument("--smoke-cpu", action="store_true")
     parser.add_argument("--sample-seed", type=int)
+    parser.add_argument("--acting-greedy", action="store_true",
+                        help="Choose argmax after the route/split transform used by PPO")
     parser.add_argument("--sampling-temperature", type=float, default=1.0)
     parser.add_argument("--split-sampling-temperature", type=float,
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
@@ -40,13 +42,17 @@ def main():
         raise ValueError("Require a positive even game count and positive pool size")
     if not np.isfinite(args.sampling_temperature) or args.sampling_temperature <= 0:
         raise ValueError("Sampling temperature must be finite and positive")
-    if args.sampling_temperature != 1 and args.sample_seed is None:
-        raise ValueError("Nondefault temperature requires sampled learner actions")
+    if args.acting_greedy and args.sample_seed is not None:
+        raise ValueError("Acting-greedy and sampled actions are separate modes")
+    if args.acting_greedy and args.split_sampling_temperature is None:
+        raise ValueError("Acting-greedy requires the structured route/split transform")
+    if args.sampling_temperature != 1 and args.sample_seed is None and not args.acting_greedy:
+        raise ValueError("Nondefault temperature requires sampled or acting-greedy actions")
     if args.split_sampling_temperature is not None and (
-            args.sample_seed is None or not np.isfinite(args.split_sampling_temperature)
+            (args.sample_seed is None and not args.acting_greedy) or not np.isfinite(args.split_sampling_temperature)
             or args.split_sampling_temperature <= 0):
-        raise ValueError("Split sampling requires sampled actions and a positive finite temperature")
-    if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and args.sample_seed is not None):
+        raise ValueError("Split temperature requires sampled or acting-greedy actions and a positive finite value")
+    if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and (args.sample_seed is not None or args.acting_greedy)):
         raise ValueError("Half-logit bias requires greedy learner actions")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
         training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
@@ -89,6 +95,7 @@ def main():
     finished = np.zeros(args.games, bool)
     outcomes = np.zeros(args.games, np.float32)
     action_counts = np.zeros(3, np.int64)
+    action_disagreements = np.zeros(2, np.int64)
     try:
         values, masks = env.reset_device(f"{args.seed}:0:0")
         sides = np.asarray(env.sides)
@@ -110,8 +117,14 @@ def main():
             if args.half_logit_bias:
                 outputs[:, 1764:3528] += args.half_logit_bias
             legal = np.asarray(masks, bool)
+            raw_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
             if args.sample_seed is None:
-                chosen = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
+                if args.acting_greedy:
+                    logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
+                                                      args.split_sampling_temperature, np)[:, :3529])
+                    chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
+                else:
+                    chosen = raw_greedy
             else:
                 key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
                 logits = (acting_logits(jnp.asarray(outputs), args.sampling_temperature,
@@ -125,12 +138,17 @@ def main():
             assert legal[np.arange(args.games), actions[:, 0]].all()
             action_counts += np.bincount(np.where(chosen < 1764, 0,
                                                   np.where(chosen < 3528, 1, 2))[~finished], minlength=3)
+            chosen_route = np.where(chosen == 3528, 1764, chosen % 1764)
+            greedy_route = np.where(raw_greedy == 3528, 1764, raw_greedy % 1764)
+            action_disagreements[0] += np.count_nonzero((chosen_route != greedy_route) & ~finished)
+            action_disagreements[1] += np.count_nonzero((chosen_route == greedy_route)
+                                                        & (chosen != raw_greedy) & ~finished)
             if turn == 0:
                 reference = policy.forward(np.asarray(values))
                 if args.half_logit_bias:
                     reference[:, 1764:3528] += args.half_logit_bias
                 assert np.allclose(outputs, reference, rtol=2e-5, atol=2e-5)
-                if args.sample_seed is None:
+                if args.sample_seed is None and not args.acting_greedy:
                     assert np.array_equal(actions[:, 0], np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
             values, masks, rewards, done, _ = env.step_device(jnp.asarray(actions))
             ended = np.asarray(done, bool) & ~finished
@@ -148,13 +166,15 @@ def main():
     result = dict(scope="First held-out episodes between frozen public-view actors; CPU smoke is not strength evidence",
                   smoke_cpu=args.smoke_cpu, games=args.games, seed=args.seed, pool_size=args.pool_size,
                   held_out=True, unique_initial_states=len(set(hashes)),
-                  action_selection="argmax" if args.sample_seed is None else "sample",
+                  action_selection="argmax_acting" if args.acting_greedy else "argmax" if args.sample_seed is None else "sample",
                   sample_seed=args.sample_seed,
-                  sampling_temperature=args.sampling_temperature if args.sample_seed is not None else None,
+                  sampling_temperature=args.sampling_temperature if (args.sample_seed is not None or args.acting_greedy) else None,
                   split_sampling_temperature=args.split_sampling_temperature,
                   half_logit_bias=args.half_logit_bias,
                   first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
                                              pass_actions=int(action_counts[2])),
+                  first_episode_vs_raw_greedy=dict(route_changes=int(action_disagreements[0]),
+                                                   split_changes=int(action_disagreements[1])),
                   opponent_action_selection="argmax",
                   checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
                   opponent_sha256=hashlib.sha256((args.opponent_bundle / "policy.bin").read_bytes()).hexdigest(),

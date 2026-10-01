@@ -15123,3 +15123,33 @@ No longer training job was started. The best measured sampled actor
 remains job33991 (221W/289L/2D); the deterministic actor's strength
 has not materially changed. Further training needs a changed
 curriculum or inference objective and another bounded paired test.
+
+Job 34454 diagnosed inference and route exploration on one physically
+idle B300 UUID `GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`
+(0 MiB, 0% at allocation). The served `SpatialPlayerPolicy.predict`
+emits raw-logit softmax probabilities, but the Coworld decoder takes
+their argmax, so softmax temperature does not randomize hosted play.
+An opt-in evaluator now tests argmax after the exact structured
+route/split transform used in training and counts action disagreements
+with raw argmax; serving remains unchanged until quality is proven.
+
+On the same 512 held-out games and 126 maps against frozen234M,
+the 67M actor (job33991) changed 1,423 routes out of roughly 298K
+first-episode actions and improved raw greedy232W/279L/1D to
+transformed greedy244W/267L/1D. The paired score delta +0.0469 had
+map-cluster 95% interval [-0.0192,+0.1165], inconclusive. The 117M
+actor (job34018) changed 1,011 routes and regressed raw greedy
+231W/280L/1D to transformed greedy225W/286L/1D, delta -0.0234,
+interval [-0.0701,+0.0271], also inconclusive. Neither transformed
+argmax produced a half-army move; it is not a demonstrated serving fix.
+
+For the 117M actor, sampled route T=0.075 / split T=0.15 won
+221W/290L/1D versus the trained T=0.05 sampler's 221W/291L/0D,
+paired score delta +0.0020, interval [-0.0835,+0.0889]. It changed
+70,437 routes and 2,454 full/half choices relative to raw greedy.
+Route T=0.10 won only183W/326L/3D, paired score delta -0.1426,
+interval [-0.2552,-0.0271]: a clear regression. A bounded training
+pilot may therefore test T=0.075, subject to its own source self-match
+gate, but T=0.10 and serving argmax changes are not justified.
+Archive `/tmp/relh-classic-acting-greedy-diagnostic-result.tar.gz`
+SHA256 `4c04061f2edc43316064f1217c3f6cc981427a5d7aa2fded1e33875a85f38326`.
