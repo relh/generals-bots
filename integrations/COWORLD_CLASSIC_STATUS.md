@@ -17134,3 +17134,37 @@ SHA256 `8dadedd1ec1e9fb052ef9a9722146fafbdbcb525c2e5151b289d0247c5465551`,
 node root `/var/tmp/relh-generals-recovery/classic-v5pool-recovery-35133`,
 Mac archive `/tmp/relh-classic-v5pool-recovery-result.tar.gz`.
 Inspect job 35133 and its archive before any retry.
+
+Recovery job 35133 completed exit0 on the physically idle assigned
+B300 UUID `GPU-5cd839f7-0d99-f113-f4fe-3243cdaaa043` (0 MiB/0%
+at entry). It evaluated the saved checkpoint without replaying any
+training. Against the exact 218M source on 2048 matched games, the
+source scored 992W/1011L/45D and the V5-pool child
+990W/1014L/44D: paired score delta -0.00244, map-cluster 95% interval
+[-0.04539,+0.03983]. Against frozen234M on 1024 matched games,
+source scored 747W/263L/14D and child 725W/281L/18D:
+delta -0.03906, interval [-0.09375,+0.01649].
+
+On 3072 matched population games with the new three-script weights,
+source scored 1352W/1662L/58D and child 1384W/1647L/41D.
+All initial hashes, seats, and labels matched. Paired outcome-score
+delta was +0.01530, map-cluster interval [-0.01757,+0.04872]
+over 1345 unique starts. Script-only delta +0.03906 had interval
+[-0.00333,+0.08205] over 1792 games; frozen-only delta -0.01797
+had interval [-0.07393,+0.03893]. Against original Sentinel the
+child's delta was +0.05990 on 768 games, interval [0,+0.11990];
+against Sentinel-v5 +0.06771 on 384 games, interval
+[-0.02632,+0.16146]. The gains remain uncertain and the child is
+not eligible for hosted upload or a long continuation yet.
+Recovery archive `/tmp/relh-classic-v5pool-recovery-result.tar.gz`
+SHA256 `df8fccd593cd252fa7177ffe4b5cff945853e0896c3c8ce59e1756f20134921a`.
+
+A larger fresh-map population check is active as the sole Generals
+B300 job **35149**. It reuses the exact source and V5-pool child
+bundles, evaluates 8192 paired first episodes on seed35567 with a
+4096-map pool, and does no training. Script
+`/tmp/relh-classic-v5pool-holdout-node.sh` SHA256
+`ee65ba9742ddb8c3249a3d95e296e137451d79445b1311eecb604d189e984d63`;
+node output `/var/tmp/relh-generals-recovery/classic-v5pool-holdout-35149`,
+Mac archive `/tmp/relh-classic-v5pool-holdout-result.tar.gz`.
+Inspect this job before any retry or scaling decision.
