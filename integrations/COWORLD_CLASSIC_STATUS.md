@@ -16951,3 +16951,35 @@ pilot therefore starts again from the 218M source, retains the same
 win-only training reward and aligned sampler, and raises scripted
 opponent weight from 2/13 to 10/20; it must pass matched held-out
 evaluations before any long continuation or hosted upload.
+
+The script-heavy pilot finished as B300 job 35060 (exit 0). Its
+opponent weights were `[1,1,2,1,1,4,5,5]`; the 8192 learner games
+had balanced opponent counts by seat. The physical UUID
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565` was initially idle
+(0 MiB, 0%, no compute process). GPU sampling every two seconds
+recorded 207 samples, post-warmup median utilization 58%, mean 57.2%,
+and peak memory 202066 MiB; no physical contention was observed.
+The 33,554,432-step run used 8192 parallel games, horizon 256,
+minibatch 8192, and replay 0.5. Final warmed end-to-end training
+throughput was **119,600 SPS**, with zero illegal actions and zero
+nonfinite rewards; 42013 terminal agents included one zero-reward
+terminal. The exported checkpoint is SHA256
+`2b054b0f355be6bac82451025c8ae45c96d5ba43dff79bf3b56a6ef9126b30a1`.
+Script SHA256 `4e345001b9aaa3bc43c8aa60b0658ed1523ad70b32177ce0944f4c6fad7d5628`;
+Mac archive `/tmp/relh-classic-scriptheavy-result.tar.gz` SHA256
+`65762aed6fa727a8c7041cfd70e63a5fb4da42439e5280293315e6bd1cd8946d`.
+
+On matched fresh frozen-actor evaluations, the candidate scored
+1011W/998L/39D versus the source itself, compared with the source's
+992W/1011L/45D (paired score delta +0.01563, map-cluster 95% interval
+[-0.02930,+0.06182]). Against frozen234M, it scored 753W/260L/11D,
+versus source 747W/263L/14D (delta +0.00879, interval
+[-0.05050,+0.06667]). On a separate matched 3072-game population
+panel with half the games assigned to scripts, the source scored
+1328W/1702L/42D and the child 1350W/1677L/45D, paired score delta
++0.01530, map-cluster 95% interval [-0.01859,+0.04868]. Script-only
+delta was +0.03329 over 1532 games, interval [-0.01419,+0.08142];
+frozen-only delta was -0.00260, interval [-0.05013,+0.04636]. All
+initial hashes, seats, and opponent labels matched. The script
+win rates are still poor, and no strength gain is statistically
+resolved yet. A larger fresh-map panel is needed before scaling.
