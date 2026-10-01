@@ -16246,3 +16246,147 @@ seat1 `xreq_3055240d-d14d-4d38-8ac3-27d81882e90d`.
 This is an inference-only diagnostic screen. Do not promote it
 or treat it as train/serving aligned until PPO uses the same
 adjustment and the hosted panel demonstrates strength.
+
+All four diagnostic hosted XP panels completed with zero runtime
+failures. Against pinned Daveey v7 the candidate scored9W/23L
+(seat0 4W/12L, seat1 5W/11L); against the prior weak-owned
+actor it scored17W/15L (seat0 8W/8L, seat1 9W/7L).
+These panels are small and do not establish a clear strength gain.
+The32 Daveey replays were downloaded once and audited in
+`/tmp/relh-classic-doomed-serving/leader-hosted-replay-audit.json`.
+The public attack penalty achieved its intended local effect:
+visible enemy attacks that could not capture fell from643/4438
+(14.5%) in the prior actor's separate Daveey panel to113/3292
+(3.4%) in the new actor's panel; Daveey made48/2771 (1.7%)
+in the new panel. Candidate neutral destinations were49.03/game
+versus Daveey88.97; turn50 land margin-0.625,
+turn100-5.35. Candidate half moves were97/12998 moves versus
+Daveey1556/12425. All games ended in general capture and the
+basic action audit found zero invalid candidate moves. The replay
+counts are post-game omniscient analysis, never actor inputs.
+
+An aligned teacher-free67,108,864-step continuation from the
+preserved~218M checkpoint is running as one bounded B300
+Slurm job34914. Before launch, full B300 queue had one other
+relh job34891 and CPU64/192 allocated; no other Generals job.
+The node script `/tmp/relh-classic-doomedtrain-node.sh` SHA256
+`09176a6fb515c84ec9997e046402e8a2c31c86e078a2ebf1f2bb93b4f8834f23`
+guards the allocated physical UUID at under2GiB and20%
+utilization. It uses seed6770,8192 parallel games, horizon256,
+minibatch8192, replay ratio0.5, gamma/shaping gamma0.999,
+win-only terminal reward, and the existing weighted population
+pool. PPO action sampling and export use neutral6, weak-owned4,
+doomed-attack4. Node output is
+`/var/tmp/relh-generals-recovery/classic-doomedtrain-pilot-34914`,
+Mac archive `/tmp/relh-classic-doomedtrain-result.tar.gz`.
+Do not launch a duplicate. Validate actual SPS, reward trend,
+source/child paired result, and physical UUID before scaling.
+
+Job34914 completed the67,108,864-step training and wrote a final
+checkpoint, but its post-training wrapper exited1 because it
+looked for opponent audit seed6768 instead of the actual seed6770.
+The archive `/tmp/relh-classic-doomedtrain-result.tar.gz` SHA256
+`21f608f16ef3df61db40315199c35eb0bd283ab0ea9cb8203759ab62e2a83ee7`
+contains `run/completed.json` and final checkpoint
+`0000000067108864.bin` SHA256
+`f00d9040a570b137533fee5aa9c07549281457f2d10e3b2872d8b8d1dbd6ddf4`.
+Training ran on physical B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, initially0MiB
+and0% utilization, with another relh B300 job on a different
+allocated GPU. Final warmed end-to-end SPS was120,400 across
+8192 parallel games, horizon256, minibatch8192, replay ratio0.5.
+The final epoch reported Env7.178s(41%), Model5.767s(33%),
+Train4.421s(25%), GPU utilization68%, VRAM196.6/268GiB.
+The reward audit covered67,108,864 actions:28,790,991 positive,
+36,961,286 negative,102,264 terminal agents,10 zero-reward
+terminal agents, zero nonfinite rewards;0 illegal masked actions.
+There were65,902,293 full moves,524,993 half moves,
+681,578 passes. The training duration was9m58s after startup.
+
+One recovery-only bounded B300 job34920 is running to validate
+the correct seed6770 opponent audit, export the already trained
+checkpoint, and evaluate source versus child on2048 fresh paired
+Classic games. It will not retrain. Script
+`/tmp/relh-classic-doomedrecover-node.sh` SHA256
+`b978372f8e2d4c81fbacbf8832100e7c0f3754e34409edcee892dfee5507e3f0`,
+node root `/var/tmp/relh-generals-recovery/classic-doomedrecover-34920`,
+Mac archive `/tmp/relh-classic-doomedrecover-result.tar.gz`.
+Preflight again showed one other relh B300 job34917,
+CPU64/192 allocated; the recovery job repeats the physical UUID
+idle guard. Do not launch a duplicate recovery or training job.
+
+Recovery job34920 COMPLETED exit0 on physical B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, initially0MiB/0%.
+Its archive `/tmp/relh-classic-doomedrecover-result.tar.gz`
+SHA256 `2487af6354f2e5fe4a5719bf4371c3781ee7367ccb5d3d0f3054ea6807711c55`
+contains the exported final checkpoint bundle with exact serving
+manifest neutral6, weak-owned4, doomed-attack4 and paired held-out
+evaluation. Correct seed6770 opponent audit had all seven pool
+branches represented in both seats at equal per-seat counts;
+the frozen234M branch had1490 per seat and the later frozen branch
+744 per seat. Final training audit confirmed120,400 SPS and0 illegal,
+0 nonfinite rewards. On2048 paired fresh Classic games,909 unique
+maps, seed35544, sample seed31337, same action adjustment on both
+arms, source~218M actor scored1495W/533L/20D and trained child
+scored1519W/512L/17D versus frozen234M. Paired score delta+0.02197,
+clustered95% CI[-0.02197,+0.06508], better257/worse233/same1558:
+inconclusive. Expansion worsened: neutral destinations
+111443→103240 across games, turn25 land margin4647→4317,
+turn50 4388→3904, turn100 5958→5561. Do not extend the same
+recipe to billions or promote the child without a new strength signal.
+
+The Daveey-panel replay audit showed a persistent split-choice gap:
+Daveey used1538 half moves in6807 own-destination moves (22.6%);
+the diagnostic relh actor used64 in8137 (0.8%). Daveey's half
+rate was only about3.5% when either source or target was adjacent
+to visible enemy territory, but28.5% on other own routes from
+stacks>=5. A previous large owned-route split bias4 harmed held-out
+quality. A smaller bias1/2 screen is being run as a diagnostic,
+with the same~218M checkpoint, neutral6, weak-owned4, doomed4,
+same2048 maps and sampling seed as the preserved baseline
+`classic-doomed-attack-screen-34901/candidate`.
+
+Initial split-screen jobs34928 and34929 exited before any GPU
+evaluation because the saved baseline directory had been removed
+from the compute node; job34929's trace verified the allocated
+physical B300 idle at0MiB/0%, no relh-classic container collision,
+and no baseline file. The baseline archive on the Mac remained
+verified by SHA256. Job34931 staged that exact208KiB archive
+into its own root, then exited before evaluation because its host
+file test used the container's `/recovery` path. No training or
+policy upload occurred in these three short jobs. The corrected
+single bounded job34932 stages the verified archive, tests the
+host path, and runs only bias1 and bias2 evaluations. Script
+`/tmp/relh-classic-ownedsplit-lite-screen-final-node.sh` SHA256
+`dc86ba0e614f73f13dacc71b7cd9b60743545c1e43b8a9d503627b852981ab41`,
+node root `/var/tmp/relh-generals-recovery/classic-ownedsplit-lite-screen-34932`,
+Mac archive `/tmp/relh-classic-ownedsplit-lite-screen-final-result.tar.gz`.
+Full B300 preflight before34932 showed other job34930 and
+user1002 job34926 on the node, CPU88/192 allocated; the job's
+physical UUID guard must still pass. Do not duplicate job34932.
+
+Job34932 COMPLETED exit0 on physical B300
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`, initially0MiB/0%.
+Its archive `/tmp/relh-classic-ownedsplit-lite-screen-final-result.tar.gz`
+SHA256 `3a8669583c781f2743b9c771430fd14d8bd247d68d55d4855fa7355134acfee7`
+contains two2048-game paired tests on the exact staged baseline.
+Baseline neutral6+weak-owned4+doomed4 had1509W/515L/24D,
+11333 half actions. Owned split bias1 had1515W/507L/26D,
+paired delta+0.00684, CI[-0.00867,+0.02234],13658 half actions.
+Bias2 had1500W/520L/28D, paired delta-0.00684,
+CI[-0.02981,+0.01612],19372 half actions. Both inconclusive;
+bias2 also reduced turn50 and turn100 land margins. No
+training/serving adoption or policy upload.
+
+A separate bounded physical B300 reward-statistics probe job34935
+COMPLETED exit0, GPU
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` initially0MiB/0%.
+Exact army/land potential rewards from fogged observations and
+`game.get_info` agreed bitwise on8192 games (maximum absolute
+difference0). The latter's median device kernel time was0.070ms
+versus0.075ms for the observation path, far too small to explain
+the~27ms full environment tick. Archive
+`/tmp/relh-classic-reward-stats-bench-result.tar.gz` SHA256
+`6f1c86ec7594260462a03411ef26afa188d9717ecf159608f13e3adeed368e8a`.
+The unverified local environment shortcut was reverted; it is not
+on the fork branch. No training or serving behavior changed.
