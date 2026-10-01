@@ -15391,3 +15391,33 @@ pending on first read,0 complete/0 failed; read these IDs and do not
 resubmit. Payloads/responses are retained in
 `/tmp/relh-classic-lr001-stage2-serving`. No league submission or
 champion change yet; hosted runtime must complete cleanly first.
+
+Both exact hosted smoke IDs completed1/1 with0 failed episodes.
+Candidate won from seat0 and lost from seat1 against the same frozen234M
+version. This establishes hosted startup/game completion, not strength.
+Four private16-episode panels were then requested once, with candidate
+seats balanced: versus234M seat0
+`xreq_5838b41f-9b01-4229-95f1-fdc8ec2a630e`, seat1
+`xreq_7f97942d-969b-423a-bf1e-72d424633935`; versus live top-ranked
+opponent seat0 `xreq_27335177-0ae3-4ca9-bf96-8804bce21b1e`,
+seat1 `xreq_df0be501-1261-4d17-88c6-48ea199a2a54`.
+All were pending on first read. Read these exact IDs and resolved
+opponent version IDs; do not duplicate the requests. No league
+submission/champion change has followed.
+
+A separate same-checkpoint split-temperature probe used fresh2048
+official Classic games over890 maps, both seats, against frozen234M.
+Allocated B300 UUID `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`
+was physically idle0MiB/0% at start. Tmove0.05/Tsplit0.15 scored
+1033W/993L/22D and made15,916 half moves; Tsplit0.30 scored
+823W/1203L/22D and made90,772 half moves. Paired score delta
+-0.20508, map-cluster95% CI[-0.25396,-0.15631]: a decisive
+regression from simply increasing half-move exploration at serving.
+Training was not changed. Bounded job34759 failed before games due
+a host/container path in the diagnostic script; corrected job34760
+completed both evaluations but its analyzer path failed after the
+results were saved. The same checked-in analyzer ran locally on the
+archived paired maps and outcomes, producing the above CI. Both jobs
+ended and released allocations. Verified archive
+`/tmp/relh-classic-splittemp-result2.tar.gz` SHA256
+`d1da164bcb4cf6d07096d602b387e159d35de0d565e5f303d4fd0773a8f01212`.
