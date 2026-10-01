@@ -118,13 +118,14 @@ def main():
             raw_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
             if args.half_logit_bias:
                 outputs[:, 1764:3528] += args.half_logit_bias
+            biased_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
             if args.sample_seed is None:
                 if args.acting_greedy:
                     logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
                                                       args.split_sampling_temperature, np)[:, :3529])
                     chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
                 else:
-                    chosen = raw_greedy
+                    chosen = biased_greedy
             else:
                 key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
                 logits = (acting_logits(jnp.asarray(outputs), args.sampling_temperature,

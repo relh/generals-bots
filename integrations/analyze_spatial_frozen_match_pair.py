@@ -85,6 +85,8 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         candidate_action_selection=records[1]["action_selection"],
         baseline_sampling_temperature=records[0]["sampling_temperature"],
         candidate_sampling_temperature=records[1]["sampling_temperature"],
+        baseline_half_logit_bias=records[0].get("half_logit_bias", 0.0),
+        candidate_half_logit_bias=records[1].get("half_logit_bias", 0.0),
         baseline_split_sampling_temperature=records[0].get("split_sampling_temperature"),
         candidate_split_sampling_temperature=records[1].get("split_sampling_temperature"),
     )

@@ -10,7 +10,7 @@ from integrations.launch_spatial_selfplay_training import validate_sampling_gate
 SHA = "a" * 64
 
 
-def _match(directory, *, outcomes, mode, temperature):
+def _match(directory, *, outcomes, mode, temperature, half_bias=0.0):
     directory.mkdir()
     outcomes = np.asarray(outcomes, np.int8)
     np.save(directory / "outcomes.npy", outcomes)
@@ -20,7 +20,7 @@ def _match(directory, *, outcomes, mode, temperature):
         held_out=True, smoke_cpu=False, coworld_classic_rules=True,
         games=4, seed=1, pool_size=2, opponent_sha256=SHA, episode_limit=2000,
         action_selection=mode, sample_seed=7 if mode == "sample" else None,
-        sampling_temperature=temperature, half_logit_bias=0.0,
+        sampling_temperature=temperature, half_logit_bias=half_bias,
         opponent_action_selection="argmax", checkpoint_sha256=SHA,
         wins=int((outcomes == 1).sum()), losses=int((outcomes == -1).sum()),
         draws=int((outcomes == 0).sum()), score=float(outcomes.mean()),
@@ -38,10 +38,23 @@ def test_pair_analysis_checks_matching_maps_and_policy_mode(tmp_path):
     assert report["unique_initial_maps"] == 2
     assert report["score_delta"] == -1
     assert report["candidate_sampling_temperature"] == .25
+    assert report["baseline_half_logit_bias"] == report["candidate_half_logit_bias"] == 0.0
     np.save(sampled / "initial_sides.npy", np.asarray([1, 0, 0, 1]))
     with pytest.raises(ValueError, match="not paired"):
         analyze(greedy, sampled, seed=1, resamples=100,
                 allow_policy_mode_change=True)
+
+
+def test_pair_analysis_records_split_bias(tmp_path):
+    baseline, biased = tmp_path / "baseline", tmp_path / "biased"
+    _match(baseline, outcomes=[1, -1, 1, -1], mode="argmax", temperature=None)
+    _match(biased, outcomes=[1, 1, 1, -1], mode="argmax", temperature=None, half_bias=.35)
+    with pytest.raises(ValueError, match="half_logit_bias"):
+        analyze(baseline, biased, seed=1, resamples=100)
+    report = analyze(baseline, biased, seed=1, resamples=100,
+                     allow_policy_mode_change=True)
+    assert report["baseline_half_logit_bias"] == 0.0
+    assert report["candidate_half_logit_bias"] == .35
 
 
 def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):

@@ -15246,3 +15246,41 @@ moves (5/643,591 first-episode actions on the first panel), whereas
 the training sampler made1.67% half moves. Test a calibrated serving
 split decision only with an independent held-out gate before changing
 the hosted policy.
+
+### 2026-10-01 — split-decision calibration and evaluator correction
+
+Job34518 swept raw-argmax half-logit bias on the117M source actor
+against frozen234M for512 games/126 maps. Bias0.25 changed no outcomes;
+bias0.50 produced81,383 half moves among310,940 first-episode
+actions and230W/274L/8D versus raw231W/280L/1D, paired delta
++0.0098 with CI[-0.1723,+0.1933]. Bias1.0 and2.0 collapsed to
+12W and0W. Archive `/tmp/relh-classic-half-bias-tune-result.tar.gz`
+SHA256 `81a5b6fe3f5276263fb6d54155efee6b94df551bdeb7d258298315d42cc654a7`.
+
+The evaluator's `first_episode_vs_raw_greedy` reference was computed
+**after** applying the diagnostic bias, so its change counts were
+false zeros. An initial correction accidentally reused the unbiased
+argmax as the chosen action; its fine-sweep job34533 was canceled
+immediately after detecting that invalid behavior, before using its
+results. The corrected evaluator separately computes unbiased and
+biased greedy actions. A full-GPU integration rerun recovered the
+old bias0.50 result exactly (230W/274L/8D) and reported55,710 route
+plus25,673 split changes instead of zero. The paired analyzer now
+records both policies' bias values. Local targeted tests:4 passed.
+
+Corrected job34547 tested biases0.30/0.35/0.40/0.45/0.50 on the
+same tuning panel: half-action counts161/2,242/13,347/39,817/81,383;
+wins232/237/235/212/230. All apparent positive paired confidence
+intervals included zero. Archive
+`/tmp/relh-classic-half-bias-corrected-result.tar.gz` SHA256
+`d2ce6da3943833e66cf146f1291361a0e38d8a882a566280f54200e5eb698c44`.
+Independent job34560 tested the selected bias0.35 on2,048 games,
+seed35517,888 unique maps. Raw source1017W/1001L/30D versus biased
+1030W/993L/25D: paired score delta+0.0103, map-cluster95% interval
+[-0.0191,+0.0404]. The biased policy made10,588 half moves among
+1,249,752 first-episode actions (0.85%); no significant strength gain.
+Archive `/tmp/relh-classic-half-bias-independent-result.tar.gz`
+SHA256 `e124a4aa0dcb5ca0a1bc2bdb2f47ef485a04067e583d903d4127c79a7a06e16a`.
+All these GPU jobs checked physical allocation and UUID and observed
+an idle allocated B300; no actual GPU contention was found. Do not
+apply a serving bias or promote a candidate on this evidence.
