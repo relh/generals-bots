@@ -15598,3 +15598,38 @@ weights and counts. Proposed next bounded test gives more games to
 the234M and sampled67M actors while retaining the rich pool and
 unchanged win-only reward. Strength and throughput still require
 measured validation; no actor promotion is implied.
+
+Weighted-pool job34807 trained16,777,216 Classic steps from the
+preserved117M actor on an initially idle physical B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,8CPU/64GiB,
+with native model SHA `811e8de5...e8863b` unchanged and new
+environment SHA `c088e733...0da83d06d`. Puffer final end-to-end
+SPS161,500, GPU90%, VRAM196.6/268GiB,8192 games;0 illegal
+actions across all16,777,216 steps and0 nonfinite rewards. The
+manifest recorded opponent weights[1,1,4,1,2,1,1], giving frozen234M
+1490 games per seat and sampled67M744 per seat, every other pool
+member372 or373 per seat. Official Classic engine SHA
+`f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318`,
+win-only terminal reward and gamma/shaping0.999 preserved. Exported
+checkpoint SHA `8ede35f000dff3cef35ed129705e26ec6610968eaaed5575df4594731a69a4cb`.
+The job exited1 *after training and export* because its candidate
+evaluator constructed a single frozen-opponent environment from the
+weighted population manifest and passed `opponent_weights` through
+to the lower base class. Commit3c4f386 strips that scheduling-only
+option in the single-opponent wrapper. No training was replayed.
+
+Post-evaluation job34813 completed exit0 on an initially idle physical
+B300, using the exact preserved weighted checkpoint and fixed wrapper.
+On fresh seed35528/2048 paired Classic games/894 unique maps against
+frozen234M, source117M1053W/983L/12D and weighted child
+1066W/967L/15D. Paired score delta+0.01416, map-bootstrap95%CI
+[-0.02676,+0.05385],228 better,212 worse,1608 same;
+inconclusive. Both actors used sampled move/split temperatures0.05/0.15.
+The weighted child made9779 half moves in first episodes versus
+source11904 on this panel, so it does not demonstrate better splitting
+or early expansion. Weighted training archive
+`/tmp/relh-classic-weighted-pop-result.tar.gz` SHA256
+`b7214894041857df54d5938cf374df6d6af1a9eb202a17c905eec3b2afcd5934`;
+post-eval archive `/tmp/relh-classic-weighted-posteval-result.tar.gz`
+SHA256 `c1502772440277fd5ab55091f7706c9942b8f6b257260a14aea254c5c0728070`.
+No champion change. No Generals GPU job remains from these experiments.
