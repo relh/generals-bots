@@ -35,3 +35,23 @@ def test_structured_serving_rejects_invalid_distribution():
     legal[0] = True
     with pytest.raises(ValueError, match="action temperatures"):
         structured_action_probabilities(outputs, legal, 0, .15)
+
+
+def test_public_neutral_route_bonus_changes_route_without_changing_split():
+    outputs = np.full(3530, -100.0, np.float32)
+    # Two legal moves from the same source: up reaches neutral, right is fog.
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    outputs[[up, right]] = 0
+    outputs[[1764 + up, 1764 + right]] = -.3
+    legal = np.zeros(3529, bool)
+    legal[[up, right, 1764 + up, 1764 + right]] = True
+    public = np.zeros(16 * 441, np.float32)
+    public[6 * 441 + source + 1] = 1
+    baseline = structured_action_probabilities(outputs, legal, .05, .15)
+    biased = structured_action_probabilities(outputs, legal, .05, .15,
+                                             observations=public, neutral_route_bias=3.0)
+    assert (biased[up] + biased[1764 + up]) / (biased[right] + biased[1764 + right]) == pytest.approx(np.exp(3))
+    assert biased[up] / biased[1764 + up] == pytest.approx(baseline[up] / baseline[1764 + up])
+    with pytest.raises(ValueError, match="public observations"):
+        structured_action_probabilities(outputs, legal, .05, .15, neutral_route_bias=3.0)

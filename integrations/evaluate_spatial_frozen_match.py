@@ -13,7 +13,7 @@ from metta_training.environment import EnvironmentContext
 from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.evaluate_coworld_frozen_greedy import sample_flat_logits
-from integrations.spatial_action_sampling import acting_logits
+from integrations.spatial_action_sampling import acting_logits, public_neutral_route_bonus
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
 
@@ -39,6 +39,8 @@ def main():
                         help="Diagnostic: add this offset to learner half-move logits before greedy selection")
     parser.add_argument("--expansion-audit", action="store_true",
                         help="Count first-episode move destinations and territory/army margins at fixed turns")
+    parser.add_argument("--neutral-route-bias", type=float, default=0.0,
+                        help="Diagnostic sampled-logit bonus for moves into visible empty neutral cells")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -56,6 +58,9 @@ def main():
         raise ValueError("Split temperature requires sampled or acting-greedy actions and a positive finite value")
     if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and (args.sample_seed is not None or args.acting_greedy)):
         raise ValueError("Half-logit bias requires greedy learner actions")
+    if not np.isfinite(args.neutral_route_bias) or args.neutral_route_bias < 0 or (
+            args.neutral_route_bias and args.sample_seed is None and not args.acting_greedy):
+        raise ValueError("Neutral route bias requires sampled or acting-greedy actions and a finite nonnegative value")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
         training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
         run = explicit_run or bundle.parent / "run"
@@ -154,6 +159,8 @@ def main():
                 if args.acting_greedy:
                     logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
                                                       args.split_sampling_temperature, np)[:, :3529])
+                    if args.neutral_route_bias:
+                        logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
                     chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
                 else:
                     chosen = biased_greedy
@@ -163,6 +170,9 @@ def main():
                                        args.split_sampling_temperature, jnp)[:, :3529]
                           if args.split_sampling_temperature is not None
                           else jnp.asarray(outputs[:, :3529]) / args.sampling_temperature)
+                if args.neutral_route_bias:
+                    logits += jnp.asarray(public_neutral_route_bonus(
+                        np.asarray(values), args.neutral_route_bias, np))
                 chosen = np.asarray(sample_flat_logits(
                     key, logits, jnp.asarray(legal),
                 ))
@@ -211,6 +221,7 @@ def main():
                   sampling_temperature=args.sampling_temperature if (args.sample_seed is not None or args.acting_greedy) else None,
                   split_sampling_temperature=args.split_sampling_temperature,
                   half_logit_bias=args.half_logit_bias,
+                  neutral_route_bias=args.neutral_route_bias,
                   first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
                                              pass_actions=int(action_counts[2])),
                   first_episode_vs_raw_greedy=dict(route_changes=int(action_disagreements[0]),

@@ -6,10 +6,11 @@ from types import SimpleNamespace
 
 import numpy as np
 
-from integrations.spatial_action_sampling import acting_logits
+from integrations.spatial_action_sampling import acting_logits, public_neutral_route_bonus
 
 
-def structured_action_probabilities(outputs, legal, move_temperature, split_temperature):
+def structured_action_probabilities(outputs, legal, move_temperature, split_temperature,
+                                    *, observations=None, neutral_route_bias=0.0):
     """Match the native rollout categorical on the legal flat action set."""
     outputs = np.asarray(outputs, dtype=np.float32)
     legal = np.asarray(legal, dtype=bool)
@@ -19,7 +20,15 @@ def structured_action_probabilities(outputs, legal, move_temperature, split_temp
         np.isfinite(value) and value > 0 for value in (move_temperature, split_temperature)
     ):
         raise ValueError("Invalid spatial logits or action temperatures")
+    if not np.isfinite(neutral_route_bias) or neutral_route_bias < 0 or (
+            neutral_route_bias and observations is None):
+        raise ValueError("Neutral route bias requires public observations and a finite nonnegative weight")
     transformed = acting_logits(outputs, move_temperature, split_temperature, np)[:3529]
+    if neutral_route_bias:
+        public = np.asarray(observations, dtype=np.float32)
+        if public.shape not in ((4851,), (5292,), (7056,)) or not np.isfinite(public).all():
+            raise ValueError("Neutral route bias requires one finite public observation")
+        transformed += public_neutral_route_bonus(public, neutral_route_bias, np)
     logits = np.where(legal, transformed, -np.inf)
     probabilities = np.exp(logits - logits.max())
     return probabilities / probabilities.sum()
@@ -52,17 +61,23 @@ class SpatialPlayerPolicy:
         acting = manifest.get("serving_action_selection", {"mode": "argmax"})
         if not isinstance(acting, dict):
             raise ValueError("Invalid spatial serving action selection")
-        if acting.get("mode") == "structured_sample" and set(acting) == {
+        if acting.get("mode") == "structured_sample" and set(acting) in ({
             "mode", "move_temperature", "split_temperature"
-        } and all(isinstance(acting[key], (int, float)) and not isinstance(acting[key], bool)
+        }, {
+            "mode", "move_temperature", "split_temperature", "neutral_route_bias"
+        }) and all(isinstance(acting[key], (int, float)) and not isinstance(acting[key], bool)
                   and np.isfinite(acting[key]) and acting[key] > 0 for key in (
             "move_temperature", "split_temperature"
-        )):
+        )) and isinstance(acting.get("neutral_route_bias", 0.0), (int, float)) and not isinstance(
+            acting.get("neutral_route_bias", 0.0), bool
+        ) and np.isfinite(acting.get("neutral_route_bias", 0.0)) and acting.get("neutral_route_bias", 0.0) >= 0:
             self.action_mode = "structured_sample"
             self.move_temperature = float(acting["move_temperature"])
             self.split_temperature = float(acting["split_temperature"])
+            self.neutral_route_bias = float(acting.get("neutral_route_bias", 0.0))
         elif acting == {"mode": "argmax"}:
             self.action_mode = "argmax"
+            self.neutral_route_bias = 0.0
         else:
             raise ValueError("Invalid spatial serving action selection")
         self.public_scalar_ablation = codec.get("public_scalar_ablation", False)
@@ -145,7 +160,8 @@ class SpatialPlayerPolicy:
         output = self.forward(values)[0]
         if self.action_mode == "structured_sample":
             probabilities = structured_action_probabilities(
-                output, mask[0], self.move_temperature, self.split_temperature
+                output, mask[0], self.move_temperature, self.split_temperature,
+                observations=values[0], neutral_route_bias=self.neutral_route_bias,
             )
         else:
             logits = np.where(mask[0], output[:3529], -np.inf)

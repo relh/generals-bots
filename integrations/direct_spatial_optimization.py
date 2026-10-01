@@ -231,6 +231,11 @@ def install(native_module=None):
         if self.spatial_split_temperature is not None and (
                 not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0):
             raise ValueError("Spatial split temperature must be finite and positive")
+        self.spatial_neutral_route_bias = float(os.environ.get("METTA_SPATIAL_NEUTRAL_ROUTE_BIAS", "0"))
+        if not np.isfinite(self.spatial_neutral_route_bias) or self.spatial_neutral_route_bias < 0:
+            raise ValueError("Neutral route bias must be finite and nonnegative")
+        if self.spatial_neutral_route_bias and self.spatial_split_temperature is None:
+            raise ValueError("Neutral route bias requires structured route and split sampling")
         if (self.spatial_policy_temperature != 1 or self.spatial_split_temperature is not None) and not self.direct_spatial_rollout:
             raise ValueError("Temperature requires identical direct rollout and optimization algebra")
 
@@ -249,6 +254,11 @@ def install(native_module=None):
                                   self.spatial_split_temperature, jnp)
         elif self.spatial_policy_temperature != 1:
             acting = outputs.at[..., :3529].divide(self.spatial_policy_temperature)
+        if self.spatial_neutral_route_bias:
+            from integrations.spatial_action_sampling import public_neutral_route_bonus
+
+            bonus = public_neutral_route_bonus(transported, self.spatial_neutral_route_bias, jnp)
+            acting = acting.at[..., :3529].add(bonus)
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
         return acting, state, DirectTape(parameters, transported, outputs)

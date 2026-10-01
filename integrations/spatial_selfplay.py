@@ -10,14 +10,18 @@ import jax.numpy as jnp
 import numpy as np
 
 from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
-from integrations.spatial_action_sampling import acting_logits
+from integrations.spatial_action_sampling import acting_logits, public_neutral_route_bonus
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
 
-def frozen_action_indices(policy, outputs, masks, keys):
+def frozen_action_indices(policy, outputs, masks, keys, observations=None):
     """Select frozen opponent actions using the bundle's serving contract."""
     if policy.action_mode == "structured_sample":
         logits = acting_logits(outputs, policy.move_temperature, policy.split_temperature, jnp)[:, :3529]
+        if getattr(policy, "neutral_route_bias", 0.0):
+            if observations is None:
+                raise ValueError("Neutral route bias requires frozen public observations")
+            logits += public_neutral_route_bonus(observations, policy.neutral_route_bias, jnp)
         legal_logits = jnp.where(masks, logits, -jnp.inf)
         random_keys = jax.vmap(lambda key: jax.random.fold_in(key, 834))(keys)
         return jax.vmap(jax.random.categorical)(random_keys, legal_logits).astype(jnp.int32)
@@ -60,7 +64,7 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
         def opposing_actions(values, masks, keys):
             with jax.default_matmul_precision("highest"):
                 outputs = frozen._forward(values[:, :frozen.observation_size], jnp)
-            return frozen_action_indices(frozen, outputs, masks, keys)
+            return frozen_action_indices(frozen, outputs, masks, keys, values)
 
         self._opposing_actions = opposing_actions
         if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
@@ -234,7 +238,8 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         self._population_checksums = checksums
         self._population_action_selection = tuple(
             ({"mode": policy.action_mode, "move_temperature": policy.move_temperature,
-              "split_temperature": policy.split_temperature}
+              "split_temperature": policy.split_temperature,
+              "neutral_route_bias": policy.neutral_route_bias}
              if policy.action_mode == "structured_sample" else {"mode": "argmax"})
             for policy in frozen
         )
@@ -253,7 +258,8 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
             for rows, policy in zip(self._population_rows[:len(frozen)], frozen, strict=True):
                 with jax.default_matmul_precision("highest"):
                     logits = policy._forward(values[rows, sides[rows], :policy.observation_size], jnp)
-                chosen = frozen_action_indices(policy, logits, masks[rows, sides[rows]], keys[rows])
+                chosen = frozen_action_indices(policy, logits, masks[rows, sides[rows]], keys[rows],
+                                               values[rows, sides[rows]])
                 result = result.at[rows].set(chosen)
             for rows, agent in zip(self._population_rows[len(frozen):], scripts, strict=True):
                 selected = jax.tree_util.tree_map(lambda leaf: leaf[rows], states)

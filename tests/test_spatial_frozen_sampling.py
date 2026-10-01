@@ -42,3 +42,28 @@ def test_frozen_argmax_opponent_keeps_legacy_selection():
                                    jnp.asarray(outputs), jnp.asarray(legal),
                                    jax.random.split(jax.random.PRNGKey(7), 2))
     np.testing.assert_array_equal(np.asarray(chosen), [3528, 3528])
+
+
+def test_frozen_neutral_route_bonus_matches_serving_distribution():
+    count = 10_000
+    source = 10 * 21 + 10
+    up, right = source, 3 * 441 + source
+    outputs = np.zeros(3530, np.float32)
+    legal = np.zeros(3529, bool)
+    legal[[up, right]] = True
+    public = np.zeros(16 * 441, np.float32)
+    public[6 * 441 + source + 1] = 1
+    expected = structured_action_probabilities(outputs, legal, .05, .15,
+                                               observations=public, neutral_route_bias=3.0)
+    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+                             split_temperature=.15, neutral_route_bias=3.0)
+    keys = jax.random.split(jax.random.PRNGKey(109), count)
+    sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(
+        policy, jnp.broadcast_to(outputs, (count, 3530)),
+        jnp.broadcast_to(legal, (count, 3529)), k,
+        jnp.broadcast_to(public, (count, public.size)),
+    ))(keys))
+    assert abs(np.mean(sampled == up) - expected[up]) < .02
+    with pytest.raises(ValueError, match="public observations"):
+        frozen_action_indices(policy, jnp.asarray(outputs[None]), jnp.asarray(legal[None]),
+                              keys[:1])

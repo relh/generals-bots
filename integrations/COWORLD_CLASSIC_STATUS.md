@@ -15827,3 +15827,99 @@ promotion or longer continuation is justified by this evidence.
 Archive `/tmp/relh-classic-expansion-audit-result.tar.gz` SHA256
 `93b42be864fc6eb13ebd1c61f6c8b0c65f61ac1669cdcc147b3e2632700bd6a1`.
 No Generals GPU job remains from this evaluation.
+
+### 2026-10-01 — public neutral route bonus
+
+The expansion audit and hosted replay gap motivated a route-only
+diagnostic. `public_neutral_route_bonus` adds the same sampled logit
+bonus to full and half moves whose destination is visible, empty,
+neutral land according to the actor's public observation planes.
+The legal mask remains authoritative; fogged, owned, and visible
+enemy destinations receive no bonus. The equal full/half addition
+changes route preference while preserving the conditional split
+distribution. It has no access to hidden engine state.
+
+The first GPU wrapper job34848 stopped before any games because it
+passed the wrong audit flag to the evaluator. The corrected script
+then completed job34850, same checkpoint SHA `776900bb...cba01e`,
+fresh seed35534/2048 paired Classic games/887 maps versus frozen234M.
+Source bonus0 scored1038W/991L/19D and bonus1 scored
+1062W/969L/17D; paired delta+0.02246,95% map-bootstrap CI
+[-0.00476,+0.04924], inconclusive. Neutral targets rose
+70,141→72,476, and half actions9747→9700. Failed-job archive
+`/tmp/relh-classic-neutral-route-screen-result.tar.gz` SHA256
+`ec53a17dc1392cbe938684ada04ef8d9384102edd49d0b88331da2167599166b`;
+completed archive `/tmp/relh-classic-neutral-route-screen-retry-result.tar.gz`
+SHA256 `70cedd5aecc96facd6aafdb4c0c98a536070a1fdbf64e3e65dbc32bdfe5009556`.
+
+Stronger bonus3 job34854 completed on a fresh seed35535/2048 paired
+Classic games/891 maps, same frozen234M opponent and same
+checkpoint. Source bonus0 scored1111W/916L/21D; bonus3 scored
+1227W/800L/21D. Paired delta+0.11328,95% map-bootstrap CI
+[+0.06957,+0.15519], a clear improvement. Neutral-target moves
+rose70,118→83,054, while half moves stayed about0.8%:
+8903→9643. Turn50 aggregate land margin rose371→1013 among
+2048 live games, +0.3135 tile/game. This is an inference-only
+causal screen, not a trained or hosted promotion. Archive
+`/tmp/relh-classic-neutral-route-strong-result.tar.gz` SHA256
+`14b3ee8e9b925b16f8cec62b85e541d5e49f78a936dbf3d30a4447920ae037ea`.
+
+The same opt-in bonus is now wired through native direct PPO
+rollout/optimization, portable sampled serving, frozen sampled
+opponents, and bundle export. Current source files passed local
+syntax checks and three serving tests; JAX tests were unavailable
+locally. One bounded B300 job34858 is testing the exact current
+source, NumPy/JAX parity, 16,777,216 additional training steps,
+end-to-end SPS, exact serving bundle selection, and fresh paired
+source/child quality with both evaluated under bonus3. Script
+`/tmp/relh-classic-neutralbias-train-node.sh` SHA256
+`3b72c8936140a9f74f2bd7a6816efa60d0bbb53abd0e0288092f56a83dc6e0ed`,
+node output `/var/tmp/relh-generals-recovery/classic-neutralbias-pilot-34858`,
+Mac archive `/tmp/relh-classic-neutralbias-train-result.tar.gz`.
+Check this existing job and archive before any follow-up; do not
+submit a duplicate.
+
+Job34858 completed exit0. A pre-training GPU probe verified exact
+branch source hashes and JAX/NumPy equality for the public bonus.
+The build kept model SHA `811e8de5...e8863b`, changed the
+environment-source SHA to `f195789c...af8a205a9`, and used the
+same original weighted opponent pool with balanced seats and the
+official Classic engine. The allocated B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was0MiB/0% at
+startup. It trained16,777,216 steps at final end-to-end153,800 SPS,
+with0 illegal actions and0 nonfinite rewards. The checkpoint and
+exported bundle policy SHA256 is
+`fe9fcfb99e9a93cb63d87e7c2b0db8972fd6d82b8ca0ba311ddfe74c947a4837`.
+The export manifest declares sampled route/split0.05/0.15 and
+neutral route bonus3.0, matching training.
+
+Fresh seed35536/2048 paired Classic games/885 maps versus frozen234M,
+both source184M and trained child evaluated with bonus3, gave
+source1217W/814L/17D and child1238W/793L/17D. Paired
+delta+0.02051,95% map-bootstrap CI[-0.01764,+0.05950],
+inconclusive for the *additional training* block. Both had strong
+early land margins: turn50 aggregate1226 versus1236 among2048 live
+games. The significant gain remains the causal same-checkpoint
+bonus3 screen, not this small child difference. Training archive
+`/tmp/relh-classic-neutralbias-train-result.tar.gz` SHA256
+`5deb5beac25e1fad33c7c8786fb7c2f9f6205cc50b0685a41aecf0b9d53e1707`.
+No Generals GPU job remains from34858.
+
+The exact child bundle was built into Linux AMD64 serving image
+`relh-classic-neutralbias-201m:eval`, image ID
+`sha256:6048da9cebb61d481de610f738ae562727d0155459a624bf7d84e05e32810be1`,
+using the pinned runtime tar SHA `de03d2a9...8b7ddc7`.
+An AMD64 CPU smoke loaded the bundle, produced finite logits, and
+selected legal pass with the bonus active. It was uploaded once under
+the `relh` player as `relh-classic-neutralbias-201m:v1`, resolved
+version ID `4f0e56fe-bde1-454c-82fb-5931e8b622b9`; the main
+user identity was restored. The current canonical Observatory
+manifest0.3.3 names variant `competition` **Classic 1v1**, with
+regular capture-only rules and a2000-turn cap; castle building has a
+separate `castles` variant, and the Classic league description states
+no Deathtouch. Two private single-game hosted smoke requests against
+frozen234M were created once: seat0
+`xreq_73dfff94-0701-4149-88d4-480911c1450c`, seat1
+`xreq_d399bba0-4f94-472f-b539-c1afbfa6c174`. Both were pending
+on first read. Check these exact IDs before any new XP request; no
+league submission or champion change.

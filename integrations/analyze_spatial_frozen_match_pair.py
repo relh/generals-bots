@@ -33,6 +33,8 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
             raise ValueError(f"Match settings differ: {field}")
     if not allow_policy_mode_change and records[0].get("split_sampling_temperature") != records[1].get("split_sampling_temperature"):
         raise ValueError("Match settings differ: split_sampling_temperature")
+    if not allow_policy_mode_change and records[0].get("neutral_route_bias", 0.0) != records[1].get("neutral_route_bias", 0.0):
+        raise ValueError("Match settings differ: neutral_route_bias")
     arrays = []
     for filename in ("initial_state_sha256.npy", "initial_sides.npy"):
         left, right = (np.load(directory / filename) for directory in (baseline, candidate))
@@ -89,6 +91,8 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         candidate_half_logit_bias=records[1].get("half_logit_bias", 0.0),
         baseline_split_sampling_temperature=records[0].get("split_sampling_temperature"),
         candidate_split_sampling_temperature=records[1].get("split_sampling_temperature"),
+        baseline_neutral_route_bias=records[0].get("neutral_route_bias", 0.0),
+        candidate_neutral_route_bias=records[1].get("neutral_route_bias", 0.0),
     )
 
 

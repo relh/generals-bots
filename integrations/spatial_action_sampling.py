@@ -12,6 +12,29 @@ MOVE_COUNT = 1764
 PASS_INDEX = 3528
 
 
+def public_neutral_route_bonus(observations, strength, xp):
+    """Bias moves into visible empty neutral cells using only public planes."""
+    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:
+        raise ValueError("Neutral route bonus requires public 21x21 observations")
+    planes = observations.reshape((*observations.shape[:-1], -1, 441))
+    routes = xp.arange(MOVE_COUNT)
+    source = routes % 441
+    direction = routes // 441
+    row, col = source // 21, source % 21
+    delta_row = xp.take(xp.asarray((-1, 1, 0, 0)), direction)
+    delta_col = xp.take(xp.asarray((0, 0, -1, 1)), direction)
+    target_row, target_col = row + delta_row, col + delta_col
+    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
+    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
+    visible_empty_neutral = (on_board &
+        (xp.take(planes[..., 0, :], target, axis=-1) == 0) &
+        (xp.take(planes[..., 4, :], target, axis=-1) == 0) &
+        (xp.take(planes[..., 5, :], target, axis=-1) == 0) &
+        (xp.take(planes[..., 6, :], target, axis=-1) == 0))
+    bonus = visible_empty_neutral.astype(observations.dtype) * strength
+    return xp.concatenate((bonus, bonus, xp.zeros_like(bonus[..., :1])), axis=-1)
+
+
 def acting_logits(predictions, move_temperature, split_temperature, xp):
     full = predictions[..., :MOVE_COUNT]
     half = predictions[..., MOVE_COUNT:PASS_INDEX]
