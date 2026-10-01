@@ -17023,3 +17023,28 @@ seat0 `xreq_6155e7a2-b78c-4977-a427-1de0f5583fd6`, seat1
 `xreq_5da1b8f4-1d00-4235-8070-ea92791f4cc2`. All were pending
 at creation. Do not recreate; read their outcomes before judging
 hosted strength or changing the champion.
+
+All four private hosted panels completed with zero runtime failures.
+The script-heavy actor scored **4W/28L** against pinned Daveey v7
+(seat0 3W/13L, seat1 1W/15L) and **10W/22L** against the relh
+incumbent (seat0 4W/12L, seat1 6W/10L). For context, the 218M source
+scored 9W/23L and 13W/19L respectively in separate earlier panels;
+these are not paired map estimates. All 32 Daveey replays were
+downloaded and audited post-game. The actor made zero basic-invalid
+moves and no timeouts; all games ended by general capture. It made
+130 half moves in 15720 nonpass moves versus Daveey's 1234 in 15170.
+Its average land margin versus Daveey was +1.97 at turn25, -1.03
+at turn50, -3.41 at turn100, -0.41 at turn150, and -0.27 at turn200
+among games reaching each checkpoint. The losing games lasted a mean
+515 turns versus 414 for the earlier 218M source panel, despite the
+child's better average midgame land margin. This points to a later
+strategic or defensive weakness, not a hosted action-legality failure.
+Replay audit: `/tmp/relh-classic-scriptheavy-serving/leader-hosted-replay-audit.json`.
+
+Two additional private direct child-versus-source hosted requests
+were made to resolve the unpaired Daveey comparison: child seat0
+`xreq_05b3bc3b-3774-4f1f-85e8-dc1ad53c50f6`, child seat1
+`xreq_9a58ec5b-a29b-4e3a-a411-55712bc8441c`, 16 Classic games
+each, stable idempotency keys. They were pending at creation. The
+script-heavy child is not eligible for champion promotion or a long
+continuation on the evidence so far.
