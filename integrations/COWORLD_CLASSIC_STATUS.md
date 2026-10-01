@@ -16859,3 +16859,45 @@ against source (sum−250→−578). Map diversity alone preserved
 throughput but did not reverse the expansion drift or demonstrate
 strength. Do not continue this checkpoint for billions, upload it,
 or promote it without a new positive strength signal.
+
+A hosted Classic map-parity audit of32 Daveey XP replay starts found
+height and width independently18–21,9–11 neutral castles per map,
+initial castle armies40–50, and general walking distance17–36
+(the minimum is17). Mountain counts66–100 reflect the map area and
+the castles carved out of initial mountain placements. These agree
+with the pinned local generator's size, castle, and walking-distance
+settings; no hosted/local map-distribution mismatch was found in this
+sample. Some Manhattan distances were below17 because the generator
+enforces walking distance around mountains, not Manhattan distance.
+
+To calibrate the local scripted-opponent pool, the existing relh
+incumbent `co-gas-generals-siege-relh:v4`, version
+`e53e30be-0b23-4d62-b944-4dd249a483fe`, was privately evaluated
+against pinned Daveey v7 in the same Classic division. Balanced16-game
+requests `xreq_d505b0bc-7c39-409e-a760-df4c52f8e501` (seat0)
+and `xreq_100ea238-3b95-4782-b55b-2d52cbfef2f6` (seat1) both
+completed with zero failures; the incumbent scored1W/15L in each,
+**2W/30L** overall. This is a separate random-map panel from the
+neural source's9W/23L and is not a paired estimate of their relative
+strength against Daveey.
+
+The exact218M neural diagnostic source, hosted version
+`aea4cb45-f9c6-4b44-93a0-8a007d087ae1`, was then directly tested
+against the relh incumbent. Private requests
+`xreq_7c3271a1-77e5-4da0-a84b-c0bfd536a8c9` (neural seat0)
+and `xreq_28b3cedb-290c-4e7e-9c0c-454ef21b1bb4` (neural seat1)
+completed with zero failures. The neural actor scored4W/12L as seat0
+and9W/7L as seat1, **13W/19L** overall. Relative strengths are
+nontransitive in these hosted panels: the incumbent is a poor Daveey
+proxy, but still beats this neural actor head-to-head. The relh
+champion was left unchanged.
+
+The user-authorized league participation step submitted the same
+already-uploaded neural source `relh-classic-doomed-218m:v1` under
+player relh to Classic 1v1 with `--auto-champion never`, preserving
+the existing champion. Submission
+`sub_bb6f8439-9c45-4e74-bc24-6bd38c63e4e3` was accepted as
+`pending` at creation; inspect that ID before any retry. Its league
+membership and round placement are asynchronous. This submission
+allows additional opponent comparisons without claiming the neural
+actor currently outcompetes Daveey or the incumbent.
