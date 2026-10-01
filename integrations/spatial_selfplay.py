@@ -182,7 +182,8 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
 class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvironment):
     """Balanced Classic games against several frozen policies and two scripts."""
 
-    def __init__(self, *, frozen_bundles, context, parallel_games=4096, **options):
+    def __init__(self, *, frozen_bundles, context, parallel_games=4096,
+                 opponent_weights=None, **options):
         bundles = tuple(map(Path, frozen_bundles))
         if len(bundles) < 2 or bundles[0] != Path(options.get("frozen_bundle", "")):
             raise ValueError("Population requires at least two bundles, starting with frozen_bundle")
@@ -215,8 +216,15 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         if len(set(checksums)) != len(checksums):
             raise ValueError("Population frozen policies must be distinct")
         count = len(frozen) + 2
-        labels = np.repeat(np.resize(np.arange(count, dtype=np.int32), parallel_games // 2), 2)
+        weights = tuple(opponent_weights) if opponent_weights is not None else (1,) * count
+        if len(weights) != count or any(not isinstance(weight, int) or weight <= 0 for weight in weights):
+            raise ValueError("Population opponent weights must be positive integers, one per opponent")
+        if parallel_games // 2 < sum(weights):
+            raise ValueError("Population needs at least one full weighted opponent cycle")
+        weighted_labels = np.repeat(np.arange(count, dtype=np.int32), weights)
+        labels = np.repeat(np.resize(weighted_labels, parallel_games // 2), 2)
         self._population_labels = labels
+        self._population_weights = weights
         self._population_rows = tuple(
             jnp.asarray(np.flatnonzero(labels == label), jnp.int32) for label in range(count)
         )
@@ -266,7 +274,8 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         }
         if any(item["0"] != item["1"] or item["0"] == 0 for item in counts.values()):
             raise ValueError("Population opponent seats are not balanced")
-        record = dict(counts=counts, frozen_policy_sha256=self._population_checksums,
+        record = dict(counts=counts, opponent_weights=self._population_weights,
+                      frozen_policy_sha256=self._population_checksums,
                       frozen_action_selection=self._population_action_selection, seed=seed,
                       episode_limit=self.horizon, coworld_classic_rules=self.base.env.coworld_classic_rules,
                       observation_size=self.spec.observation_size,

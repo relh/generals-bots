@@ -15571,3 +15571,30 @@ for promotion or unchanged scaling. Mac archive
 `8a0452344910b45b8b6d169f08829b32d2cdd8af2ad0129c3ac447a472c994ed`,
 node output `/var/tmp/relh-generals-recovery/classic-sampled-pop-pilot-34794`.
 No Generals training job is left running from this experiment.
+
+Same117M actor serving-temperature probe job34802 ran both2048-game
+heldout arms on878 paired Classic initial maps against frozen234M,
+seed35527, split temperature0.15. Physical allocated B300 UUID
+`GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f` was0MiB/0% at
+startup; no physical contention was observed. Move temperature0.05
+scored1003W/1030L/15D with134,402 route changes from argmax;
+temperature0.10 scored972W/1056L/20D with309,883 route changes.
+Paired delta-0.02783, map-bootstrap95%CI[-0.08180,+0.02616]
+(341 better,373 worse,1334 same): inconclusive, no basis to raise
+the serving move temperature. The game arms completed, but the job
+exited2 because its final analyzer path was absent from the historical
+node staging directory. The checked-in analyzer was run locally on
+the exact archived outcomes; result at
+`/tmp/relh-classic-movetemp-analysis/paired.json`. Archive
+`/tmp/relh-classic-movetemp-result.tar.gz` SHA256
+`112e96dd16a441659fff57b140bcf53d06399f0d8e06b71e0ba7737c26c76dce`.
+No second temperature job or training steps were submitted.
+
+The sampled-pool pilot divided8192 games nearly evenly among seven
+opponents; the strongest known frozen234M occupied only one seventh
+of games. A new optional integer opponent-weights setting repeats
+opponent labels in balanced seat pairs and records the effective
+weights and counts. Proposed next bounded test gives more games to
+the234M and sampled67M actors while retaining the rich pool and
+unchanged win-only reward. Strength and throughput still require
+measured validation; no actor promotion is implied.
