@@ -196,20 +196,27 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
 
 
 class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvironment):
-    """Balanced Classic games against several frozen policies and two scripts."""
+    """Balanced Classic games against frozen policies and selected scripts."""
 
     def __init__(self, *, frozen_bundles, context, parallel_games=4096,
-                 opponent_weights=None, **options):
+                 opponent_weights=None,
+                 scripted_opponents=("expander_harvester", "sentinel"), **options):
         bundles = tuple(map(Path, frozen_bundles))
+        script_names = tuple(scripted_opponents)
+        available_scripts = ("expander_harvester", "sentinel", "sentinel_v5")
+        if (not script_names or len(set(script_names)) != len(script_names)
+                or any(name not in available_scripts for name in script_names)):
+            raise ValueError("Population scripts must be distinct known opponent names")
         if len(bundles) < 2 or bundles[0] != Path(options.get("frozen_bundle", "")):
             raise ValueError("Population requires at least two bundles, starting with frozen_bundle")
-        if parallel_games < 2 * (len(bundles) + 2) or parallel_games % 2:
+        if parallel_games < 2 * (len(bundles) + len(script_names)) or parallel_games % 2:
             raise ValueError("Population needs a pair of games per opponent")
         super().__init__(context=context, parallel_games=parallel_games, **options)
         if not self.base.coworld_classic or not self.base.env.coworld_classic_rules:
             raise ValueError("Population opponents require official Coworld Classic rules")
         from generals.agents.harvester_agent import ExpanderHarvesterAgent
         from generals.agents.sentinel_agent import SentinelAgent
+        from generals.agents.sentinel_v5_agent import SentinelV5Agent
         from generals.core import game
 
         frozen = (self._frozen,) + tuple(SpatialPlayerPolicy(path) for path in bundles[1:])
@@ -231,7 +238,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         checksums = tuple(hashlib.sha256((path / "policy.bin").read_bytes()).hexdigest() for path in bundles)
         if len(set(checksums)) != len(checksums):
             raise ValueError("Population frozen policies must be distinct")
-        count = len(frozen) + 2
+        count = len(frozen) + len(script_names)
         weights = tuple(opponent_weights) if opponent_weights is not None else (1,) * count
         if len(weights) != count or any(not isinstance(weight, int) or weight <= 0 for weight in weights):
             raise ValueError("Population opponent weights must be positive integers, one per opponent")
@@ -264,7 +271,10 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
             moves = (actions[:, 4] * 4 + actions[:, 3]) * 441 + actions[:, 1] * 21 + actions[:, 2]
             return jnp.where(actions[:, 0] != 0, 3528, moves).astype(jnp.int32)
 
-        scripts = (ExpanderHarvesterAgent(), SentinelAgent())
+        script_factories = {"expander_harvester": ExpanderHarvesterAgent,
+                            "sentinel": SentinelAgent, "sentinel_v5": SentinelV5Agent}
+        scripts = tuple(script_factories[name]() for name in script_names)
+        self._population_script_names = script_names
 
         def opposing_indices(states, sides, keys, values, masks):
             result = jnp.zeros(parallel_games, jnp.int32)
@@ -286,9 +296,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
     def reset_device(self, seed):
         result = super().reset_device(seed)
         sides = np.asarray(self.sides)
-        names = tuple("frozen_" + digest[:12] for digest in self._population_checksums) + (
-            "expander_harvester", "sentinel"
-        )
+        names = tuple("frozen_" + digest[:12] for digest in self._population_checksums) + self._population_script_names
         counts = {
             name: {str(side): int(np.count_nonzero((self._population_labels == index) & (sides == side)))
                    for side in (0, 1)}

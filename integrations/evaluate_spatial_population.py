@@ -83,8 +83,7 @@ def main():
         values, masks = env.reset_device(f"{args.seed}:0:0")
         sides = np.asarray(env.sides)
         labels = env._population_labels.copy()
-        names = tuple("frozen_" + digest[:12] for digest in env._population_checksums) + (
-            "expander_harvester", "sentinel")
+        names = tuple("frozen_" + digest[:12] for digest in env._population_checksums) + env._population_script_names
         if (sides == 0).sum() != args.games // 2 or (sides == 1).sum() != args.games // 2:
             raise ValueError("Learner seats are not balanced")
         for name in range(len(names)):

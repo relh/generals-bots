@@ -17048,3 +17048,44 @@ were made to resolve the unpaired Daveey comparison: child seat0
 each, stable idempotency keys. They were pending at creation. The
 script-heavy child is not eligible for champion promotion or a long
 continuation on the evidence so far.
+
+The direct hosted child-versus-source panels completed with zero
+failures. The child scored **13W/17L/2D** in 32 games: seat0
+8W/6L/2D, seat1 5W/11L. This is close to even and does not confirm
+the small pooled local gain. The earlier Daveey panels used different
+maps, so their 9W versus 4W totals do not prove a significant
+regression either. The relh champion remains unchanged.
+
+A post-game replay-window audit explains the strategic concern more
+concretely. Against Daveey, the child's mean army margin among games
+still running was -5.6 at turn200, -9.9 at turn300, -28.6 at turn350,
+and -76.9 at turn500; by turn500 its mean land margin was -13.
+Within turns 100–200, its moves entered neutral cells on 13.5% of
+active turns versus Daveey's 24.4%; within turns 200–300 the rates
+were 5.7% versus 16.1%. It made half moves on under 1% of turns
+in these intervals versus Daveey's 7–9%. These are descriptive
+statistics on different hosted maps and surviving-game subsets, not
+causal estimates. They show a late expansion/army deficit despite
+better early margins. The existing same-checkpoint temperature and
+safe-split screens found that globally forcing more half moves hurts
+held-out strength; the next change needs better strategic decisions
+and opponent diversity rather than an inference-only split bias.
+
+Two bounded B300 screens tested additional public-observation-only
+scripted opponents against the 218M source before using them in
+training. Both jobs ran on the assigned physically idle UUID
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` (0 MiB, 0%, no compute
+process at entry), ended exit0, and used balanced learner seats.
+Job 35092 found Hunter far too weak: the source scored
+787W/25L/4D in 816 Hunter games. Hunter was removed from the
+proposed configurable pool before any training. Its audit archive is
+`/tmp/relh-classic-hunter-audit-result.tar.gz`, SHA256
+`6c743d49cbb0914983837ced5f5a1dc5917a3d54aacd68358818db6a80f0b5dc`.
+Job 35096 found the stateless Sentinel-v5 variant more competitive:
+the source scored 237W/167L/4D in 408 games (seat0 124W/80L,
+seat1 113W/87L/4D). It is less difficult than the original Sentinel
+but offers a different visible-threat response. The optional
+`scripted_opponents` option now accepts distinct selected scripts;
+the existing Expander Harvester/Sentinel default is unchanged.
+Sentinel-v5 archive `/tmp/relh-classic-sentinelv5-audit-result.tar.gz`
+SHA256 `b630029a5540d8d2e83e0a28ae8db24863384a3ad672b1fe937d56b088df3728`.
