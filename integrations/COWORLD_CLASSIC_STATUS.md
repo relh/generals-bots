@@ -16983,3 +16983,43 @@ frozen-only delta was -0.00260, interval [-0.05013,+0.04636]. All
 initial hashes, seats, and opponent labels matched. The script
 win rates are still poor, and no strength gain is statistically
 resolved yet. A larger fresh-map panel is needed before scaling.
+
+B300 job 35072 (exit 0) evaluated the same source and child on 8192
+additional matched first episodes with a fresh seed, 4096 map-pool
+entries, and the same half-script opponent mix. Initial-state hashes,
+seats, and labels matched exactly; there were 3524 unique starts.
+Despite several other Slurm jobs on the B300 node, its allocated
+physical UUID `GPU-00ecc38f-dc4b-bd1a-7875-55b4301e4d9f` had
+0 MiB/0% utilization and no compute process at entry; its contention
+guard passed.
+The source scored 3417W/4623L/152D; the child scored
+3502W/4550L/140D, paired score delta +0.01929 with map-cluster
+95% interval [-0.00048,+0.03968]. Script-only delta was +0.01320
+over 4092 games, interval [-0.01410,+0.03942]. Across the two
+independent fresh-map panels (11264 games, 4865 unique initial
+states), the pooled paired delta is +0.01820, interval
+[+0.00096,+0.03582]; script-only delta +0.01867 has interval
+[-0.00460,+0.04249]. The gain is small and script-only improvement
+remains unresolved. Script SHA256
+`933f4af40a5f8f80556fa520e92b0104665d54cdf81c2fb3e5c41734e27e7747`;
+Mac archive `/tmp/relh-classic-scriptheavy-holdout-result.tar.gz`
+SHA256 `aad930e777d2616af22f7866a7a3f520e285f608e764f0cb6680d1de93cc76bb`.
+
+For a hosted transfer check, an AMD64 image derived from the already
+smoked 218M serving image and containing only the new portable bundle
+was built as `relh-classic-scriptheavy-251m:eval`, image ID
+`sha256:975935b64122ee561103a8dd6c37ccc2831dac85c4a0dd1f06a2a4ea255f3722`.
+The first local smoke exposed unreadable bundle permissions from the
+compute-node archive; the image was rebuilt with readable policy files.
+Final local smoke loaded the exact checkpoint, selected the sole legal
+pass with probability 1, and verified structured sampling. The relh
+policy was uploaded once as `relh-classic-scriptheavy-251m:v1`,
+version `3735c96d-058f-4e00-96aa-7f639dd0da15`.
+Four private hosted Classic requests were created with stable
+idempotency keys and 16 episodes each: pinned Daveey v7 seat0
+`xreq_108a7d8c-3e9d-4b6a-b877-07bded4d357a`, seat1
+`xreq_2d9047bb-e71e-4a2c-afa6-67a848704b15`; relh incumbent
+seat0 `xreq_6155e7a2-b78c-4977-a427-1de0f5583fd6`, seat1
+`xreq_5da1b8f4-1d00-4235-8070-ea92791f4cc2`. All were pending
+at creation. Do not recreate; read their outcomes before judging
+hosted strength or changing the champion.
