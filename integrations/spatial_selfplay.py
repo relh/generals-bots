@@ -10,7 +10,18 @@ import jax.numpy as jnp
 import numpy as np
 
 from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
+from integrations.spatial_action_sampling import acting_logits
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+
+
+def frozen_action_indices(policy, outputs, masks, keys):
+    """Select frozen opponent actions using the bundle's serving contract."""
+    if policy.action_mode == "structured_sample":
+        logits = acting_logits(outputs, policy.move_temperature, policy.split_temperature, jnp)[:, :3529]
+        legal_logits = jnp.where(masks, logits, -jnp.inf)
+        random_keys = jax.vmap(lambda key: jax.random.fold_in(key, 834))(keys)
+        return jax.vmap(jax.random.categorical)(random_keys, legal_logits).astype(jnp.int32)
+    return jnp.argmax(jnp.where(masks, outputs[:, :3529], -jnp.inf), axis=1).astype(jnp.int32)
 
 
 class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnvironment):
@@ -43,10 +54,10 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
         self._public_scalar_ablation = bool(options.get("public_scalar_ablation"))
 
         @jax.jit
-        def opposing_actions(values, masks):
+        def opposing_actions(values, masks, keys):
             with jax.default_matmul_precision("highest"):
                 outputs = frozen._forward(values[:, :frozen.observation_size], jnp)
-            return jnp.argmax(jnp.where(masks, outputs[:, :3529], -jnp.inf), axis=1).astype(jnp.int32)
+            return frozen_action_indices(frozen, outputs, masks, keys)
 
         self._opposing_actions = opposing_actions
         if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
@@ -85,7 +96,9 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
 
     def _opposing_indices(self, values, masks):
         opposing_sides = 1 - self.sides
-        return self._opposing_actions(values[self._rows, opposing_sides], masks[self._rows, opposing_sides])
+        return self._opposing_actions(
+            values[self._rows, opposing_sides], masks[self._rows, opposing_sides], self.keys[self._rows]
+        )
 
 
 class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvironment):
@@ -123,7 +136,7 @@ class SpatialMixedFrozenOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnv
             opponents = jnp.zeros(self.parallel_games, jnp.int32)
             rows = self._mix_rows[0]
             opponents = opponents.at[rows].set(
-                self._opposing_actions(values[rows, sides[rows]], masks[rows, sides[rows]])
+                self._opposing_actions(values[rows, sides[rows]], masks[rows, sides[rows]], keys[rows])
             )
             for rows, act in zip(self._mix_rows[1:], self._scripted_actions, strict=True):
                 selected = jax.tree_util.tree_map(lambda leaf: leaf[rows], states)
@@ -208,6 +221,12 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
             jnp.asarray(np.flatnonzero(labels == label), jnp.int32) for label in range(count)
         )
         self._population_checksums = checksums
+        self._population_action_selection = tuple(
+            ({"mode": policy.action_mode, "move_temperature": policy.move_temperature,
+              "split_temperature": policy.split_temperature}
+             if policy.action_mode == "structured_sample" else {"mode": "argmax"})
+            for policy in frozen
+        )
 
         def scripted_indices(states, sides, keys, agent):
             actions = jax.vmap(lambda state, side, key: agent.act(game.get_observation(state, side), key))(
@@ -223,8 +242,8 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
             for rows, policy in zip(self._population_rows[:len(frozen)], frozen, strict=True):
                 with jax.default_matmul_precision("highest"):
                     logits = policy._forward(values[rows, sides[rows], :policy.observation_size], jnp)
-                chosen = jnp.argmax(jnp.where(masks[rows, sides[rows]], logits[:, :3529], -jnp.inf), axis=1)
-                result = result.at[rows].set(chosen.astype(jnp.int32))
+                chosen = frozen_action_indices(policy, logits, masks[rows, sides[rows]], keys[rows])
+                result = result.at[rows].set(chosen)
             for rows, agent in zip(self._population_rows[len(frozen):], scripts, strict=True):
                 selected = jax.tree_util.tree_map(lambda leaf: leaf[rows], states)
                 selected_keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(keys[rows])
@@ -247,7 +266,8 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         }
         if any(item["0"] != item["1"] or item["0"] == 0 for item in counts.values()):
             raise ValueError("Population opponent seats are not balanced")
-        record = dict(counts=counts, frozen_policy_sha256=self._population_checksums, seed=seed,
+        record = dict(counts=counts, frozen_policy_sha256=self._population_checksums,
+                      frozen_action_selection=self._population_action_selection, seed=seed,
                       episode_limit=self.horizon, coworld_classic_rules=self.base.env.coworld_classic_rules,
                       observation_size=self.spec.observation_size,
                       scope="Opponent actions only; no teacher targets or learner action overrides")

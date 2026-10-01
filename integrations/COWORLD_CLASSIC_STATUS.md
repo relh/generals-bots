@@ -15421,3 +15421,90 @@ archived paired maps and outcomes, producing the above CI. Both jobs
 ended and released allocations. Verified archive
 `/tmp/relh-classic-splittemp-result2.tar.gz` SHA256
 `d1da164bcb4cf6d07096d602b387e159d35de0d565e5f303d4fd0773a8f01212`.
+
+Read-only audit of the two completed hosted smoke replays found
+772 candidate nonpass moves,10 half moves (1.30%),6 passes,0 basic
+invalid moves,0 timeouts, and two regular general-capture finishes.
+This is consistent with the roughly1.45% half-move rate in the
+50.3M training block, providing a direct hosted behavior check for
+the sampled-serving path. The replay hashes and per-seat counts are
+in `/tmp/relh-classic-lr001-stage2-serving/smoke-replay-audit.json`.
+
+A further bounded50,331,648-step continuation from the exact67M actor
+SHA `6834e6a7...296b438a8` began as Slurm job34766 on one physically
+idle B300 UUID `GPU-d8f786b6-25e6-1199-8523-0d38073df48c`,
+8CPU/64GiB, nice100, node output
+`/var/tmp/relh-generals-recovery/classic-iterated-lr001-stage3-34766`.
+It keeps the same verified build, opponent population, learner
+settings and0.05/0.15 sampler, with fresh optimizer seed6758. The
+exact source self-match gate precedes training and a fresh2048-game
+paired held-out panel against frozen234M follows. Config SHA256
+`9565594a3d1fbda6a828c5a815cd8bb580d1d2a248f6598a5a6fd695f607fd61`.
+Do not start another Generals GPU job while34766 is active. The
+hosted64-game panels remain separate and will be read by their exact IDs.
+
+After the two clean hosted smoke games, the67M image was submitted
+once as a **non-champion canary** under player `relh` to the live
+Classic1v1 league `league_8c189954-be68-479c-a092-eeb79c436d12`.
+Exact submission `sub_7a960803-6e13-4d56-aff6-cdae77d9fb24` bound
+version `54286092-476e-4ee6-96ed-cb1e315ab91f` to relh player
+`ply_18302115-9fc9-482d-a2f3-f4c592bf9e57` with
+`auto_champion=never`. First readback was pending and had no active
+membership yet. There was no prior submission or active membership
+for this version. The alternate player identity was unset afterward.
+Readback then showed submission `placed` and active competing
+membership `lpm_c2994257-74e5-4f91-8d2b-e73cfca8d342` for the
+same version, relh player, and Classic Competition division;
+`is_champion=false`. No promotion was requested.
+
+Job34766 completed and released its B300 allocation. Its exact
+source sampled self-match gate passed249W/260L/3D versus source
+greedy242W/252L/18D. The six opponents each had682–683 starts
+per learner seat. Native training completed50,331,648 physical
+steps with warm end-to-end SPS about162k and final162,500,
+8192 parallel games/H256/minibatch8192/replay0.5,
+rollout7.08s and optimization3.03s per final epoch, dashboard
+GPU63–88% and VRAM196.5GiB. The terminal reward audit found
+74,362 terminal agents,689,555 half actions,0 nonfinite rewards;
+the action-mask audit found0 illegal actions. Exact checkpoint
+and sampled-serving bundle SHA256
+`211a06b4032b549906b476b452aef816ea5fb0b76f802d756846b2dcaa33bcf1`.
+
+Fresh2048-game/890-map seed35521 versus frozen234M: the67M source
+sampled actor scored997W/1040L/11D; the117M cumulative actor scored
+1036W/1000L/12D. Paired score delta+0.03857, map-cluster95%
+CI[-0.00381,+0.08022], so another positive point estimate but
+not a conclusive incremental gain. Archive
+`/tmp/relh-classic-iterated-lr001-stage3-result.tar.gz` SHA256
+`d92ea273af7fb968ad5c0072454e05b0c314bf6722281f598b04f4a8e79205f5`.
+The117M actor is not a hosted champion. Await the67M hosted
+parent/leader panels before another training-scale decision.
+
+Both67M-versus-frozen234M hosted16-game panels completed with0
+failed episodes: candidate seat0 5W/11L, seat1 11W/5L,
+combined16W/16L. This verifies hosted parity with234M, not a
+gain. All32 owned replays downloaded read-only and audited:
+17,236 candidate nonpass moves,163 half moves,138 passes,
+0 basic invalid moves,0 timeouts,32 regular general captures.
+The candidate's mean neutral-target moves were35.22/game versus
+26.88 for the234M reference, but the win result remains even.
+Replay manifest and audit are in
+`/tmp/relh-classic-lr001-stage2-serving`. The top-ranked-opponent
+requests remain separate and are not duplicated.
+
+Found a population-opponent behavior gap for future iterated self-play:
+`SpatialFrozenOpponentPufferEnvironment` and
+`SpatialPopulationOpponentPufferEnvironment` always used raw argmax
+for frozen policy bundles, regardless of a bundle's sampled-serving
+manifest. The current four frozen opponents are legacy argmax bundles,
+so this did not invalidate completed training. New sampled snapshots
+would have played differently as training opponents than in hosted
+matches. Updated all spatial frozen and mixed/population paths to
+use the manifest's structured categorical with the legal mask and a
+per-game JAX key, retaining legacy argmax for old bundles. A B300
+CPU JAX check of the exact helper over20,000 draws matched the
+serving probabilities (expected0.5344/0.1966/0.2689; observed
+0.5350/0.1986/0.2664), with reproducible draws and unchanged
+legacy argmax. Local targeted tests:2 passed,1 skipped because
+local Python lacks JAX. This code has not been compiled into a new
+native environment yet; no new GPU training run uses it.
