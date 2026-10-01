@@ -17089,3 +17089,19 @@ but offers a different visible-threat response. The optional
 the existing Expander Harvester/Sentinel default is unchanged.
 Sentinel-v5 archive `/tmp/relh-classic-sentinelv5-audit-result.tar.gz`
 SHA256 `b630029a5540d8d2e83e0a28ae8db24863384a3ad672b1fe937d56b088df3728`.
+
+One bounded source-initialized Sentinel-v5 population pilot is active
+as Slurm job **35101** on `metta-fabric-b300-1`; inspect the queue
+and node-local output before any retry. It uses official Classic,
+the same 218M initial checkpoint and structured sampled actions,
+win-only terminal reward, 8192 games×H256, minibatch8192/replay0.5,
+33,554,432 steps, seed6777, map pool8192, and opponent weights
+`[1,1,2,1,1,4,5,6,3]` for six frozen actors plus Expander
+Harvester, Sentinel, and Sentinel-v5. The 30k-SPS gate checks after
+warmup and stops the container if it fails. Script
+`/tmp/relh-classic-v5pool-node.sh` SHA256
+`8c05d3d967db7897b607a8e7a5ea3a2f5ed28f57e12a1ed0108bb6021d5dc64c`;
+node output `/var/tmp/relh-generals-recovery/classic-v5pool-pilot-35101`,
+Mac result `/tmp/relh-classic-v5pool-result.tar.gz`. Do not submit a
+duplicate job. Matched source and frozen234M evaluations and a
+3072-game population evaluation are scheduled after training.
