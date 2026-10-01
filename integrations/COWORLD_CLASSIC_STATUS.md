@@ -16526,3 +16526,22 @@ once: against pinned Daveey v7 seat0
 seat1 `xreq_a9e678e4-1eb1-4660-90ab-5e6cf0d93443`.
 All were pending at submission. Do not resubmit or promote before
 checking their completed scores and runtime failures.
+
+All four script-pool hosted XP panels COMPLETED16/16 with zero runtime
+failures. Against pinned Daveey v7, child scored5W/27L (seat0
+2W/14L, seat1 3W/13L), versus the218M source's prior9W/23L.
+Against the exact218M source directly, it scored14W/18L, seven
+wins in each seat. The significant frozen234M held-out gain thus
+did not transfer to either hosted opponent; do not promote or
+continue this checkpoint unchanged. The32 Daveey replay files
+were downloaded once to
+`/tmp/relh-classic-scriptpool-serving/leader-replays` and audited
+at `/tmp/relh-classic-scriptpool-serving/leader-hosted-replay-audit.json`.
+The child made134 half moves in15,699 nonpass actions versus Daveey's
+1,197 in15,070. It averaged55.97 visible neutral-target moves/game
+versus Daveey96.0; turn100 mean land margin was-3.42 among31 live
+games. Basic invalid actions0, all32 games ended by general capture.
+Post-game replay statistics are diagnostic, not an action-mask
+parity or causal test. The child still plays meaningfully and the
+training/serving transform is aligned, but its quality is below
+the live leader and not a long-run candidate.
