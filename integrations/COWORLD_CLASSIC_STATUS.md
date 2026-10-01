@@ -16743,3 +16743,32 @@ neutral8 action transform improves the exact frozen-source match,
 but the learned continuation still loses expansion and does not
 transfer to Daveey. Next isolate same-checkpoint bias8 on hosted
 Daveey before allocating another long training run.
+
+That same-checkpoint diagnostic is complete. The original218M checkpoint
+`fff930fd...5247938` was copied into a new bundle with only its
+serving neutral-route bonus changed6→8; all weights, temperatures,
+weak-owned4, and doomed-attack4 stayed identical. AMD64 image
+`relh-classic-source-neutral8-diagnostic:eval` ID
+`sha256:19a5af7bf4be235146c70465a545e40af32a386db6c5bfa7733cfe5b03578262`
+passed bundle load with8/4/4 and was uploaded once under relh as
+`relh-classic-source-neutral8-diagnostic:v1`, version
+`1cf44dd9-716b-4fc1-a670-10f60483391f`.
+Private Classic XP requests versus pinned Daveey v7 completed with
+zero failures: seat0 `xreq_6e6c5191-9035-4617-8fc9-96b87e35a6e7`
+scored4W/12L; seat1 `xreq_8192393b-d590-4b4b-8b44-5ba5dd480481`
+scored2W/14L. Combined **6W/26L** does not improve on the previous
+same-checkpoint bias6 hosted9W/23L; the panels use different random
+maps, so this difference alone is not a precise paired estimate.
+All32 replays were audited in
+`/tmp/relh-classic-source-neutral8-diagnostic/leader-hosted-replay-audit.json`:
+zero basic invalid actions, all general captures, no timeouts. Visible
+neutral-target moves rose from49.03/game in the old bias6 panel to
+68.75/game with bias8, but Daveey averaged95.59/game in this panel.
+The source bias8 actor made96 half moves in13,828 nonpass actions
+versus Daveey's1,010 in13,300. Daveey used994 half moves on7,043
+own-destination moves, with none from source armies2–4 and826 from
+armies5–19; our actor used53 on8,188 own-destination moves, of which
+79/96 total half moves came from source armies2–4. The split-choice
+gap is action-specific and present before PPO continuation.
+The same-checkpoint hosted test demonstrates that frozen-opponent
+gains from neutral8 alone are not a reliable proxy for Daveey.
