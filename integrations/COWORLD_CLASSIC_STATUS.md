@@ -16545,3 +16545,178 @@ Post-game replay statistics are diagnostic, not an action-mask
 parity or causal test. The child still plays meaningfully and the
 training/serving transform is aligned, but its quality is below
 the live leader and not a long-run candidate.
+
+A bounded self-anchored population trial was launched as the sole
+Generals B300 job34953. It starts again from the better-hosted218M
+checkpoint `fff930fd...5247938`. A byte-verified copy of the
+exact diagnostic serving bundle is reconstructed on the compute
+node by adding the doomed-attack4 manifest setting to the source
+bundle; the resulting manifest SHA256 is pinned to
+`0302750fdafda70531d0e2dee5043fd4f462e2b2e5598ccdee15d749b5147955`.
+This copy becomes a sixth frozen opponent. Opponent weights are
+[1,1,3,1,1,4,1,1] for the six frozen actors plus Expander/Sentinel,
+with the exact218M actor at weight4. The pilot targets33,554,432
+physical steps, seed6773,8192 games×H256, minibatch8192,
+replay ratio0.5, gamma/shaping gamma0.999, win-only terminal reward,
+and neutral6+weak-owned4+doomed4 action transform in PPO and export.
+Its final checkpoint is scheduled for paired fresh held-out tests
+against the exact218M source (2048 games, seed35546) and frozen234M
+(1024 games, seed35547). Script
+`/tmp/relh-classic-selfanchor-node.sh` SHA256
+`8ac3eabf631bf07e535d73d90fce5ff06b4ba5d78ff6e3f47e21def5edf8866f`,
+node root `/var/tmp/relh-generals-recovery/classic-selfanchor-pilot-34953`,
+Mac archive `/tmp/relh-classic-selfanchor-result.tar.gz`.
+The full B300 queue before submission had relh `pb_26` job34942
+and no other Generals job; CPU64/192 allocated. Job34953 checks
+the allocated physical UUID for<2GiB/<20% occupancy, pins the
+B300 image and official engine hash, and archives node-local
+output before exit. Do not duplicate this live job.
+
+Job34953 COMPLETED exit0 on physical B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, initially0MiB/0%,
+with no competing process on its UUID. Mac archive
+`/tmp/relh-classic-selfanchor-result.tar.gz` SHA256
+`f6a947282f1e3f8f7510d1816f48077b1f27e7cf3807c0c6e401536789af1865`
+contains the complete33,554,432-step run, exported bundle, and
+both paired evaluations. Checkpoint SHA256
+`c1245ad130307edb7b0b19d37bd7ca6e6b83d83eb1ff8e8d27b1b3146b7b8714`.
+Final warmed end-to-end SPS122,600,8192 games×H256,
+minibatch8192/replay0.5, one B300. Final epoch environment6.820s
+(39%), model5.748s (33%), training4.488s (26%), VRAM196.6/268GiB,
+console utilization66%. Of205 two-second GPU samples,145 after
+the first120 seconds had median utilization59% and mean56.6%.
+All33,554,432 actions legal, zero nonfinite rewards;
+46,282 terminal agents (3 zero-reward), positive rewards14,983,150,
+negative17,862,955. Actual opponent counts were balanced by seat:
+exact218M source1260, frozen234M945, two scripts315 each,
+and remaining frozen315–316 each.
+
+Fresh2048 paired Classic maps versus the exact218M serving policy:
+source983W/1015L/50D, child1018W/983L/47D, delta+0.03271,
+map-cluster95% CI[-0.01274,+0.07833], inconclusive. Fresh1024
+paired maps versus frozen234M: source775W/241L/8D,
+child775W/240L/9D, delta+0.00098,
+CI[-0.05357,+0.05882], inconclusive. Against the source, the child
+targeted110,129 neutral cells versus112,640 by baseline; versus
+frozen234M it targeted52,231 versus56,115. The pool anchor
+prevented a clear direct regression but produced no proven win or
+expansion gain. Do not promote, host, or scale this child on these
+results alone.
+
+The next bounded B300 diagnostic is job34962, a same-checkpoint
+screen of public neutral-route bonuses6,8,10 on the exact best-hosted
+218M actor. Each setting uses the same move/split temperatures
+0.05/0.15, weak-owned penalty4, doomed-attack penalty4, and
+fresh paired Classic maps. It evaluates each bias on2048 games
+against frozen234M (seed35548) and the exact218M serving actor
+(seed35549), with sampled actions and cluster-bootstrap paired
+analysis. The six comparisons share one Slurm allocation; no
+training or policy upload occurs in this screen. Script
+`/tmp/relh-classic-neutral-strong-screen-node.sh` SHA256
+`d2f4e13aef1cb06a4776421cffeab422651e0a7071237cf556598d7b9d55e764`,
+node root `/var/tmp/relh-generals-recovery/classic-neutral-strong-screen-34962`,
+Mac archive `/tmp/relh-classic-neutral-strong-screen-result.tar.gz`.
+Full B300 queue before submission had relh job34942 and user1002
+job34957, CPU88/192 allocated; no other Generals job. The script
+checks its physical UUID has<2GiB/<20% occupancy before evaluation
+and pins the official Classic engine SHA. Do not duplicate job34962.
+
+Job34962 COMPLETED exit0, initially0MiB/0% on physical B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`. Mac archive
+`/tmp/relh-classic-neutral-strong-screen-result.tar.gz` SHA256
+`372f821bdb65d7db1189ef6db2ab3b9a93ab7b59985e3a93abecfacf5d882be5`.
+On2048 paired fresh Classic maps versus frozen234M, bias6 baseline
+scored1554W/473L/21D; bias8 scored1607W/394L/47D, paired
+delta+0.06445, map-cluster95% CI[+0.02443,+0.10590]; bias10
+scored1575W/396L/77D, delta+0.04785,
+CI[+0.00097,+0.09361]. Against the exact218M serving actor
+as opponent on a separate2048 paired map set, bias6 scored
+1005W/1000L/43D, bias8 scored1138W/825L/85D,
+delta+0.15039, CI[+0.09813,+0.20247], and bias10 scored
+1189W/697L/162D, delta+0.23779,
+CI[+0.18138,+0.29384]. These are same-checkpoint causal
+inference screens, not aligned trained policies.
+
+Versus frozen234M, neutral-target moves rose110,084→148,593
+at bias8 and210,005 at bias10; turn50 land-margin sums
+4568→6172→7318 and turn100 sums6769→9918→13632.
+Against the218M source, neutral targets116,855→154,737→216,250,
+and turn50 land margin-349→1169→2359. Bias10's extra neutral
+preference increased draws sharply in both panels. Direct paired
+analysis of bias8 versus10 from the same archived outcome arrays:
+frozen234M delta-0.01660 for10, CI[-0.05641,+0.02268]
+(inconclusive); source218M delta+0.08740 for10,
+CI[+0.03844,+0.13705]. Bias8 offers a significant gain against
+both opponents with fewer draws and is selected for the next
+bounded aligned PPO pilot. No long run or champion promotion yet.
+
+One bounded aligned bias8 PPO trial is now live as B300 job34971.
+It reuses the verified six-frozen-plus-two-script opponent build
+from34953, starts again from checkpoint `fff930fd...5247938`, and
+changes the learner's public neutral-route bonus from6 to8 in
+native rollout and optimization. The frozen218M opponent retains
+its exact diagnostic serving bonus6. The output exporter pins
+bonus8, weak-owned4, doomed-attack4, and temperatures0.05/0.15.
+Training target33,554,432 steps, seed6774,8192 games×H256,
+minibatch8192, replay0.5, win-only terminal reward,
+gamma/shaping gamma0.999; the SPS, illegal action, reward, and
+balanced opponent-by-seat gates remain. The job compares source
+and child with bias8 on fresh2048 maps versus the exact218M actor
+(seed35550) and1024 maps versus frozen234M (seed35551).
+Script `/tmp/relh-classic-neutral8-train-node.sh` SHA256
+`79fbf27c5e0f8d8616a53d5d079bc20ebe35b95768eda199ed9cbb6fa7070400`,
+node root `/var/tmp/relh-generals-recovery/classic-neutral8-pilot-34971`,
+Mac archive `/tmp/relh-classic-neutral8-train-result.tar.gz`.
+Full B300 queue before launch had relh jobs34970,34968,34942,
+CPU88/192 allocated, and no Generals job. Job34971 checks its
+allocated physical UUID has<2GiB/<20% utilization before work;
+no free logical GPU is assumed. Do not duplicate this live job.
+
+Job34971 COMPLETED exit0 on physical B300
+`GPU-5cd839f7-0d99-f113-f4fe-3243cdaaa043`, initially0MiB/0%,
+with no foreign process on its UUID. It reused the exact native
+build from34953. Archive
+`/tmp/relh-classic-neutral8-train-result.tar.gz` SHA256
+`9490ac6ff3be3d8b0f0056cde8036f84b0f585888a98e2ecc672358dfe3dbb55`
+contains completed33,554,432-step training, export, and both
+paired evaluations. Checkpoint SHA256
+`22b2c47849778984d5ddfcf7a91b0f0ed41087b51b67ae280d1d867dfa114c4f`.
+Final warmed end-to-end SPS119,200 on8192 games×H256,
+minibatch8192/replay0.5, one B300. Final epoch environment7.023s
+(40%), model5.760s (32%), training4.753s (27%), VRAM196.6/268GiB,
+console utilization66%. Of208 two-second GPU samples,148 after
+the first120 seconds had median utilization58% and mean55.8%.
+All33,554,432 actions legal, zero nonfinite rewards;
+42,136 terminal agents (4 zero-reward), positive rewards14,555,738,
+negative18,458,266. Opponent counts were balanced by seat, including
+exact218M source1260, frozen234M945, scripts315 each.
+The exported manifest exactly declares structured sampled
+move/split0.05/0.15, neutral8, weak-owned4, doomed-attack4,
+matching PPO's action transform.
+
+On fresh2048 paired Classic maps versus the exact218M actor,
+the source evaluated under bias8 scored1153W/820L/75D and child
+1183W/798L/67D, delta+0.02539,
+map-cluster95% CI[-0.02135,+0.07328], inconclusive. On fresh1024
+paired maps versus frozen234M, source770W/230L/24D and child
+803W/198L/23D, delta+0.06348,
+CI[+0.01067,+0.11657], significant. The child targeted fewer
+neutral cells than the source under bias8 (149,416→134,392
+versus source218;75,142→66,782 versus frozen234) and its early
+land margins were slightly lower. Hosted leader evaluation is
+therefore required before any longer continuation.
+
+The exact exported bundle was built into AMD64 image
+`relh-classic-neutral8-251m:eval` ID
+`sha256:50f258670fbe565aa58a4971e3d19f0ed527c75a90bbe5d8cd142c10f7b38908`,
+passed bundle-load smoke with neutral8/weak4/doomed4, and uploaded
+once under relh as `relh-classic-neutral8-251m:v1`, version
+`26af20f4-c921-41f6-88f4-39b0dc89d896`. Main CLI identity
+was restored. Four private16-game XP requests were created once:
+versus pinned Daveey v7 seat0
+`xreq_df3847ba-3f21-4c02-adfe-98a0a2d03def`, seat1
+`xreq_b0b4759b-80db-4d19-84eb-9ef2beeb4bf1`; versus exact
+218M source seat0 `xreq_edb0eedf-d414-4c7e-acbe-3182a0727601`,
+seat1 `xreq_1fe17a25-9c91-435f-be89-4715dd013038`.
+All were pending at submission. Inspect these IDs before any retry;
+no league or champion promotion.
