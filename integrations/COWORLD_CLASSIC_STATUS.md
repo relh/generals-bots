@@ -16901,3 +16901,8 @@ the existing champion. Submission
 membership and round placement are asynchronous. This submission
 allows additional opponent comparisons without claiming the neural
 actor currently outcompetes Daveey or the incumbent.
+
+Follow-up read-only Observatory checks show the submission is now
+`placed`; nonchampion relh membership
+`lpm_1fd3bf03-0a6c-49e9-aa4e-3ab5f575e710` is `competing`.
+The relh incumbent remains champion. No duplicate submission was made.
