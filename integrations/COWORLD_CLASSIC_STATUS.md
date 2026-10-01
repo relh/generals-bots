@@ -16720,3 +16720,26 @@ versus pinned Daveey v7 seat0
 seat1 `xreq_1fe17a25-9c91-435f-be89-4715dd013038`.
 All were pending at submission. Inspect these IDs before any retry;
 no league or champion promotion.
+
+All four XP requests subsequently completed with zero execution failures.
+Against pinned Daveey v7 in the Classic 1v1 division, the aligned
+neutral8 child scored **3W/29L** (seat0 2W/14L, seat1 1W/15L), worse
+than the diagnostic 218M source's prior 9W/23L. Against that exact
+source actor it scored 18W/13L/1D (seat0 9W/6L/1D, seat1 9W/7L).
+The hosted Classic replay `ruleset` is `classic`; the Observatory
+variant ID `competition` is the label used by the **Classic 1v1**
+division and does not add Deathtouch. No promotion or longer PPO
+continuation is justified by these hosted results.
+
+All32 Daveey replay files were downloaded once and audited as
+`/tmp/relh-classic-neutral8-serving/leader-hosted-replay-audit.json`.
+All games ended by general capture, with zero timeouts and zero basic
+invalid candidate moves. The child made99 half-army moves in14,947
+nonpass moves versus Daveey's1,067 in14,387; it targeted visible
+neutral destinations69.63 times/game versus Daveey's100.56.
+Mean candidate land margin was+2.22 at turn25,−0.09 at turn50,
+−5.53 at turn100, and mean army margin−5.78 at turn100. The fixed
+neutral8 action transform improves the exact frozen-source match,
+but the learned continuation still loses expansion and does not
+transfer to Daveey. Next isolate same-checkpoint bias8 on hosted
+Daveey before allocating another long training run.
