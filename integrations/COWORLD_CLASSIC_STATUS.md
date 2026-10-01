@@ -16390,3 +16390,139 @@ the~27ms full environment tick. Archive
 `6f1c86ec7594260462a03411ef26afa188d9717ecf159608f13e3adeed368e8a`.
 The unverified local environment shortcut was reverted; it is not
 on the fork branch. No training or serving behavior changed.
+
+The aligned final~285M checkpoint SHA256
+`f00d9040a570b137533fee5aa9c07549281457f2d10e3b2872d8b8d1dbd6ddf4`
+was extracted from the successful recovery archive without modifying
+the source. Its exported manifest serves structured sampling
+move/split temperatures0.05/0.15, neutral6, weak-owned4,
+doomed-attack4, exactly matching the training transform.
+Built AMD64 image `relh-classic-doomedtrained-285m:eval` ID
+`sha256:374f3129d7d2e4e2f185dffbd41e19050bdbdaa5ee04940ad42cc21020435a7f`,
+passed a bundle-load smoke, and uploaded once under relh as
+`relh-classic-doomedtrained-285m:v1`, version
+`fe200c8d-9f0f-49bf-8d54-4220e6e658d7`.
+Main Coworld CLI identity was restored. Four private16-game
+balanced XP requests were created once: versus pinned Daveey v7
+seat0 `xreq_7876b6b2-dd12-45ad-869f-da4861dfc4c5`, seat1
+`xreq_e68dcf8a-b880-4abe-bb35-c55126adc53c`; versus exact
+218M diagnostic source seat0 `xreq_2c536c54-797e-4343-a67e-19d8df2ed85c`,
+seat1 `xreq_6a6f579a-e6a4-4b3a-aa15-ab3c4e644d5c`.
+All were pending at submission. Inspect IDs before retrying;
+no league or champion promotion.
+
+All four aligned~285M hosted XP panels completed with zero runtime
+failures. Against pinned Daveey v7 it scored7W/25L (seat0
+4W/12L, seat1 3W/13L), below the separate218M diagnostic
+screen's9W/23L. Against that exact218M source version it scored
+18W/12L/2D (seat0 11W/4L/1D, seat1 7W/8L/1D).
+Thus the additional67M steps improved direct play against the
+source while failing to improve the live leader matchup. The
+32 Daveey replays were downloaded once and audited at
+`/tmp/relh-classic-doomedtrained-serving/leader-hosted-replay-audit.json`.
+The trained actor made114 doomed visible enemy attacks in4442
+(2.6%), versus Daveey77/3935 (2.0%), so the combat penalty
+kept working. It used only59 half moves in16202 nonpass actions
+versus Daveey1608/15545, and at turn100 had mean land margin
+-6.09 and army margin-6.94. Basic invalid actions0; all games
+ended in general capture. The best known diagnostic source
+remains the~218M actor with the same serving transform until
+stronger held-out and hosted evidence. Do not extend the
+unchanged opponent recipe to billions or promote the child.
+
+A bounded strategic-pool reweighting pilot is running as one
+B300 Slurm job34941. It initializes from the better-hosted~218M
+checkpoint `fff930fd...5247938`, keeps the same five frozen
+snapshot opponents and Expander/Sentinel scripts, and changes
+only the opponent weights from[1,1,4,1,2,1,1] to
+[1,1,3,1,1,3,3]. This gives the scripts6/13 weighted slots
+instead of2/11 while retaining the strong234M frozen actor3/13.
+Seed6772,33,554,432 new physical Classic steps,8192 parallel
+games, horizon256, minibatch8192, replay ratio0.5,
+gamma/shaping gamma0.999, win-only terminal reward,
+neutral6+weak-owned4+doomed4 action transform in PPO and export.
+The script screens the exact source sampled-vs-greedy before
+training, gates final warmed end-to-end SPS>=30k, audits pool
+by seat and illegal/nonfinite actions, exports the final bundle,
+and compares source and child on2048 paired fresh Classic maps
+seed35545. Script
+`/tmp/relh-classic-scriptpool-node.sh` SHA256
+`8bc2c6b25b6363313c2649ba5c9c49aa97745ae5a2b7b4a1922f5e87beb5bdb5`,
+node root `/var/tmp/relh-generals-recovery/classic-scriptpool-pilot-34941`,
+Mac archive `/tmp/relh-classic-scriptpool-result.tar.gz`.
+Before launch, full B300 queue was empty and node idle with
+CPU0/192 allocated. Another relh `pb_dbg` job34940 appeared
+concurrently at submission; physical UUID, memory and utilization
+are checked inside34941 before work. Do not duplicate job34941.
+
+Job34941 ended exit1 after source sampling gate and native build,
+before any training step. The source greedy versus sampled self
+gate scored160W/350L/2D versus282W/224L/6D and passed.
+The build completed, but a wrapper assertion incorrectly excluded
+`opponent_weights` at the outer Python environment level rather
+than inside `python_environment.options`. Inspection of archived
+new and source build manifests showed the only changed option was
+indeed `opponent_weights` as planned. Archive
+`/tmp/relh-classic-scriptpool-result.tar.gz` SHA256
+`4305b780e329a3952a8843779b81cf35e5ff3901d946dd41a6dae0ba78b24a75`.
+No model update/checkpoint came from34941. Its allocated B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a` was initially0MiB/0%.
+
+One bounded resume job34945 used the corrected nested
+configuration comparison, reusing the exact completed build and
+source gate from34941 without repeating build or source evaluation.
+It will train33,554,432 steps, export, and run fresh paired matches.
+Script `/tmp/relh-classic-scriptpool-resume-node.sh` SHA256
+`49c32d5509533a11f691ee5f10cd02b97d22f6f7c9c2a7959301bbc63d1540fd`,
+node root `/var/tmp/relh-generals-recovery/classic-scriptpool-resume-34945`,
+Mac archive `/tmp/relh-classic-scriptpool-resume-result.tar.gz`.
+Preflight full B300 queue showed another relh job34942 on a
+separate allocation and no Generals job; CPU64/192 allocated.
+The physical UUID idle guard and pinned image/source checks remained
+in the resume script.
+
+Job34945 COMPLETED exit0 on physical B300
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, initially0MiB/0%.
+Archive `/tmp/relh-classic-scriptpool-resume-result.tar.gz` SHA256
+`a4720449fbc252a2d39f42f498dfe387e1a335129ce0c6417281a3b391397ff6`
+contains completed33,554,432-step training, exact exported bundle,
+and fresh paired evaluation. Final checkpoint SHA256
+`0b8b395107ee046a5049cd73235f5a3fb31c48a401ee88b315636662ccfa8a47`.
+Final warmed end-to-end Puffer SPS127,700, with8192 games,
+horizon256, minibatch8192, replay ratio0.5, and one B300; final
+epoch environment6.336s (38%), model5.627s (34%), training4.410s
+(26%), VRAM196.6/268GiB and console GPU utilization68%.
+Of198 two-second GPU samples, the138 after the first120 seconds
+had median utilization58% and mean56.4%; no physical GPU
+contention was observed on its UUID.
+Device audit:33,554,432 actions, zero illegal, zero nonfinite rewards,
+43,904 terminal agents (2 zero-reward), positive rewards15,203,769,
+negative17,709,169. The actual pool counts were balanced by seat:
+strong frozen234M945, Expander945, Sentinel945, and each remaining
+frozen315–316 per seat. Training and exported serving use matching
+structured sampling temperatures0.05/0.15 and route
+biases/penalties neutral6, weak-owned4, doomed-attack4.
+
+On2048 paired held-out Classic games against frozen234M,
+the source scored1503W/524L/21D and child scored1572W/463L/13D;
+paired score delta+0.06348, map-cluster95% CI[+0.02475,+0.10312].
+This is a significant improvement on that opponent. Early expansion
+did not clearly improve: neutral destination counts113,154 source
+versus110,110 child, turn50 land-margin sums4624 versus4414;
+turn100 sums6712 versus6816. A hosted Daveey panel is required
+before scaling this recipe.
+
+The exact exported bundle was built into AMD64 image
+`relh-classic-scriptpool-251m:eval` ID
+`sha256:521e1463b7c7ce35ebd3f7883535017e8e1ff46571ba0ba36157ab69c828e363`,
+passed bundle-load smoke, and uploaded once under relh as
+`relh-classic-scriptpool-251m:v1`, version
+`1b993314-f418-4b92-bf29-102fa15ac646`. Main Coworld CLI
+identity was restored. Four private16-game XP requests were made
+once: against pinned Daveey v7 seat0
+`xreq_7e8bd964-eabb-46f1-b198-80c54cbd6165`, seat1
+`xreq_a911b3aa-fbb5-4153-8775-dc112c15af1c`; against exact
+218M source seat0 `xreq_5e152c19-2bac-4eaa-991c-b7e83ce458c8`,
+seat1 `xreq_a9e678e4-1eb1-4660-90ab-5e6cf0d93443`.
+All were pending at submission. Do not resubmit or promote before
+checking their completed scores and runtime failures.
