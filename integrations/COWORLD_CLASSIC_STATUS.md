@@ -15702,3 +15702,45 @@ rate matches the train/eval sampled policy order of magnitude. The
 heldout gain against the argmax234M reference did not translate to
 leader strength; the next training change must target split-supported
 expansion, and hosted performance must gate any champion promotion.
+
+Frontier-potential isolation from the preserved184M actor had two
+pre-training integration failures, both archived and terminal.
+Job34831 built successfully but its guard incorrectly expected the
+environment source SHA to change when only a build option changed;
+actual configs differed solely in `frontier_shaping_weight`0→1.
+Archive `/tmp/relh-classic-frontier-failed-34831.tar.gz` SHA256
+`4589f50fb701f8f7bdad6a396d9531e3de7f4381eae565ba280ae4bd32cceb3c`.
+Job34834 passed the corrected config guard but reached no rollout:
+the historical staged `metta_puffer.py` lacked the frontier option and
+the device runner rejected it. The diff between that staged file and
+the current branch module contains only the frontier potential and
+its option wiring. Archive
+`/tmp/relh-classic-frontier-failed-34834.tar.gz` SHA256
+`4d6040eefc255747d9212b09bc50b765151201fe4a95ddaea7ba578eb06a1700`.
+Neither failure created a checkpoint or trained any steps; no existing
+trainer was replayed.
+
+Corrected bounded job34835 mounted the exact branch
+`integrations/metta_puffer.py` SHA
+`ef08cf60913d07284b3a8d51907c57aaeae6ab9d7ec139d1d3b435a47fac3ba4`
+into both native import paths. New environment source SHA
+`29405fe1...423124`, unchanged model SHA `811e8de5...e8863b`,
+official Classic engine SHA `f39e448a...3182fef04007ade951809d4a318`,
+and manifest inspection verified the reward and weighted pool.
+On initially idle physical B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,8CPU/64GiB,
+it trained16,777,216 steps at warmed157,800 end-to-end SPS,
+GPU87%,196.6/268GiB VRAM;0 illegal actions and0 nonfinite rewards.
+Training half actions142,836/16,777,216 (~0.85%). Final actor SHA
+`ca063828b7a87f759510b3f18bb129082136009b25caf40184d821b408231896`.
+
+Fresh seed35530/2048 paired Classic games/871 unique maps against
+frozen234M, both sampled move/split0.05/0.15: source184M
+1117W/921L/10D, frontier child1106W/937L/5D. Paired score delta
+-0.01318, map-bootstrap95%CI[-0.05375,+0.02596], inconclusive.
+First-episode half moves rose only8763→9733 (~0.75%→0.83%),
+without demonstrated quality or sufficient expansion gain.
+Do not extend this reward setting or promote its actor. Final archive
+`/tmp/relh-classic-frontier-result.tar.gz` SHA256
+`87fc0451aade98f8007fd392c00eb13177e3a999de97a333ab4fbb7d20ca0210`.
+No Generals GPU job remains from this pilot.
