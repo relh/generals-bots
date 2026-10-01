@@ -18,12 +18,22 @@ from integrations.puffer_codec import (
 BOARD_SIZE = 21
 
 
-def decode_policy_action(probabilities, *, factorized_actions: bool = True) -> list[int]:
+def decode_policy_action(probabilities, *, factorized_actions: bool = True, rng=None) -> list[int]:
     """Convert either trained action layout to the Coworld move tuple."""
     probabilities = np.asarray(probabilities)
     expected_size = 1767 if factorized_actions else 3529
     if probabilities.shape != (expected_size,) or not np.isfinite(probabilities).all():
         raise ValueError("Policy probabilities differ from the Coworld action layout")
+    if rng is not None:
+        if factorized_actions or np.any(probabilities < 0) or probabilities.sum() <= 0:
+            raise ValueError("Sampling requires nonnegative flat-action probabilities")
+        index = int(rng.choice(expected_size, p=probabilities / probabilities.sum()))
+        if index == 3528:
+            return [1, 0, 0, 0, 0]
+        split, source = divmod(index, 1764)
+        direction, cell = divmod(source, 441)
+        row, col = divmod(cell, 21)
+        return [0, row, col, direction, split]
     if factorized_actions:
         source = int(np.argmax(probabilities[:1765]))
         split = int(np.argmax(probabilities[1765:]))

@@ -392,3 +392,19 @@ def test_hosted_action_decode_matches_training_full_half_and_pass(factorized):
     np.testing.assert_array_equal(
         decode_policy_action(probabilities, factorized_actions=factorized), [1, 0, 0, 0, 0],
     )
+
+
+def test_hosted_flat_action_sampling_decodes_categorical_choice():
+    from integrations.softmax.neural_codec import decode_policy_action
+
+    probabilities = np.zeros(3529, np.float64)
+    probabilities[1764] = 1
+    assert decode_policy_action(probabilities, factorized_actions=False,
+                                rng=np.random.default_rng(7)) == [0, 0, 0, 0, 1]
+    probabilities[1764] = 0
+    probabilities[3528] = 1
+    assert decode_policy_action(probabilities, factorized_actions=False,
+                                rng=np.random.default_rng(7)) == [1, 0, 0, 0, 0]
+    with pytest.raises(ValueError, match="nonnegative flat-action"):
+        decode_policy_action(np.ones(1767), factorized_actions=True,
+                             rng=np.random.default_rng(7))

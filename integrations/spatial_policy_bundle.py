@@ -6,6 +6,24 @@ from types import SimpleNamespace
 
 import numpy as np
 
+from integrations.spatial_action_sampling import acting_logits
+
+
+def structured_action_probabilities(outputs, legal, move_temperature, split_temperature):
+    """Match the native rollout categorical on the legal flat action set."""
+    outputs = np.asarray(outputs, dtype=np.float32)
+    legal = np.asarray(legal, dtype=bool)
+    if outputs.shape != (3530,) or legal.shape != (3529,) or not legal.any():
+        raise ValueError("Invalid spatial logits or legal-action mask")
+    if not np.isfinite(outputs).all() or not all(
+        np.isfinite(value) and value > 0 for value in (move_temperature, split_temperature)
+    ):
+        raise ValueError("Invalid spatial logits or action temperatures")
+    transformed = acting_logits(outputs, move_temperature, split_temperature, np)[:3529]
+    logits = np.where(legal, transformed, -np.inf)
+    probabilities = np.exp(logits - logits.max())
+    return probabilities / probabilities.sum()
+
 
 class SpatialPlayerPolicy:
     def __init__(self, bundle):
@@ -31,6 +49,22 @@ class SpatialPlayerPolicy:
             raise ValueError("Spatial model channels differ from its public scalar codec")
         if manifest.get("channels", self.channels) != self.channels:
             raise ValueError("Spatial bundle channel metadata differs from its model")
+        acting = manifest.get("serving_action_selection", {"mode": "argmax"})
+        if not isinstance(acting, dict):
+            raise ValueError("Invalid spatial serving action selection")
+        if acting.get("mode") == "structured_sample" and set(acting) == {
+            "mode", "move_temperature", "split_temperature"
+        } and all(isinstance(acting[key], (int, float)) and not isinstance(acting[key], bool)
+                  and np.isfinite(acting[key]) and acting[key] > 0 for key in (
+            "move_temperature", "split_temperature"
+        )):
+            self.action_mode = "structured_sample"
+            self.move_temperature = float(acting["move_temperature"])
+            self.split_temperature = float(acting["split_temperature"])
+        elif acting == {"mode": "argmax"}:
+            self.action_mode = "argmax"
+        else:
+            raise ValueError("Invalid spatial serving action selection")
         self.public_scalar_ablation = codec.get("public_scalar_ablation", False)
         if self.public_scalar_ablation and self.channels != 16:
             raise ValueError("Public scalar ablation requires the sixteen-channel codec")
@@ -58,6 +92,7 @@ class SpatialPlayerPolicy:
             elif value.dtype != np.float32:
                 raise ValueError("Spatial inference requires float32 weights")
         self.features = f
+        self.reset("spatial-policy-default")
 
     @staticmethod
     def silu(value, xp=np):
@@ -97,16 +132,23 @@ class SpatialPlayerPolicy:
         return output
 
     def reset(self, seed):
-        # The verified actor has no temporal dependence.
-        pass
+        # The graph has no temporal state. Sampling uses a reproducible stream.
+        if self.action_mode == "structured_sample":
+            digest = hashlib.sha256(str(seed).encode()).digest()
+            self.action_rng = np.random.default_rng(int.from_bytes(digest[:16], "little"))
 
     def predict(self, seat, observation):
         values = np.asarray(observation.values, np.float32)
         mask = np.asarray(observation.action_masks, bool)
         if seat != 0 or values.shape != (1, self.observation_size) or mask.shape != (1, 3529) or not mask.any():
             raise ValueError("Invalid spatial single-seat observation or mask")
-        output = self.forward(values)[0, :3529]
-        logits = np.where(mask[0], output, -np.inf)
-        probabilities = np.exp(logits - logits.max())
-        probabilities /= probabilities.sum()
+        output = self.forward(values)[0]
+        if self.action_mode == "structured_sample":
+            probabilities = structured_action_probabilities(
+                output, mask[0], self.move_temperature, self.split_temperature
+            )
+        else:
+            logits = np.where(mask[0], output[:3529], -np.inf)
+            probabilities = np.exp(logits - logits.max())
+            probabilities /= probabilities.sum()
         return SimpleNamespace(probabilities=probabilities.tolist())

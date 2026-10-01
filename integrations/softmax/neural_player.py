@@ -30,6 +30,8 @@ def select_action(policy: FrozenPolicy | NativePlayerPolicy | SpatialPlayerPolic
     )
     return decode_policy_action(
         prediction.probabilities, factorized_actions=codec_kwargs.get("factorized_actions", True),
+        rng=policy.action_rng if isinstance(policy, SpatialPlayerPolicy)
+        and policy.action_mode == "structured_sample" else None,
     )
 
 
@@ -81,7 +83,7 @@ async def play(url: str, bundle: Path) -> None:
     }
     values, mask = encode_wire_observation(warmup, **codec_kwargs)
     policy.predict(0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()]))
-    policy.reset("coworld-classic")
+    policy.reset(os.urandom(16).hex() if spatial and policy.action_mode == "structured_sample" else "coworld-classic")
     replies, slowest = 0, 0.0
     async with connect(url, ping_timeout=None, max_size=128 * 1024, open_timeout=30) as ws:
         async for raw in ws:

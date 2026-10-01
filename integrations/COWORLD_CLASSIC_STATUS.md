@@ -15284,3 +15284,61 @@ SHA256 `e124a4aa0dcb5ca0a1bc2bdb2f47ef485a04067e583d903d4127c79a7a06e16a`.
 All these GPU jobs checked physical allocation and UUID and observed
 an idle allocated B300; no actual GPU contention was found. Do not
 apply a serving bias or promote a candidate on this evidence.
+
+### 2026-10-01 — sampled-serving parity and lower-rate population gain
+
+The Softmax player previously decoded `SpatialPlayerPolicy.predict`
+probabilities with raw argmax, although PPO had acted by sampling the
+structured route/split distribution. An opt-in spatial bundle field
+`serving_action_selection` now records `structured_sample` with exact
+route and split temperatures. The serving adapter draws from the
+masked transformed categorical and decodes that flat action; old
+bundles remain argmax. Its RNG resets for each hosted process after
+warmup. A B300 smoke check compared NumPy serving probabilities to
+JAX acting logits and found maximum absolute difference2.98e-8 on
+the tested legal action set; seeded action decoding was reproducible.
+This establishes distribution and codec parity, subject to a full
+hosted match check before promotion.
+
+Startup jobs34683 and34686 exited before training due to a Docker
+mount addressing the staged module at the wrong container path.
+Job34689 passed serving parity but correctly stopped before any
+training step when the native environment fingerprint detected the
+changed serving source module. The corrected runner keeps the pinned
+native training environment unchanged and mounts the new serving
+module only for parity, export, and evaluation. No checkpoint or
+training step was replayed by these failed jobs.
+
+Job34692 used one physically idle B300 UUID
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`,8CPU/64GiB, the
+verified official Classic engine SHA
+`f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318`,
+8192 parallel games, H256, minibatch8192, replay0.5, gamma and
+shaping gamma0.999, win-only terminal reward, shaping weight0.25,
+and route/split temperatures0.05/0.15. It changed only learning rate
+from0.003 to0.001 relative to the prior six-opponent pilot, using a
+fresh optimizer and seed6756 from the117M source SHA `4d4c46d7...1060`.
+The source's exact self-match sampling gate was reused and verified.
+The four frozen snapshots and Expander/Sentinel each occupied682–683
+games on both learner seats at reset, with no teacher action overrides.
+Completed16,777,216 physical steps in eight epochs. Warm native
+end-to-end SPS was about163k, final162,644; dashboard GPU88%,
+VRAM196.5 GiB. Rollout9.87s and optimization2.97s per warm epoch.
+There were23,400 terminal agents,240,295 half moves,0 nonfinite
+rewards, and0 illegal actions. Final checkpoint SHA256
+`a5aef925eb56053ecaef4061cd30d5c7a9a8544c69af3251692dae862212ba5d`.
+The verified exported bundle declares sampled serving T0.05/0.15.
+
+Versus frozen234M, the first independent1024-game panel on429 maps
+had source sampled474W/541L/9D and child491W/520L/13D, paired
+score delta+0.0371, map-cluster95% interval[-0.0152,+0.0913].
+The separate2048-game panel on888 maps had source988W/1046L/14D
+and child1043W/992L/13D, paired delta+0.0532,
+CI[+0.0161,+0.0899]: a held-out sampled-play improvement.
+Raw argmax on the first panel moved from482W/519L/23D to
+473W/534L/17D, delta-0.0234 with CI crossing zero; the candidate
+must be judged through its parity-checked sampled serving path.
+Verified archive `/tmp/relh-classic-iterated-lr001-separated-result.tar.gz`
+SHA256 `1e43491c6c7441ce4e6cf5bfcdc2f779ffb3a1d81e71381c9343647bf79cbbd7`.
+No hosted or champion claim yet. Continue the lower-rate recipe in
+bounded blocks with fresh independent map gates; stop on plateau.

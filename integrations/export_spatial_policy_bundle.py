@@ -10,7 +10,14 @@ import sys
 import numpy as np
 
 
-def export_bundle(build, training, checkpoint, sha256, factory_source, output):
+def export_bundle(build, training, checkpoint, sha256, factory_source, output, *,
+                  serving_move_temperature=None, serving_split_temperature=None):
+    if (serving_move_temperature is None) != (serving_split_temperature is None):
+        raise ValueError("Structured serving requires both action temperatures")
+    if serving_move_temperature is not None and not all(
+        np.isfinite(value) and value > 0 for value in (serving_move_temperature, serving_split_temperature)
+    ):
+        raise ValueError("Structured serving temperatures must be finite and positive")
     spec = importlib.util.spec_from_file_location("integrations.generals_fabric", factory_source)
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -54,11 +61,17 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output):
     np.savez_compressed(output / "weights.npz", **weights)
     files = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
              for name in ("build.json", "training.json", "policy.bin", "weights.npz")}
+    serving_action_selection = (
+        dict(mode="structured_sample", move_temperature=serving_move_temperature,
+             split_temperature=serving_split_temperature)
+        if serving_move_temperature is not None else dict(mode="argmax")
+    )
     (output / "spatial-policy.json").write_text(json.dumps(dict(
         schema="puffer5-generals-spatial-v1", files=files, features=model.features,
         channels=model.channels,
         global_features=model.global_features, prior_count=len(model.priors),
         factory_source_sha256=hashlib.sha256(factory_source.read_bytes()).hexdigest(),
+        serving_action_selection=serving_action_selection,
     ), indent=2) + "\n")
 
 
@@ -67,8 +80,12 @@ def main():
     for name in ("build", "training", "checkpoint", "factory-source", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--sha256", required=True)
+    parser.add_argument("--serving-move-temperature", type=float)
+    parser.add_argument("--serving-split-temperature", type=float)
     args = parser.parse_args()
-    export_bundle(args.build, args.training, args.checkpoint, args.sha256, args.factory_source, args.output)
+    export_bundle(args.build, args.training, args.checkpoint, args.sha256, args.factory_source, args.output,
+                  serving_move_temperature=args.serving_move_temperature,
+                  serving_split_temperature=args.serving_split_temperature)
 
 
 if __name__ == "__main__":
