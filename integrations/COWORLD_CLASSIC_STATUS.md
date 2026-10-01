@@ -16813,3 +16813,49 @@ change is justified. The unused PPO and serving wiring was removed;
 the evaluator diagnostic remains to document and reproduce the
 negative result. The half gap is a strategic choice problem, not a
 safe global frequency correction.
+
+The Classic training pool refreshes every horizon256 ticks. At8192
+parallel games, a33,554,432-step run spans16 pool generations;
+with the previous256-map pool this exposes at most4096 generated
+pool entries. To isolate map diversity, job35014 repeated the
+self-anchored source218M/6-frozen+2-script pilot with only
+`coworld_pool_size` changed256→8192 and seed6775. Same official
+Classic engine, structured sampled0.05/0.15 learner action, neutral6,
+weak-owned4, doomed4, win-only terminal reward, gamma and shaping
+gamma0.999, opponent weights[1,1,3,1,1,4,1,1],8192 games×H256,
+minibatch8192/replay0.5. Script
+`/tmp/relh-classic-pool8192-node.sh` SHA256
+`5e30aaeaa0c214f4a16c89c428c013b676a55f520a1094cd84ed646bfa5e7526`,
+node output `/var/tmp/relh-generals-recovery/classic-pool8192-pilot-35014`,
+Mac archive `/tmp/relh-classic-pool8192-result.tar.gz` SHA256
+`674c9ddc626e49dedb7915cb91ddb1029d0d3b8944d8a3d672fe65cc01c6e7df`.
+
+Job35014 COMPLETED exit0 on physical B300 UUID
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`, initially0MiB/0%,
+with no compute process on that UUID and no measured contention.
+Requested8 CPUs/64GiB/nice100/35min. The exact verified native
+build and balanced opponent-by-seat audit passed. Final warmed
+end-to-end Puffer SPS117,300 across33,554,432 environment steps,
+above the30k gate but below the300k aspiration. Final epoch
+environment7.453s(41%), model5.862s(32%), train4.507s(25%),
+VRAM197.3/268GiB; of208 two-second GPU samples,148 after120s had
+median utilization59%, mean57.3%, max sampled memory202,066MiB.
+All33,554,432 actions legal; zero nonfinite rewards; terminal agents
+45,800 (3 zero reward), positive rewards15,056,449 and negative
+rewards17,799,086. Exported checkpoint SHA256
+`ad40950c6eeca6d9f1757cfdd4a180a041a15eee56e8537966b6905352754474`
+keeps PPO/serving action selection aligned.
+
+Fresh2048 paired Classic games versus the exact218M source actor
+scored source992W/1011L/45D and child983W/1022L/43D,
+score delta−0.00977, map-cluster95% CI[−0.05567,+0.03639]
+on879 unique maps. Fresh1024 paired games versus frozen234M
+scored source747W/263L/14D and child742W/270L/12D,
+delta−0.01172, CI[−0.06863,+0.04676] on649 unique maps.
+Neither difference is resolved, and the child again moved into fewer
+neutral destinations (115,042→109,455 versus source;
+55,412→52,110 versus frozen234M) with lower turn50 land margin
+against source (sum−250→−578). Map diversity alone preserved
+throughput but did not reverse the expansion drift or demonstrate
+strength. Do not continue this checkpoint for billions, upload it,
+or promote it without a new positive strength signal.
