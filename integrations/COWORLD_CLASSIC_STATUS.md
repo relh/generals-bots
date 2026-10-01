@@ -17105,3 +17105,32 @@ node output `/var/tmp/relh-generals-recovery/classic-v5pool-pilot-35101`,
 Mac result `/tmp/relh-classic-v5pool-result.tar.gz`. Do not submit a
 duplicate job. Matched source and frozen234M evaluations and a
 3072-game population evaluation are scheduled after training.
+
+Job 35101 ended exit1 **after** its training and export completed.
+Its initial physical B300 UUID was
+`GPU-0c5605ae-e405-99f1-848e-9fa81e41482a`, initially 0 MiB/0%
+with no compute process. Early warmed SPS was 78,900; final warmed
+end-to-end SPS was **84,300**, still above the 30k gate, but lower
+than the previous 119,600 with two scripts. Across 33,554,432
+steps there were zero illegal actions, zero nonfinite rewards,
+41800 terminal agents (one zero-reward terminal), 405815 half moves,
+and 287069 passes. Post-warmup GPU utilization median was 69%,
+mean 65.5%, with peak memory 202070 MiB over 270 two-second samples.
+The exported checkpoint SHA256 is
+`ae397c243c3d2f0ac3976387e26261d45785231bfe9b17125907ad9a9129dcfd`.
+Archive `/tmp/relh-classic-v5pool-result.tar.gz` SHA256
+`9eb5ea919247b19881105e6941dacff450928db0fd7720cd2215c05330d921c0`.
+
+The source baseline against itself completed, but the first candidate
+evaluator raised `GeneralsPufferEnvironment.__init__() got an
+unexpected keyword argument 'scripted_opponents'`. The single-frozen
+wrapper already removed population-only `opponent_weights` before
+calling the base environment; it now also removes
+`scripted_opponents`. This fixes evaluation of a portable actor
+trained with a configurable pool. No training or baseline is being
+replayed. A bounded evaluation-only recovery is active as Slurm job
+**35133**; script `/tmp/relh-classic-v5pool-recovery-node.sh`
+SHA256 `8dadedd1ec1e9fb052ef9a9722146fafbdbcb525c2e5151b289d0247c5465551`,
+node root `/var/tmp/relh-generals-recovery/classic-v5pool-recovery-35133`,
+Mac archive `/tmp/relh-classic-v5pool-recovery-result.tar.gz`.
+Inspect job 35133 and its archive before any retry.

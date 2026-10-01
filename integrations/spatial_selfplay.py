@@ -42,6 +42,7 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
         # Evaluation can load a population training manifest while instantiating
         # this single-opponent wrapper. Pool scheduling is irrelevant here.
         options.pop("opponent_weights", None)
+        options.pop("scripted_opponents", None)
         if options.get("teacher") is not None or options.get("supervise_teacher") or options.get("teacher_rollouts"):
             raise ValueError("Spatial frozen opponents require teacher-free training")
         if not options.get("balance_opponent_sides") or parallel_games % 2:
