@@ -23,7 +23,12 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         if not record["coworld_classic_rules"]:
             raise ValueError("Both matches must use official Coworld Classic rules")
     settings = ("games", "seed", "pool_size", "opponent_sha256", "episode_limit",
-                "coworld_classic_rules", "opponent_action_selection")
+                "coworld_classic_rules")
+    # Historical records hard-coded "argmax" even when the frozen bundle
+    # sampled actions. Compare the recorded contract when both records have it;
+    # the exact opponent checkpoint still has to match in every case.
+    if all("opponent_action_parameters" in record for record in records):
+        settings += ("opponent_action_selection", "opponent_action_parameters")
     if not allow_policy_mode_change:
         settings += ("action_selection", "sample_seed", "sampling_temperature", "half_logit_bias")
     elif records[0]["checkpoint_sha256"] != records[1]["checkpoint_sha256"]:

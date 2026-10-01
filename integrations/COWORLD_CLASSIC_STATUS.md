@@ -17189,3 +17189,24 @@ the existing relh league champion remains unchanged. The next
 investigation needs to address the late neutral-expansion and army
 deficit visible in the Daveey replays rather than merely reweighting
 similar frozen or scripted opponents.
+
+### 2026-10-01 — sampled-opponent evaluation metadata correction
+
+Rechecked the effective V5-pool configuration: learner gamma and GAE
+lambda are both 0.999, matching shaping gamma. Earlier long-credit and
+same-checkpoint temperature probes already tested those hypotheses; no
+repeat training was started. The earlier current-actor frozen self-play
+pool also failed to show a held-out gain. The full Slurm queue showed no
+active Generals job, while three unrelated B300 jobs remained active.
+
+The frozen-match evaluator was reporting `opponent_action_selection` as
+`argmax` for every opponent, even though the spatial frozen-opponent
+environment already follows a sampled bundle's serving contract. This
+was a reporting bug, not an action-selection or result bug. New records
+now report the actual opponent mode and sampled-action parameters. The
+paired analyzer checks the parameters when both records contain them,
+while accepting older records whose hard-coded `argmax` metadata is
+unreliable, provided the exact opponent checkpoint matches. Four
+targeted tests passed, including a changed-sampler rejection and a
+legacy-record compatibility check. No GPU job, XP request, upload, or
+champion change was made.

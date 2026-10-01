@@ -10,7 +10,8 @@ from integrations.launch_spatial_selfplay_training import validate_sampling_gate
 SHA = "a" * 64
 
 
-def _match(directory, *, outcomes, mode, temperature, half_bias=0.0):
+def _match(directory, *, outcomes, mode, temperature, half_bias=0.0,
+           opponent_selection="argmax", opponent_parameters=None):
     directory.mkdir()
     outcomes = np.asarray(outcomes, np.int8)
     np.save(directory / "outcomes.npy", outcomes)
@@ -21,7 +22,9 @@ def _match(directory, *, outcomes, mode, temperature, half_bias=0.0):
         games=4, seed=1, pool_size=2, opponent_sha256=SHA, episode_limit=2000,
         action_selection=mode, sample_seed=7 if mode == "sample" else None,
         sampling_temperature=temperature, half_logit_bias=half_bias,
-        opponent_action_selection="argmax", checkpoint_sha256=SHA,
+        opponent_action_selection=opponent_selection, checkpoint_sha256=SHA,
+        **({"opponent_action_parameters": opponent_parameters}
+           if opponent_parameters is not None else {}),
         wins=int((outcomes == 1).sum()), losses=int((outcomes == -1).sum()),
         draws=int((outcomes == 0).sum()), score=float(outcomes.mean()),
     )))
@@ -55,6 +58,19 @@ def test_pair_analysis_records_split_bias(tmp_path):
                      allow_policy_mode_change=True)
     assert report["baseline_half_logit_bias"] == 0.0
     assert report["candidate_half_logit_bias"] == .35
+
+
+def test_pair_analysis_checks_recorded_frozen_sampler(tmp_path):
+    baseline, changed, legacy = (tmp_path / name for name in ("baseline", "changed", "legacy"))
+    outcomes = [1, -1, 1, -1]
+    _match(baseline, outcomes=outcomes, mode="sample", temperature=.05,
+           opponent_selection="structured_sample", opponent_parameters={"move_temperature": .05})
+    _match(changed, outcomes=outcomes, mode="sample", temperature=.05,
+           opponent_selection="structured_sample", opponent_parameters={"move_temperature": .10})
+    with pytest.raises(ValueError, match="opponent_action_parameters"):
+        analyze(baseline, changed, seed=1, resamples=100)
+    _match(legacy, outcomes=outcomes, mode="sample", temperature=.05)
+    assert analyze(legacy, baseline, seed=1, resamples=100)["score_delta"] == 0
 
 
 def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):

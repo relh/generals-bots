@@ -275,7 +275,17 @@ def main():
                                              pass_actions=int(action_counts[2])),
                   first_episode_vs_raw_greedy=dict(route_changes=int(action_disagreements[0]),
                                                    split_changes=int(action_disagreements[1])),
-                  opponent_action_selection="argmax",
+                  opponent_action_selection=env._frozen.action_mode,
+                  opponent_action_parameters=(
+                      dict(
+                           move_temperature=env._frozen.move_temperature,
+                           split_temperature=env._frozen.split_temperature,
+                           neutral_route_bias=env._frozen.neutral_route_bias,
+                           weak_owned_route_penalty=env._frozen.weak_owned_route_penalty,
+                           doomed_attack_route_penalty=env._frozen.doomed_attack_route_penalty)
+                      if env._frozen.action_mode == "structured_sample"
+                      else {}
+                  ),
                   checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
                   opponent_sha256=hashlib.sha256((args.opponent_bundle / "policy.bin").read_bytes()).hexdigest(),
                   episode_limit=env.horizon,
