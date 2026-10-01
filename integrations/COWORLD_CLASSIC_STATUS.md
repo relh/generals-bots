@@ -15193,3 +15193,56 @@ The original held-out seed's 126 maps were too narrow to select this
 recipe reliably. Future gates should require independent maps before
 long training. Next candidate change is an iterated opponent pool that
 includes a recent frozen policy, tested at a bounded step budget.
+
+### 2026-10-01 — recent-snapshot population did not pass independent gates
+
+Job34487 rebuilt the pinned Puffer5 binary for a six-opponent Classic
+population: frozen134M/218M/234M plus the recent117M actor, Expander,
+and Sentinel. Each opponent occupied 682 or683 games **on each seat**
+at reset. The source117M checkpoint SHA256 was
+`4d4c46d78c24dde44d98e1218891244cda39fea76aa5b9db26d9a248f6641060`;
+greedy versus itself won252/512 and the exact training sampler (route
+T0.05, split T0.15) won227/512 on126 maps, passing the pretraining gate.
+The B300 UUID `GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565` was
+physically idle0 MiB/0% at allocation. Native build used node `/tmp`
+because Docker root had only5.6 GiB free. The native model SHA stayed
+`811e8de55c3fe327a670a362b076f88fc8e56b9525a347ed89c945cfe9e8863b`;
+the environment SHA changed to
+`78abc8b2fcdb169ac95869fd1ac9a30f3e3c0e94ad60ff5aca05ace78fe30aff`.
+
+With one B300,8CPU/64GiB,8192 games, H256, minibatch8192,
+replay0.5, LR0.003, entropy0.001, gamma=shaping gamma0.999, win-only
+terminal reward, shaping weight0.25, and a fresh optimizer, the pilot
+completed16,777,216 steps in eight epochs. Warm epochs 2–8 ran at
+167–169k end-to-end environment SPS after compilation, native final
+SPS167,079, dashboard GPU89%, VRAM196.6 GiB. Evaluation took9.5s
+per warm epoch (environment6.8s, model2.7s); optimization3.0s.
+There were22,711 terminal agents,279,933 half-army actions (1.67%),
+zero nonfinite rewards, and zero illegal actions in16.8M actions.
+Final checkpoint SHA256 is
+`38c0af7a418199a8d60419d39d3434e73214bb8f63ba4f06e560c748a35f8a4b`.
+Run and build archive `/tmp/relh-classic-iterated-structured-result.tar.gz`
+SHA256 `6556af289715cc40e0749928a68ab5d051efb17cbcc91fff7f2e3f871b966172`.
+
+On the first independent1,024-game panel (seed35516,429 maps),
+versus frozen234M, raw greedy source482W/519L/23D and child
+461W/540L/23D gave paired score delta -0.0410, map-cluster95% CI
+[-0.1213,+0.0376]. Sampled source474W/541L/9D and child
+498W/516L/10D gave +0.0479, CI[-0.0173,+0.1152]. Both were
+inconclusive. The separate job34504 therefore tested2,048 games,
+seed35517,1024-map pool,888 unique maps. Raw greedy source
+1017W/1001L/30D and child996W/1027L/25D gave delta -0.0229,
+CI[-0.0777,+0.0332]. Sampled source988W/1046L/14D and child
+972W/1052L/24D gave delta -0.0107, CI[-0.0509,+0.0286]. The
+apparent sampled gain did not replicate, and raw serving regressed in
+direction on both panels. The larger panel's B300 was physically idle
+at allocation with about5.0 GiB free on Docker root; no contention
+was observed. Verified archive
+`/tmp/relh-classic-iterated-independent-result.tar.gz` SHA256
+`b1c97433ada7c366fb9cb88a36197bb28766c7febcab1145da515bde41d63faa`.
+Do not scale or submit this child. The remaining measurable acting
+mismatch is that raw-argmax serving made essentially no half-army
+moves (5/643,591 first-episode actions on the first panel), whereas
+the training sampler made1.67% half moves. Test a calibrated serving
+split decision only with an independent held-out gate before changing
+the hosted policy.
