@@ -15153,3 +15153,43 @@ pilot may therefore test T=0.075, subject to its own source self-match
 gate, but T=0.10 and serving argmax changes are not justified.
 Archive `/tmp/relh-classic-acting-greedy-diagnostic-result.tar.gz`
 SHA256 `4c04061f2edc43316064f1217c3f6cc981427a5d7aa2fded1e33875a85f38326`.
+
+Job 34462 tested a bounded route T=0.075 / split T=0.15 PPO change
+from the 117M actor, without changing its five-opponent population.
+Its exact source self-match gate passed: raw greedy252W/260L/0D
+versus sampled235W/276L/1D on 512 games/126 maps. The one allocated
+B300 UUID `GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565` was physically
+idle at allocation (0 MiB, 0%). With 8192 games, H256, minibatch8192,
+replay0.5, gamma=shaping gamma0.999, teacher-free win-only terminal
+reward, and fresh seed6754/optimizer, the pilot completed33,554,432
+physical steps. Native final end-to-end SPS167,705 after warmup,
+GPU dashboard78%, VRAM196.5 GiB, 46,543 terminal agents, zero
+nonfinite rewards, 707,421 half moves (2.11%). Final checkpoint
+SHA256 `902797fefd46268aee7fae81a3b12565896781c0e14c18933e82cfd2d0b5ccca`.
+Original 512-game seed35514 versus frozen234M suggested improvement:
+raw greedy source231W/280L/1D versus child254W/257L/1D, paired
+score delta +0.0898 and map-cluster 95% interval [-0.0618,+0.2510];
+sampled at route T=0.075 source221W/290L/1D versus child233W/277L/2D,
+delta +0.0488, interval [-0.0519,+0.1466]; sampled T=0.05 source
+221W/291L/0D versus child242W/270L/0D, delta +0.0820,
+interval [-0.0038,+0.1673]. All intervals include zero. Archive
+`/tmp/relh-classic-route075-pilot-result.tar.gz` SHA256
+`c3440dbe0d11a78be718e30bb9b6ad84c9343073b8dd0b6389769aaad409da9d`.
+
+Independent job34479 then evaluated the same source and child on
+1,024 paired games with seed35516, pool512, and 429 unique initial
+maps against the same frozen234M. The allocated B300 UUID matched and
+was idle0 MiB/0% at allocation; node Docker disk had only about5.6 GiB
+free, so the job stopped between panels if free space fell below3 GiB.
+Raw greedy source482W/519L/23D versus child455W/553L/16D had paired
+score delta -0.0596, map-cluster 95% interval [-0.1401,+0.0201].
+Sampled route T=0.05 source474W/541L/9D versus child445W/570L/9D
+had delta -0.0566, interval [-0.1197,+0.0068]. Neither interval proves
+a regression, but both independent estimates reverse the selected
+512-game improvement. Do not scale, serve, or promote this child.
+Archive `/tmp/relh-classic-route075-independent-result.tar.gz` SHA256
+`014dd617257703f2409c07a289f6faca33ca5cdbb8c2bf23364eba942ca2fc6f`.
+The original held-out seed's 126 maps were too narrow to select this
+recipe reliably. Future gates should require independent maps before
+long training. Next candidate change is an iterated opponent pool that
+includes a recent frozen policy, tested at a bounded step budget.
