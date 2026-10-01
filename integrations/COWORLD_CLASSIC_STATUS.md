@@ -15633,3 +15633,32 @@ or early expansion. Weighted training archive
 post-eval archive `/tmp/relh-classic-weighted-posteval-result.tar.gz`
 SHA256 `c1502772440277fd5ab55091f7706c9942b8f6b257260a14aea254c5c0728070`.
 No champion change. No Generals GPU job remains from these experiments.
+
+Weighted-pool continuation job34815 completed exit0 on the initially
+idle allocated physical B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`. It initialized from
+the exact weighted16M actor SHA `8ede35f0...a69a4cb`, retained the
+weighted[1,1,4,1,2,1,1] balanced opponent pool, win-only terminal
+reward, potential shaping0.25 with gamma/shaping0.999, sampled
+move/split0.05/0.15, LR0.001,8192 games×H256, and trained
+50,331,648 new Classic steps with fresh optimizer. New build retained
+model SHA `811e8de5...e8863b`; environment SHA
+`d049a5ac...c50d66156` reflects the evaluator-wrapper fix.
+Warmed end-to-end Puffer SPS164,300, GPU88%,196.6/268GiB VRAM;
+final epoch environment6.973s, model2.769s, train2.966s per
+2,097,152-step epoch. All50,331,648 actions legal;0 nonfinite
+rewards. Final actor SHA
+`776900bb86778df2493447b37778dd055be9d8608c5d7f37a805d7abfbcba01e`.
+
+Fresh seed35529/2048 paired Classic games/887 unique maps against
+the same frozen234M reference, both sampled0.05/0.15: source weighted
+16M actor1052W/980L/16D; new50M continuation1127W/903L/18D.
+Paired score delta+0.07422, map-bootstrap95%CI[+0.02912,+0.11976],
+312 better/234 worse/1502 same; **heldout improvement established**.
+The actor is now suitable for hosted evaluation and another bounded
+iterated self-play block, subject to the same throughput and strength
+gates. The new training archive
+`/tmp/relh-classic-weighted-50m-result.tar.gz` SHA256
+`7c56b76bb3d7d9e4483d1d4fcdd380ea0c74b9877beab85f37a116b9abce2954`.
+No league submission or champion change yet; no Generals GPU job
+remains from34815.
