@@ -37,6 +37,8 @@ def main():
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
                         help="Diagnostic: add this offset to learner half-move logits before greedy selection")
+    parser.add_argument("--expansion-audit", action="store_true",
+                        help="Count first-episode move destinations and territory/army margins at fixed turns")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -96,9 +98,38 @@ def main():
     outcomes = np.zeros(args.games, np.float32)
     action_counts = np.zeros(3, np.int64)
     action_disagreements = np.zeros(2, np.int64)
+    destination_counts = np.zeros(4, np.int64)
+    checkpoints = (25, 50, 100, 150, 200)
+    progress = {}
+
+    @jax.jit
+    def audit_destinations(states, sides, indices):
+        cells = 21 * 21
+        passing = indices == 8 * cells
+        route = indices % (4 * cells)
+        source = route % cells
+        direction = route // cells
+        row, col = source // 21, source % 21
+        dr = jnp.take(jnp.array((-1, 1, 0, 0)), direction)
+        dc = jnp.take(jnp.array((0, 0, -1, 1)), direction)
+        dest_row = jnp.clip(row + dr, 0, 20)
+        dest_col = jnp.clip(col + dc, 0, 20)
+        rows = jnp.arange(indices.shape[0])
+        own = states.ownership[rows, sides, dest_row, dest_col]
+        neutral = states.ownership_neutral[rows, dest_row, dest_col]
+        return jnp.where(passing, 3, jnp.where(own, 0, jnp.where(neutral, 1, 2))).astype(jnp.int8)
+
+    @jax.jit
+    def audit_progress(states, sides):
+        rows = jnp.arange(sides.shape[0])
+        land = jnp.sum(states.ownership, axis=(2, 3), dtype=jnp.int32)
+        army = jnp.sum(states.armies[:, None] * states.ownership, axis=(2, 3), dtype=jnp.int32)
+        return (land[rows, sides] - land[rows, 1 - sides],
+                army[rows, sides] - army[rows, 1 - sides])
     try:
         values, masks = env.reset_device(f"{args.seed}:0:0")
         sides = np.asarray(env.sides)
+        device_sides = jnp.asarray(sides)
         assert (sides == 0).sum() == (sides == 1).sum() == args.games // 2
         np.save(args.output / "initial_sides.npy", sides)
         leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
@@ -144,6 +175,14 @@ def main():
             action_disagreements[0] += np.count_nonzero((chosen_route != greedy_route) & ~finished)
             action_disagreements[1] += np.count_nonzero((chosen_route == greedy_route)
                                                         & (chosen != raw_greedy) & ~finished)
+            if args.expansion_audit:
+                destinations = np.asarray(audit_destinations(env.states, device_sides, jnp.asarray(chosen)))
+                destination_counts += np.bincount(destinations[~finished], minlength=4)
+                if turn in checkpoints:
+                    land_margin, army_margin = map(np.asarray, audit_progress(env.states, device_sides))
+                    progress[str(turn)] = dict(games=int((~finished).sum()),
+                                               land_margin_sum=int(land_margin[~finished].sum()),
+                                               army_margin_sum=int(army_margin[~finished].sum()))
             if turn == 0:
                 reference = policy.forward(np.asarray(values))
                 if args.half_logit_bias:
@@ -184,6 +223,13 @@ def main():
                   pool_generation=int(env._pool_generation),
                   wins=int((outcomes > 0).sum()), losses=int((outcomes < 0).sum()), draws=int((outcomes == 0).sum()),
                   score=float(outcomes.mean()), turns=turn + 1, wall_seconds=time.monotonic() - start)
+    if args.expansion_audit:
+        result["expansion_audit"] = dict(
+            destination_counts=dict(own=int(destination_counts[0]), neutral=int(destination_counts[1]),
+                                    enemy=int(destination_counts[2]), passes=int(destination_counts[3])),
+            checkpoints=progress,
+            scope="Post-game omniscient audit of first-episode actions and state; no hidden information fed to actors",
+        )
     np.save(args.output / "outcomes.npy", outcomes)
     (args.output / "evaluation.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result), flush=True)

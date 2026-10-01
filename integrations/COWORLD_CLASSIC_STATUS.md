@@ -15744,3 +15744,86 @@ Do not extend this reward setting or promote its actor. Final archive
 `/tmp/relh-classic-frontier-result.tar.gz` SHA256
 `87fc0451aade98f8007fd392c00eb13177e3a999de97a333ab4fbb7d20ca0210`.
 No Generals GPU job remains from this pilot.
+
+### 2026-10-01 — stronger land potential and current-actor self-play
+
+Bounded land-potential isolation job34838 completed exit0 from the
+preserved184M sampled actor, changing only `land_shaping_weight` from
+0.3 to1.0. The official Classic engine, win-only terminal reward,
+gamma=shaping gamma0.999, weighted seven-opponent pool, and sampled
+move/split temperatures0.05/0.15 were pinned. The initially idle
+allocated B300 GPU was UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,0MiB/0%, with
+8CPU/64GiB. It trained16,777,216 physical steps at final end-to-end
+165,300 SPS; all actions were legal and rewards finite. The policy
+checkpoint is SHA256
+`20de60beb02b98b1e9f5d8428ce734f56816b15f3cafdd96fe91ac7f72dc2e5b`.
+Fresh seed35532/2048 paired games against frozen234M on892 unique maps
+gave source184M1085W/940L/23D and land-potential child
+1072W/960L/16D. Paired score delta -0.01611, map-bootstrap95%CI
+[-0.05575,+0.02299], inconclusive. First-episode half moves rose
+8986→10480, without a win gain. Do not extend or promote this setting.
+Archive `/tmp/relh-classic-landpotential-result.tar.gz` SHA256
+`b29f2d660b48021facd9c4c7053b41d065ca3ad0739f157b44a32eea26f70afa`.
+
+The next bounded job34842 is a clean self-play pool isolation from
+the same preserved184M actor. It restores land potential0.3 and
+adds that actor as a frozen sampled opponent, retaining the previous
+five frozen policies and Expander/Sentinel. Integer opponent weights
+are [1,1,2,1,2,4,1,1], with balanced seats by construction.
+The sole train config change is seed6764. Script
+`/tmp/relh-classic-selfpool-node.sh` SHA256
+`e5aea4f6bc0bd1ee30ab7bed207404bd5f8223eb24fb2800a8ac5ede05da95f1`
+is syntax checked, pins source and build/config hashes, and runs a
+fresh2048 paired heldout gate after a16,777,216-step block. Full
+Slurm queue was checked before launch: no other Generals job; B300
+had relh jobs34841 and34819, and this job must pass the allocated
+physical GPU idle guard inside its node script. Its output is pinned
+to `/var/tmp/relh-generals-recovery/classic-selfpool-pilot-34842` and
+the Mac archive `/tmp/relh-classic-selfpool-result.tar.gz`. Check the
+existing job and archive before any follow-up; do not submit a duplicate.
+
+Job34842 completed exit0 on an initially idle physical B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`. The frozen184M opponent
+occupied1260 games per seat; frozen234M and sampled67M occupied630
+each, and all eight opponent types had balanced seats. The run
+trained16,777,216 Classic steps at final end-to-end155,200 SPS,
+with0 nonfinite rewards and all actions legal. Final checkpoint SHA256
+`f5649455fdd7f5ffcc8cfc38d30c0b29692931e1d21e88d7512970b04851db61`.
+Fresh seed35532/2048 paired games on890 unique initial maps versus
+frozen234M gave source184M1083W/937L/28D and self-pool child
+1061W/958L/29D, delta -0.02100, map-bootstrap95%CI
+[-0.05928,+0.01796], inconclusive. First-episode half actions rose
+9365→9892, without a win gain. Do not extend or promote this actor.
+Archive `/tmp/relh-classic-selfpool-result.tar.gz` SHA256
+`989c62b7cda0ceee8c65f916c21307578b224d9fa1c9ee3cdd02db1fbbf37a91`.
+No Generals training job remains from this pilot.
+
+The fixed-opponent evaluator now has an opt-in `--expansion-audit`
+for first-episode destination counts and turn25/50/100/150/200
+territory and army margins. It uses post-game omniscient state only
+for metrics; policy inputs and legal action selection are unchanged.
+A bounded GPU comparison of the exact184M source and self-pool child
+on fresh paired maps is running as job34846. It will establish whether
+the self-pool child changes neutral targeting or early land control
+before any further training intervention. Its node output is pinned
+to `/var/tmp/relh-generals-recovery/classic-expansion-audit-34846`,
+archive `/tmp/relh-classic-expansion-audit-result.tar.gz`. Check the
+existing job and archive; do not duplicate it.
+
+Job34846 completed exit0 on an initially idle allocated B300 GPU,
+using the checked-in evaluator SHA256 `a9582e68...e1b672b63` and
+fresh seed35533/2048 paired games on884 unique maps. Against the
+same frozen234M opponent, source184M won1114/lost920/drew14;
+self-pool child won1120/lost914/drew14. Paired delta+0.00586,
+map-bootstrap95%CI[-0.03327,+0.04608], inconclusive. Post-game
+first-episode destination counts were source69,498 neutral,302,246
+enemy,789,738 own,9536 passes; child69,774 neutral,302,429 enemy,
+788,244 own,9620 passes. At turn50 both had2048 live games and
+aggregate land margins were718 versus755, an average advantage of
+only0.018 tile/game for the child. This added opponent produced no
+material expansion shift and no demonstrated win gain. No actor
+promotion or longer continuation is justified by this evidence.
+Archive `/tmp/relh-classic-expansion-audit-result.tar.gz` SHA256
+`93b42be864fc6eb13ebd1c61f6c8b0c65f61ac1669cdcc147b3e2632700bd6a1`.
+No Generals GPU job remains from this evaluation.
