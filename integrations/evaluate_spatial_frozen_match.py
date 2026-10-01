@@ -13,7 +13,8 @@ from metta_training.environment import EnvironmentContext
 from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.evaluate_coworld_frozen_greedy import sample_flat_logits
-from integrations.spatial_action_sampling import acting_logits, public_neutral_route_bonus
+from integrations.spatial_action_sampling import (acting_logits, public_neutral_route_bonus,
+                                                  public_owned_split_bias, public_weak_owned_route_penalty)
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
 
@@ -41,6 +42,10 @@ def main():
                         help="Count first-episode move destinations and territory/army margins at fixed turns")
     parser.add_argument("--neutral-route-bias", type=float, default=0.0,
                         help="Diagnostic sampled-logit bonus for moves into visible empty neutral cells")
+    parser.add_argument("--owned-split-bias", type=float, default=0.0,
+                        help="Diagnostic conditional half-move bonus on owned routes from stacks >=5")
+    parser.add_argument("--weak-owned-route-penalty", type=float, default=0.0,
+                        help="Diagnostic route penalty for small-stack owned moves before 15 owned tiles")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -61,6 +66,12 @@ def main():
     if not np.isfinite(args.neutral_route_bias) or args.neutral_route_bias < 0 or (
             args.neutral_route_bias and args.sample_seed is None and not args.acting_greedy):
         raise ValueError("Neutral route bias requires sampled or acting-greedy actions and a finite nonnegative value")
+    if not np.isfinite(args.owned_split_bias) or args.owned_split_bias < 0 or (
+            args.owned_split_bias and args.split_sampling_temperature is None):
+        raise ValueError("Owned split bias requires structured actions and a finite nonnegative value")
+    if not np.isfinite(args.weak_owned_route_penalty) or args.weak_owned_route_penalty < 0 or (
+            args.weak_owned_route_penalty and args.split_sampling_temperature is None):
+        raise ValueError("Weak owned route penalty requires structured actions and a finite nonnegative value")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
         training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
         run = explicit_run or bundle.parent / "run"
@@ -158,21 +169,30 @@ def main():
             if args.sample_seed is None:
                 if args.acting_greedy:
                     logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
-                                                      args.split_sampling_temperature, np)[:, :3529])
+                                                      args.split_sampling_temperature, np,
+                                                      public_owned_split_bias(values, args.owned_split_bias, np)
+                                                      if args.owned_split_bias else None)[:, :3529])
                     if args.neutral_route_bias:
                         logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
+                    if args.weak_owned_route_penalty:
+                        logits += public_weak_owned_route_penalty(np.asarray(values), args.weak_owned_route_penalty, np)
                     chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
                 else:
                     chosen = biased_greedy
             else:
                 key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
                 logits = (acting_logits(jnp.asarray(outputs), args.sampling_temperature,
-                                       args.split_sampling_temperature, jnp)[:, :3529]
+                                       args.split_sampling_temperature, jnp,
+                                       jnp.asarray(public_owned_split_bias(np.asarray(values), args.owned_split_bias, np))
+                                       if args.owned_split_bias else None)[:, :3529]
                           if args.split_sampling_temperature is not None
                           else jnp.asarray(outputs[:, :3529]) / args.sampling_temperature)
                 if args.neutral_route_bias:
                     logits += jnp.asarray(public_neutral_route_bonus(
                         np.asarray(values), args.neutral_route_bias, np))
+                if args.weak_owned_route_penalty:
+                    logits += jnp.asarray(public_weak_owned_route_penalty(
+                        np.asarray(values), args.weak_owned_route_penalty, np))
                 chosen = np.asarray(sample_flat_logits(
                     key, logits, jnp.asarray(legal),
                 ))
@@ -222,6 +242,8 @@ def main():
                   split_sampling_temperature=args.split_sampling_temperature,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
+                  owned_split_bias=args.owned_split_bias,
+                  weak_owned_route_penalty=args.weak_owned_route_penalty,
                   first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
                                              pass_actions=int(action_counts[2])),
                   first_episode_vs_raw_greedy=dict(route_changes=int(action_disagreements[0]),

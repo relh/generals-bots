@@ -15923,3 +15923,145 @@ frozen234M were created once: seat0
 `xreq_d399bba0-4f94-472f-b539-c1afbfa6c174`. Both were pending
 on first read. Check these exact IDs before any new XP request; no
 league submission or champion change.
+
+Both hosted smoke requests completed without runtime failures: one loss and
+one win. Four further private 16-game XP requests, balanced 32 games per
+seat in aggregate, all completed without runtime failures. The top-ranked
+resolution was the same pinned Daveey v7 version in both panels, so the
+64-game result is against one opponent, not a varied pool. Request IDs:
+`xreq_22ae2875-c07d-46a6-8f57-7c9b1aebf902`,
+`xreq_c5a3df86-a8af-4534-a553-13cac6541dc2`,
+`xreq_f882b301-ac0a-4cdb-8539-de7f87ade14d`, and
+`xreq_7d525622-8aab-445a-93f3-145f1c75ec20`.
+The exact uploaded candidate scored 13W/49L/2D overall, seat0
+7W/23L/2D and seat1 6W/26L, with zero basic invalid actions.
+All 64 replays were downloaded once and audited at
+`/tmp/relh-classic-neutralbias-serving/leader-hosted-replay-audit.json`.
+The candidate targeted neutral cells 53.125 times/game versus Daveey's
+88.59; the prior 184M host actor targeted about 40.59 in a separate
+32-game panel. At turn 25 candidate land margin was +0.375 tiles,
+at turn 50 -1.625, at turn 100 -5.129 with army margin -7.177.
+The public neutral route bonus improved expansion but did not close the
+leader gap. No league submission or champion change was made.
+
+Replay split audit `/tmp/relh-classic-neutralbias-serving/split-context.json`
+found candidate half moves 272/31,006 moves (0.88%), Daveey
+2,524/27,856 (9.06%). Daveey used half on 2,480/15,387 moves
+to owned cells (16.12%), versus just 15/5,670 neutral and
+29/6,799 enemy moves. Candidate used half on only 172/19,106
+owned-cell moves (0.90%). Daveey half moves to owned cells were
+256/687 (37.26%) at turns 0–49 and 353/1,565 (22.56%) at
+turns 50–99. He made no half moves from source stacks below five
+armies; among source stacks 5–9, 1,001/6,693 moves were half.
+This supports a contextual owned-route split screen. It does not
+justify globally increasing half-move sampling, which previously
+regressed strength.
+
+The contextual hypothesis also failed its causal screen. B300 job34868
+completed the baseline on fresh seed35537/2048 paired Classic maps
+(872 unique), then stopped before candidate games because the evaluator
+passed a JAX array to a NumPy `take` call. Its archive is
+`/tmp/relh-classic-owned-split-screen-result.tar.gz`. The evaluator was
+fixed to convert that public observation to NumPy, and job34869 reused
+the exact saved baseline rather than rerunning it. Both arms used the
+same 184M checkpoint, neutral route bonus3.0, and frozen234M opponent;
+the candidate alone added conditional half-move logit bonus4.0 on owned
+destinations from public source stacks of at least five. Baseline scored
+1212W/822L/14D; candidate scored1065W/970L/13D. Paired score delta
+-0.14404,95% map-bootstrap CI[-0.18887,-0.10010], a clear regression.
+Half actions rose to49,683 across first episodes, while turn50 land
+margin sum fell1074→148 and army margin938→4. No training or serving
+bundle adopted this conditional split change. Job34869 archive
+`/tmp/relh-classic-owned-split-retry-result.tar.gz` SHA256
+`136e0b5c8d19c563b5db586f4df4b7faff1c9786a68ef300a2a85c1a52568b14`.
+The allocated physical B300 UUID `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`
+was0MiB/0% at startup despite another relh B300 job, and no actual
+GPU contention was observed. Both Generals jobs are terminal.
+
+### 2026-10-01 — stronger neutral preference
+
+B300 job34871 compared the same preserved184M checkpoint under public
+neutral route bias3 versus6, with unchanged split temperature0.15,
+move temperature0.05, and frozen234M opponent. On fresh seed35538,
+2048 paired first episodes/883 unique maps, bias3 scored
+1168W/855L/25D and bias6 scored1353W/657L/38D. Paired score delta
++0.18701,95% map-bootstrap CI[+0.13631,+0.23772], a strong
+local improvement. Neutral targets rose80,865→117,159, turn50
+land margin sum1122→2871, and army margin1058→2796. Bias6 was
+an inference-only causal screen; hosted strength and aligned training
+remain to be checked. Archive
+`/tmp/relh-classic-neutral-six-screen-result.tar.gz` SHA256
+`51353a2a5f1ff0aa502b8fd5dd05c6f959d31e3142cccbc64a400ee878145bef`.
+The B300 physical UUID was again
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`,0MiB/0% at startup;
+no contention was observed with the other relh job on the node.
+
+Hosted replay turns 10–19 showed this candidate pass ~1%, own-destination
+move ~68%, neutral-destination move ~31%; Daveey passed ~88%,
+moved to owned ~5%, and neutral ~7%. In turns 50–59 the candidate
+reached neutral ~23% versus Daveey ~74%. A diagnostic early weak-owned
+route penalty was prepared from this observation, but it has not yet
+been evaluated or adopted. Bias6 is the supported intervention with
+positive paired evidence.
+
+One bounded aligned-training pilot is now being tested as job34873
+(check the live queue and node archive before retrying). It starts from
+the original184M checkpoint, keeps the weighted opponent pool and
+win-only reward with learner/environment gamma0.999, and applies
+neutral bias6 in native rollout and PPO optimization. The planned
+budget is16,777,216 new steps on8,192 parallel games, followed by
+export and fresh paired held-out evaluation. Script
+`/tmp/relh-classic-neutralsix-train-node.sh` SHA256
+`4494e6374b02a04b90808bce0efda765a06a4c24ff51d934c077637a8034b231`,
+node output `/var/tmp/relh-generals-recovery/classic-neutralsix-pilot-34873`,
+Mac archive `/tmp/relh-classic-neutralsix-train-result.tar.gz`.
+
+Job34873 completed exit0 in14m26s with one allocated B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, initially0MiB/0%.
+The native trainer completed16,777,216 steps at final144,200
+end-to-end SPS using8,192 parallel games, minibatch8,192,
+horizon256, replay ratio0.5; sampled GPU utilization while active
+had median66% and peak memory201,292MiB. Training code passed
+JAX/NumPy public bonus6 parity, model/environment source checks,
+balanced opponent-by-seat counts, and win-only gamma0.999 checks.
+Checkpoint/bundle SHA256
+`5d329687e6fc567270f83f65cd5f831fce37f5a47ac8deafd61db285778b7833`.
+The bundle manifest declares structured sampled move/split
+temperatures0.05/0.15 and neutral route bias6.0, matching PPO.
+
+Fresh seed35540/2048 paired Classic games/888 unique maps against
+frozen234M, with both original184M source and new child evaluated
+under bias6, gave source1411W/617L/20D and child1417W/619L/12D.
+Paired delta+0.00195,95% map-bootstrap CI[-0.03983,+0.04327],
+inconclusive for the extra16.8M training steps. The child targeted
+109,856 neutral cells versus source115,505, so the short training
+block did not establish extra expansion. Neither checkpoint is promoted
+on this local comparison alone. Training archive
+`/tmp/relh-classic-neutralsix-train-result.tar.gz` SHA256
+`7a0d885fef6d1c916e898091ea5f41e7b3a0f12a92951f6f45664dcdf6259e32`.
+No Generals GPU job remains from34873. The aligned child is being
+built for a private hosted XP panel; hosted result pending.
+
+The exact child bundle SHA was extracted from the archived job and
+built into Linux AMD64 image `relh-classic-neutralsix-201m:eval`, image ID
+`sha256:46d0219b3fd06f9ee4dc8808ca04678742d89ee2679a3aaee1939acc72543b3d`,
+with the pinned runtime tar SHA
+`de03d2a921bd3441edef8257d16301b75e767aa2f743be80cd3dbf2488b7ddc7`.
+The container loaded the policy and selected a legal pass with bias6
+in an AMD64 CPU smoke. Uploaded once under the relh player as
+`relh-classic-neutralsix-201m:v1`, policy version
+`a1df32dc-16b9-4de7-a98a-5f06a0be0509`. Two private one-game hosted
+runtime smokes versus the prior relh bias3 actor both completed with
+zero failures, though both were losses: seat0
+`xreq_7d715142-2d2c-4191-906a-13ccd5282568`, seat1
+`xreq_d57c6545-f762-491a-a37c-76cb3e668978`.
+
+Four private balanced 16-game XP panels were submitted once, with
+distinct idempotency keys: versus pinned Daveey v7 seat0
+`xreq_20540663-9c53-4d58-9762-8d3c24648511`, seat1
+`xreq_38a34dad-8f82-44a3-a3a7-f8e6b54e2433`; versus the prior
+relh bias3 actor seat0 `xreq_8caa9af3-e544-4a4a-b99c-e02b74a5c04b`,
+seat1 `xreq_64594c42-2298-46b2-902f-2b900389b9bb`.
+They were pending at submission; inspect these IDs before any further
+request. The main Coworld CLI user identity was restored. No league
+submission or champion change.

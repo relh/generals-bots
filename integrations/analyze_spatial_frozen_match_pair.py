@@ -35,6 +35,10 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         raise ValueError("Match settings differ: split_sampling_temperature")
     if not allow_policy_mode_change and records[0].get("neutral_route_bias", 0.0) != records[1].get("neutral_route_bias", 0.0):
         raise ValueError("Match settings differ: neutral_route_bias")
+    if not allow_policy_mode_change and records[0].get("owned_split_bias", 0.0) != records[1].get("owned_split_bias", 0.0):
+        raise ValueError("Match settings differ: owned_split_bias")
+    if not allow_policy_mode_change and records[0].get("weak_owned_route_penalty", 0.0) != records[1].get("weak_owned_route_penalty", 0.0):
+        raise ValueError("Match settings differ: weak_owned_route_penalty")
     arrays = []
     for filename in ("initial_state_sha256.npy", "initial_sides.npy"):
         left, right = (np.load(directory / filename) for directory in (baseline, candidate))
@@ -93,6 +97,10 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         candidate_split_sampling_temperature=records[1].get("split_sampling_temperature"),
         baseline_neutral_route_bias=records[0].get("neutral_route_bias", 0.0),
         candidate_neutral_route_bias=records[1].get("neutral_route_bias", 0.0),
+        baseline_owned_split_bias=records[0].get("owned_split_bias", 0.0),
+        candidate_owned_split_bias=records[1].get("owned_split_bias", 0.0),
+        baseline_weak_owned_route_penalty=records[0].get("weak_owned_route_penalty", 0.0),
+        candidate_weak_owned_route_penalty=records[1].get("weak_owned_route_penalty", 0.0),
     )
 
 
