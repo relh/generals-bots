@@ -56,6 +56,44 @@ def public_owned_split_bias(observations, strength, xp):
     return eligible.astype(observations.dtype) * strength
 
 
+def public_safe_owned_split_bias(observations, strength, xp):
+    """Favor half moves on interior owned routes from 5–19 army stacks.
+
+    This diagnostic uses only the learner's public observation. Visible enemy
+    tiles adjacent to either end of the route disable the bias.
+    """
+    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:
+        raise ValueError("Safe owned split bias requires public 21x21 observations")
+    planes = observations.reshape((*observations.shape[:-1], -1, 441))
+    routes = xp.arange(MOVE_COUNT)
+    source = routes % 441
+    direction = routes // 441
+    source_row, source_col = source // 21, source % 21
+    target_row = source_row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
+    target_col = source_col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
+    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
+    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
+    army_log = xp.take(planes[..., 0, :], source, axis=-1)
+    middle_stack = ((army_log >= math.log1p(5) / 8 - 1e-6) &
+                    (army_log < math.log1p(20) / 8 - 1e-6))
+
+    def visible_enemy_neighbor(rows, cols):
+        nearby = xp.zeros_like(middle_stack, dtype=bool)
+        for delta_row, delta_col in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            row, col = rows + delta_row, cols + delta_col
+            valid = (row >= 0) & (row < 21) & (col >= 0) & (col < 21)
+            cell = xp.clip(row, 0, 20) * 21 + xp.clip(col, 0, 20)
+            nearby = nearby | (valid & (xp.take(planes[..., 5, :], cell, axis=-1) > 0.5))
+        return nearby
+
+    eligible = (on_board & middle_stack &
+                (xp.take(planes[..., 4, :], source, axis=-1) > 0.5) &
+                (xp.take(planes[..., 4, :], target, axis=-1) > 0.5) &
+                ~visible_enemy_neighbor(source_row, source_col) &
+                ~visible_enemy_neighbor(target_row, target_col))
+    return eligible.astype(observations.dtype) * strength
+
+
 def public_weak_owned_route_penalty(observations, strength, xp):
     """Discourage early shuffling of small armies between owned cells."""
     if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:

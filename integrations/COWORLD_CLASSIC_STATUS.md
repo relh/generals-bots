@@ -16772,3 +16772,44 @@ armies5–19; our actor used53 on8,188 own-destination moves, of which
 gap is action-specific and present before PPO continuation.
 The same-checkpoint hosted test demonstrates that frozen-opponent
 gains from neutral8 alone are not a reliable proxy for Daveey.
+
+A subsequent post-game replay context audit found only6 half moves
+among2,626 candidate owned-route actions from5–19 army stacks with
+no visible-adjacent enemy in the omniscient replay, versus Daveey's
+805 half moves among3,344 such actions. This is an analysis of
+observed behavior, not a training target or evidence that all those
+splits are equally good. A public-observation-only optional safe
+owned split diagnostic was added to the evaluator; it biases the
+conditional full/half choice on interior owned-to-owned routes from
+5–19 army stacks, while preserving route probability mass.
+
+One bounded B300 screen, job34990, COMPLETED exit0 on physical UUID
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565`, initially0MiB/0%,
+with no compute process on that UUID. Full B300 preflight found other
+jobs34987 and34970, but the allocated physical GPU was uncontended.
+Requested one B300,8 CPUs,64GiB,35min, nice100; output stayed on
+the node at
+`/var/tmp/relh-generals-recovery/classic-safe-owned-split-screen-34990`.
+Source script `/tmp/relh-classic-safe-owned-split-screen-node.sh`
+SHA256 `5802e8dc3bb047a9ccd8caa353d3567232f1e0b3a0bd4e8ba2705d32adbe8e9f`;
+Mac archive `/tmp/relh-classic-safe-owned-split-screen-result.tar.gz`
+SHA256 `f03ab9d4ba2d0e3ed5cda3a3cb29db9fca40e3c8813991416c3bfb5a2095b627`.
+All six first-episode evaluations used the same218M checkpoint,
+neutral8/weak-owned4/doomed4, sampled0.05/0.15 actions,1024 games,
+balanced seats, and matched initial maps within each opponent panel.
+
+Versus frozen234M, safe split bias0 scored772W/228L/24D with6,531
+half actions; bias4 scored728W/264L/32D with31,631 half actions,
+paired score delta−0.07813, map-cluster95% CI[−0.13450,−0.01992].
+Bias6 scored656W/337L/31D with78,993 half actions,
+delta−0.21973, CI[−0.28239,−0.15700]. Versus exact218M source,
+bias0 scored566W/413L/45D with7,286 half actions; bias4 scored
+489W/499L/36D with38,371 half actions, delta−0.15918,
+CI[−0.22055,−0.09928]; bias6 scored330W/661L/33D with92,508
+half actions, delta−0.47266, CI[−0.54286,−0.40239]. Bias4 brought
+half frequency closer to Daveey but significantly harmed both local
+matchups; therefore no hosted upload, training adoption, or serving
+change is justified. The unused PPO and serving wiring was removed;
+the evaluator diagnostic remains to document and reproduce the
+negative result. The half gap is a strategic choice problem, not a
+safe global frequency correction.

@@ -14,7 +14,8 @@ from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
 from integrations.evaluate_coworld_frozen_greedy import sample_flat_logits
 from integrations.spatial_action_sampling import (acting_logits, public_neutral_route_bonus,
-                                                  public_owned_split_bias, public_weak_owned_route_penalty,
+                                                  public_owned_split_bias, public_safe_owned_split_bias,
+                                                  public_weak_owned_route_penalty,
                                                   public_doomed_attack_route_penalty)
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
@@ -45,6 +46,8 @@ def main():
                         help="Diagnostic sampled-logit bonus for moves into visible empty neutral cells")
     parser.add_argument("--owned-split-bias", type=float, default=0.0,
                         help="Diagnostic conditional half-move bonus on owned routes from stacks >=5")
+    parser.add_argument("--safe-owned-split-bias", type=float, default=0.0,
+                        help="Diagnostic half-move bonus on interior owned routes from stacks of 5–19")
     parser.add_argument("--weak-owned-route-penalty", type=float, default=0.0,
                         help="Diagnostic route penalty for small-stack owned moves before 15 owned tiles")
     parser.add_argument("--doomed-attack-route-penalty", type=float, default=0.0,
@@ -72,6 +75,11 @@ def main():
     if not np.isfinite(args.owned_split_bias) or args.owned_split_bias < 0 or (
             args.owned_split_bias and args.split_sampling_temperature is None):
         raise ValueError("Owned split bias requires structured actions and a finite nonnegative value")
+    if not np.isfinite(args.safe_owned_split_bias) or args.safe_owned_split_bias < 0 or (
+            args.safe_owned_split_bias and args.split_sampling_temperature is None):
+        raise ValueError("Safe owned split bias requires structured actions and a finite nonnegative value")
+    if args.owned_split_bias and args.safe_owned_split_bias:
+        raise ValueError("Use only one owned split diagnostic at a time")
     if not np.isfinite(args.weak_owned_route_penalty) or args.weak_owned_route_penalty < 0 or (
             args.weak_owned_route_penalty and args.split_sampling_temperature is None):
         raise ValueError("Weak owned route penalty requires structured actions and a finite nonnegative value")
@@ -174,10 +182,13 @@ def main():
             biased_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
             if args.sample_seed is None:
                 if args.acting_greedy:
+                    split_bias = (public_safe_owned_split_bias(values, args.safe_owned_split_bias, np)
+                                  if args.safe_owned_split_bias else
+                                  public_owned_split_bias(values, args.owned_split_bias, np)
+                                  if args.owned_split_bias else None)
                     logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
                                                       args.split_sampling_temperature, np,
-                                                      public_owned_split_bias(values, args.owned_split_bias, np)
-                                                      if args.owned_split_bias else None)[:, :3529])
+                                                      split_bias)[:, :3529])
                     if args.neutral_route_bias:
                         logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
                     if args.weak_owned_route_penalty:
@@ -189,10 +200,13 @@ def main():
                     chosen = biased_greedy
             else:
                 key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
+                split_bias = (jnp.asarray(public_safe_owned_split_bias(
+                                  np.asarray(values), args.safe_owned_split_bias, np))
+                              if args.safe_owned_split_bias else
+                              jnp.asarray(public_owned_split_bias(np.asarray(values), args.owned_split_bias, np))
+                              if args.owned_split_bias else None)
                 logits = (acting_logits(jnp.asarray(outputs), args.sampling_temperature,
-                                       args.split_sampling_temperature, jnp,
-                                       jnp.asarray(public_owned_split_bias(np.asarray(values), args.owned_split_bias, np))
-                                       if args.owned_split_bias else None)[:, :3529]
+                                       args.split_sampling_temperature, jnp, split_bias)[:, :3529]
                           if args.split_sampling_temperature is not None
                           else jnp.asarray(outputs[:, :3529]) / args.sampling_temperature)
                 if args.neutral_route_bias:
@@ -254,6 +268,7 @@ def main():
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
                   owned_split_bias=args.owned_split_bias,
+                  safe_owned_split_bias=args.safe_owned_split_bias,
                   weak_owned_route_penalty=args.weak_owned_route_penalty,
                   doomed_attack_route_penalty=args.doomed_attack_route_penalty,
                   first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
