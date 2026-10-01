@@ -16906,3 +16906,48 @@ Follow-up read-only Observatory checks show the submission is now
 `placed`; nonchampion relh membership
 `lpm_1fd3bf03-0a6c-49e9-aa4e-3ab5f575e710` is `competing`.
 The relh incumbent remains champion. No duplicate submission was made.
+
+### Population weakness audit, October 1
+
+The first 8192-map pool continuation did not improve the held-out
+frozen matchups. To identify which branches of its six-frozen,
+two-script opponent pool are difficult, `evaluate_spatial_population.py`
+now runs first-episode, win/loss/draw evaluation for every opponent and
+learner seat using the exported structured serving sampler. It verifies
+balanced seats, legal actions, signed terminal outcomes, and the
+initial-state hashes for paired comparisons. The diagnostic never
+trains or gives the learner hidden game state.
+
+B300 job 35059 used one physically idle GPU
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565` (0 MiB, 0% at start),
+with no compute process on that UUID. It compared the 218M source
+`fff930fd304a` and the 33M-step map-pool continuation `ad40950c6eec`
+on 3072 matched Classic starts, 1536 pool maps, balanced seats, with
+the training pool weights `[1,1,3,1,1,4,1,1]` and exact sampled
+serving actions. All 3072 first episodes terminated within 2000 turns;
+there were 1322 unique initial states. Node archive:
+`/tmp/relh-classic-pool-opponent-audit-restaged-result.tar.gz`.
+Both evaluations completed. The job's final host-side pairing command
+failed because the host Python lacked NumPy; the archived arrays were
+paired on the Mac, and all initial hashes, seats, and opponent labels
+matched exactly. No result was discarded or replayed.
+
+| Opponent | Source W/L/D | Continuation W/L/D |
+| --- | ---: | ---: |
+| Five older frozen actors, combined | 1251/387/18 | 1232/403/21 |
+| Exact 218M source, frozen | 494/428/22 | 482/435/27 |
+| Expander Harvester script | 46/185/5 | 57/172/7 |
+| Sentinel script | 35/197/4 | 40/193/3 |
+| All eight | 1826/1197/49 | 1811/1203/58 |
+
+The paired outcome-score delta is `-0.00684` for the continuation,
+with map-cluster bootstrap 95% interval `[-0.03997,+0.02603]`.
+Each scripted opponent beats the source in both learner seats: combined
+source win rates are 19.5% versus Expander Harvester and 14.8% versus
+Sentinel. This is a concrete weakness that the overall score, dominated
+by older frozen actors, concealed. The small script improvement in the
+continuation has not demonstrated an overall gain. A bounded B300
+pilot therefore starts again from the 218M source, retains the same
+win-only training reward and aligned sampler, and raises scripted
+opponent weight from 2/13 to 10/20; it must pass matched held-out
+evaluations before any long continuation or hosted upload.
