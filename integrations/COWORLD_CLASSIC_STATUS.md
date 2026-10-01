@@ -15508,3 +15508,66 @@ serving probabilities (expected0.5344/0.1966/0.2689; observed
 legacy argmax. Local targeted tests:2 passed,1 skipped because
 local Python lacks JAX. This code has not been compiled into a new
 native environment yet; no new GPU training run uses it.
+
+Both exact67M live-leader XP panels completed16/16 with0 failed
+episodes. Every resolved opponent was Daveey v7 version
+`76b0a083-f0a4-4ec7-9811-038349266633`; candidate won5/lost11
+from each seat, combined10W/22L. The frozen234M reference had
+historically scored6W/26L on separate hosted seeds, so the4-win
+difference is suggestive, not a paired or statistically secure gain.
+No champion promotion. All32 owned leader replays downloaded
+read-only:15,082 candidate moves,219 half moves,0 basic invalid;
+Daveey made14,437 moves with1,227 half moves. Candidate averaged
+44.81 neutral-target moves/game versus Daveey104.84, and trailed
+by9.23 land and11.55 army at turn100 among31 live games. All32
+ended by general capture with0 timeouts. Replay hashes, scores and
+per-game audit are in `/tmp/relh-classic-lr001-stage2-serving`.
+The current sampled policy plays meaningful hosted games but remains
+well behind the live leader; early expansion is the clearest gap.
+
+Next controlled sampled-opponent pilot began as sole Generals GPU
+job34794 on physically idle B300 UUID
+`GPU-fd64bf38-10c2-50a7-fbd8-89bc8ed88565` (0MiB/0% at allocation),
+8CPU/64GiB/nice100/30-minute cap. Node output is
+`/var/tmp/relh-generals-recovery/classic-sampled-pop-pilot-34794`.
+It retains the official Classic engine, 8192 games and the same
+win-only/shaping0.25/gamma0.999/PPO/sampler settings, starts from
+the117M actor SHA `211a06b4...33bcf1` with a fresh optimizer,
+and appends the sampled67M bundle SHA `6834e6a7...296b438a8`
+to the four frozen actors plus Expander/Sentinel. The new opponent
+selector must record four argmax modes and one structured-sample
+mode0.05/0.15, balanced across both learner seats. It gates source
+self-match, rebuilds the changed environment, trains16,777,216
+steps only if compilation succeeds, rejects <30k final SPS, and
+compares on a fresh2048-game panel. Build/run config SHA256s
+`66900dde303e8657ca712d4e34d783a19702e2375b649dac631ed75f9069dbde`
+and `cdd1a884391c377930aff847ec4697875a83857a2c3c15e03d6cc8cfb3d49d88`.
+No second Generals GPU job while34794 is active.
+
+Job34794 completed exit0 on the physically idle allocated B300 with
+no observed physical GPU contention. The new native environment source
+hash was `a8d18108...baab874`; pinned official Classic engine SHA
+`f39e448a...3182fef04007ade951809d4a318`. The opponent selector
+recorded four legacy argmax frozen bundles and the fifth sampled67M
+bundle at move/split temperatures0.05/0.15, plus Expander/Sentinel.
+All seven opponents were balanced across learner seats (585 or586
+games per side). With8192 environments and16,777,216 physical steps,
+the final end-to-end dashboard showed162,000 SPS, GPU88%,196.6/268GiB
+VRAM; epoch environment/model/optimization times were7.124/2.742/3.020s.
+Device audits counted23,348 terminal agents,0 nonfinite rewards and
+0 illegal actions in16,777,216 actions (16,466,734 full,
+191,777 half,118,705 pass). Checkpoint/export SHA256
+`48f517b64ac3accd2e1a3ed5d88be179463b07a24330a8614b51a471c7573f32`.
+
+Fresh paired heldout against frozen234M on2048 games,882 unique
+initial maps, seed35526, both candidate and source sampled at
+move/split temperatures0.05/0.15: source117M1041W/985L/22D,
+new sampled-pool actor1038W/987L/23D. Paired score delta
+-0.00244, map-bootstrap95%CI[-0.03662,+0.03231],193 better,
+194 worse,1661 same; inconclusive. The sampled-opponent mode works
+and is fast, but this training block supplies no quality evidence
+for promotion or unchanged scaling. Mac archive
+`/tmp/relh-classic-sampled-pop-result.tar.gz` SHA256
+`8a0452344910b45b8b6d169f08829b32d2cdd8af2ad0129c3ac447a472c994ed`,
+node output `/var/tmp/relh-generals-recovery/classic-sampled-pop-pilot-34794`.
+No Generals training job is left running from this experiment.
