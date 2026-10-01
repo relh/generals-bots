@@ -114,10 +114,10 @@ def main():
         for turn in range(env.horizon):
             outputs = np.asarray(forward(values)).copy()
             assert outputs.shape == (args.games, 3530) and np.isfinite(outputs).all()
-            if args.half_logit_bias:
-                outputs[:, 1764:3528] += args.half_logit_bias
             legal = np.asarray(masks, bool)
             raw_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
+            if args.half_logit_bias:
+                outputs[:, 1764:3528] += args.half_logit_bias
             if args.sample_seed is None:
                 if args.acting_greedy:
                     logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
