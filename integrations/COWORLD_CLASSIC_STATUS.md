@@ -18137,3 +18137,20 @@ local screen. Node output is
 `/var/tmp/relh-generals-recovery/classic-lowrate-control-32m-35660`;
 downloaded archive SHA256
 `f33ef56da73134e4b4dafa6c2a64f994988ecd11afd6b16e7befea2fa0d76b0c`.
+
+The exact 35660 checkpoint was smoke-tested in an AMD64 portable
+image and uploaded privately as `relh-classic-lowrate-control:v1`,
+policy version `6b3be057-ac68-49da-8e3a-52bd2d11f973`. Two
+16-game, seat-balanced private XP requests against pinned Daveey v7
+(`76b0a083-f0a4-4ec7-9811-038349266633`) completed with zero
+runtime failures: `xreq_d6411b66-2e2e-4d10-a3bd-ed714e4f7a99`
+and `xreq_35fac990-1a0b-4ed1-b4c9-2817dabb02bc`. The hosted
+variant was explicitly named **Classic 1v1**, version 0.3.3, in the
+Classic 1v1 league. The child scored 6W/26L overall, with 6W/10L
+from seat 0 and 0W/16L from seat 1. The earlier 67M source panel
+also scored 6W/26L, on different hosted games. All 32 downloaded
+replays passed SHA256 verification; an omniscient post-game audit
+found zero basic invalid child moves in 13,663 moves, with only 75
+half moves versus Daveey's 1,311 half moves in 13,182 moves. This
+hosted result does not show an improvement over the source and is
+not suitable for champion promotion or a long continuation.
