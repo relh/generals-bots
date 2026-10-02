@@ -17266,3 +17266,42 @@ SPS was 84.3k. Adding Sentinel-v5 lowered throughput versus the
 two-script 119.6k-SPS pilot without a resolved strength gain. The next
 training intervention should address strategic expansion and harder
 opponent quality while retaining a measured above-30k path.
+
+### 2026-10-01 — hosted public-state policy comparison
+
+Added `integrations/audit_spatial_hosted_replays.py` to reconstruct only
+frame-verified Classic public observations from completed hosted replays and
+score exported policies through the exact `structured_action_probabilities`
+serving transform, including each bundle's route adjustments. The two
+bundles have identical action settings (route temperature 0.05, split
+temperature 0.15, neutral bonus 6, weak-owned penalty 4, doomed-attack
+penalty 4); policy binaries are SHA256 `fff930fd304a43a6f3875d20dc71509e4a5c482bd10d10b9b7187a1755247938`
+(218M) and `2b054b0f355be6bac82451025c8ae45c96d5ba43dff79bf3b56a6ef9126b30a1`
+(251M). This is a postgame diagnostic, not a training label or proof of
+winning strength.
+
+On the source-versus-Daveey 32-game panel, 12,492 expert actions have
+verified pre-action frames. Two replays first diverge at turns 193 and
+136 on simultaneous full-versus-half head-on moves; later states in those
+games are excluded. The 218M policy gives those actions mean negative
+log probability 10.240, versus 10.541 for 251M. On the independent
+251M-versus-Daveey 32-game panel, all 15,882 actions reconstruct and
+the respective values are 9.746 and 10.044. The 251M minus 218M
+negative-log-probability difference is positive in all 32 games of
+each panel; game-cluster bootstrap 95% intervals are approximately
+[0.256, 0.359] and [0.265, 0.337] nats. Top-action route and exact
+match rates barely differ. This supports a consistent distributional
+shift away from Daveey's actions, alongside the child policy's weak
+hosted 4W/28L result, but cannot establish that imitation would improve
+winning. Daveey used 1,518 half moves in the first verified set and
+1,234 in the second; do not force split frequency based on this alone.
+
+The head-on disagreement is a real but narrow hosted/local rule
+difference on these archived replays. In both cases the pinned engine
+resolved player 1's half move before player 0's full move while the
+hosted frames imply the reverse order. No game-engine change is justified
+without checking the current hosted engine or a broader collision sample.
+The local diagnostic outputs are
+`/tmp/relh-classic-source-replay-audit-v1.json` and
+`/tmp/relh-classic-scriptheavy-replay-audit-v1.json`. No Generals GPU
+training job was launched during this audit.
