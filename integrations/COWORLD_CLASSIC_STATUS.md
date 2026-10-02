@@ -18198,3 +18198,16 @@ descriptive evidence of midgame expansion versus attack priorities,
 not proof that increasing neutral moves alone improves wins. Prior
 neutral-bias-8 hosted screens failed, so another serving-only bonus
 is not justified by this audit.
+
+The archived 35660 Daveey replay audit's per-action log probabilities
+were aligned with all 14,351 frame-verified expert actions and grouped
+by the pre-action destination owner. Relative to the exact 67M parent,
+the lower-rate child increased Daveey neutral-action NLL by +0.515
+in turns 100–199 (768 actions, game-bootstrap 95% CI
+[+0.442,+0.587]) and +0.551 after turn 200 (1,013 actions, CI
+[+0.463,+0.633]). It reduced midgame enemy-attack NLL by −0.125
+(660 actions, CI [−0.158,−0.092]). This is a diagnostic distribution
+shift in the same direction as the child's hosted midgame overattack;
+it is not a supervised target or proof of a causal reward defect.
+It argues against extending this checkpoint solely because it beat
+the parent in a narrow self-match.
