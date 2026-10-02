@@ -17344,3 +17344,23 @@ unchanged; the audit outputs are
 `/tmp/relh-classic-scriptheavy-route-calibration.json`. This is a
 counterfactual likelihood calculation, not an interactive game or a
 validated serving change. Wait for job35491's paired win results.
+
+Job35491 is terminal FAILED1 after eight seconds of allocated time,
+before any completed game. Its B300 GPU UUID
+`GPU-9d2dc36a-246e-b703-c53c-232a60d1b758` was physically idle
+at entry (0MiB,0%), with no compute process. The JAX runtime raised
+`NOT_FOUND: /scratch/jax-cache/xla_gpu_per_fusion_autotune_cache_dir`
+on its first tiny JAX operation. The exact node archive
+`/tmp/relh-classic-route-temp-screen-result.tar.gz` passed gzip
+validation and contains the failure log; no match result was produced.
+The retry script now creates the XLA cache directory before Docker
+startup and moves this job's scratch from the nearly inode-full
+`/tmp` to node-local `/var/tmp/relh-generals-recovery`. It preserves
+the same checkpoint, opponents, maps, temperatures, and time limit.
+The sole replacement job **35499** is RUNNING on B300 after a fresh
+queue/node preflight; script SHA256
+`1e854ee50ea0b54c93d8d7c812835d52c265aee2d687b338804c322cd7c71fce`,
+node output `/var/tmp/relh-generals-recovery/classic-route-temp-screen-35499`,
+Mac archive target `/tmp/relh-classic-route-temp-screen-retry-result.tar.gz`.
+Inspect that job and archive before any further action; do not submit
+another screen or training job while it runs.
