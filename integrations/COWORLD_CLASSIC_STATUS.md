@@ -18154,3 +18154,18 @@ found zero basic invalid child moves in 13,663 moves, with only 75
 half moves versus Daveey's 1,311 half moves in 13,182 moves. This
 hosted result does not show an improvement over the source and is
 not suitable for champion promotion or a long continuation.
+
+The remaining optimizer control combines learning rate 0.0002 and
+entropy coefficient zero, with the same 67M initializer and opponent
+pool. It enables an optional device audit of actual terminal wins by
+opponent and learner seat. Initial B300 job **35663** passed its build,
+sampler gate, and physical GPU preflight but stopped before its first
+training step: the audit assumed an optional
+`frontier_shaping_weight` key was present in the pinned trainer's
+reward dictionary. The audit now defaults absent optional weights to
+zero (fork commit `e5228a4`), and a local pinned-shape smoke passes.
+The failed job is terminal with exit code 1; its archive SHA256 is
+`3f4b7467578c711fe3e20eb580cc47a19ea954ededb27f9a112f555c4a5337f9`.
+A single corrected B300 retry, job **35667**, is pending behind a
+fully allocated queue; no training result should be inferred from
+35663.
