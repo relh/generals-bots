@@ -18112,3 +18112,28 @@ downloaded archive SHA256
 `db30422209399ac7b0912420fa78dc24c766977a30aed56f4de6691bba94b323`.
 A matched lower-learning-rate pilot is the next bounded optimizer
 control before another long continuation.
+
+B300 job **35660** tested `train.learning_rate=0.0002` instead of
+0.001 from the same 67M checkpoint, with entropy coefficient 0.001,
+route-half weight zero, seed 8842, 12-opponent pool, and 33,554,432
+steps. The allocated physical B300 was idle at entry despite seven
+other logical GPUs being occupied. It sustained **110.1k warmed
+end-to-end SPS** over 8,192 environments, with zero illegal actions,
+zero nonfinite rewards, and balanced opponent seats. Final checkpoint
+SHA256 is
+`5a148544e30963b1595b4255dc83a4dcd0a583b04efa04940213cfa377d9b2ac`.
+On the matched 512-game self-match it scored 257W/246L/9D versus
+source 228W/277L/7D, paired score delta +0.1172,
+CI [+0.0238,+0.2097]. The larger 4,096-game frozen/scripted pool gave
+2,497W/1,513L/86D versus source 2,485W/1,540L/71D. Initial-state
+hashes, seats and opponent labels matched exactly; paired map-cluster
+score delta was only +0.0048, CI [−0.0097,+0.0190]. Expander wins
+fell from 87 to 68, while Sentinel wins rose from 44 to 49. Daveey
+replay NLL was 10.242 versus source 10.089, and half-route NLL was
+14.853 versus 14.477. The direct self-match gain does not establish
+a broader strength gain. A private hosted Daveey XP comparison is
+pending; no long continuation or champion change follows from this
+local screen. Node output is
+`/var/tmp/relh-generals-recovery/classic-lowrate-control-32m-35660`;
+downloaded archive SHA256
+`f33ef56da73134e4b4dafa6c2a64f994988ecd11afd6b16e7befea2fa0d76b0c`.
