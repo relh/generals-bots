@@ -18295,3 +18295,12 @@ compute-node output path
 `/var/tmp/relh-generals-recovery/classic-hardpool-routezero-32m-35687`.
 The physical GPU occupancy gate runs inside the allocation. The job
 was pending for resources at submission; no result is inferred yet.
+
+`analyze_spatial_population_pair.py` now verifies identical Classic
+rules, map hashes, seats, and opponent labels before computing paired
+signed-score deltas and initial-state-cluster intervals. When both
+arms have destination counts it also checks their saved category
+totals and reports phase/category fractions by opponent and seat.
+It reproduced the 35667 4,096-game comparison and rejected a
+deliberately altered opponent assignment; the 35687 destination
+path awaits actual output.
