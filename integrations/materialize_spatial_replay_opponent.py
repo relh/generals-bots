@@ -86,6 +86,7 @@ def materialize(source_bundle: Path, fit_dir: Path, factory_source: Path, output
     export_bundle(source_bundle / "build.json", training_path, checkpoint, digest, factory_source,
                   output / "bundle", serving_move_temperature=record["route_temperature"],
                   serving_split_temperature=record["split_temperature"],
+                  serving_route_half_weight=record.get("route_half_weight", 0.0),
                   serving_early_route_temperature=record.get("early_route_temperature"),
                   serving_early_route_turns=record.get("early_route_turns"),
                   serving_neutral_route_bias=source_policy.neutral_route_bias,

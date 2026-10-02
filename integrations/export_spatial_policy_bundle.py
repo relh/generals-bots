@@ -13,6 +13,7 @@ import numpy as np
 def export_bundle(build, training, checkpoint, sha256, factory_source, output, *,
                   serving_move_temperature=None, serving_split_temperature=None,
                   serving_early_route_temperature=None, serving_early_route_turns=None,
+                  serving_route_half_weight=0.0,
                   serving_neutral_route_bias=0.0, serving_weak_owned_route_penalty=0.0,
                   serving_doomed_attack_route_penalty=0.0):
     if (serving_move_temperature is None) != (serving_split_temperature is None):
@@ -21,6 +22,9 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
         np.isfinite(value) and value > 0 for value in (serving_move_temperature, serving_split_temperature)
     ):
         raise ValueError("Structured serving temperatures must be finite and positive")
+    if (not np.isfinite(serving_route_half_weight) or not 0 <= serving_route_half_weight <= 1 or
+            (serving_route_half_weight and serving_move_temperature is None)):
+        raise ValueError("Route half weight requires structured serving and must be between zero and one")
     if (serving_early_route_temperature is None) != (serving_early_route_turns is None):
         raise ValueError("Early serving route temperature and turns must be paired")
     if serving_early_route_temperature is not None:
@@ -92,6 +96,8 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
     )
     if serving_neutral_route_bias:
         serving_action_selection["neutral_route_bias"] = serving_neutral_route_bias
+    if serving_route_half_weight:
+        serving_action_selection["route_half_weight"] = serving_route_half_weight
     if serving_early_route_temperature is not None:
         serving_action_selection["early_route_temperature"] = serving_early_route_temperature
         serving_action_selection["early_route_turns"] = serving_early_route_turns
@@ -117,6 +123,7 @@ def main():
     parser.add_argument("--serving-split-temperature", type=float)
     parser.add_argument("--serving-early-route-temperature", type=float)
     parser.add_argument("--serving-early-route-turns", type=int)
+    parser.add_argument("--serving-route-half-weight", type=float, default=0.0)
     parser.add_argument("--serving-neutral-route-bias", type=float, default=0.0)
     parser.add_argument("--serving-weak-owned-route-penalty", type=float, default=0.0)
     parser.add_argument("--serving-doomed-attack-route-penalty", type=float, default=0.0)
@@ -126,6 +133,7 @@ def main():
                   serving_split_temperature=args.serving_split_temperature,
                   serving_early_route_temperature=args.serving_early_route_temperature,
                   serving_early_route_turns=args.serving_early_route_turns,
+                  serving_route_half_weight=args.serving_route_half_weight,
                   serving_neutral_route_bias=args.serving_neutral_route_bias,
                   serving_weak_owned_route_penalty=args.serving_weak_owned_route_penalty,
                   serving_doomed_attack_route_penalty=args.serving_doomed_attack_route_penalty)

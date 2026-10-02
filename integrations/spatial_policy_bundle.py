@@ -13,7 +13,8 @@ from integrations.spatial_action_sampling import (acting_logits, public_doomed_a
 
 def structured_action_probabilities(outputs, legal, move_temperature, split_temperature,
                                     *, observations=None, neutral_route_bias=0.0,
-                                    weak_owned_route_penalty=0.0, doomed_attack_route_penalty=0.0):
+                                    weak_owned_route_penalty=0.0, doomed_attack_route_penalty=0.0,
+                                    route_half_weight=0.0):
     """Match the native rollout categorical on the legal flat action set."""
     outputs = np.asarray(outputs, dtype=np.float32)
     legal = np.asarray(legal, dtype=bool)
@@ -32,7 +33,8 @@ def structured_action_probabilities(outputs, legal, move_temperature, split_temp
     if not np.isfinite(doomed_attack_route_penalty) or doomed_attack_route_penalty < 0 or (
             doomed_attack_route_penalty and observations is None):
         raise ValueError("Doomed attack route penalty requires public observations and a finite nonnegative weight")
-    transformed = acting_logits(outputs, move_temperature, split_temperature, np)[:3529]
+    transformed = acting_logits(outputs, move_temperature, split_temperature, np,
+                                route_half_weight=route_half_weight)[:3529]
     if neutral_route_bias or weak_owned_route_penalty or doomed_attack_route_penalty:
         public = np.asarray(observations, dtype=np.float32)
         if public.shape not in ((4851,), (5292,), (7056,)) or not np.isfinite(public).all():
@@ -77,7 +79,7 @@ class SpatialPlayerPolicy:
             raise ValueError("Invalid spatial serving action selection")
         required = {"mode", "move_temperature", "split_temperature"}
         allowed = required | {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty",
-                              "early_route_temperature", "early_route_turns"}
+                              "early_route_temperature", "early_route_turns", "route_half_weight"}
         if acting.get("mode") == "structured_sample" and required <= set(acting) <= allowed and all(
             isinstance(acting[key], (int, float)) and not isinstance(acting[key], bool)
                   and np.isfinite(acting[key]) and acting[key] > 0 for key in (
@@ -92,15 +94,21 @@ class SpatialPlayerPolicy:
             acting.get("doomed_attack_route_penalty", 0.0), (int, float)
         ) and not isinstance(acting.get("doomed_attack_route_penalty", 0.0), bool) and np.isfinite(
             acting.get("doomed_attack_route_penalty", 0.0)
-        ) and acting.get("doomed_attack_route_penalty", 0.0) >= 0:
+        ) and acting.get("doomed_attack_route_penalty", 0.0) >= 0 and isinstance(
+            acting.get("route_half_weight", 0.0), (int, float)
+        ) and not isinstance(acting.get("route_half_weight", 0.0), bool) and np.isfinite(
+            acting.get("route_half_weight", 0.0)
+        ) and 0 <= acting.get("route_half_weight", 0.0) <= 1:
             self.action_mode = "structured_sample"
             self.move_temperature = float(acting["move_temperature"])
             self.split_temperature = float(acting["split_temperature"])
+            self.route_half_weight = float(acting.get("route_half_weight", 0.0))
             self.neutral_route_bias = float(acting.get("neutral_route_bias", 0.0))
             self.weak_owned_route_penalty = float(acting.get("weak_owned_route_penalty", 0.0))
             self.doomed_attack_route_penalty = float(acting.get("doomed_attack_route_penalty", 0.0))
         elif acting == {"mode": "argmax"}:
             self.action_mode = "argmax"
+            self.route_half_weight = 0.0
             self.neutral_route_bias = 0.0
             self.weak_owned_route_penalty = 0.0
             self.doomed_attack_route_penalty = 0.0
@@ -208,6 +216,7 @@ class SpatialPlayerPolicy:
                 observations=values[0], neutral_route_bias=self.neutral_route_bias,
                 weak_owned_route_penalty=self.weak_owned_route_penalty,
                 doomed_attack_route_penalty=self.doomed_attack_route_penalty,
+                route_half_weight=self.route_half_weight,
             )
         else:
             logits = np.where(mask[0], output[:3529], -np.inf)

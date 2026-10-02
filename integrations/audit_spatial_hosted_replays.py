@@ -96,7 +96,8 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
                 output, masks[index], route_temperatures[index], policy.split_temperature,
                 observations=observations[index], neutral_route_bias=policy.neutral_route_bias,
                 weak_owned_route_penalty=policy.weak_owned_route_penalty,
-                doomed_attack_route_penalty=policy.doomed_attack_route_penalty)
+                doomed_attack_route_penalty=policy.doomed_attack_route_penalty,
+                route_half_weight=policy.route_half_weight)
             action = actions[index]
             predicted = int(np.argmax(probabilities))
             logprob.append(float(np.log(probabilities[action])))

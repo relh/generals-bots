@@ -237,6 +237,11 @@ def install(native_module=None):
         if self.spatial_split_temperature is not None and (
                 not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0):
             raise ValueError("Spatial split temperature must be finite and positive")
+        self.spatial_route_half_weight = float(os.environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
+        if (not np.isfinite(self.spatial_route_half_weight) or
+                not 0 <= self.spatial_route_half_weight <= 1 or
+                (self.spatial_route_half_weight and self.spatial_split_temperature is None)):
+            raise ValueError("Route half weight requires structured sampling and must be between zero and one")
         if self.spatial_early_route_temperature is not None:
             from integrations.spatial_action_sampling import public_early_route_temperature
 
@@ -283,7 +288,8 @@ def install(native_module=None):
             from integrations.spatial_action_sampling import acting_logits
 
             acting = acting_logits(outputs, move_temperature,
-                                  self.spatial_split_temperature, jnp)
+                                  self.spatial_split_temperature, jnp,
+                                  route_half_weight=self.spatial_route_half_weight)
         elif self.spatial_policy_temperature != 1:
             acting = outputs.at[..., :3529].divide(self.spatial_policy_temperature)
         if self.spatial_neutral_route_bias:
@@ -326,7 +332,8 @@ def install(native_module=None):
                     self.spatial_early_route_turns, jnp)
             cotangents = raw_cotangents(tape.predictions, logits, values,
                                        move_temperature,
-                                       self.spatial_split_temperature, jnp) * coefficient
+                                       self.spatial_split_temperature, jnp,
+                                       route_half_weight=self.spatial_route_half_weight) * coefficient
         else:
             cotangents = jnp.concatenate((logits / self.spatial_policy_temperature,
                                           values[..., None]), axis=-1) * coefficient

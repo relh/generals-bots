@@ -42,6 +42,25 @@ def test_structured_serving_rejects_invalid_distribution():
         structured_action_probabilities(outputs, legal, 0, .15)
 
 
+def test_half_route_weight_matches_categorical_and_preserves_conditional_split():
+    outputs = np.full(3530, -100.0, np.float32)
+    outputs[[0, 1]] = [0.0, -0.2]
+    outputs[[1764, 1765]] = [-0.3, -0.1]
+    legal = np.zeros(3529, bool)
+    legal[[0, 1, 1764, 1765]] = True
+    baseline = structured_action_probabilities(outputs, legal, .05, .15)
+    coupled = structured_action_probabilities(outputs, legal, .05, .15, route_half_weight=.25)
+    expected = acting_logits(outputs, .05, .15, np, route_half_weight=.25)[:3529]
+    expected = np.exp(np.where(legal, expected, -np.inf) - np.max(expected[legal]))
+    expected /= expected.sum()
+    np.testing.assert_allclose(coupled, expected, rtol=1e-6, atol=1e-8)
+    assert (coupled[1] + coupled[1765]) / (coupled[0] + coupled[1764]) > (
+        baseline[1] + baseline[1765]) / (baseline[0] + baseline[1764])
+    assert coupled[0] / coupled[1764] == pytest.approx(baseline[0] / baseline[1764])
+    with pytest.raises(ValueError, match="Route half weight"):
+        structured_action_probabilities(outputs, legal, .05, .15, route_half_weight=1.1)
+
+
 def test_public_neutral_route_bonus_changes_route_without_changing_split():
     outputs = np.full(3530, -100.0, np.float32)
     # Two legal moves from the same source: up reaches neutral, right is fog.

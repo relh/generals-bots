@@ -43,6 +43,8 @@ def main():
                         help="Number of opening turns using --early-route-temperature")
     parser.add_argument("--split-sampling-temperature", type=float,
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
+    parser.add_argument("--route-half-weight", type=float, default=0.0,
+                        help="Fraction of the half head included in each route score")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
                         help="Diagnostic: add this offset to learner half-move logits before greedy selection")
     parser.add_argument("--expansion-audit", action="store_true",
@@ -77,6 +79,9 @@ def main():
         raise ValueError("Acting-greedy requires the structured route/split transform")
     if args.sampling_temperature != 1 and args.sample_seed is None and not args.acting_greedy:
         raise ValueError("Nondefault temperature requires sampled or acting-greedy actions")
+    if (not np.isfinite(args.route_half_weight) or not 0 <= args.route_half_weight <= 1 or
+            (args.route_half_weight and args.split_sampling_temperature is None)):
+        raise ValueError("Route half weight requires structured sampling and must be between zero and one")
     if args.split_sampling_temperature is not None and (
             (args.sample_seed is None and not args.acting_greedy) or not np.isfinite(args.split_sampling_temperature)
             or args.split_sampling_temperature <= 0):
@@ -211,7 +216,8 @@ def main():
                                   if args.owned_split_bias else None)
                     logits = np.asarray(acting_logits(outputs, route_temperature,
                                                       args.split_sampling_temperature, np,
-                                                      split_bias)[:, :3529])
+                                                      split_bias,
+                                                      route_half_weight=args.route_half_weight)[:, :3529])
                     if args.neutral_route_bias:
                         logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
                     if args.weak_owned_route_penalty:
@@ -232,7 +238,8 @@ def main():
                               jnp.asarray(public_owned_split_bias(np.asarray(values), args.owned_split_bias, np))
                               if args.owned_split_bias else None)
                 logits = (acting_logits(jnp.asarray(outputs), route_temperature,
-                                       args.split_sampling_temperature, jnp, split_bias)[:, :3529]
+                                       args.split_sampling_temperature, jnp, split_bias,
+                                       route_half_weight=args.route_half_weight)[:, :3529]
                           if args.split_sampling_temperature is not None
                           else jnp.asarray(outputs[:, :3529]) / route_temperature)
                 if args.neutral_route_bias:
@@ -293,6 +300,7 @@ def main():
                   early_route_temperature=args.early_route_temperature,
                   early_route_turns=args.early_route_turns,
                   split_sampling_temperature=args.split_sampling_temperature,
+                  route_half_weight=args.route_half_weight,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
                   owned_split_bias=args.owned_split_bias,
@@ -309,6 +317,7 @@ def main():
                       dict(
                            move_temperature=env._frozen.move_temperature,
                            split_temperature=env._frozen.split_temperature,
+                           route_half_weight=env._frozen.route_half_weight,
                            neutral_route_bias=env._frozen.neutral_route_bias,
                            weak_owned_route_penalty=env._frozen.weak_owned_route_penalty,
                            doomed_attack_route_penalty=env._frozen.doomed_attack_route_penalty)

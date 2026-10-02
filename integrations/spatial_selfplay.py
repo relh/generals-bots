@@ -25,7 +25,8 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
                 raise ValueError("Early route schedule requires frozen public observations")
             move_temperature = public_early_route_temperature(
                 observations, move_temperature, policy.early_route_temperature, policy.early_route_turns, jnp)
-        logits = acting_logits(outputs, move_temperature, policy.split_temperature, jnp)[:, :3529]
+        logits = acting_logits(outputs, move_temperature, policy.split_temperature, jnp,
+                               route_half_weight=getattr(policy, "route_half_weight", 0.0))[:, :3529]
         if getattr(policy, "neutral_route_bias", 0.0):
             if observations is None:
                 raise ValueError("Neutral route bias requires frozen public observations")

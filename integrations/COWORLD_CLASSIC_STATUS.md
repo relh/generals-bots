@@ -17880,3 +17880,29 @@ This is a plausible action-selection bottleneck, separate from the
 split choice error. A next candidate should couple half value into
 route selection, derive matching PPO gradients and serving
 probabilities, and pass paired games before long training.
+
+An experimental `route_half_weight` now mixes a fraction of the half
+head into the route score while retaining the same conditional
+full/half split and flat action codec. Weight zero is exactly the
+previous policy. The native PPO forward and analytic backward,
+frozen opponent sampling, portable serving, and held-out evaluator
+share the parameter. NumPy finite differences and B300 JAX autodiff
+matched the analytic cotangent at weights 0, 0.05, 0.10, 0.25, and
+1.0 (maximum B300 absolute error 1.2e-7). On 16 actual public replay
+observations, the serving bundle loaded weight 0.25, preserved
+legal masks and normalization, and changed 11 action distributions.
+
+B300 job **35638** screened the fixed 67M checkpoint versus the
+same 235M parent on 1,024 paired Classic games per arm. At weight
+0 it scored 512W/478L/34D with 3,804 half moves (0.45% of nonpass
+moves). At 0.05 it scored 529W/471L/24D with 3,973 half moves;
+paired score delta +0.0234, map-bootstrap95% CI
+[−0.0440,+0.0917]. At 0.10 it scored 510W/485L/29D with 4,054
+half moves; delta −0.0088, CI [−0.0800,+0.0601]. At 0.25 it
+scored 491W/496L/37D with 4,956 half moves; delta −0.0381, CI
+[−0.1102,+0.0324]. None proves a fixed-weight strength gain,
+but 0.05 remains competitive and gives the half head a direct
+route gradient during on-policy PPO. The next bounded training pilot
+must use weight 0.05 for both rollout optimization and eventual
+serving, pass a source-checkpoint sampling gate, sustain the 30k
+SPS floor, and beat frozen baselines before hosted promotion.

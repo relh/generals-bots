@@ -2,8 +2,9 @@
 
 The public 3529-action head contains 1764 full moves, the same 1764
 half moves, and pass. The transformed categorical distribution first
-chooses a route from the full-move logits, then chooses its split from
-the full/half pair. A single flat categorical and PPO log probability
+chooses a route from a weighted full/half score, then chooses its split
+from the full/half pair. Weight zero preserves the original full-only
+route distribution. A single flat categorical and PPO log probability
 can therefore use it without changing the native action codec.
 """
 
@@ -181,7 +182,11 @@ def public_doomed_attack_route_penalty(observations, strength, xp):
     return xp.concatenate((penalty, penalty, xp.zeros_like(penalty[..., :1])), axis=-1)
 
 
-def acting_logits(predictions, move_temperature, split_temperature, xp, split_bias=None):
+def acting_logits(predictions, move_temperature, split_temperature, xp, split_bias=None,
+                  *, route_half_weight=0.0):
+    if not isinstance(route_half_weight, (int, float)) or isinstance(route_half_weight, bool) or (
+            not math.isfinite(route_half_weight) or not 0 <= route_half_weight <= 1):
+        raise ValueError("Route half weight must be finite and between zero and one")
     full = predictions[..., :MOVE_COUNT]
     half = predictions[..., MOVE_COUNT:PASS_INDEX]
     pass_logit = predictions[..., PASS_INDEX:PASS_INDEX + 1]
@@ -190,14 +195,18 @@ def acting_logits(predictions, move_temperature, split_temperature, xp, split_bi
     if split_bias is not None:
         difference = difference + split_bias
     log_partition = xp.logaddexp(0, difference)
-    route = full / move_temperature
+    route = (full + route_half_weight * (half - full)) / move_temperature
     return xp.concatenate((route - log_partition,
                            route + difference - log_partition,
                            pass_logit / move_temperature, value), axis=-1)
 
 
 def raw_cotangents(predictions, logit_cotangents, value_cotangents,
-                   move_temperature, split_temperature, xp, split_bias=None):
+                   move_temperature, split_temperature, xp, split_bias=None,
+                   *, route_half_weight=0.0):
+    if not isinstance(route_half_weight, (int, float)) or isinstance(route_half_weight, bool) or (
+            not math.isfinite(route_half_weight) or not 0 <= route_half_weight <= 1):
+        raise ValueError("Route half weight must be finite and between zero and one")
     full = predictions[..., :MOVE_COUNT]
     half = predictions[..., MOVE_COUNT:PASS_INDEX]
     difference = (half - full) / split_temperature
@@ -209,7 +218,8 @@ def raw_cotangents(predictions, logit_cotangents, value_cotangents,
     half_cotangent = logit_cotangents[..., MOVE_COUNT:PASS_INDEX]
     split_cotangent = (full_cotangent * half_probability
                        - half_cotangent * full_probability) / split_temperature
-    return xp.concatenate(((full_cotangent + half_cotangent) / move_temperature + split_cotangent,
-                           -split_cotangent,
+    route_cotangent = full_cotangent + half_cotangent
+    return xp.concatenate(((1 - route_half_weight) * route_cotangent / move_temperature + split_cotangent,
+                           route_half_weight * route_cotangent / move_temperature - split_cotangent,
                            logit_cotangents[..., PASS_INDEX:PASS_INDEX + 1] / move_temperature,
                            value_cotangents[..., None]), axis=-1)

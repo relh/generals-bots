@@ -33,6 +33,24 @@ def test_frozen_sampled_opponent_matches_serving_distribution():
         assert abs(np.mean(sampled == action) - expected[action]) < .02
 
 
+def test_frozen_half_weight_matches_serving_route_distribution():
+    count = 12_000
+    outputs = np.zeros(3530, np.float32)
+    outputs[[0, 1, 1764, 1765]] = [0, -.2, -.3, -.1]
+    legal = np.zeros(3529, bool)
+    legal[[0, 1, 1764, 1765]] = True
+    expected = structured_action_probabilities(outputs, legal, .05, .15, route_half_weight=.25)
+    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+                             split_temperature=.15, route_half_weight=.25)
+    keys = jax.random.split(jax.random.PRNGKey(291), count)
+    sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(
+        policy, jnp.broadcast_to(outputs, (count, 3530)),
+        jnp.broadcast_to(legal, (count, 3529)), k,
+    ))(keys))
+    for action in (0, 1, 1764, 1765):
+        assert abs(np.mean(sampled == action) - expected[action]) < .02
+
+
 def test_frozen_opening_schedule_matches_serving_temperature_by_public_turn():
     count = 8000
     outputs = np.zeros(3530, np.float32)

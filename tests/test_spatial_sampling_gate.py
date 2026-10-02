@@ -133,3 +133,17 @@ def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):
     path.write_text(json.dumps(report))
     with pytest.raises(ValueError, match="intended rollout action settings"):
         validate_sampling_gate(argv, environment)
+    report["candidate_early_route_turns"] = 100
+    environment["METTA_SPATIAL_ROUTE_HALF_WEIGHT"] = ".25"
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report["baseline_route_half_weight"] = 0.0
+    report["candidate_route_half_weight"] = .25
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report["baseline_early_route_temperature"] = .1
+    report["baseline_early_route_turns"] = 100
+    path.write_text(json.dumps(report))
+    validate_sampling_gate(argv, environment)

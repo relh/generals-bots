@@ -103,7 +103,8 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
         all_weights = {**frozen, **weights}
         values = observations.astype(jnp.float32)
         outputs = policy._forward(values, jnp, all_weights)
-        logits = acting_logits(outputs, route_temperature, policy.split_temperature, jnp)[:, :3529]
+        logits = acting_logits(outputs, route_temperature, policy.split_temperature, jnp,
+                               route_half_weight=policy.route_half_weight)[:, :3529]
         if policy.neutral_route_bias:
             logits += public_neutral_route_bonus(values, policy.neutral_route_bias, jnp)
         if policy.weak_owned_route_penalty:
@@ -210,6 +211,7 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
               "steps": steps, "batch_size": batch_size, "learning_rate": learning_rate,
               "mode": mode,
               "route_temperature": route_temperature, "split_temperature": policy.split_temperature,
+              "route_half_weight": policy.route_half_weight,
               "early_route_temperature": policy.early_route_temperature if mode == "conditional_split" else None,
               "early_route_turns": policy.early_route_turns if mode == "conditional_split" else None,
               "trainable_names": TRAINABLE_NAMES, "seed": seed, "history": history,
