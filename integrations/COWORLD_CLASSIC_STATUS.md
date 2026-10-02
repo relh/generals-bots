@@ -18183,3 +18183,18 @@ The route temperature switched from 0.10 at turn 99 to 0.05 at turn
 of train/serve alignment on real hosted states; it does not by itself
 prove an entire end-to-end native model-forward parity for that
 checkpoint.
+
+The lower-rate child's 32 SHA-verified hosted replays were also
+reconstructed frame by frame to compare destinations against Daveey.
+During turns 100–199, the child moved into 348 neutral cells and
+attacked 920 enemy cells, versus Daveey's 760 neutral and 650 enemy
+moves in the same games. Per-game candidate-minus-Daveey neutral
+moves averaged −12.88, game-bootstrap 95% CI [−16.22,−9.50]; enemy
+moves averaged +8.44, CI [+6.16,+10.81]. After turn 200, the neutral
+gap widened to −22.16 moves/game, CI [−30.41,−14.38]. Each of the
+child's and Daveey's 1,957 and 3,162 respective neutral destinations
+was visible in that player's pre-action public observation. This is
+descriptive evidence of midgame expansion versus attack priorities,
+not proof that increasing neutral moves alone improves wins. Prior
+neutral-bias-8 hosted screens failed, so another serving-only bonus
+is not justified by this audit.
