@@ -17650,8 +17650,8 @@ labels matched. Map-cluster bootstrap signed-score delta was
 +0.06445, CI [+0.02794,+0.10071] across 1,338 starts; seven frozen
 opponents +0.06207, CI [+0.02049,+0.10351], and two scripts
 +0.07222, CI [+0.00280,+0.14225]. This resolves a local improvement
-for both frozen and scripted opponents, but hosted Daveey strength
-remains untested for this checkpoint.
+for both frozen and scripted opponents; the hosted comparison below
+tests its transfer.
 
 The final portable bundle records the same early route schedule.
 Its actual serving probabilities matched the structured sampler at
@@ -17663,6 +17663,54 @@ privately as `relh-classic-iterated-369m:v1`, UUID
 hash in its metadata. Two hosted one-game smokes against the frozen
 235M parent were requested for both seats as XP requests
 `xreq_d3d3fd2c-3e95-48e9-a996-69fd0d2cb78c` and
-`xreq_e6fa5006-745a-4575-8a98-b841868638c1`. Their results and
-larger private comparison are the next strength gate; no champion
-change has occurred.
+`xreq_e6fa5006-745a-4575-8a98-b841868638c1`. Results of the
+larger private comparison follow; no champion change has occurred.
+
+Both 369M hosted runtime smokes completed cleanly and beat the 235M
+parent, one from each seat. The private 32-game hosted panel versus
+that parent completed with no runtime failures: 369M scored
+**15W/16L/1D** (seat 0: 6W/9L/1D; seat 1: 9W/7L). This is a noisy
+result compatible with the modest held-out gain; it does not establish
+a hosted head-to-head improvement. XP requests were
+`xreq_372edcc3-2eab-44f8-9ec6-3db8e66d43bd` and
+`xreq_e08c72b5-b682-445d-ba9a-568bd3505bcf`.
+
+Against pinned Daveey v7, UUID
+`76b0a083-f0a4-4ec7-9811-038349266633`, the 369M actor scored
+**5W/27L** in 32 hosted games (seat 0: 2W/14L; seat 1: 3W/13L),
+again with zero runtime failures. XP requests were
+`xreq_17ad9614-18d8-4266-b2d5-d38c9c5c4aa1` and
+`xreq_f210d7bc-5c5e-49fb-99a2-8e0b5ab0681a`. Replays are
+archived with SHA256 checks in
+`/tmp/relh-classic-iterated-369m-serving/leader-replay-manifest.json`.
+All 32 games ended in general capture; a basic action legality screen
+found zero invalid moves. The actor used 36 half moves against
+Daveey's 861. Of Daveey's half moves, 850 targeted owned cells,
+with median source stack 12 and median turn 148. Of ours, only 20
+targeted owned cells, with median source stack 3 and median turn
+284.5. This is a strategic behavior gap; earlier unconditional
+owned-split biases reduced held-out wins. The actor's mean land lead
+of +2.625 at turn25 became
+-0.8125 at turn100. Its mean army margin at turn200 was -4.8214
+over the 28 games reaching that turn. The full replay summary is
+`/tmp/relh-classic-iterated-369m-serving/leader-hosted-replay-audit.json`.
+Despite a robust local training gain and high throughput, this policy
+does not yet close the hosted strength gap and was not promoted.
+
+The exact hosted Daveey replay prefixes were checked against the
+pinned local Classic engine and public action mask. Three of 32
+reconstructions diverged late; only their verified prefixes were used.
+Across 12,542 verified Daveey moves, the scheduled 235M parent's
+expert-action NLL was 9.4436, while the iterated 369M actor's was
+11.2610. The per-game NLL was worse in all 32 games; the mean
+per-game difference was +1.8183 with game-bootstrap95% CI
+[+1.6756,+1.9616]. The 369M actor's mean action entropy was 0.207 versus
+0.286 for its parent and its mean half-action probability was
+0.00133 versus 0.00301. This is a diagnostic distribution shift,
+not a teacher target: PPO against its existing population coincided
+with a more certain policy, nearly removed half moves, and did not improve
+hosted Daveey strength. Full metrics are in
+`/tmp/relh-classic-iterated-369m-serving/leader-policy-audit.json`.
+The next training iteration should widen the opponent pool toward
+strong half-aware play and guard hosted transfer with paired XP panels,
+rather than simply extend this policy for billions of steps.
