@@ -86,6 +86,20 @@ space was approximately19GiB after packaging; source/image input uploads will
 stream without duplicating the large image into another local tar archive.
 S3 upload and final live allocation preflight remain before submission.
 
+Concrete physical allocation finding23:44UTC: controller jobs35744 and35745
+belong to another relh task and allocate B300 GPUs0 and3. GPU7 separately held
+101042MiB under subho PIDs1461090/1462130, whose cgroups were
+`/user.slice/user-1001.slice/session-43686.scope`, outside the two live Slurm
+allocations. Nothing about those processes/jobs was changed. GPUs1,2,4,5,6
+showed0MiB and no compute processes at that readback. Thus the six logically
+unallocated GPUs did not imply six physically clear GPUs. New task startup
+checks the controller-assigned physical GPU for existing compute processes and
+memory/utilization before downloading inputs or initializing CUDA. CPU tests
+verify refusal on an occupied allocation. ProctrackType and TaskPlugin are
+cgroup-based; `/etc/slurm/cgroup.conf` was absent at the queried conventional
+path, so its device-confinement settings are not claimed as verified.
+
+
 ## Coordinator status: mandatory lowest Slurm priority (2026-10-02 22:15 UTC)
 
 The user's explicit lowest-priority rule supersedes every historical

@@ -18,7 +18,7 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
-                image_parts=False, bad_image=False, result_part_bytes=None):
+                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -32,6 +32,7 @@ class S3JobTests(unittest.TestCase):
                 "scontrol": f"print('JobId=999 Nice={100 if low_nice else 2147483645} Priority=1 TimeLimit=00:10:00')",
                 "squeue": "import pathlib; print('999.0' if pathlib.Path('writing').exists() else '')",
                 "enroot": "import pathlib; assert not pathlib.Path('writing').exists(); pathlib.Path('cleaned').touch()",
+                "nvidia-smi": f"import sys; print({repr('123' if busy_gpu else '')} if '--query-compute-apps=pid' in sys.argv else 'GPU-test, 0, 0')",
                 "srun": '''import os,sys
 assert '--nice=2147483645' in sys.argv
 assert '--no-container-mount-home' in sys.argv
@@ -96,7 +97,7 @@ m.transfer=transfer
 if {result_part_bytes!r}: m.MAX_PART_BYTES={result_part_bytes!r}
 sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
 ''')
-            env = dict(os.environ, SLURM_JOB_ID="999", PATH=str(commands)+os.pathsep+os.environ["PATH"],
+            env = dict(os.environ, SLURM_JOB_ID="999", SLURM_JOB_GPUS="1", PATH=str(commands)+os.pathsep+os.environ["PATH"],
                        PYTHONPATH=str(Path(__file__).resolve().parents[1]))
             process = subprocess.Popen([sys.executable, str(harness)], cwd=root, env=env,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
@@ -166,6 +167,12 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertEqual(bad["code"],1,bad)
         self.assertNotIn("READY",bad["events"])
         self.assertTrue(bad["scratch"])
+
+    def test_busy_physical_gpu_prevents_workload(self):
+        result=self.run_job(busy_gpu=True)
+        self.assertEqual(result["code"],1,result)
+        self.assertNotIn("READY",result["events"])
+        self.assertFalse(result["cleaned"])
 
     def test_multiple_output_parts_have_completion_manifest(self):
         result=self.run_job(result_part_bytes=128)

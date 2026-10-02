@@ -111,6 +111,7 @@ class SlurmJob:
             path.mkdir(mode=0o700)
             self.runtime_env[variable] = str(path)
         self.runtime_env["ENROOT_MAX_PROCESSORS"] = str(self.config.get("cpus", 8))
+        self.verify_gpu_idle()
         if time.time() + self.config["runtime_seconds"] + 600 >= self.config["credential_expiry"]:
             raise RuntimeError("Signing credentials expire too soon for this allocation")
         archive = self.root / "input.tar.gz"
@@ -145,6 +146,24 @@ class SlurmJob:
                     path.unlink()  # Verified bytes are retained in the owned image.
             if digest.hexdigest() != self.config["image_sha256"]:
                 raise ValueError("Reassembled image digest differs")
+
+    def verify_gpu_idle(self):
+        selector = os.environ.get("SLURM_JOB_GPUS", "")
+        if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", selector):
+            raise RuntimeError("Expected one controller-provided physical GPU ID")
+        processes = subprocess.check_output([
+            "nvidia-smi", "--id=" + selector, "--query-compute-apps=pid",
+            "--format=csv,noheader,nounits"], text=True, timeout=15)
+        if processes.strip():
+            raise RuntimeError("Allocated physical GPU already has compute processes; leaving them untouched")
+        row = subprocess.check_output([
+            "nvidia-smi", "--id=" + selector, "--query-gpu=uuid,memory.used,utilization.gpu",
+            "--format=csv,noheader,nounits"], text=True, timeout=15).strip()
+        fields = [field.strip() for field in row.split(",")]
+        if len(fields) != 3 or float(fields[1]) >= 2048 or float(fields[2]) >= 20:
+            raise RuntimeError("Allocated physical GPU is not idle before workload startup")
+        self.receipt["physical_gpu_preflight"] = dict(uuid=fields[0], memory_mib=float(fields[1]),
+                                                      utilization_percent=float(fields[2]))
 
     def run_step(self, name, argv, seconds):
         # Repeat immediately before Pyxis/Enroot may unpack an image.
