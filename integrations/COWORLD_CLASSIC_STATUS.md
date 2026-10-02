@@ -17856,3 +17856,27 @@ only **46 half moves**, while Daveey made **1,138**; the extra
 frozen split opponent did not teach meaningful half-move behavior.
 The 6W/26L hosted result is not enough to justify extending this
 checkpoint for billions of steps or promoting it as champion.
+
+A fixed-weight split-temperature screen then used that 67M checkpoint
+against the same 235M parent on 1,024 paired Classic games per arm.
+At trained split temperature 0.15 it scored 512W/478L/34D and made
+3,804 half moves out of 854,030 nonpass moves (0.45%). At 0.20 it
+scored 483W/499L/42D with 10,481 half moves (1.23%); paired score
+delta −0.0488, map-bootstrap95% CI [−0.1036,+0.0059]. At 0.25 it
+scored 484W/509L/31D with 18,891 half moves (2.25%); delta
+−0.0576, CI [−0.1207,+0.0060]. At 0.30 it scored
+454W/541L/29D with 30,987 half moves (3.66%); delta −0.1182,
+CI [−0.1832,−0.0526]. B300 job 35635 exited cleanly; output is
+`/var/tmp/relh-generals-recovery/classic-split-temp-screen-35635`.
+Merely sampling more half moves therefore does not improve this
+actor. The serving sampler's transformed full and half logits for
+one route sum to a route marginal proportional to
+`exp(full_logit / route_temperature)`; the half logit affects only
+the conditional split. Consequently, it cannot directly promote a
+route that is valuable specifically as a half move. On the earlier
+exact Daveey replays, the 235M parent's NLL on Daveey's half-move
+routes was 13.27, far worse than its overall route NLL of 9.00.
+This is a plausible action-selection bottleneck, separate from the
+split choice error. A next candidate should couple half value into
+route selection, derive matching PPO gradients and serving
+probabilities, and pass paired games before long training.
