@@ -69,10 +69,14 @@ def verified_states(replay_root, limit):
             np.asarray(games), divergences)
 
 
-def score(bundle, observations, masks, actions, games):
+def score(bundle, observations, masks, actions, games, move_temperature=None):
     policy = SpatialPlayerPolicy(bundle)
     if policy.observation_size != observations.shape[1] or policy.action_mode != "structured_sample":
         raise ValueError("Expected 16-plane directional structured-sampling policy")
+    if move_temperature is None:
+        move_temperature = policy.move_temperature
+    if not np.isfinite(move_temperature) or move_temperature <= 0:
+        raise ValueError("Move temperature must be finite and positive")
     logprob, route_match, action_match = [], [], []
     action_entropy, route_entropy, half_mass, top_mass = [], [], [], []
     for start in range(0, len(actions), 32):
@@ -80,7 +84,7 @@ def score(bundle, observations, masks, actions, games):
         outputs = policy.forward(observations[start:stop])
         for index, output in enumerate(outputs, start):
             probabilities = structured_action_probabilities(
-                output, masks[index], policy.move_temperature, policy.split_temperature,
+                output, masks[index], move_temperature, policy.split_temperature,
                 observations=observations[index], neutral_route_bias=policy.neutral_route_bias,
                 weak_owned_route_penalty=policy.weak_owned_route_penalty,
                 doomed_attack_route_penalty=policy.doomed_attack_route_penalty)
@@ -103,6 +107,7 @@ def score(bundle, observations, masks, actions, games):
                              "nll": float(-logprob[games == game].mean())}
                 for game in np.unique(games)}
     return {"policy_sha256": hashlib.sha256((bundle / "policy.bin").read_bytes()).hexdigest(),
+            "move_temperature": move_temperature, "bundle_move_temperature": policy.move_temperature,
             "actions": len(actions), "nll": float(-logprob.mean()),
             "route_match": float(np.mean(route_match)), "action_match": float(np.mean(action_match)),
             "action_entropy": float(np.mean(action_entropy)), "route_entropy": float(np.mean(route_entropy)),
@@ -114,6 +119,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--replay-root", type=Path, required=True)
     parser.add_argument("--bundle", type=Path, action="append", required=True)
+    parser.add_argument("--move-temperature", type=float, action="append",
+                        help="Counterfactual route temperature; repeat to compare without changing a bundle")
     parser.add_argument("--limit", type=int, default=32)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -123,7 +130,9 @@ def main():
               "expert_half_actions": int(np.sum((actions >= 1764) & (actions < 3528))),
               "expert_pass_actions": int(np.sum(actions == 3528)), "policies": {}}
     for bundle in args.bundle:
-        result["policies"][str(bundle)] = score(bundle, observations, masks, actions, games)
+        for temperature in args.move_temperature or [None]:
+            key = str(bundle) if temperature is None else f"{bundle}@routeT={temperature:g}"
+            result["policies"][key] = score(bundle, observations, masks, actions, games, temperature)
     args.output.write_text(json.dumps(result) + "\n")
     print(json.dumps({key: value for key, value in result.items() if key != "policies"}))
     for bundle, metrics in result["policies"].items():

@@ -17330,3 +17330,17 @@ jobs allocated all192 B300 CPUs. Do not submit a duplicate. A B200
 preflight found an idle allocated physical GPU but the existing Puffer
 runtime image has CPU-only JAX, and Docker root has only13GiB free;
 no B200 training was started.
+
+An opt-in counterfactual route-temperature setting in the replay audit
+quantifies calibration on the same verified pre-action public states.
+For the unchanged218M checkpoint, the source-panel mean Daveey-action
+negative log probabilities at route temperatures0.05/0.10/0.20 are
+10.240/5.553/4.070 over12,492 actions. On the independent child-panel
+states they are9.746/5.246/3.909 over15,882 actions. Source-panel
+top-action probabilities fall0.918/0.787/0.564, while child-panel
+values fall0.906/0.775/0.516. Bundles and split temperature stay
+unchanged; the audit outputs are
+`/tmp/relh-classic-source-route-calibration.json` and
+`/tmp/relh-classic-scriptheavy-route-calibration.json`. This is a
+counterfactual likelihood calculation, not an interactive game or a
+validated serving change. Wait for job35491's paired win results.
