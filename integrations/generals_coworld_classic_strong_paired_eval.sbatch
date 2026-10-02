@@ -8,10 +8,22 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=96G
 #SBATCH --time=00:30:00
-#SBATCH --nice=100
+#SBATCH --nice=2147483645
 #SBATCH --chdir=/tmp
 #SBATCH --output=/tmp/relh-generals-coworld/strong-paired-eval-%j.log
 set -euo pipefail
+
+# Mandatory user policy: verify lowest scheduling priority before workload startup.
+slurm_task_priority_record=$(scontrol show job -o "${SLURM_JOB_ID:?}")
+[[ " $slurm_task_priority_record " == *" Nice=2147483645 "* ]] || { printf 'Lowest Slurm Nice verification failed\n' >&2; exit 1; }
+slurm_task_priority=unknown
+for slurm_task_field in $slurm_task_priority_record; do
+  case "$slurm_task_field" in Priority=*) slurm_task_priority=${slurm_task_field#Priority=} ;; esac
+done
+[[ "$slurm_task_priority" =~ ^[0-9]+$ ]] || exit 1
+printf 'SLURM_PRIORITY_READBACK JobId=%s Nice=2147483645 Priority=%s\n' "$SLURM_JOB_ID" "$slurm_task_priority" >&2
+unset slurm_task_priority_record slurm_task_field
+
 
 opponent=${1:?Use expander_harvester or sentinel}
 seed=${2:?Use a held-out integer seed}
@@ -55,7 +67,7 @@ eval_config.write_text(json.dumps({"seeds": [seed], "episodes_per_seed": 1,
 PY
 
 export workspace source_build run config eval_config build eval_name opponent seed
-srun --export=ALL --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -c '
+srun --nice=2147483645 --export=ALL --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -c '
     set -euo pipefail
     name="${eval_name}-build"
     cleanup() { docker stop -t 5 "$name" >/dev/null 2>&1 || true; }
@@ -82,7 +94,7 @@ for step in 31457280; do
     fi
     printf '%s  %s\n' "$expected" "$checkpoint" | sha256sum -c -
     export checkpoint output expected step
-    srun --export=ALL --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -c '
+    srun --nice=2147483645 --export=ALL --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -c '
         set -euo pipefail
         name="${eval_name}-${step}"
         cleanup() { docker stop -t 5 "$name" >/dev/null 2>&1 || true; }

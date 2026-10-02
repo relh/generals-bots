@@ -8,10 +8,22 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=00:20:00
-#SBATCH --nice=100
+#SBATCH --nice=2147483645
 #SBATCH --chdir=/tmp
 #SBATCH --output=/var/tmp/relh-generals-recovery/native-raw-land-gain20-r4-8m-%j.log
 set -euo pipefail
+
+# Mandatory user policy: verify lowest scheduling priority before workload startup.
+slurm_task_priority_record=$(scontrol show job -o "${SLURM_JOB_ID:?}")
+[[ " $slurm_task_priority_record " == *" Nice=2147483645 "* ]] || { printf 'Lowest Slurm Nice verification failed\n' >&2; exit 1; }
+slurm_task_priority=unknown
+for slurm_task_field in $slurm_task_priority_record; do
+  case "$slurm_task_field" in Priority=*) slurm_task_priority=${slurm_task_field#Priority=} ;; esac
+done
+[[ "$slurm_task_priority" =~ ^[0-9]+$ ]] || exit 1
+printf 'SLURM_PRIORITY_READBACK JobId=%s Nice=2147483645 Priority=%s\n' "$SLURM_JOB_ID" "$slurm_task_priority" >&2
+unset slurm_task_priority_record slurm_task_field
+
 export TMPDIR=/var/tmp/relh-generals-recovery
 mkdir -p "$TMPDIR"
 python3 - /var/tmp/relh-generals-recovery <<'STAGE'
@@ -34,7 +46,7 @@ if path.exists():
 else:
     with path.open('xb') as handle: handle.write(data)
 LEARNERSTAGE
-srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 bash -s <<'NODE'
+srun --nice=2147483645 --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 bash -s <<'NODE'
 set -euo pipefail
 w=/tmp/relh-generals-coworld
 disk=/var/tmp/relh-generals-recovery

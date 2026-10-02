@@ -12,7 +12,7 @@ run_name=$(basename "$run_directory")
 checkpoint_directory="checkpoints/metta_generals/$run_name"
 mkdir -p "$archive_directory"
 
-gpu_step=(srun --jobid="$job_id" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=1)
+gpu_step=(srun --nice=2147483645 --jobid="$job_id" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=1)
 
 while scontrol show job -o "$job_id" 2>/dev/null | grep -Eq 'JobState=(RUNNING|COMPLETING)'; do
     mapfile -t checkpoints < <(

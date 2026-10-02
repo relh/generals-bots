@@ -1,5 +1,108 @@
 # Softmax Coworld Classic 1v1 training
 
+## Coordinator status: mandatory lowest Slurm priority (2026-10-02 22:15 UTC)
+
+The user's explicit lowest-priority rule supersedes every historical
+`--nice=100` reference below. All future task `sbatch`/`srun`/`salloc`
+commands must request `--nice=2147483645`, retain finite runtime, and
+verify controller Nice/Priority before GPU workload startup. Never lower
+Nice, raise Priority, seek privileged QOS or admin credentials, cancel or
+requeue to gain priority, or change other people's jobs or scheduler/node
+state. Priority=1 stays at the minimum. Complete implementation and local
+end-to-end launch audits before any GPU submission. This policy is also
+persisted in the worktree's `AGENTS.md` for task handoffs.
+
+Installed range verification: `scontrol --version` reports Slurm 26.05.3;
+metta0's installed `man srun`, `--nice` section, states an adjustment range
+of +/-2147483645. No GPU job was submitted for this audit.
+
+| Task job | First controller state | Before Nice / Priority | After Nice / Priority | Action / error |
+| --- | --- | --- | --- | --- |
+| 35687, relh-classic-hardpool-routezero | FAILED, ExitCode=0:10, RaisedSignal:10(User_defined_signal_1) | 100 / 1 | 100 / 1 at terminal readback; later unavailable | Already terminal before steering audit; no update, stop, cancellation, or requeue attempted. A later readback returned `slurm_load_jobs error: Invalid job id specified` after the controller aged out the record. |
+
+Job 35687 ran from 22:05:40 to 22:09:24 UTC, with a finite 55-minute
+limit and zero restarts. Its failure cause and artifacts are not yet
+investigated here. Full queue inspection found no live Generals/Classic
+task allocation to reprioritize. Other jobs sharing the `metta` account
+were left untouched; account ownership alone does not identify this task.
+
+Implementation: all 567 repository `.sbatch` templates now request the
+maximum Nice and verify controller readback before starting workloads;
+573 embedded `srun` invocations also explicitly request maximum Nice.
+One old template used Nice=0; it is now corrected. The current local
+launcher `/tmp/relh-launch-classic-hardpool-routezero.sh` and unsubmitted
+`/tmp/relh-classic-env-info-reuse-profile-stage/job.sh` also enforce
+maximum-Nice readback. Diagnostics go to stderr to preserve streamed
+binary result archives. The completed pilot's sealed payload is retained
+as provenance, not edited or relaunched. No priority-escalation loop or
+priority-changing `scontrol` command was found in this task's scripts.
+
+Validation: `bash -n` passed for all 579 repository/local shell paths
+audited; every `.sbatch` has maximum Nice, controller readback, and a
+finite runtime. Mock controller checks accepted Nice=2147483645 and
+rejected Nice=100/0, all with empty stdout. `git diff --check` passed.
+No scheduler mutation errors occurred because no live task job needed an
+update. The terminal-job readback error above is the only controller
+error. An initial local `rg` option-order mistake was corrected and the
+script audit rerun successfully.
+
+Guide received and read: `/Users/relh/Downloads/Submitting Slurm Jobs Today.md`
+(Jordan, Sep30). This existing task record is the coordinator feedback channel;
+no new guide documentation has been created or submitted.
+
+Concrete audit findings and user overrides:
+
+- All 567 legacy repository batch templates still pin a node and invoke Docker;
+  none has Pyxis, `--no-requeue`, or a Slurm warning-signal directive. They are
+  **not approved launch paths** under the current user instructions. Maximum
+  Nice alone does not make them eligible. No template was submitted.
+- The two current unsubmitted local launch paths named above now exit 78 before
+  any scheduler or workload command. They depend on manually staged node files,
+  Docker, and streamed archives. A host-sbatch/S3/Pyxis replacement remains
+  required. Completed sealed payloads and existing results remain untouched.
+- All future inputs/results must use sandbox S3 `softmax-slurm-artifacts` with
+  presigned GET/PUT and a fresh result key per attempt. Check signing credential
+  expiry against queue time plus runtime; keep URL credentials out of logs.
+  Split large outputs into parts strictly under 4 GB, with separate signed keys.
+  No copied virtualenvs; build/test dependencies inside the image.
+- Future steps require job-unique Pyxis names, no home mount, owned scratch,
+  finite runtime, no requeue, smoke then training in the same single task job.
+  Check bytes AND inodes before input extraction and again before Enroot unpack.
+  Let Slurm place the job; no node pin or manual node staging.
+- Guide nice100 is superseded by maximum Nice2147483645. Implementation/local
+  CPU audits precede GPU scheduling. Guide shared-account/prolog statements are
+  not treated as verified live configuration; no identity changes or bypasses.
+- Existing AGENTS B200/B300-only wording and skill Docker/nice100 instructions
+  conflict with current user steering. User guidance takes precedence: prefer
+  4090 unless measured capacity/architecture/multi-GPU requirements justify a
+  larger GPU. This task's last measured peak was 202084 MiB, exceeding 24 GB.
+- Coordinator reproduced the template signal race: EXIT upload can begin while
+  its background step is still writing. The sample also checks disk after input
+  extraction and removes the container before upload succeeds. These are real
+  failure-path issues, not documentation changes submitted by this task.
+
+Implementation and CPU evidence for the replacement lifecycle:
+
+- `integrations/slurm_task_lifecycle.sh` terminates its owned step on a warning
+  or termination signal, waits for its local process, and requires an explicit
+  remote-step-completion callback before archive/upload. A timeout or uncertain
+  remote completion refuses to archive. Successful upload is required before
+  cleanup; failed/signaled jobs preserve local evidence. Required callbacks
+  must implement bounded operations and propagate their own failures explicitly.
+- CPU tests cover normal success, failed step (preserved exit 7), USR1/TERM/INT
+  (124/143/130), upload failure (74), unconfirmed remote completion (125), and
+  insufficient bytes/inodes. In signal cases event order is CHECKPOINT,
+  LAST_WRITE, STOPPED, UPLOAD; there is no cleanup. All six test methods passed.
+- Maximum-Nice guards now log only job ID, Nice and Priority, never a full
+  controller record that could contain submission credentials.
+- This helper is not yet wired into a complete S3/Pyxis launcher. The actual
+  image/dependency build, transfer expiry/part handling, bounded remote-step
+  completion check, checkpoint signal integration, pre-extraction checks, and
+  end-to-end launcher failure tests remain submission blockers. CPU lifecycle
+  tests do not certify remote Slurm/Pyxis behavior or policy checkpoint validity.
+- No live task job was modified, stopped, requeued, or submitted during this
+  audit. Latest known task job remains failed 35687 as recorded above.
+
 This branch targets the live `generals-competition` Classic 1v1 league. The
 existing 10×10 checkpoint is a separate result and cannot serve this arena.
 

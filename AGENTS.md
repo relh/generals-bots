@@ -1,5 +1,23 @@
 # Generals training agent guidance
 
+## Mandatory lowest Slurm scheduling priority
+
+- User steering supersedes the old `--nice=100` convention. Every future
+  `sbatch`, `srun`, or `salloc` must use the largest supported positive Nice
+  value. Slurm 26.05.3 on metta0 documents `2147483645`; reverify the installed
+  range if the cluster version changes. Use `--nice=2147483645` now.
+- Verify controller readback with `scontrol show job -o JOB_ID`, recording
+  exact Nice/Priority and a finite TimeLimit. Leave Priority=1 at its minimum.
+- Never lower Nice, raise Priority, match or outrank competing jobs, request
+  privileged QOS, use sudo/admin credentials, or cancel/requeue for priority.
+  Do not change other people's jobs or global scheduler/node state. Lower
+  scheduling priority of this task's existing live jobs in place only; do not
+  stop or requeue running work. Terminal jobs have no scheduling action left.
+- Keep one bounded task job and finish implementation and end-to-end launch
+  audits before GPU submission. Record job IDs, before/after Nice/Priority,
+  terminal state, and errors in `integrations/COWORLD_CLASSIC_STATUS.md`.
+  Preserve this policy in every task handoff.
+
 ## GPU throughput gate
 
 - Coworld Classic training and evaluation must select `coworld_classic_rules=True` in the instantiated `GeneralsEnv`. Record the selected engine source hash and verify it against the pinned official Softmax engine. The generic engine's chasing/smaller-army priority is a different ruleset and cannot qualify a hosted policy. Public observation/action dimensions and a 2,000-turn limit alone do not establish rule parity.

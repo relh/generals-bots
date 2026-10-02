@@ -8,10 +8,22 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=96G
 #SBATCH --time=00:40:00
-#SBATCH --nice=100
+#SBATCH --nice=2147483645
 #SBATCH --chdir=/tmp
 #SBATCH --output=/tmp/relh-generals-coworld/long-%j.log
 set -euo pipefail
+
+# Mandatory user policy: verify lowest scheduling priority before workload startup.
+slurm_task_priority_record=$(scontrol show job -o "${SLURM_JOB_ID:?}")
+[[ " $slurm_task_priority_record " == *" Nice=2147483645 "* ]] || { printf 'Lowest Slurm Nice verification failed\n' >&2; exit 1; }
+slurm_task_priority=unknown
+for slurm_task_field in $slurm_task_priority_record; do
+  case "$slurm_task_field" in Priority=*) slurm_task_priority=${slurm_task_field#Priority=} ;; esac
+done
+[[ "$slurm_task_priority" =~ ^[0-9]+$ ]] || exit 1
+printf 'SLURM_PRIORITY_READBACK JobId=%s Nice=2147483645 Priority=%s\n' "$SLURM_JOB_ID" "$slurm_task_priority" >&2
+unset slurm_task_priority_record slurm_task_field
+
 
 workspace=/tmp/relh-generals-coworld
 printf '%s  %s\n' 2261a533cdbc89d4111ddf9d108c74252da1cf74ed66cf92513c00683645995f \
@@ -35,7 +47,7 @@ Path(destination).write_text(json.dumps(config) + "\n")
 PY
 done
 
-srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -lc '
+srun --nice=2147483645 --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 --cpu-bind=cores bash -lc '
     set -euo pipefail
     workspace=/tmp/relh-generals-coworld
     prefix="relh-generals-coworld-expander-long-${SLURM_JOB_ID}"

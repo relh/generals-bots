@@ -9,7 +9,7 @@ workspace=${3:-/tmp/relh-generals-gpu}
 mkdir -p "$destination"
 source_file="$workspace/parallel-eval-gpu-${job_id}.csv"
 archive_file="$destination/parallel-eval-gpu-${job_id}.csv"
-gpu_step=(srun --jobid="$job_id" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=1 --chdir=/tmp)
+gpu_step=(srun --nice=2147483645 --jobid="$job_id" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=1 --chdir=/tmp)
 
 while true; do
     state=$(scontrol show job -o "$job_id" 2>/dev/null | sed -n 's/.*JobState=\([^ ]*\).*/\1/p')

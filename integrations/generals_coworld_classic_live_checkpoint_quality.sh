@@ -6,7 +6,7 @@ job=${1:?training job ID required}
 step=${2:?saved checkpoint step required}
 [[ "$job" =~ ^[0-9]+$ && "$step" =~ ^[0-9]+$ ]]
 export GENERALS_LIVE_CHECKPOINT_STEP=$step
-srun --jobid="$job" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=2 --time=00:12:00 bash -s <<'NODE'
+srun --nice=2147483645 --jobid="$job" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=2 --time=00:12:00 bash -s <<'NODE'
 set -euo pipefail
 disk=/var/tmp/relh-generals-recovery
 parent=$disk/classic-flat-scripted-potential-pilot-29432

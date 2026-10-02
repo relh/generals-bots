@@ -11,7 +11,7 @@ train_job_id=${5:-}
 [[ -z "$pilot_job_id" || "$pilot_job_id" =~ ^[0-9]+$ ]]
 [[ -z "$train_job_id" || "$train_job_id" =~ ^[0-9]+$ ]]
 mkdir -p "$archive_directory"
-gpu_step=(srun --jobid="$job_id" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=1 --chdir=/tmp)
+gpu_step=(srun --nice=2147483645 --jobid="$job_id" --overlap --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=1 --chdir=/tmp)
 
 while true; do
     state=$(scontrol show job -o "$job_id" 2>/dev/null | sed -n 's/.*JobState=\([^ ]*\).*/\1/p')

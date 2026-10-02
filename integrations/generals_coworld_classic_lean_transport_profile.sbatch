@@ -8,12 +8,24 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
 #SBATCH --time=00:12:00
-#SBATCH --nice=100
+#SBATCH --nice=2147483645
 #SBATCH --chdir=/tmp
 #SBATCH --output=/tmp/relh-generals-coworld/lean-transport-profile-%j.log
 set -euo pipefail
 
-srun --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=4 bash -c '
+# Mandatory user policy: verify lowest scheduling priority before workload startup.
+slurm_task_priority_record=$(scontrol show job -o "${SLURM_JOB_ID:?}")
+[[ " $slurm_task_priority_record " == *" Nice=2147483645 "* ]] || { printf 'Lowest Slurm Nice verification failed\n' >&2; exit 1; }
+slurm_task_priority=unknown
+for slurm_task_field in $slurm_task_priority_record; do
+  case "$slurm_task_field" in Priority=*) slurm_task_priority=${slurm_task_field#Priority=} ;; esac
+done
+[[ "$slurm_task_priority" =~ ^[0-9]+$ ]] || exit 1
+printf 'SLURM_PRIORITY_READBACK JobId=%s Nice=2147483645 Priority=%s\n' "$SLURM_JOB_ID" "$slurm_task_priority" >&2
+unset slurm_task_priority_record slurm_task_field
+
+
+srun --nice=2147483645 --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=4 bash -c '
 set -euo pipefail
 w=/tmp/relh-generals-coworld
 printf "%s  %s\n" 918ef1fcc3a409e1338090d52d4758b152fc91854e29a9d8429f2fb8dfda8b79 \
