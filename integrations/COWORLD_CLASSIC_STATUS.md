@@ -17717,3 +17717,35 @@ hosted Daveey strength. Full metrics are in
 The next training iteration should widen the opponent pool toward
 strong half-aware play and guard hosted transfer with paired XP panels,
 rather than simply extend this policy for billions of steps.
+
+A counterfactual public-state likelihood screen held the 369M weights
+fixed and varied route temperature across its 32 exact Daveey replays.
+Action NLL fell from 11.2826 at the trained 0.10→0.05 schedule to
+6.1751 at constant 0.10 and 3.8324 at constant 0.20. This is only
+an offline expert-action diagnostic, so one bounded paired B300 game
+screen tested whether either setting actually plays better. Full
+Slurm preflight found two unrelated `pb_*` jobs on B300 and no active
+Generals job; the assigned physical GPU guard required <2 GiB used
+and <20% utilization. Jobs 35614 and 35616 both exited before game
+evaluation because the temporary screen script mounted a newer
+sampling module at an incorrect container path. Their logs and exit
+codes are pinned to compute-node roots
+`classic-route-temp-screen-35614` and
+`classic-route-temp-screen-35616`. Corrected job **35618** completed
+exit 0, on one B300 with 8 CPUs, 64 GiB and a 30-minute bound;
+its node-local output is
+`/var/tmp/relh-generals-recovery/classic-route-temp-screen-35618`.
+The successful script SHA256 was
+`e25bf22271138b8b9f42b3334a1754e452df3869d658cd86e1297bc44160acb1`.
+
+All three 1,024-game arms used the same 658 unique initial maps,
+balanced seats, the same child checkpoint, the same 235M frozen
+opponent, split temperature 0.15, neutral bias 6, and weak-owned/
+doomed-route penalties 4. The trained first100-turn 0.10 then 0.05
+schedule scored **534W/470L/20D**. Constant 0.10 scored
+449W/489L/86D, paired signed-score delta **−0.10156** with
+map-bootstrap95% CI [−0.17121,−0.02973]. Constant 0.20 scored
+65W/857L/102D, delta **−0.83594** with CI
+[−0.90345,−0.76640]. Thus the offline NLL reduction is not a
+playing-strength gain; retain the trained sampling schedule and do
+not upload or train from the wider-temperature diagnostics.
