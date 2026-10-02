@@ -17562,6 +17562,56 @@ once as `relh-classic-early100-source218m:v1`, version
 `413f181e-c08a-4652-b4a3-853b96a8dc77`. Two private one-game hosted
 smokes against the original source are pending: seat0
 `xreq_d263e1d8-6bd9-41fd-b35d-a4efcc61f733`, seat1
-`xreq_012fece4-e967-4a67-81c2-a9944afe23a7`. Read those outcomes
-before creating its Daveey panels. No longer PPO run or promotion is
-justified while the hosted Daveey weakness is unresolved.
+`xreq_012fece4-e967-4a67-81c2-a9944afe23a7`. Both completed with
+zero runtime failures, one win and one loss against the original
+source. Four private 16-game hosted panels were also created with
+stable idempotency keys: versus source seat0
+`xreq_dc4789ed-1990-4cba-a525-3d71ec781a9b`, seat1
+`xreq_e69df98b-074b-4708-aa77-816a44740d76`; versus Daveey v7
+seat0 `xreq_e6bf3cd2-dac3-4292-aaeb-80ae77c69985`, seat1
+`xreq_481f1c8e-6f88-438b-9a92-b802af2a3b1f`. They were pending
+at creation; read them before further training or promotion.
+
+All 64 schedule-only source panel games completed with zero runtime
+failures. Against the unscheduled source it scored **17W/14L/1D**
+(8W/7L/1D from seat0, 9W/7L from seat1); against Daveey v7 it scored
+**8W/24L** (3W/13L and 5W/11L). The unscheduled source's earlier
+Daveey result was 9W/23L on different maps. The opening schedule
+does not by itself resolve hosted late-game strength.
+
+The 32 schedule-only source versus Daveey replays all ended by general
+capture and had zero basic-invalid source moves. Source made 105 half
+moves in 13,197 moves versus Daveey's 1,000 in 12,467. Mean land
+margin was +2.78 at turn25, +1.13 at turn50, -0.47 at turn100, and
+-0.27 at turn200 among surviving games. This is substantially better
+early territory than the earlier unscheduled source panel, but it did
+not move the hosted win count clearly. Replay audit:
+`/tmp/relh-classic-early100-source-serving/leader-hosted-replay-audit.json`.
+
+On 13,764 verified Daveey actions from the 235M candidate's own
+32-game hosted panel, the schedule-only source assigned mean action
+NLL 8.824 and the PPO child 9.073. The child was worse on all 32
+per-game means; paired game-bootstrap difference +0.248, 95% CI
+[+0.218,+0.277]. Daveey-action likelihood is a diagnostic, not a
+teacher objective or direct win-rate estimate. No billion-step PPO run or
+promotion is justified while hosted Daveey weakness is unresolved.
+
+One bounded iterated self-play experiment was submitted as the sole
+Generals GPU job **35600** on B300, with 8 CPUs, 64 GiB, nice100,
+and a 70-minute allocation. It starts from the exact235M child,
+adds that scheduled child to the frozen pool alongside the original
+218M source, and weights seven frozen policies plus Expander Harvester
+and Sentinel `[1,1,3,1,1,3,3,2,2]`. The same win-only objective,
+gamma/shaping gamma0.999, 8,192 parallel games, H256, minibatch8192,
+replay0.5, and 0.10→0.05 first100-turn schedule are pinned. A fresh
+512-game same-checkpoint sampled-source gate must complete before the
+planned 134,217,728 PPO steps. Two consecutive post-warmup epoch SPS
+values below30k stop the run; fresh paired and population evaluations
+follow training. Script
+`/tmp/relh-classic-iterated-134m-node.sh` SHA256
+`4f021ec37aee9bef6f33dcb359a2f9fc3862029e7df4b9cf2853cae0250f634b`;
+compute-node output
+`/var/tmp/relh-generals-recovery/classic-iterated-134m-35600`,
+Mac archive target `/tmp/relh-classic-iterated-134m-result.tar.gz`.
+Read the job and archive before any follow-up allocation. No champion
+promotion or hosted upload is scheduled for its checkpoint.
