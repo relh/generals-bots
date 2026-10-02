@@ -18016,3 +18016,47 @@ The next bounded on-policy pilot should increase training exposure to
 the strong scripted opponents and recent frozen actors, while retaining
 some older diversity, then gate on the whole held-out opponent pool
 and hosted Daveey games before any longer continuation.
+
+The reweighted hard-opponent pilot in B300 job **35648** kept the
+67M initializer and route-half weight 0.25 but assigned 8/30 opponent
+weight to `expander_harvester` and 6/30 to `sentinel`, with the other
+16/30 spread across ten frozen actors. Its 8,192-environment,
+33,554,432-step run finished at **117.1k warmed SPS** with zero
+illegal actions, zero nonfinite rewards, and balanced seat counts for
+each opponent. The final checkpoint SHA256 is
+`ab7b14e85041f54f8ced0467ac2fece16980c4458d741fe6daea6b718966ee02`.
+On 512 held-out games per arm against the 67M source under the same
+0.25 sampler, it scored 248W/250L/14D versus 252W/242L/18D,
+paired delta −0.0234, CI [−0.1184,+0.0725]. On 4,096 held-out
+games against the wider frozen/scripted pool it scored
+2,414W/1,603L/79D versus source 2,485W/1,540L/71D. It also lost
+strength against the two deliberately emphasized scripts:
+`expander_harvester` 71W versus source 87W, `sentinel` 33W versus
+source 44W. Daveey replay action NLL was 9.238, better than the
+source's 10.089 but worse than the standard-pool 0.25 child's 9.168.
+The node output is
+`/var/tmp/relh-generals-recovery/classic-hardpool-half25-pilot-32m-35648`;
+archive SHA256
+`51cc51f3740eb11eaa41541f2fa43bd23345cde8eab1b4b6955a8c78d084dd54`.
+The hard-pool child is not eligible for longer training or hosted
+promotion.
+
+Both 0.25 pilot runs saved 16,777,216-step intermediate checkpoints.
+B300 job **35649** exported them with the exact 0.25 serving sampler
+and screened them on the same 4,096-game maps and opponent assignments.
+The standard-pool midpoint scored 2,428W/1,592L/76D and the hard-pool
+midpoint 2,359W/1,642L/95D, both below the 67M source's 2,485 wins.
+Their Daveey replay NLLs were 9.015 and 8.995 respectively, better
+than their final checkpoints but again not a playing-strength gain.
+Across the identical opponent rows, a map-cluster bootstrap gave
+paired signed-score deltas versus the source of −0.0266
+CI [−0.0598,+0.0052] for the standard midpoint, −0.0310
+CI [−0.0634,−0.0002] for its final, −0.0557
+CI [−0.0892,−0.0233] for the hard midpoint, and −0.0327
+CI [−0.0658,−0.0007] for its final. This rules out selecting the
+saved midpoint as a sufficient fix. Job 35649 output is under
+`/var/tmp/relh-generals-recovery/classic-midpoint-screen-35649`;
+archive SHA256
+`7e4c2acf91e060cf7c2e9b7e3ef1fd40e0eac93e4a6e087478bf3cbecb46dac6`.
+An otherwise matched route-weight-zero PPO continuation is the next
+causal control before changing reward or scaling training.
