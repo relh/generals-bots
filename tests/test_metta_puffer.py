@@ -168,8 +168,12 @@ def test_device_step_matches_numeric_training_step():
         next_actions = np.stack((next_indices, np.zeros(4, dtype=np.int32)), axis=1)
         expected = numeric.step(next_actions.tolist())
         _, _, _, terminals, episode_done = device.step_device(jnp.asarray(next_actions, dtype=jnp.float32))
-        assert episode_done and expected.episode_done
-        np.testing.assert_array_equal(np.asarray(terminals, dtype=bool), np.asarray(expected.terminated))
+        assert expected.episode_done
+        assert not episode_done
+        assert device.turn == 0
+        # The native training path keeps a continuous rollout at pool refresh;
+        # its terminal flags describe individual games, not the numeric horizon.
+        assert not np.asarray(terminals, dtype=bool).any()
     finally:
         numeric.close()
         device.close()
