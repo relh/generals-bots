@@ -18221,3 +18221,11 @@ never model inputs. A focused CPU JAX test covers full, half, pass,
 seat-dependent ownership, and inactive lanes. This diagnostic is
 ready for a subsequent paired population screen; job 35667 already
 has its source snapshot and does not include it.
+
+The destination classifier was also checked against 804 actual
+actions from two frame-verified hosted Classic replays. It received
+the engine's pre-action `GameState` for both seats and matched the
+replay frame's neutral/owned/enemy/pass category on every action,
+including the flat full/half index mapping. This validates the metric
+against real engine state; the optional 4,096-game GPU evaluator path
+has not yet been exercised.
