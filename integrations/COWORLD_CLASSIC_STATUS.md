@@ -18092,3 +18092,23 @@ strength gain. Ordinary continuation also does not reliably improve
 the broader pool. The policy entropy rose during these PPO runs at
 `train.ent_coef=0.001`; a lower-entropy-bonus control is needed
 before blaming either route coupling or reward shaping.
+
+The matched zero-entropy control in B300 job **35655** changed only
+`train.ent_coef` from 0.001 to 0.0, retaining route-half weight zero,
+the 67M initializer, 12-opponent pool, seed 8842, and 33,554,432-step
+budget. It finished at **116.0k warmed end-to-end SPS** with zero
+illegal actions and zero nonfinite rewards. Its held-out 512-game
+self-match scored 238W/264L/10D versus the source's 228W/277L/7D,
+paired signed-score delta +0.0449, CI [−0.0521,+0.1437]. On the same
+4,096-game frozen/scripted population screen it scored
+2,488W/1,528L/80D versus source 2,485W/1,540L/71D. Initial-state
+hashes, seats, and opponents matched exactly; the map-cluster paired
+score delta was +0.0018, CI [−0.0135,+0.0173]. Daveey replay NLL
+worsened from 10.089 to 10.639; half-route NLL worsened from 14.477
+to 15.752. The zero-entropy child has no demonstrated population
+strength gain. The node output is
+`/var/tmp/relh-generals-recovery/classic-zeroentropy-control-32m-35655`;
+downloaded archive SHA256
+`db30422209399ac7b0912420fa78dc24c766977a30aed56f4de6691bba94b323`.
+A matched lower-learning-rate pilot is the next bounded optimizer
+control before another long continuation.
