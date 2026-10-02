@@ -166,6 +166,27 @@ def spatial_self_play_transfer(source, target, digest):
     return options == before.options
 
 
+def configure_offline_puffer(module, environ=os.environ):
+    # Portable Slurm inputs carry the pinned upstream Git objects through S3.
+    # Keep the trainer's exact revision check; never fetch code over the network
+    # from a compute allocation when an audited local source is requested.
+    puffer_source = environ.get("METTA_PUFFER_SOURCE_REPOSITORY")
+    if puffer_source:
+        repository = Path(puffer_source).resolve(strict=True)
+        if not (repository / "objects").is_dir() or not (repository / "HEAD").is_file():
+            raise ValueError("Portable Puffer source must be a local bare Git repository")
+        module.PUFFER_REPOSITORY = str(repository)
+        import shutil
+        raylib = Path(environ["METTA_PUFFER_RAYLIB_DIRECTORY"]).resolve(strict=True)
+        if not (raylib / "lib/libraylib.a").is_file() or not (raylib / "include/raylib.h").is_file():
+            raise ValueError("Portable Puffer source requires its prepackaged raylib dependency")
+        install_environment = module.install_environment
+        def install_portable_environment(source, *args, **kwargs):
+            shutil.copytree(raylib, source / "raylib-5.5_linux_amd64")
+            return install_environment(source, *args, **kwargs)
+        module.install_environment = install_portable_environment
+
+
 def main():
     validate_training_geometry()
     validate_sampling_gate()
@@ -192,6 +213,7 @@ def main():
         exec(compile(entropy_resume_source(source.read_text()), str(source), "exec"), module.__dict__)
     else:
         spec.loader.exec_module(module)
+    configure_offline_puffer(module)
     orientation = os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION", "storage")
     if orientation == "canonical":
         from integrations.spatial_muon_orientation import install_build_hook

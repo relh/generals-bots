@@ -1,5 +1,66 @@
 # Softmax Coworld Classic 1v1 training
 
+## Resumed training: portable launch migration (2026-10-02 23:00 UTC)
+
+No new GPU allocation has been submitted. Full queue inspection on resumption
+found no live Generals/Classic task job. B300 had eight running GPU jobs, B200
+was drained, and the 4090 GPUs were allocated. Other jobs were left untouched.
+
+Recovered failed job 35687's intact 5 MB local result archive. It reached the
+sampling gate, before TRAIN_START. Slurm's SIGUSR1 failure is authoritative;
+the old archive incorrectly contains `exit-code.txt=0`. The replacement runner
+records signal/failure status explicitly and waits for remote step completion.
+There is no newly trained checkpoint or improved strength result from that run.
+
+Live configuration now identifies this SSH connection as relh UID1002. Old
+shared-account source directories owned by ec2-user are unreadable; Docker
+socket access is denied. No identity change, permission change or bypass was
+attempted. Enroot4.2.0 and TaskProlog=task_prolog.sh are present; accounting is
+off and MinJobAge=300 seconds. B300 /tmp had approximately41000 free inodes
+while /var/tmp had approximately70 GB and146million free inodes. Future owned
+Enroot temp/cache/data/runtime paths are placed together on checked scratch.
+
+Recovered93 readable task files through sandbox S3, including opponent bundles
+and the67M parent checkpoint. Object:
+`softmax-slurm-artifacts/relh/generals-portable-20261002T223043Z-7cdf1c78/recovery.tar.gz`
+SHA256 `b5c5f46a28e543a55bf71daccdb242d8af5b6defa9bc506d247c4189193def37`.
+Local archive `/tmp/relh-generals-portable-recovery-1d10c79d.tar.gz` and its
+receipt list unreadable files explicitly. Missing local8 bundle and parent
+completion/lineage metadata were recovered from preserved local result archives.
+No code/data was manually staged to a compute node. URL credentials were never
+printed. Sandbox STS worked; signing credentials then expired2026-10-03 10:16UTC.
+
+Work in progress:
+
+- `slurm_s3_job.py`: host-side runner, Pyxis on every step, maximum Nice readback,
+  bounded transfers, safe input extraction, free bytes/inodes checks, owned
+  scratch, signal-safe step ownership, remote completion confirmation, split
+  result parts below4GB and final manifest, cleanup only after successful upload.
+- `submit_slurm_s3.py`: host sbatch rendering, finite resources/no requeue, live
+  task queue reconciliation, durable submission intent to prevent retries after
+  lost SSH responses, sanitized submission and terminal controller receipts.
+- `portable_classic_pilot.py`:8M-step hard-pool profile from the same67M parent;
+  no teacher, win-only terminal target plus existing potential shaping, matched
+  gamma. Includes sampled-parent gate, reward/mask/seat audits, warmed end-to-end
+  SPS gate, newly trained checkpoint serving parity, and paired held-out4096
+  game evaluations. No claim of improvement until these actually run.
+- Pure source recovery reproduces exact model fingerprint
+  `811e8de55c3fe327a670a362b076f88fc8e56b9525a347ed89c945cfe9e8863b`.
+  The historical fingerprint includes179 AppleDouble metadata files under Fabric;
+  excluding them changed the fingerprint. They are preserved unchanged as hash
+  inputs. No virtualenv is copied. Puffer revision6ffa5b10 and Raylib5.5 are
+  packaged locally so GPU builds do not fetch code from the network.
+- Input assembly: `/tmp/relh-generals-portable-input-20261002`. Image build
+  context: `/tmp/relh-generals-portable-image-20261002`. Local CPU-only Docker
+  build first failed on an existing libomp5.so symlink; corrected to idempotent
+  links and added clang. Retry1 is in progress, log
+  `/tmp/relh-generals-portable-image-build-20261002-retry1.log`.
+- Full host-runner CPU tests initially passed seven methods. Combined tests then
+  caught leaked ignored signal handlers from an in-process runner call; execute
+  now restores caller handlers. Combined runner/submission/lifecycle tests are
+  being rerun. Image build, source CPU audit, squashfs export, complete signed
+  payload, and final physical/scheduler preflight remain submission gates.
+
 ## Coordinator status: mandatory lowest Slurm priority (2026-10-02 22:15 UTC)
 
 The user's explicit lowest-priority rule supersedes every historical
