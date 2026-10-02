@@ -79,6 +79,7 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
         raise ValueError("Move temperature must be finite and positive")
     logprob, route_match, action_match = [], [], []
     action_entropy, route_entropy, half_mass, top_mass = [], [], [], []
+    route_logprob, split_logprob = [], []
     for start in range(0, len(actions), 32):
         stop = min(start + 32, len(actions))
         outputs = policy.forward(observations[start:stop])
@@ -98,11 +99,18 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
             action_entropy.append(float(-np.sum(present * np.log(present))))
             routes = np.concatenate((probabilities[:1764] + probabilities[1764:3528],
                                      probabilities[3528:]))
+            route = 1764 if action == 3528 else action % 1764
+            route_logprob.append(float(np.log(routes[route])))
+            split_logprob.append(0.0 if action == 3528 else
+                                 float(np.log(probabilities[action] / routes[route])))
             present_routes = routes[routes > 0]
             route_entropy.append(float(-np.sum(present_routes * np.log(present_routes))))
             half_mass.append(float(np.sum(probabilities[1764:3528])))
             top_mass.append(float(probabilities[predicted]))
     logprob = np.asarray(logprob)
+    route_logprob = np.asarray(route_logprob)
+    split_logprob = np.asarray(split_logprob)
+    half_actions = (actions >= 1764) & (actions < 3528)
     per_game = {str(game): {"actions": int(np.sum(games == game)),
                              "nll": float(-logprob[games == game].mean())}
                 for game in np.unique(games)}
@@ -112,6 +120,9 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
             "route_match": float(np.mean(route_match)), "action_match": float(np.mean(action_match)),
             "action_entropy": float(np.mean(action_entropy)), "route_entropy": float(np.mean(route_entropy)),
             "half_probability": float(np.mean(half_mass)), "top_probability": float(np.mean(top_mass)),
+            "route_nll": float(-route_logprob.mean()), "split_nll": float(-split_logprob.mean()),
+            "half_route_nll": float(-route_logprob[half_actions].mean()) if half_actions.any() else None,
+            "half_split_nll": float(-split_logprob[half_actions].mean()) if half_actions.any() else None,
             "per_game": per_game, "logprob": logprob.tolist()}
 
 

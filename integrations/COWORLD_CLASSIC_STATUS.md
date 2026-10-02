@@ -17364,3 +17364,17 @@ node output `/var/tmp/relh-generals-recovery/classic-route-temp-screen-35499`,
 Mac archive target `/tmp/relh-classic-route-temp-screen-retry-result.tar.gz`.
 Inspect that job and archive before any further action; do not submit
 another screen or training job while it runs.
+
+The replay audit now separates the probability assigned to a recorded
+route from the conditional full/half probability on that route. At the
+unchanged serving settings, the 218M source has mean route/split
+negative log probabilities9.370/0.870 across12,492 verified actions
+in its Daveey panel, and9.192/0.554 across15,882 in the child's
+Daveey panel. Restricted to Daveey's half moves, route/split values
+are15.675/7.034 and13.672/6.943 respectively. Broadening route
+temperature may address route selection but cannot directly repair
+the split preference conditional on a chosen route. The outputs are
+`/tmp/relh-classic-source-route-split-audit.json` and
+`/tmp/relh-classic-scriptheavy-route-split-audit.json`. These
+diagnostics do not justify teacher labels, a global split bias, or
+policy promotion; prior split-bias screens reduced held-out wins.
