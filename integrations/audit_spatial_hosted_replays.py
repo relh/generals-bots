@@ -74,6 +74,7 @@ def score(bundle, observations, masks, actions, games):
     if policy.observation_size != observations.shape[1] or policy.action_mode != "structured_sample":
         raise ValueError("Expected 16-plane directional structured-sampling policy")
     logprob, route_match, action_match = [], [], []
+    action_entropy, route_entropy, half_mass, top_mass = [], [], [], []
     for start in range(0, len(actions), 32):
         stop = min(start + 32, len(actions))
         outputs = policy.forward(observations[start:stop])
@@ -89,6 +90,14 @@ def score(bundle, observations, masks, actions, games):
             route_match.append(int(predicted == action if action == 3528 or predicted == 3528
                                    else predicted % 1764 == action % 1764))
             action_match.append(int(predicted == action))
+            present = probabilities[probabilities > 0]
+            action_entropy.append(float(-np.sum(present * np.log(present))))
+            routes = np.concatenate((probabilities[:1764] + probabilities[1764:3528],
+                                     probabilities[3528:]))
+            present_routes = routes[routes > 0]
+            route_entropy.append(float(-np.sum(present_routes * np.log(present_routes))))
+            half_mass.append(float(np.sum(probabilities[1764:3528])))
+            top_mass.append(float(probabilities[predicted]))
     logprob = np.asarray(logprob)
     per_game = {str(game): {"actions": int(np.sum(games == game)),
                              "nll": float(-logprob[games == game].mean())}
@@ -96,6 +105,8 @@ def score(bundle, observations, masks, actions, games):
     return {"policy_sha256": hashlib.sha256((bundle / "policy.bin").read_bytes()).hexdigest(),
             "actions": len(actions), "nll": float(-logprob.mean()),
             "route_match": float(np.mean(route_match)), "action_match": float(np.mean(action_match)),
+            "action_entropy": float(np.mean(action_entropy)), "route_entropy": float(np.mean(route_entropy)),
+            "half_probability": float(np.mean(half_mass)), "top_probability": float(np.mean(top_mass)),
             "per_game": per_game, "logprob": logprob.tolist()}
 
 

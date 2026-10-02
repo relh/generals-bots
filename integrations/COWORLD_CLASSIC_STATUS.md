@@ -17305,3 +17305,28 @@ The local diagnostic outputs are
 `/tmp/relh-classic-source-replay-audit-v1.json` and
 `/tmp/relh-classic-scriptheavy-replay-audit-v1.json`. No Generals GPU
 training job was launched during this audit.
+
+The same audit now reports the served action distribution's entropy.
+On all 15,882 verified Daveey actions in the script-heavy hosted panel,
+the 218M source has mean action entropy 0.323 nats, route entropy 0.304,
+top-action probability 0.906, and half-action probability 0.00387.
+The 251M child has 0.299, 0.280, 0.912, and 0.00398 respectively.
+The low route entropy identifies a measurable exploration issue; it
+does not prove that a higher temperature wins games.
+
+The next bounded test is one queued B300 job **35491**, comparing the
+unchanged exact218M policy at route temperatures 0.05, 0.10, and 0.20
+with split temperature0.15 and all existing public route adjustments.
+It uses 1,024 balanced first episodes per arm versus frozen234M and
+versus a frozen copy of itself, with matched seeds and initial maps
+within each opponent. It is an evaluation-only intervention; no
+training or serving bundle has changed. The script is
+`/tmp/relh-classic-route-temp-screen-node.sh`, SHA256
+`431d0708e16c7f91282e05ea42240ad945f5ba070602e41c89ed329af191c172`,
+node output `/var/tmp/relh-generals-recovery/classic-route-temp-screen-35491`,
+and Mac archive target `/tmp/relh-classic-route-temp-screen-result.tar.gz`.
+Job35491 was PENDING (Priority) at the last queue check; three peer
+jobs allocated all192 B300 CPUs. Do not submit a duplicate. A B200
+preflight found an idle allocated physical GPU but the existing Puffer
+runtime image has CPU-only JAX, and Docker root has only13GiB free;
+no B200 training was started.
