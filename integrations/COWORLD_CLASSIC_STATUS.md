@@ -18229,3 +18229,52 @@ replay frame's neutral/owned/enemy/pass category on every action,
 including the flat full/half index mapping. This validates the metric
 against real engine state; the optional 4,096-game GPU evaluator path
 has not yet been exercised.
+
+The corrected lower-learning-rate, zero-entropy control in B300 job
+**35667** completed with exit code zero. Its assigned physical B300
+(`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`) had zero GPU memory
+usage at entry. The pinned Classic engine hash remained
+`f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318`;
+environment shaping gamma and learner gamma were both 0.999. It ran
+33,554,432 steps in 8,192 parallel environments (256-step horizon,
+8,192 minibatch, replay ratio 0.5) at **108.0k warmed end-to-end
+SPS** after JAX compilation. The one-GPU, one-learner run had 55%
+median GPU utilization across 190 active two-second samples and
+202,084 MiB peak allocated memory. It recorded zero illegal actions,
+zero nonfinite rewards,
+and balanced seats for every opponent. The device audit counted
+42,308 terminal learner games, 137,273 half actions, and no
+zero-reward terminal agents. Its final checkpoint SHA256 is
+`9d1be145ec38aedd467a775baef36d427d90ad1ca0a0e202b01a7a5a817bc826`.
+The result archive SHA256 is
+`81413d6829ce5d4d48367a40a185f2eb150154d966ac099d65359ff51e0cfb29`.
+
+Actual on-policy terminal wins differed markedly by opponent. Across
+both balanced learner seats, the frozen 67M self opponent gave
+1,650 wins in 3,283 finished games (50.3%); Expander gave 870 in
+3,601 (24.2%), and Sentinel 338 in 1,448 (23.3%). The first
+8.39M-step interval won 202/684 against Expander and 67/240 against
+Sentinel; in the final 8.39M-step interval, the corresponding rates
+were 23.7% and 21.4%. The early frozen policies yielded roughly
+87–90% wins. Expander and Sentinel together had only 3 of 22
+opponent-weight slots, so the hard script outcomes contributed a
+small share of training episodes. These are actual terminal win
+counts, not a proxy derived from the shaped reward sign.
+
+The child's 512-game paired self-match beat the source by
+252W/248L/12D versus 228W/277L/7D (paired signed-score delta
++0.1035, bootstrap95% CI [+0.0103,+0.1942]). The exact 14,351-action
+Daveey replay audit worsened from source NLL 10.089 to 10.255 and
+half-route NLL 14.477 to 15.170. On the same 4,096 held-out Classic
+games against a 13-opponent pool, the child scored 2,483W/1,523L/90D
+versus source 2,485W/1,540L/71D. Initial-state hashes, learner
+seats, and opponent labels matched exactly; a 10,000-resample
+initial-state-cluster bootstrap gives signed-score delta +0.0037,
+95% CI [−0.0275,+0.0341]. Against Expander the child fell from
+87 wins to 75, especially from seat 0 (58 to 40), while Sentinel
+wins rose from 44 to 49. This checkpoint has no demonstrated broad
+strength gain and should not be promoted or extended merely on its
+self-match gain. The next causal pilot should keep the route sampler
+and optimizer fixed while changing hard-opponent exposure; the
+earlier hard-pool pilot simultaneously changed route-half coupling,
+so it did not isolate the pool effect.
