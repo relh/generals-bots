@@ -129,6 +129,8 @@ def main():
                       sample_seed=args.sample_seed, unique_initial_states=len(set(hashes)),
                       action_selection=dict(mode=policy.action_mode,
                                             move_temperature=policy.move_temperature,
+                                            early_route_temperature=policy.early_route_temperature,
+                                            early_route_turns=policy.early_route_turns,
                                             split_temperature=policy.split_temperature,
                                             neutral_route_bias=policy.neutral_route_bias,
                                             weak_owned_route_penalty=policy.weak_owned_route_penalty,

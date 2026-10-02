@@ -17457,3 +17457,66 @@ launcher requires a paired same-checkpoint sampled-source match gate
 under the exact scheduled settings. No child checkpoint has yet been
 trained or uploaded; implementation must pass the full training and
 serving parity checks before a GPU pilot.
+
+### 2026-10-02 — aligned early-route PPO pilot
+
+The first schedule-aligned 16,777,216-step continuation from the exact
+218M source completed in B300 Slurm job **35547** (exit 0). The official
+Classic game engine SHA256 was
+`f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a3182`.
+Its physical GPU UUID `GPU-d8f786b6-25e6-1199-8523-0d38073df48c`
+was idle at entry. The run used 8,192 parallel games, horizon 256,
+minibatch 8,192, replay ratio 0.5, one B300, eight CPUs, 64 GiB,
+win-only terminal reward, gamma/shaping gamma 0.999, and a balanced
+eight-member opponent pool: six frozen policies and two scripts.
+Sampling used route temperature 0.10 before turn 100, then 0.05,
+split temperature 0.15, neutral route bias 6, weak-owned penalty 4,
+and doomed-attack penalty 4. The learner source SHA256 was
+`fff930fd304a43a6f3875d20dc71509e4a5c482bd10d10b9b7187a1755247938`.
+
+The first 2.1M-step SPS reading included warmup and was 27.5k.
+Subsequent end-to-end PPO readings over rollout and updates were
+115.9k–117.4k SPS; the final reading was **116.8k SPS**. GPU memory
+reached 202,066 MiB, with median sampled utilization 58% after memory
+exceeded 100 GiB. The action-mask audit recorded 16,777,216 learner
+actions and zero illegal actions. The reward audit recorded 20,989
+terminal agents, zero zero-reward terminal agents, and zero nonfinite
+rewards at the end. The final policy entropy reading was 0.735.
+Checkpoint SHA256 is
+`704b0949c9a59d2af28b9cf2d9d84e85560e9b5325ebb5b9b15f2828cdbb23ba`.
+The node archive is `/tmp/relh-classic-early100-pilot-fourth-result.tar.gz`
+on the Mac, SHA256
+`7741929a91520af04449d07b48ecb23edbafe67d0a15250596dcd8ae9799f7a3`.
+Earlier jobs 35542, 35544, and 35545 exited before PPO updates because
+the staged launcher missed adjacent files or ran an older sampling gate;
+job 35547 fixed those staging paths. No duplicate Generals jobs ran.
+
+Fresh held-out paired evaluation with both policies using the same
+opening schedule gave the child 659W/341L/24D against frozen 218M,
+versus the source baseline's 638W/361L/25D (1,024 games, 648 unique
+starts, paired score delta +0.04004, map-bootstrap 95% CI
+[-0.02168,+0.10161]). Against frozen 234M the child scored
+832W/175L/17D versus baseline 802W/202L/20D (1,024 games,
+635 unique starts, delta +0.05566, CI [+0.00284,+0.11066]).
+The mixed-pool panel yielded 2,050W/966L/56D for the child versus
+1,989W/1,020L/63D for the source on 3,072 games. The gain against
+the source is still uncertain. A paired map-cluster bootstrap on the
+saved population arrays gave signed-score delta +0.03743, 95% CI
+[+0.00526,+0.06936] overall; the six frozen opponents gave +0.05077,
+CI [+0.01603,+0.08555], and the two scripts gave -0.03602,
+CI [-0.11677,+0.04386]. This checkpoint is not promoted.
+
+The exported bundle records the opening schedule. Its actual serving
+probabilities at turns 99 and 100 matched the corresponding structured
+action distribution of the exact checkpoint. The Coworld wire codec
+produced the expected public time plane at both turns and legal
+pass-only output. AMD64 image `relh-classic-early100-235m:eval`, image
+ID `sha256:4f3fd7c920d2c35207e2c23cb71e6d1b8dc86023b2cec7422f9ae1d5c7b15cff`,
+loaded the bundle and passed the image-level pass smoke. It was uploaded
+once under relh as `relh-classic-early100-235m:v1`, version
+`fc5c63e4-a9fd-4d7c-b9e5-b340b3e7b1b1`. Two private one-game hosted
+runtime smokes versus the existing 218M source were created with fixed
+idempotency keys: candidate seat 0
+`xreq_67bf9d76-fcc8-422c-a9a1-945c07e4a5b5` and seat 1
+`xreq_eeb626fa-1d37-481f-adef-1efb37a236dc`. They were pending
+at creation. Read their outcomes before broader XP or longer training.
