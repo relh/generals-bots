@@ -18304,3 +18304,19 @@ totals and reports phase/category fractions by opponent and seat.
 It reproduced the 35667 4,096-game comparison and rejected a
 deliberately altered opponent assignment; the 35687 destination
 path awaits actual output.
+
+The public observation boundary was checked directly on the 32
+SHA256-verified hosted Daveey Classic replays. The new
+`audit_classic_hosted_codec_parity.py` reconstructed official engine
+frames and compared hosted wire encoding with the training codec on
+a 21×21 mountain-padded copy of the same state. At turns 0, 25, 99,
+100, 150, and 200 where present, both seats were checked: 378
+public states across 14 observed board shapes (18–21 tiles per
+dimension). All legal flat action masks matched exactly; the maximum
+absolute feature difference was 1.49e-8. The engine source SHA256
+matched the pinned official Classic hash
+`f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318`.
+This is direct sampled evidence against a training/hosted observation
+codec gap. It complements the earlier action-selection probability
+check on real hosted states; it does not measure full native model
+forward parity for every checkpoint or establish playing strength.
