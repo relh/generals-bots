@@ -17992,3 +17992,27 @@ games reaching that turn. The hosted evidence is under
 still not competitive with Daveey and must not be promoted or
 extended for billions of steps merely because replay likelihood
 improved.
+
+A held-out population audit exposed why the 67M self-match was an
+insufficient quality gate. B300 job **35647** compared the 67M
+baseline and the 0.25 child on 4,096 Classic games each, with identical
+maps, seats, the existing frozen pool, and one additional scripted
+`sentinel_v5` opponent. The baseline scored 2,485W/1,540L/71D;
+the child scored 2,412W/1,594L/90D. Against the two strongest
+scripted opponents, the baseline scored 87W/263L/6D versus
+`expander_harvester` and 44W/133L/1D versus `sentinel`. It beat
+`sentinel_v5` 124W/50L/4D, so adding v5 would not supply harder
+opposition. The child regressed against both strong scripts
+(77W/273L/6D and 32W/145L/1D), despite its narrow source
+self-match gain. Both frozen and scripted opponent rows were balanced
+across player seats. The audit's `action_selection` record now
+includes `route_half_weight`, and frozen-opponent population records
+include a nonzero route-half weight when present; these metadata fixes
+make the evaluated sampling behavior explicit. The node output is
+`/var/tmp/relh-generals-recovery/classic-v5-pool-screen-35647` and
+the downloaded archive SHA256 is
+`a8aa2a6dfe2860870b0991887327dd7951199f1a24d08238c028e2338166f2c1`.
+The next bounded on-policy pilot should increase training exposure to
+the strong scripted opponents and recent frozen actors, while retaining
+some older diversity, then gate on the whole held-out opponent pool
+and hosted Daveey games before any longer continuation.

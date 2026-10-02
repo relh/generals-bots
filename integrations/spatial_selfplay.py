@@ -264,6 +264,8 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         self._population_action_selection = tuple(
             ({"mode": policy.action_mode, "move_temperature": policy.move_temperature,
               "split_temperature": policy.split_temperature,
+              **({"route_half_weight": policy.route_half_weight}
+                 if policy.route_half_weight else {}),
               **({"early_route_temperature": policy.early_route_temperature,
                   "early_route_turns": policy.early_route_turns}
                  if policy.early_route_temperature is not None else {}),
