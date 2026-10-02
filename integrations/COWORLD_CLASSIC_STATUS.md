@@ -17697,20 +17697,23 @@ over the 28 games reaching that turn. The full replay summary is
 Despite a robust local training gain and high throughput, this policy
 does not yet close the hosted strength gap and was not promoted.
 
-The exact hosted Daveey replay prefixes were checked against the
-pinned local Classic engine and public action mask. Three of 32
-reconstructions diverged late; only their verified prefixes were used.
-Across 12,542 verified Daveey moves, the scheduled 235M parent's
-expert-action NLL was 9.4436, while the iterated 369M actor's was
-11.2610. The per-game NLL was worse in all 32 games; the mean
-per-game difference was +1.8183 with game-bootstrap95% CI
-[+1.6756,+1.9616]. The 369M actor's mean action entropy was 0.207 versus
-0.286 for its parent and its mean half-action probability was
-0.00133 versus 0.00301. This is a diagnostic distribution shift,
+The first replay scorer mistakenly used the generic Generals move
+order: three head-on moves diverged late in its reconstructions.
+`Match` now accepts an explicit official Coworld Classic rule mode,
+and the replay scorer selects it. All **32 full hosted replays** then
+matched the pinned engine frame by frame, with **zero divergences**
+and 12,740 verified Daveey actions; the public action mask admitted
+each recorded action. On those states, the scheduled 235M parent's
+expert-action NLL was 9.4687, while the iterated 369M actor's was
+11.2826. The per-game NLL was worse in all 32 games; the mean
+per-game difference was +1.8220 with game-bootstrap95% CI
+[+1.6936,+1.9523]. The 369M actor's mean action entropy was 0.2057
+versus 0.2850 for its parent and its mean half-action probability
+was 0.00132 versus 0.00300. This is a diagnostic distribution shift,
 not a teacher target: PPO against its existing population coincided
 with a more certain policy, nearly removed half moves, and did not improve
 hosted Daveey strength. Full metrics are in
-`/tmp/relh-classic-iterated-369m-serving/leader-policy-audit.json`.
+`/tmp/relh-classic-iterated-369m-serving/leader-policy-audit-classic.json`.
 The next training iteration should widen the opponent pool toward
 strong half-aware play and guard hosted transfer with paired XP panels,
 rather than simply extend this policy for billions of steps.

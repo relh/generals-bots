@@ -40,7 +40,7 @@ def verified_states(replay_root, limit):
         replay = json.loads(gzip.decompress(blob))
         if replay["ruleset"] != "classic":
             raise ValueError(f"Expected Classic: game {game_index}")
-        match = Match(replay["seed"])
+        match = Match(replay["seed"], coworld_classic_rules=True)
         if any(match.frame()[field] != replay["frames"][0][field] for field in FRAME_FIELDS):
             raise ValueError(f"Initial frame differs: game {game_index}")
         expert = 1 - item["seat"]
