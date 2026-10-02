@@ -37,6 +37,10 @@ def main():
     parser.add_argument("--acting-greedy", action="store_true",
                         help="Choose argmax after the route/split transform used by PPO")
     parser.add_argument("--sampling-temperature", type=float, default=1.0)
+    parser.add_argument("--early-route-temperature", type=float,
+                        help="Diagnostic route temperature during the first --early-route-turns turns")
+    parser.add_argument("--early-route-turns", type=int,
+                        help="Number of opening turns using --early-route-temperature")
     parser.add_argument("--split-sampling-temperature", type=float,
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
@@ -60,6 +64,13 @@ def main():
         raise ValueError("Require a positive even game count and positive pool size")
     if not np.isfinite(args.sampling_temperature) or args.sampling_temperature <= 0:
         raise ValueError("Sampling temperature must be finite and positive")
+    if (args.early_route_temperature is None) != (args.early_route_turns is None):
+        raise ValueError("Early route temperature and turn count must be set together")
+    if args.early_route_temperature is not None and (
+            not np.isfinite(args.early_route_temperature) or args.early_route_temperature <= 0
+            or args.early_route_turns <= 0 or args.sample_seed is None
+            or args.split_sampling_temperature is None):
+        raise ValueError("Early route schedule requires positive temperatures, turns, and structured sampling")
     if args.acting_greedy and args.sample_seed is not None:
         raise ValueError("Acting-greedy and sampled actions are separate modes")
     if args.acting_greedy and args.split_sampling_temperature is None:
@@ -180,6 +191,9 @@ def main():
             hashes.append(digest.hexdigest())
         np.save(args.output / "initial_state_sha256.npy", np.asarray(hashes, dtype="U64"))
         for turn in range(env.horizon):
+            route_temperature = (args.early_route_temperature
+                                 if args.early_route_turns is not None and turn < args.early_route_turns
+                                 else args.sampling_temperature)
             outputs = np.asarray(forward(values)).copy()
             assert outputs.shape == (args.games, 3530) and np.isfinite(outputs).all()
             legal = np.asarray(masks, bool)
@@ -195,7 +209,7 @@ def main():
                                   if args.safe_owned_split_bias else
                                   public_owned_split_bias(values, args.owned_split_bias, np)
                                   if args.owned_split_bias else None)
-                    logits = np.asarray(acting_logits(outputs, args.sampling_temperature,
+                    logits = np.asarray(acting_logits(outputs, route_temperature,
                                                       args.split_sampling_temperature, np,
                                                       split_bias)[:, :3529])
                     if args.neutral_route_bias:
@@ -217,10 +231,10 @@ def main():
                               if args.safe_owned_split_bias else
                               jnp.asarray(public_owned_split_bias(np.asarray(values), args.owned_split_bias, np))
                               if args.owned_split_bias else None)
-                logits = (acting_logits(jnp.asarray(outputs), args.sampling_temperature,
+                logits = (acting_logits(jnp.asarray(outputs), route_temperature,
                                        args.split_sampling_temperature, jnp, split_bias)[:, :3529]
                           if args.split_sampling_temperature is not None
-                          else jnp.asarray(outputs[:, :3529]) / args.sampling_temperature)
+                          else jnp.asarray(outputs[:, :3529]) / route_temperature)
                 if args.neutral_route_bias:
                     logits += jnp.asarray(public_neutral_route_bonus(
                         np.asarray(values), args.neutral_route_bias, np))
@@ -276,6 +290,8 @@ def main():
                   action_selection="argmax_acting" if args.acting_greedy else "argmax" if args.sample_seed is None else "sample",
                   sample_seed=args.sample_seed,
                   sampling_temperature=args.sampling_temperature if (args.sample_seed is not None or args.acting_greedy) else None,
+                  early_route_temperature=args.early_route_temperature,
+                  early_route_turns=args.early_route_turns,
                   split_sampling_temperature=args.split_sampling_temperature,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,

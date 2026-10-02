@@ -38,6 +38,10 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
             raise ValueError(f"Match settings differ: {field}")
     if not allow_policy_mode_change and records[0].get("split_sampling_temperature") != records[1].get("split_sampling_temperature"):
         raise ValueError("Match settings differ: split_sampling_temperature")
+    if not allow_policy_mode_change and any(
+            records[0].get(field) != records[1].get(field)
+            for field in ("early_route_temperature", "early_route_turns")):
+        raise ValueError("Match settings differ: early route schedule")
     if not allow_policy_mode_change and records[0].get("neutral_route_bias", 0.0) != records[1].get("neutral_route_bias", 0.0):
         raise ValueError("Match settings differ: neutral_route_bias")
     if not allow_policy_mode_change and records[0].get("owned_split_bias", 0.0) != records[1].get("owned_split_bias", 0.0):
@@ -102,6 +106,10 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         candidate_action_selection=records[1]["action_selection"],
         baseline_sampling_temperature=records[0]["sampling_temperature"],
         candidate_sampling_temperature=records[1]["sampling_temperature"],
+        baseline_early_route_temperature=records[0].get("early_route_temperature"),
+        candidate_early_route_temperature=records[1].get("early_route_temperature"),
+        baseline_early_route_turns=records[0].get("early_route_turns"),
+        candidate_early_route_turns=records[1].get("early_route_turns"),
         baseline_half_logit_bias=records[0].get("half_logit_bias", 0.0),
         candidate_half_logit_bias=records[1].get("half_logit_bias", 0.0),
         baseline_split_sampling_temperature=records[0].get("split_sampling_temperature"),

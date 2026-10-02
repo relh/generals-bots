@@ -17378,3 +17378,49 @@ the split preference conditional on a chosen route. The outputs are
 `/tmp/relh-classic-scriptheavy-route-split-audit.json`. These
 diagnostics do not justify teacher labels, a global split bias, or
 policy promotion; prior split-bias screens reduced held-out wins.
+
+Job35499 COMPLETED exit0 in17m06s. Its physical B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was0MiB/0% with no
+compute process at startup; no GPU contention was observed. Archive
+`/tmp/relh-classic-route-temp-screen-retry-result.tar.gz` passed
+gzip validation, SHA256
+`569225fabfade6e73ae5b2c489c7d03e15f4281e2394a2a774a76e1c2a8e6513`.
+All six evaluations finished with exact paired initial hashes and
+learner seats within each opponent panel. The 1,024-game frozen234M
+panel (448 unique starts) gave route temperature0.05 740W/271L/13D,
+0.10 627W/342L/55D, and0.20 84W/877L/63D. Relative to0.05,
+paired score deltas are -0.17969 (map-bootstrap95% CI
+[-0.25905,-0.10216]) and -1.23242 (CI[-1.29835,-1.16385]).
+Against a frozen sampled copy of the same218M actor on1,024 games
+(446 unique starts), respective outcomes are496W/499L/29D,
+389W/494L/141D, and28W/930L/66D. Paired deltas are -0.09961
+(CI[-0.17951,-0.02108]) and -0.87793
+(CI[-0.94199,-0.81335]). Thus both broader full-game temperatures
+are decisively worse in interactive held-out play, despite their
+much better Daveey-action likelihood on fixed replay states.
+
+Temperature0.10 increased turn100 mean land margin versus frozen234M
+from3.31 to8.15 tiles among games still alive and increased neutral
+destination moves55,052→138,733 over the first episodes, yet lost
+more games and drew more often. This suggests testing an early-only
+exploration schedule while retaining the proven0.05 late route
+temperature. It does not justify serving0.10, training at constant0.10,
+or a long run. The existing0.05 policy remains the reference.
+
+An opt-in evaluator-only opening schedule now tests route temperature
+0.10 for the first50 or100 turns, then the original0.05 for the rest
+of each game. It retains the exact218M checkpoint, split temperature
+0.15, public route adjustments, frozen opponents, map seeds, and
+sampling seed. The saved0.05 baseline arrays from job35499 will be
+paired with the new arms, avoiding a repeated baseline allocation.
+One bounded B300 job **35523** is RUNNING with four1,024-game arms,
+balanced learner seats,8 CPUs/64GiB/nice100/30min. Its script
+`/tmp/relh-classic-early-route-temp-screen-node.sh` is Bash-checked,
+SHA256 `492057baac29c9f0521498d586e5ac6c1632b8391ae9f2e4b3830ab5253c6dad`;
+the node output is
+`/var/tmp/relh-generals-recovery/classic-early-route-temp-screen-35523`
+and Mac archive target is
+`/tmp/relh-classic-early-route-temp-screen-result.tar.gz`. The
+script guards its allocated physical GPU and pins the official
+Classic engine SHA. Inspect this job and its archive before another
+Generals allocation. No training or serving change is adopted.
