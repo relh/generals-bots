@@ -18169,3 +18169,17 @@ The failed job is terminal with exit code 1; its archive SHA256 is
 A single corrected B300 retry, job **35667**, is pending behind a
 fully allocated queue; no training result should be inferred from
 35663.
+
+While 35667 waited for a GPU, an independent local action-selection
+check reconstructed two of the lower-rate child's hosted Classic 1v1
+replays frame by frame with the pinned official engine and encoded ten
+real public observations at turns 25, 99, 100, 150, and 200. For the
+exact checkpoint `5a148544...7d9b2ac`, its NumPy portable serving
+probabilities and JAX rollout action transform agreed on the legal
+flat action mask, including route bonuses and penalties: maximum
+absolute probability difference was 2.39e-7 across the ten states.
+The route temperature switched from 0.10 at turn 99 to 0.05 at turn
+100 in both paths. This directly checks the action-selection portion
+of train/serve alignment on real hosted states; it does not by itself
+prove an entire end-to-end native model-forward parity for that
+checkpoint.
