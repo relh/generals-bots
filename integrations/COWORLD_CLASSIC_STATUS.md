@@ -17614,4 +17614,55 @@ compute-node output
 `/var/tmp/relh-generals-recovery/classic-iterated-134m-35600`,
 Mac archive target `/tmp/relh-classic-iterated-134m-result.tar.gz`.
 Read the job and archive before any follow-up allocation. No champion
-promotion or hosted upload is scheduled for its checkpoint.
+promotion has occurred.
+
+Job **35600 completed exit 0**. Its allocated B300 UUID
+`GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was physically idle
+(0 MiB, 0%) at entry, and the container saw that same UUID. The
+512-game child-versus-child sampler gate compared the 235M weights
+with plain0.05 against their first100-turn0.10 schedule on 327 unique
+starts: 163W/331L/18D versus 249W/239L/24D, paired delta +0.34766,
+map-bootstrap95% CI [+0.24502,+0.45059].
+
+The full **134,217,728** PPO steps ran at 119.6k SPS on the first
+post-warmup epoch and **117.2k final end-to-end SPS**; the two-epoch
+low-SPS monitor never fired. GPU memory peaked at 202,070 MiB, with
+median 59% utilization after usage exceeded 100 GiB. The reward audit
+recorded 184,898 terminal agents, seven zero-reward terminals, zero
+nonfinite rewards, and 868,811 half actions. The action-mask audit
+recorded zero illegal actions out of 134,217,728. Eight checkpoints
+were saved; final checkpoint SHA256 is
+`4940d3db12225c5ed2071395bb9c30b08b8001046c0f69524ecf7dfcd9cef780`.
+The 43 MiB archive `/tmp/relh-classic-iterated-134m-result.tar.gz`
+has SHA256
+`b852c7e0061eeb9517672fdda600ab2db2e5fc8a35be1853a03a01b42daebf43`.
+
+On fresh paired Classic maps versus the frozen 235M parent, the
+baseline scored 488W/491L/45D and the final checkpoint
+530W/459L/35D (1,024 games/633 unique starts, delta +0.07227,
+95% CI [+0.00618,+0.13852]). Against frozen234M the baseline scored
+825W/179L/20D and the final checkpoint 883W/128L/13D
+(1,024 games/645 starts, delta +0.10645, CI [+0.05044,+0.16300]).
+On 3,072 paired games against the nine-member training population,
+baseline was 1,827W/1,174L/71D and the final actor
+1,933W/1,082L/57D. Initial hashes, learner seats, and opponent
+labels matched. Map-cluster bootstrap signed-score delta was
++0.06445, CI [+0.02794,+0.10071] across 1,338 starts; seven frozen
+opponents +0.06207, CI [+0.02049,+0.10351], and two scripts
++0.07222, CI [+0.00280,+0.14225]. This resolves a local improvement
+for both frozen and scripted opponents, but hosted Daveey strength
+remains untested for this checkpoint.
+
+The final portable bundle records the same early route schedule.
+Its actual serving probabilities matched the structured sampler at
+turns99 and100. AMD64 image `relh-classic-iterated-369m:eval`, image
+ID `sha256:243d09f23b4584391e2d98f357b1cb45cfb77f39674ad3f830f118ece3313a80`,
+loaded the exact bundle and passed a pass-only smoke. It was uploaded
+privately as `relh-classic-iterated-369m:v1`, UUID
+`5ee180a7-c586-46e0-8eab-cf8d15ef1368`, with the exact checkpoint
+hash in its metadata. Two hosted one-game smokes against the frozen
+235M parent were requested for both seats as XP requests
+`xreq_d3d3fd2c-3e95-48e9-a996-69fd0d2cb78c` and
+`xreq_e6fa5006-745a-4575-8a98-b841868638c1`. Their results and
+larger private comparison are the next strength gate; no champion
+change has occurred.
