@@ -18278,3 +18278,20 @@ self-match gain. The next causal pilot should keep the route sampler
 and optimizer fixed while changing hard-opponent exposure; the
 earlier hard-pool pilot simultaneously changed route-half coupling,
 so it did not isolate the pool effect.
+
+One bounded causal follow-up is queued as B300 Slurm job **35687**.
+It uses the same 67M parent, seed 8842, 33,554,432-step budget,
+learning rate 0.0002, entropy coefficient zero, route-half weight
+zero, reward settings, and 8,192-game rollout geometry as 35667.
+Only training opponent weights change: the ten frozen policies and
+Expander/Sentinel receive `[1,1,1,1,1,1,2,2,2,2,8,6]`, so the two
+scripts occupy 14/28 weighted slots instead of 3/22. It keeps the
+source sampling gate, win-by-opponent-and-seat device audit, 30k SPS
+stop monitor, paired 512-game self-match, Daveey replay audit, and
+4,096-game wider population screen. Both wider-pool arms opt into the
+new post-selection destination audit. The job is restricted to one
+B300 GPU, 8 CPUs, 64 GiB memory, 55 minutes, `--nice=100`, and a
+compute-node output path
+`/var/tmp/relh-generals-recovery/classic-hardpool-routezero-32m-35687`.
+The physical GPU occupancy gate runs inside the allocation. The job
+was pending for resources at submission; no result is inferred yet.
