@@ -11,14 +11,21 @@ import numpy as np
 
 from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
 from integrations.spatial_action_sampling import (acting_logits, public_doomed_attack_route_penalty,
-                                                  public_neutral_route_bonus, public_weak_owned_route_penalty)
+                                                  public_early_route_temperature, public_neutral_route_bonus,
+                                                  public_weak_owned_route_penalty)
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
 
 def frozen_action_indices(policy, outputs, masks, keys, observations=None):
     """Select frozen opponent actions using the bundle's serving contract."""
     if policy.action_mode == "structured_sample":
-        logits = acting_logits(outputs, policy.move_temperature, policy.split_temperature, jnp)[:, :3529]
+        move_temperature = policy.move_temperature
+        if getattr(policy, "early_route_temperature", None) is not None:
+            if observations is None:
+                raise ValueError("Early route schedule requires frozen public observations")
+            move_temperature = public_early_route_temperature(
+                observations, move_temperature, policy.early_route_temperature, policy.early_route_turns, jnp)
+        logits = acting_logits(outputs, move_temperature, policy.split_temperature, jnp)[:, :3529]
         if getattr(policy, "neutral_route_bias", 0.0):
             if observations is None:
                 raise ValueError("Neutral route bias requires frozen public observations")
@@ -256,6 +263,9 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         self._population_action_selection = tuple(
             ({"mode": policy.action_mode, "move_temperature": policy.move_temperature,
               "split_temperature": policy.split_temperature,
+              **({"early_route_temperature": policy.early_route_temperature,
+                  "early_route_turns": policy.early_route_turns}
+                 if policy.early_route_temperature is not None else {}),
               "neutral_route_bias": policy.neutral_route_bias,
               **({"weak_owned_route_penalty": policy.weak_owned_route_penalty}
                  if policy.weak_owned_route_penalty else {}),

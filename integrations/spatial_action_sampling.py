@@ -14,6 +14,21 @@ MOVE_COUNT = 1764
 PASS_INDEX = 3528
 
 
+def public_early_route_temperature(observations, base_temperature, early_temperature, early_turns, xp):
+    """Use the public turn plane for an opening route schedule per game."""
+    if observations.shape[-1] != 16 * 441:
+        raise ValueError("Early route temperature requires sixteen public planes")
+    if (not isinstance(base_temperature, (int, float)) or isinstance(base_temperature, bool)
+            or not math.isfinite(base_temperature) or base_temperature <= 0
+            or not isinstance(early_temperature, (int, float)) or isinstance(early_temperature, bool)
+            or not math.isfinite(early_temperature) or early_temperature <= 0
+            or isinstance(early_turns, bool) or not isinstance(early_turns, int)
+            or not 0 < early_turns <= 2000):
+        raise ValueError("Early route schedule requires positive temperatures and a valid turn cutoff")
+    turn = xp.floor(observations[..., 11 * 441] * 2000 + 0.5)
+    return xp.where(turn < early_turns, early_temperature, base_temperature)[..., None]
+
+
 def public_neutral_route_bonus(observations, strength, xp):
     """Bias moves into visible empty neutral cells using only public planes."""
     if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:

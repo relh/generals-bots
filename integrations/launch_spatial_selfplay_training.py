@@ -54,20 +54,34 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
     temperature = float(environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
     split_temperature = environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE")
     split_temperature = float(split_temperature) if split_temperature is not None else None
+    early_temperature = environ.get("METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE")
+    early_turns = environ.get("METTA_SPATIAL_EARLY_ROUTE_TURNS")
+    if (early_temperature is None) != (early_turns is None):
+        raise ValueError("Early route sampling gate requires temperature and turns together")
+    early_temperature = float(early_temperature) if early_temperature is not None else None
+    early_turns = int(early_turns) if early_turns is not None else None
+    scheduled = early_temperature is not None
+    if scheduled and (not options.get("public_scalar_features") or options.get("public_scalar_ablation")):
+        raise ValueError("Early route schedule requires full public scalar turn observations")
     if (report.get("baseline_sha256") != source or report.get("candidate_sha256") != source
             or report.get("opponent_sha256") != source
-            or report.get("baseline_action_selection") != "argmax"
+            or report.get("baseline_action_selection") != ("sample" if scheduled else "argmax")
             or report.get("candidate_action_selection") != "sample"
-            or report.get("baseline_sampling_temperature") is not None
+            or report.get("baseline_sampling_temperature") != (temperature if scheduled else None)
             or report.get("candidate_sampling_temperature") != temperature
             or report.get("candidate_split_sampling_temperature") != split_temperature
+            or (scheduled and report.get("baseline_split_sampling_temperature") != split_temperature)
+            or report.get("baseline_early_route_temperature") is not None
+            or report.get("baseline_early_route_turns") is not None
+            or report.get("candidate_early_route_temperature") != early_temperature
+            or report.get("candidate_early_route_turns") != early_turns
             or report.get("games", 0) < 256 or report.get("unique_initial_maps", 0) < 64):
-        raise ValueError("Sampling gate must compare greedy and rollout-temperature play of the exact source policy")
+        raise ValueError("Sampling gate must compare the exact source policy with the intended rollout action settings")
     greedy_wins = report["baseline_wld"][0]
     sampled_wins = report["candidate_wld"][0]
     if greedy_wins < report["games"] / 4:
         raise ValueError(
-            f"Greedy source wins only {greedy_wins}/{report['games']} in its self-match; "
+            f"{'Sampled' if scheduled else 'Greedy'} source wins only {greedy_wins}/{report['games']} in its self-match; "
             "verify the checkpoint and opponent before PPO"
         )
     minimum_wins = max(16, report["games"] / 4, greedy_wins / 2)

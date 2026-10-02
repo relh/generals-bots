@@ -226,11 +226,26 @@ def install(native_module=None):
         self.spatial_policy_temperature = float(os.environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
         if not np.isfinite(self.spatial_policy_temperature) or self.spatial_policy_temperature <= 0:
             raise ValueError("Spatial policy temperature must be finite and positive")
+        early_temperature = os.environ.get("METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE")
+        early_turns = os.environ.get("METTA_SPATIAL_EARLY_ROUTE_TURNS")
+        if (early_temperature is None) != (early_turns is None):
+            raise ValueError("Early route temperature and turns must be set together")
+        self.spatial_early_route_temperature = float(early_temperature) if early_temperature is not None else None
+        self.spatial_early_route_turns = int(early_turns) if early_turns is not None else None
         split_temperature = os.environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE")
         self.spatial_split_temperature = float(split_temperature) if split_temperature is not None else None
         if self.spatial_split_temperature is not None and (
                 not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0):
             raise ValueError("Spatial split temperature must be finite and positive")
+        if self.spatial_early_route_temperature is not None:
+            from integrations.spatial_action_sampling import public_early_route_temperature
+
+            if self.spatial_split_temperature is None:
+                raise ValueError("Early route temperature requires structured sampling")
+            public_early_route_temperature(np.zeros((1, 16 * 441), np.float32), self.spatial_policy_temperature,
+                                           self.spatial_early_route_temperature, self.spatial_early_route_turns, np)
+            if self.direct_spatial.observation_size != 16 * 441:
+                raise ValueError("Early route temperature requires sixteen public planes")
         self.spatial_neutral_route_bias = float(os.environ.get("METTA_SPATIAL_NEUTRAL_ROUTE_BIAS", "0"))
         if not np.isfinite(self.spatial_neutral_route_bias) or self.spatial_neutral_route_bias < 0:
             raise ValueError("Neutral route bias must be finite and nonnegative")
@@ -257,10 +272,17 @@ def install(native_module=None):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
         acting = outputs
+        move_temperature = self.spatial_policy_temperature
+        if self.spatial_early_route_temperature is not None:
+            from integrations.spatial_action_sampling import public_early_route_temperature
+
+            move_temperature = public_early_route_temperature(
+                transported, move_temperature, self.spatial_early_route_temperature,
+                self.spatial_early_route_turns, jnp)
         if self.spatial_split_temperature is not None:
             from integrations.spatial_action_sampling import acting_logits
 
-            acting = acting_logits(outputs, self.spatial_policy_temperature,
+            acting = acting_logits(outputs, move_temperature,
                                   self.spatial_split_temperature, jnp)
         elif self.spatial_policy_temperature != 1:
             acting = outputs.at[..., :3529].divide(self.spatial_policy_temperature)
@@ -295,8 +317,15 @@ def install(native_module=None):
         if self.spatial_split_temperature is not None:
             from integrations.spatial_action_sampling import raw_cotangents
 
+            move_temperature = self.spatial_policy_temperature
+            if self.spatial_early_route_temperature is not None:
+                from integrations.spatial_action_sampling import public_early_route_temperature
+
+                move_temperature = public_early_route_temperature(
+                    tape.observations, move_temperature, self.spatial_early_route_temperature,
+                    self.spatial_early_route_turns, jnp)
             cotangents = raw_cotangents(tape.predictions, logits, values,
-                                       self.spatial_policy_temperature,
+                                       move_temperature,
                                        self.spatial_split_temperature, jnp) * coefficient
         else:
             cotangents = jnp.concatenate((logits / self.spatial_policy_temperature,

@@ -78,7 +78,8 @@ def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):
     build.mkdir()
     (build / "build.json").write_text(json.dumps(dict(config=dict(python_environment=dict(
         factory="integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
-        spec=dict(action_sizes=[3529]), options=dict(terminal_reward_mode="win_only"),
+        spec=dict(action_sizes=[3529]), options=dict(terminal_reward_mode="win_only",
+                                                 public_scalar_features=True, public_scalar_ablation=False),
     )))))
     config = tmp_path / "config.json"
     config.write_text(json.dumps(dict(initialize=dict(sha256=SHA))))
@@ -115,3 +116,20 @@ def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):
     report["candidate_split_sampling_temperature"] = .25
     path.write_text(json.dumps(report))
     validate_sampling_gate(argv, environment)
+
+    report.update(baseline_action_selection="sample", candidate_action_selection="sample",
+                  baseline_sampling_temperature=.05, candidate_sampling_temperature=.05,
+                  baseline_split_sampling_temperature=.15, candidate_split_sampling_temperature=.15,
+                  baseline_early_route_temperature=None, baseline_early_route_turns=None,
+                  candidate_early_route_temperature=.1, candidate_early_route_turns=100,
+                  baseline_wld=[496, 499, 29], candidate_wld=[649, 346, 29],
+                  games=1024, unique_initial_maps=446)
+    path.write_text(json.dumps(report))
+    environment.update(METTA_SPATIAL_SPLIT_TEMPERATURE=".15",
+                       METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE=".1",
+                       METTA_SPATIAL_EARLY_ROUTE_TURNS="100")
+    validate_sampling_gate(argv, environment)
+    report["candidate_early_route_turns"] = 50
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)

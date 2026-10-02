@@ -33,6 +33,30 @@ def test_frozen_sampled_opponent_matches_serving_distribution():
         assert abs(np.mean(sampled == action) - expected[action]) < .02
 
 
+def test_frozen_opening_schedule_matches_serving_temperature_by_public_turn():
+    count = 8000
+    outputs = np.zeros(3530, np.float32)
+    outputs[0], outputs[1] = .1, 0
+    legal = np.zeros(3529, bool)
+    legal[[0, 1]] = True
+    observations = np.zeros((2 * count, 16 * 441), np.float32)
+    observations[:count, 11 * 441] = 99 / 2000
+    observations[count:, 11 * 441] = 100 / 2000
+    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+                             split_temperature=.15, early_route_temperature=.1, early_route_turns=100)
+    keys = jax.random.split(jax.random.PRNGKey(118), 2 * count)
+    sampled = np.asarray(jax.jit(lambda k, o: frozen_action_indices(
+        policy, jnp.broadcast_to(outputs, (2 * count, 3530)),
+        jnp.broadcast_to(legal, (2 * count, 3529)), k, o,
+    ))(keys, jnp.asarray(observations)))
+    expected_early = structured_action_probabilities(outputs, legal, .1, .15)[0]
+    expected_late = structured_action_probabilities(outputs, legal, .05, .15)[0]
+    assert abs(np.mean(sampled[:count] == 0) - expected_early) < .02
+    assert abs(np.mean(sampled[count:] == 0) - expected_late) < .02
+    with pytest.raises(ValueError, match="public observations"):
+        frozen_action_indices(policy, jnp.asarray(outputs[None]), jnp.asarray(legal[None]), keys[:1])
+
+
 def test_frozen_argmax_opponent_keeps_legacy_selection():
     outputs = np.zeros((2, 3530), np.float32)
     outputs[:, 0], outputs[:, 1764], outputs[:, 3528] = .15, 0, .1

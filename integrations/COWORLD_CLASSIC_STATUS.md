@@ -17424,3 +17424,36 @@ and Mac archive target is
 script guards its allocated physical GPU and pins the official
 Classic engine SHA. Inspect this job and its archive before another
 Generals allocation. No training or serving change is adopted.
+
+Job35523 COMPLETED exit0 in10m59s. Its physical B300 UUID
+`GPU-9d2dc36a-246e-b703-c53c-232a60d1b758` was idle at entry;
+all four evaluations finished without a runtime failure. Archive
+`/tmp/relh-classic-early-route-temp-screen-result.tar.gz` passed gzip
+validation, SHA256
+`53aeb8195fbd281a2394fe6b41f418864ffb693b07a84fcbdb7f1884f5ee69c4`.
+Saved0.05 baseline hashes and seats from job35499 matched the new
+arms exactly. Against frozen234M on1,024 games/448 unique starts,
+baseline0.05 scored740W/271L/13D; opening0.10 for50 turns scored
+782W/229L/13D (paired delta+0.08203, map-bootstrap95% CI
+[+0.02405,+0.13988]); opening0.10 for100 turns scored
+826W/181L/17D (delta+0.17188, CI[+0.10863,+0.23676]). Against
+a frozen sampled copy of218M on1,024 games/446 unique starts,
+baseline scored496W/499L/29D; opening50 scored565W/434L/25D
+(delta+0.13086, CI[+0.05877,+0.20176]); opening100 scored
+649W/346L/29D (delta+0.29883, CI[+0.22276,+0.37512]). Direct
+opening100-minus-opening50 paired deltas were+0.08984 versus
+frozen234M, CI[+0.03624,+0.14478], and+0.16797 versus218M,
+CI[+0.10452,+0.23208]. All four candidate arms retained the late
+0.05 temperature and the same checkpoint; opening100 is the local
+choice for an aligned, bounded PPO pilot. This is held-out local
+strength, not proof of hosted Daveey transfer.
+
+The first100-turn schedule now has a shared public-turn transform for
+native PPO rollout, PPO cotangents, exported serving, and frozen
+opponent sampling. It reads plane11 of the16-plane public codec,
+which encodes timestep/2000, and switches from0.10 to0.05 at turn100.
+The exporter records the schedule in the bundle manifest, and the
+launcher requires a paired same-checkpoint sampled-source match gate
+under the exact scheduled settings. No child checkpoint has yet been
+trained or uploaded; implementation must pass the full training and
+serving parity checks before a GPU pilot.

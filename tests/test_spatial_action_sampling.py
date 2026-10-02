@@ -1,6 +1,7 @@
 import numpy as np
 
-from integrations.spatial_action_sampling import MOVE_COUNT, acting_logits, raw_cotangents
+from integrations.spatial_action_sampling import (MOVE_COUNT, acting_logits, public_early_route_temperature,
+                                                  raw_cotangents)
 
 
 def test_split_sampling_keeps_route_marginals_and_exact_vjp():
@@ -32,3 +33,26 @@ def test_split_sampling_keeps_route_marginals_and_exact_vjp():
         right[row, index] += 1e-5
         numeric = (objective(right) - objective(left)) / 2e-5
         np.testing.assert_allclose(analytic[row, index], numeric, rtol=2e-5, atol=2e-7)
+
+
+def test_public_turn_schedule_preserves_per_row_ppo_cotangents():
+    observations = np.zeros((2, 1, 16 * 441), np.float32)
+    observations[0, 0, 11 * 441] = 99 / 2000
+    observations[1, 0, 11 * 441] = 100 / 2000
+    temperatures = public_early_route_temperature(observations, .05, .1, 100, np)
+    np.testing.assert_array_equal(temperatures[:, 0, 0], [.1, .05])
+
+    rng = np.random.default_rng(7)
+    predictions = rng.normal(0, .1, (2, 1, 3530))
+    logits = rng.normal(0, .01, (2, 1, 3529))
+    values = rng.normal(0, .01, (2, 1))
+    analytic = raw_cotangents(predictions, logits, values, temperatures, .15, np)
+    def objective(raw):
+        output = acting_logits(raw, temperatures, .15, np)
+        return float(np.sum(output[..., :3529] * logits) + np.sum(output[..., 3529] * values))
+    for row, action in ((0, 0), (0, 1764), (1, 441), (1, 3528)):
+        left, right = predictions.copy(), predictions.copy()
+        left[row, 0, action] -= 1e-5
+        right[row, 0, action] += 1e-5
+        np.testing.assert_allclose(analytic[row, 0, action], (objective(right) - objective(left)) / 2e-5,
+                                   rtol=2e-5, atol=2e-7)

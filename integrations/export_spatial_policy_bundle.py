@@ -12,6 +12,7 @@ import numpy as np
 
 def export_bundle(build, training, checkpoint, sha256, factory_source, output, *,
                   serving_move_temperature=None, serving_split_temperature=None,
+                  serving_early_route_temperature=None, serving_early_route_turns=None,
                   serving_neutral_route_bias=0.0, serving_weak_owned_route_penalty=0.0,
                   serving_doomed_attack_route_penalty=0.0):
     if (serving_move_temperature is None) != (serving_split_temperature is None):
@@ -20,6 +21,15 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
         np.isfinite(value) and value > 0 for value in (serving_move_temperature, serving_split_temperature)
     ):
         raise ValueError("Structured serving temperatures must be finite and positive")
+    if (serving_early_route_temperature is None) != (serving_early_route_turns is None):
+        raise ValueError("Early serving route temperature and turns must be paired")
+    if serving_early_route_temperature is not None:
+        from integrations.spatial_action_sampling import public_early_route_temperature
+
+        if serving_move_temperature is None:
+            raise ValueError("Early route schedule requires structured serving")
+        public_early_route_temperature(np.zeros((1, 16 * 441), np.float32), serving_move_temperature,
+                                       serving_early_route_temperature, serving_early_route_turns, np)
     if not np.isfinite(serving_neutral_route_bias) or serving_neutral_route_bias < 0 or (
             serving_neutral_route_bias and serving_move_temperature is None):
         raise ValueError("Neutral route bias requires structured serving and a finite nonnegative value")
@@ -49,6 +59,9 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
     verify_configuration(configuration)
     policy = NativeFabricPolicy(configuration)
     model = DirectSpatial(policy)
+    if serving_early_route_temperature is not None and (
+            model.channels != 16 or manifest["config"]["python_environment"]["options"].get("public_scalar_ablation")):
+        raise ValueError("Early route schedule requires full public scalar observations")
     raw = checkpoint.read_bytes()
     if hashlib.sha256(raw).hexdigest() != sha256:
         raise ValueError("Spatial checkpoint SHA256 mismatch")
@@ -79,6 +92,9 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
     )
     if serving_neutral_route_bias:
         serving_action_selection["neutral_route_bias"] = serving_neutral_route_bias
+    if serving_early_route_temperature is not None:
+        serving_action_selection["early_route_temperature"] = serving_early_route_temperature
+        serving_action_selection["early_route_turns"] = serving_early_route_turns
     if serving_weak_owned_route_penalty:
         serving_action_selection["weak_owned_route_penalty"] = serving_weak_owned_route_penalty
     if serving_doomed_attack_route_penalty:
@@ -99,6 +115,8 @@ def main():
     parser.add_argument("--sha256", required=True)
     parser.add_argument("--serving-move-temperature", type=float)
     parser.add_argument("--serving-split-temperature", type=float)
+    parser.add_argument("--serving-early-route-temperature", type=float)
+    parser.add_argument("--serving-early-route-turns", type=int)
     parser.add_argument("--serving-neutral-route-bias", type=float, default=0.0)
     parser.add_argument("--serving-weak-owned-route-penalty", type=float, default=0.0)
     parser.add_argument("--serving-doomed-attack-route-penalty", type=float, default=0.0)
@@ -106,6 +124,8 @@ def main():
     export_bundle(args.build, args.training, args.checkpoint, args.sha256, args.factory_source, args.output,
                   serving_move_temperature=args.serving_move_temperature,
                   serving_split_temperature=args.serving_split_temperature,
+                  serving_early_route_temperature=args.serving_early_route_temperature,
+                  serving_early_route_turns=args.serving_early_route_turns,
                   serving_neutral_route_bias=args.serving_neutral_route_bias,
                   serving_weak_owned_route_penalty=args.serving_weak_owned_route_penalty,
                   serving_doomed_attack_route_penalty=args.serving_doomed_attack_route_penalty)

@@ -7,7 +7,8 @@ from types import SimpleNamespace
 import numpy as np
 
 from integrations.spatial_action_sampling import (acting_logits, public_doomed_attack_route_penalty,
-                                                  public_neutral_route_bonus, public_weak_owned_route_penalty)
+                                                  public_early_route_temperature, public_neutral_route_bonus,
+                                                  public_weak_owned_route_penalty)
 
 
 def structured_action_probabilities(outputs, legal, move_temperature, split_temperature,
@@ -75,7 +76,8 @@ class SpatialPlayerPolicy:
         if not isinstance(acting, dict):
             raise ValueError("Invalid spatial serving action selection")
         required = {"mode", "move_temperature", "split_temperature"}
-        allowed = required | {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty"}
+        allowed = required | {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty",
+                              "early_route_temperature", "early_route_turns"}
         if acting.get("mode") == "structured_sample" and required <= set(acting) <= allowed and all(
             isinstance(acting[key], (int, float)) and not isinstance(acting[key], bool)
                   and np.isfinite(acting[key]) and acting[key] > 0 for key in (
@@ -107,6 +109,20 @@ class SpatialPlayerPolicy:
         self.public_scalar_ablation = codec.get("public_scalar_ablation", False)
         if self.public_scalar_ablation and self.channels != 16:
             raise ValueError("Public scalar ablation requires the sixteen-channel codec")
+        self.early_route_temperature = None
+        self.early_route_turns = None
+        if self.action_mode == "structured_sample":
+            early_temperature = acting.get("early_route_temperature")
+            early_turns = acting.get("early_route_turns")
+            if (early_temperature is None) != (early_turns is None):
+                raise ValueError("Early route temperature and turns must be paired")
+            if early_temperature is not None:
+                if self.public_scalar_ablation or self.channels != 16:
+                    raise ValueError("Early route schedule requires full public scalar features")
+                public_early_route_temperature(np.zeros((1, 16 * 441), np.float32), self.move_temperature,
+                                               early_temperature, early_turns, np)
+                self.early_route_temperature = float(early_temperature)
+                self.early_route_turns = int(early_turns)
         with np.load(bundle / "weights.npz", allow_pickle=False) as data:
             self.weights = {name: data[name].copy() for name in data.files}
         f, g = manifest["features"], manifest["global_features"]
@@ -183,8 +199,12 @@ class SpatialPlayerPolicy:
             raise ValueError("Invalid spatial single-seat observation or mask")
         output = self.forward(values)[0]
         if self.action_mode == "structured_sample":
+            move_temperature = self.move_temperature
+            if self.early_route_temperature is not None:
+                move_temperature = float(public_early_route_temperature(
+                    values, move_temperature, self.early_route_temperature, self.early_route_turns, np)[0, 0])
             probabilities = structured_action_probabilities(
-                output, mask[0], self.move_temperature, self.split_temperature,
+                output, mask[0], move_temperature, self.split_temperature,
                 observations=values[0], neutral_route_bias=self.neutral_route_bias,
                 weak_owned_route_penalty=self.weak_owned_route_penalty,
                 doomed_attack_route_penalty=self.doomed_attack_route_penalty,
