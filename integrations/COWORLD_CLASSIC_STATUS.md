@@ -17944,3 +17944,51 @@ regression argues against longer training or hosted promotion of the
 throughput, and export checks, but it did not create useful half-route
 exploration. A stronger on-policy intervention needs a bounded pilot
 and the same strength gate.
+
+A second controlled on-policy pilot raised route-half coupling to 0.25
+from the same 67M parent and otherwise kept the pool, reward, route
+schedule, and split temperature fixed. B300 job **35645** completed
+33,554,432 steps at **115.8k warmed end-to-end SPS**, with zero
+illegal actions and zero nonfinite rewards. Its source sampler passed
+a 512-game gate at 237W/257L/18D versus the weight-zero source's
+250W/252L/10D; paired score delta −0.0352,
+map-bootstrap95% CI [−0.1391,+0.0675]. The new checkpoint SHA256 is
+`aa1ab8bd90ad8c8430cbea19185f517e791a93d0a73c39cba6b91090ad62f944`.
+On 512 held-out paired games per arm against the frozen 67M actor,
+the child scored 253W/242L/17D versus baseline 247W/257L/8D,
+delta +0.0410, CI [−0.0611,+0.1415]. Training half moves rose to
+221,680 from 160,752 in the 0.05 pilot; held-out half moves were
+2,662/441,596 nonpass moves, or 0.603%. Its early territory and
+army margins were worse than the baseline in this panel. The node
+archive is under
+`/var/tmp/relh-generals-recovery/classic-route-half25-pilot-32m-35645`;
+downloaded archive SHA256 is
+`2b6baa6b26b4361f02ba68ee2de385fdefceac3d17a0344c7d94e110ab3e1ab3`.
+
+The same job scored 14,351 frame-verified Daveey-v7 actions across
+32 earlier hosted Classic replays with zero divergences. The 0.25
+child reduced overall Daveey-action NLL from 10.089 to 9.168 and
+half-move route NLL from 14.477 to 13.291; per-game NLL improved in
+all 32. Its mean half-action probability rose from 0.167% to 0.289%,
+still far below Daveey's observed 7.93% half actions. This likelihood
+gain alone does not establish winning play.
+
+The exact AMD64 serving image passed a bundle-load and pass-only
+inference smoke, then was uploaded privately as
+`relh-classic-routehalf25-32m:v1` (policy version
+`c021ff67-e3e1-4f74-8e44-99a895e3f8d0`). Two one-game hosted
+runtime smokes completed without failure, followed by balanced
+16-game-per-seat private XP requests against pinned Daveey v7:
+`xreq_3fc81514-cef7-42e4-9b3d-686567940d0c` and
+`xreq_125241eb-9f1e-435f-b069-3c754cad329e`. The child won
+**3W/29L** overall (seat 0: 1W/15L; seat 1: 2W/14L), compared with
+the 67M parent's 6W/26L on different maps. All 32 new replays were
+downloaded and SHA-checked; a basic legality screen found zero
+invalid candidate moves. It made 100 half moves in 12,110 nonpass
+moves (0.83%), versus Daveey's 905 half moves in the same games.
+Mean army margin at turn 200 was −8.45 and land margin −4.45 over
+games reaching that turn. The hosted evidence is under
+`/tmp/relh-classic-routehalf25-32m-serving`. The 0.25 child is
+still not competitive with Daveey and must not be promoted or
+extended for billions of steps merely because replay likelihood
+improved.
