@@ -17749,3 +17749,49 @@ map-bootstrap95% CI [−0.17121,−0.02973]. Constant 0.20 scored
 [−0.90345,−0.76640]. Thus the offline NLL reduction is not a
 playing-strength gain; retain the trained sampling schedule and do
 not upload or train from the wider-temperature diagnostics.
+
+An opponent-only replay experiment reconstructed 448 unique pinned
+Daveey-v7 Classic games, yielding 206,050 verified public-state/action
+pairs (17,067 half moves), with zero replay divergences or illegal
+labels. A SHA-checked, seed-disjoint 20% holdout has 99 games and
+46,858 actions; its dataset manifest SHA256 is
+`4d3b48919b058dabd633d90120c3c6edb0f04d8aa5e2f6acbc495924571bf79e`.
+The dataset builder and fitter keep these labels out of the RL
+learner's loss. A full-action clone from the 235M parent reduced
+held-out action NLL from 4.0399 to 3.7198 at route temperature 0.20,
+but its 512-game Classic screen against that parent was
+**11W/476L/25D**. The reverse panel was 467W/19L/26D. The clone is
+too weak for the opponent pool; lower replay NLL did not imply better
+play. A first version trained the portable output bias independently
+even though native Fabric aliases some positions; the materializer
+rejected that train/inference mismatch. The fitted variants now leave
+the tied bias frozen, and native/portable export requires an exact
+weight roundtrip.
+
+A narrower conditional-split fit changed only the half-action columns
+of the action and readout kernels. It kept every full-route, pass, and
+value logit bit-exact on sampled public states and preserved the 235M
+parent's route temperatures (0.10 for the first 100 turns, then 0.05),
+split temperature 0.15, and public action biases. Its seed-disjoint
+conditional split NLL fell from 0.6369 to 0.4922 over 3,000 B300
+steps; held-out predicted half rate rose only from 1.43% to 1.49%
+versus 9.10% recorded Daveey half moves. Native/portable weights
+round-tripped exactly (checkpoint SHA256
+`a4591eb43f96295237d6ba630bff72fa1501eeab5e2467e27f091edd2c2c8613`).
+In paired 512-game Classic panels, it scored **232W/261L/19D**
+as learner against the 235M parent; the parent scored
+**249W/249L/14D** in the reverse panel. The 369M child scored
+261W/228L/23D against the split clone, compared with the 235M
+parent's 249W/249L/14D on those same seeds; the paired score delta
+was +0.0645 with 95% CI [−0.0237,+0.1520]. The split clone made
+3,529 half moves over its learner-side panel, while the parent made
+2,718 in the reverse panel. This is a playable but unproven diversity
+candidate, not a strength improvement. It was not uploaded or added
+to sustained training. The B300 fit/export and game jobs were
+35628–35630; each had a physical assigned-GPU guard and node-local
+outputs under `/var/tmp/relh-generals-recovery/classic-daveey-split-*`.
+The first export attempt rejected a mismatched factory source hash;
+the second used the exact archived source and completed. Future
+iterations should measure improvement against both frozen parent and
+pinned Daveey, with special attention to strategically safe owned
+half moves, before a billions-step run.

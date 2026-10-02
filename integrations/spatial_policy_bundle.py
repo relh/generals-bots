@@ -164,8 +164,8 @@ class SpatialPlayerPolicy:
             raise FloatingPointError("Spatial inference produced nonfinite outputs")
         return output
 
-    def _forward(self, observations, xp):
-        w = self.weights
+    def _forward(self, observations, xp, weights=None):
+        w = self.weights if weights is None else weights
         if self.public_scalar_ablation:
             observations = xp.concatenate((observations[:, :4851], xp.zeros_like(observations[:, 4851:])), axis=1)
         obs = observations.reshape(-1, self.channels, 21, 21).transpose(0, 2, 3, 1)
