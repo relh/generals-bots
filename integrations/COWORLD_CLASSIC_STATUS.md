@@ -17520,3 +17520,48 @@ idempotency keys: candidate seat 0
 `xreq_67bf9d76-fcc8-422c-a9a1-945c07e4a5b5` and seat 1
 `xreq_eeb626fa-1d37-481f-adef-1efb37a236dc`. They were pending
 at creation. Read their outcomes before broader XP or longer training.
+
+Both hosted smokes completed without runtime failures and won against
+the exact 218M source, one from each seat. Their 340-turn and 621-turn
+Classic replays reconstructed frame by frame against the local engine;
+all 961 recorded candidate actions passed the public legality mask.
+The reconstructed observation turn plane gave route temperature 0.10
+for the first 100 turns and 0.05 afterward. The recorded candidate
+actions had mean negative log likelihood 0.657 and 0.451 under the
+exported sampler in the two games. This is an end-to-end hosted
+action-path check, not a strength estimate.
+
+Four private 16-game hosted panels were then created once with fixed
+idempotency keys: candidate against the exact218M source, seat0
+`xreq_60c3a391-b8f6-4e00-9851-350a14ac632e`, seat1
+`xreq_11ca3db5-6c64-4900-b601-f485c91008fe`; candidate against
+pinned Daveey v7, seat0 `xreq_629d24d2-9eb4-4205-8570-01d1fb5c5c11`,
+seat1 `xreq_653b61d6-ac52-415b-9a86-0f6a4961a91f`. All 64 games
+completed with zero runtime failures. Against the source the child
+scored **23W/8L/1D** (12W/4L from seat0, 11W/4L/1D from seat1).
+Against Daveey it scored **5W/27L** (2W/14L and 3W/13L). The prior
+218M source scored 9W/23L against Daveey on different maps; that
+unpaired total alone does not prove a regression.
+
+The 32 new Daveey replays all ended by general capture. A post-game
+audit found zero basic-invalid candidate moves. The candidate made
+107 half moves in 13,474 moves versus Daveey's 1,123 in 13,034.
+Mean candidate land margin was +2.59 tiles at turn25, +0.91 at turn50,
+-1.41 at turn100, -1.94 at turn150, and -2.61 at turn200 among games
+reaching each turn. Mean army margin reached -6.93 at turn200.
+The opening schedule improves early territory over the prior source
+panel, but late strategic play remains far below Daveey. Replay audit:
+`/tmp/relh-classic-early100-serving/leader-hosted-replay-audit.json`.
+
+To isolate the schedule from PPO, the **exact218M source weights** were
+packaged with only the first100-turn route schedule changed. The image
+`relh-classic-early100-source218m:eval` has ID
+`sha256:9944ca8d7dec5ab60df2eec5463ef64cb94cad0a3b8762bd598ac72eb5861edf`.
+Its bundle loaded and passed a local pass-only smoke, then uploaded
+once as `relh-classic-early100-source218m:v1`, version
+`413f181e-c08a-4652-b4a3-853b96a8dc77`. Two private one-game hosted
+smokes against the original source are pending: seat0
+`xreq_d263e1d8-6bd9-41fd-b35d-a4efcc61f733`, seat1
+`xreq_012fece4-e967-4a67-81c2-a9944afe23a7`. Read those outcomes
+before creating its Daveey panels. No longer PPO run or promotion is
+justified while the hosted Daveey weakness is unresolved.
