@@ -16,6 +16,7 @@ import numpy as np
 from metta_training.environment import EnvironmentContext
 
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+from integrations.spatial_destination_audit import destination_categories
 from integrations.spatial_selfplay import (SpatialPopulationOpponentPufferEnvironment,
                                            frozen_action_indices)
 
@@ -46,6 +47,8 @@ def main():
     parser.add_argument("--pool-size", type=int, default=1024)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--sample-seed", type=int, required=True)
+    parser.add_argument("--destination-audit", action="store_true",
+                        help="Record first-episode destination types by game phase")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -79,6 +82,7 @@ def main():
     start = time.monotonic()
     finished = np.zeros(args.games, bool)
     outcomes = np.zeros(args.games, np.float32)
+    destination_counts = np.zeros((args.games, 3, 4), np.int32) if args.destination_audit else None
     try:
         values, masks = env.reset_device(f"{args.seed}:0:0")
         sides = np.asarray(env.sides)
@@ -106,6 +110,16 @@ def main():
             legal = np.asarray(masks, bool)
             if not legal[np.arange(args.games), chosen].all():
                 raise ValueError("Candidate sampled an illegal action")
+            if destination_counts is not None:
+                active_rows = np.flatnonzero(~finished)
+                categories = np.asarray(destination_categories(
+                    env.states.ownership_neutral, env.states.ownership,
+                    env.sides, jnp.asarray(chosen), jnp.asarray(~finished),
+                ))
+                selected = categories[active_rows]
+                if not np.isin(selected, (1, 2, 3, 4)).all():
+                    raise ValueError("Active legal action lacks a destination category")
+                np.add.at(destination_counts, (active_rows, min(turn // 100, 2), selected - 1), 1)
             values, masks, rewards, done, _ = env.step_device(jnp.asarray(chosen[:, None]))
             ended = np.asarray(done, bool) & ~finished
             reward = np.asarray(rewards)
@@ -141,6 +155,19 @@ def main():
                       draws=int((outcomes == 0).sum()), turns=turn + 1,
                       wall_seconds=time.monotonic() - start)
         np.save(args.output / "outcomes.npy", outcomes)
+        if destination_counts is not None:
+            np.save(args.output / "destination_counts.npy", destination_counts)
+            result["destination_audit"] = dict(
+                scope="Omniscient post-action audit; destination ownership was never fed to the policy",
+                phases=("turns_0_99", "turns_100_199", "turns_200_plus"),
+                categories=("neutral", "owned", "enemy", "pass"),
+                counts=destination_counts.sum(axis=0).tolist(),
+                by_opponent_and_seat={
+                    name: {str(side): destination_counts[(labels == index) & (sides == side)].sum(axis=0).tolist()
+                           for side in (0, 1)}
+                    for index, name in enumerate(names)
+                },
+            )
         (args.output / "evaluation.json").write_text(json.dumps(result, indent=2) + "\n")
         print(json.dumps(result), flush=True)
     finally:

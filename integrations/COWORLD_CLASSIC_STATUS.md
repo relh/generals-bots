@@ -18211,3 +18211,13 @@ shift in the same direction as the child's hosted midgame overattack;
 it is not a supervised target or proof of a causal reward defect.
 It argues against extending this checkpoint solely because it beat
 the parent in a narrow self-match.
+
+The held-out population evaluator now accepts opt-in
+`--destination-audit`. It saves per-game counts of neutral, owned,
+enemy, and pass actions for turns 0–99, 100–199, and 200 onward,
+with opponent and learner-seat summaries. It reads pre-action state
+only after the actor has selected its action; ownership labels are
+never model inputs. A focused CPU JAX test covers full, half, pass,
+seat-dependent ownership, and inactive lanes. This diagnostic is
+ready for a subsequent paired population screen; job 35667 already
+has its source snapshot and does not include it.
