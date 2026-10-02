@@ -17795,3 +17795,19 @@ the second used the exact archived source and completed. Future
 iterations should measure improvement against both frozen parent and
 pinned Daveey, with special attention to strategically safe owned
 half moves, before a billions-step run.
+
+The conditional-split fit was extended to 30,000 steps in bounded B300
+job 35631. Its held-out split NLL improved further to 0.1352 and its
+predicted half rate on Daveey-selected routes rose to 7.17%, close
+to the recorded 9.10%. The exported checkpoint
+`b949a340f0f9098b20422e2cf9258e5c0de7e14251ea0ddc277b00a8abbab05c`
+again preserved full-route, pass, and value logits exactly. Yet the
+same 512-game screen in job 35632 scored only **137W/369L/6D**
+against the parent, with 16,516 half moves; the parent scored
+330W/167L/15D in the reverse panel. The 369M child scored
+348W/157L/7D against it. This is clear evidence of off-policy
+route mismatch: fitting Daveey's split on Daveey-chosen routes does
+not transfer safely to the parent's routes. Do not promote or train
+against the 30,000-step clone. Future half-move learning needs
+on-policy evaluation or RL against an opponent population, with
+playing strength as the acceptance gate.
