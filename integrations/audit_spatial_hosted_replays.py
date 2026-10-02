@@ -16,6 +16,7 @@ import numpy as np
 from integrations.puffer_codec import encode_coworld_directional_observation
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import training_observation
+from integrations.spatial_action_sampling import public_early_route_temperature
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy, structured_action_probabilities
 
 
@@ -73,10 +74,17 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
     policy = SpatialPlayerPolicy(bundle)
     if policy.observation_size != observations.shape[1] or policy.action_mode != "structured_sample":
         raise ValueError("Expected 16-plane directional structured-sampling policy")
+    use_bundle_schedule = move_temperature is None
     if move_temperature is None:
         move_temperature = policy.move_temperature
     if not np.isfinite(move_temperature) or move_temperature <= 0:
         raise ValueError("Move temperature must be finite and positive")
+    if use_bundle_schedule and policy.early_route_temperature is not None:
+        route_temperatures = np.asarray(public_early_route_temperature(
+            observations, move_temperature, policy.early_route_temperature,
+            policy.early_route_turns, np)).reshape(-1)
+    else:
+        route_temperatures = np.full(len(actions), move_temperature)
     logprob, route_match, action_match = [], [], []
     action_entropy, route_entropy, half_mass, top_mass = [], [], [], []
     route_logprob, split_logprob = [], []
@@ -85,7 +93,7 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
         outputs = policy.forward(observations[start:stop])
         for index, output in enumerate(outputs, start):
             probabilities = structured_action_probabilities(
-                output, masks[index], move_temperature, policy.split_temperature,
+                output, masks[index], route_temperatures[index], policy.split_temperature,
                 observations=observations[index], neutral_route_bias=policy.neutral_route_bias,
                 weak_owned_route_penalty=policy.weak_owned_route_penalty,
                 doomed_attack_route_penalty=policy.doomed_attack_route_penalty)
@@ -116,6 +124,8 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
                 for game in np.unique(games)}
     return {"policy_sha256": hashlib.sha256((bundle / "policy.bin").read_bytes()).hexdigest(),
             "move_temperature": move_temperature, "bundle_move_temperature": policy.move_temperature,
+            "early_route_temperature": policy.early_route_temperature if use_bundle_schedule else None,
+            "early_route_turns": policy.early_route_turns if use_bundle_schedule else None,
             "actions": len(actions), "nll": float(-logprob.mean()),
             "route_match": float(np.mean(route_match)), "action_match": float(np.mean(action_match)),
             "action_entropy": float(np.mean(action_entropy)), "route_entropy": float(np.mean(route_entropy)),
