@@ -70,13 +70,13 @@ def install(environment_class):
             if audit_population:
                 weights = self._reward_options
                 maximum_terminal_shaping = weights["shaping_weight"] * sum(
-                    weights[name] for name in (
+                    weights.get(name, 0.0) for name in (
                         "army_shaping_weight", "land_shaping_weight",
                         "castle_shaping_weight", "frontier_shaping_weight",
                     )
                 )
                 if (self._terminal_reward_mode != "win_only"
-                        or weights["land_gain_reward_weight"] != 0
+                        or weights.get("land_gain_reward_weight", 0.0) != 0
                         or weights["reward_scale"] != 1
                         or maximum_terminal_shaping >= 0.5
                         or not hasattr(self, "_population_labels")):
