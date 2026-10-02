@@ -17811,3 +17811,48 @@ not transfer safely to the parent's routes. Do not promote or train
 against the 30,000-step clone. Future half-move learning needs
 on-policy evaluation or RL against an opponent population, with
 playing strength as the acceptance gate.
+
+A fresh win-only PPO pilot then started from the 235M parent and added
+the 369M child and playable 3,000-step split variant to its existing
+frozen population, for 11 opponents total. The 30,000-step split
+clone was excluded. B300 job **35633** trained 67,108,864 steps
+with 8,192 parallel games, horizon 256, minibatch 8,192, replay
+ratio 0.5, gamma/shaping gamma 0.999, terminal 0/1 reward, and
+army/land potential shaping. It completed in 32 epochs at **116.6k
+end-to-end SPS** after warmup (Puffer uptime 10m33s); physical B300
+UUID `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7` was idle at
+entry. The node had two unrelated `pb_*` jobs on other allocated
+GPUs. GPU utilization sampled every two seconds had median 58% and
+peak 79%, with peak assigned-GPU memory 202,078 MiB. The device
+audit found zero illegal actions in 67,108,864 steps and zero
+nonfinite rewards; all 11 opponents were sampled equally by side.
+The exported checkpoint SHA256 was
+`3eb2fe3f22affcc4f7563c46c105a2d71e183b73447c3e6e617b1a4da7c0aeeb`.
+Full logs and output are pinned to
+`/var/tmp/relh-generals-recovery/classic-split-pool-67m-35633`.
+
+On 512 new held-out Classic games per arm in B300 job 35634, the
+67M candidate scored **255W/236L/21D** against the 235M parent;
+the parent scored **230W/261L/21D** in the reverse pairing. Against
+the 369M child, the candidate scored 253W/243L/16D while the parent
+scored 233W/266L/13D on the same seeds. The paired score gain
+versus the child was +0.0840 with map-bootstrap95% CI
+[−0.0269,+0.1939], so local strength improvement remains
+uncertain. The bundle and its AMD64 serving image passed a pass-only
+inference smoke, and the image was privately uploaded as
+`relh-classic-split-pool-67m:v1`, policy version UUID
+`e1d363db-66b5-43b0-a36c-9871a81ac8fb`.
+
+Two hosted runtime smokes and balanced 16-game-per-seat XP requests
+against pinned Daveey v7 completed with zero runtime failures.
+The candidate scored **6W/26L** (seat 0: 2W/14L; seat 1:
+4W/12L), versus the prior 369M actor's 5W/27L. XP requests were
+`xreq_017027f4-19da-4c27-8a97-612d17ce0a07` and
+`xreq_bdba09a1-1fcb-4649-8c37-e7f32a4be36e`. Replay blobs
+and SHA256 manifest are under
+`/tmp/relh-classic-split-pool-67m-serving`. A basic legality
+screen found zero invalid moves in 32 games. The candidate made
+only **46 half moves**, while Daveey made **1,138**; the extra
+frozen split opponent did not teach meaningful half-move behavior.
+The 6W/26L hosted result is not enough to justify extending this
+checkpoint for billions of steps or promoting it as champion.
