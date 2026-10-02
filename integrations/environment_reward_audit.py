@@ -15,10 +15,12 @@ import jax.numpy as jnp
 @jax.jit
 def accumulate(counts, rewards, terminals):
     ended = terminals != 0
+    clipped = jnp.isfinite(rewards) & (jnp.abs(rewards) > 1)
     delta = jnp.stack((
         jnp.sum(rewards > 0), jnp.sum(rewards < 0),
         jnp.sum(ended), jnp.sum(ended & (rewards == 0)),
         jnp.sum(~jnp.isfinite(rewards)),
+        jnp.sum(clipped), jnp.sum(ended & clipped),
     )).astype(jnp.int32)
     return counts + delta
 
@@ -61,7 +63,7 @@ def install(environment_class):
     def step(self, actions):
         result = original(self, actions)
         if not hasattr(self, "_reward_audit_counts"):
-            self._reward_audit_counts = jnp.zeros(5, jnp.int32)
+            self._reward_audit_counts = jnp.zeros(7, jnp.int32)
             self._reward_audit_ticks = 0
             if audit_flat_splits:
                 if tuple(self.spec.action_sizes) != (3529,):
@@ -95,6 +97,7 @@ def install(environment_class):
                     positive_rewards=counts[0], negative_rewards=counts[1],
                     terminal_agents=counts[2], zero_reward_terminal_agents=counts[3],
                     nonfinite_rewards=counts[4],
+                    native_clipped_rewards=counts[5], native_clipped_terminal_rewards=counts[6],
                 )
                 if audit_flat_splits:
                     full, half, passing = map(int, jax.device_get(self._split_audit_counts))
