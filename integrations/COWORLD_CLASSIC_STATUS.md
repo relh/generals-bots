@@ -18060,3 +18060,35 @@ archive SHA256
 `7e4c2acf91e060cf7c2e9b7e3ef1fd40e0eac93e4a6e087478bf3cbecb46dac6`.
 An otherwise matched route-weight-zero PPO continuation is the next
 causal control before changing reward or scaling training.
+
+A route-weight-zero control then started from the identical 67M
+checkpoint, original 12-opponent pool, and seed 8842 used by the
+standard-pool 0.25 pilot. Its gate compared the constant 0.05 source
+sampler with the actual first-100-turn 0.10 then 0.05 schedule;
+the scheduled source scored 250W/252L/10D versus 132W/372L/8D,
+confirming why the opening schedule must remain aligned. B300 job
+**35654** finished 33,554,432 steps at **116.2k warmed end-to-end
+SPS**, with zero illegal actions, zero nonfinite rewards, and balanced
+opponent seats. Final checkpoint SHA256 is
+`09b145c225a8df0819a67360a0283203aec9e4c8c6c0c82c538d255cea8e84e7`.
+Its 512-game paired self-match scored 242W/247L/23D versus source
+228W/277L/7D (delta +0.0859, CI [−0.0077,+0.1799]), but on the
+same 4,096-game wider pool it scored 2,455W/1,567L/74D versus
+source 2,485W/1,540L/71D. Daveey replay NLL worsened from 10.089
+to 10.371. The assigned B300 was idle at entry; no other Generals
+job ran concurrently. Output is
+`/var/tmp/relh-generals-recovery/classic-routezero-control-32m-35654`;
+archive SHA256
+`3e07bd0a6718dd1d139342b69c88e12f1d92b6a678e439bfad4ae930af6b9d11`.
+
+The weight-zero control, standard 0.25 pilot, and source pool outcomes
+have identical initial-state hashes, learner seats, and opponent labels.
+A paired map-cluster bootstrap gives signed-score deltas versus source
+of −0.0139 CI [−0.0451,+0.0180] for weight zero and −0.0310
+CI [−0.0629,+0.0002] for weight 0.25; the direct 0.25-minus-zero
+delta is −0.0171 CI [−0.0489,+0.0155]. The 0.25 intervention
+improves Daveey-action likelihood but has no demonstrated playing
+strength gain. Ordinary continuation also does not reliably improve
+the broader pool. The policy entropy rose during these PPO runs at
+`train.ent_coef=0.001`; a lower-entropy-bonus control is needed
+before blaming either route coupling or reward shaping.
