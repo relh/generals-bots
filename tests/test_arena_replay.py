@@ -152,3 +152,62 @@ def test_v9_live_and_snapshot_factories_preserve_stateful_options(alias, enabled
     assert agent(alias, rules, options={"remember_enemy_general": not enabled}).remember_enemy_general is not enabled
     with pytest.raises(ValueError, match="Unsupported policy options"):
         agent(alias, rules, options={"remember_threats": True})
+
+
+def recorded_case(**changes):
+    return dict(suite="competition", opponent="hunter", candidate="sentinel-v9",
+                board_id="3", repeat="0", swapped="1", seat="0", action_seed="183",
+                result="loss", **changes)
+
+
+def test_resumed_duplicate_is_rejected_before_selection_or_result_filter():
+    row = recorded_case()
+    with pytest.raises(ValueError, match="duplicate replay case"):
+        select_rows([row, dict(row)], max_samples=1, result="win")
+
+
+@pytest.mark.parametrize("outcome", ["error", "failed", "", "unfinished"])
+def test_failed_records_cannot_enter_replay_aggregation(outcome):
+    row = recorded_case()
+    row["result"] = outcome
+    with pytest.raises(ValueError, match="unfinished/unknown"):
+        select_rows([row], result="any")
+
+
+def test_changed_policy_version_is_rejected_even_when_filtered_out():
+    with pytest.raises(ValueError, match="candidate differs"):
+        select_rows([recorded_case()], result="win", candidate="sentinel-v10")
+
+
+@pytest.mark.parametrize("mismatch,critical,status,rules,expected", [
+    ({"result": {"recorded": "loss", "replayed": "win"}}, [], "recorded", "stored suite_rules",
+     "outcome_mismatch"),
+    ({}, ["candidate_source_sha256"], "recorded", "stored suite_rules", "source_mismatch"),
+    ({}, [], "historical_source_hashes_unavailable", "stored suite_rules", "provenance_unverified"),
+    ({}, [], "recorded", "legacy suite defaults; historical rules provenance unverified", "provenance_unverified"),
+    ({}, [], "recorded", "stored suite_rules", "verified"),
+])
+def test_replay_verification_distinguishes_outcome_and_execution_identity(mismatch, critical, status, rules, expected):
+    provenance = dict(critical_changed_sources=critical, status=status)
+    assert replay.replay_evidence_state(mismatch, provenance, rules) == expected
+
+
+def test_compact_replay_preserves_recorded_loss_seed_and_policy_identity():
+    row = recorded_case()
+    provenance = dict(seed=83000, run_metadata_sha256="metadata-hash",
+                      board_archive_sha256="board-hash", checkpoint_sha256=None)
+    report = dict(
+        recorded_row=row, case_provenance=provenance, evidence_state="outcome_mismatch",
+        replayed_result=dict(result="win", turns=40),
+        outcome_and_counter_mismatches=dict(result=dict(recorded="loss", replayed="win")),
+        source_provenance=dict(candidate_source_sha256="policy-hash", critical_changed_sources=[]),
+        observed_categories=[],
+    )
+    summary = replay.compact_replay_summary("case", report)
+    assert not summary["matched"]
+    assert summary["evidence_state"] == "outcome_mismatch"
+    assert summary["recorded_row"] == row
+    assert summary["recorded_row"]["result"] == "loss"
+    assert summary["case_provenance"] == provenance
+    assert summary["candidate_source_sha256"] == "policy-hash"
+    assert summary["result"] == "win"

@@ -11,6 +11,7 @@ import json
 from collections import Counter, defaultdict
 from dataclasses import asdict
 from pathlib import Path
+from typing import Literal
 
 import jax
 import jax.numpy as jnp
@@ -23,6 +24,7 @@ from .cli import V3_OPTIONS, V4_OPTIONS, V5_OPTIONS, V6_OPTIONS, V7_OPTIONS, V8_
 
 ROOT = Path(__file__).resolve().parents[2]
 METRICS = ("passes", "splits", "build_attempts", "builds", "invalid_moves", "malformed_commands")
+ReplayEvidenceState = Literal["verified", "outcome_mismatch", "source_mismatch", "provenance_unverified"]
 
 
 _SNAPSHOT_AGENT_OPTIONS = (
@@ -49,10 +51,20 @@ def file_hash(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def select_rows(rows, *, max_samples=1, result="loss", **filters):
+def select_rows(rows, *, max_samples=1, result="loss", candidate=None, **filters):
     """Select across suite/opponent groups before taking another row per group."""
     groups = defaultdict(list)
+    seen = set()
     for row in rows:
+        if row["result"] not in ("win", "loss", "draw"):
+            raise ValueError("unfinished/unknown outcomes cannot enter replay aggregation")
+        if candidate is not None and row.get("candidate") != candidate:
+            raise ValueError("recorded candidate differs from run metadata")
+        identity = tuple(str(row.get(name, "")) for name in
+                         ("suite", "opponent", "board_id", "repeat", "swapped", "seat"))
+        if identity in seen:
+            raise ValueError(f"duplicate replay case: {identity}")
+        seen.add(identity)
         if result != "any" and row["result"] != result:
             continue
         if any(value is not None and str(row[name]) != str(value) for name, value in filters.items()):
@@ -67,6 +79,33 @@ def select_rows(rows, *, max_samples=1, result="loss", **filters):
             if len(selected) == max_samples:
                 break
     return selected
+
+
+def replay_evidence_state(mismatch, provenance, rule_provenance) -> ReplayEvidenceState:
+    """An outcome match alone cannot certify the historical policy execution."""
+    if mismatch:
+        return "outcome_mismatch"
+    if provenance["critical_changed_sources"]:
+        return "source_mismatch"
+    if provenance["status"] != "recorded" or rule_provenance != "stored suite_rules":
+        return "provenance_unverified"
+    return "verified"
+
+
+def compact_replay_summary(name, report):
+    """Keep recorded case identity and verification state beside replay outcomes."""
+    return dict(
+        name=name,
+        matched=not report["outcome_and_counter_mismatches"],
+        evidence_state=report["evidence_state"],
+        recorded_row=report["recorded_row"],
+        case_provenance=report["case_provenance"],
+        candidate_source_sha256=report["source_provenance"]["candidate_source_sha256"],
+        result=report["replayed_result"]["result"],
+        turns=report["replayed_result"]["turns"],
+        critical_changed_sources=report["source_provenance"]["critical_changed_sources"],
+        observed_categories=report["observed_categories"],
+    )
 
 
 def load_grid(run_dir, row):
@@ -475,6 +514,7 @@ def main():
             list(csv.DictReader(stream)),
             max_samples=args.max_samples,
             result=args.result,
+            candidate=metadata["candidate"],
             suite=args.suite,
             opponent=args.opponent,
             board_id=args.board_id,
@@ -514,6 +554,7 @@ def main():
             decision=decision,
         )
         mismatch = compare_result(actual, row)
+        evidence_state = replay_evidence_state(mismatch, provenance, rule_provenance)
         detail = diagnostics(arrays, actual, int(row["seat"]), rules, args.last_turns)
         name = (
             f"{row['suite']}-{row['opponent']}-b{row['board_id']}-r{row['repeat']}-s{row['seat']}-swap{row['swapped']}"
@@ -523,7 +564,14 @@ def main():
             recorded_row=row,
             replayed_result=actual,
             outcome_and_counter_mismatches=mismatch,
-            verified_recorded_outcome=not mismatch,
+            verified_recorded_outcome=evidence_state == "verified",
+            evidence_state=evidence_state,
+            case_provenance=dict(
+                seed=metadata.get("seed"),
+                run_metadata_sha256=file_hash(args.run_dir / "metadata.json"),
+                board_archive_sha256=file_hash(args.run_dir / f"{row['suite']}_boards.npz"),
+                checkpoint_sha256=metadata.get("checkpoint_sha256"),
+            ),
             source_provenance=provenance,
             rules=asdict(rules),
             rule_provenance=rule_provenance,
@@ -564,16 +612,7 @@ def main():
                 f"(+{turn['castle_gains']}/-{turn['castle_losses']}) |"
             )
         (output / f"{name}.md").write_text("\n".join(text) + "\n")
-        summaries.append(
-            dict(
-                name=name,
-                matched=not mismatch,
-                result=actual["result"],
-                turns=actual["turns"],
-                critical_changed_sources=provenance["critical_changed_sources"],
-                observed_categories=detail["observed_categories"],
-            )
-        )
+        summaries.append(compact_replay_summary(name, report))
         print(
             f"{name}: {actual['result']} at turn {actual['turns']}; matches={not mismatch}; "
             f"{detail['observed_categories']}",
@@ -587,6 +626,7 @@ def main():
             dict(
                 samples=summaries,
                 observed_category_counts=category_counts,
+                evidence_state_counts=Counter(row["evidence_state"] for row in summaries),
                 interpretation=(
                     "Selected representative games, not an unbiased failure-frequency estimate; categories may overlap."
                 ),
