@@ -18320,3 +18320,34 @@ This is direct sampled evidence against a training/hosted observation
 codec gap. It complements the earlier action-selection probability
 check on real hosted states; it does not measure full native model
 forward parity for every checkpoint or establish playing strength.
+
+The exact 67M parent and completed 35667 child now pass a CPU
+comparison of the actual Puffer direct spatial rollout path against
+exported NumPy serving inference. The preserved native bridge hash
+is `c1bed03201af5133badfe8c5fa1566efc3830acc73c68798fbf5b7f7d7e051c1`;
+the checkpoint factory hash is
+`5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474`.
+`audit_spatial_checkpoint_serving_parity.py` checks the bundle files,
+factory, official engine, and replay hashes, reconstructs the real
+frames, and loads raw checkpoint weights into the training rollout
+implementation. Each checkpoint was checked on 46 public states
+from four hosted games, both seats, at turns 0/25/99/100/150/200
+where present. All 46 top actions matched for each checkpoint.
+Parent maximum logit/probability differences were 4.77e-7/1.10e-6;
+child differences were 5.96e-7/1.07e-6. This verifies sampled
+checkpoint inference alignment on CPU with bundle action settings;
+it does not establish GPU numerical parity or stronger play.
+Reports are `/tmp/relh-classic-67m-native-serving-parity.json` and
+`/tmp/relh-classic-35667-native-serving-parity.json`.
+
+The environment optimization reuses Classic step observations and
+engine reward totals. Its forced-terminal/reset transition comparison
+preserved states, observations, masks, rewards, and RNG keys, and the
+environment/sampling CPU suite passed all 51 tests. The suite's stale
+horizon assertion was corrected: numeric episodes end at the wrapper
+horizon, while device training preserves individual game terminal
+flags and continuous rollouts. GPU performance of this optimization
+is not yet measured. A bounded 8M-step profile, including checkpoint
+inference parity, is prepared locally and has not been submitted.
+At 2026-10-02 21:00 UTC, 35687 remains the sole Generals Slurm job,
+pending for priority. Its sealed source predates this optimization.
