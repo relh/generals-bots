@@ -17906,3 +17906,41 @@ route gradient during on-policy PPO. The next bounded training pilot
 must use weight 0.05 for both rollout optimization and eventual
 serving, pass a source-checkpoint sampling gate, sustain the 30k
 SPS floor, and beat frozen baselines before hosted promotion.
+
+B300 job **35639** completed the bounded 0.05-route-weight PPO pilot
+from the 67M checkpoint: 33,554,432 agent steps, 8,192 parallel
+Classic games, horizon 256, minibatch 8,192, replay ratio 0.5, and
+the existing 11-opponent pool plus a frozen 67M self opponent. The
+source sampler passed a 512-game gate (256W/242L/14D versus
+252W/249L/11D for weight zero). Training reported **116.3k warmed
+end-to-end SPS** on one initially idle B300, with sampled GPU
+utilization median 58% and peak memory 202,084 MiB. It logged zero
+illegal actions over all 33,554,432 steps and zero nonfinite rewards;
+every opponent was sampled on both seats in equal counts. The exported
+checkpoint SHA256 is
+`3ffaba8a67796a14551aec1a6497a5d294db5fabfe4ad50b592ee1e442d7e0c9`.
+On 512 new paired held-out games per arm against the frozen 67M policy,
+with weight 0.05 for both evaluated actors, it scored 255W/244L/13D
+versus baseline 246W/250L/16D: paired score delta +0.0293,
+map-bootstrap95% CI [−0.0634,+0.1250]. Its half-move fraction was
+2,011/432,652 nonpass moves (0.465%), versus 1,891/425,963
+(0.444%) for baseline. Output is pinned to
+`/var/tmp/relh-generals-recovery/classic-route-half-pilot-32m-35639`;
+the downloaded archive SHA256 is
+`beb190e5b664af48081c97aa0b0974cebac94183bb520cea7b30807e263a52bb`.
+
+B300 replay-audit job **35644** then reconstructed all 14,351
+Daveey-v7 actions in 32 archived Classic games with zero frame
+divergences, including 1,138 half moves. Against these verified
+public states the 0.05-trained bundle was worse than its 67M parent
+in **all 32 games**: overall action NLL 10.456 versus 10.089,
+route NLL 9.864 versus 9.508, and Daveey half-move route NLL 15.339
+versus 14.477. Mean predicted half-action probability fell from
+0.167% to 0.154%. The diagnostic archive SHA256 is
+`0983f98a3e2cd6e7b7a233240252a88a2804e05943284c7535f96ef1c5011c01`.
+The local win-rate difference is inconclusive and this elite-action
+regression argues against longer training or hosted promotion of the
+0.05 child. The route-gradient intervention passed algebra, legality,
+throughput, and export checks, but it did not create useful half-route
+exploration. A stronger on-policy intervention needs a bounded pilot
+and the same strength gate.
