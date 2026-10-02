@@ -35,6 +35,19 @@ def accumulate_flat_splits(counts, actions):
     return counts + delta
 
 
+@jax.jit
+def accumulate_population_outcomes(counts, rewards, terminals, labels, sides):
+    """Count finished games and unambiguous win-only rewards by opponent/seat."""
+    group = labels * 2 + sides
+    ended = terminals != 0
+    wins = ended & (rewards > 0.5)
+    delta = jnp.stack((
+        jnp.bincount(group, weights=ended.astype(jnp.int32), length=counts.shape[1]),
+        jnp.bincount(group, weights=wins.astype(jnp.int32), length=counts.shape[1]),
+    ))
+    return counts + delta.astype(jnp.int32)
+
+
 def install(environment_class):
     if getattr(environment_class.step_device, "_generals_reward_audit", False):
         return
@@ -42,6 +55,7 @@ def install(environment_class):
         raise RuntimeError("Reward audit already installed")
     original = environment_class.step_device
     audit_flat_splits = os.environ.get("METTA_AUDIT_SPATIAL_SPLITS") == "1"
+    audit_population = os.environ.get("METTA_AUDIT_POPULATION_WINS") == "1"
 
     @functools.wraps(original)
     def step(self, actions):
@@ -53,6 +67,25 @@ def install(environment_class):
                 if tuple(self.spec.action_sizes) != (3529,):
                     raise ValueError("Spatial split audit requires one 3529-action flat head")
                 self._split_audit_counts = jnp.zeros(3, jnp.uint32)
+            if audit_population:
+                weights = self._reward_options
+                maximum_terminal_shaping = weights["shaping_weight"] * sum(
+                    weights[name] for name in (
+                        "army_shaping_weight", "land_shaping_weight",
+                        "castle_shaping_weight", "frontier_shaping_weight",
+                    )
+                )
+                if (self._terminal_reward_mode != "win_only"
+                        or weights["land_gain_reward_weight"] != 0
+                        or weights["reward_scale"] != 1
+                        or maximum_terminal_shaping >= 0.5
+                        or not hasattr(self, "_population_labels")):
+                    raise ValueError("Population win audit requires bounded win-only rewards")
+                self._population_audit_labels = jnp.asarray(self._population_labels, jnp.int32)
+                self._population_audit_names = tuple(
+                    "frozen_" + digest[:12] for digest in self._population_checksums
+                ) + self._population_script_names
+                self._population_audit_counts = jnp.zeros((2, 2 * len(self._population_audit_names)), jnp.int32)
 
             def report():
                 counts = list(map(int, jax.device_get(self._reward_audit_counts)))
@@ -68,6 +101,21 @@ def install(environment_class):
                     record.update(full_actions=full, half_actions=half, pass_actions=passing)
                     if full + half + passing != record["agent_steps"]:
                         raise ValueError("Spatial split audit did not count every action")
+                if audit_population:
+                    finished, wins = ([int(value) for value in row]
+                                      for row in jax.device_get(self._population_audit_counts))
+                    if sum(finished) != record["terminal_agents"] or any(
+                        won > ended for won, ended in zip(wins, finished, strict=True)
+                    ):
+                        raise ValueError("Population terminal audit disagrees with reward audit")
+                    record["population_outcomes"] = {
+                        name: {
+                            str(side): {"finished": finished[2 * index + side],
+                                        "wins": wins[2 * index + side]}
+                            for side in (0, 1)
+                        }
+                        for index, name in enumerate(self._population_audit_names)
+                    }
                 print("DEVICE_REWARD_AUDIT " + json.dumps(record), flush=True)
 
             self._reward_audit_report = report
@@ -75,6 +123,11 @@ def install(environment_class):
         self._reward_audit_counts = accumulate(self._reward_audit_counts, result[2], result[3])
         if audit_flat_splits:
             self._split_audit_counts = accumulate_flat_splits(self._split_audit_counts, actions)
+        if audit_population:
+            self._population_audit_counts = accumulate_population_outcomes(
+                self._population_audit_counts, result[2], result[3],
+                self._population_audit_labels, self.sides,
+            )
         self._reward_audit_ticks += 1
         if self._reward_audit_ticks % 512 == 0:
             self._reward_audit_report()
