@@ -61,6 +61,31 @@ Work in progress:
   being rerun. Image build, source CPU audit, squashfs export, complete signed
   payload, and final physical/scheduler preflight remain submission gates.
 
+Update23:40UTC: all20 runner/submission/lifecycle CPU tests and four existing
+sampling-gate tests pass. The final image built successfully and ran a JAX CPU
+JIT plus the exact model fingerprint audit as UID1002 under explicit QEMU TCG.
+The Mac default x86 translator lacks AVX; no JAX feature guard was bypassed.
+Image source directories initially had mode700; the image now makes source
+readable to its non-root runtime user. The packaged source retains the earlier
+64-bit native rollout transpose/indexing patch.
+
+Image digest: `sha256:66660f4bb0d8793989a6940bc09109d42f63a6ef15544864fb279d16b0ad4e51`.
+SquashFS packaging finished at
+`/tmp/relh-generals-portable-input-20261002/image.sqsh` (approximately6.4GiB).
+Readback verifies source directory0755, driver environment, and native bridge
+SHA256 `c1bed03201af5133badfe8c5fa1566efc3830acc73c68798fbf5b7f7d7e051c1`.
+Large image inputs and result outputs use separately signed parts below4GB.
+Finalization has a shared deadline and bounded archive/transfer operations;
+failed uploads retain artifacts without a misleading completion marker.
+
+Only the obsolete task-created export container was removed after its CPU
+audit results and replacement image were preserved. Removing its old image
+returned `No such image` because it was already absent; no other image,
+container, job, node state, or protected agent history was touched. Local free
+space was approximately19GiB after packaging; source/image input uploads will
+stream without duplicating the large image into another local tar archive.
+S3 upload and final live allocation preflight remain before submission.
+
 ## Coordinator status: mandatory lowest Slurm priority (2026-10-02 22:15 UTC)
 
 The user's explicit lowest-priority rule supersedes every historical

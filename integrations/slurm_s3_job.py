@@ -51,16 +51,19 @@ def extract_input(archive, destination, max_bytes, max_members):
         source.extractall(destination, members=members)
 
 
-def transfer(url, path, upload=False):
+def transfer(url, path, upload=False, deadline=None):
     if not url.startswith("https://") or any(c in url for c in '\r\n"\\'):
         raise ValueError("Invalid presigned URL")
     # Config arrives on stdin, never in argv, output logs or exceptions.
+    seconds = min(180, int(deadline - time.monotonic() - 10)) if deadline is not None else 180
+    if seconds < 5:
+        raise RuntimeError("Transfer deadline exhausted; retain local artifacts")
     command = ["curl", "--silent", "--fail", "--connect-timeout", "15",
-               "--max-time", "180", "--retry", "1", "--retry-max-time", "240",
+               "--max-time", str(seconds),
                "--config", "-"]
     command += ["--upload-file" if upload else "--output", str(path)]
     result = subprocess.run(command, input=f'url = "{url}"\n', text=True,
-                            capture_output=True, timeout=260)
+                            capture_output=True, timeout=seconds + 5)
     if result.returncode:
         raise RuntimeError(f"S3 {'upload' if upload else 'download'} failed (curl {result.returncode})")
 
@@ -120,6 +123,28 @@ class SlurmJob:
             raise RuntimeError("Input digest mismatch")
         extract_input(archive, self.root / "input", self.config["input_unpacked_bytes"],
                       self.config["input_members"])
+        if self.config.get("image_parts"):
+            image = self.root / "input/image.sqsh"
+            if image.exists():
+                raise ValueError("Image must come from exactly one declared input source")
+            digest = hashlib.sha256()
+            with image.open("xb") as target:
+                for index, part in enumerate(self.config["image_parts"]):
+                    path = self.root / f"image-input.part{index:03d}"
+                    transfer(part["url"], path)
+                    if path.stat().st_size != part["bytes"] or part["bytes"] >= 4_000_000_000:
+                        raise ValueError("Image input part size differs")
+                    part_digest = hashlib.sha256()
+                    with path.open("rb") as source:
+                        for block in iter(lambda: source.read(1024 * 1024), b""):
+                            part_digest.update(block)
+                            digest.update(block)
+                            target.write(block)
+                    if part_digest.hexdigest() != part["sha256"]:
+                        raise ValueError("Image input part digest differs")
+                    path.unlink()  # Verified bytes are retained in the owned image.
+            if digest.hexdigest() != self.config["image_sha256"]:
+                raise ValueError("Reassembled image digest differs")
 
     def run_step(self, name, argv, seconds):
         # Repeat immediately before Pyxis/Enroot may unpack an image.
@@ -194,8 +219,11 @@ class SlurmJob:
                 shutil.copyfile(batch_log, self.root / "out/batch.log")
         (self.root / "out" / "receipt.json").write_text(json.dumps(self.receipt, indent=2) + "\n")
         archive = self.root / "results.tar.gz"
-        with tarfile.open(archive, "w:gz") as target:
-            target.add(self.root / "out", arcname="out")
+        seconds = min(120, int(self.finalization_deadline - time.monotonic() - 60))
+        if seconds <= 0:
+            raise RuntimeError("Insufficient finalization time to archive results")
+        subprocess.run(["tar", "-czf", str(archive), "-C", str(self.root), "out"],
+                       check=True, timeout=seconds, capture_output=True)
         part_count = (archive.stat().st_size + MAX_PART_BYTES - 1) // MAX_PART_BYTES
         if part_count > len(self.config["output_urls"]):
             raise RuntimeError("Results exceed separately signed output part capacity")
@@ -207,18 +235,21 @@ class SlurmJob:
                 size = 0
                 with part.open("wb") as target:
                     while size < MAX_PART_BYTES:
+                        if time.monotonic() + 15 >= self.finalization_deadline:
+                            raise RuntimeError("Result packing deadline exhausted")
                         block = source.read(min(1024 * 1024, MAX_PART_BYTES - size))
                         if not block:
                             break
                         target.write(block)
                         digest.update(block)
                         size += len(block)
-                transfer(self.config["output_urls"][index], part, upload=True)
+                transfer(self.config["output_urls"][index], part, upload=True,
+                         deadline=self.finalization_deadline)
                 parts.append(dict(index=index, bytes=size, sha256=digest.hexdigest()))
         manifest = self.root / "result-manifest.json"
         manifest.write_text(json.dumps(dict(receipt=self.receipt, parts=parts), indent=2) + "\n")
         # This final upload is the result-completion marker.
-        transfer(self.config["manifest_url"], manifest, upload=True)
+        transfer(self.config["manifest_url"], manifest, upload=True, deadline=self.finalization_deadline)
 
     def cleanup(self):
         if self.step_started:
@@ -242,8 +273,10 @@ class SlurmJob:
         for sig in (signal.SIGUSR1, signal.SIGTERM, signal.SIGINT):
             signal.signal(sig, interrupted)
         try:
+            self.receipt["phase"] = "prepare"
             self.prepare()
             for step in self.config["steps"]:
+                self.receipt["phase"] = step["name"]
                 self.run_step(step["name"], step["argv"], step["seconds"])
         except JobSignal as error:
             status = error.status
@@ -251,13 +284,18 @@ class SlurmJob:
             status = error.returncode if error.returncode > 0 else 128 - error.returncode
         except Exception as error:
             # Never stringify arbitrary transport exceptions: URLs are secrets.
-            print(f"Workload failed: {type(error).__name__}", flush=True)
+            reason = type(error).__name__
+            if type(error) in (RuntimeError, ValueError):
+                reason += ": " + str(error)
+            self.receipt["failure"] = reason
+            print(f"Workload failed in {self.receipt['phase']}: {reason}", flush=True)
             status = 1
         finally:
             for sig in (signal.SIGUSR1, signal.SIGTERM, signal.SIGINT):
                 signal.signal(sig, signal.SIG_IGN)
         if not self.owns_root or not (self.root / "out").exists():
             return status or 1
+        self.finalization_deadline = time.monotonic() + 510
         try:
             if not self.stop_and_wait():
                 print("Step completion unconfirmed; retaining scratch without archiving", flush=True)

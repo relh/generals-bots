@@ -12,6 +12,7 @@ RUN python3 -m venv /opt/generals \
 
 # Pure source only: no copied virtualenv, bytecode, binary wheel or CUDA cache.
 COPY source /opt/generals-source
+RUN chmod -R a+rX /opt/generals-source
 ENV PATH=/opt/generals/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV PYTHONPATH=/opt/generals-source
 RUN python -m pip check && python -c \

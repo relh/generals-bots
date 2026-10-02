@@ -17,7 +17,8 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 
 
 class S3JobTests(unittest.TestCase):
-    def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False):
+    def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
+                image_parts=False, bad_image=False, result_part_bytes=None):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -72,18 +73,27 @@ sys.exit(7 if sys.argv[1]=='fail' else 0)
                           image="test-image", output_urls=["https://part"], manifest_url="https://manifest",
                           steps=[dict(name="smoke", argv=["--", sys.executable, str(worker), "success"], seconds=5),
                                  dict(name="train", argv=["--", sys.executable, str(worker), mode], seconds=20)])
+            if image_parts:
+                config["image_parts"] = []
+                for index, data in enumerate((b"first", b"second")):
+                    (root / f"image{index}").write_bytes(data)
+                    config["image_parts"].append(dict(url=f"https://image{index}",bytes=len(data),sha256=hashlib.sha256(data).hexdigest()))
+                config["image_sha256"] = "0"*64 if bad_image else hashlib.sha256(b"firstsecond").hexdigest()
+            if result_part_bytes:
+                config["output_urls"] = [f"https://output{index}" for index in range(32)]
             (root / "config.json").write_text(json.dumps(config))
             harness = root / "harness.py"
             harness.write_text(f'''import json,pathlib,shutil,sys
 from integrations import slurm_s3_job as m
-def transfer(url,path,upload=False):
+def transfer(url,path,upload=False,deadline=None):
     if upload:
         assert not pathlib.Path('writing').exists()
         with open('events','a') as f: f.write('UPLOAD\\n')
         if {fail_upload!r}: raise RuntimeError('simulated upload failure')
         shutil.copyfile(path, 'uploaded-'+path.name)
-    else: shutil.copyfile('input.tar.gz',path)
+    else: shutil.copyfile(url.removeprefix('https://') if url.startswith('https://image') else 'input.tar.gz',path)
 m.transfer=transfer
+if {result_part_bytes!r}: m.MAX_PART_BYTES={result_part_bytes!r}
 sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
 ''')
             env = dict(os.environ, SLURM_JOB_ID="999", PATH=str(commands)+os.pathsep+os.environ["PATH"],
@@ -148,6 +158,20 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertEqual(r["code"],1,r)
         self.assertEqual(r["events"],[])
         self.assertFalse(r["scratch"])
+
+    def test_image_parts_verified_before_any_step(self):
+        good=self.run_job(image_parts=True)
+        self.assertEqual(good["code"],0,good)
+        bad=self.run_job(image_parts=True,bad_image=True)
+        self.assertEqual(bad["code"],1,bad)
+        self.assertNotIn("READY",bad["events"])
+        self.assertTrue(bad["scratch"])
+
+    def test_multiple_output_parts_have_completion_manifest(self):
+        result=self.run_job(result_part_bytes=128)
+        self.assertEqual(result["code"],0,result)
+        self.assertGreater(len(result["manifest"]["parts"]),1)
+        self.assertTrue(all(part["bytes"]<=128 for part in result["manifest"]["parts"]))
 
     def test_existing_scratch_never_archived_or_removed(self):
         with tempfile.TemporaryDirectory() as root, patch.dict(os.environ, SLURM_JOB_ID="999"):
