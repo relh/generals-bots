@@ -4,6 +4,8 @@ import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 
 AGENT_PATH = Path(__file__).resolve().parents[1] / "competition/agents/expander_python/agent.py"
 SPEC = importlib.util.spec_from_file_location("competition_expander_agent", AGENT_PATH)
@@ -228,13 +230,14 @@ def test_ffa_pressure_keeps_one_rally_point_instead_of_switching_borders():
     assert agent.pressure_anchor == (1, 2)
 
 
-def test_ffa_rallies_to_exposed_general_before_distant_siege():
+@pytest.mark.parametrize("turn", [120, 239, 240, 320])
+def test_ffa_rallies_to_exposed_general_before_distant_siege(turn):
     obs = observation(
         owned={(2, 1), (2, 2), (2, 3), (3, 2)},
         enemies={(0, 2), (4, 3)},
         armies={(2, 1): 22, (2, 2): 5, (2, 3): 2, (3, 2): 18,
                 (0, 2): 41, (4, 3): 1},
-        turn=320,
+        turn=turn,
     )
     obs.type_grid[2][2] = 4
     obs.type_grid[4][3] = 4
@@ -293,3 +296,50 @@ def test_castle_variant_funds_and_builds_one_opening_castle():
     )
     affordable.type_grid[2][2] = 4
     assert agent.act(affordable) == (2, 2, 3, 0, 0)
+
+
+@pytest.mark.parametrize("turn", [120, 239, 240])
+def test_ffa_visible_charge_is_repelled_across_defense_cutoff(turn):
+    """Missing even one rally turn can lose the crown before defense catches up."""
+    import jax.numpy as jnp
+
+    from competition.protocol import encode_observation
+    from generals.core import game
+
+    grid = jnp.zeros((5, 5), dtype=jnp.int32)
+    for player, cell in enumerate([(2, 2), (0, 0), (4, 4), (0, 4)]):
+        grid = grid.at[cell].set(player + 1)
+    state = game.create_initial_state(grid, teams=jnp.arange(4))
+    for player, cell, army in [
+        (0, (2, 2), 5), (0, (2, 1), 22), (0, (3, 2), 18),
+        (0, (1, 2), 1), (1, (0, 2), 41), (1, (1, 1), 1),
+    ]:
+        row, col = cell
+        state = state._replace(
+            armies=state.armies.at[cell].set(army),
+            ownership=state.ownership.at[:, row, col].set(False).at[player, row, col].set(True),
+            ownership_neutral=state.ownership_neutral.at[cell].set(False),
+        )
+    state = state._replace(time=jnp.int32(turn))
+    agent = MODULE.Agent(0, 5, 5)
+
+    for row in (0, 1):
+        # Both sides can see the charging stack and its target. Feed only the
+        # engine's fogged public wire fields to the policy, never GameState.
+        public = game.get_observation(state, 0)
+        assert int(public.armies[row, 2]) >= 39
+        assert bool(game.get_observation(state, 1).generals[2, 2])
+        lines = encode_observation(public).splitlines()
+        grids = [[list(map(int, line.split())) for line in lines[start:start + 5]]
+                 for start in (1, 6, 11)]
+        obs = SimpleNamespace(
+            H=5, W=5, turn=int(lines[0].split()[0]), players=list("ABCD"),
+            type_grid=grids[0], owner_grid=grids[1], army_grid=grids[2],
+        )
+        state, _ = game.step(state, jnp.array([
+            agent.act(obs), (0, row, 2, 1, 0), MODULE.PASS, MODULE.PASS,
+        ], dtype=jnp.int32))
+
+    assert not bool(state.eliminated[0])
+    assert bool(state.ownership[0, 2, 2])
+    assert bool(state.generals[2, 2])
