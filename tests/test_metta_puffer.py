@@ -15,7 +15,8 @@ from metta_training.environment import EnvironmentContext, NativeEnvironment
 from generals.agents import ExpanderAgent
 from generals.core import game
 from integrations.metta_puffer import (
-    BatchedGeneralsPufferEnvironment, GeneralsPufferEnvironment,
+    BatchedGeneralsPufferEnvironment, BatchedGeneralsSelfPlayPufferEnvironment,
+    GeneralsPufferEnvironment,
     _castle_control_margin, _frontier_control_margin,
 )
 from integrations.puffer_codec import decode_action, hinted_replay_indices
@@ -52,6 +53,39 @@ def test_win_only_terminal_reward_does_not_credit_a_draw():
             result = env.step([[env.spec.action_sizes[0] - 1]])
         assert result.episode_done and result.score == 0
         assert result.rewards == [0.0]
+    finally:
+        env.close()
+
+
+def test_classic_selfplay_observes_live_and_recycled_games(tmp_path):
+    context = EnvironmentContext(seed=1, index=0, mode="train", output=tmp_path)
+    env = BatchedGeneralsSelfPlayPufferEnvironment(
+        context=context, parallel_games=4, require_gpu=False,
+        coworld_classic=True, coworld_pool_size=16, balance_opponent_sides=True,
+        shaping_weight=.25, shaping_gamma=.999, army_shaping_weight=.5,
+        land_shaping_weight=.3, terminal_reward_mode="win_only",
+    )
+    try:
+        env.reset_device("classic-observation-reuse")
+        generals = np.asarray(env.states.generals & env.states.ownership[:, 0])
+        cells = np.asarray([np.argwhere(row)[0] for row in generals])
+        env.states = env.states._replace(
+            armies=env.states.armies.at[jnp.arange(4), cells[:, 0], cells[:, 1]].add(5),
+            time=jnp.asarray([1999, 1, 1999, 1], dtype=env.states.time.dtype)
+        )
+        values, masks, rewards, terminals, _ = env.step_device(
+            jnp.full((8, 1), 3528, jnp.int32)
+        )
+        expected_values, expected_masks = env._observe_both(env.states)
+        np.testing.assert_array_equal(np.asarray(values), np.asarray(expected_values).reshape(8, -1))
+        np.testing.assert_array_equal(np.asarray(masks), np.asarray(expected_masks).reshape(8, -1))
+        np.testing.assert_array_equal(np.asarray(terminals), [1, 1, 0, 0, 1, 1, 0, 0])
+        # Original observation-based reward path on this seeded Classic state.
+        np.testing.assert_allclose(
+            np.asarray(rewards),
+            [-0.078125, 0.078125, -0.015687499, 0.015687499] * 2,
+            atol=1e-7, rtol=0,
+        )
     finally:
         env.close()
 

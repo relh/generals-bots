@@ -24,7 +24,7 @@ from generals import GeneralsEnv
 from generals.agents import ExpanderAgent, HunterAgent, RandomAgent
 from generals.agents.harvester_agent import ExpanderHarvesterAgent, HarvesterAgent, SprintHarvesterAgent
 from generals.agents.sentinel_agent import SentinelAgent
-from generals.core import game
+from generals.core import coworld_game, game
 from integrations.puffer_codec import (
     calibrate_hint_features,
     decode_action, encode_coworld_directional_observation, encode_coworld_lean_observation,
@@ -914,16 +914,23 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
         initial_state = self.base._initial_state
         size = self.base.size
         weights = self._reward_options
+        observe_next = (
+            coworld_game.get_observations if self.base.coworld_classic and not env.perfect_info
+            else lambda current: jax.vmap(lambda side: game.get_observation(current, side))(
+                self._self_sides
+            )
+        )
 
         def margin(ours, theirs):
             return (ours - theirs) / (ours + theirs + 1)
 
-        def potential(observation, state, side):
+        def potential(info, state, side):
+            same_team = state.teams == state.teams[side]
             value = weights["army_shaping_weight"] * margin(
-                observation.owned_army_count, observation.opponent_army_count
+                info.army[side], jnp.sum(jnp.where(same_team, 0, info.army))
             )
             value += weights["land_shaping_weight"] * margin(
-                observation.owned_land_count, observation.opponent_land_count
+                info.land[side], jnp.sum(jnp.where(same_team, 0, info.land))
             )
             if weights["castle_shaping_weight"]:
                 value += weights["castle_shaping_weight"] * _castle_control_margin(state, side)
@@ -936,19 +943,18 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
             actions = jax.vmap(lambda index, split: decode_action(
                 index, size, split if self.base.factorized_actions else None
             ))(indices, splits)
-            previous = jax.vmap(lambda side: game.get_observation(state, side))(self._self_sides)
+            previous_info = game.get_info(state)
             timestep, next_state = env.step(state, actions, pool)
-            final = jax.vmap(lambda side: game.get_observation(timestep.last_state, side))(self._self_sides)
             done = timestep.terminated | timestep.truncated
 
-            def side_reward(side, old, new):
+            def side_reward(side):
                 outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
                 shaped = weights["shaping_weight"] * (
-                    weights["shaping_gamma"] * potential(new, timestep.last_state, side) * ~done
-                    - potential(old, state, side)
+                    weights["shaping_gamma"] * potential(timestep.info, timestep.last_state, side) * ~done
+                    - potential(previous_info, state, side)
                 )
                 land_gain = weights["land_gain_reward_weight"] * (
-                    jnp.float32(new.owned_land_count) - jnp.float32(old.owned_land_count)
+                    jnp.float32(timestep.info.land[side]) - jnp.float32(previous_info.land[side])
                 )
                 terminal_reward = (
                     jnp.where(timestep.terminated & (timestep.reward[side] > 0), 1.0, 0.0)
@@ -956,18 +962,22 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
                 )
                 return (terminal_reward + shaped + land_gain) * weights["reward_scale"]
 
-            rewards = jax.vmap(side_reward)(self._self_sides, previous, final)
+            rewards = jax.vmap(side_reward)(self._self_sides)
 
             def recycle(_):
                 fresh = initial_state(pool, reset_key)
-                return fresh, jax.random.fold_in(next_key, 1)
+                return fresh, jax.random.fold_in(next_key, 1), observe_next(fresh)
 
-            next_state, next_key = jax.lax.cond(
-                done, recycle, lambda _: (next_state, next_key), operand=None
+            def continue_game(_):
+                observations = (
+                    observe_next(next_state) if env.perfect_info else timestep.observation
+                )
+                return next_state, next_key, observations
+
+            next_state, next_key, next_observations = jax.lax.cond(
+                done, recycle, continue_game, operand=None
             )
-            values, masks = jax.vmap(lambda side: encode(game.get_observation(next_state, side)))(
-                self._self_sides
-            )
+            values, masks = jax.vmap(encode)(next_observations)
             return next_state, next_key, values, masks, rewards, done
 
         self._advance_self_states = jax.jit(jax.vmap(advance_one, in_axes=(0, None, 0, 0, 0)))
