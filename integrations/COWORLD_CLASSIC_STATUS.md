@@ -1,5 +1,27 @@
 # Softmax Coworld Classic 1v1 training
 
+## Provisional final35867 serving image qualified locally (2026-10-03)
+
+While35868 prepares, the retained final checkpoint was built for serving in
+`/tmp/relh-generals-serving-35867-final` (DO NOT rerun the empty-root builder).
+Local tag relh-generals-serving:35867-final, amd64 UID10001:10001, imageID
+sha256:cadc8a1c9929c4da90dff9f8bd17832efbd2790c7385c8e372733e55d5e2309b.
+Reference46/46 actions match, max probability difference7.599592208862305e-7;
+wire32/32 legal replies, local emulated max66.90ms (not hosted latency).
+Runtime rebuilt from retained exact runtime archive0b3e9a9e..., sourcebaf3679.
+`cpu-readiness.json` explicitly says provisional_build_only=true. No serving
+selection JSON, upload, registration, XP, or champion change has occurred.
+
+If the completed35868 panel selects final, reuse this qualified image and
+64-state late proof. The prepared `/tmp/relh-generals-upload-35867.py` now requires
+actual COMPLETED evaluation receipt, both candidate panel files, matching
+selected checkpoint SHA, identical sampler JSON, and every exported weight array
+equal to that completed evaluation before any publication. Preserve provisional
+CPU evidence as recorded; actual selection is a separate artifact. If midpoint
+wins, build its separate serving directory and run its late-state parity proof.
+Current goal turn progressed with this concrete CPU/runtime proof;35868 still
+RUNNING, its image download advancing and only taskGPU job. No priority change.
+
 ## Final35867 late-game alignment verified during35868 preparation (2026-10-03)
 
 Actual final checkpoint c75dce5d722c06362f107f877e4e455bcbbaa119cc4c4c1d7060654b056c09db
