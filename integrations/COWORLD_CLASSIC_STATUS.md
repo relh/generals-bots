@@ -1,5 +1,22 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 refreshed pool passes throughput gate (2026-10-03 09:35 UTC)
+
+The active run has fully optimized **12,582,912 new environment steps** through
+epoch 262. Epochs 260→262: 4,194,304 steps / 38.575 seconds = **108,731.147
+steady-state SPS**, including rollout and updates. Hardware/configuration:
+one B300, 8,192 games, horizon 256, minibatch 8,192, replay ratio 0.5; first
+resumed epoch 257 took 97.895 seconds. Recent GPU memory 202,090 MiB,
+utilization 53–59%. Reward audit counts **15,213 terminal games**, zero nonfinite
+or clipped rewards. Full final action/strength audits remain pending.
+Evidence: `/tmp/relh-generals-35860-live-training2.json`.
+
+Continue this sole bounded job, **Nice 2147483645 / Priority 1**; no competing
+allocation or priority changes. Its terminal collector and paired analysis
+are already armed. Next decision requires actual fresh parent/midpoint/final
+results and hosted strength, not merely additional training steps. The 536M
+hosted screen remains 3/32 versus Daveey, 10/32 versus incumbent; goal active.
+
 ## 536M hosted screen fails strength gate; late-game parity passes (2026-10-03)
 
 All **64 unique hosted episodes** completed and all replay files were downloaded
