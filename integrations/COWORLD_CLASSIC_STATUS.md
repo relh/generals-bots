@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## One-shot continuation armed (2026-10-03 00:13 UTC)
+
+The transfer-to-pilot sequence is running, currently waiting for all verified
+image parts. It has NOT submitted a Slurm job yet. Do not start another uploader,
+launcher, or training job without reconciling these live processes and receipts.
+
+- Sequence: `/tmp/relh-generals-portable-sequence.py`; log
+  `/tmp/relh-generals-portable-sequence.log`; public state
+  `/tmp/relh-generals-portable-sequence.status.json`; exclusive durable intent
+  `/tmp/relh-generals-portable-sequence.intent.json`.
+- Image uploader: `/tmp/relh-generals-retry-image-upload.py`; completed parts and
+  checksums in `/tmp/relh-generals-portable-upload-retry.json`. Fresh retry keys
+  are separate from the failed original transfer. No GPU is used for uploads.
+- After transfer: audit signed config/object sizes, fresh full queue readback,
+  duplicate-task refusal, exactly one75-minute B300 job with8CPU/64GiB host RAM,
+  maxNice2147483645. No node pinning. Physical GPU check runs in the allocation
+  before workload startup. Submission response uncertainty stops without retry.
+- Same job phases: smoke180s, build570s, sampler gate810s,8.4M-step train870s,
+  new-child parity and4096-game paired evaluations1230s, reserved finalization.
+  Runtime and finalization remain bounded; no long continuation is chained.
+- Terminal controller receipt is polled every20s and saved before retention
+  expires. Result manifest and independently hashed parts are retrieved from S3.
+  Final strength, reward and throughput acceptance require inspecting these
+  real results; no improvement or current300kSPS claim is made.
+
+Additional CPU evidence: all six pilot phase modules import inside the exact
+image (`/tmp/relh-generals-all-phase-image-import-audit.log`). Unpacked image is
+12613869568bytes; current B300 scratch readback was51904499712bytes free and
+101481728free inodes. Submission config reserves40GiB initially and checks15GiB
+before image unpack. Sequence failure/duplicate-intent CPU audit passed:
+`/tmp/relh-generals-sequence-cpu-audit.log`. Its printed SUBMITTING_ONE_JOB line
+is from a mocked CPU test; it did not contact sbatch.
+
 ## Live compute steering and transfer retry (2026-10-03 00:04 UTC)
 
 Read `/tmp/relh-october-dispatch/autoresearch-fleet-guidance.md`, including the
