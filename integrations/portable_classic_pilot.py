@@ -86,6 +86,12 @@ def prepare_configs(parent=PARENT, output=OUT):
         reward_scale=options["reward_scale"], absolute_reward_bound=bound,
         native_clamp=[-1, 1], expected_unclipped=bound <= 1, population_win_threshold=threshold,
     ), indent=2) + "\n")
+    position_manifest = os.environ.get("GENERALS_PILOT_POSITION_MANIFEST")
+    if position_manifest:
+        from integrations.classic_position_curriculum import configure_positions
+
+        curriculum = configure_positions(options, position_manifest)
+        (output / "position-curriculum.json").write_text(json.dumps(curriculum, indent=2) + "\n")
     shutil.copytree(parent / "bundle", output / "self_bundle")
     options["frozen_bundles"].append(str(output / "self_bundle"))
     options["opponent_weights"] = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 8, 6]

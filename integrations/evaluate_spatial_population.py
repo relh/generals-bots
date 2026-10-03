@@ -67,6 +67,9 @@ def main():
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
                    shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0,
                    terminal_reward_mode="signed")
+    # A training curriculum must never change the held-out starting distribution.
+    if "coworld_position_probability" in options:
+        options["coworld_position_probability"] = 0.0
     if options.get("public_scalar_features"):
         options["public_scalar_ablation"] = False
     args.output.mkdir(parents=True, exist_ok=False)

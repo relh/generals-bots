@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## Active audited reward retry35852; physical occupancy finding (2026-10-03)
+
+Job35852 RUNNING from2026-10-03T05:18:31, oneB300/8CPU/96GiBhost,
+finite80min. Nice2147483645/Priority1 read back unchanged; no escalation,
+node pin, duplicate task job or paid spend. Prior35851 terminal/results verified.
+InputSHA f8e3f817045aa5dd77ebb61d0fbb80c68a0c358f1d25db84a0428dd6ee825940,
+sourcee0a945c. Manifest diff from failed35851 is EXACTLY two files: fixed
+population audit and pilot preflight of its scaled reward threshold. Curriculum
+code/data is excluded from this reward-only retry. Exact-image wrapper CPU
+proof reproduced old failure and passed new source before submission.
+
+Physical preflight finding: Slurm reported B300 IDLE/CPUAlloc0/AllocTRESempty,
+but physicalGPU7 UUID GPU-165f3adf-7f27-3302-db15-d13da6a28b10 used105284MiB
+at12%utilization. GPUs0–6 were0MiB/0%. This is occupancy not represented by
+that Slurm readback; no other process was altered. The job checks its assigned
+physical UUID before JAX, so an occupied assignment must fail closed. /tmp had
+1.2TBfree and180265freeinodes. Preflight raw safe outputs retained in
+`/tmp/relh-generals-rewardscale-fixed32m-{slurm,physical}-preflight.txt`.
+Monitor `/tmp/relh-generals-rewardscale-fixed32m-submit.log`, controller
+`/tmp/relh-generals-portable-40202aa8.receipt.json`; public launch descriptor
+`/tmp/relh-generals-rewardscale-fixed32m-launch.json`. Inspect35852 before retry.
+Use collector-v2 with600s GET limit; no result retrieval should replay compute.
+
+Curriculum implementation remains opt-in and separate. It binds the192-position
+archive by SHA, validates live Classic states, mixes25% midgame /75% fresh starts,
+logs initial observed mixture, and forces fresh starts in held-out population
+evaluation. No actions/teacher labels stored or applied.24CPUtests passed27.06s,
+including prior default reset/reward behavior, new padding transition parity,
+actual recycle/public observations and held-out isolation. Exact immutable image
+validated the actual192-position input and deterministic mix (12/64 fixture starts
+were midgame); module SHA aa55c070332789cc5d51acae29170f09164d1c38e3303dc03102ad45f823f02f.
+No curriculum GPU run has been submitted; judge reward-only result first.
+
 ## 35851 audit-wrapper failure reproduced and fixed before retry (2026-10-03)
 
 35851 terminal FAILED1:0 at04:55:27UTC; Nice2147483645/Priority1 unchanged.

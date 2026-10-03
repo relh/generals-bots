@@ -83,6 +83,9 @@ class GeneralsPufferEnvironment:
         coworld_small_map_curriculum: bool = False,
         coworld_tiny_map_curriculum: bool = False,
         coworld_pool_size: int = 256,
+        coworld_position_pool: str | None = None,
+        coworld_position_pool_sha256: str | None = None,
+        coworld_position_probability: float = 0.0,
         compact_features: bool = False,
         lean_features: bool = False,
         directional_features: bool = False,
@@ -234,6 +237,16 @@ class GeneralsPufferEnvironment:
                 return jax.tree.map(lambda field: field[index], pool)
             return self.env.init_state(key)
 
+        if not np.isfinite(coworld_position_probability) or not 0 <= coworld_position_probability <= 1:
+            raise ValueError("Classic position probability must be in [0, 1]")
+        self.position_probability = float(coworld_position_probability)
+        if coworld_position_probability:
+            if not coworld_classic or context.mode != "train" or not coworld_position_pool or not coworld_position_pool_sha256:
+                raise ValueError("Position curriculum requires a pinned Classic training archive")
+            from integrations.classic_position_curriculum import load_positions, mix_initial_positions
+
+            positions = load_positions(coworld_position_pool, coworld_position_pool_sha256)
+            initial_state = mix_initial_positions(initial_state, positions, coworld_position_probability)
         self._initial_state = jax.jit(initial_state)
         self._encode = (
             (lambda obs: encode_coworld_hinted_observation(
@@ -726,6 +739,11 @@ class BatchedGeneralsPufferEnvironment:
         state_keys = jax.random.split(jax.random.PRNGKey(numeric_seed), self.parallel_games)
         self.keys = jax.random.split(jax.random.PRNGKey(numeric_seed ^ 0xA5A5A5A5), self.parallel_games)
         self.states = self._init_states(self.base.pool, state_keys)
+        if self.base.position_probability:
+            print("INITIAL_POSITION_MIX " + json.dumps(dict(
+                games=self.parallel_games, midgame=int(np.count_nonzero(np.asarray(self.states.time) > 0)),
+                probability=self.base.position_probability,
+            )), flush=True)
         values, masks = self._observe_states(self.states, self.sides)
         self.cached_teacher_actions = None
         if self.base.teacher_rollouts:
