@@ -1,5 +1,44 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35882 running: controlled mixed-position continuation (2026-10-03)
+
+Only Generals GPU job: 35882, `relh-generals-mixed-curriculum-725e8e1f`. Started 20:47:17 UTC;
+one B300 on metta-fabric-b300-1, 8 CPUs, 96 GiB host RAM, finite two hours.
+Nice 2147483645 / Priority 1 at submission and controller readback: unchanged,
+no errors or escalation. No paid node/spend or duplicate task job.
+Launch `/tmp/relh-generals-mixed-curriculum-launch.json`;
+receipt `/tmp/relh-generals-mixed-curriculum-725e8e1f.receipt.json`;
+S3 bucket softmax-slurm-artifacts, result prefix `relh/generals-classic-results-20261003T204636Z-34391f04`.
+Source and launcher revision `205f89e393ebd1b908cd38a0f948eb9894fa16b9`.
+Input archive 193,765,052 bytes, SHA
+`0babb867cfc7ed3b8eec4c38955ce25adc97e7172306050cfa0d87657cdf5316`;
+467 input hashes and bounded archive extraction passed before upload/submission.
+All CPU/image/lifecycle readiness evidence is recorded in the preceding section.
+
+Budget: 268,435,456 new steps, 2,164,260,864 -> 2,432,696,320;
+midpoint 2,298,478,592. Only experiment change is the 384-position dataset.
+The 8192 environments / horizon 256 / minibatch 8192 / four native workers / .5
+replay setup previously sustained 96,040 SPS; projected training about 46.6 minutes.
+Warm measurement of this dataset is pending; do not infer a new measured rate yet.
+Fresh-start held-out parent/mid/final panels and checkpoint parity remain in the
+same job. Prior hosted result is still 10/32 Daveey and 17/32 incumbent; goal unmet.
+
+Live handles: controller session 26879; collector 24853
+(`/tmp/relh-generals-collect-35882-when-terminal.py`, log
+`/tmp/relh-generals-35882-collection-monitor.log`); physical monitor 81855
+(`/tmp/relh-generals-monitor-35882.py`, observations
+`/tmp/relh-generals-35882-gpu-observations.jsonl`). Collector will download terminal
+results to `/tmp/relh-generals-portable-result-35882`; no duplicate collection.
+Warm observer prepared but not started: `/tmp/relh-generals-observe-warm-window-35882.py`;
+50 observations / 10 seconds, exact owned training PID identity/exit guard,
+one CPU/no GRES within existing allocation, max Nice, finite ten-minute step.
+Start only after training phase starts. No additional observer alongside it.
+
+Post-run summarize/select/serving/parity/upload/XP/finalize/replay helpers have been
+prepared as `/tmp/relh-generals-*35882*.py`, compiled and NOT executed. Select only
+after real collected comparisons; fresh hosted seeds compare against 35879.
+No 35882 serving image, policy, XP or champion change exists yet.
+
 ## 35879 hosted result remains weak; mixed-position continuation ready locally (2026-10-03)
 
 All 64 fresh hosted games and replays are complete and verified for private policy
