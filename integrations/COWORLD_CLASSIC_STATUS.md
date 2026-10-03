@@ -1,5 +1,29 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35858 training complete; fresh evaluation running (2026-10-03 09:05 UTC)
+
+The continuation finished all **268,435,456 new environment steps**, ending
+at learner counter **536,870,912**. Final action audit: **268,435,456 actions,
+zero illegal**. Reward audit: **384,996 terminal games**, zero nonfinite
+rewards, zero native-clipped rewards or terminal rewards. This is a clean
+training execution, not yet evidence of stronger hosted play.
+
+On one B300 with 8,192 games, horizon 256, minibatch 8,192, and replay ratio
+0.5, epochs 254→256 advanced 4,194,304 steps in 38.484 seconds:
+**108,988.255 steady-state SPS**. First resumed epoch took 82.901 seconds;
+all 128 resumed epochs completed in 2,479.906 seconds. Training GPU memory
+was 202,088 MiB, recent utilization 53–64%. Restored learner identity and
+midpoint hashes remain verified. Evidence:
+`/tmp/relh-generals-35858-live-training-final.json`.
+
+The same job entered its bounded fresh-map evaluation phase. No second GPU
+job or hosted request has been created. Nice remains **2147483645**, Priority
+**1**. Terminal receipt and S3 collection monitors remain active. Prepared
+serving scripts require an explicit checkpoint selection and completed job
+receipt before building; their exact-image golden and wire checks must pass
+before any private Observatory upload. Promotion remains gated on strong
+fresh held-out and hosted wins, including Daveey.
+
 ## Midpoint retained; evaluation completeness fixes (2026-10-03 08:58 UTC)
 
 Job **35858** is still the sole Generals allocation. Controller readback at
