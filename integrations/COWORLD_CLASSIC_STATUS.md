@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35852 completed; next controlled combat-position experiment (2026-10-03)
+
+35852 COMPLETED 0:0 at 05:41:54 UTC, including evaluation, verified S3 upload
+and owned-container cleanup. Nice 2147483645 / Priority 1 unchanged before/after;
+no escalation, duplicate job, paid spend or champion change. Source e0a945c.
+Results: `/tmp/relh-generals-portable-result-35852`; retained controller receipt
+`/tmp/relh-generals-portable-40202aa8.receipt.json`. Physical GPU0 is now idle;
+all eight GPUs read 0 MiB / 0% in the next full preflight. Earlier unaccounted
+GPU7 occupancy has ended without any action by this task.
+
+33,554,432 environment steps, one B300, 8192 games, horizon256, minibatch8192,
+replay0.5. First-epoch warmup80.854s. Epoch14→16: 4,194,304 steps over37.020s
+including rollout and updates =113,298.325 SPS. Zero nonfinite/clipped rewards,
+zero illegal actions;39,513 terminal training games with every opponent on
+both seats. Final checkpoint350329012db0a6bf9e75452a879ce8add56f601d9dbc20436ed70a98b748eb05.
+GPU/portable serving parity46/46 top actions, max probability difference1.014e-6.
+
+Matched4096 held-out games /2591 unique starting states:
+parent1761W/2248L/87D; mid1796W/2214L/86D; final1821W/2194L/81D.
+Final paired signed-score delta+0.027832, map-cluster95%CI[-0.000239,+0.056161].
+This is encouraging but does not establish improvement or strong hosted play.
+Previous hosted candidate remains3W/29L vs Daveey and10W/22L vs incumbent.
+Goal remains incomplete; no promotion. Raw paired reports and curve summary retained.
+
+Next bounded experiment isolates25% verified midgame resets against this reward-only
+control, using the same67M parent,33.55M steps, optimizer, sampling and pool. Fresh
+held-out maps remain mandatory. Actual192-position archive across64 owned games
+passed384 public-view checks: all masks equal, observation difference exactly0.
+Proof `/tmp/relh-generals-position-curriculum-35848/wire-parity.json`; no teacher
+actions or labels. Prior24 CPU tests and exact-image192-position mixing proof passed.
+Input/source/lifecycle checks precede submission. B300 remains necessary for the
+measured197.3GiB geometry; one job, max-positive Nice, finite80-minute ceiling.
+
 ## Active audited reward retry35852; physical occupancy finding (2026-10-03)
 
 Job35852 RUNNING from2026-10-03T05:18:31, oneB300/8CPU/96GiBhost,
