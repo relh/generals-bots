@@ -34,6 +34,15 @@ class SubmissionTests(unittest.TestCase):
             with self.subTest(override=override),self.assertRaises(ValueError):
                 render(self.config()|override,name="relh-generals-test",partition="b300",minutes=55,cpus=8,memory_gib=64)
 
+    def test_4090_leaves_placement_to_slurm_and_excludes_prohibited_host(self):
+        script = render(self.config() | dict(required_gpu_memory_gib=24),
+                        name="relh-generals-test", partition="rtx4090", minutes=55,
+                        cpus=8, memory_gib=32)
+        self.assertIn("#SBATCH --exclude=metta4\n", script)
+        self.assertIn("#SBATCH --nice=2147483645", script)
+        self.assertNotIn("--nodelist", script)
+        self.assertNotIn("#SBATCH --exclude=metta0", script)
+
     def test_live_task_prevents_submission(self):
         result=subprocess.CompletedProcess([],0,"35687|relh-classic-old\n","")
         with tempfile.TemporaryDirectory() as directory,patch("integrations.submit_slurm_s3.remote",return_value=result) as remote:

@@ -1,5 +1,52 @@
 # Softmax Coworld Classic 1v1 training
 
+## Evaluation-only recovery prepared; smaller GPU placement audited (2026-10-03)
+
+35867 remains the sole live task job. No recovery job submitted. Last native
+snapshot epoch760:243269632new steps,72534.44environmentSPS,351739terminalgames,
+zero nonfinite/clipped rewards (`/tmp/relh-generals-35867-live-training9.json`).
+Keep its original source6e03bd1/input intact through finalization and verified
+collection. Expected missing-midpoint failure remains an evaluation issue.
+
+Prepared `/tmp/relh-generals-prepare-35867-evaluation-recovery.py`: refuses to
+run until terminal FAILED receipt, completed trainer, verified collection and
+exact missing1484783616 traceback exist. It preserves every original serial
+opponent/source input except the patched evaluator, stages actual1476395008
+near-midpoint and1619001344final checkpoints, and verifies policy/learner/run
+hashes, finite tensors, saved counters and optimizer identity. NOT executed yet.
+
+`/tmp/relh-generals-restore-evaluation.py` verifies all source hashes and existing
+destinations before copying; matching smoke-produced files stay untouched,
+conflicts/corruption/path escape/incomplete run/duplicate restore are rejected.
+Bounded CPU reproduction against retained35863 artifacts passed all six paths:
+`/tmp/relh-generals-evaluation-recovery-cpu-proof.log`.
+Pinned image CPU run completed actual prepare_configs +19-file restoration and
+midpoint selection, then hit420s timeout in optional full graph export under
+x86 emulation; NOT a full-image-export pass. Same restored-input export on native
+Mac CPU passed in37.99s with every array identical to the retained GPU bundle:
+`...evaluation-recovery-cpu-proof/native-mac-export.json`. An emulated retry with
+production optimizer-layout environment remains bounded; inspect its result.
+Both image attempts/logs retained, owned containers cleaned on exit/timeout.
+
+Plan recovery on oneRTX4090/8CPU/32GiB,45min, same-job smoke/restore/evaluate,
+zero training updates. Evaluation peak memory is not yet measured; do not reuse
+the198GiB *training* requirement as justification for a large evaluation GPU.
+Current metta0 physical4090:1MiB/0%, driver580.173.02, scratch742GiB and232.5M
+free inodes. Actual JAX CUDA13 support requires driver>=580 and SM>=7.5:
+https://docs.jax.dev/en/latest/installation.html . Smoke must verify runtime on
+allocated hardware. Fresh full queue/physical/space/credential checks still
+precede submission; if incompatible/OOM, preserve the exact evidence first.
+User's prefer4090 steering supersedes repo's older large-GPU-only preference;
+project-prohibited metta4 stays excluded. Renderer now adds--exclude=metta4
+only for4090, leaving Slurm placement among other eligible nodes. No--nodelist,
+priority/QOS change, paid spend, or duplicate job.27 launch/lifecycle tests +11
+subtests passed, including failure/signal/upload-failure and exclusion behavior.
+
+Future35867 serving/late-parity helpers require `evaluation_out` and
+`evaluation_receipt` in selection JSON, so they use verified recovered panels
+and a COMPLETED recovery receipt instead of requiring original35867 success.
+No serving image, upload, or XP request for35867 has been created yet.
+
 ## 35867 midpoint-grid evaluator bug identified before run ends; fix CPU-reproduced (2026-10-03)
 
 IMPORTANT next action:35867 is still training successfully, but its immutable

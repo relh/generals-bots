@@ -35,10 +35,13 @@ def render(config, *, name, partition, minutes, cpus, memory_gib):
     if time.time() + minutes * 60 + 600 >= config["credential_expiry"]:
         raise ValueError("Signing credentials expire too soon")
     code = Path(__file__).with_name("slurm_s3_job.py").read_text()
+    # Keep the project-prohibited host out of the shared 4090 partition while
+    # leaving Slurm free to choose among the other eligible nodes.
+    excluded = "#SBATCH --exclude=metta4\n" if partition == "rtx4090" else ""
     return f'''#!/bin/bash
 #SBATCH --job-name={name}
 #SBATCH --partition={partition}
-#SBATCH --nodes=1
+{excluded}#SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task={cpus}
