@@ -1,5 +1,49 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 hosted result remains weak; mixed-position continuation ready locally (2026-10-03)
+
+All 64 fresh hosted games and replays are complete and verified for private policy
+`c7bc220c-28a8-4222-b581-301366142b96` (`relh-classic-hardpool-35879-final`).
+Daveey: 10 W / 22 L (seat 0: 7/16; seat 1: 3/16).
+Incumbent: 17 W / 15 L (seat 0: 7/16; seat 1: 10/16).
+Zero failed episodes, timeouts or illegal moves; all general captures.
+64 unique seeds, no overlap with 35876. This does NOT establish strong hosted
+performance or an improvement over 35876 (9/32 and 19/32). No confirmation panel
+or champion change. Goal remains active; local learning gains have not translated
+to the target hosted strength. Raw evidence: `/tmp/relh-generals-serving-35879-final/`
+`hosted-results-summary.json`, `hosted-replay-panel-audit.json`, `hosted-seed-audit.json`.
+
+Actual image `sha256:89548867131890b8b61feea0eac8027131c89b2c0d9083184f09ada62af9d41a`:
+46/46 golden actions, 32/32 legal wire replies (max 110.7 ms local CPU), 64/64
+late public-state actions, maximum late probability error 2.86103e-6.
+Hosted image `img_3311ff17-033a-4150-9c75-030323d7f216`; registry manifest
+`813bfcc9685bd3946c27a8b8378705080d3984bfe0ca796f080e549355838d81`.
+XP IDs: smoke e15906b1-17ba-4c2b-8390-71df24d664d8 / 8e34e623-6fae-449f-8951-6d14760bb40c;
+incumbent a74ba2d0-8be2-45ea-9ab5-97c0126d548e / 933bc5a5-dce8-462c-a155-0a56f4622d3f;
+Daveey e4bf6741-42f2-41bd-b7f9-3070b49ccd72 / 844b6f83-d8f8-49f2-a5d6-17978ac6419b
+(all IDs have `xreq_` prefix). Do not reissue these completed requests.
+
+Next controlled change: use the verified merged 384-position reset pool, retaining
+25% midgame / 75% fresh starts, all 13 opponents and weights, rewards, sampler,
+model and batching. No opponent rotation this iteration. Start from selected 35879
+policy and Muon SHA `ab36d78d454eb736cf80356a9afd4425f08d1407a874c65c9ac5ff46854d322a`.
+Staged `/tmp/relh-generals-portable-mixed-curriculum-input`.
+Current-parent native 256-game CPU audit passed both seats, legal finite transitions,
+nonzero-position resets and cleared opponent memory:
+`/tmp/relh-generals-mixed-curriculum-35879-cpu-readiness.json`.
+Exact immutable training-image preparation and actual 16-game/four-step self-match
+CLI also passed: `/tmp/relh-generals-mixed-curriculum-image-proof/image-cpu.log`.
+These are readiness checks, not new game-strength evidence. Dataset SHA remains
+`d68ee1625da50fd9f91fcf2181855dc5a4c476150ff5aa01920aa1b3942b311c`.
+
+Fresh full queue: no Generals task job; unrelated 35881/35875/35874 untouched.
+B300 physical GPUs all idle, 88,249 free scratch inodes and 1.2 TiB free.
+Proposed training needs measured ~202 GiB GPU memory; 4090 cannot hold it.
+No new submission yet. Future launch retains max Nice 2147483645 / Priority 1,
+one finite job, no node pinning, S3-only inputs/results and Pyxis. Prior lifecycle
+CPU suite (29 tests + 18 subtests) and successful 35879 end-to-end remain applicable:
+no launcher or image change. No additional container retirement is needed.
+
 ## 35879 completed; final checkpoint selected for hosted screen (2026-10-03)
 
 Job 35879 completed 0:0 at 20:30:28 UTC. All S3 results were downloaded and
