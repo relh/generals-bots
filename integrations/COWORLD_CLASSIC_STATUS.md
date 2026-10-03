@@ -1,5 +1,44 @@
 # Softmax Coworld Classic 1v1 training
 
+## Corrected continuation job 35858 running (2026-10-03 08:16 UTC)
+
+Job **35858** started **08:16:25 UTC**, source **1977bc5**, name
+`relh-generals-resume-49e3c7c2`. Controller readback remains **Nice 2147483645 /
+Priority 1, finite 02:00:00**, one B300 / 8 CPUs / 96 GiB host memory on
+`metta-fabric-b300-1`. No duplicate task job, cancellation, requeue, priority
+change, privileged QOS or paid reservation. The previous job 35857 is terminal
+and its raw archive is verified. Terminal monitoring and collection are active.
+
+The exact-image CPU sampler reproduction passed, and all **17 focused tests**
+passed before submission. No optimizer, objective, policy architecture or
+sampler was changed by the fix: continuation now checks the actual scheduled
+sampler, whose retained result is 245 wins / 259 losses / 8 draws. The final
+464-file input manifest is verified. Archive SHA:
+`5f4f03575a543f0244b65301f81712cc62ac53e1589f7686cd06c4a06c4ad488`.
+Public launch: `/tmp/relh-generals-continuation-fixed-launch.json`;
+controller receipt: `/tmp/relh-generals-resume-49e3c7c2.receipt.json`.
+S3 result prefix: `relh/generals-classic-results-20261003T081310Z-1ae8439d`.
+
+Final physical preflight showed all eight GPUs idle. The external GPU 6/7
+workloads ended without our intervention. Scratch had 1.2 TiB / 146,355 free
+inodes; root had 24 GiB free. The immutable squashfs superblock declares exactly
+29,244 image inodes. The initial free-inode reserve is now 120,000 (over four
+times the image footprint), while the 100,000-inode check before every Pyxis
+step remains. Both capacity checks still run before extraction/unpack. Prior
+failed scratch/results are preserved; no shared data was deleted. Same-role
+sandbox SSO credentials were refreshed in memory, identity checked, and the
+full finite runtime plus queue/upload margin checked; shared login caches were
+not changed. URLs and credentials remain private.
+
+Additional CPU analysis of the five enumerated defensive opportunities found
+that removing external action biases alone does not fix most tiny defensive
+probabilities. Higher late-game sampling temperature increases several of them,
+but these are post-game counterfactual probabilities, not match-strength proof.
+No such exploratory sampler change was applied to this controlled continuation.
+Evidence: `last-turn-defense-sampler-audit.json` in the 35854 serving directory.
+The goal remains active: latest actual hosted screen is 5/32 versus Daveey and
+14/32 versus the incumbent, so strong winning performance is not established.
+
 ## 35857 retained failure: obsolete sampler ablation blocked continuation
 
 Job **35857 FAILED 1:0 at 2026-10-03 07:58:57 UTC**, after smoke, build and
