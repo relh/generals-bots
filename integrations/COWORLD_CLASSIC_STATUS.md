@@ -1,5 +1,53 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35882 quarter-run healthy; exact final-turn defense diagnostic retained (2026-10-03)
+
+Previous goal turn made progress: completed/collected 35879, finished actual hosted
+screen, audited its losses, and launched the fully audited controlled curriculum
+continuation. Current authoritative job 35882 remains RUNNING; no restart or new
+GPU job. At epoch 1065, measured 96,197.427 SPS. Periodic audit: 67,108,864 new
+steps, 92,908 terminal games, zero nonfinite/clipped rewards. Final action audit
+still pending. Warm observer 83260 exited normally. Active midpoint observer
+78983: `/tmp/relh-generals-observe-midpoint-window-35882.py`, output
+`/tmp/relh-generals-35882-midpoint-window.jsonl` and sibling stderr. This single
+read-only CPU step is within the existing allocation; max Nice, 20-minute internal
+bound / 22-minute step, exits promptly on owned training PID exit or verified
+2,298,478,592-step checkpoint. Do not run another observer alongside it.
+Controller 26879, collector 24853, physical monitor 81855 unchanged. Nice/Priority
+remain 2147483645/1. No duplicate queued/running task job or paid allocation.
+
+New bounded CPU diagnostic reconstituted all 37 lost final-turn states from the
+SHA-verified 35879 replays, reproduced the recorded final army/ownership grids,
+time and winner with the pinned official engine, then enumerated every public-
+legal alternative against the RECORDED opponent action. Six of 22 Daveey losses
+and three of 15 incumbent losses had a legal one-turn survival alternative;
+none had an immediate winning move. The current policy ranked none of those
+saving moves first. Saving probability was at most 0.0001315 on the six Daveey
+states and 0.0003687 on the three incumbent states; many were below 1e-16.
+This is a retrospective fixed-opponent-action diagnostic, NOT an adaptive-game
+win guarantee, action labels for training, or hidden-state policy inputs.
+Evidence: `/tmp/relh-generals-35879-one-turn-defense.py/.log` and
+`/tmp/relh-generals-serving-35879-final/one-turn-defense-diagnostic.json`.
+
+Frozen CPU inference controls separately removed neutral bonus, doomed-attack
+penalty or direct prior contributions, or doubled route temperature to .1.
+NONE made a rescue the top action in any of the nine states. The learned action
+scores also contain this tactical failure; a serving-only tweak is not supported.
+No altered variant was uploaded, trained or evaluated as a game-strength claim.
+Evidence: `/tmp/relh-generals-35879-one-turn-defense-controls.py/.log` and
+`/tmp/relh-generals-serving-35879-final/one-turn-defense-controls.json`.
+
+Retained held-out PUBLIC observation probe (nine defendable states):
+`/tmp/relh-generals-35879-defense-probe/{public-probe.npz,manifest.json}`;
+SHA `2bc3ce0d9d2670d22244747c6012408b421fcab714e85b74fd7031801c296bbd`.
+Baseline probabilities reproduced; no episode seed overlaps 35882's training
+position pool. Retrospective rescue masks are evaluation labels ONLY, never
+policy inputs or training targets. Prepared, compiled, NOT yet executed:
+`/tmp/relh-generals-evaluate-defense-probe-35882.py` compares the actual parent,
+midpoint and final after RESULTS_VERIFIED. It complements fresh game outcomes;
+it cannot replace the hosted acceptance gate. Latest hosted remains 10/32 Daveey,
+17/32 incumbent. Goal active, strength unproven, no champion change.
+
 ## 35882 passes warm throughput gate; hosted strength still unproven (2026-10-03)
 
 The ONLY task GPU job 35882 is healthy and training. First epoch 1033 uptime
