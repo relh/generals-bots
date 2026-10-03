@@ -1,5 +1,57 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35863 hosted12/32 against each target; sole native-siege pilot35866 running (2026-10-03)
+
+35863 frozen final policyeda1614a-a267-4ee4-98c7-d1792a500dcf completed all64
+unique hosted episodes and all64 hashed replay audits: **Daveey12W/20L** and
+**incumbent12W/20L**, each split seat0:5W/11L,seat1:7W/9L. Zero execution
+failures or timeouts for either player; allgeneral capture. All**36215 candidate
+moves** passed the basic replay legality audit. Meanlength498.0625vsDaveey,
+643.0vsincumbent. Artifacts `/tmp/relh-generals-serving-35863-final`, summary
+`hosted-results-summary.json`, `hosted-replay-panel-audit.json`, `replays/`.
+Watcher/finalizer complete; do not reissue. RemainingXP IDs:
+incum0xreq_ec707b5e-c159-4143-8cbe-d6740bcb7fe1;
+incum1xreq_93afa72c-b9d7-4bc7-9af6-bf65e1eb60c7;
+Daveey0xreq_de92f8ee-91f7-450c-8592-56859b32976e;
+Daveey1xreq_f48fb853-4c3f-46bf-b603-f100519a5a69.
+These results do not meet the strong-win gate, despite the verified fresh local
+65% win rate. Small independent screens do not prove improvement over9/32 or
+regression from16/32. No champion change. Continue learning/opponent diversity.
+
+After all CPU/image/lifecycle/source/immutable archive gates above, submitted
+**35866 RUNNING**,13:19:24UTC,finite end14:19:24UTC; oneB300/8CPU/96GiBhost,
+**Nice2147483645/Priority1** controller verified before/after, no escalation,
+errors, duplicate job, paid GPU or other-owner changes. Slurm placed it on
+metta-fabric-b300-1. Latest physical check shows onlyGPU0 with our runtime
+python(~1300MiB startup), other7GPUs0MiB/0%; no observed contention. The
+pre-submit fullqueue/physical check again found no Generals allocation and all
+8GPUsidle, with146313free/tmpinodes. Startup sampling is not sustained SPS.
+
+This is the explicitly bounded **8388608-step native-siege qualification**, not
+a long run:8192games,H256,minibatch8192, same reward/curriculum/optimizer, plus
+thirteenth opponent and verified parent rotation. Start1342177280,
+end1350565888,mid1346371584. Archive193696092bytes,SHA
+**8d52673f37490ce607759249cce4f5bd338b642f99c5a3d68e9b27001a306853**;
+all467 source/data hashes safely extracted and verified before launch. Input
+S3 **relh/generals-native-siege-20261003T131556Z-8b6e8783/input.part000**;
+result **relh/generals-classic-results-20261003T131729Z-b8263dda**.
+Immutable source/launcher **6a5a8e3563fd6f34ea60e6563bb231a031364d4a**;
+image66660f4b… unchanged. CPU readiness is based on128-game actual staged
+13-opponent test,16-game complete Linux-image population test,32-case image
+callback/3912-action port fidelity, actual pinned-image native prepare_run
+with cfa0f088… learner and83dc8144… policy, and26lifecycle tests/11subtests.
+
+Launch `/tmp/relh-generals-native-siege-launch.json`; receipt
+`/tmp/relh-generals-native-siege-8b91b60b.receipt.json`; private config/script
+share that basename. Submit/monitor log`/tmp/relh-generals-native-siege-submit.log`.
+One terminal collector live at`/tmp/relh-generals-collect-35866-when-terminal.py`,
+log`/tmp/relh-generals-35866-collection-monitor.log`; future results directory
+`/tmp/relh-generals-portable-result-35866`. Read-only existing-allocation
+observers prepared: `/tmp/relh-generals-observe-35866.py` and`...-evaluation.py`.
+Keep this sole job, capture terminal receipt promptly, verify returned results,
+and require actual>=30000SPS plus reward/heldout evidence before extending.
+Goal remains active; hosted winning and new-opponent GPU qualification open.
+
 ## 35863 selected final: fresh paired gain, hosted startup live; native pilot CPU ready (2026-10-03)
 
 **35863 COMPLETED0:0**,11:54:40→12:55:16UTC, Nice2147483645/Priority1
