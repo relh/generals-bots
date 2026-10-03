@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 hosted screen complete: 9/32 Daveey, 16/32 incumbent (2026-10-03)
+
+All **64 unique records** completed and all **64 replays** were downloaded and
+hash-recorded. Policy **e0e95898-fe15-455a-8a4b-ac3acfdd7eff** scored
+**9 W /23 L vs Daveey** (seat0 4/12, seat1 5/11), **16 W /16 L vs incumbent**
+(seat0 9/7, seat1 7/9). Zero draws/execution failures/timeouts for either
+player; all ended in general capture. All **28,280 candidate moves** passed
+the replay ownership/army/bounds/mountain legality check. Mean lengths
+384.5625 vs Daveey, 511.4375 vs incumbent. Evidence:
+`/tmp/relh-generals-serving-35861-final/hosted-results-summary.json`,
+`hosted-replay-panel-audit.json`, hashed `replays/`, and
+`/tmp/relh-generals-35861-finalize-hosted.log`.
+
+This remains below the strong-win/promotion gate. Independent 32-game screens
+were 11/32 and 12/32 for the parent, so these small unmatched samples do not
+prove a Daveey regression or reliable incumbent improvement. No champion
+changed. The positive 4,096-game fresh paired result remains valid for its
+local opponent pool, but does not substitute for hosted strength.
+
+Sole **35863** continues its already qualified self-play iteration at
+Nice2147483645/Priority1. A bounded source search is checking whether the
+hosted siege strategy can add a stronger, different local opponent. Found
+stateful Python `competition/agents/expander_python/agent.py`; it is not yet
+verified as the exact hosted incumbent. Existing JAX `ExpanderHarvesterAgent`
+is a different implementation. Do not port or claim equivalence without
+identity/action evidence. Existing status already records sentinel_v5 at
+124W/50L/4D for the older learner, insufficient as a harder opponent; do not
+repeat that rejected experiment. No new opponent/training code changed.
+Goal remains active; latest completed hosted strength gate fails.
+
 ## 35863 sole continuation running; 35861 hosted panel active (2026-10-03 11:55 UTC)
 
 Both 35861 startup episodes completed successfully, zero execution failures.
