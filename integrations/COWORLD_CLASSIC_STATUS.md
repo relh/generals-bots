@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 complete: fresh paired improvement, final selected (2026-10-03 11:47 UTC)
+
+Job **35861 COMPLETED 0:0** at **11:44:50 UTC**, starting 10:43:54.
+Nice **2147483645 / Priority1** unchanged before/after, finite two-hour
+limit; allocation released. Source `b9896e93e465adfa0f78d5866d755c9f14f5b9da`.
+All result artifacts downloaded/hash-verified and paired analysis completed;
+archive **277,704,089 bytes**, SHA256
+`552f1f320697afd1ca3e6483cd80eb58c4004362801377bc6dc813d517560bb2`,
+S3 prefix `relh/generals-classic-results-20261003T104326Z-518462cd`,
+local `/tmp/relh-generals-portable-result-35861`.
+
+Fresh paired **4,096 games / 2,591 initial states**, seeds **38255/9137**:
+parent **2,037 W / 1,988 L / 71 D**; midpoint **2,002 / 2,027 / 67**;
+final **2,210 / 1,817 / 69**. Final-parent signed-score delta **+0.083984**,
+initial-state-cluster 95% CI **[+0.052926, +0.115989]**. Final-midpoint
+**+0.102051**, CI **[+0.070608, +0.134141]**. The midpoint-parent interval
+crosses zero. Select final checkpoint **f589aa8f…55b358b3a**, counter
+**1,073,741,824**, for hosted validation. Compared within this fresh pool;
+do not compare raw totals across changed pools. Full paired reports:
+`learning-curve-summary.json` under the retained result root.
+
+Both final and midpoint passed GPU/NumPy parity **46/46**. Midpoint maximum
+probability difference **8.3446503e-7**, final **9.8347664e-7**. Completed
+training remains **107,419.556 steady SPS**, zero illegal actions across
+268,435,456 new steps, zero nonfinite/clipped rewards. Exact final serving
+image CPU golden/wire checks are running from qualified 35860 base; no new
+policy registration/XP yet. Selection record
+`/tmp/relh-generals-35861-serving-selection.json`. No live task GPU job or
+funded node. Goal remains active: fresh improvement needs hosted confirmation.
+
 ## 35861 final checkpoint GPU/serving parity passes (2026-10-03)
 
 Final 1,073,741,824-step checkpoint SHA256
