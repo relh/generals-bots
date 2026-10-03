@@ -1,5 +1,43 @@
 # Softmax Coworld Classic 1v1 training
 
+## Long four-worker continuation35873 running (2026-10-03)
+
+ONE job35873 RUNNING since17:10:27UTC, Slurm-selectedmetta-fabric-b300-1,
+1B300/8CPU/96GiB/120min. Nice2147483645/Priority1 verified; no priority change,
+no errors. No other Generals pending/running job. Other owners35871/35872 on
+4090 nodes untouched. Fresh physical scan showed all8B300 GPUs0MiB/0%; earlier
+GPU7 activity had ended. /tmp1.2TiB and111050freeinodes;60k pre-extraction and
+pre-step floor retained. Same-job smoke/build/sampling/train/evaluation,4-way
+image download, durable output before owned cleanup. No paid allocation.
+
+Source/launcher a5d2a8a27685b2b5c94d41d3ffa571757654b330, pinned image66660f4b.
+Actual128-game current-input CPU legal/finite/reset/full-pool proof passed;
+exact-image prepare_run restored policy8483afd1 and Muon2d94492c. Both
+`/tmp/relh-generals-siege-workers4-long-staged-cpu-readiness.json` and
+`...siege-workers4-long-resume-image-proof/image-cpu.log` retained.
+467 source/input hashes roundtrip-extracted and verified before S3 upload.
+Input `relh/generals-siege-workers4-long-20261003T170822Z-4d944059/input.part000`,
+193698280bytes, SHA6955d23a8b3759559c02060887157b1901e1424c518025d6155b360d7f1283a0.
+Result prefix `relh/generals-classic-results-20261003T171007Z-fefea953`.
+Initial local config render correctly rejected excess step budgets before any
+submission; evaluation budget restored to audited900s, leaving termination/
+upload reserve. Source train timeout4440s, host4500s; no live layout retrofit.
+
+New268435456steps:1627389952→1895825408; same rewards,13-opponent pool,
+25%position curriculum, four native workers. Qualified94,061.7SPS predicts
+~47.6min training plus compilation/checkpoints/evaluation. This is a learning
+experiment, not a hosted strength claim. Final/midpoint held-out and selected
+hosted screen remain required; latestDaveey12/32 still below target.
+
+Launch `/tmp/relh-generals-siege-workers4-long-launch.json`; receipt
+`/tmp/relh-generals-siege-workers4-long-7741dac4.receipt.json`.
+Submit/receipt monitor session17416; one collector10207 runs
+`/tmp/relh-generals-collect-35873-when-terminal.py`, one physical observer24165
+runs `...monitor-35873.py`. Collection log `...35873-collection-monitor.log`;
+future comparison helper `...summarize-35873.py` prepared, not executed.
+Do not duplicate jobs, collectors, or XP requests. Wait for existing container
+before any bounded read-only allocation metadata probe. No champion changed.
+
 ## Four-worker qualification35870 complete; longer continuation being audited (2026-10-03)
 
 Job35870 COMPLETED0:0 at16:54:12UTC. Nice2147483645/Priority1 unchanged;
