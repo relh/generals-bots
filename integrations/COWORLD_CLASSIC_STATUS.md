@@ -1,5 +1,55 @@
 # Softmax Coworld Classic 1v1 training
 
+## Optimizer continuation job 35857 running; 268M hosted result remains weak
+
+Job **35857** started 2026-10-03 **07:52:34 UTC**, source **e3a4f7e**, name
+`relh-generals-resume-f2f432dd`. Controller readback: **Nice 2147483645,
+Priority 1, TimeLimit 02:00:00**, node `metta-fabric-b300-1`; one B300, 8 CPUs,
+96 GiB host memory. No priority change, duplicate job, or funded spend. Receipt:
+`/tmp/relh-generals-resume-f2f432dd.receipt.json`. Monitor saves terminal state
+before controller expiry. Public launch record:
+`/tmp/relh-generals-continuation-launch.json`.
+
+The implementation and CPU audit finished before submission. Actual native
+`prepare_run` accepted the saved policy and Muon snapshot both locally and in
+the immutable training image. Final image proof:
+`/tmp/relh-generals-continuation-image-final-proof.log` and
+`/tmp/relh-generals-continuation-image-proof/image-cpu.log`. The lifecycle suite
+passed 35 tests; the final continuation/evaluation suite passed 11 tests. All
+464 input files were hash-verified; the pinned model factory is unchanged.
+Input archive SHA `e103a9592cbbd2213f8014172dee8e22f3ad63577a393bed3d601217e065d0b3`.
+S3 input `relh/generals-continuation-20261003T074737Z-c5380990/input.part000`;
+result prefix `relh/generals-classic-results-20261003T075040Z-e5922942`.
+
+This adds 268,435,456 physical training steps, from learner counter 268,435,456
+to 536,870,912, retaining optimizer momentum and the fixed ten-policy pool.
+Fresh evaluation seeds are 37872/8754. The preceding identical geometry ran
+113,029.643 SPS; expected training duration is about 40 minutes, plus setup and
+evaluation. Every phase is bounded, with the existing under-30k SPS stop gate.
+Final preflight still found external occupancy on GPUs 6/7; GPUs 0–5 were empty.
+No external process was touched. The allocated UUID must pass the job's idle
+check before JAX starts.
+
+The 268M checkpoint's hosted screen is now verified complete: **64 unique
+episodes, zero execution failures**. Daveey: **5 W / 27 L** (seat 0: 4/12,
+seat 1: 1/15). Incumbent: **14 W / 18 L** (seat 0: 8/8, seat 1: 6/10).
+No strong-win claim or promotion. All replays were retained and hashed; across
+31,150 turns there were **zero candidate timeouts** and all 30,717 nonpass
+moves passed basic replay legality. These checks are not a replacement for the
+authoritative mask. See `/tmp/relh-generals-serving-35854-final/hosted-results-summary.json`
+and `hosted-replay-panel-audit.json` in that directory.
+
+Main XP IDs, all terminal; never reissue:
+- Incumbent seat 0: `xreq_c5e95dc2-e3c5-4662-9760-c6312785e1a4`
+- Incumbent seat 1: `xreq_bd664bdd-49e8-435f-9ebc-9c845e37302b`
+- Daveey seat 0: `xreq_9ee9b5b9-3d00-4192-9992-cc440c078e95`
+- Daveey seat 1: `xreq_1856e418-5558-40b4-9f0c-0a8aaa33c8ed`
+
+The watcher initially printed completion with 63 visible episode records;
+read-only API reconciliation obtained and verified all 64. Do not trust only
+pending/running counters for future completion; require all expected episode
+records to be terminal. The winning-performance goal remains active and unmet.
+
 ## Continuation preflight and hosted IDs (2026-10-03 07:45 UTC)
 
 The 268M final policy is `f5a79e7a-1e65-4180-a2f3-6213aa6c3ea6`, private image
