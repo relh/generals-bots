@@ -1,5 +1,24 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35887 warm throughput qualified, strength evaluation pending
+
+Loss-weighted pilot 35887 passes the warm throughput gate: 20,971,520 environment
+steps over 247.889 seconds, **84,600.4 SPS**, epochs 1163 to 1173.
+The first native completed epoch took 105.621 seconds including warmup.
+One B300, 8192 games, horizon 256, minibatch 8192, replay ratio 0.5, four native
+workers, ~202,092 MiB GPU memory. Observed utilization 32–64%; no other physical
+GPU workload. Per-process and aggregate SPS are equal (one trainer). Each
+Puffer agent step is one learner-controlled game transition. Increased native
+opponent sampling costs throughput versus the former ~97k mix but remains
+above the mandatory 30k gate. This does not establish learning improvement.
+
+Muon restoration SHA matches the parent; same-sampler gate 245W/265L/2D,
+zero score difference. Midpoint 2,449,473,536 saved. Current audit has zero
+nonfinite or clipped rewards. Controller retains Nice 2147483645/Priority 1.
+Warm proof `/tmp/relh-generals-35887-warm-throughput.json`, epoch observations
+`/tmp/relh-generals-35887-warm-observations.jsonl`; owned read-only observer
+session 53757 exits at training completion. No additional GPU job submitted.
+
 ## Latest 35882 hosted losses reproduce the defensive weakness
 
 Read-only, SHA-verified replay reconstruction reproduced every recorded final
