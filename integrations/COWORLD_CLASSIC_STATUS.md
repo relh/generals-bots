@@ -1,5 +1,29 @@
 # Softmax Coworld Classic 1v1 training
 
+## Latest hosted policy passes64 late-game parity states;35867 reaches33.55M (2026-10-03)
+
+35863 checkpoint83dc8144… CPU native-Fabric vs exported NumPy/serving
+sampler audit passed**64/64 top actions**, max logit difference1.90735e-6,
+max probability difference**1.66893e-6**, rollout transform1.78814e-7.
+Selected8 SHA-verified hosted35863 episodes: longest win/loss for each of
+Daveey/incumbent and both seats, each last live turn and1/25/75 turns before,
+both public player views. States span turns572–1591. Factory5221cd60… and
+official Classic enginef39e448a… remain pinned. This specifically checks
+late-game inference consistency; it is not new win-rate evidence or a proof
+covering every possible state. No gap found in this diagnostic.
+Evidence `/tmp/relh-generals-35863-late-parity/parity.json`, manifest and
+hashed replays nearby; script `/tmp/relh-generals-audit-35863-late-parity.py`.
+Prepared `/tmp/relh-generals-audit-35867-late-parity.py` to check the selected
+future35867 checkpoint on these same states before hosted publication;
+not executed until terminal results and selection exist.
+
+35867 latest completed epoch660=33,554,432 new steps. Epoch658→660:
+4,194,304steps/(540.859-482.596)s = **71,989.15 environmentSPS**.
+45,924terminalgames, zero nonfinite/clipped rewards. Still sole live task job,
+unchanged Nice2147483645/Priority1 and finite runtime; no new allocation.
+Evidence `/tmp/relh-generals-35867-live-training5.json`. Continue the bounded
+run; midpoint/final fresh panels and hosted strength remain pending.
+
 ## 35867 live continuation passes steady throughput at72.24kSPS (2026-10-03)
 
 Authoritative controller35867 RUNNING, Nice2147483645/Priority1 unchanged,
