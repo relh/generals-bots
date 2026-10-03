@@ -1,5 +1,22 @@
 # Softmax Coworld Classic 1v1 training
 
+## Explicit four-worker continuation probe recipe CPU-verified (2026-10-03)
+
+`classic_learner_continuation.py` now supports manifest
+native_opponent_execution=classic_siege_workers4 only for an isolated8388608-step
+pilot from an existing serial native-siege parent. Simultaneous frozen/scripted
+pool changes, long budgets, invalid inherited workers, and unknown recipes are
+rejected. Default preserve keeps parent worker count. Audit records worker count
+and execution recipe; original policy/Muon/run identities and files remain intact.
+21 continuation tests passed; actual1350565888 parent checkpoint/Muon preparation
+passed inside pinned66660f4b image with all13 opponent weights preserved:
+`/tmp/relh-generals-worker-recipe-image-proof/image-cpu.log`.
+This complements existing native4-worker3912-action/JIT/reset CPU proofs; it is
+NOT an end-to-end GPU throughput qualification and no such GPU job was submitted.
+Future use requires selected-parent input/source/image/lifecycle audit and one
+bounded GPU measurement before longer training. Current35868 recovery remains
+on its original serial source; do not mutate it or launch a duplicate.
+
 ## Provisional final35867 serving image qualified locally (2026-10-03)
 
 While35868 prepares, the retained final checkpoint was built for serving in

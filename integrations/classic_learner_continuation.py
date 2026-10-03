@@ -101,6 +101,23 @@ def load_continuation(manifest_path, additional_steps):
         weights = weights + [6]
         options["opponent_weights"] = weights
         options["scripted_opponents"] = scripts
+    execution_recipe = manifest.get("native_opponent_execution", "preserve")
+    if execution_recipe not in ("preserve", "classic_siege_workers4"):
+        raise ValueError("Unknown native opponent execution recipe")
+    workers = options.get("classic_siege_workers", 1)
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 8:
+        raise ValueError("Invalid inherited native opponent worker count")
+    if execution_recipe == "classic_siege_workers4":
+        if (
+            scripts != siege_scripts
+            or workers != 1
+            or additional_steps != 8_388_608
+            or pool_recipe != "preserve"
+            or script_recipe != "preserve"
+        ):
+            raise ValueError("Worker change requires an isolated bounded 8M native siege qualification pilot")
+        workers = 4
+        options["classic_siege_workers"] = workers
     dropped_sha = None
     if pool_recipe == "drop_oldest_append_parent_weight8":
         if manifest["policy_sha256"] in pool_hashes:
@@ -131,6 +148,8 @@ def load_continuation(manifest_path, additional_steps):
             restore_learner=True,
             opponent_generation=pool_recipe,
             scripted_opponent_generation=script_recipe,
+            native_opponent_execution=execution_recipe,
+            classic_siege_workers=workers,
             scripted_opponents=scripts,
             dropped_opponent_sha256=dropped_sha,
             frozen_policy_sha256=pool_hashes,

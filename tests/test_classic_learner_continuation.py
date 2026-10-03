@@ -171,6 +171,69 @@ class ContinuationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unknown scripted"):
             load_continuation(self.manifest, self.steps)
 
+    def native_parent(self, workers=1):
+        training = self.parent / "run/training.json"
+        record = json.loads(training.read_text())
+        options = record["build"]["config"]["python_environment"]["options"]
+        options["scripted_opponents"] = ["expander_harvester", "sentinel", "classic_siege_padded"]
+        options["opponent_weights"].append(6)
+        options["classic_siege_workers"] = workers
+        training.write_text(json.dumps(record))
+        self.identity["run_sha256"] = hashlib.sha256(training.read_bytes()).hexdigest()
+        self.data["run_sha256"] = self.identity["run_sha256"]
+        Path(str(self.state) + ".json").write_text(json.dumps(self.identity))
+        self.write_manifest()
+
+    def test_worker_probe_preserves_pool_optimizer_and_parent_artifacts(self):
+        self.native_parent()
+        self.data["native_opponent_execution"] = "classic_siege_workers4"
+        self.write_manifest()
+        training = self.parent / "run/training.json"
+        original = training.read_bytes()
+        _, build, run, audit = load_continuation(self.manifest, 8_388_608)
+        options = build["python_environment"]["options"]
+        self.assertEqual(options["classic_siege_workers"], 4)
+        self.assertEqual(audit["classic_siege_workers"], 4)
+        self.assertEqual(audit["frozen_policy_sha256"], [e["sha256"] for e in self.data["frozen_bundles"]])
+        original_options = json.loads(original)["build"]["config"]["python_environment"]["options"]
+        self.assertEqual(options["opponent_weights"], original_options["opponent_weights"])
+        self.assertTrue(run["initialize"]["restore_learner"])
+        self.assertEqual(training.read_bytes(), original)
+
+    def test_worker_probe_rejects_long_budget_or_simultaneous_pool_change(self):
+        self.native_parent()
+        self.data["native_opponent_execution"] = "classic_siege_workers4"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "isolated bounded 8M"):
+            load_continuation(self.manifest, self.steps)
+        self.data["opponent_generation"] = "drop_oldest_append_parent_weight8"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "isolated bounded 8M"):
+            load_continuation(self.manifest, 8_388_608)
+
+    def test_worker_probe_requires_existing_native_siege(self):
+        self.data["native_opponent_execution"] = "classic_siege_workers4"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "isolated bounded 8M"):
+            load_continuation(self.manifest, 8_388_608)
+
+    def test_default_preserves_previously_bound_workers(self):
+        self.native_parent(workers=4)
+        _, build, _, audit = load_continuation(self.manifest, self.steps)
+        self.assertEqual(build["python_environment"]["options"]["classic_siege_workers"], 4)
+        self.assertEqual(audit["native_opponent_execution"], "preserve")
+
+    def test_unknown_worker_recipe_is_rejected(self):
+        self.data["native_opponent_execution"] = "all_cpus"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "Unknown native opponent"):
+            load_continuation(self.manifest, 8_388_608)
+
+    def test_invalid_inherited_worker_count_is_rejected(self):
+        self.native_parent(workers=True)
+        with self.assertRaisesRegex(ValueError, "Invalid inherited"):
+            load_continuation(self.manifest, 8_388_608)
+
     def test_evaluation_uses_resumed_counters_and_new_maps(self):
         with (
             patch.dict(os.environ, GENERALS_PILOT_CONTINUATION_MANIFEST=str(self.manifest)),
