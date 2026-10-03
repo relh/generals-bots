@@ -1,5 +1,26 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 training complete, evaluation running (2026-10-03 10:15 UTC)
+
+The sole task job **35860** finished **268,435,456 new environment steps**,
+reaching counter **805,306,368**. Final action audit checked all 268,435,456
+actions: **zero illegal**. Final reward audit: **381,034 terminal games**, zero
+nonfinite/clipped rewards. Training completed in 2,567.942 seconds; first
+resumed epoch took 97.895 seconds. Epochs 382→384 advanced 4,194,304 steps
+in 38.936 seconds = **107,723.033 steady-state SPS**, including rollout and
+optimization. Same one-B300, 8,192-game, horizon-256, minibatch-8,192 setup.
+Evidence: `/tmp/relh-generals-35860-live-training-final.json`.
+
+The bounded evaluation step has started inside the same allocation. Parent,
+midpoint, and final strength results remain pending; successful training is
+not a promotion decision. Nice **2147483645 / Priority 1** remains unchanged,
+with the original finite end time. Terminal controller and S3 collection
+monitors remain active; no next job or hosted request has been submitted.
+The collector's default sandbox SSO credentials were checked live against STS
+and a retained S3 manifest, refreshed successfully through 22:05 UTC, and no
+credential values were persisted. Evidence:
+`/tmp/relh-generals-35860-collection-credential-check.json`.
+
 ## 35860 midpoint verified (2026-10-03 09:54 UTC)
 
 The sole active Generals run remains **35860**, Nice **2147483645 / Priority
