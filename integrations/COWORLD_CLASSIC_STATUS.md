@@ -1,5 +1,44 @@
 # Softmax Coworld Classic 1v1 training
 
+## 536M hosted screen fails strength gate; late-game parity passes (2026-10-03)
+
+All **64 unique hosted episodes** completed and all replay files were downloaded
+and hash-verified. The selected 536M checkpoint scored:
+
+- **Daveey: 3 W / 29 L** (seat 0: 1/15; seat 1: 2/14).
+- **Incumbent: 10 W / 22 L** (both seats: 5/11).
+
+Zero execution failures, **zero timeouts on either side**, all games ended by
+general capture, and all 33,957 candidate moves passed the basic replay
+legality test. Mean game length: 410.4 turns vs Daveey and 660.6 vs incumbent.
+This screen does not show hosted improvement despite the statistically positive
+fresh population comparison. No champion changed; the goal remains incomplete.
+Evidence: `/tmp/relh-generals-serving-35858-final/hosted-results-summary.json`,
+`hosted-replay-panel-audit.json`, and `/tmp/relh-generals-35858-replay-audit.log`.
+All six XP requests listed below are terminal; do not resubmit them.
+
+To check the specific remaining inference risk at late turns, a bounded CPU
+reproduction selected the longest won and lost episode for each opponent/seat
+(eight games). Full recorded transitions were replayed against the pinned
+Classic engine, then both public player observations were checked at the final
+live turn and 1/25/75 turns earlier. All **64 states**, spanning turns 191–1829,
+matched native training and NumPy serving top actions. Maximum probability
+difference **1.848e-6**, raw logit difference 7.153e-7, acting-transform difference
+2.384e-7. This extends the original GPU 46-state parity evidence; it is a CPU
+parity diagnostic, not a fresh strength panel or a proof over every state.
+Evidence: `/tmp/relh-generals-35858-late-parity/parity.json` and script
+`/tmp/relh-generals-audit-35858-late-parity.py`. No mismatch was found explaining
+the hosted losses.
+
+Active **35860** has entered native training with the exact restored Muon SHA
+`fbf13e59952ebc04bbea880f56d03a5bfca094323faeb589edbccc1c5010b626`.
+Its real population includes the selected parent on 936 games per player seat;
+all other policies/scripts also have equal nonzero seat counts. Initial mix is
+2,077 midgame / 8,192 total games. GPU 0 was physically idle at its preflight;
+training memory is 202,072 MiB, recent utilization 52–55%. First steady-state
+SPS readback remains pending startup. Evidence:
+`/tmp/relh-generals-35860-live-training.json`. No other task job is queued.
+
 ## Active iterated self-play 35860; hosted 35858 panel (2026-10-03 09:25 UTC)
 
 **ONE live Generals job: 35860**, started **09:24:40 UTC**, finite two hours
