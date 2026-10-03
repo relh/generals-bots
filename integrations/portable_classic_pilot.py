@@ -490,6 +490,29 @@ def export_and_audit(steps, bundle, suffix=""):
         raise ValueError("Trained checkpoint failed serving parity")
 
 
+def midpoint_checkpoint_steps(start, additional_steps):
+    """Choose a retained interior checkpoint, recording any epoch-grid offset."""
+    requested = start + additional_steps // 2
+    directory = OUT / "run/checkpoints/metta_generals/run"
+    candidates = [int(path.stem) for path in directory.glob("*.bin")
+                  if path.stem.isdigit() and start < int(path.stem) < start + additional_steps]
+    if not candidates:
+        raise FileNotFoundError("No retained interior checkpoint for the learning curve")
+    selected = min(candidates, key=lambda step: (abs(step - requested), step))
+    config = json.loads((OUT / "config.json").read_text())
+    interval = config["overrides"]["base.checkpoint_interval"]
+    if isinstance(interval, bool) or not isinstance(interval, int) or interval <= 0:
+        raise ValueError("Expected a positive checkpoint epoch interval")
+    if abs(selected - requested) > interval * 8192 * 256 // 2:
+        raise FileNotFoundError("No retained checkpoint within half a save interval of midpoint")
+    (OUT / "midpoint-selection.json").write_text(json.dumps(dict(
+        requested_agent_steps=requested, selected_agent_steps=selected,
+        offset_steps=selected - requested, checkpoint_interval_epochs=interval,
+        selection="Nearest retained interior checkpoint; ties choose the earlier checkpoint",
+    ), indent=2) + "\n")
+    return selected
+
+
 def evaluate():
     export_and_audit(starting_steps() + STEPS, OUT / "bundle")
     # Keep the extended run off the repeatedly used short-pilot development maps.
@@ -499,7 +522,7 @@ def evaluate():
         map_seed, sample_seed = 37871 + starting_steps() // (8192 * 256), 8753 + starting_steps() // (8192 * 256)
     arms = [("parent", OUT / "self_bundle"), ("child", OUT / "bundle")]
     if STEPS >= 33_554_432:
-        export_and_audit(starting_steps() + STEPS // 2, OUT / "bundle-mid", "-mid")
+        export_and_audit(midpoint_checkpoint_steps(starting_steps(), STEPS), OUT / "bundle-mid", "-mid")
         arms.append(("mid", OUT / "bundle-mid"))
     for label, bundle in arms:
         command(

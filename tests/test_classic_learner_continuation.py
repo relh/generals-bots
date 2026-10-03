@@ -175,6 +175,7 @@ class ContinuationTests(unittest.TestCase):
         with (
             patch.dict(os.environ, GENERALS_PILOT_CONTINUATION_MANIFEST=str(self.manifest)),
             patch.object(pilot, "STEPS", self.steps),
+            patch.object(pilot, "midpoint_checkpoint_steps", side_effect=lambda start, budget: start + budget // 2),
             patch.object(pilot, "export_and_audit") as export,
             patch.object(pilot, "command") as command,
         ):
@@ -194,6 +195,7 @@ class ContinuationTests(unittest.TestCase):
             with (
                 patch.dict(os.environ, GENERALS_PILOT_CONTINUATION_MANIFEST=str(self.manifest)),
                 patch.object(pilot, "STEPS", 268_435_456),
+                patch.object(pilot, "midpoint_checkpoint_steps", side_effect=lambda start, budget: start + budget // 2),
                 patch.object(pilot, "export_and_audit"),
                 patch.object(pilot, "command") as command,
             ):

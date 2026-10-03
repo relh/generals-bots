@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -16,6 +17,7 @@ class LearningCurveTests(unittest.TestCase):
 
     def test_mid_and_final_share_one_matched_parent_panel(self):
         with patch.object(pilot, 'STEPS', 33_554_432), patch.object(
+                pilot, 'midpoint_checkpoint_steps', return_value=16_777_216), patch.object(
                 pilot, 'export_and_audit') as export, patch.object(pilot, 'command') as command:
             pilot.evaluate()
         self.assertEqual([call.args[0] for call in export.call_args_list], [33_554_432, 16_777_216])
@@ -36,6 +38,7 @@ class LearningCurveTests(unittest.TestCase):
 
     def test_extended_run_keeps_midpoint_and_fresh_matched_panels(self):
         with patch.object(pilot, 'STEPS', 268_435_456), patch.object(
+                pilot, 'midpoint_checkpoint_steps', return_value=134_217_728), patch.object(
                 pilot, 'export_and_audit') as export, patch.object(pilot, 'command') as command:
             pilot.evaluate()
         self.assertEqual([call.args[0] for call in export.call_args_list], [268_435_456, 134_217_728])
@@ -45,6 +48,40 @@ class LearningCurveTests(unittest.TestCase):
             self.assertEqual(call.args[call.args.index('--games') + 1], 4096)
             self.assertEqual(call.args[call.args.index('--seed') + 1], 37841)
             self.assertEqual(call.args[call.args.index('--sample-seed') + 1], 8729)
+
+    def midpoint_fixture(self, directory, epochs, interval=8):
+        root = Path(directory)
+        checkpoints = root / 'run/checkpoints/metta_generals/run'
+        checkpoints.mkdir(parents=True)
+        for epoch in epochs:
+            (checkpoints / f'{epoch * 2097152:016d}.bin').write_bytes(b'fixture')
+        (root / 'config.json').write_text(json.dumps({'overrides': {'base.checkpoint_interval': interval}}))
+        return root
+
+    def test_resumed_pilot_midpoint_between_save_boundaries(self):
+        # Actual35867: resume644, requested midpoint708, checkpoints704/712.
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.midpoint_fixture(directory, [640, 648, 704, 712, 772])
+            with patch.object(pilot, 'OUT', root):
+                selected = pilot.midpoint_checkpoint_steps(644 * 2097152, 128 * 2097152)
+            self.assertEqual(selected, 704 * 2097152)
+            record = json.loads((root / 'midpoint-selection.json').read_text())
+            self.assertEqual(record['requested_agent_steps'], 708 * 2097152)
+            self.assertEqual(record['offset_steps'], -4 * 2097152)
+
+    def test_exact_saved_midpoint_is_retained(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.midpoint_fixture(directory, [640, 696, 704, 712, 768])
+            with patch.object(pilot, 'OUT', root):
+                self.assertEqual(pilot.midpoint_checkpoint_steps(640 * 2097152, 128 * 2097152), 704 * 2097152)
+
+    def test_missing_midpoint_does_not_use_parent_final_or_distant_snapshot(self):
+        for epochs in ([644, 772], [644, 648, 772]):
+            with self.subTest(epochs=epochs), tempfile.TemporaryDirectory() as directory:
+                root = self.midpoint_fixture(directory, epochs)
+                with patch.object(pilot, 'OUT', root), self.assertRaises(FileNotFoundError):
+                    pilot.midpoint_checkpoint_steps(644 * 2097152, 128 * 2097152)
+                self.assertFalse((root / 'midpoint-selection.json').exists())
 
 
 if __name__ == '__main__':

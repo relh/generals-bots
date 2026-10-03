@@ -1,5 +1,42 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35867 midpoint-grid evaluator bug identified before run ends; fix CPU-reproduced (2026-10-03)
+
+IMPORTANT next action:35867 is still training successfully, but its immutable
+old evaluator requests a nonexistent nominal midpoint. Preserve the run and
+results; expect evaluation failure unless actual terminal evidence says otherwise.
+Do not rename/alias a different policy as the missing counter, patch live input,
+restart training, or create a second GPU job. Single collector still downloads
+and verifies terminal FAILED results; its analysis branch only runs for COMPLETED.
+After durable result collection, recover ONLY evaluation in a new bounded job,
+with patched source/input/image/lifecycle CPU readiness and current queue/physical
+checks. No next job currently submitted. Strong hosted wins remain pending.
+
+Root cause: parent35866 ends epoch644.268M continuation ends772, requests exact
+midpoint708. `base.checkpoint_interval=8` saves at648,656,...704,712,... plus final;
+708 is not on that absolute epoch grid. Actual read-only snapshot
+`/tmp/relh-generals-35867-live-checkpoints.json` at epoch712 confirms704 and712
+exist and708 is absent. Training itself is healthy:142606336new steps by712,
+~71.86kSPS. Original6e03bd1 evaluator exports/audits final, then will fail reading
+`0000001484783616.bin` before running its three fresh panels. Archive remains
+usable; this is an evaluator assumption, not loss of learned weights.
+
+Fix `midpoint_checkpoint_steps`: select nearest retained **interior** checkpoint,
+ties earlier, require distance<=half configured save interval, fail if missing or
+too distant, never silently substitute parent/final. Write exact requested/selected
+counter and offset to`midpoint-selection.json`; export/audit actual selected file.
+For35867 requested1484783616 -> selected**1476395008**, offset-8388608(4epochs).
+Use this actual counter if near-midpoint is selected for serving/continuation.
+
+CPU reproduction uses the actual live filenames and retained interval8 config;
+fixture contents are explicitly only filename-selection fixtures, not policy proof.
+Evidence `/tmp/relh-generals-35867-midpoint-grid-reproduction.json`.
+27 tests+2subtests pass, covering off-grid resume, exact midpoint, rejection of
+parent/final/distant fallback, fresh matched seeds and continuation contracts.
+`/tmp/relh-generals-midpoint-grid-tests-final.log`. Initial test failures were
+wiring mocks that had no checkpoint fixtures; selector itself has real filesystem
+regression tests. Fork fix does not change immutable live source6e03bd1.
+
 ## Optional parallel native opponent passes CPU/image checks;35867 unchanged (2026-10-03)
 
 Investigated the measured native-opponent CPU rollout cost while the sole
