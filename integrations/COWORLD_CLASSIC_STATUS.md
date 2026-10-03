@@ -1,5 +1,61 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35869 recovered all comparisons; final35867 privately hosted (2026-10-03)
+
+35869 COMPLETED0:0 at16:19:43UTC (start16:00:49), same maxNice2147483645 /
+Priority1 throughout. All output parts verified in
+`/tmp/relh-generals-portable-result-35869`; oneGPU job released and owned scratch /
+container cleaned after upload. No live GeneralsSlurm job, no paid spending.
+Image download now630.361s for6900146176bytes with4parallel parts, versus prior
+~30min45s preparation. Peak sampled4090 GPU3810MiB. Evaluation parent/mid/final
+panels91.19/80.39/80.27seconds; these are evaluation times, not trainingSPS.
+
+Fresh4096 matched games /2577unique initial states, seeds38515/9397:
+parent2523W1534L39D; actual midpoint1476395008:2704W1363L29D;
+final1619001344:2776W1296L24D. Final-vs-parent paired signed-score delta0.119873,
+95%initial-state-cluster interval[0.0885295,0.1511462]. Mid→final delta0.033936,
+interval[0.0036172,0.0643034]. Native siege wins203→219→223of396; final seats
+114/198 and109/198. All panels legal/finite, both candidate GPU parity46/46.
+Select FINAL c75dce5d722c06362f107f877e4e455bcbbaa119cc4c4c1d7060654b056c09db.
+`/tmp/relh-generals-35867-serving-selection.json` binds COMPLETED35869 and actual
+artifact paths. Local gains are not hosted strength; training remains72,315.586SPS.
+
+Local Mac disk reached298MiB free, stopping Docker and leaving missing layer
+snapshots. Removed ONLY redundant owned transport image
+`/tmp/relh-generals-portable-input-20261002/image.sqsh` after whole SHA and all26
+remote S3 part sizes/ETag-MD5/SHA matches. Its bytes remain preserved in sandboxS3;
+receipt `/tmp/relh-generals-image-transport-cache-release-v2.json`. First receipt
+attempt is empty from a local TypeError; no removal happened until verifiedv2.
+All source/checkpoints/results and38GiB protected session archives untouched.
+Freed~6.9GB, restarted stopped OrbStack (no Linux machines), no global prune/reset.
+Do not assume the local squashfs transport copy exists for future work.
+
+Both candidate serving images were rebuilt as a single filesystem layer to avoid
+local missing-parent snapshot references; environment/user/command/workdir match
+original configuration, retained runtime SHA0b3e9a9e... unchanged. Dockerfiles in
+candidate roots `Dockerfile.flattened`, SHA030aa2cc9593af7189219d74e8f69f3c07b7aa04787289a6054a0eff00a13c74.
+Final image550bd5311d5c81062d90043b6053651ddfbb9ecba5e78a3f7014d009f3d1a0e9;
+mid imagecfcfa7a7d726b6495dce19681bb835802baffbe2ba7613586982b2176b34ff60.
+Both46/46golden actions and32/32wire replies passed; final localmax47.97ms,
+mid51.05ms (not hosted latency). Previous proof/logs retained, final oldproof
+`cpu-readiness-before-docker-outage.json`. Both late CPUparity64/64 passed,
+finalmaxprob1.63913e-6,mid2.563e-6. Reuse current `cpu-readiness.json` in each root.
+
+Private uploaded imageimg_cfcb977b-6f94-4cb2-8fce-d921b0f4683d; verified registry
+digestda1ee6808410db1efda73579ba42b9821241afe412dacdb0b1dd8034a6a6002b.
+Policy **1cc80ca9-13a1-464b-8f4e-0e713ee70ca6**, name
+**relh-classic-hardpool-35867-final**. Upload gate matched selected recovered
+policy SHA, every weight array and sampler JSON to the qualified image.
+Root `/tmp/relh-generals-serving-35867-final`; upload complete, DO NOT duplicate.
+Startup XP seat0xreq_0e3a6165-264c-4873-b5c9-39af68349171,
+seat1xreq_1c005c9c-6fa9-4f27-9749-5db42ef43e7e. One live monitor
+`/tmp/relh-generals-watch-35867-xp.py` automatically issues remaining62 after
+successful startup; one finalizer `...finalize-hosted-35867.py` collects64results
+and hash-verifies replays. Inspect logs/currentrequests before writes; no duplicates.
+Latest champion read unchanged Daveeyv7/relhv4. No champion change; acceptance
+requires fresh hosted screen then independent128-game confirmation if promising.
+Goal stays active. Original latest hosted35863 still12/32 against each target.
+
 ## Evaluation retry35869 running with audited preparation fix (2026-10-03 16:00 UTC)
 
 One taskGPU job35869 started16:00:49UTC, Slurm-selectedmetta0 RTX4090,8CPU,
