@@ -1,5 +1,32 @@
 # Softmax Coworld Classic 1v1 training
 
+## Four-worker qualification35870 complete; longer continuation being audited (2026-10-03)
+
+Job35870 COMPLETED0:0 at16:54:12UTC. Nice2147483645/Priority1 unchanged;
+no priority actions/errors. Results fully downloaded/hash-verified at
+`/tmp/relh-generals-portable-result-35870` (RESULTS_VERIFIED in collection log).
+All8,388,608newsteps completed, cumulative1,627,389,952; steady94,061.6716
+end-to-end environment SPS on oneB300,8192games/H256/minibatch8192,4nativeworkers.
+9464terminalgames; zero illegal/nonfinite/clipped rewards. GPU parity46/46,
+max probability error1.6093e-6. Final policy8483afd17f6cc4f4ff304b7044cd1e2c4b789e2277d3c654f8ca7b20ce95cd89.
+
+Fresh paired4096-game panel: parent2761W1307L28D, child2725W1346L25D.
+Signed-score delta−.0183105, initial-state clustered95%CI[−.0464892,+.0101676].
+The short probe is statistically inconclusive and is NOT a stronger-policy claim.
+Final selected ONLY as trajectory continuation, retaining c75dce5d/35867 as hosted
+reference (Daveey12/32, incumbent16/32). No champion change or new XP requests.
+Selection `/tmp/relh-generals-35870-continuation-selection.json`; comparison
+`/tmp/relh-generals-portable-result-35870/learning-curve-summary.json`.
+
+Staging another268,435,456steps, same pool/rewards/curriculum/optimizer, inherited
+four workers. Target cumulative1,895,825,408; midpoint1,761,607,680 lies on actual
+8epoch checkpoint grid. No new GPU launch until current staged CPU and pinned
+image resume checks pass. Stage `/tmp/relh-generals-portable-siege-workers4-long-input`.
+The previous job is terminal; no duplicate GPU work. During prior evaluation,
+physicalGPU7 showed24804MiB/19% with no second B300 Slurm job; GPU0 remained
+isolated. This was unattributed activity, not a claim of measured training
+contention; no other owner resources touched. Fresh preflight required.
+
 ## Final35867 hosted screen below target; four-worker qualification35870 running (2026-10-03)
 
 All64 hosted episodes/replays audited for policy1cc80ca9-13a1-464b-8f4e-0e713ee70ca6:
