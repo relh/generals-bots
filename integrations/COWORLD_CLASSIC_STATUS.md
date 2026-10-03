@@ -1,5 +1,28 @@
 # Softmax Coworld Classic 1v1 training
 
+## Final35867 late-game alignment verified during35868 preparation (2026-10-03)
+
+Actual final checkpoint c75dce5d722c06362f107f877e4e455bcbbaa119cc4c4c1d7060654b056c09db
+passed64/64 late-game native Fabric versus exported serving top-action checks,
+max probability difference1.6391277313232422e-6. Eight retained35863 hosted
+won/lost games balanced by opponent/seat, both public views, turns572–1591.
+This CPU diagnostic is not a35867 hosted strength result or universal gap proof.
+Evidence `/tmp/relh-generals-35867-final-preselection-late-parity/parity.json`;
+script `/tmp/relh-generals-audit-35867-final-preselection-late-parity.py` exited0.
+Original35867 collection verified before use; final46-state GPU parity already
+passed. If final is selected, reuse this exact-SHA late proof without repeating;
+if midpoint is selected, run the prepared selected-checkpoint late audit.
+
+35868 remains the sole live task job, controller RUNNING onmetta0, maxNice /
+Priority1. Pinned6.9GB image transfer advancing; GPU still idle during download.
+No training restarted, no second GPU job. Bounded local read-only hardware
+observer `/tmp/relh-generals-monitor-35868.py` records
+`/tmp/relh-generals-35868-gpu-observations.jsonl`; terminal collector
+`/tmp/relh-generals-collect-35868-when-terminal.py` already live. Do not duplicate.
+Paired summary helper `/tmp/relh-generals-summarize-35868.py` prepared, not yet run.
+Fresh champion read confirms Daveeyv7 and relhv4 unchanged; response retained
+`/tmp/relh-generals-35868-current-champions.json`. Goal/hosted acceptance unmet.
+
 ## 35867 trained successfully; evaluation recovery 35868 running (2026-10-03 15:18 UTC)
 
 35867 terminal FAILED at 15:03:19 UTC only in evaluation: missing nominal
