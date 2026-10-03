@@ -1,5 +1,21 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 crosses one billion optimized steps (2026-10-03)
+
+Native completed epoch **486** reaches **1,019,215,872 total optimized steps**,
+including **213,909,504 new steps** in the current run. Latest two-epoch
+steady interval is **106,362.631 environment SPS**; same one-B300 / 8,192
+environments / horizon-256 / minibatch-8,192 geometry. Periodic reward audit
+covers those 213,909,504 steps and **300,663 terminal games**, zero nonfinite
+or clipped rewards. Evidence `/tmp/relh-generals-35861-live-training9.json`.
+
+The sole **35861** job is still active toward its 1,073,741,824 endpoint,
+Nice2147483645 / Priority1, original two-hour limit. Collector remains live.
+One billion optimized steps is not a claim of strong play: final action,
+paired fresh held-out, parity and hosted strength results remain pending.
+Latest completed hosted screen remains 11/32 Daveey, 12/32 incumbent; no
+champion changes. Continue the existing job; do not submit duplicates.
+
 ## 35861 midpoint saved and verified (2026-10-03 11:13 UTC)
 
 The active sole job **35861** saved its midpoint at counter **939,524,096**,
