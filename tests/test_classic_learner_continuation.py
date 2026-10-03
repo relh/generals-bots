@@ -157,8 +157,24 @@ class ContinuationTests(unittest.TestCase):
         panels = [x for x in command.call_args_list if x.args[0] == "evaluate_spatial_population"]
         self.assertEqual(len(panels), 3)
         for call in panels:
-            self.assertEqual(call.args[call.args.index("--seed") + 1], 37872)
-            self.assertEqual(call.args[call.args.index("--sample-seed") + 1], 8754)
+            self.assertEqual(call.args[call.args.index("--seed") + 1], 37999)
+            self.assertEqual(call.args[call.args.index("--sample-seed") + 1], 8881)
+
+    def test_resume_from_midpoint_uses_a_distinct_panel(self):
+        seeds = []
+        for steps in (268_435_456, 402_653_184):
+            self.data["agent_steps"] = steps
+            self.write_manifest()
+            with (
+                patch.dict(os.environ, GENERALS_PILOT_CONTINUATION_MANIFEST=str(self.manifest)),
+                patch.object(pilot, "STEPS", 268_435_456),
+                patch.object(pilot, "export_and_audit"),
+                patch.object(pilot, "command") as command,
+            ):
+                pilot.evaluate()
+            call = next(c for c in command.call_args_list if c.args[0] == "evaluate_spatial_population")
+            seeds.append((call.args[call.args.index("--seed") + 1], call.args[call.args.index("--sample-seed") + 1]))
+        self.assertNotEqual(seeds[0], seeds[1])
 
 
 if __name__ == "__main__":

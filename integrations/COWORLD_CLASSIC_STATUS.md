@@ -1,5 +1,36 @@
 # Softmax Coworld Classic 1v1 training
 
+## Midpoint retained; evaluation completeness fixes (2026-10-03 08:58 UTC)
+
+Job **35858** is still the sole Generals allocation. Controller readback at
+08:57 UTC remains **Nice 2147483645 / Priority 1**, finite two-hour limit;
+no scheduling changes or duplicate submissions. At epoch 204, 159,383,552
+new steps were optimized. Epochs 202→204 took 38.584 seconds for 4,194,304
+steps: **108,705.785 steady-state SPS**, including rollout and optimization.
+Configuration remains one B300, 8,192 environments, horizon 256, minibatch
+8,192. First resumed epoch took 82.901 seconds. Recent GPU memory was
+202,088 MiB with 53–64% utilization. The 402,653,184-counter midpoint is
+present and its policy hash matches its learner identity:
+`da2cf6801ee370fd982b07f1dff17101bf867e1797108ab943beba7f921df27c`.
+Reward audit reports 227,029 terminal games, zero nonfinite/clipped rewards;
+final action audit and fresh-map evaluation remain pending. Evidence:
+`/tmp/relh-generals-35858-live-training4.json`.
+
+Future resume evaluation seeds now distinguish midpoint and endpoint parents.
+The active job retains its immutable, already fresh evaluation seeds. Hosted
+completion now requires every unique completed episode record as well as the
+request counters; a 63-record/64-counter panel cannot pass. The previously
+reported 35854 main panel was independently checked against all 64 records.
+Sixteen focused continuation/completion tests pass with the pinned framework
+on PYTHONPATH; an initial invocation without that framework failed imports,
+then the corrected invocation passed. Ruff and diff checks pass.
+
+The proposed next opponent generation also passed exact-image configuration
+and native prepare_run validation, in addition to its earlier actual 80-game
+CPU environment check. Evidence:
+`/tmp/relh-generals-next-generation-image-proof.log` and its retained inner
+log. No next training job has been submitted and no champion changed.
+
 ## Healthy resume beyond 100M new steps; broader hosted wins (2026-10-03)
 
 Job **35858** remains the only Generals GPU allocation, Nice **2147483645 /

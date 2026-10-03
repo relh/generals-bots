@@ -480,8 +480,9 @@ def evaluate():
     export_and_audit(starting_steps() + STEPS, OUT / "bundle")
     # Keep the extended run off the repeatedly used short-pilot development maps.
     map_seed, sample_seed = (37841, 8729) if STEPS == 268_435_456 else (37813, 8713)
+    # Distinct checkpoint counters, including a chosen midpoint, get new maps.
     if starting_steps():
-        map_seed, sample_seed = 37871 + starting_steps() // 268_435_456, 8753 + starting_steps() // 268_435_456
+        map_seed, sample_seed = 37871 + starting_steps() // (8192 * 256), 8753 + starting_steps() // (8192 * 256)
     arms = [("parent", OUT / "self_bundle"), ("child", OUT / "bundle")]
     if STEPS >= 33_554_432:
         export_and_audit(starting_steps() + STEPS // 2, OUT / "bundle-mid", "-mid")
