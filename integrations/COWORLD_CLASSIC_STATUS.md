@@ -1,5 +1,45 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35887 completed: small local gain; hosted screen preparing
+
+35887 COMPLETED 0:0, 22:22:12–22:46:51 UTC. Nice 2147483645/Priority 1
+unchanged; finite one hour, one B300/8 CPUs/96 GiB. GPU released; all artifacts
+verified in `/tmp/relh-generals-portable-result-35887`. No duplicate job or paid
+compute. Controller 71868, collector 76260, analysis 54159 and warm observer
+53757 finished. A late read-only evaluation observer was rejected because the
+job had already completed; no resubmission or resource mutation followed.
+
+33,554,432 new steps, 2,432,696,320→2,466,250,752; 46,060 terminal games.
+Zero nonfinite or clipped rewards. Final audit 84,764.24 environment SPS;
+broader post-warm interval epochs1163→1176: 27,262,976 steps/322.076 seconds
+=84,647.65 SPS. Same 8192 games/H256/mb8192/replay0.5/four native workers.
+Model hash and serving contract unchanged; all13 opponents have both seats.
+
+Fresh 4096-game panel, 2594 distinct initial states: parent2707W/1352L/37D,
+mid2776W/1291L/29D, final2775W/1290L/31D. Both candidate signed-score deltas
++0.0317383; clustered95% CI midpoint[+0.0027046,+0.0598081],
+final[+0.0029097,+0.0604164]. Final-versus-mid delta0, CI[-0.0292154,+0.0291019].
+Hardest frozen opponent:534→568→562 wins/986; native siege527→531→537/906.
+Changed pool weights mean raw totals cannot be compared to old35882 totals.
+
+Independent nine-state defense probe remains0/9 top defenses in all arms;
+mean survival probability declines. No tactical fix or hosted-win claim.
+Final selected for hosted exploration after a positive broad parent comparison;
+it is not proven stronger than midpoint. Policy
+6daac1721eff17a5be3bb46d3c6be3f67fd4bb411da35384f93f18a7fc0b8774,
+Muon f42e877ee7a45802020cbff7cd321da08b35c0e960a3f75770d5c85ac7dfd796.
+Midpoint2449473536 policy5a87cceab1e26bff7f669f3f36ac2009bd8779251d44a57e97a0787327463095,
+Muon7e64b89e523366744e8a0b81463e9803f5073ee0bdd2d170c37250327479dde2.
+
+Both GPU parity checks46/46. Final serving image
+sha256:5e56b94a6bbeb85f25bddb5f3ed50e952ac9b40beb2dae1433f98a1e773dc48f
+passes46golden states (maxprobability difference3.8147e-6),32legal wire replies
+(max50.85ms on local Linux CPU), and64late public-state parity (max2.02656e-6).
+Selection `/tmp/relh-generals-35887-serving-selection.json`; serving artifacts
+`/tmp/relh-generals-serving-35887-final`. Upload session46254 is active; no
+XP requests or champion promotion yet. Await actual hosted results before
+choosing the next training intervention.
+
 ## Diagnostic follow-up while 35887 evaluates
 
 35882 frozen checkpoint, prior independent nine-state defensive probe: actual
