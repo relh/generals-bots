@@ -288,7 +288,7 @@ def sampling_gate():
     continuing = bool(starting_steps())
     # A resumed policy already uses the scheduled sampler. Its viability check
     # must not require winning with the obsolete unscheduled ablation.
-    for label in (("candidate",) if continuing else ("baseline", "candidate")):
+    for label in ("candidate",) if continuing else ("baseline", "candidate"):
         extra = ["--early-route-temperature", ".10", "--early-route-turns", "100"] if label == "candidate" else []
         command(
             "evaluate_spatial_frozen_match",
@@ -378,9 +378,15 @@ def train():
     if reward_contract["expected_unclipped"] and audits[-1]["native_clipped_rewards"]:
         raise ValueError("Scaled reward violates the audited native clamp bound")
     population = json.loads((OUT / "run/environments/8842/spatial-opponent-population.json").read_text())
+    expected_pool = json.loads((OUT / "build-config.json").read_text())["python_environment"]["options"]
+    expected_hashes = [
+        hashlib.sha256((Path(bundle) / "policy.bin").read_bytes()).hexdigest()
+        for bundle in expected_pool["frozen_bundles"]
+    ]
     if (
         len(population["frozen_action_selection"]) != 10
-        or population["opponent_weights"] != [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 8, 6]
+        or population["opponent_weights"] != expected_pool["opponent_weights"]
+        or population["frozen_policy_sha256"] != expected_hashes
         or not all(c["0"] > 0 and c["0"] == c["1"] for c in population["counts"].values())
     ):
         raise ValueError("Opponent pool or balanced seat allocation differs")

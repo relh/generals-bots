@@ -1,5 +1,53 @@
 # Softmax Coworld Classic 1v1 training
 
+## Healthy resume beyond 100M new steps; broader hosted wins (2026-10-03)
+
+Job **35858** remains the only Generals GPU allocation, Nice **2147483645 /
+Priority 1**. A bounded read-only Pyxis observer inside the existing allocation
+confirmed restored learner SHA
+`85b64aff0f985fe3d3e69bfeb29049e27b51cce51fab1df9e4e69b195d501cbc`.
+At epoch 177, **102,760,448 new steps** were fully optimized. The interval
+epochs 175→177 was 4,194,304 steps in 37.188 seconds =
+**112,786.490 SPS**. First resumed epoch 129 took 82.901 seconds. GPU 0 used
+202,088 MiB; recent utilization was 53–66%. The next rollout's reward audit
+counted 104,857,600 environment steps and 148,166 terminal games, zero nonfinite
+or clipped rewards. Final complete action audit remains pending. Evidence:
+`/tmp/relh-generals-35858-live-training3.json`. Observer used no extra GPU,
+maximum Nice, the existing owned container, and exited promptly.
+
+Live league membership confirms Daveey's v7 remains champion/#1. The 268M
+checkpoint's additional private league panel completed **64 unique episodes**:
+- Aaron v10: **20 W / 12 L**; seats 0 and 1 were 11/5 and 9/7.
+- Straka hunter v1: **32 W / 0 L**, 16/0 from each seat.
+
+All 64 replays were downloaded and hash-verified. Every game ended by general
+capture, with **zero timeouts for either player**, and all candidate moves
+passed the basic replay legality test. Aaron's 32-game majority is a screen,
+not a statistically conclusive superiority claim. The policy is meaningfully
+competitive with some league players; its 5/32 versus Daveey and 14/32 versus
+our incumbent still fail the promotion/strong-win gate. No champion changed.
+Evidence: `/tmp/relh-generals-serving-35854-final/league-panel/summary.json`
+and `hosted-replay-panel-audit.json` in that directory.
+
+These XP IDs are terminal and must not be reissued:
+- Aaron seat 0: `xreq_2a07603b-686f-4221-896d-3b79a35ce028`
+- Aaron seat 1: `xreq_7e0c5320-ec85-4d6f-9682-3e18d6fab266`
+- Straka seat 0: `xreq_a6da9275-924a-4d2c-a654-7aecc84bca1d`
+- Straka seat 1: `xreq_9d370d29-0d05-4d76-a3ae-82dbc19e94c1`
+
+Preparing the next self-play generation has not changed the active run.
+An explicit `drop_oldest_append_parent_weight8` recipe retains nine older
+frozen policies, adds the verified parent with weight 8, and retains both
+scripted opponents. Default continuation still preserves the pool. Duplicate
+checkpoints, unknown recipes, and invalid weights fail before GPU use; the
+training audit now checks the actual configured opponent hashes and weights.
+All 21 focused tests passed. An actual 80-game CPU environment loaded the new
+pool, balanced every opponent across both seats, and completed a finite valid
+step. The initial 70/140-game fixtures correctly failed the base strong-mixed
+multiple-of-eight requirement; the qualified 8,192-game training geometry was
+never changed. Evidence: `/tmp/relh-generals-next-generation-cpu80.log`.
+Exact-image configuration proof is running; no second GPU job is queued.
+
 ## Corrected continuation job 35858 running (2026-10-03 08:16 UTC)
 
 Job **35858** started **08:16:25 UTC**, source **1977bc5**, name

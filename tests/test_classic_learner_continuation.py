@@ -37,6 +37,7 @@ class ContinuationTests(unittest.TestCase):
                             teacher=None,
                             teacher_rollouts=False,
                             frozen_bundles=["old"] * 10,
+                            opponent_weights=[1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 8, 6],
                         )
                     )
                 )
@@ -52,12 +53,19 @@ class ContinuationTests(unittest.TestCase):
             environment_sha256=[],
         )
         Path(str(self.state) + ".json").write_text(json.dumps(self.identity))
+        frozen = []
+        for i in range(10):
+            directory = self.root / "frozen" / str(i)
+            directory.mkdir(parents=True)
+            policy = directory / "policy.bin"
+            policy.write_bytes(struct.pack("<4f", i + 10, 0, 0, 0))
+            frozen.append(dict(directory="frozen/" + str(i), sha256=hashlib.sha256(policy.read_bytes()).hexdigest()))
         self.manifest = self.root / "manifest.json"
         self.data = dict(
             schema=1,
             agent_steps=self.steps,
             **self.identity,
-            frozen_bundles=[dict(directory="parent/bundle", sha256=self.identity["policy_sha256"])] * 10,
+            frozen_bundles=frozen,
         )
         self.write_manifest()
 
@@ -99,6 +107,43 @@ class ContinuationTests(unittest.TestCase):
     def test_invalid_new_step_budget_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "bounded"):
             load_continuation(self.manifest, 0)
+
+    def test_iterated_pool_retains_nine_and_adds_verified_parent(self):
+        frozen = self.data["frozen_bundles"]
+        self.data["frozen_bundles"] = frozen
+        self.data["opponent_generation"] = "drop_oldest_append_parent_weight8"
+        self.write_manifest()
+        original_training = (self.parent / "run/training.json").read_bytes()
+        _, build, run, audit = load_continuation(self.manifest, self.steps)
+        options = build["python_environment"]["options"]
+        self.assertEqual(len(options["frozen_bundles"]), 10)
+        self.assertEqual(options["frozen_bundles"][-1], str(self.parent / "bundle"))
+        self.assertEqual(options["opponent_weights"], [1, 1, 1, 1, 1, 2, 2, 2, 2, 8, 8, 6])
+        self.assertEqual(
+            audit["frozen_policy_sha256"], [v["sha256"] for v in frozen[1:]] + [self.identity["policy_sha256"]]
+        )
+        self.assertEqual(audit["dropped_opponent_sha256"], frozen[0]["sha256"])
+        self.assertTrue(run["initialize"]["restore_learner"])
+        self.assertEqual((self.parent / "run/training.json").read_bytes(), original_training)
+
+    def test_preserved_pool_rejects_duplicate_checkpoint(self):
+        self.data["frozen_bundles"][1] = self.data["frozen_bundles"][0]
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "distinct checkpoints"):
+            load_continuation(self.manifest, self.steps)
+
+    def test_iterated_pool_rejects_duplicate_parent(self):
+        self.data["frozen_bundles"][0] = dict(directory="parent/bundle", sha256=self.identity["policy_sha256"])
+        self.data["opponent_generation"] = "drop_oldest_append_parent_weight8"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "already present"):
+            load_continuation(self.manifest, self.steps)
+
+    def test_unknown_pool_recipe_is_rejected(self):
+        self.data["opponent_generation"] = "replace_everything"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "Unknown opponent generation"):
+            load_continuation(self.manifest, self.steps)
 
     def test_evaluation_uses_resumed_counters_and_new_maps(self):
         with (
