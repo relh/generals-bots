@@ -1,5 +1,23 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 final checkpoint GPU/serving parity passes (2026-10-03)
+
+Final 1,073,741,824-step checkpoint SHA256
+`f589aa8f274583fb03188a9579050c5d33e5f786bc94e496f8c0f7b55b358b3a`
+passed exact native Fabric GPU forward versus NumPy serving comparison on
+**46 verified public states: 46/46 top actions match**. Maximum action
+probability difference **9.8347664e-7**, logit difference 1.1920929e-6,
+rollout transform difference 2.3841858e-7. Factory and Classic engine hashes
+match the pinned sources. Evidence
+`/tmp/relh-generals-35861-live-evaluation2.json`.
+
+Fresh parent/midpoint/final game comparisons remain pending in the same live
+job. No checkpoint selected for upload yet. Current league champion versions
+were rechecked and remain Daveey v7, relh siege v4, richard siege v2;
+`/tmp/relh-generals-live-champions-35861.json`. No hosted writes or champion
+changes. Continue the sole 35861 allocation at Nice2147483645/Priority1;
+collector remains armed. Strong hosted wins remain the unmet gate.
+
 ## 35861 training complete; final evaluation pending (2026-10-03)
 
 The sole job **35861** completed native epoch **512**, reaching
