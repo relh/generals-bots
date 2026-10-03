@@ -1,5 +1,61 @@
 # Softmax Coworld Classic 1v1 training
 
+## Active reward-scale comparison35851 (2026-10-03 04:47 UTC)
+
+The same exact-image CPU Classic capture/draw/recycle proof completed successfully
+on the finite600s retry; test SHA f87845c94b75789997040fb06747f6b4cb356880384c5ee4f8f8c3cf723ce7ac.
+All readiness gates satisfied before submission. Full queue/Slurm node/partition
+and all physical GPUs checked: no other Generals job, B300 idle/all GPUs0MiB;
+/tmp1.3TBfree,214661freeinodes. Prior35848 COMPLETED0:0 and results preserved.
+Source535ead5; one bounded job35851 started04:46:58UTC on Slurm-selected B300,
+oneGPU/8CPU/96GiBhost,finite80min. Controller RUNNING, Nice2147483645/Priority1
+before/after unchanged. GPU requirement~198GiB measured, so4090 is insufficient.
+No priority escalation, second pending task, paid reservation or spend.
+
+Only reward_scale1→.5 changes from35848; same67Mparent/seed/sampler/pool/optimizer,
+33.55Msteps with16.78Mmidpoint, matched4096panels and both serving parity checks.
+Whole-reward bound.6 and zero clipping are acceptance gates, alongside>=30kSPS,
+finite rewards and zero illegal actions. No stronger-play claim until results.
+Live monitor `/tmp/relh-generals-rewardscale32m-submit.log`, terminal receipt
+`/tmp/relh-generals-portable-a4fef67d.receipt.json`, launch descriptor
+`/tmp/relh-generals-rewardscale32m-launch.json`. Results prefix
+`relh/generals-classic-results-20261003T044124Z-4a749615` in sandbox bucket.
+Inputs moved only through presignedS3; Pyxis unique job container, no home mount,
+no node pin, actual site/tmp checks before extraction/unpack, wait before archive.
+Inspect35851 and retained receipts before any retry; monitor captures terminal
+controller record every20s. Source/results/olderroots and history untouched.
+
+## Hosted35848 complete: not competitive; failures are tactical (2026-10-03)
+
+All64 private episodes completed, zero failed episodes. Mid checkpoint versus
+pinned Daveeyv7: seat0 1W/15L,seat1 2W/14L,total3W/29L. Versus relh incumbent,
+including startup episodes: seat0 6W/10L,seat1 4W/12L,total10W/22L. These fresh
+maps are not paired to historical6/26; do not claim statistically established
+regression from that comparison. Definitely no demonstrated strong wins and no
+promotion. Registered candidate and all XP receipts remain preserved.
+
+Fetched and SHA-recorded64 owned replays, `/tmp/relh-generals-serving-35848-mid/replays`.
+All games ended by general_capture; zero candidate/opponent action timeouts.
+Simple post-game frame audit found every nonpass move legal (not a replacement
+for authoritative masks). Against Daveey, mean land candidate/opponent:
+turn50 18.69/17.72;turn100 39.97/40.53;turn150 49.61/50.52 (31survivors).
+Candidate halfmoves64/13383 vsDaveey988/12912; owned-destination moves8003
+vs6823. These are descriptive counts, not proof that copying splits helps.
+15/29 Daveey losses had more candidate total armies immediately before capture,
+11/29 more land; at25turns before capture13/29 more armies and19/29 more land.
+Median game404.5turns. Against incumbent, only2/22 losses had more armies at
+capture; median642turns. Full replay/terminal-position audit JSON retained.
+This points to weak tactical general protection alongside broader matchup
+weakness, rather than hosted timeouts. Winning goal remains active/incomplete.
+
+Reward-scale source535ead5 input uploaded/verified SHA
+7eb5e336696debb256f89c842cf7226fa92ad70d0f5695ba354ef5627162de2e.
+Signed/audited launch descriptor `/tmp/relh-generals-rewardscale32m-launch.json`,
+name relh-generals-portable-a4fef67d; no GPU submission yet. Exact-image CPU
+proof remains active with finite600s budget. Existing immutable runtime and
+native bootstrap/lifecycle proof retained; all core reward/rollout/sampling
+files hash-identical between CPU checkout and staged input. No paid spend.
+
 ## Hosted panel active; unclipped reward experiment prepared (2026-10-03 04:37 UTC)
 
 Private candidate relh-classic-hardpool-35848-mid registered policy version
