@@ -1,5 +1,41 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35887 publication recovered; hosted requests active
+
+Published policy789ec2ed-5e94-44bd-82b5-64c6aafbc8bc,
+`relh-classic-hardpool-35887-final`, imageimg_3b201c17-1f36-4229-bdae-0d3bae95d3ba.
+During upload, both local candidate and base image tags/IDs disappeared after
+all runtime layers were pushed. Cause unknown; this task did not prune them.
+The registry's attestation HEAD403 is already handled by the manifest publisher,
+but that fallback could not export the removed local image. No policy existed
+and no XP had been issued at failure.
+
+Restored the owned verified base, rebuilt the exact source/bundle, and pinned
+the base and candidate with stopped, network-disabled retention containers:
+`relh-generals-serving-base-35876-retention` and
+`relh-generals-serving-35887-retention`. Both have owner=relh-generals and remain
+Created, never running/GPU users. Recovered index22ba2faf8c3664c59e9814bde111324c56bcf9f9f729c1306f5b97c286dd7973
+differs only in build attestation from original5e56b94a...; actual amd64 runtime
+manifest03ee88238089f87d3691b179a92c0eabc2ce2f1b1b7c5bbbf654e17b31879a20,
+configuration and every layer are identical. Publisher verified the exact
+runtime manifest from docker-save plus all remote blob HEADs, then completed
+the existing pending image via client-hash reuse and registered one policy.
+Proof `serving-35887-final/runtime-payload-recovery-proof.json`; recovery log
+`/tmp/relh-generals-35887-publication-recovery.log`. No second image version.
+
+Smoke requests: seat0 xreq_965f6d1d-3b77-4c03-bff4-cdf56f0b8fe4,
+seat1 xreq_7e802e0e-bf9a-4197-ace4-8f978646bf34. Watcher36650 expands only after
+both complete without failure; finalizer14575 requires all64 individual records
+then audits raw replays/fresh seeds. No champion change; no live Slurm job.
+
+Disk reached1.2GiB free. Reclaimed581,231,867 bytes by removing ONLY three
+redundant local compressed input transports for35879/35882/35887, after full
+presigned S3 GET/hash and every expanded input file hash verified. Expanded
+inputs, S3 objects, all results and receipts remain. Exact retirement record
+`/tmp/relh-generals-input-transport-retirement-20261003.json`. Protected session
+history measured roughly38GiB and was left untouched; no history/SQLite/cache
+pruning or other owners' cleanup. Current free space about2.6GiB.
+
 ## 35887 completed: small local gain; hosted screen preparing
 
 35887 COMPLETED 0:0, 22:22:12–22:46:51 UTC. Nice 2147483645/Priority 1
