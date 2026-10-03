@@ -1,5 +1,28 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 allocated GPU and restored optimizer verified (2026-10-03 10:50 UTC)
+
+A bounded read-only observer inside existing allocation **35861** confirmed
+physical GPU **0**, UUID `GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7`, with
+**0 MiB / 0%** at its preflight. The earlier unrelated GPU 6 occupancy was
+not the allocated device and has since disappeared without our intervention.
+Restored learner SHA256 exactly matches the qualified continuation:
+`e4f2386978052fc676d1b2072b0c2c14c79074c9cfb71a1de792f41331b221d7`.
+Latest GPU memory rose to **179,718 MiB** during initialization; no completed
+epoch yet, so no new steady SPS claim. Evidence
+`/tmp/relh-generals-35861-live-startup.json`. The observer's static `phase`
+label is not evidence of completed training; rely on epoch/dashboard counters.
+No additional allocation or process restart. Nice2147483645/Priority1 remains.
+
+Six next-checkpoint serving/hosted scripts have been adapted and syntax
+checked, preserving the now hosted-qualified 35860 base image. Paths/hashes
+in `/tmp/relh-generals-35861-hosted-preparation.json`. They are **not executed**:
+selection requires completed fresh evaluation, then exact-image CPU golden/
+wire qualification before private upload. Current source/result/collector
+ownership is unchanged. Previous turn made concrete progress by completing
+the 35860 hosted/replay audit and starting the single qualified continuation;
+this turn verifies startup and prepares its eventual evaluation pipeline.
+
 ## 35860 hosted screen complete: 11/32 Daveey, 12/32 incumbent (2026-10-03 10:49 UTC)
 
 All **64 unique episode records** completed and all **64 replay files** were
