@@ -1,5 +1,28 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35876 second half healthy; current hosted targets verified (2026-10-03)
+
+Authoritative controller confirms35876 RUNNING, maxNice/Priority1 unchanged.
+Latest bounded read-only training-window observer: epoch869,95139.1371SPS;
+periodic192937984newsteps,276993terminalgames,0nonfinite/0clipped rewards.
+One metadata observer is now running inside the existing allocation (no new job,
+no GPU requested): `/tmp/relh-generals-observe-training-window-35876.py`, local
+session25838, output`/tmp/relh-generals-35876-training-window.jsonl`. It reads at45s
+intervals, stops when run/completed.json appears, and has a20min Slurm step /
+1140s local bound. This replaces repeated short metadata steps. Existing physical
+observer58879, controller10797 and collector33224 remain; do not duplicate.
+
+Read-only hosted preflight `/tmp/relh-generals-35876-hosted-preflight.json` confirms
+Daveey daveey-grl:v7/76b0a083-f0a4-4ec7-9811-038349266633 remains #1 (Alpha), and
+relh incumbent e53e30be-0b23-4d62-b944-4dd249a483fe unchanged. Six champions;
+no policy or XP writes. Relh currently lower rated than Richard; recheck at any
+future qualified promotion. `/tmp/relh-generals-35876-coworld-current.json`
+confirms canonical Coworldcow_8f61ead9-f3c6-4be0-95ed-7ad0de6c961e version0.3.3,
+manifest hash4f93e6adfe1388fef5601dc11cdd3f8d170ea6fbba52a30a31865d12e914b0e1,
+entire manifest equal to retained training/hosted reference. Same intended
+Classic arena; prepared benchmark references remain current. New checkpoint
+held-out comparison, candidate container proof and hosted wins still pending.
+
 ## 35876 past midpoint; serving image recovered and durably backed up (2026-10-03)
 
 Live training9 observation: epoch843, epoch8411523.828→8431568.273,
