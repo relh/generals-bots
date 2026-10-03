@@ -28,6 +28,10 @@ def render(config, *, name, partition, minutes, cpus, memory_gib):
         raise ValueError("Step budgets leave insufficient upload/termination time")
     if not config["steps"] or config["steps"][0]["name"] != "smoke":
         raise ValueError("The first step must smoke-test the image")
+    storage = config.get("enroot_storage_paths")
+    if not isinstance(storage, list) or not storage or any(
+            not isinstance(path, str) or not Path(path).is_absolute() for path in storage):
+        raise ValueError("Record actual site Enroot unpack/temp filesystems before submission")
     if time.time() + minutes * 60 + 600 >= config["credential_expiry"]:
         raise ValueError("Signing credentials expire too soon")
     code = Path(__file__).with_name("slurm_s3_job.py").read_text()

@@ -1,5 +1,92 @@
 # Softmax Coworld Classic 1v1 training
 
+## Qualified training/parity and completed game comparison35836 (2026-10-03 03:12 UTC)
+
+The full workload completed exit0:8,388,608 steps, checkpoint export, GPU/native
+versus NumPy serving parity, and both4096-game matched heldout panels. Durable
+S3 manifest confirms workload_exit_code0. Slurm terminal FAILED74:0 at03:01:05UTC
+was AFTER successful archive/manifest upload, during owned-container cleanup.
+Nice2147483645/Priority1 before/after unchanged. No cancellation/requeue, duplicate
+GPU job, paid resource or spend. Latest full queue has only unrelated357xx/358xx
+jobs on other nodes; B300 all8 GPUs0MiB, no remaining Generals allocation.
+
+Verified local results `/tmp/relh-generals-portable-result-35836`; archive SHA
+7984882a2e01f2728a5822cff5d2839daf1e2608ca180de16c09b284c6a9ab08.
+Checkpoint SHAa42cc9fa427196a739640d1d80508781bbd17740238975aea05ab560f433a406.
+Source381c8eb, immutable image66660f4b, input64071ee2; S3 keys and exact full
+hashes are in `/tmp/relh-generals-fix35835-launch.json` and controller receipt
+`/tmp/relh-generals-portable-6516e573.receipt.json`. All prior source/results remain.
+
+One B300,8192games,H256,mb8192,replay0.5; gamma/shaping_gamma0.999,win-only
+terminal objective plus0.25 potential shaping, no teacher. After first-epoch
+compilation warmup (81.429s Puffer uptime), epoch2→4 completed4,194,304steps in
+37.084s:113102.794 environment SPS, including rollout/copies/updates. One process,
+so aggregate equals per-process SPS. Eight GPU samples over the final37.084s
+console interval have median57% utilization; peak202086MiB. Final epoch rollout
+13.757s (model6.222s,environment7.534s),optimization4.843s. 300kSPS is not achieved.
+Zero illegal actions, zero nonfinite rewards,7701 terminal games, balanced seats
+for all10 frozen+2 scripted opponents. Expander722/2271 wins; Sentinel359/1166.
+These on-policy rates do not establish heldout improvement. Embedded worker
+explicitly logged wheel cuBLAS13.8.1 and active direct spatial adapter.
+
+GPU checkpoint/serving parity passed all46 hosted public states and top actions:
+max logit5.96e-7, probability9.54e-7, rollout-transform2.98e-7. This is sampled
+GPU-native/serving alignment, not proof over every possible state.
+
+Matched heldout Classic panel: parent1761W/2248L/87D; child1786W/2223L/87D.
+All4096 map hashes/seats/opponents match,2591 unique initial states. Paired
+signed-score delta+0.012207;10000-resample initial-state-cluster95%CI
+[-0.014652,+0.039221]. In win/draw-point units this is+0.61percentage points,
+95%CI[-0.73,+1.96]. Expander wins259→280, Sentinel201→185. No demonstrated
+broad strength improvement; no basis yet for billions of steps or champion
+promotion. No new hosted claim; prior Daveey result remains6W/26L.
+Paired report `/tmp/relh-generals-35836-paired.json`.
+
+Cleanup bug diagnosis: installed Pyxis binary contains deny entries for
+ENROOT_DATA_PATH/CACHE_PATH/TEMP_PATH/RUNTIME_PATH. Site config
+`/etc/enroot/enroot.conf.d/10-paths.conf` uses/tmp/enroot-data/user-UID and/tmp
+unpack; plugin config `/var/spool/slurmd/conf-cache/plugstack.conf` selects
+runtime_path=/var/lib/pyxis and default global container scope. Our overridden
+host environment therefore pointed cleanup at a different empty data directory.
+The original stderr was swallowed, so no exact historical enroot error string
+is recoverable; path mismatch is independently established from installed code
+and config. Guide/coordinator feedback: ENROOT_* job path overrides cannot be
+assumed effective on this current Pyxis. Do not bypass its filter/site policy.
+
+Fixed runner to remove filtered host overrides, require actual unpack/temp
+filesystem checks in future launch config, discover only exact global/job-scoped
+OWN container names, verify removal, and retain safe cleanup diagnostics. CPU
+lifecycle suite26tests passes including success/failure/signals/upload failure,
+wrong host override, both naming scopes, preserving unrelated containers, and
+cleanup-failure preservation of successful uploaded workload. Log
+`/tmp/relh-generals-pyxis-cleanup-cpu.log`. Fix awaits live cleanup validation;
+no extra GPU job solely for cleanup. Retained task scratch/containers remain
+untouched; no other user's resources or protected history were modified.
+
+Acceptance status: training performance and meaningful rewarded/legal play
+verified; sampled train/serve parity verified; heldout experiment completed
+with inconclusive strength gain. Original stronger-hosted-play objective remains
+unfinished. Next learning experiment should address weak script/leader outcomes,
+not treat this throughput milestone as proof of stronger policy.
+
+
+## Active library/layout retry35836 (2026-10-03 02:46 UTC)
+
+Source/launcher381c8eb,33 CPU lifecycle/bootstrap/binding tests passed before
+submission. Initial controller RUNNING, Nice2147483645/Priority1,
+finite75min, oneB300/8CPU/96GiB host (includes owned tmpfs input/image storage).
+No duplicate Generals job, no priority mutation, no paid spend. New owned scratch
+is `/tmp/relh-generals-35836`; previous roots remain untouched.
+Input SHA64071ee2afbc56b27e1b804ff119b0c15030c754af2ee7056dc5154a0f51eb09.
+Immutable image unchanged; source wrapper explicitly re-execs with audited CUDA
+wheel precedence before each phase and checks loaded libraries in embedded Python.
+Public launch `/tmp/relh-generals-fix35835-launch.json`; controller receipt
+`/tmp/relh-generals-portable-6516e573.receipt.json`; monitor
+`/tmp/relh-generals-fix35835-submit.log`. Fresh S3 result prefix
+`relh/generals-classic-results-20261003T024457Z-2c9ba024`.
+Continue through GPU serving parity and paired4096-game heldout panels.
+
+
 ## Pilot35835 trained; evaluator layout and CUDA binding fixed (2026-10-03 02:45 UTC)
 
 Job35835 FAILED1:0 in evaluation at02:35:35UTC, Nice2147483645/Priority1

@@ -148,15 +148,11 @@ class SlurmJob:
         self.owns_root = True
         (self.root / "out").mkdir()
         check_space(self.root, self.config["scratch_bytes"], self.config["scratch_inodes"])
-        # Keep Enroot's unpack/cache trees on the checked, owned filesystem.
-        # The shared /tmp may have free bytes but no inodes.
-        for variable, relative in (("ENROOT_TEMP_PATH", "enroot-tmp"),
-                                   ("ENROOT_CACHE_PATH", "enroot-cache"),
-                                   ("ENROOT_DATA_PATH", "enroot-data"),
-                                   ("ENROOT_RUNTIME_PATH", "enroot-runtime")):
-            path = self.root / relative
-            path.mkdir(mode=0o700)
-            self.runtime_env[variable] = str(path)
+        # Pyxis filters these job environment overrides. Host enroot commands
+        # must use the same site defaults, or cleanup targets an empty tree.
+        for variable in ("ENROOT_TEMP_PATH", "ENROOT_CACHE_PATH", "ENROOT_DATA_PATH",
+                         "ENROOT_RUNTIME_PATH", "ENROOT_LIBRARY_PATH", "ENROOT_SYSCONF_PATH"):
+            self.runtime_env.pop(variable, None)
         self.runtime_env["ENROOT_MAX_PROCESSORS"] = str(self.config.get("cpus", 8))
         self.receipt["gpu_environment"] = {
             key: os.environ.get(key) for key in
@@ -207,8 +203,10 @@ class SlurmJob:
     def run_step(self, name, argv, seconds):
         # Repeat immediately before Pyxis/Enroot may unpack an image.
         check_space(self.root, self.config["image_unpacked_bytes"], self.config["image_inodes"])
-        check_space(self.runtime_env["ENROOT_TEMP_PATH"], self.config["image_unpacked_bytes"],
-                    self.config["image_inodes"])
+        # These are the actual site-configured unpack/temp filesystems, verified
+        # before submission. Never assume filtered ENROOT_* overrides applied.
+        for path in self.config.get("enroot_storage_paths", []):
+            check_space(path, self.config["image_unpacked_bytes"], self.config["image_inodes"])
         image = self.config["image"]
         if image == "input/image.sqsh":
             image = str(self.root / image)
@@ -311,8 +309,21 @@ class SlurmJob:
 
     def cleanup(self):
         if self.step_started:
-            subprocess.run(["enroot", "remove", "--force", f"pyxis_{self.container}"],
-                           check=True, timeout=60, capture_output=True, env=self.runtime_env)
+            def enroot(*arguments):
+                result = subprocess.run(["enroot", *arguments], timeout=60,
+                                        capture_output=True, text=True, env=self.runtime_env)
+                if result.returncode:
+                    # This command contains only list/remove and our container
+                    # name, never transport URLs. Retain its real diagnostic.
+                    detail = (result.stdout + result.stderr).strip()[:2000]
+                    raise RuntimeError(f"Owned container cleanup exit {result.returncode}: {detail}")
+                return set(result.stdout.splitlines())
+            allowed = {f"pyxis_{self.container}", f"pyxis_{self.job_id}_{self.container}"}
+            owned = enroot("list") & allowed
+            for name in sorted(owned):
+                enroot("remove", "--force", name)
+            if enroot("list") & allowed:
+                raise RuntimeError("Owned container remains after cleanup")
         # root was created exclusively by this process and is never reused.
         shutil.rmtree(self.root)
 
@@ -362,6 +373,9 @@ class SlurmJob:
             if status == 0:
                 self.cleanup()
         except Exception as error:
-            print(f"Finalization failed: {type(error).__name__}; retaining scratch", flush=True)
+            # Only our explicit RuntimeErrors are safe to stringify. Transport
+            # exceptions can contain credentials and remain type-only.
+            detail = ": " + str(error) if type(error) is RuntimeError else ""
+            print(f"Finalization failed: {type(error).__name__}{detail}; retaining scratch", flush=True)
             return 74
         return status

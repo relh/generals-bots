@@ -18,7 +18,8 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
-                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False, batch_gpu_absent=False):
+                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False, batch_gpu_absent=False,
+                cleanup_failure=False, job_scoped=False):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -31,7 +32,19 @@ class S3JobTests(unittest.TestCase):
             scripts = {
                 "scontrol": f"print('JobId=999 Nice={100 if low_nice else 2147483645} Priority=1 TimeLimit=00:10:00')",
                 "squeue": "import pathlib; print('999.0' if pathlib.Path('writing').exists() else '')",
-                "enroot": "import pathlib; assert not pathlib.Path('writing').exists(); pathlib.Path('cleaned').touch()",
+                "enroot": f'''import os,pathlib,sys
+assert not pathlib.Path('writing').exists()
+assert not any(k in os.environ for k in ('ENROOT_DATA_PATH','ENROOT_TEMP_PATH','ENROOT_CACHE_PATH','ENROOT_RUNTIME_PATH'))
+name={'pyxis_999_relh-generals-999' if job_scoped else 'pyxis_relh-generals-999'!r}
+if sys.argv[1]=='list':
+    print('unrelated-container')
+    if not pathlib.Path('cleaned').exists(): print(name)
+else:
+    assert sys.argv[1:]==['remove','--force',name]
+    if {cleanup_failure!r}:
+        print('owned root removal denied',file=sys.stderr); sys.exit(7)
+    pathlib.Path('cleaned').touch()
+''',
                 "nvidia-smi": f'''import sys,os
 if {gpu_query_failure!r} or '--id=1' in sys.argv or ({batch_gpu_absent!r} and not os.environ.get('SLURM_STEP_GPUS')):
     print('No devices were found', file=sys.stderr); sys.exit(6)
@@ -82,6 +95,7 @@ sys.exit(7 if sys.argv[1]=='fail' else 0)
                           input_url="https://input", input_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
                           input_unpacked_bytes=100, input_members=10,
                           enroot_unpack_path=str(root), image_unpacked_bytes=1, image_inodes=1,
+                          enroot_storage_paths=[str(root)],
                           image="test-image", output_urls=["https://part"], manifest_url="https://manifest",
                           steps=[dict(name="smoke", argv=["--", sys.executable, str(worker), "success"], seconds=5),
                                  dict(name="train", argv=["--", sys.executable, str(worker), mode], seconds=20)])
@@ -109,6 +123,7 @@ if {result_part_bytes!r}: m.MAX_PART_BYTES={result_part_bytes!r}
 sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
 ''')
             env = dict(os.environ, SLURM_JOB_ID="999", SLURM_JOB_GPUS="1", PATH=str(commands)+os.pathsep+os.environ["PATH"],
+                       ENROOT_DATA_PATH="/wrong-host-only-root", ENROOT_RUNTIME_PATH="/wrong-runtime",
                        PYTHONPATH=str(Path(__file__).resolve().parents[1]))
             process = subprocess.Popen([sys.executable, str(harness)], cwd=root, env=env,
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
@@ -147,6 +162,19 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertTrue(r["scratch"])
         self.assertFalse(r["cleaned"])
         self.assertEqual(r["manifest"]["receipt"]["workload_exit_code"], 7)
+
+    def test_job_scoped_owned_container_cleanup(self):
+        r = self.run_job(job_scoped=True)
+        self.assertEqual(r['code'], 0, r)
+        self.assertTrue(r['cleaned'])
+
+    def test_cleanup_failure_preserves_uploaded_success_and_diagnostic(self):
+        r = self.run_job(cleanup_failure=True)
+        self.assertEqual(r['code'], 74, r)
+        self.assertTrue(r['scratch'])
+        self.assertFalse(r['cleaned'])
+        self.assertEqual(r['manifest']['receipt']['workload_exit_code'], 0)
+        self.assertIn(b'owned root removal denied', r['stdout'])
 
     def test_signaled_training_finishes_writes_before_upload(self):
         for sig, code in ((signal.SIGUSR1,124),(signal.SIGTERM,143),(signal.SIGINT,130)):

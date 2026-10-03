@@ -12,6 +12,7 @@ from integrations.submit_slurm_s3 import render, submit, monitor
 class SubmissionTests(unittest.TestCase):
     def config(self):
         return dict(runtime_seconds=3300, credential_expiry=time.time()+36000,
+                    enroot_storage_paths=["/tmp"],
                     required_gpu_memory_gib=198, steps=[dict(name="smoke", seconds=60)],
                     input_url="https://example.invalid/credential-SECRET")
 
@@ -28,6 +29,7 @@ class SubmissionTests(unittest.TestCase):
 
     def test_rejects_ineligible_resources_and_expiring_credentials(self):
         for override in (dict(required_gpu_memory_gib=20),dict(credential_expiry=time.time()+100),
+                         dict(enroot_storage_paths=[]), dict(enroot_storage_paths=["relative"]),
                          dict(steps=[dict(name="smoke",seconds=3000)])):
             with self.subTest(override=override),self.assertRaises(ValueError):
                 render(self.config()|override,name="relh-generals-test",partition="b300",minutes=55,cpus=8,memory_gib=64)
