@@ -1,5 +1,26 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 midpoint saved and verified (2026-10-03 11:13 UTC)
+
+The active sole job **35861** saved its midpoint at counter **939,524,096**,
+SHA256 `c6515af94218e27a285176688a21454968f51dbb9ffa944317d9d7f126e394ee`,
+matching the recorded checkpoint identity. Latest completed epoch **449**
+means 136,314,880 new optimized steps; periodic reward audit at midpoint
+covers **134,217,728 steps / 187,424 terminal games**, zero nonfinite/clipped
+rewards. Full action audit and strength comparisons remain pending.
+
+Epochs **447→449**: 4,194,304 steps / **39.122 seconds** = **107,210.879 SPS**,
+including rollout/optimization. Same one-B300 / 8,192-game / horizon-256 /
+minibatch-8,192 setup; first resumed epoch 97.155 seconds. GPU 202,090 MiB,
+recent utilization 52–56%. Evidence
+`/tmp/relh-generals-35861-live-midpoint.json`.
+
+Continue the existing finite run toward 1,073,741,824 total steps, keeping
+Nice2147483645 / Priority1. Terminal monitor and collector remain live; no
+second job or new hosted request. Midpoint availability is not evidence of
+strength improvement. Final paired held-out and hosted comparisons still
+control selection and promotion; goal remains active.
+
 ## 35860 loss-stage diagnostic retained; 35861 continues (2026-10-03)
 
 Bounded CPU analysis of the already downloaded 64 hosted replays is retained
