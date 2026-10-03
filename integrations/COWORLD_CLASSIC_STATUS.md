@@ -1,5 +1,39 @@
 # Softmax Coworld Classic 1v1 training
 
+## Private hosted screen of35852; curriculum35853 progressing (2026-10-03)
+
+Corrected35852 final privately registered as `relh-classic-hardpool-35852-final`,
+policyversiona5c7fefc-e93b-476f-87bb-4c2430f4e47c; image
+img_af49e564-dd1f-4f59-9b7a-3a786cb60708. CPU-qualified AMD64 image
+sha256:90b71de34054885fa0f740f3c47894c287504a1307d060cc5fb53949d2d06631;
+registry manifest0a2f8bdaf437afaa7bc7f96b9f65ec147049014d95375fabbda4ad52f5c9c0f8.
+32/32 legal protocol replies; emulated-local max231ms (not production timing),
+46/46 golden top actions with maxprobability difference4.48e-7.
+Docker29 push HEAD returned1 after layers; independent verified blob+manifest
+path completed and API confirmed image ready. No champion change.
+
+All records `/tmp/relh-generals-serving-35852-final`. Two startup episodes both
+lost to incumbent, no execution failures. Main balanced private screen requested:
+relh seat0 xreq_3019871e-d33f-46a3-9b11-429730b3079e and seat1
+xreq_11039a60-fbc7-4ead-b2f6-942837595871 (15 each, plusstartup1each);
+Daveey seat0 xreq_a8b67482-b5a4-400b-b706-45767f2dac95 and seat1
+xreq_5d16f386-cf93-4f6a-87ff-2be06d2c4464 (16 each). Existing requests
+must be reconciled, never recreated. Bounded monitor
+`/tmp/relh-generals-watch-35852-xp.py`, output`xp-watch.log`. Stable idempotency
+keys and durable response files retained. No league promotion on startup results.
+
+35853 verified2077/8192 initial midgame positions, all12 opponent types onboth
+seats. At epoch9:18.87Msteps,115.3k recentSPS,68%GPU,197.4GiB, RAM4.1GiB;
+firstepoch82.301s includes compile. Raw reward audit through4.19M had zero
+nonfinite/clipped rewards. Final whole-run gates/evaluation still pending.
+
+Cross-run reward-scale comparison verified exact initial states/seats/opponents
+and all build settings equal exceptscale1→.5. Final1754→1821wins; paired signed
+score delta+.031006, map-cluster95%CI[+.002219,+.058223]. Mid1796→1796wins,
+CIcrosseszero. Reused development panel and one training seed; this is not
+independent confirmation of hosted superiority. Rawanalysis
+`/tmp/relh-generals-portable-result-35852/reward-scale-comparison.json`.
+
 ## Active curriculum job35853 (2026-10-03)
 
 35853 RUNNING from05:48:45UTC; oneB300/8CPU/96GiB, finite80min,
