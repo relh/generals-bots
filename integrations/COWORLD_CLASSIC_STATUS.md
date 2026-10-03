@@ -1,5 +1,51 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35858 complete: further learning, second-half plateau (2026-10-03)
+
+Job **35858 COMPLETED 0:0** at **09:15:04 UTC** (started 08:16:25), still
+**Nice 2147483645 / Priority 1**. One B300, 8 CPUs, 96 GiB host memory,
+2-hour limit; source `1977bc5`. All results were collected and hash-verified:
+`/tmp/relh-generals-portable-result-35858`, S3 prefix
+`relh/generals-classic-results-20261003T081310Z-1ae8439d`. Archive 277,700,542
+bytes, SHA `973fc967a01ac82670be4e00c9de4aa12e018b1e0be48c5b123c95114c9891c9`.
+Terminal receipt: `/tmp/relh-generals-resume-49e3c7c2.receipt.json`.
+
+Fresh evaluation used 4,096 games / 2,618 distinct initial states, seeds
+37872/8754, with midgame curriculum disabled:
+
+| Checkpoint counter | Wins | Losses | Draws | Paired score gain vs parent | Cluster 95% interval |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Parent 268,435,456 | 1,876 | 2,143 | 77 | — | — |
+| Midpoint 402,653,184 | 1,949 | 2,075 | 72 | +0.034424 | [+0.005371, +0.062940] |
+| Final 536,870,912 | 1,951 | 2,073 | 72 | +0.035400 | [+0.006775, +0.064372] |
+
+Final versus midpoint is +0.000977, interval [-0.028022, +0.030647]: no
+resolved second-half improvement. Select final for hosted screening, without
+claiming superiority to midpoint. The refreshed opponent generation is the
+next experiment. Final policy SHA:
+`201e147f536fd1ca3eed949b27b7e081a2aae6084b67ce863823c8c01afce0e2`;
+learner SHA `fbf13e59952ebc04bbea880f56d03a5bfca094323faeb589edbccc1c5010b626`.
+The complete training audit is clean at **108,988.255 SPS** (details below).
+
+Both checkpoints passed native GPU/exported serving parity on all 46 states.
+Final max probability difference was 1.073e-6. Its exact serving image also
+passed 46/46 golden states (max difference 1.878e-6) and 32/32 legal wire
+replies; local cold readiness 11.225 seconds, max reply 50.2 ms. Local timings
+are not hosted latency. Image `relh-generals-serving:35858-final`, ID
+`sha256:ba7d17bee81d7f88edafca1b51589834982b9c3c962c6c26a3224ca8c62c8489`.
+Evidence: `/tmp/relh-generals-serving-35858-final/cpu-readiness.json`.
+Private upload image `img_83d05bd9-41fb-485a-8982-e5c3ab53dd76` is in progress;
+retain its receipt and reconcile before retrying. No champion changed.
+
+Next-generation input is staged at `/tmp/relh-generals-portable-generation-input`.
+It retains nine frozen predecessors, drops d261ac6d, and adds the selected
+201e147f parent at weight 8; both scripted opponents remain. An actual 80-game
+CPU environment check passed with all opponents on both seats and finite valid
+step output. Exact immutable training-image configuration/native prepare_run
+also passed, verifying Muon restoration and endpoint 805,306,368. Evidence:
+`/tmp/relh-generals-generation-cpu.log` and
+`/tmp/relh-generals-generation-image-proof.log`. No next GPU job submitted.
+
 ## 35858 training complete; fresh evaluation running (2026-10-03 09:05 UTC)
 
 The continuation finished all **268,435,456 new environment steps**, ending
