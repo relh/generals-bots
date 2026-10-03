@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35877 COMPLETED; final35876 improves locally and selected for hosted screen (2026-10-03)
+
+35877 COMPLETED0:0,18:48:14→19:06:26UTC,RTX4090/metta0,
+Nice2147483645/Priority1 unchanged. No live Generals GPU job; no paid spend.
+All artifacts verified `/tmp/relh-generals-portable-result-35877`;
+`/tmp/relh-generals-35877-collected.txt` endsRESULTS_VERIFIED. Existing collector
+12704 and physical monitor46987 terminate; controller23020 terminal. No training
+replayed. Both exact checkpoints export and GPU parity46/46pass; finalmaxprob
+4.94719e-6,mid1.81794e-6. Actualimage download625.859s;peak3810MiB GPU.
+The fixed post-step transition completed through smoke/restore/evaluate,
+upload and owned cleanup. Retained original35876source/results unchanged.
+
+Fresh matched4096games/2594uniqueinitialstates, seeds38647/9529:
+parent2756W1294L46D;mid2804W1252L40D;final2911W1151L34D.
+Mid-parent signed-scoreΔ+.0219727, clustered95%CI[-.00850966,+.0529843]
+inconclusive; final-parentΔ+.0727539,CI[+.0429867,+.1025894];
+final-midΔ+.0507813,CI[+.0221026,+.0794362]. Native siege199→222→212/396;
+Sentinel258→274→293/396; latestfrozen303→316→329/528.
+Final selected for hosted screening based on overall paired improvement;
+this is not evidence of strong hosted wins. Selection record
+`/tmp/relh-generals-35876-serving-selection.json` binds actual35877COMPLETED
+receipt, verifiedresultlog, source7e721314b5bbadcf5b8fe97177ded7d9bba4754e,
+final1895825408,SHA d2c30ee48e805306bc57bcb094dbd59e350bd66307736054625462b5889a3bc0.
+
+Both CPU-export candidates passed64/64late-hosted-state parity, finalmaxprob
+3.7849e-6,mid1.96695e-6. FinalCPU/GPU exported weight arrays checked exactly
+equal before reusing the CPU late-state proof; binding recorded in
+`/tmp/relh-generals-35876-late-parity/parity.json`. Candidate-serving build and
+46golden/32wire proof now running locally, session58825, log
+`/tmp/relh-generals-35876-final-serving-proof.log`. No new hosted policy/XP yet;
+next private64game screen vsDaveeyv7 and incumbent, then128/opponent confirmation
+only if strong. Champion remains unchanged; goal active/unmet.
+
 ## 35877 evaluation-only recovery RUNNING after full CPU audit (2026-10-03)
 
 Exactly one Generals job:35877, relh-generals-eval-35876-b413de93,
