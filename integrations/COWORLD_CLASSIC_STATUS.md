@@ -1,5 +1,34 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 late training healthy; distant-threat responsiveness verified (2026-10-03)
+
+Sole35879 continuestraining. Latestobserverepoch1013,97685.07348SPS;
+periodic230686720newsteps,324911terminalgames,0nonfinite/0clippedrewards.
+Activecompletionobserver30393:`/tmp/relh-generals-observe-completion-window-35879.py`,
+output`/tmp/relh-generals-35879-completion-window.jsonl`. ThisisoneboundedCPU-only
+stepwithintheexistingallocation, maxNice,30mininternalbound/32minSlurmstep;
+checksownedtrainingPIDevery10s andexitsoncompletion/mainPIDexit. It replaces
+finishedmidpointobserver26872; do notstartanotherobserver. Controller87428,
+collector73001,physicalmonitor11612remainactive. No duplicateGPUjob.
+
+BoundedCPU diagnostic inspectedactual35876trainedtensors and89pairedengine
+states fromlatestverifiedhostedpositions. Two visibleenemyarmystacks were swapped
+whileownership/terrain/generals,publictotals andlegalmasks remainedfixed.
+For356same-directionmove-sourcegroups whose localneighborhoods andfixed-prior
+inputs wereunchanged, ALL356changedrelativelogits(maxchange.2100243).
+Thus theactualpolicy can condition sourcepreferences onremoteinformation;
+thisdoesnotproveappropriate defensivebehavior or explain thelosses causally.
+Evidence`/tmp/relh-generals-remote-threat-capacity-35876-v2.py/.json/.log`.
+Initialdiagnostic'shypothesisofspatiallyuniformglobalreadoutwasrejectedbyactual
+exportedweights;thefactory'sscalar-edgeannotationsweren'tsufficienttoinfer
+densekernelsharing. Failedinitialassert retained; correctedv2measuresactual
+mapping. No modelchange follows thisnegativehypothesischeck.
+
+Keepcurrentarchitecture/run intact. Candidate384positioncurriculum remains
+CPU-verifiedbutunused; assesscurrentheldout/hostedresults beforeanothertraining
+change. Latesthosted9/32Daveey,19/32incumbent,strongwinninggoalstillunmet.
+No newpolicy/XPwrites, paidspend, schedulingchange orothers'file/processchanges.
+
 ## 35879 midpoint checkpoint verified; healthy second half continues (2026-10-03)
 
 Authoritativecontroller confirms35879RUNNING; trainingstep35879.3 remains after
