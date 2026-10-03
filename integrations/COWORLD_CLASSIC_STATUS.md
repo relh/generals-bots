@@ -1,5 +1,41 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35882 passes warm throughput gate; hosted strength still unproven (2026-10-03)
+
+The ONLY task GPU job 35882 is healthy and training. First epoch 1033 uptime
+94.645 seconds excludes compilation/warmup. Epoch 1035 at 137.275 seconds to
+1037 at 179.890 seconds: 4,194,304 new environment steps / 42.615 seconds =
+98,423.184 SPS. Same 8192 games, horizon 256, minibatch 8192, replay 0.5,
+four native workers, one B300. Memory 202,092 MiB, observed 43–67% utilization;
+all other physical GPUs idle. No detected contention. No sustained sub-30k run.
+Periodic reward audit: 8,388,608 new steps, 9,202 terminal games, zero nonfinite
+or clipped rewards. Final action audit is not emitted yet; do not claim a final
+illegal-action count for this live run. Actual Muon SHA matches expected
+`ab36d78d454eb736cf80356a9afd4425f08d1407a874c65c9ac5ff46854d322a`.
+Same-sampler gate passed at 234 W / 276 L / 2 D, zero policy score delta.
+
+Active warm observer session 83260, `/tmp/relh-generals-observe-warm-window-35882.py`,
+output `/tmp/relh-generals-35882-warm-window.jsonl` and sibling `.stderr`.
+It exits automatically after its bounded 50 observations (roughly 20:59 UTC),
+or promptly on owned training PID exit. Do not start a duplicate observer.
+Controller 26879, collector 24853 and physical monitor 81855 remain active.
+Controller at 20:56 UTC still RUNNING, Nice 2147483645 / Priority 1, unchanged,
+finite 02:00:00. Latest source/status pushed; no new GPU submission is needed.
+
+35879 loss diagnosis repeated on the actual latest SHA-verified hosted replays:
+25 turns before defeat, all 22 Daveey losses had a smaller largest owned stack;
+12/22 still had more total army and 13/22 more land. No fatal-turn move evacuated
+the general. Incumbent losses: only 2/15 ahead in total army. Descriptive
+post-game omniscient audit, not causal proof or hidden policy features.
+Evidence `/tmp/relh-generals-serving-35879-final/late-loss-diagnostics-v2.json` and
+`/tmp/relh-generals-35879-late-loss-diagnostics-v2.py/.log`.
+
+Next: preserve this live run through midpoint/final and same-job held-out panels,
+collect and verify artifacts, inspect paired learning before selecting weights,
+then actual serving parity and fresh hosted games if improved. Do not repeat
+completed 35879 XP. Acceptance is still unmet: latest hosted 10/32 Daveey,
+17/32 incumbent. No champion change or claim of winning well. Goal remains active.
+
 ## 35882 running: controlled mixed-position continuation (2026-10-03)
 
 Only Generals GPU job: 35882, `relh-generals-mixed-curriculum-725e8e1f`. Started 20:47:17 UTC;
