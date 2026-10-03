@@ -1,5 +1,52 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 hosted startup submitted; generation3 CPU-ready (2026-10-03)
+
+Exact serving image `sha256:8da936437849e0a80573c67f1c6efcedd2c10e3ed71d945bfd911515321fbb5c`
+passed **46/46** CPU action parity (max probability difference 9.5367432e-7)
+and **32/32 legal wire replies**. Local CPU cold-ready 12.866 seconds,
+maximum reply 0.06358 seconds; not production latency. Qualified 35860 base
+layer prefix preserved. Private image `img_a03b68cd-e8b8-4d17-9b7c-38ae85506b9e`,
+registry manifest `412f4e7a52a8b41ec38fab6f0b8968b7fe46cda51440fa4bc97f64631abcc696`,
+policy **e0e95898-fe15-455a-8a4b-ac3acfdd7eff** (`relh-classic-hardpool-35861-final`).
+Known post-layer Docker push HEAD failure reconciled with verified registry
+manifest; registration completed once. Evidence root
+`/tmp/relh-generals-serving-35861-final`.
+
+Startup XP IDs: seat0 `xreq_2b08d8ed-6707-4f6d-bf54-066835606dd1`, seat1
+`xreq_14bb4de1-2599-43b0-b97a-0b84d3f88782`, currently pending. Strict watcher
+`/tmp/relh-generals-watch-35861-xp.py` advances to 64 total games only after
+both startup records complete. Single finalizer
+`/tmp/relh-generals-finalize-hosted-35861.py` waits for all 64 unique records,
+then summarizes and downloads/audits all replays. Logs
+`/tmp/relh-generals-35861-xp-monitor.log` and
+`/tmp/relh-generals-35861-finalize-hosted.log`; do not restart these or duplicate
+requests. No champion change.
+
+Next generation is separately staged at
+`/tmp/relh-generals-portable-generation3-input`: add final f589aa8f parent,
+drop oldest 0025c722 entry, weights `[1,1,1,2,2,2,2,8,8,8,8,6]`, preserve
+Muon SHA256 `ce5b923aba88122a7bff5d60995faa2029e0be32c3598e742f5d2205404bbb5d`,
+count **1,073,741,824→1,342,177,280**. Actual **112-game CPU step** passed,
+all opponents both seats; exact image native prepare_run and pilot reward/
+optimizer binding passed. Lifecycle/continuation/hosted audit: **36 tests +
+8 subtests passed in14.77s**. All **464 archive file hashes** verified after
+safe extraction. Input **193,685,976 bytes**, SHA256
+`28870c5c674e1507b8aed5c2c7303d2844f5760fb166b12979b48c2f0d5aba0e`, uploaded
+under `relh/generals-generation3-20261003T114941Z-dc550ab6/input.part000`.
+Readiness `/tmp/relh-generals-generation3-cpu-readiness.json`.
+
+Live queue has no Generals task; all eight physical B300 GPUs **0MiB/0%**.
+Scratch **1.2TiB free /146,315 inodes**, root20GiB. No contention found and no
+other jobs/files changed. Signed finite launcher is prepared **NOT SUBMITTED**:
+`/tmp/relh-generals-generation3-launch.json`, name
+`relh-generals-generation3-6281cda1`, source/launcher
+`b3299115b8d56cb41229b8c5b54bf2599603eabd`, output prefix
+`relh/generals-classic-results-20261003T115153Z-143ed179`. Full live-config,
+credential-lifetime and rendered syntax checks passed. Wait for hosted startup
+readback before deciding the next bounded submission. Maximum Nice2147483645 /
+Priority1 and one-task-job rules remain mandatory. Goal remains active.
+
 ## 35861 complete: fresh paired improvement, final selected (2026-10-03 11:47 UTC)
 
 Job **35861 COMPLETED 0:0** at **11:44:50 UTC**, starting 10:43:54.
