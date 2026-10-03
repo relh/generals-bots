@@ -1,5 +1,6 @@
 """Frozen training opponents honor the same action mode as their serving bundle."""
 
+import json
 from types import SimpleNamespace
 
 import numpy as np
@@ -10,6 +11,37 @@ import jax.numpy as jnp
 
 from integrations.spatial_policy_bundle import structured_action_probabilities
 from integrations.spatial_selfplay import frozen_action_indices
+
+
+@pytest.mark.parametrize("workers", [1, 4, 8])
+def test_single_frozen_match_accepts_population_worker_metadata(tmp_path, monkeypatch, workers):
+    from integrations import spatial_selfplay as module
+
+    (tmp_path / "build.json").write_text(json.dumps({
+        "config": {"python_environment": {"options": {}}},
+    }))
+    monkeypatch.setattr(module, "SpatialPlayerPolicy", lambda bundle: SimpleNamespace())
+    reached = []
+
+    class BaseReached(Exception):
+        pass
+
+    # Explicit base signature rejects population-only keywords, as the real
+    # Generals adapter did when a four-worker checkpoint entered its self-match.
+    def base_init(self, *, context, parallel_games, balance_opponent_sides, shaping_gamma):
+        reached.append((context, parallel_games, balance_opponent_sides, shaping_gamma))
+        raise BaseReached
+
+    monkeypatch.setattr(module.BatchedGeneralsSelfPlayPufferEnvironment, "__init__", base_init)
+    context = object()
+    with pytest.raises(BaseReached):
+        module.SpatialFrozenOpponentPufferEnvironment(
+            frozen_bundle=tmp_path, context=context, parallel_games=16,
+            balance_opponent_sides=True, shaping_gamma=.999,
+            opponent_weights=[8, 6, 6], scripted_opponents=["classic_siege_padded"],
+            classic_siege_workers=workers,
+        )
+    assert reached == [(context, 16, True, .999)]
 
 
 def test_frozen_sampled_opponent_matches_serving_distribution():

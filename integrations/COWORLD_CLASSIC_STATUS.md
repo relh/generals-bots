@@ -1,5 +1,34 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35873 stopped in self-match; worker-option boundary fixed on CPU (2026-10-03)
+
+35873 FAILED1:0 before training, all artifacts downloaded/hash-verified at
+`/tmp/relh-generals-portable-result-35873`. MaxNice2147483645/Priority1 unchanged;
+no priority errors. Source/result/checkpoints and failed owned scratch retained.
+No new training steps, no learning result. Image transfer succeeded in52.82s.
+Exact failure in `out/gate-candidate.log`: inherited classic_siege_workers from
+35870 reached GeneralsPufferEnvironment through the single-frozen-opponent
+wrapper and raised TypeError. Earlier35870 gate used its serial parent, whose
+manifest omitted this new option, so the bug only appeared on next continuation.
+
+Fix strips population-only worker metadata at SpatialFrozenOpponentPufferEnvironment,
+alongside existing population weights/scripts. Population training continues to
+consume and enforce its own worker setting. Regression covers worker1/4/8 and
+preserves actual game settings passed to the base adapter.31 frozen-sampling/
+continuation tests passed. Exact actual-checkpoint CLI CPU reproduction failed
+before fix, then completed16 full Classic games (8W8L,1842turns, all legal and
+finite) after fix; these are correctness smoke results, not strength evidence.
+Initial after-fix harness used pool4, correctly rejected by16-board-size contract;
+corrected pool16 without changing the environment. Logs retained under
+`/tmp/relh-generals-35873-sampling-cpu-{before,after,after-v2}.log`.
+
+Retry stage `/tmp/relh-generals-portable-siege-workers4-long-retry-input` preserves
+all original source/results and changes only the wrapper fix.128-game full-pool
+CPU legal/finite/curriculum memory-reset proof passed with four workers.
+Pinned-image prepare_run policy/Muon/config passed; actual self-match CPU run
+inside image still being checked. No retry GPU until that gate completes.
+Existing E501/E402 lint findings are outside the changed lines; diff check clean.
+
 ## Long four-worker continuation35873 running (2026-10-03)
 
 ONE job35873 RUNNING since17:10:27UTC, Slurm-selectedmetta-fabric-b300-1,
