@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 RUNNING: refreshed self-play, inode capacity recovered (2026-10-03)
+
+Job35879 relh-generals-siege-generation4-4ebcd02c RUNNING, B300,
+1GPU/8CPU/96GiB,finite120min. Nice2147483645/Priority1 controller verified
+unchanged; no escalation/errors. Source/launcher a6d8783c9593ab1a2082bd9de6cb1f0ecba79701.
+Input467hashes verified,193700626bytes,SHAaf893e84c7b97f3509cccb86efbd8262f99c91bab44dcd1bd8ed0ff4e0b6f1c9.
+Results S3softmax-slurm-artifacts/relh/generals-classic-results-20261003T192544Z-691182f9.
+Launch`/tmp/relh-generals-siege-generation4-launch.json`, receipt
+`/tmp/relh-generals-siege-generation4-4ebcd02c.receipt.json`.
+Controller87428;collector73001(`...collect-35879-when-terminal.py`),physical
+monitor11612(`...monitor-35879.py`) active; do not duplicate jobs/collectors.
+
+After configured retirement of only verified old35873container, freeinodes rose
+56431→87642, then54415aftercurrentunpack/build. Originaloldsource/results retained;
+actual retirement receipt will be part of terminaloutput.60k/40kguards unchanged.
+Job passed prepare/smoke/build and is running sampling_gate35879.2; no sustained
+training measurement yet. Preflight found B300 Slurm idle but externalGPU7 held
+97366MiB/95–97%; ownGPU0UUIDGPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 was0MiB/0%
+preallocation and is separate. Do not touch otherprocesses. No observed direct
+memory contention; throughput must still be measured in this newrun.
+
+Warmup observer prepared`/tmp/relh-generals-observe-training-window-35879.py`,
+NOT started yet. Start only once controller shows trainingstep35879.3. It checks
+the exact owned training PID from cuda-binding-train.json, exits on main-process
+exit within10s (wellinside45sphasegrace), stops at epoch920 or600s,CPU1/GRESnone
+insideexistingallocation,maxNice. This avoids the35876cross-phaseobserverrace.
+The staged256game/fullimage CPU proofs and29tests+18subtests allpassed before
+submission. Budget1895825408→2164260864,latestparentd2c30ee4 addedtoselfplay,
+10frozen+3scripts,win-only potentialobjective unchanged. Broad priorwarmSPS94154;
+verifyfreshwarmSPS≥30kbeforecontinuing sustained training. No paid node/spend.
+Latesthosted35876remains9/32Daveey,19/32incumbent,64freshuniqueseeds,0illegal/
+timeouts,allgeneralcapture. No promotion; goalactive/unmet.
+
 ## Hosted35876 complete:19/32 incumbent,9/32 Daveey; next self-play CPU-ready (2026-10-03)
 
 Private policy8801b44c-429a-4821-8138-9eb7db8ade3e,
