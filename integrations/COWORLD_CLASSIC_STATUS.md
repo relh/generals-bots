@@ -1,5 +1,36 @@
 # Softmax Coworld Classic 1v1 training
 
+## Hosted panel active; unclipped reward experiment prepared (2026-10-03 04:37 UTC)
+
+Private candidate relh-classic-hardpool-35848-mid registered policy version
+3af7e40d-923e-42dc-bd31-ac66a4932871, imageimg_a977f47c-fd83-49f9-ba79-1d4355474767,
+registry manifest968b193eac7b0c6627226b3de8183dc9d7b6e8ffc46c291251e0d883a1a934e6.
+Docker29 layer transfer ended1 at known manifest path; independent verified
+OCI manifest commit and API upload-complete succeeded. All layers checked.
+Startup XP requests ee022127-5f44-4b4e-a793-f0721e93836c and
+7b627b4a-06d4-4f23-b6a0-967df8cb8241 completed with no serving errors, both losses.
+All XP IDs have xreq_ prefix; exact payloads/receipts retained under serving dir.
+Balanced panel requests now running:
+relh-seat0 xreq_689634d0-9c1c-42e9-9a51-1baa84c83dc6 (15games),
+relh-seat1 xreq_62946638-0433-4ce6-b414-2810e424daa6 (15games),
+Daveey-seat0 xreq_3ff0c22a-1f1c-4237-921d-42bbea9b020f (16games),
+Daveey-seat1 xreq_83877846-3ee8-4778-af62-77dd563bd90a (16games).
+Including startup games gives32 per opponent; no champion change.
+
+Next optional bounded comparison retains exact67M parent/settings/seed/pool,
+changes only whole reward_scale1→.5. New explicit pilot setting validates all
+reward terms and derives absolute bound.6 (previous1.2); train fails if native
+clipping remains. Default1 preserves the previous control. Nine targeted CPU
+tests passed25.21s, including real Classic capture/draw/live/recycle transitions,
+identical states/observations/masks/terminal flags and exactly halved rewards.
+Constructed underdog capture truly has rawreward>1; scaledreward remains<=.6.
+Both actual pinned-parent prepare_configs paths passed, bounds1.2 and.6.
+New test Ruff passes; pilot file retains pre-existing import/line-length findings.
+Exact immutable AMD64 image CPU proof under QEMU hit its240s compilation limit,
+without an assertion result. Bounded600s/4CPU retry active, unique owned container;
+no GPU scheduled. Retain both logs `/tmp/relh-generals-reward-scale-proof`.
+Unchanged image/native bootstrap/CUDA binding/lifecycle were qualified by35848.
+
 ## 35848 COMPLETED; no established duration gain; private hosted comparison next
 
 Terminal controller saved: COMPLETED0:0 at2026-10-03 04:22:38UTC,

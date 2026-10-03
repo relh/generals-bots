@@ -25,6 +25,27 @@ def pilot_steps(value):
 
 
 STEPS = pilot_steps(os.environ.get("GENERALS_PILOT_STEPS", "8388608"))
+
+
+def configure_reward_scale(options, value):
+    """Keep the duration control reproducible; explicitly opt into unclipped rewards."""
+    scale = float(value)
+    if scale not in (1.0, 0.5):
+        raise ValueError("Reward-scale comparison permits only 1 or 0.5")
+    expected = dict(terminal_reward_mode="win_only", shaping_weight=.25,
+                    shaping_gamma=.999, army_shaping_weight=.5,
+                    land_shaping_weight=.3, castle_shaping_weight=0.,
+                    imitation_weight=0., land_gain_reward_weight=0.)
+    if any(options.get(key) != val for key, val in expected.items()) or options.get("frontier_shaping_weight", 0.):
+        raise ValueError("Reward bound requires the exact Classic potential objective")
+    if options.get("reward_scale") != 1.0:
+        raise ValueError("Expected the unscaled parent reward contract")
+    options["reward_scale"] = scale
+    # Each army/land margin lies in [-1, 1]. Terminal potential is zero.
+    potential_bound = .25 * (.5 + .3)
+    return scale * max(1 + potential_bound, (1 + .999) * potential_bound)
+
+
 TRAIN_ENV = dict(
     METTA_SPATIAL_MUON_DENSE_ORIENTATION="canonical", METTA_SPATIAL_MUON_CONTEXT_MATRIX="1",
     METTA_SPATIAL_OPTIMIZER_LAYOUT="logical", METTA_SPATIAL_POLICY_TEMPERATURE="0.05",
@@ -57,6 +78,11 @@ def prepare_configs(parent=PARENT, output=OUT):
         raise ValueError("Classic rules, reward discount or teacher settings differ")
     if len(options["frozen_bundles"]) != 9:
         raise ValueError("Parent opponent pool differs")
+    bound = configure_reward_scale(options, os.environ.get("GENERALS_PILOT_REWARD_SCALE", "1"))
+    (output / "reward-contract.json").write_text(json.dumps(dict(
+        reward_scale=options["reward_scale"], absolute_reward_bound=bound,
+        native_clamp=[-1, 1], expected_unclipped=bound <= 1,
+    ), indent=2) + "\n")
     shutil.copytree(parent / "bundle", output / "self_bundle")
     options["frozen_bundles"].append(str(output / "self_bundle"))
     options["opponent_weights"] = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 8, 6]
@@ -169,6 +195,9 @@ def train():
               if line.startswith("DEVICE_REWARD_AUDIT ")]
     if not audits or audits[-1]["agent_steps"] != STEPS or audits[-1]["nonfinite_rewards"]:
         raise ValueError("Reward audit missing or nonfinite")
+    reward_contract = json.loads((OUT / "reward-contract.json").read_text())
+    if reward_contract["expected_unclipped"] and audits[-1]["native_clipped_rewards"]:
+        raise ValueError("Scaled reward violates the audited native clamp bound")
     population = json.loads((OUT / "run/environments/8842/spatial-opponent-population.json").read_text())
     if (len(population["frozen_action_selection"]) != 10
             or population["opponent_weights"] != [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 8, 6]
