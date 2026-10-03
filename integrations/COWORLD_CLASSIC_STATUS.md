@@ -1,5 +1,28 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 loss-stage diagnostic retained; 35861 continues (2026-10-03)
+
+Bounded CPU analysis of the already downloaded 64 hosted replays is retained
+at `/tmp/relh-generals-serving-35860-final/resource-trajectory-audit.json`,
+script `/tmp/relh-generals-35860-resource-trajectory.py`. It is descriptive
+post-game omniscient evidence only, not policy inputs/teacher labels or a
+causal claim; outcome-conditioned and late-survivor subsets are biased.
+
+Of 21 Daveey losses, **11 had an army lead at turn 100** and **6 still had
+more total army immediately before capture**. Among 20 incumbent losses,
+only 2 led in army at turn 100, but **13 led at turn 200** and only **1 led
+immediately before capture**. Remaining weakness is therefore not solely
+initial expansion; converting midgame resources into a win and avoiding
+capture remains a relevant training/evaluation target. These aggregates do
+not identify a codec or optimizer bug and do not justify adding teacher
+constraints. Continue the qualified iterated self-play experiment, then
+judge its actual fresh and hosted outcomes.
+
+Live controller readback confirmed **35861 RUNNING**, Nice2147483645 /
+Priority1, finite two-hour limit; its controller monitor and result collector
+are both live. No other submission, policy upload, XP request, or champion
+change was made for this diagnostic. Goal remains active.
+
 ## 35861 passes renewed throughput gate (2026-10-03 10:54 UTC)
 
 Native completed epochs **387→389** advanced **4,194,304 environment steps**
