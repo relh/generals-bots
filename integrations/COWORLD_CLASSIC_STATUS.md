@@ -1,5 +1,29 @@
 # Softmax Coworld Classic 1v1 training
 
+## Hosted35852 final is still weak; winning gate remains unmet (2026-10-03)
+
+All64 requested hosted episodes completed with zero execution failures.
+Versus pinnedDaveeyv7:4W/28L, eachseat2W/14L. Versus relh incumbent:
+10W/20L/2D;seat0=6W/10L,seat1=4W/10L/2D. No champion change.
+Result `/tmp/relh-generals-serving-35852-final/hosted-results-summary.json`;
+all request states retained. Do not reissue these completed requests.
+This does not demonstrate a hosted improvement over the previous3W/29L screen.
+
+35853 completed33,554,432 training steps at113,423.943steadyenvSPS;
+45,289 terminal games,zero nonfinite/clipped rewards,whole-runillegal-action
+gate passed. Evaluation/parity/upload remain running; do not duplicate it.
+Live audit `/tmp/relh-generals-35853-training-audit.txt`.
+
+The task is not complete at positive local reward or fastSPS. Use fresh,
+balanced hosted confirmation against the pinned/current leader and incumbent
+before calling it winning well: targetatleast60% wins across128games peropponent,
+with both seatsatleast50% and a pooled95%win-rate lowerboundabove50% (treatdraws
+as nonwins conservatively). Initial32-game screens select candidates, not final
+confirmation. Recheckcurrentchampions beforepromotion; do notpromote this weakactor.
+The future268M learning curve uses new map/sample seeds37841/8729 for allpaired
+arms, keeping its evaluation off the reused33M development panel. Short controls
+remain37813/8713. Eight bounded curve/throughput tests passed2.75s. No newGPUjob.
+
 ## Private hosted screen of35852; curriculum35853 progressing (2026-10-03)
 
 Corrected35852 final privately registered as `relh-classic-hardpool-35852-final`,

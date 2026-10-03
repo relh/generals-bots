@@ -43,7 +43,8 @@ class LearningCurveTests(unittest.TestCase):
         self.assertEqual(len(panels), 3)
         for call in panels:
             self.assertEqual(call.args[call.args.index('--games') + 1], 4096)
-            self.assertEqual(call.args[call.args.index('--seed') + 1], 37813)
+            self.assertEqual(call.args[call.args.index('--seed') + 1], 37841)
+            self.assertEqual(call.args[call.args.index('--sample-seed') + 1], 8729)
 
 
 if __name__ == '__main__':

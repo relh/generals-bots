@@ -246,13 +246,15 @@ def export_and_audit(steps, bundle, suffix=""):
 
 def evaluate():
     export_and_audit(STEPS, OUT / "bundle")
+    # Keep the extended run off the repeatedly used short-pilot development maps.
+    map_seed, sample_seed = (37841, 8729) if STEPS == 268_435_456 else (37813, 8713)
     arms = [("parent", OUT / "self_bundle"), ("child", OUT / "bundle")]
     if STEPS >= 33_554_432:
         export_and_audit(STEPS // 2, OUT / "bundle-mid", "-mid")
         arms.append(("mid", OUT / "bundle-mid"))
     for label, bundle in arms:
         command("evaluate_spatial_population", "--bundle", bundle, "--population-build", OUT / "build/build.json",
-                "--games", 4096, "--pool-size", 4096, "--seed", 37813, "--sample-seed", 8713,
+                "--games", 4096, "--pool-size", 4096, "--seed", map_seed, "--sample-seed", sample_seed,
                 "--output", OUT / ("heldout-" + label), name="heldout-" + label, seconds=360)
     for label, _ in arms[1:]:
         command("analyze_spatial_population_pair", "--baseline", OUT / "heldout-parent",
