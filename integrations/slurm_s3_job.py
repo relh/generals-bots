@@ -21,6 +21,39 @@ MAX_PART_BYTES = 3_500_000_000
 NICE = 2147483645
 
 
+def gpu_query(*arguments):
+    """Only NVIDIA query output is included in errors; never transport credentials."""
+    result = subprocess.run(["nvidia-smi", *arguments], capture_output=True,
+                            text=True, timeout=15)
+    if result.returncode:
+        detail = (result.stdout + result.stderr).strip()[:2000]
+        raise RuntimeError(f"nvidia-smi query exit {result.returncode}: {detail}")
+    return result.stdout.strip()
+
+
+def allocated_gpu_identity(environ=None):
+    """Resolve the single device visible inside Slurm's constrained device cgroup.
+
+    SLURM_JOB_GPUS/STEP_GPUS are global GRES identifiers, not NVML ordinals
+    inside that cgroup. Never pass those numeric identifiers to nvidia-smi -i.
+    """
+    environ = os.environ if environ is None else environ
+    assigned = environ.get("SLURM_STEP_GPUS") or environ.get("SLURM_JOB_GPUS", "")
+    if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", assigned):
+        raise RuntimeError("Expected one controller-provided GPU assignment")
+    rows = gpu_query("--query-gpu=index,minor_number,uuid", "--format=csv,noheader,nounits").splitlines()
+    if len(rows) != 1:
+        raise RuntimeError(f"Expected exactly one cgroup-visible GPU; observed {len(rows)}")
+    fields = [field.strip() for field in rows[0].split(",")]
+    if (len(fields) != 3 or not fields[0].isdigit() or not fields[1].isdigit()
+            or not re.fullmatch(r"GPU-[a-fA-F0-9-]+", fields[2])):
+        raise RuntimeError("Unrecognized visible GPU identity")
+    if assigned.startswith("GPU-") and assigned != fields[2]:
+        raise RuntimeError("Visible GPU UUID differs from controller assignment")
+    return dict(slurm_assignment=assigned, visible_index=fields[0],
+                minor_number=fields[1], uuid=fields[2])
+
+
 class JobSignal(Exception):
     def __init__(self, signum):
         self.status = 128 + signum
@@ -148,22 +181,21 @@ class SlurmJob:
                 raise ValueError("Reassembled image digest differs")
 
     def verify_gpu_idle(self):
-        selector = os.environ.get("SLURM_JOB_GPUS", "")
-        if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", selector):
-            raise RuntimeError("Expected one controller-provided physical GPU ID")
-        processes = subprocess.check_output([
-            "nvidia-smi", "--id=" + selector, "--query-compute-apps=pid",
-            "--format=csv,noheader,nounits"], text=True, timeout=15)
-        if processes.strip():
+        self.receipt["gpu_environment"] = {
+            key: os.environ.get(key) for key in
+            ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS", "CUDA_VISIBLE_DEVICES", "NVIDIA_VISIBLE_DEVICES")}
+        identity = allocated_gpu_identity()
+        self.receipt["physical_gpu_preflight"] = identity
+        processes = gpu_query("--id=" + identity["uuid"], "--query-compute-apps=pid",
+                              "--format=csv,noheader,nounits")
+        if processes:
             raise RuntimeError("Allocated physical GPU already has compute processes; leaving them untouched")
-        row = subprocess.check_output([
-            "nvidia-smi", "--id=" + selector, "--query-gpu=uuid,memory.used,utilization.gpu",
-            "--format=csv,noheader,nounits"], text=True, timeout=15).strip()
+        row = gpu_query("--id=" + identity["uuid"],
+                        "--query-gpu=uuid,memory.used,utilization.gpu", "--format=csv,noheader,nounits")
         fields = [field.strip() for field in row.split(",")]
-        if len(fields) != 3 or float(fields[1]) >= 2048 or float(fields[2]) >= 20:
+        if len(fields) != 3 or fields[0] != identity["uuid"] or float(fields[1]) >= 2048 or float(fields[2]) >= 20:
             raise RuntimeError("Allocated physical GPU is not idle before workload startup")
-        self.receipt["physical_gpu_preflight"] = dict(uuid=fields[0], memory_mib=float(fields[1]),
-                                                      utilization_percent=float(fields[2]))
+        identity.update(memory_mib=float(fields[1]), utilization_percent=float(fields[2]))
 
     def run_step(self, name, argv, seconds):
         # Repeat immediately before Pyxis/Enroot may unpack an image.

@@ -33,10 +33,8 @@ TRAIN_ENV = dict(
 
 
 def allocated_gpu():
-    value = os.environ.get("SLURM_STEP_GPUS") or os.environ.get("SLURM_JOB_GPUS", "")
-    if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", value):
-        raise RuntimeError("Expected one explicit allocated physical GPU ID")
-    return value
+    from integrations.slurm_s3_job import allocated_gpu_identity
+    return allocated_gpu_identity()["uuid"]
 
 
 def prepare_configs(parent=PARENT, output=OUT):

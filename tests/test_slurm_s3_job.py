@@ -18,7 +18,7 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
-                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False):
+                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -32,7 +32,13 @@ class S3JobTests(unittest.TestCase):
                 "scontrol": f"print('JobId=999 Nice={100 if low_nice else 2147483645} Priority=1 TimeLimit=00:10:00')",
                 "squeue": "import pathlib; print('999.0' if pathlib.Path('writing').exists() else '')",
                 "enroot": "import pathlib; assert not pathlib.Path('writing').exists(); pathlib.Path('cleaned').touch()",
-                "nvidia-smi": f"import sys; print({repr('123' if busy_gpu else '')} if '--query-compute-apps=pid' in sys.argv else 'GPU-test, 0, 0')",
+                "nvidia-smi": f'''import sys
+if {gpu_query_failure!r} or '--id=1' in sys.argv:
+    print('No devices were found', file=sys.stderr); sys.exit(6)
+if '--query-gpu=index,minor_number,uuid' in sys.argv: print('0, 1, GPU-abcd')
+elif '--query-compute-apps=pid' in sys.argv: print({repr('123' if busy_gpu else '')})
+else: print('GPU-abcd, 0, 0')
+''',
                 "srun": '''import os,sys
 assert '--nice=2147483645' in sys.argv
 assert '--no-container-mount-home' in sys.argv
@@ -173,6 +179,24 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertEqual(result["code"],1,result)
         self.assertNotIn("READY",result["events"])
         self.assertFalse(result["cleaned"])
+
+    def test_global_gpu_ordinal_is_resolved_to_visible_uuid(self):
+        # Fake NVML exposes physical minor1 as visible index0. -i1 returns6,
+        # reproducing the old preparation failure without a GPU allocation.
+        result = self.run_job()
+        self.assertEqual(result["code"], 0, result)
+        gpu = result["manifest"]["receipt"]["physical_gpu_preflight"]
+        self.assertEqual(gpu["slurm_assignment"], "1")
+        self.assertEqual(gpu["visible_index"], "0")
+        self.assertEqual(gpu["uuid"], "GPU-abcd")
+
+    def test_gpu_query_failure_retains_diagnostic_and_never_starts(self):
+        result = self.run_job(gpu_query_failure=True)
+        self.assertEqual(result["code"], 1, result)
+        self.assertNotIn("READY", result["events"])
+        failure = result["manifest"]["receipt"]["failure"]
+        self.assertIn("query exit 6", failure)
+        self.assertIn("No devices were found", failure)
 
     def test_multiple_output_parts_have_completion_manifest(self):
         result=self.run_job(result_part_bytes=128)

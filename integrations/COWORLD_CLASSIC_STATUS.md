@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## Job35830 preparation failure and CPU fix (2026-10-03 01:35 UTC)
+
+Authoritative terminal receipt: FAILED, ExitCode6:0, prepare phase, start
+00:39:25/end00:39:26UTC, Nice2147483645/Priority1 unchanged. No training or input
+download occurred. Verified artifacts remain at
+`/tmp/relh-generals-portable-result-35830` and S3 prefix
+`relh/generals-classic-results-20261003T003916Z-ffe0043a`. No source/result was
+removed. Host scratch exists but is owned by UID1000/ec2-user; current compute
+SSH user is UID1002/relh. Submit-host default SSH is UID1000/metta. No identity,
+permission, prolog, scheduler, or other user's resource was changed.
+
+Preparation used the Slurm global GRES number as nvidia-smi's visible device
+index. This is invalid under cgroup device filtering. A bounded CPU reproduction
+exposes physical minor1 at visible index0: old --id=1 returns6, UUID lookup
+succeeds. Host checks and in-container telemetry now resolve the single visible
+GPU to its UUID; ambiguous visibility fails closed. NVIDIA query diagnostics and
+selected GPU environment are now retained. All23 host/submission/lifecycle tests
+pass (`/tmp/relh-generals-35830-fix-cpu.log`), including the remapped-ID case,
+query failure, occupied GPU, signal/wait/upload ordering, and submission retry
+refusal. The old runner discarded NVIDIA stdout/stderr, so the retained receipt
+cannot retrospectively prove the exact device mapping; the next bounded pilot
+must confirm it. NVIDIA documents6 as failed object lookup:
+https://docs.nvidia.com/deploy/nvidia-smi/index.html
+Slurm documents cgroup-relative visibility:
+https://slurm.schedmd.com/gres.html
+
+Live readback found B300 IDLE, CPUAlloc0, all eight physical GPUs empty and no
+live Generals job. Therefore no paid fallback reservation is needed for queue
+delay at this point. The updated Autoresearch brief was read; funded service
+access is available, and a minimal current quote/reservation is required if
+Slurm delays a qualified run. No paid node, smoke, billing change, or reservation
+was made. The current8192-env setup needs about198GiB, so H100 fallback requires
+smaller geometry plus CPU/image requalification before spending.
+
+
 ## One-shot continuation armed (2026-10-03 00:13 UTC)
 
 The transfer-to-pilot sequence is running, currently waiting for all verified
