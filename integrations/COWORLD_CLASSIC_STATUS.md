@@ -1,5 +1,61 @@
 # Softmax Coworld Classic 1v1 training
 
+## Final35867 hosted screen below target; four-worker qualification35870 running (2026-10-03)
+
+All64 hosted episodes/replays audited for policy1cc80ca9-13a1-464b-8f4e-0e713ee70ca6:
+Daveey12W20L (seat0:5/16,seat1:7/16); incumbent16W16L (7/16,9/16).
+Zero runtime failures, timeouts, or illegal moves; all ended by general capture.
+64distinct seeds, zero seed overlap with prior35863 panel. Thus no new strong-win
+claim, no confirmation panel or champion change. Local67.8% gains did not improve
+Daveey screen point estimate. Evidence `hosted-results-summary.json` and
+`hosted-replay-panel-audit.json` under `/tmp/relh-generals-serving-35867-final`.
+Watcher/finalizer finished; do not recreate these completed XP requests.
+
+Selected final remains the verified training parent for a controlled execution
+probe, with model/optimizer/reward/curriculum/pool unchanged. Staged input
+`/tmp/relh-generals-portable-siege-workers4-input` starts1619001344, ends1627389952
+(8388608newsteps), classic_siege_workers4, ten frozen+three scripted opponents,
+weights[1,1,2,2,2,2,8,8,8,8,8,6,6],25%curriculum. Native source
+1979e5357bccbfe925a0f439854f4c4e06840023528504dfc2dc75e9f357d367.
+Current actual128-game full-pool CPU legal/finite/reset proof passed; initial
+harness-only wrong metadata key fixed. Exact pinned66660f4b image prepare_run
+restored final policy/Muon and four-worker configuration. Initial fixture used
+an evaluation archive lacking build/puffer; corrected to retained original
+35867 training build. Logs preserved; final proof marker
+ACTUAL_NATIVE_PREPARE_RUN_RESUME_OK in
+`/tmp/relh-generals-siege-workers4-resume-image-proof/image-cpu.log`.
+Current readiness `...siege-workers4-staged-cpu-readiness.json`.
+
+ONE bounded job **35870**, started16:38:50UTC, Slurm-selectedmetta-fabric-b300-1,
+GPU0 UUIDGPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7. 1B300/8CPU/96GiB/60min,
+Nice2147483645/Priority1 unchanged at submission/readback; no priority errors.
+Training geometry8192games/H256/minibatch8192 previously used202090MiB GPU,
+so B300 is justified; this is not the small4090 evaluation footprint. All8GPUs
+physically0MiB/0% before submission. Other owners35864/35865 untouched; no paid
+node/spending. Source/launcher0c75e36; full CPU/lifecycle gates passed before GPU.
+
+B300 scratch1.2TiB/111051 free inodes at preflight. Budget calibrated to measured
+29244image inodes plus input/build and~30000reserve:60000both initial/pre-step
+floors; no other jobs/files/containers removed. After unpack/build77215 free,
+still above floor. Existing source/results and failed-job scratch preserved.
+Job passed smoke/build and entered sampling gate; NO steady-state SPS yet.
+Image parts use audited4-way bounded downloader. Input key
+`relh/generals-siege-workers4-20261003T163421Z-67be8f59/input.part000`, SHA
+3b4a5f9b27401515716a780bf91d2abfcb4fb0ce8de48cfed2523bba27b907af (193698240bytes).
+Results `relh/generals-classic-results-20261003T163815Z-40bc8541` in sandboxS3.
+Launch `/tmp/relh-generals-siege-workers4-launch.json`; receipt
+`/tmp/relh-generals-siege-workers4-0ce0a3fa.receipt.json`. One live terminal
+collector `...collect-35870-when-terminal.py`, observer `...monitor-35870.py`.
+Do not duplicate jobs/collectors. Prepared read-only same-allocation observer
+`...observe-35870.py` only after existing container/step verified, and summary
+`...summarize-35870.py` for parent/child (8M has no midpoint panel).
+
+Next: measure real warm SPS/reward/legality/held-out result; only then longer
+training with qualified execution. The72,315.586SPS serial run is a historical
+control with a different starting checkpoint, not an exactly paired runtime
+experiment. Goal remains active: meaningful learning/alignment demonstrated,
+but strong hosted wins and substantially higher training throughput unproven.
+
 ## 35869 recovered all comparisons; final35867 privately hosted (2026-10-03)
 
 35869 COMPLETED0:0 at16:19:43UTC (start16:00:49), same maxNice2147483645 /
