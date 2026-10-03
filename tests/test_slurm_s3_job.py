@@ -18,7 +18,7 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
-                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False):
+                image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False, batch_gpu_absent=False):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -32,15 +32,20 @@ class S3JobTests(unittest.TestCase):
                 "scontrol": f"print('JobId=999 Nice={100 if low_nice else 2147483645} Priority=1 TimeLimit=00:10:00')",
                 "squeue": "import pathlib; print('999.0' if pathlib.Path('writing').exists() else '')",
                 "enroot": "import pathlib; assert not pathlib.Path('writing').exists(); pathlib.Path('cleaned').touch()",
-                "nvidia-smi": f'''import sys
-if {gpu_query_failure!r} or '--id=1' in sys.argv:
+                "nvidia-smi": f'''import sys,os
+if {gpu_query_failure!r} or '--id=1' in sys.argv or ({batch_gpu_absent!r} and not os.environ.get('SLURM_STEP_GPUS')):
     print('No devices were found', file=sys.stderr); sys.exit(6)
-if '--query-gpu=index,minor_number,uuid' in sys.argv: print('0, 1, GPU-abcd')
+if any('minor_number' in a for a in sys.argv): sys.exit(2)
+if '--query-gpu=index,uuid' in sys.argv: print('0, GPU-abcd')
 elif '--query-compute-apps=pid' in sys.argv: print({repr('123' if busy_gpu else '')})
 else: print('GPU-abcd, 0, 0')
 ''',
                 "srun": '''import os,sys
 assert '--nice=2147483645' in sys.argv
+assert '--gres=gpu:1' in sys.argv
+os.environ['SLURM_STEP_GPUS']='1'
+from integrations.slurm_s3_job import verify_allocated_gpu_idle
+verify_allocated_gpu_idle()
 assert '--no-container-mount-home' in sys.argv
 assert any(x.startswith('--container-name=relh-generals-999') for x in sys.argv)
 index = sys.argv.index('--')
@@ -118,7 +123,8 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
                 stdout, stderr = process.communicate(timeout=15)
                 events = (root / "events").read_text().splitlines() if (root / "events").exists() else []
                 result = dict(code=process.returncode, events=events, scratch=(root/"relh-generals-999").exists(),
-                              cleaned=(root/"cleaned").exists(), stdout=stdout, stderr=stderr)
+                              cleaned=(root/"cleaned").exists(), stdout=stdout, stderr=stderr,
+                              smoke_log=(root/"relh-generals-999/out/smoke.log").read_text() if (root/"relh-generals-999/out/smoke.log").exists() else "")
                 manifest = root / "uploaded-result-manifest.json"
                 if manifest.exists():
                     result["manifest"] = json.loads(manifest.read_text())
@@ -185,16 +191,21 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         # reproducing the old preparation failure without a GPU allocation.
         result = self.run_job()
         self.assertEqual(result["code"], 0, result)
-        gpu = result["manifest"]["receipt"]["physical_gpu_preflight"]
-        self.assertEqual(gpu["slurm_assignment"], "1")
-        self.assertEqual(gpu["visible_index"], "0")
-        self.assertEqual(gpu["uuid"], "GPU-abcd")
+        self.assertEqual(result["manifest"]["receipt"]["batch_gpu_visibility"], "0, GPU-abcd")
+
+    def test_batch_without_devices_does_not_skip_step_gpu_gate(self):
+        result = self.run_job(batch_gpu_absent=True)
+        self.assertEqual(result["code"], 0, result)
+        self.assertIn("query exit 6", result["manifest"]["receipt"]["batch_gpu_visibility"])
+        busy = self.run_job(batch_gpu_absent=True, busy_gpu=True)
+        self.assertEqual(busy["code"], 1, busy)
+        self.assertNotIn("READY", busy["events"])
 
     def test_gpu_query_failure_retains_diagnostic_and_never_starts(self):
         result = self.run_job(gpu_query_failure=True)
         self.assertEqual(result["code"], 1, result)
         self.assertNotIn("READY", result["events"])
-        failure = result["manifest"]["receipt"]["failure"]
+        failure = result["smoke_log"]
         self.assertIn("query exit 6", failure)
         self.assertIn("No devices were found", failure)
 

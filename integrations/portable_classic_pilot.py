@@ -105,6 +105,9 @@ def command(module, *args, name, seconds=600, train=False):
 
 
 def smoke():
+    from integrations.slurm_s3_job import verify_allocated_gpu_idle
+    identity = verify_allocated_gpu_idle()
+    (OUT / "gpu-preflight.json").write_text(json.dumps(identity, indent=2) + "\n")
     import jax
     if len(jax.devices("gpu")) != 1:
         raise RuntimeError("Expected exactly one allocated JAX GPU")

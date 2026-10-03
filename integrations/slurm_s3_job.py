@@ -41,17 +41,31 @@ def allocated_gpu_identity(environ=None):
     assigned = environ.get("SLURM_STEP_GPUS") or environ.get("SLURM_JOB_GPUS", "")
     if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", assigned):
         raise RuntimeError("Expected one controller-provided GPU assignment")
-    rows = gpu_query("--query-gpu=index,minor_number,uuid", "--format=csv,noheader,nounits").splitlines()
+    rows = gpu_query("--query-gpu=index,uuid", "--format=csv,noheader,nounits").splitlines()
     if len(rows) != 1:
         raise RuntimeError(f"Expected exactly one cgroup-visible GPU; observed {len(rows)}")
     fields = [field.strip() for field in rows[0].split(",")]
-    if (len(fields) != 3 or not fields[0].isdigit() or not fields[1].isdigit()
-            or not re.fullmatch(r"GPU-[a-fA-F0-9-]+", fields[2])):
+    if (len(fields) != 2 or not fields[0].isdigit()
+            or not re.fullmatch(r"GPU-[a-fA-F0-9-]+", fields[1])):
         raise RuntimeError("Unrecognized visible GPU identity")
-    if assigned.startswith("GPU-") and assigned != fields[2]:
+    if assigned.startswith("GPU-") and assigned != fields[1]:
         raise RuntimeError("Visible GPU UUID differs from controller assignment")
-    return dict(slurm_assignment=assigned, visible_index=fields[0],
-                minor_number=fields[1], uuid=fields[2])
+    return dict(slurm_assignment=assigned, visible_index=fields[0], uuid=fields[1])
+
+
+def verify_allocated_gpu_idle():
+    identity = allocated_gpu_identity()
+    processes = gpu_query("--id=" + identity["uuid"], "--query-compute-apps=pid",
+                          "--format=csv,noheader,nounits")
+    if processes:
+        raise RuntimeError("Allocated physical GPU already has compute processes; leaving them untouched")
+    row = gpu_query("--id=" + identity["uuid"],
+                    "--query-gpu=uuid,memory.used,utilization.gpu", "--format=csv,noheader,nounits")
+    fields = [field.strip() for field in row.split(",")]
+    if len(fields) != 3 or fields[0] != identity["uuid"] or float(fields[1]) >= 2048 or float(fields[2]) >= 20:
+        raise RuntimeError("Allocated physical GPU is not idle before workload startup")
+    identity.update(memory_mib=float(fields[1]), utilization_percent=float(fields[2]))
+    return identity
 
 
 class JobSignal(Exception):
@@ -144,7 +158,16 @@ class SlurmJob:
             path.mkdir(mode=0o700)
             self.runtime_env[variable] = str(path)
         self.runtime_env["ENROOT_MAX_PROCESSORS"] = str(self.config.get("cpus", 8))
-        self.verify_gpu_idle()
+        self.receipt["gpu_environment"] = {
+            key: os.environ.get(key) for key in
+            ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS", "CUDA_VISIBLE_DEVICES", "NVIDIA_VISIBLE_DEVICES")}
+        # A batch shell is not the GPU execution context. Record its visibility,
+        # but enforce device ownership/occupancy inside the allocated Pyxis step.
+        try:
+            self.receipt["batch_gpu_visibility"] = gpu_query(
+                "--query-gpu=index,uuid", "--format=csv,noheader,nounits")
+        except RuntimeError as error:
+            self.receipt["batch_gpu_visibility"] = str(error)
         if time.time() + self.config["runtime_seconds"] + 600 >= self.config["credential_expiry"]:
             raise RuntimeError("Signing credentials expire too soon for this allocation")
         archive = self.root / "input.tar.gz"
@@ -180,22 +203,6 @@ class SlurmJob:
             if digest.hexdigest() != self.config["image_sha256"]:
                 raise ValueError("Reassembled image digest differs")
 
-    def verify_gpu_idle(self):
-        self.receipt["gpu_environment"] = {
-            key: os.environ.get(key) for key in
-            ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS", "CUDA_VISIBLE_DEVICES", "NVIDIA_VISIBLE_DEVICES")}
-        identity = allocated_gpu_identity()
-        self.receipt["physical_gpu_preflight"] = identity
-        processes = gpu_query("--id=" + identity["uuid"], "--query-compute-apps=pid",
-                              "--format=csv,noheader,nounits")
-        if processes:
-            raise RuntimeError("Allocated physical GPU already has compute processes; leaving them untouched")
-        row = gpu_query("--id=" + identity["uuid"],
-                        "--query-gpu=uuid,memory.used,utilization.gpu", "--format=csv,noheader,nounits")
-        fields = [field.strip() for field in row.split(",")]
-        if len(fields) != 3 or fields[0] != identity["uuid"] or float(fields[1]) >= 2048 or float(fields[2]) >= 20:
-            raise RuntimeError("Allocated physical GPU is not idle before workload startup")
-        identity.update(memory_mib=float(fields[1]), utilization_percent=float(fields[2]))
 
     def run_step(self, name, argv, seconds):
         # Repeat immediately before Pyxis/Enroot may unpack an image.
@@ -208,7 +215,7 @@ class SlurmJob:
         mounts = f"{self.root}:/work"
         if self.config.get("mount_recovery"):
             mounts += f",{self.root}/input/recovery:/recovery:ro"
-        command = ["srun", f"--nice={NICE}", "--nodes=1", "--ntasks=1",
+        command = ["srun", f"--nice={NICE}", "--nodes=1", "--ntasks=1", "--gres=gpu:1",
                    "--kill-on-bad-exit=1", "--unbuffered",
                    f"--container-image={image}",
                    f"--container-name={self.container}", "--no-container-mount-home",

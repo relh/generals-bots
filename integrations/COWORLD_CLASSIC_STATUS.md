@@ -1,5 +1,33 @@
 # Softmax Coworld Classic 1v1 training
 
+## Follow-up35833: diagnostic field correction and execution-context gate
+
+Job35833 terminated in1second, FAILED/ExitCode1:0, Nice2147483645/Priority1
+unchanged. Verified results `/tmp/relh-generals-portable-result-35833` and S3
+`relh/generals-classic-results-20261003T013729Z-24fda26b` are preserved.
+The new retained diagnostic is exact: nvidia-smi exit2, `minor_number` is not a
+valid query field. This was introduced by the first fix, not evidence that the
+original35830 mapping hypothesis was correct. Actual batch environment was
+SLURM_JOB_GPUS=0, CUDA_VISIBLE_DEVICES=0, no SLURM_STEP_GPUS.
+
+Removed unsupported field; verified all three NVIDIA query forms against the
+installed B300 driver using read-only SSH metadata queries. Mandatory UUID,
+occupancy and memory/utilization checks now execute inside the allocated Pyxis
+smoke step before JAX initialization. Every srun explicitly requests gres/gpu:1.
+Batch visibility is diagnostic only; batch NVML visibility cannot qualify or
+reject the separately constrained GPU execution context. Multiple visible GPUs
+or occupied GPU in the workload step still fail closed. No identity, prolog,
+permissions, device cgroup or scheduling priority was changed.
+
+CPU evidence:24 lifecycle/submission/host tests pass, including absent batch
+GPU with valid step visibility, busy step GPU, global/local ID mismatch,
+unsupported-field rejection and query failure diagnostics. Two additional tests
+exercise the actual pilot smoke entry point and prove occupancy rejection occurs
+before JAX or configuration creation. Logs:
+`/tmp/relh-generals-35833-fix-cpu.log` and
+`/tmp/relh-generals-pilot-gpu-gate-cpu.log`.
+
+
 ## Job35830 preparation failure and CPU fix (2026-10-03 01:35 UTC)
 
 Authoritative terminal receipt: FAILED, ExitCode6:0, prepare phase, start
