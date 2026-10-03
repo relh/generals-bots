@@ -1,5 +1,29 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35882 midpoint verified; second-half training continues (2026-10-03)
+
+Authoritative job 35882 is RUNNING at 21:18 UTC, still the only task GPU job.
+Verified midpoint: 2,298,478,592 total steps (134,217,728 new), policy SHA
+`cb66b51f64f76db628225cf7b8fcd6ce09878617fe9fb75d9383f3ad9c0a589a`, Muon SHA
+`4c729854ea900cbd93dd4750124a6051b1dbf3cbc286018c1154700029ea802e`. Hashes match the on-node snapshot identity.
+Reward audit: 188,808 terminal games, zero nonfinite or clipped rewards.
+Epoch 1035 (137.275 s) -> 1096 (1451.923 s): 127,926,272 completed environment
+steps / 1314.648 s = 97308.384 SPS. Latest two-epoch rate
+97,036.461 SPS. Same qualified hardware, geometry and lowest scheduling priority.
+This proves a saved training checkpoint, NOT held-out or hosted strength.
+
+Midpoint observer 78983 finished successfully. Its retained output is
+`/tmp/relh-generals-35882-midpoint-window.jsonl`. Sole current observation step:
+completion observer session 49461, `/tmp/relh-generals-observe-completion-window-35882.py`,
+output `/tmp/relh-generals-35882-completion-window.jsonl` and sibling stderr.
+It has a 30-minute internal bound / 32-minute step and exits within ten seconds
+of owned training PID exit or completed.json, before evaluation starts. No duplicate
+observer. Controller 26879, collector 24853 and physical monitor 81855 continue.
+Expected final 2,432,696,320 steps, then same-job parity and parent/mid/final panels.
+Wait for actual terminal receipt and RESULTS_VERIFIED before selection or publication.
+Prepared held-out defense probe evaluation is also pending actual exports.
+Goal remains active; latest hosted is 10/32 Daveey, 17/32 incumbent; no promotion.
+
 ## 35882 quarter-run healthy; exact final-turn defense diagnostic retained (2026-10-03)
 
 Previous goal turn made progress: completed/collected 35879, finished actual hosted
