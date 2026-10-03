@@ -1,5 +1,37 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 completed: refreshed-pool improvement, hosted validation pending (2026-10-03 10:32 UTC)
+
+Job **35860 COMPLETED 0:0** at 10:25:21 UTC. Nice **2147483645 / Priority 1**
+remained unchanged before/after; finite 02:00:00 limit. No scheduling errors,
+priority changes, duplicate task job, or funded node. Receipt:
+`/tmp/relh-generals-generation-9f270eb0.receipt.json`. Immutable source
+`e4417be4d874ad2fc715ffc24f4ebca3cb2db9e3`; S3 results
+`relh/generals-classic-results-20261003T092301Z-8e4131c3` were downloaded and
+verified: 277,700,905 bytes, SHA256
+`fc1e527408eb43404e3fff3aaa1953305c005efd9230ff2e557965ebe736e9d3`.
+Retained local result: `/tmp/relh-generals-portable-result-35860`.
+
+Fresh paired 4,096-game / 2,558-initial-state evaluation of the refreshed pool:
+parent **1,916 W / 2,105 L / 75 D**; midpoint **1,911 / 2,112 / 73**;
+final **2,023 / 2,009 / 64**. Final minus parent signed-score delta **+0.04956**,
+initial-state-cluster 95% CI **[+0.01858, +0.08056]**; final minus midpoint
+**+0.05249 [ +0.02188, +0.08323 ]**. These are matched comparisons within this
+pool, not across different pools. The final checkpoint at **805,306,368**
+steps is selected for hosted validation, SHA256
+`f8df1ccd67a1a08ac65788343ed4b51af50068aebd7d028d8699f0e32966c78c`.
+Both checkpoints passed native GPU/NumPy serving parity **46/46**; final
+maximum probability difference 1.25169754e-6. Steady training **107,723 SPS**,
+268,435,456 new actions / zero illegal, 381,034 terminals / zero nonfinite or
+clipped rewards; full geometry and warmup recorded below.
+
+Exact candidate serving-image CPU golden/wire checks are now running from the
+qualified 35858 base. No 35860 hosted policy or XP request yet. Prior 35858
+hosted results remain **3/32 vs Daveey, 10/32 vs incumbent**, so the strength
+goal is not achieved. Next: candidate CPU readiness, private hosted screen,
+then use actual game outcomes to steer the next generation. Preserve all
+source/results and maximum-positive-Nice policy; goal remains active.
+
 ## 35860 training complete, evaluation running (2026-10-03 10:15 UTC)
 
 The sole task job **35860** finished **268,435,456 new environment steps**,
