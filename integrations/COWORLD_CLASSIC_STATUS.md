@@ -1,5 +1,42 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 completed; final checkpoint selected for hosted screen (2026-10-03)
+
+Job 35879 completed 0:0 at 20:30:28 UTC. All S3 results were downloaded and
+hash-verified at `/tmp/relh-generals-portable-result-35879`; verification log
+`/tmp/relh-generals-35879-collected.txt`. No task GPU job remains active.
+Controller receipt `/tmp/relh-generals-siege-generation4-4ebcd02c.receipt.json`:
+Nice 2147483645 / Priority 1 before and after; finite 02:00:00; one B300 on
+metta-fabric-b300-1, 8 CPUs, 96 GiB host memory. No escalation or paid spend.
+
+Completed 268,435,456 new steps, 1,895,825,408 -> 2,164,260,864;
+378,521 terminal games, zero illegal actions, nonfinite rewards or clipped rewards.
+8192 environments, horizon 256, minibatch 8192, replay ratio 0.5, four opponent
+workers. Excluding compilation/warmup, epoch 907 (144.012 s) to 1032 (2873.539 s)
+completed 262,144,000 steps / 2729.527 s = 96,040.083 SPS. Final audit interval:
+98,418.565 SPS. GPU memory about 202,090 MiB, observed utilization about 45–64%.
+
+Fresh matched held-out panels: 4096 games / 2589 distinct initial states.
+Parent 2801 W / 1263 L / 32 D; midpoint 2879 W / 1187 L / 30 D;
+final 2937 W / 1128 L / 31 D. Final-parent signed score delta +0.0661621,
+clustered 95% CI [+0.0364299, +0.0957760]. Midpoint-parent interval also positive;
+final-midpoint interval [-0.0009747, +0.0573878] remains inconclusive.
+Native siege wins 185 -> 209 -> 211. Selected final for hosted screening only.
+Final policy SHA `5b05a0a88aa35564f432d9add108a9c37427a7c3086ed9aed0a3d931eafd62a6`.
+Both checkpoint GPU serving audits passed 46/46 actions; final maximum probability
+error 9.23872e-7. Selection `/tmp/relh-generals-35879-serving-selection.json`.
+Candidate serving image and 64 late-state CPU parity checks are currently running;
+no new policy or XP request has been created yet. Prior hosted 35876 remains
+9/32 wins against Daveey and 19/32 against incumbent: strength gate NOT met.
+
+Fresh Observatory reads confirm unchanged Daveey v7 and relh siege v4 targets,
+and exact pinned Classic arena manifest v0.3.3. Readbacks:
+`/tmp/relh-generals-35879-pre-xp-{leaderboard,champions}.json` and
+`/tmp/relh-generals-35879-coworld-current.json`.
+Terminal receipt confirms ONLY `pyxis_relh-generals-35873` was retired after its
+archive verification; old source/results/scratch preserved. Successful current
+job completed evaluation, upload and cleanup. No Codex history or database touched.
+
 ## 35879 late training healthy; distant-threat responsiveness verified (2026-10-03)
 
 Sole35879 continuestraining. Latestobserverepoch1013,97685.07348SPS;
