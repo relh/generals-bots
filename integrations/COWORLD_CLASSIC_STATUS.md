@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 midpoint verified (2026-10-03 09:54 UTC)
+
+The sole active Generals run remains **35860**, Nice **2147483645 / Priority
+1**, finite through 11:24:40 UTC. Its midpoint at learner counter
+**671,088,640** is saved and matches the recorded checkpoint identity:
+`2d9dfe479eef5191f1802a5bfb2f20d4ea0d49d7876745ef988e2cb76971936f`.
+At epoch 321, 136,314,880 new steps were fully optimized. Latest reward audit
+covers 134,217,728 steps / **189,185 terminal games**, zero nonfinite or clipped
+rewards. Complete final action and strength audits remain pending.
+
+Epochs 319→321 advanced 4,194,304 steps in 38.850 seconds = **107,961.493
+steady-state SPS**. Same one-B300 / 8,192-environment / horizon-256 /
+minibatch-8,192 geometry; first resumed epoch 97.895 seconds. GPU memory
+202,090 MiB, recent utilization 51–63%. Evidence:
+`/tmp/relh-generals-35860-live-midpoint.json`.
+
+Checkpoint-selectable serving build, private upload, strict 64-record hosted
+watcher, summary, and replay-audit scripts for this run are prepared and
+syntax-checked, but not executed. Their paths/hashes are recorded in
+`/tmp/relh-generals-35860-hosted-preparation.json`. They require selection after
+completed evaluation and retain the qualified 35858 serving runtime as base.
+No new image, policy, XP request, or second GPU job has been created.
+
+A bounded public search did not locate a verified Daveey Generals training
+configuration. This is not proof that none exists; do not infer v7 settings
+from older public PufferLib branches. Search scope retained in
+`/tmp/relh-generals-daveey-public-search-20261003.json`. Continue the actual
+fresh-map and hosted comparisons. Goal remains active and the latest hosted
+strength gate still fails (3/32 Daveey, 10/32 incumbent).
+
 ## 35860 refreshed pool passes throughput gate (2026-10-03 09:35 UTC)
 
 The active run has fully optimized **12,582,912 new environment steps** through
