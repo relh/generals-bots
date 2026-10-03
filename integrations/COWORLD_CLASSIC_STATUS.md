@@ -1,5 +1,46 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35867 trained successfully; evaluation recovery 35868 running (2026-10-03 15:18 UTC)
+
+35867 terminal FAILED at 15:03:19 UTC only in evaluation: missing nominal
+midpoint 1484783616. All output parts were collected and hash-verified in
+`/tmp/relh-generals-portable-result-35867`. Trainer completed 268435456 new
+steps, cumulative 1619001344, at 72315.5862 environment SPS; 388463 terminal
+games, zero illegal actions and nonfinite/clipped rewards. Final GPU/serving
+parity passed 46/46. No fresh held-out or hosted strength claim yet.
+
+Midpoint-grid fix 2af8203 selects actual retained 1476395008 (epoch704),
+without relabeling it as epoch708. Recovery restores verified original serial
+opponent inputs and policy/optimizer pairs; only evaluator/restore code changes.
+Actual staged-input pinned-image CPU proof passed; 27 launcher/lifecycle tests
+and 11 subtests passed. Native CPU full export matched retained GPU parameters.
+Two optional QEMU full graph exports timed out420s; not reported as passes.
+
+One evaluation-only job **35868** started15:18:18UTC on Slurm-selected metta0:
+RTX4090, 8CPU,32GiB host RAM,45min. Nice2147483645/Priority1 at submission and
+readback, unchanged; no priority errors/escalation. No other Generals job live.
+Physical preflight:1MiB GPU memory/0%utilization, driver580.173.02;742GiB scratch
+and232.5M free inodes. Other owners35864/35865 untouched. No paid GPU spending.
+Job excludes prohibited metta4, no nodelist; host sbatch and per-step Pyxis.
+Same-job smoke/restore/evaluate; zero optimizer updates. Actual evaluation GPU
+peak and completion remain unverified. Do not reuse B300 training memory as an
+evaluation requirement. One monitor and one terminal collector only.
+
+Source/launcher c3d82d1; original training6e03bd1, original serial native SHA
+3b68a8ab27ca2bde301986082611dcbe3758cc4b7e5f0a3b4267ce66aeac4708 (workers1).
+Input: `relh/generals-35867-evaluation-20261003T150819Z-6fc25bdb/input.part000`,
+SHA d9dddc51270c66599a90a813080caf4dc78f2a1b362e98bfc44d215c16b5b010.
+Results: `relh/generals-35867-evaluation-results-20261003T151751Z-310804eb`
+in sandbox softmax-slurm-artifacts. Receipt
+`/tmp/relh-generals-eval-recovery-04c0ed5e.receipt.json`; launch
+`/tmp/relh-generals-35867-evaluation-launch.json`; result destination
+`/tmp/relh-generals-portable-result-35868`. URLs remain private.
+
+Next: verify recovered parent/mid/final panels, select actual best checkpoint,
+rebuild audited serving image, then fresh private hosted games. Latest hosted
+35863 remains12/32 against Daveey and12/32 against incumbent; acceptance unmet,
+no champion change. Goal remains active. Preserve all source/results/history.
+
 ## Evaluation-only recovery prepared; smaller GPU placement audited (2026-10-03)
 
 35867 remains the sole live task job. No recovery job submitted. Last native
