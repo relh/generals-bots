@@ -1,5 +1,26 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35867 live continuation passes steady throughput at72.24kSPS (2026-10-03)
+
+Authoritative controller35867 RUNNING, Nice2147483645/Priority1 unchanged,
+finite end15:50:07UTC. Live native console completed epochs645→649:
+first645 at104.769s;647 at162.756s;649 at220.815s. Interval4194304steps /
+58.059s = **72242.098555 environmentSPS**, including rollout/optimization.
+OneB300/8192games/H256/minibatch8192/replay.5;202090MiB GPU memory,
+32–36% sampled utilization; other7 GPUs0MiB/0%, no physical contention.
+10,485,760new steps completed by epoch649. Latest less-frequent reward audit
+covers8,388,608steps/9431terminalgames, no nonfinite/clipped rewards.
+All13 opponent types have equal positive allocations on both seats;
+restored learnerSHA60db2698… matches exact staged/image CPU proof.
+
+Evidence `/tmp/relh-generals-35867-live-training4.json`, prior startup/training
+snapshots retained. One temporary read-only observer failed trying to read
+receipt.json before finalization; changed observer to infer phase from existing
+phase logs. This did not affect the training job or require resubmission.
+Single submit monitor and collector remain active. No next allocation or
+hosted requests created. Fresh learning panels and hosted strength remain
+pending; this verifies runtime health, not improved win rate. Goal active.
+
 ## Sole native siege continuation35867 running,268M additional steps (2026-10-03)
 
 Job**35867** starts13:50:07UTC on Slurm-selected metta-fabric-b300-1,
