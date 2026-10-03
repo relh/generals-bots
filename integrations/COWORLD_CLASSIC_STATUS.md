@@ -1,5 +1,31 @@
 # Softmax Coworld Classic 1v1 training
 
+## Opponent-weight pilot 35887 launched (2026-10-03 22:22 UTC)
+
+One bounded job, 35887, is RUNNING on Slurm-selected metta-fabric-b300-1.
+Controller readback: Nice 2147483645 / Priority 1 at submission and first
+monitor readback, TimeLimit 01:00:00, one B300 / 8 CPUs / 96 GiB. No priority
+mutation or other live Generals job. Full preflight found only unrelated
+35874/35875 on 4090 nodes; all eight physical B300 GPUs were idle, no CUDA
+processes, 1.2 TiB scratch space and 88,247 free inodes. B300 required by the
+previous measured ~202 GiB device footprint. No funded node or spend.
+
+Source/launcher af8a5d4e4a99236f0a9be65396964cf9c93ce440. Immutable input
+193,766,189 bytes, SHA 2db5353b7fc3ef4309eee0819e0583b7959e45e86df72356cb71a2eb28e3e814,
+469 extracted file hashes checked. Existing audited image ID 66660f4bb0d8793989a6940bc09109d42f63a6ef15544864fb279d16b0ad4e51.
+Results key: `relh/generals-classic-results-20261003T222200Z-b7d3ecea`
+in sandbox softmax-slurm-artifacts. Private signed config and script stay out
+of git. Receipt `/tmp/relh-generals-prioritized-pool-91e97a8d.receipt.json`;
+launch `/tmp/relh-generals-prioritized-pool-launch.json`.
+
+Controller session 71868 captures terminal state; collector 76260 waits for
+terminal then verifies outputs; physical observer 23939 samples utilization.
+Observer setup initially had a duplicated local path prefix and failed before
+collection; corrected without submitting/restarting any GPU work. Local logs
+retain the error. GPU phases use the existing tested stop/wait/upload lifecycle.
+No throughput or strength conclusion yet. Parent/midpoint/final comparisons,
+serving parity, and held-out tactical diagnostic are required before scaling.
+
 ## 35882 hosted result and bounded opponent-weight pilot readiness (2026-10-03)
 
 35882 final policy af9033e5-55f9-4a33-95fc-93955181ef75 completed 64 fresh
