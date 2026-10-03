@@ -223,6 +223,105 @@ class ContinuationTests(unittest.TestCase):
         self.assertEqual(build["python_environment"]["options"]["classic_siege_workers"], 4)
         self.assertEqual(audit["native_opponent_execution"], "preserve")
 
+    def reweight_panel(self):
+        self.native_parent(workers=4)
+        options = json.loads((self.parent / "run/training.json").read_text())["build"]["config"][
+            "python_environment"]["options"]
+        hashes = [e["sha256"] for e in self.data["frozen_bundles"]]
+        names = ["frozen_" + sha[:12] for sha in hashes] + options["scripted_opponents"]
+        panel = dict(checkpoint_sha256=self.identity["policy_sha256"],
+                     frozen_policy_sha256=hashes, opponent_weights=options["opponent_weights"],
+                     coworld_classic_rules=True, games=4096, wins=0, losses=0, draws=0,
+                     by_opponent_and_seat={})
+        for index, name in enumerate(names):
+            seats = panel["by_opponent_and_seat"][name] = {}
+            for side in (0, 1):
+                games = 157 + (14 if index == side == 0 else 0)
+                wins = games // 2 if name == "classic_siege_padded" else games * 9 // 10
+                seats[str(side)] = dict(games=games, wins=wins, losses=games - wins, draws=0)
+                panel["wins"] += wins
+                panel["losses"] += games - wins
+        self.data["opponent_weight_generation"] = "squared_nonwin_v1"
+        self.write_panel(panel)
+        return panel
+
+    def write_panel(self, panel):
+        path = self.root / "weight-panel.json"
+        path.write_text(json.dumps(panel))
+        self.data["opponent_evaluation"] = dict(
+            file=path.name, sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+        self.write_manifest()
+
+    def test_reweighting_retains_every_opponent_and_optimizer(self):
+        self.reweight_panel()
+        original = (self.parent / "run/training.json").read_bytes()
+        _, build, run, audit = load_continuation(self.manifest, 33_554_432)
+        weights = build["python_environment"]["options"]["opponent_weights"]
+        self.assertEqual(len(weights), 13)
+        self.assertTrue(all(1 <= value <= 24 for value in weights))
+        self.assertGreater(weights[-1], 6)
+        self.assertTrue(run["initialize"]["restore_learner"])
+        self.assertEqual(run["total_timesteps"], self.steps + 33_554_432)
+        self.assertEqual(audit["opponent_weight_audit"]["weights"], weights)
+        self.assertEqual(audit["opponent_weight_audit"]["games"], 4096)
+        self.assertEqual(audit["frozen_policy_sha256"], [x["sha256"] for x in self.data["frozen_bundles"]])
+        self.assertEqual((self.parent / "run/training.json").read_bytes(), original)
+
+    def test_reweighting_requires_isolated_short_pilot(self):
+        self.reweight_panel()
+        with self.assertRaisesRegex(ValueError, "isolated bounded 33M"):
+            load_continuation(self.manifest, self.steps)
+        self.data["opponent_generation"] = "drop_oldest_append_parent_weight8"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "isolated bounded 33M"):
+            load_continuation(self.manifest, 33_554_432)
+
+    def test_reweighting_rejects_stale_policy_and_bad_counts(self):
+        panel = self.reweight_panel()
+        panel["checkpoint_sha256"] = "wrong"
+        self.write_panel(panel)
+        with self.assertRaisesRegex(ValueError, "resumed policy and pool"):
+            load_continuation(self.manifest, 33_554_432)
+        panel["checkpoint_sha256"] = self.identity["policy_sha256"]
+        panel["by_opponent_and_seat"]["classic_siege_padded"]["0"]["wins"] += 1
+        self.write_panel(panel)
+        with self.assertRaisesRegex(ValueError, "inconsistent outcome counts"):
+            load_continuation(self.manifest, 33_554_432)
+
+    def test_reweighting_rejects_untrusted_or_corrupted_evaluation(self):
+        self.reweight_panel()
+        self.data["opponent_evaluation"]["file"] = "../outside.json"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "escapes"):
+            load_continuation(self.manifest, 33_554_432)
+        self.data["opponent_evaluation"]["file"] = "weight-panel.json"
+        self.write_manifest()
+        (self.root / "weight-panel.json").write_text("{}")
+        with self.assertRaisesRegex(ValueError, "checksum"):
+            load_continuation(self.manifest, 33_554_432)
+
+    def test_reweighting_requires_explicit_recipe(self):
+        self.reweight_panel()
+        self.data["opponent_weight_generation"] = "preserve"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "explicit reweighting"):
+            load_continuation(self.manifest, 33_554_432)
+
+    def test_preserves_previously_reweighted_native_pool(self):
+        self.native_parent(workers=4)
+        training = self.parent / "run/training.json"
+        record = json.loads(training.read_text())
+        weights = [1, 2, 1, 1, 1, 4, 5, 5, 11, 17, 3, 4, 16]
+        record["build"]["config"]["python_environment"]["options"]["opponent_weights"] = weights
+        training.write_text(json.dumps(record))
+        self.identity["run_sha256"] = hashlib.sha256(training.read_bytes()).hexdigest()
+        self.data["run_sha256"] = self.identity["run_sha256"]
+        Path(str(self.state) + ".json").write_text(json.dumps(self.identity))
+        self.write_manifest()
+        _, build, _, audit = load_continuation(self.manifest, self.steps)
+        self.assertEqual(build["python_environment"]["options"]["opponent_weights"], weights)
+        self.assertEqual(audit["opponent_weight_generation"], "preserve")
+
     def test_unknown_worker_recipe_is_rejected(self):
         self.data["native_opponent_execution"] = "all_cpus"
         self.write_manifest()

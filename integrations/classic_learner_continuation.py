@@ -83,12 +83,11 @@ def load_continuation(manifest_path, additional_steps):
     scripts = list(options.get("scripted_opponents", ["expander_harvester", "sentinel"]))
     qualified_scripts = ["expander_harvester", "sentinel"]
     siege_scripts = qualified_scripts + ["classic_siege_padded"]
-    expected_tail = [8, 6] if scripts == qualified_scripts else [8, 6, 6]
     if (
         scripts not in (qualified_scripts, siege_scripts)
         or len(weights) != 10 + len(scripts)
-        or any(isinstance(w, bool) or not isinstance(w, int) or w <= 0 for w in weights)
-        or weights[10:] != expected_tail
+        or any(isinstance(w, bool) or not isinstance(w, int) or not 1 <= w <= 24 for w in weights)
+        or sum(weights) > 256
     ):
         raise ValueError("Expected ten frozen weights and the qualified scripted opponents")
     script_recipe = manifest.get("scripted_opponent_generation", "preserve")
@@ -126,6 +125,30 @@ def load_continuation(manifest_path, additional_steps):
         options["frozen_bundles"] = options["frozen_bundles"][1:] + [str(parent / "bundle")]
         pool_hashes = pool_hashes[1:] + [manifest["policy_sha256"]]
         options["opponent_weights"] = weights[1:10] + [8] + weights[10:]
+    weight_recipe = manifest.get("opponent_weight_generation", "preserve")
+    if weight_recipe not in ("preserve", "squared_nonwin_v1"):
+        raise ValueError("Unknown opponent weight generation recipe")
+    weight_audit = None
+    if weight_recipe == "squared_nonwin_v1":
+        if (
+            additional_steps != 33_554_432
+            or pool_recipe != "preserve"
+            or script_recipe != "preserve"
+            or execution_recipe != "preserve"
+        ):
+            raise ValueError("Opponent reweighting requires an isolated bounded 33M pilot")
+        from integrations.classic_opponent_weights import weights_from_panel
+
+        options["opponent_weights"], weight_audit = weights_from_panel(
+            manifest_path.parent,
+            manifest["opponent_evaluation"],
+            policy_sha256=manifest["policy_sha256"],
+            frozen_sha256=pool_hashes,
+            scripts=scripts,
+            weights=weights,
+        )
+    elif "opponent_evaluation" in manifest:
+        raise ValueError("Opponent evaluation requires an explicit reweighting recipe")
     options["frozen_bundle"] = options["frozen_bundles"][0]
     run["total_timesteps"] = start + additional_steps
     run["initialize"] = dict(
@@ -149,6 +172,8 @@ def load_continuation(manifest_path, additional_steps):
             opponent_generation=pool_recipe,
             scripted_opponent_generation=script_recipe,
             native_opponent_execution=execution_recipe,
+            opponent_weight_generation=weight_recipe,
+            opponent_weight_audit=weight_audit,
             classic_siege_workers=workers,
             scripted_opponents=scripts,
             dropped_opponent_sha256=dropped_sha,

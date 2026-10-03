@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35882 hosted result and bounded opponent-weight pilot readiness (2026-10-03)
+
+35882 final policy af9033e5-55f9-4a33-95fc-93955181ef75 completed 64 fresh
+hosted games: Daveey 12W/20L (seat 0: 4/16; seat 1: 8/16), incumbent
+16W/16L (9/16 and 7/16). Zero failed episodes; raw replay and seed audits
+are retained under `/tmp/relh-generals-serving-35882-final`. No promotion:
+these results do not meet the strong-win gate. Prior job 35882 remains
+COMPLETED 0:0, Nice 2147483645 / Priority 1 before and after; no escalation.
+
+Implemented an isolated 33,554,432-step continuation experiment using
+squared non-win rates from the SHA-verified 4096-game parent panel to select
+opponent weights. All ten frozen and three scripted opponents are retained.
+Weights become [1,2,1,1,1,4,5,5,11,17,3,4,16]; the two hardest opponents
+increase from 14/69 to 33/71 of sampling mass. This is a hypothesis about
+training allocation, not evidence of stronger play. No architecture, reward,
+sampler, optimizer, worker count, or 384-position curriculum change.
+
+CPU evidence: 27 continuation tests and Ruff pass. Actual staged 256-game
+population covers all opponents on both seats, legal sampled actions, finite
+transitions, and native memory reset. The exact immutable training image also
+passes actual policy/Muon restoration, configuration preparation, the bounded
+16-game/four-step self-match CLI, and the full staged population audit.
+Logs: `/tmp/relh-generals-prioritized-pool-cpu-readiness.json`,
+`/tmp/relh-generals-prioritized-pool-image-proof/image-cpu.log`, and
+`/tmp/relh-generals-prioritized-pool-image-driver.log`.
+
+Proposed parent is 35882 final SHA 7c909b8b899a0bbefb03b6248a84ff7a30e621cc26cd806cc92eeb12143c10a6,
+Muon f250db2814641e7d04589490fda6816ccd147c09daa9c16af3e0b6ec8bae6e0d;
+2,432,696,320 to 2,466,250,752 steps. New native sampling fraction may reduce
+throughput, so the bounded pilot must requalify steady environment SPS >=30k
+before any longer continuation. Fresh-map held-out evaluation and hosted
+strength remain required; no win claim or long-run scaling from CPU checks.
+No GPU submission or paid reservation at this record. Maximum Nice, one-job
+limit, immutable S3 source/image/results and terminal receipt capture apply.
+
 ## 35882 completed: local gain, defensive failure persists (2026-10-03)
 
 35882 COMPLETED 0:0 at 21:50:25 UTC; allocation released. Receipt
