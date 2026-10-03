@@ -359,7 +359,10 @@ def train():
         "--output",
         OUT / "run",
         name="train-native",
-        seconds=3240 if STEPS == 268_435_456 else 840,
+        # The qualified native-siege pool sustains ~72k environment SPS;
+        # 268M steps need ~62 minutes before compilation/checkpoint overhead.
+        # The host step and finite Slurm allocation remain the outer limits.
+        seconds=4440 if STEPS == 268_435_456 else 840,
         train=True,
     )
     if not (OUT / "run/completed.json").is_file():

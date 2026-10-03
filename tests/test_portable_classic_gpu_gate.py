@@ -11,6 +11,20 @@ from integrations import portable_classic_pilot as pilot
 
 
 class PilotGateTests(unittest.TestCase):
+    def test_long_training_budget_covers_qualified_siege_throughput(self):
+        class CommandCaptured(Exception):
+            pass
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+                pilot, 'OUT', Path(directory)), patch.object(
+                pilot, 'STEPS', 268_435_456), patch.object(
+                pilot, 'command', side_effect=CommandCaptured) as command:
+            with self.assertRaises(CommandCaptured):
+                pilot.train()
+        budget = command.call_args.kwargs['seconds']
+        self.assertGreater(budget, 268_435_456 / 72_172 + 180)
+        self.assertLess(budget, 4500)  # Host step leaves time for final audits.
+
     def test_evaluation_child_receives_complete_optimizer_layout(self):
         with tempfile.TemporaryDirectory() as directory:
             original = subprocess.Popen

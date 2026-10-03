@@ -1,5 +1,43 @@
 # Softmax Coworld Classic 1v1 training
 
+## Native siege pilot35866 verified complete; controlled268M continuation preparing (2026-10-03)
+
+35866 COMPLETED0:0 at13:37:14UTC; retained controller receipt has
+Nice2147483645/Priority1 before/after, no scheduling change or error.
+All result parts downloaded and hash-verified under
+`/tmp/relh-generals-portable-result-35866`; S3 result prefix
+`relh/generals-classic-results-20261003T131729Z-b8263dda`.
+The local summary helper incorrectly expected a midpoint for the8M pilot.
+Only >=33M runs export midpoint panels. Fixed that temporary helper and reran
+paired analysis from retained arrays; GPU workload and collection succeeded.
+
+Fresh4096 games/2596 initial states, seeds38511/9393, no curriculum:
+parent2504W1549L43D; child2489W1560L47D. Paired signed-score delta
+-0.00634765625, clustered95%CI[-0.033840657,+0.021065453]: statistically flat.
+Native siege subset186/396 ->195/396 wins (98/198 seat0,97/198 seat1),
+not evidence of strong hosted wins. Final SHA
+`2e472f28ffdc0cba7c2519cb82bb69cb4a89f1b364a3421ead8580a35b11cb1f`.
+Native/NumPy serving parity46/46 top actions, max probability difference
+2.8312206e-6. Engineering qualification passed:72,172.49 environmentSPS,
+8.39M legal actions,9507 terminal games, finite/unclipped rewards.
+
+Next experiment: continue this qualified learner for268,435,456 new steps,
+**preserving all13 opponents and their weights**, to test adaptation beyond
+four pilot updates. No champion promotion; latest hosted remains12/32 each.
+At measured72.17k SPS, training projects~62min plus compilation. Proposed
+single120min job: smoke120s/build480/sampling360/train4500/evaluate900;
+600s reserved finalization, total6960<7200. Existing evaluation arms took
+140.57s(parent)/110.11s(child), making900s reasonable for three arms+parity.
+Exact staged128-game CPU audit and immutable-image prepare_run restore passed;
+45 tests +11 lifecycle subtests passed. Audit caught the old3240s internal
+training timeout, which cannot finish268M at72k SPS. Extended to4440s, below
+the4500s host step;9 GPU-gate/learning-curve tests passed including a
+regression requiring enough time at measured throughput. Final source is
+restaged and image restoration is rechecked before signing/submission.
+Fresh queue/physical/space/inode/credential checks still precede launch. No GPU
+job is currently owned by this task; do not submit duplicates. Budget and
+Nice policy unchanged. Goal remains active until fresh hosted strength passes.
+
 ## Native siege pilot35866 completes8M at72.17kSPS; evaluations pending (2026-10-03)
 
 Actual Puffer/GPU rollout with the13-opponent pool completed all**8388608**
@@ -9,7 +47,7 @@ new steps, epochs641→644, cumulative**1350565888**. First resumed epoch641
 rollout and optimization. OneB300,8192games,H256,minibatch8192,replay.5;
 ~202090MiB GPU memory. Steady samples mostly29–36%GPU with optimization
 bursts60–61%. Final dashboard reports environment17.065s/model6.471s within
-24.12s rollout, training4.94s. This configuration qualifies the>=30k gate;
+roughly24s rollout, training4.94s. This configuration qualifies the>=30k gate;
 it costs throughput versus prior106.9k but adds the verified siege strategy.
 
 **9507 terminal games**, zero illegal learner actions, zero nonfinite/clipped
