@@ -1,5 +1,27 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 hosted screen complete: 11/32 Daveey, 12/32 incumbent (2026-10-03 10:49 UTC)
+
+All **64 unique episode records** completed and all **64 replay files** were
+downloaded and SHA256-recorded. Candidate `3ba939e8-f925-4865-92e3-9306fde3f9c3`
+scored **11 W / 21 L vs Daveey** (seat 0: 5/11, seat 1: 6/10) and
+**12 W / 20 L vs incumbent** (seat 0: 5/11, seat 1: 7/9). Zero draws,
+execution failures, or timeouts for either player. All games ended in general
+capture; all **32,644 candidate moves** passed the replay ownership/army/
+bounds/mountain legality check. Mean lengths: 463.344 turns vs Daveey,
+567.125 vs incumbent. Evidence root `/tmp/relh-generals-serving-35860-final`,
+`hosted-results-summary.json`, `hosted-replay-panel-audit.json`, and hashed
+`replays/`; finalizer log `/tmp/relh-generals-35860-finalize-hosted.log`.
+
+The independently sampled screen improved from 35858's 3/32 Daveey and 10/32
+incumbent, but is too small to establish consistent strength, and remains
+below the promotion/strong-win gate. No champion changed. No replay evidence
+of a timeout/illegal-action failure explaining the remaining losses. The
+sole **35861** continuation is already running toward 1.07B steps, with the
+latest parent in its frozen opponent pool and the original lowest-priority
+finite allocation. Full newer training/held-out/hosted evidence is pending.
+Keep goal active; do not mistake this improved screen for completion.
+
 ## 35861 sole continuation launched; 35860 hosted screen submitted (2026-10-03 10:45 UTC)
 
 Both 35860 hosted startup episodes completed successfully with zero execution
