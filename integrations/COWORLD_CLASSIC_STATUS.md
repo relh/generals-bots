@@ -1,5 +1,25 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 passes renewed throughput gate (2026-10-03 10:54 UTC)
+
+Native completed epochs **387→389** advanced **4,194,304 environment steps**
+in **38.978 seconds** (135.901→174.879 seconds) = **107,606.958 steady SPS**,
+including rollout and optimization. First resumed epoch 385 took **97.155
+seconds**. Same single B300 / 8,192 environments / horizon 256 / minibatch
+8,192 / replay ratio 0.5; GPU **202,090 MiB**, recent utilization **50–56%**.
+All 12 opponents have exactly balanced seat allocations; newest frozen parent
+gets 778 games per seat. Latest completed epoch 389 means **10,485,760 new
+optimized steps**; latest periodic reward audit covers **8,388,608 steps**,
+**9,123 terminal games**, zero nonfinite/clipped rewards. Complete action and
+final quality audits remain pending, not inferred from this startup sample.
+Evidence `/tmp/relh-generals-35861-live-steady.json`.
+
+Continue this sole healthy bounded job at **Nice2147483645/Priority1**.
+Terminal collection and fresh paired evaluation remain armed. Hosted pipeline
+for its eventual selected checkpoint is prepared, not executed. Goal remains
+active; latest completed hosted screen is still 11/32 Daveey and 12/32
+incumbent, below the strong-win acceptance gate.
+
 ## 35861 allocated GPU and restored optimizer verified (2026-10-03 10:50 UTC)
 
 A bounded read-only observer inside existing allocation **35861** confirmed
