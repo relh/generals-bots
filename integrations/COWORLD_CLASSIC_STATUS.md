@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 reached33.6M newsteps; warmobserver exits, post-run pipeline prepared (2026-10-03)
+
+Currentcontroller revalidated35879RUNNING,maxNice2147483645/Priority1. Previous
+goalturn madeconcreteprogress: fixed/pushedlauncher, completed35877evaluation,
+completed64hostedgames, launchedCPU-audited refreshedselfplay35879. Thisturn
+verifiedthelivejob and preparedits concretepost-run execution scripts.
+
+Warmobserver9924 reachedstop-epoch920; lateststeady94999.07137SPS,
+33554432newsteps,44662terminalgames,0nonfinite/0clipped rewards. It exits normally
+atthispoint; no need torestartit or createa duplicate. Maintrainingstep35879.3
+continues,controller87428/collector73001/physicalmonitor11612remainactive.
+Remainingbudget234881024steps,expectedmidpoint2030043136 andfinal2164260864.
+Do not interpret the stoppedwarmobserver as stoppedtraining.
+
+PreparedandPython-compiled conditionalfuturehelpers (noneexecutedagainstabsent
+newresults; no newpolicy/XPwrites): `/tmp/relh-generals-summarize-35879.py`,
+`...select-35879.py`, `...prepare-serving-35879.py`,
+`...audit-35879-late-parity.py`, `...upload-35879.py`,
+`...35879-xp.py`, `...watch-35879-xp.py`, `...finalize-hosted-35879.py`,
+`...summarize-hosted-35879.py`, `...35879-replay-panel.py`.
+Selectrequiresactual35879COMPLETEDreceipt,verifiedcollection,all268Mfinite
+unclippedsteps≥30kSPS,positivepairedclusterinterval,exactcheckpointSHAand46/46GPU
+parity. Thenactualcandidatecontainer46golden/32wire and64lateCPUparity before
+privateupload and64newhostedgames. Keep qualified/backed-upservingbase35876/3c7679
+references unchanged; currentcandidate will be35879. Replayseedcheck compares
+newpanel against35876. Needfreshhostedtargetreadbackbeforeeventualwrites.
+
+Strongwinacceptance remains unmet (latestDaveey9/32,incumbent19/32); goalactive.
+No paidnode/spend,no extraGPUjob,no schedulerchange,no otherownerdata touched.
+
 ## 35879 warm throughput qualified:95,474.8 environment SPS (2026-10-03)
 
 Sole35879training remainsRUNNING, Nice2147483645/Priority1 unchanged.
