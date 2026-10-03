@@ -4,6 +4,9 @@ import sys
 
 if os.environ.get("METTA_MEMORYLESS_OPTIMIZATION") == "1":
     try:
+        if os.environ.get("GENERALS_AUDIT_CUDA_RUNTIME") == "1":
+            from integrations.cuda_runtime_binding import audit
+            audit()
         from integrations.activate_memoryless_optimization import activate
         activate("integrations.direct_spatial_optimization")
         if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":

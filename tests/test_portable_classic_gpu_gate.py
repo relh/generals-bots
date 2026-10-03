@@ -11,6 +11,19 @@ from integrations import portable_classic_pilot as pilot
 
 
 class PilotGateTests(unittest.TestCase):
+    def test_evaluation_child_receives_complete_optimizer_layout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            original = subprocess.Popen
+            def launch(_argv, **kwargs):
+                code = ('import os; '
+                        'assert os.environ["METTA_SPATIAL_OPTIMIZER_LAYOUT"] == "logical"; '
+                        'assert os.environ["METTA_SPATIAL_MUON_DENSE_ORIENTATION"] == "canonical"; '
+                        'assert os.environ["METTA_SPATIAL_MUON_CONTEXT_MATRIX"] == "1"')
+                return original([sys.executable, '-c', code], **kwargs)
+            with patch.object(pilot, 'OUT', Path(directory)), patch.object(
+                    pilot.subprocess, 'Popen', side_effect=launch):
+                pilot.command('audit_spatial_checkpoint_serving_parity', name='parity', seconds=5)
+
     def test_occupied_gpu_stops_before_jax_or_config_creation(self):
         jax = SimpleNamespace(devices=Mock())
         with patch.dict('sys.modules', jax=jax), patch(

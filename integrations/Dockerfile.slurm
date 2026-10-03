@@ -15,6 +15,7 @@ COPY source /opt/generals-source
 RUN chmod -R a+rX /opt/generals-source
 ENV PATH=/opt/generals/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV PYTHONPATH=/opt/generals-source
+ENV LD_LIBRARY_PATH=/opt/generals/lib/python3.12/site-packages/nvidia/cu13/lib:/opt/generals/lib/python3.12/site-packages/nvidia/cudnn/lib:/opt/generals/lib/python3.12/site-packages/nvidia/nccl/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64
 RUN python -m pip check && python -c \
     'import numpy, pydantic, msgpack, importlib.metadata as m; assert m.version("jax") == "0.11.0"; print("IMAGE_DEPENDENCIES_OK")'
 # JAX CPU execution is audited separately in this exact image: default Apple

@@ -1,5 +1,71 @@
 # Softmax Coworld Classic 1v1 training
 
+## Pilot35835 trained; evaluator layout and CUDA binding fixed (2026-10-03 02:45 UTC)
+
+Job35835 FAILED1:0 in evaluation at02:35:35UTC, Nice2147483645/Priority1
+unchanged. All8,388,608 training steps completed:8192games,H256,mb8192,
+replay0.5, epoch uptimes87.957/106.383/124.843/143.352seconds. Warm interval
+epoch2→4 gives4,194,304steps/36.969s =113454.624 environment SPS. This includes
+rollout/transfers/optimization; first epoch is compilation warmup. One B300,
+peak202088MiB;46 five-second samples have median0% across startup+training,
+so do not claim high utilization from the warmed SPS alone. Zero illegal actions
+and nonfinite rewards;7662 finished games. Expander712/2253 wins, Sentinel342/1163.
+On-policy win rates are not heldout improvement evidence.
+
+Checkpoint SHA5e50aedcf2082caa75874e13f6a705e6db0f0b9bc0828dfac9a60d231034855e.
+Verified archive `/tmp/relh-generals-portable-result-35835/results.tar.gz`,
+SHA6de8b38736bedb25891e5943e6fde91e794a035c0fe27d49f650ce062afc3322.
+Evaluation exited before logits: common child environment enabled context Muon
+and canonical orientation but omitted logical layout. Fixed the shared child
+environment; real subprocess regression passes. Saved checkpoint now passes
+CPU serving parity46/46 top actions, max logit4.77e-7/probability8.94e-7;
+report `/tmp/relh-generals-35835-serving-parity-cpu.json`. No heldout games ran.
+
+Live native output also exposed cuBLAS13.1.0 from CUDA base overriding installed
+wheel13.8.1. JAX explicitly warns about concurrent-kernel corruption below13.2.
+Added portable phase re-exec before JAX so wheel library paths lead at process
+startup, and actual loaded-version/path checks in each phase and embedded Python.
+CPU positive/negative probes in exact image prove default13.1 rejected and
+wheel13.8.1 selected. Exact native/python.cuh embedded interpreter linked to
+cuBLAS passes with new paths, exits78 with old paths; UID1002, noGPU. Logs
+`/tmp/relh-generals-native-binding-{positive,negative}-cpu.log`. An attempted
+QEMU+cuBLAS probe hit QEMU internal SIGSEGV; its owned hung container was stopped.
+The successful exact-header probe used ordinary x86 translation and no JAX
+execution; earlier exact-image JAX adapter proof and new ARM CPU checkpoint
+parity cover those components separately. Nine focused CPU regressions pass.
+Current35835 checkpoint is diagnostic, not qualified for long-run promotion
+under its old CUDA binding. All source/checkpoints/results remain preserved.
+
+B300 now has no live Generals job or GPU process. Root filesystem has only
+32.17GB free; /tmp has1.34TB free and250112 inodes, executable tmpfs. Next retry
+will use a fresh owned /tmp root, preserve all prior roots, require150000 inodes
+before extraction, and96GiB host memory to cover64GiB worker budget plus image
+and input tmpfs storage. One finite job only; no paid resource/spend.
+
+
+## Corrected embedded-bootstrap pilot35835 (2026-10-03 02:23 UTC)
+
+Source/launcher70fc53a; exact-image CPU bootstrap positive/negative proof and
+30 distinct CPU tests passed before submission. Job35835 started02:22:55UTC
+on Slurm-selected metta-fabric-b300-1, one B300/8CPU/64GiB host, finite75min.
+Controller readback RUNNING, Nice2147483645/Priority1; before/after unchanged,
+no priority mutation or duplicate task job. Full queue had only unrelated jobs
+35761/35762 on other nodes. No paid reservation/resource/spend for this task.
+
+Input SHA99409e4a0f01741b82792f8a872d77ad1db8508718d6001e493b1f239eb6dea6;
+image digest66660f4bb0d8793989a6940bc09109d42f63a6ef15544864fb279d16b0ad4e51.
+Public launch metadata `/tmp/relh-generals-fix35834-launch.json`; monitored
+receipt `/tmp/relh-generals-portable-a974e9b1.receipt.json`; result prefix
+`s3://softmax-slurm-artifacts/relh/generals-classic-results-20261003T021745Z-373dec55`.
+Initial scratch reserve32GiB covers measured12.6GB unpacked image,6.9GB archive,
+transient part and build/results margin; free bytes AND inodes checked before
+extraction/unpack. Retained prior results/scratch preserved.
+
+Acceptance remains actual warm environment SPS>=30000, finite reward/legal
+actions, balanced frozen opponents, child serving parity, and paired heldout
+parent/child strength. Bootstrap success alone is not completion.
+
+
 ## Confirmed native bootstrap omission; job35834 preserved (2026-10-03 02:14 UTC)
 
 Job35834 FAILED/ExitCode1:0 at01:59:42UTC, Nice2147483645/Priority1 unchanged.

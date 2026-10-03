@@ -65,7 +65,7 @@ def prepare_configs(parent=PARENT, output=OUT):
 
 def command(module, *args, name, seconds=600, train=False):
     env = dict(os.environ, METTA_SPATIAL_MUON_DENSE_ORIENTATION="canonical",
-               METTA_SPATIAL_MUON_CONTEXT_MATRIX="1")
+               METTA_SPATIAL_MUON_CONTEXT_MATRIX="1", METTA_SPATIAL_OPTIMIZER_LAYOUT="logical")
     if train:
         env.update(TRAIN_ENV)
     argv = [sys.executable, "-m", "integrations." + module, *map(str, args)]
@@ -205,6 +205,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("phase", choices=("smoke", "build", "sampling_gate", "train", "evaluate"))
     args = parser.parse_args()
+    from integrations.cuda_runtime_binding import configure, audit
+    configure()
+    (OUT / ("cuda-binding-" + args.phase + ".json")).write_text(json.dumps(audit(), indent=2) + "\n")
     os.environ.update(PYTHONPATH=f"{SOURCE}/integrations/puffer_bootstrap:{SOURCE}:/opt/generals-source", JAX_PLATFORMS="cuda,cpu",
                       XLA_PYTHON_CLIENT_PREALLOCATE="false", XDG_CACHE_HOME="/work/cache",
                       FABRIC_VERIFY_CACHE="/work/fabric-verify", JAX_COMPILATION_CACHE_DIR="/work/jax-cache",
