@@ -1,5 +1,32 @@
 # Softmax Coworld Classic 1v1 training
 
+## Diagnostic follow-up while 35887 evaluates
+
+35882 frozen checkpoint, prior independent nine-state defensive probe: actual
+policy 0/9 top-ranked survival moves, mean survival mass 2.14631e-5. Removing
+only global readout gives 0/9 and 5.53963e-6; removing learned local action
+readout gives 1/9 and 0.0985628; removing direct priors gives 0/9 and 7.61237e-7.
+These are CPU component ablations with no serving/training mutation or game-win
+claim. Single-state forward reproduces the serving probabilities; an initial
+batched calculation differed by 1.49e-6 from single-state BLAS arithmetic, so
+the diagnostic uses the actual single-state path. Artifact
+`/tmp/relh-generals-defense-component-audit-35882.json`.
+
+In six of nine states every survival-move source is Manhattan distance two
+from the recorded attacker, outside the current five-cell local cross stencil.
+Artifact `/tmp/relh-generals-defense-local-reach.json`. The global network and
+derived public features still carry broader information; this does not establish
+an expressivity impossibility. A wider local context is a possible subsequent
+experiment if opponent reweighting does not improve combat. Previous radius-two
+job 27580 compiled but completed no epochs; it never established a radius-two
+SPS or learning result. A future wider model needs explicit direct-kernel,
+optimizer-layout, migration and serving audits before GPU submission.
+
+Live Observatory readback saved `/tmp/relh-generals-35887-coworld-current.json`
+and `champions-current.json`: arena metadata identical to 35882, Daveey v7
+76b0a083-f0a4-4ec7-9811-038349266633 and incumbent
+e53e30be-0b23-4d62-b944-4dd249a483fe unchanged. No new hosted request yet.
+
 ## 35887 warm throughput qualified, strength evaluation pending
 
 Loss-weighted pilot 35887 passes the warm throughput gate: 20,971,520 environment
