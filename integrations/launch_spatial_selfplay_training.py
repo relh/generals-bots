@@ -187,7 +187,20 @@ def configure_offline_puffer(module, environ=os.environ):
         module.install_environment = install_portable_environment
 
 
+def verify_runtime_bootstrap(environ=os.environ):
+    if environ.get("METTA_MEMORYLESS_OPTIMIZATION") != "1":
+        return
+    if environ.get("METTA_SPATIAL_BOOTSTRAP_PID") != str(os.getpid()):
+        raise RuntimeError("Spatial training requires the bootstrap in this interpreter, not only its environment flag")
+    from integrations.activate_memoryless_optimization import AdapterFinder
+    if not any(isinstance(finder, AdapterFinder) and
+               finder.adapter_module == "integrations.direct_spatial_optimization"
+               for finder in sys.meta_path):
+        raise RuntimeError("Direct spatial adapter import hook is not active")
+
+
 def main():
+    verify_runtime_bootstrap()
     validate_training_geometry()
     validate_sampling_gate()
     prepare_temporary_directory()

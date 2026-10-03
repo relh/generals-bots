@@ -1,5 +1,68 @@
 # Softmax Coworld Classic 1v1 training
 
+## Confirmed native bootstrap omission; job35834 preserved (2026-10-03 02:14 UTC)
+
+Job35834 FAILED/ExitCode1:0 at01:59:42UTC, Nice2147483645/Priority1 unchanged.
+Input preparation, Pyxis GPU smoke, model-fingerprint check and sampler gate all
+passed. Training then entered generic Fabric setup and was host-memory OOM
+killed at01:59:32UTC; no PPO epoch or new checkpoint completed. Peak observed
+GPU allocation was185864MiB, with low GPU activity during generic setup.
+The later graceful USR1 request returned `Invalid job id specified` because the
+job was already terminal; it did not stop/requeue any running work.
+
+Verified results: `/tmp/relh-generals-portable-result-35834`. Original controller
+receipt and S3 result prefix are retained in the public launch metadata. A small
+read-only CPU step within35834 read its console through the existing owned Pyxis
+container, at maxNice and gres=none; no additional job/GPU allocation was made.
+The console confirms all10 frozen policies plus2 scripted opponents with balanced
+seats. GPU smoke recorded physical UUIDbce8f97b-720b-5afa-cbb7-ad8b68cc14f7,
+zero initial memory/use. Batch enumeration also saw this GPU; therefore the old
+35830 numeric-lookup failure cannot be proven retrospectively as cgroup denial.
+Do not overstate that earlier hypothesis. The workload-context gate now works.
+
+Root cause of the training startup regression is concrete: the portable package
+kept the old `sitecustomize.py` only in recovery data, outside PYTHONPATH. Flags
+alone did not install the direct spatial adapter or embedded-worker reward hook.
+This reproduced the historical expensive generic wide-model path. Added a
+repo-owned bootstrap directory to the child/native PYTHONPATH, PID-bound launcher
+verification, fatal bootstrap failures, and an actual adapter-activation marker.
+The training monitor now rejects generic Fabric setup without that marker.
+
+CPU proof in the exact image used the actual native/python.cuh PyConfig startup
+as UID1002 under AVX-capable QEMU CPU emulation. Without bootstrap it failed
+`native adapter missing`; with bootstrap both direct adapter and reward audit
+activated and printed NATIVE_EMBEDDED_BOOTSTRAP_OK. Logs:
+`/tmp/relh-generals-embedded-bootstrap-negative-cpu.log`,
+`/tmp/relh-generals-embedded-bootstrap-cpu.log`.
+The29-test suite passed, plus a new real-child CPU regression proved the missing
+native adapter terminates before an epoch (30 distinct tests total):
+`/tmp/relh-generals-bootstrap-full-cpu.log`,
+`/tmp/relh-generals-native-adapter-guard-cpu.log`.
+No new GPU submission until this corrected bootstrap is packaged and verified.
+
+
+## Active bounded retry35834 (2026-10-03 01:47 UTC)
+
+Source/launcher37bc948. Job35834 started01:45:31UTC on Slurm-selected B300,
+75-minute finite limit, oneGPU/8CPU/64GiB host memory. Initial controller readback
+RUNNING, Nice2147483645, Priority1; no priority mutation or duplicate live job.
+Update01:48UTC: input preparation and allocated Pyxis GPU smoke passed.
+Native build completed and verified the expected model fingerprint.
+Sampling gate is running in step35834.2 (two matched512-game frozen panels).
+This verifies execution-context startup; no training/strength/SPS claim yet.
+Submission monitor `/tmp/relh-generals-fix35833-submit.log` saves terminal receipt
+`/tmp/relh-generals-portable-f2107f10.receipt.json` every20seconds. Public launch
+metadata: `/tmp/relh-generals-fix35833-launch.json`. Collect only after terminal
+using `/tmp/relh-generals-collect-portable.py` with that metadata path. Do not
+start another job without reconciling35834 and its receipt.
+
+New input SHA256
+`cd936962955da1140ed1fa6e30856220f7490d810a0fa556d8ea04b56940b852`;
+image unchanged and all S3 objects reverified. Prior35830/35833 failed artifacts,
+source archives and receipts remain intact. B300 was idle with no outside GPU
+processes immediately before submission; no queue delay or paid fallback spend.
+
+
 ## Follow-up35833: diagnostic field correction and execution-context gate
 
 Job35833 terminated in1second, FAILED/ExitCode1:0, Nice2147483645/Priority1

@@ -20,6 +20,10 @@ class AdapterLoader(importlib.abc.Loader):
     def exec_module(self, module):
         self.original.exec_module(module)
         importlib.import_module(self.adapter_module).install(module)
+        if self.adapter_module == "integrations.direct_spatial_optimization":
+            if not getattr(module.NativeFabricPolicy, "_generals_direct_spatial", False):
+                raise RuntimeError("Direct spatial adapter failed to activate")
+            print("SPATIAL_ADAPTER_ACTIVE module=" + self.adapter_module, flush=True)
         import os
         if os.environ.get("METTA_SPATIAL_MUON_STEP_AUDIT_DIR"):
             from integrations.spatial_muon_first_step import install

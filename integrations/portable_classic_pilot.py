@@ -90,6 +90,9 @@ def command(module, *args, name, seconds=600, train=False):
                 console = OUT / "run/console.log"
                 if console.exists():
                     text = console.read_text(errors="replace")
+                    if "pooling:" in text and "SPATIAL_ADAPTER_ACTIVE module=integrations.direct_spatial_optimization" not in text:
+                        process.terminate()
+                        raise RuntimeError("Native worker entered Fabric setup without the verified spatial adapter")
                     if "NonFiniteGradsError" in text or "FloatingPointError" in text:
                         process.terminate()
                         raise RuntimeError("Nonfinite training result")
@@ -202,7 +205,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("phase", choices=("smoke", "build", "sampling_gate", "train", "evaluate"))
     args = parser.parse_args()
-    os.environ.update(PYTHONPATH=f"{SOURCE}:/opt/generals-source", JAX_PLATFORMS="cuda,cpu",
+    os.environ.update(PYTHONPATH=f"{SOURCE}/integrations/puffer_bootstrap:{SOURCE}:/opt/generals-source", JAX_PLATFORMS="cuda,cpu",
                       XLA_PYTHON_CLIENT_PREALLOCATE="false", XDG_CACHE_HOME="/work/cache",
                       FABRIC_VERIFY_CACHE="/work/fabric-verify", JAX_COMPILATION_CACHE_DIR="/work/jax-cache",
                       TMPDIR="/work/tmp", METTA_PUFFER_SOURCE_REPOSITORY="/work/input/puffer.git",
