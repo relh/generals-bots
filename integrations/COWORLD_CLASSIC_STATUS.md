@@ -1,5 +1,51 @@
 # Softmax Coworld Classic 1v1 training
 
+## Hosted curriculum screen complete; long run past midpoint (2026-10-03)
+
+Job 35854 remains RUNNING, Nice 2147483645 / Priority 1, with no second
+Generals GPU job. At epoch 78 it had completed 163,577,856 steps and saved the
+134,217,728-step checkpoint. The latest measured interval was 4,194,304 steps
+in 37.250 seconds = 112,598.765 SPS. The audit counted 231,058 terminal games,
+zero nonfinite rewards, and zero clipped rewards. Source and configuration are
+unchanged. Final training audit and checkpoint evaluations are still pending.
+Live evidence: `/tmp/relh-generals-35854-live-interval2.json`.
+
+All 64 private hosted episodes for the 33M curriculum checkpoint completed:
+Daveey v7: 6 wins / 26 losses (seat 0: 4/12; seat 1: 2/14).
+Incumbent: 9 wins / 23 losses (seat 0: 5/11; seat 1: 4/12).
+This remains weak play; the differences from the preceding screens are
+inconclusive. No champion was changed. The goal remains active and unmet.
+
+Main request IDs, all terminal and never to be reissued:
+- Daveey seat 0: xreq_b9de992d-97ba-4189-a975-02825f57094e
+- Daveey seat 1: xreq_89227943-0db0-4a2a-944a-1b356e79e324
+- Incumbent seat 0: xreq_7215f7a7-e449-4b67-8464-4564d9fe6cf8
+- Incumbent seat 1: xreq_4ec54ae2-68c5-45ee-8e26-836369533ff0
+
+The two startup requests recorded above also completed, one win and one loss.
+All 64 unique replay IDs were downloaded and hashed. Across 36,712 game turns,
+the candidate had zero timeouts. All 36,160 nonpass moves passed the basic
+replay legality check (ownership, armies, bounds and mountains; this check is
+not a substitute for the authoritative action mask). All games ended by general
+capture. This supplies actual native hosted runtime evidence after the local
+emulator timeouts. Results and replay audit are in
+`/tmp/relh-generals-serving-35853-final/hosted-results-summary.json` and
+`hosted-replay-panel-audit.json` in that directory.
+
+A small NumPy diagnostic rejected an architectural hypothesis that remote
+information cannot change same-direction source rankings. Swapping visible
+noncastle enemy army amounts outside the selected actions' local neighborhoods
+changed their relative logits by up to 0.018794 across 20 views; other logits
+changed by up to 1.361594. Do not infer strict spatial tying from the factory
+name or introduce an architecture fix based on that rejected hypothesis. This
+is a sensitivity check, not a counterfactual game-quality result. Record:
+`/tmp/relh-generals-serving-35853-final/source-ranking-diagnostic.json`.
+
+Next: retain the 35854 terminal receipt, collect using collector-v2 and
+`/tmp/relh-generals-learning256m-launch.json`, then compare parent/mid/final on
+its fresh evaluation maps. Reconcile existing jobs before any submission.
+Keep the goal active until strong independent hosted wins are demonstrated.
+
 ##35853 private native-runtime screen;35854 past46M (2026-10-03)
 
 Long35854 latest observed epoch23,46,137,344 auditedsteps,62,999terminals;
