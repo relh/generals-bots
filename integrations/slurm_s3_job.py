@@ -164,19 +164,75 @@ class SlurmJob:
         self.receipt.update({key: fields.get(key) for key in (
             "Nice", "Priority", "TimeLimit", "Partition", "NumCPUs", "ReqTRES", "NodeList")})
 
+    def retire_verified_container(self):
+        """Remove one explicitly named old task container, preserving its scratch.
+
+        The caller supplies the SHA of the fully collected, S3-verified archive.
+        Neither retained source/results nor any other container is removed.
+        """
+        retained = self.config.get("retained_container")
+        if retained is None:
+            return
+        prior = retained.get("job_id", "")
+        expected = retained.get("results_sha256", "")
+        if (not isinstance(prior, str) or not re.fullmatch(r"[1-9][0-9]*", prior)
+                or int(prior) >= int(self.job_id)
+                or not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected)):
+            raise ValueError("Invalid retained task container identity")
+        root = self.root.parent / f"relh-generals-{prior}"
+        archive = root / "results.tar.gz"
+        receipt = root / "out/receipt.json"
+        for path in (root, root / "out", archive, receipt):
+            if path.is_symlink() or path.stat().st_uid != os.getuid():
+                raise ValueError("Retained task path ownership differs")
+        if json.loads(receipt.read_text()).get("job_id") != prior:
+            raise ValueError("Retained receipt belongs to another job")
+        digest = hashlib.sha256()
+        with archive.open("rb") as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
+        if digest.hexdigest() != expected:
+            raise ValueError("Retained archive differs from verified collected results")
+        for steps in (False, True):
+            command = ["squeue", "--noheader", "--format=%i"]
+            if steps:
+                command.append("--steps")
+            state = subprocess.run(command, capture_output=True, text=True, timeout=15)
+            if state.returncode:
+                raise RuntimeError("Cannot confirm retained job is inactive")
+            if any(line.strip().split(".")[0].split("_")[0] == prior
+                   for line in state.stdout.splitlines()):
+                raise RuntimeError("Retained job or step remains active")
+        def enroot(*args):
+            result = subprocess.run(["enroot", *args], capture_output=True, text=True,
+                                    timeout=60, env=self.runtime_env)
+            if result.returncode:
+                raise RuntimeError("Retained owned container operation failed")
+            return set(result.stdout.splitlines())
+        allowed = {f"pyxis_relh-generals-{prior}", f"pyxis_{prior}_relh-generals-{prior}"}
+        removed = sorted(enroot("list") & allowed)
+        for name in removed:
+            enroot("remove", "--force", name)
+        if enroot("list") & allowed:
+            raise RuntimeError("Retained owned container remains after removal")
+        self.receipt["retired_owned_container"] = dict(
+            job_id=prior, results_sha256=expected, removed=removed,
+            retained_scratch=str(root), source_and_results_preserved=True)
+
     def prepare(self):
         self.check_priority()
         # Refuse reuse, including accidental restarts with the same job ID.
         self.root.mkdir(mode=0o700)
         self.owns_root = True
         (self.root / "out").mkdir()
-        check_space(self.root, self.config["scratch_bytes"], self.config["scratch_inodes"])
         # Pyxis filters these job environment overrides. Host enroot commands
         # must use the same site defaults, or cleanup targets an empty tree.
         for variable in ("ENROOT_TEMP_PATH", "ENROOT_CACHE_PATH", "ENROOT_DATA_PATH",
                          "ENROOT_RUNTIME_PATH", "ENROOT_LIBRARY_PATH", "ENROOT_SYSCONF_PATH"):
             self.runtime_env.pop(variable, None)
         self.runtime_env["ENROOT_MAX_PROCESSORS"] = str(self.config.get("cpus", 8))
+        self.retire_verified_container()
+        check_space(self.root, self.config["scratch_bytes"], self.config["scratch_inodes"])
         self.receipt["gpu_environment"] = {
             key: os.environ.get(key) for key in
             ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS", "CUDA_VISIBLE_DEVICES", "NVIDIA_VISIBLE_DEVICES")}

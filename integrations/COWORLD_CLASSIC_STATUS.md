@@ -1,5 +1,45 @@
 # Softmax Coworld Classic 1v1 training
 
+## Hosted35876 complete:19/32 incumbent,9/32 Daveey; next self-play CPU-ready (2026-10-03)
+
+Private policy8801b44c-429a-4821-8138-9eb7db8ade3e,
+relh-classic-hardpool-35876-final, registry imageimg_9922f639-cbd5-44a3-ae27-93102e59192c,
+manifest530df791dd1a219ba296ee3fcd4283ae0fd71aa350af958433640eb507ffcfcc,
+localimage1dfa6a0d16cf0640c5855e84c90a176536228281b1c31bd740f1ec0a916c55b1.
+Actualserving46/46golden,32/32legalwire,max47.73mslocal (notproductionlatency).
+All64hostedgames/replayscompleteandverified: incumbent19W13L(seats8/16,11/16),
+Daveey9W23L(seats3/16,6/16),0failed/timeout/illegal. No strong-win claim,
+no128confirmation, no champion change. Local learning improvement did not yet
+produce Daveey strength. Root`/tmp/relh-generals-serving-35876-final` contains
+allrequests/rawreplays/hosted-results-summary.json/hosted-replay-panel-audit.json.
+XPmonitor76676/finalizer68265completed; do not reissue any requests.
+
+Next input`/tmp/relh-generals-portable-siege-generation4-input` rotates the oldest
+6834e6a79f69 checkpoint out and adds finald2c30ee48e80 atweight8, retaining10frozen
+and3scripts. Policy+Muon resume1895825408→2164260864planned, no training submitted.
+Weights[1,2,2,2,2,8,8,8,8,8,8,6,6],4nativeworkers, sameobjective/geometry.
+Native256gameCPU proof verifies all13opponents/bothseats,legalactions,finite
+rewards and nonzero-curriculum memory reset. Exactimageproof-v2 verifiesactual
+prepare_run policy/Muon and4steps×16games of the real self-matchCLI.
+Initial local prep mistakenly changed scripted recipe as well as frozen recipe;
+CPU rejected it before any submission, corrected to preserve. Initial128game
+CPU harness lacked a full69-weight×2seatcycle; corrected harness to256, real
+training8192unchanged. Failed proof logs retained, onlyv2image/v3native qualify.
+
+B300 had56431freeinodes (1.2TiBfreebytes), insufficient existing safe guards after
+anotherunpack. Preparing retirement of ONLY old35873namedcontainer, while keeping
+all oldscratch/source/results. Full35873result archive196406177bytes already
+S3-collected/verified, SHA9baaecf115b68494a99be014f5b1bffc8626cff707b9dc787f1872955573e680.
+Launcher opt-in retirement validates exactoldjob/UID/non-symlinkpaths/receipt,
+archiveSHA and absence of oldjob AND steps before removing only its exactnamed
+Enrootroot. Uses normalnewbatchidentity, no sudo/SSHidentityswitch/globalchanges.
+Alloldsource/resultsfiles retained; nohistorytouched.29CPUtests+18subtests pass,
+including activejob/step,wronghash/UID/receipt/symlink,removefailure,and full
+success/failure/signal/upload lifecycle. No retirement has run oncluster yet;
+futurefirstprepare must retain normal60k/40kinode guards and failclosed ifuncertain.
+No live GeneralsGPU job; currentother35878Parley/metta0,35874/metta1,35875/metta4
+untouched. MaxNice2147483645/Priority1 remainsmandatory. Goalactive/unmet.
+
 ## 35877 COMPLETED; final35876 improves locally and selected for hosted screen (2026-10-03)
 
 35877 COMPLETED0:0,18:48:14→19:06:26UTC,RTX4090/metta0,
