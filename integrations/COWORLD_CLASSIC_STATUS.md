@@ -1,5 +1,28 @@
 # Softmax Coworld Classic 1v1 training
 
+## Live compute steering and transfer retry (2026-10-03 00:04 UTC)
+
+Read `/tmp/relh-october-dispatch/autoresearch-fleet-guidance.md`, including the
+service-token update. No Autoresearch node, paid smoke, reservation, or spend
+was made by this task. The audited8192-environment setup previously peaked at
+202084MiB; it does not fit a singleH100. A smaller H100 configuration would need
+separate qualification before requesting a bounded reservation from the
+coordinator. Preserve the one shared99.9958USD budget and infra-only token scope.
+
+Full queue readback found no Generals task job. All future Slurm submissions
+retain Nice2147483645/Priority1, finite runtime, one job, no escalation.
+Other jobs35744/35745 were untouched. No GPU allocation has been submitted.
+
+Source input upload completed (142494183bytes, SHA256
+`c205403d6c64447d9feee5b58f4eea84e85426f2629f81451848039c252a544e`).
+The original large image-part upload failed before any image part completed.
+A5MiB curl probe measured1884565bytes/second. The retry uses fresh S3 keys,
+256MiB independently hashed parts and three bounded transfers, preserving each
+completed part in `/tmp/relh-generals-portable-upload-retry.json`.
+Log: `/tmp/relh-generals-retry-image-upload.log`. Neither record contains tokens
+or presigned URLs. Complete verified image transfer, fresh queue and physical
+allocation checks, and final signed-config audit remain launch gates.
+
 ## Resumed training: portable launch migration (2026-10-02 23:00 UTC)
 
 No new GPU allocation has been submitted. Full queue inspection on resumption
