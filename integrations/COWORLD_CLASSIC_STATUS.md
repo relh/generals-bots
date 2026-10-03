@@ -1,5 +1,30 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35876 real launch fixed; long training sustains94.8kSPS (2026-10-03)
+
+`/tmp/relh-generals-35876-live-training5.json` confirms successful512-game GPU
+self-match gate (243W268L1D, same-sampler viability only), restored Muon
+2d94492cc9654a7324fb004f3ce526f7f0fd273ac23d9aae66ed5ca5e5454061, and active
+training through epoch781. First epoch777 uptime96.084s includes warmup;
+epoch779140.245→781184.487 gives4194304environmentsteps/44.242s =
+**94803.6707environmentSPS**. One process/oneB300,8192games/H256/minibatch8192,
+replay.5,4nativeworkers; per-process and aggregate SPS identical. Observed GPU0
+202090MiB,42–62% utilization in latest samples; other7 GPUs idle. This exceeds
+30k, not300k. No observed competing allocation/device-memory contention.
+
+Periodic audit at8388608newsteps:9365terminalgames, nonfinite_rewards0,
+native_clipped_rewards0, native_clipped_terminal_rewards0. All13 opponent types
+appear on both seats; native siege775wins/1303finished across both sides in this
+changing-policy/25%-curriculum training window. That is NOT fresh held-out or
+hosted strength evidence. Final action audit/paired checkpoint evaluation and
+hosted screen still pending; latest hostedDaveey12/32,incumbent16/32 unchanged.
+
+35876 remains the only live Generals job; Nice2147483645/Priority1 unchanged,
+finite end19:33:57UTC. Healthy ongoing training; do not cancel/requeue or launch
+another job. One collector33224 and observer58879 already running; source/results
+and all earlier failure evidence retained. Scratch43378freeinodes after startup,
+above40000pre-step guard; no protected history or other-owner cleanup.
+
 ## Fixed continuation retry35876 running; CPU boundary audit complete (2026-10-03)
 
 ONE job35876 RUNNING since17:33:57UTC, Slurm-selectedmetta-fabric-b300-1,
