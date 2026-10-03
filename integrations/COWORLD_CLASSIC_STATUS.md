@@ -31,6 +31,13 @@ terminal receipt then verifies durable outputs and compares retained panels.
 Do not duplicate submission/collector or export/promote before results.
 Goal active; current hosted12/32both is below acceptance. No funded spend.
 
+Serving preparation note: localDocker inspection again finds the previously
+qualified35863 serving tag absent (training image remains). Cause unverified;
+no cleanup by this task. Retained runtime/source/golden artifacts remain.
+Prepared35867 rebuild/upload/XP helpers for a fresh CPU-verified serving
+image after checkpoint selection; none executed, no duplicate hosted requests.
+Do not assume the old35863 image/layers remain locally available.
+
 ## Native siege pilot35866 verified complete; controlled268M continuation preparing (2026-10-03)
 
 35866 COMPLETED0:0 at13:37:14UTC; retained controller receipt has
