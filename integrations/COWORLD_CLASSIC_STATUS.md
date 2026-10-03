@@ -1,5 +1,36 @@
 # Softmax Coworld Classic 1v1 training
 
+## Sole native siege continuation35867 running,268M additional steps (2026-10-03)
+
+Job**35867** starts13:50:07UTC on Slurm-selected metta-fabric-b300-1,
+finite end15:50:07UTC. OneB300/8CPU/96GiB; controller readback
+**Nice2147483645/Priority1**, unchanged minimum, no errors/escalation.
+Queue contains only external4090 jobs35864/35865 besides this task; untouched.
+Physical preflight all8 B300 GPUs0MiB/0%; no contention. Scratch1.2TiB free,
+146312free inodes, above120000 initial/100000 pre-unpack floors.
+Source/launcher**6e03bd19c06e9eca01fa656e33f56e4c2d69a1da**.
+Immutable image66660f4b…; input467 hashes verified,193697265bytes,
+SHA`29ea3e3eb0958ff8198f269d5a44c2799468d6763dc1b97f32074a5c8b63f7c1`.
+Input`relh/generals-native-siege-long-20261003T134759Z-4c7195e0/input.part000`;
+result`relh/generals-classic-results-20261003T134935Z-ef834ddf`.
+
+Resume1350565888→1619001344, midpoint1484783616, preserving13-opponent
+pool/weights. Exact optimizerSHA60db26981b14813962ef2930f00a543286b79f5dfbd9a8c7ff9beb6206dd81e8
+restored with2e472f28… policy;CPU128-game and immutable-image prepare_run
+proofs passed.45tests+11subtests, then9 timeout/gate tests passed.
+8192games/H256/minibatch8192/replay.5,LR.0002/entropy0,win_only terminal,
+rewardscale.5/potential.25/gamma.999,25% curriculum; fresh heldout excludes it.
+Predicted~62min train at measured72.17kSPS; internal4440s,host4500s limits.
+Heldout seeds38515/9397,4096games each parent/mid/final, plus serving parity.
+
+Launch`/tmp/relh-generals-native-siege-long-launch.json`; receipt
+`/tmp/relh-generals-native-siege-long-106fe944.receipt.json`;
+submit/controller monitor`/tmp/relh-generals-native-siege-long-submit.log`.
+Single collector`/tmp/relh-generals-collect-35867-when-terminal.py` waits for
+terminal receipt then verifies durable outputs and compares retained panels.
+Do not duplicate submission/collector or export/promote before results.
+Goal active; current hosted12/32both is below acceptance. No funded spend.
+
 ## Native siege pilot35866 verified complete; controlled268M continuation preparing (2026-10-03)
 
 35866 COMPLETED0:0 at13:37:14UTC; retained controller receipt has
