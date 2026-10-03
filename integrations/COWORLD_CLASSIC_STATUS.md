@@ -1,5 +1,102 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35848 COMPLETED; no established duration gain; private hosted comparison next
+
+Terminal controller saved: COMPLETED0:0 at2026-10-03 04:22:38UTC,
+Nice2147483645/Priority1 unchanged. Full workload exit0, archive/manifest verified
+under `/tmp/relh-generals-portable-result-35848`; results safe before successful
+owned-container cleanup. All8 B300 GPUs0MiB afterward; no task job remains.
+Matched4096 panels,2591unique initial states:
+parent1761W/2248L/87D; intermediate1796W/2212L/88D; final1754W/2254L/88D.
+Intermediate signedscore delta+.017334,95%map-clusterCI[-.011016,+.045278];
+final-.003174,CI[-.031807,+.026115]. Mid→final-.020508,CI[-.047724,+.008155].
+No statistically established improvement; don't scale this unchanged recipe
+blindly or call it winning well. Mid Expander259→281 wins, Sentinel201→164.
+Final Expander270,Sentinel189. Full breakdown learning-curve-summary.json.
+Checkpoint mid e58fadd6e3782c77754a61f20904eae8bf36e0d2265c274b027bcfa76ce30a19;
+final3235acbc592e96b2dda5153995a29cf3c35706d9efd688861aecf7dbd0ceb7be.
+Both46/46 sampled GPU/portable top actions, max probability9.24e-7(mid),8.35e-7(final).
+
+Selected mid for diagnostic private hosted test; selection on this panel means
+its small positive estimate is not independent confirmation. New immutable
+AMD64 serving image96adb8f7bea9752851207c98d72963e4fab16489848ea30321d89239192869c0
+copies exact mid bundle over CPU-qualified base. CPU32/32 legal websocket replies,
+46/46 golden top actions,max probability1.40e-6; emulated cold-ready39.25s,
+maxreply243ms, not hosted timing. Evidence `/tmp/relh-generals-serving-35848-mid`.
+Upload started once; no XP/promotion yet. Private XP will pin Daveey v7 exactly
+and both seats, with an initial real hosted serving check against relh incumbent.
+
+## Live learning curve training complete; strength evaluation in progress (2026-10-03)
+
+35848 completed all33,554,432 training steps. Warm final interval epochs14→16:
+4,194,304steps/(357.531-320.764)s =114077.95 environment SPS, including rollout,
+copies and PPO updates. Geometry unchanged: oneB300,8192games,H256,mb8192,
+replay0.5; first epoch81.058s includes compilation. Final GPU63%,197.3/268GiB.
+Zero illegal actions, zero nonfinite rewards;39685 terminal games. Both
+intermediate/final checkpoint GPU/portable parity phases completed; heldout
+panels now running. No stronger-play claim from training counters alone.
+Native reward clamp affected1940 of33.55M steps, all terminals; known objective
+saturation is retained in this fixed-setting duration comparison. Historical
+reward-scale trials exist and must inform any next intervention.
+Controller remains RUNNING,Nice2147483645/Priority1 before/after; no duplicate
+Generals job, paid resource, or priority change. Full queue rechecked, unrelated
+jobs left untouched. Hosted Alpha still pins daveey-grl:v7,
+76b0a083-f0a4-4ec7-9811-038349266633. Private balanced matches can diagnose a
+nonregressing candidate; promotion requires convincing independent strength.
+
+## Hosted serving runtime rebuilt and CPU qualified (2026-10-03 04:10 UTC)
+
+Previous local serving base images were absent; preserved source/checkpoints
+and registry/XP receipts remain intact. Rebuilt AMD64 image with existing
+Dockerfile.neural from pure pinned metta_training/fabric source archive, current
+wire codec/player and qualified35836 fixture checkpoint. No copied virtualenv.
+Image IDsha256:e667468f40c550c51fda9c8e5e9ba171baa30d7fbc0a064ec1c550f9119e072f;
+name `relh-generals-serving:35836-fixture`, UID10001. CPU proof artifacts at
+`/tmp/relh-generals-serving-base-20261003`, summary cpu-readiness.json.
+Actual AMD64 runtime ran via AVX-capable QEMU,2CPU/3GiB,read-only rootfs,network
+none,512MiB tmpfs,180s timeout,core0. Real websocket32/32 legal replies across
+four board shapes; cold-ready12.31s,mean36.65ms,max101.35ms. These are emulated
+local timings, not hosted latency. Exact runtime also matches all46 top actions
+on hosted replay states, maximum probability difference1.13e-6 versus qualified
+local inference. Initial probe harness lacked/app on import path; fixed harness
+PYTHONPATH before successful run, without changing the normal player entrypoint.
+No hosted image/policy/XP mutation yet. Final selected curve checkpoint must get
+its own immutable layer and protocol/parity check before upload.
+Live game manifest0.3.3 confirms Classic1v1 competition variant,2000turns,
+500ms actions,noDeathtouch. Champion records still relh:siege-v4 and
+richard:siege-v2. Current target reads stored separately under
+`/tmp/relh-generals-hosted-targets-20261003`.
+
+
+## Active33.55M learning curve35848 (2026-10-03 04:00 UTC)
+
+Job35848 started03:59:23UTC on Slurm-selected B300, oneGPU/8CPU/96GiB host,
+finite80minutes. Controller RUNNING,Nice2147483645/Priority1; no priority changes
+or duplicate Generals jobs. Source/launcher7f00904. Input SHA
+a7cddab65f98272ee898c34f8f09c6b97754b93b2af4e0401a01ec869253c696; image unchanged.
+Public launch `/tmp/relh-generals-curve32m-launch.json`; monitor
+`/tmp/relh-generals-curve32m-submit.log`; controller
+`/tmp/relh-generals-portable-8e25aa21.receipt.json`. New S3 result prefix
+`relh/generals-classic-results-20261003T035846Z-46ca94fe`.
+Same qualified8192/H256/mb8192/replay0.5 geometry;16.78M and33.55M checkpoints
+get GPU/serving parity and matched4096-game panels versus frozen67M parent.
+Native checkpoint cadence verified in pinned Puffer source. New curve CPU tests
+7passed; cleanup lifecycle26passed before launch; exact-image CUDA/native
+bootstrap proof unchanged. Actual site Enroot unpack/temp filesystem/tmp checked
+for bytes and inodes; last preflight214664 free inodes, all8 GPUs0MiB.
+
+Live Observatory read `/tmp/relh-generals-leaderboard-20261003.json`: Alpha/DavidB
+rank1 MMR2292.72; relh1472.65,richard1456.38. Richard currently lower eligible
+account. No new policy/XP request/promotion yet; source025 historical uploader
+and target discovery scripts located for reuse with a qualifying frozen child.
+
+Native reward audit count is real: pinned src/pufferl.cu1487-1489 clamps rollout
+rewards to[-1,1] before training. Current bounded curve intentionally retains
+prior objective/settings for duration comparison. A subsequent causal reward
+scale test can preserve the potential objective without terminal saturation;
+do not relabel raw >1 counts as an observed model/codec failure.
+
+
 ## Continue to stronger play: bounded hard-pool learning curve (2026-10-03)
 
 User explicitly requires continuing until verified strong wins. Previous turn
