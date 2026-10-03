@@ -1,5 +1,34 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 warm throughput qualified:95,474.8 environment SPS (2026-10-03)
+
+Sole35879training remainsRUNNING, Nice2147483645/Priority1 unchanged.
+Source/launcher a6d8783; latest observer epoch909. Completedepoch907144.012s→
+909187.943s:4194304steps/43.931s=95474.81277end-to-endenvironmentSPS.
+Firstcompletedepoch905100.449s is warmup;8192games,H256,minibatch8192,replay.5,
+4nativeworkers,1B300/8CPU/96GiB. Broader905→9098388608steps/87.494s≈95876SPS.
+Periodicrewardaudit8388608newsteps,9082terminalgames,0nonfinite/0clipped rewards.
+Finaldeviceaction-maskaudit not yet emitted; don't invent an intermediatecount.
+OwnGPU0~202086MiB,45–47% duringrollout; externalGPU7~97366MiB/95–100%,untouched.
+No observed directmemorycontention; measuredthroughput remainsabovegate.
+
+Same-sampler selfmatch gate251W257L4D/512. MuonrestoreSHA
+064ba0d8b5835a76a2efb099b3c1ca9c434b7f3a00fa452754da6d15c5f4b052 confirmed.
+Bounded warmobserver NOWACTIVE session9924,
+`/tmp/relh-generals-35879-training-window.jsonl` and stderr sibling.
+It reads every10s, checks exactownedtrainingPID lifetime, exitsbyepoch920 or600s;
+no secondobserver needed. Pyxis says attach ignores requestedmount flags;actual
+observercode is strictlyread-only. Maintrainingcontinues towardepoch1032,
+2164260864cumulativesteps; expectedmidpoint2030043136(epoch968).
+Controller87428,collector73001,physicalmonitor11612remainactive. Do notstart
+anotherjob, replaytraining, or reissue alreadycompleted35876hostedrequests.
+
+Next: allowhealthyboundedtrainingtofinish, preserve terminalreceipt/results,
+inspect fullreward/mask/SPS audits, comparefreshparent/mid/final heldoutpanels,
+thenactualcontainer/lateparity and hostedstrength beforepromotion. Latesthosted
+35876was19/32incumbent,9/32Daveey; goalremainsactive/unmet. No paidspend,
+no prioritychanges, no newchampion. Fixesandstatus pushedtoforkbranch.
+
 ## 35879 RUNNING: refreshed self-play, inode capacity recovered (2026-10-03)
 
 Job35879 relh-generals-siege-generation4-4ebcd02c RUNNING, B300,
