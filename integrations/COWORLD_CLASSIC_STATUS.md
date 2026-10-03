@@ -1,5 +1,34 @@
 # Softmax Coworld Classic 1v1 training
 
+## Native siege pilot35866 completes8M at72.17kSPS; evaluations pending (2026-10-03)
+
+Actual Puffer/GPU rollout with the13-opponent pool completed all**8388608**
+new steps, epochs641→644, cumulative**1350565888**. First resumed epoch641
+105.912s; epochs642→644 advance4194304steps in**58.115s**, sustained
+**72172.485589 environment SPS**, including CPU callback/device transfer,
+rollout and optimization. OneB300,8192games,H256,minibatch8192,replay.5;
+~202090MiB GPU memory. Steady samples mostly29–36%GPU with optimization
+bursts60–61%. Final dashboard reports environment17.065s/model6.471s within
+24.12s rollout, training4.94s. This configuration qualifies the>=30k gate;
+it costs throughput versus prior106.9k but adds the verified siege strategy.
+
+**9507 terminal games**, zero illegal learner actions, zero nonfinite/clipped
+rewards. Native-siege training outcomes seat0:370wins/686finished,
+seat1:381/669. These include the25% midgame curriculum and changing policy,
+so they are NOT fresh heldout or hosted strength results. All13 opponents
+sample both seats. Final/midpoint parity and fresh4096-game panels remain
+pending in this same sole job. Source, input, image, Nice2147483645/Priority1
+and finite end14:19:24UTC remain unchanged; no duplicate allocation.
+
+Evidence `/tmp/relh-generals-35866-live-diagnostic.json` (completed epoch times,
+audit records, console tail, GPU samples), startup/progress snapshots nearby.
+A source inspection raised a possible asynchronous-callback/GIL concern, but
+this actual embedded Puffer run completed every step: **no deadlock observed,
+no speculative synchronization patch made**. Do not turn that disproven
+startup suspicion into a claimed bug. Preserve collector/terminal monitor and
+wait for complete paired results before choosing the next learning run.
+Goal remains active; latest hosted35863 remains12/32against each target.
+
 ## 35863 hosted12/32 against each target; sole native-siege pilot35866 running (2026-10-03)
 
 35863 frozen final policyeda1614a-a267-4ee4-98c7-d1792a500dcf completed all64
