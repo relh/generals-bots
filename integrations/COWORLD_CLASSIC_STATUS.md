@@ -1,5 +1,55 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 sole continuation launched; 35860 hosted screen submitted (2026-10-03 10:45 UTC)
+
+Both 35860 hosted startup episodes completed successfully with zero execution
+failures. The remaining balanced 62-game screen is submitted: incumbent
+seat 0 `xreq_0cc49841-7512-4649-a017-06dd07a5dcc4`, seat 1
+`xreq_ea2cd4ab-1c14-4261-ba81-5f90623e5170`; Daveey seat 0
+`xreq_e07292dd-ecde-48cf-a861-42860789df88`, seat 1
+`xreq_93b4c698-7f5f-4447-a1ca-12cd0296067b`. Keep strict all-64-record gate;
+no final scores or promotion claim yet. Watcher remains live.
+
+The positive paired fresh-population improvement, successful exact serving
+checks and native hosted startup support the next bounded self-play iteration
+while the hosted strength screen completes. **35861 RUNNING**, submitted at
+10:43:54 UTC, finite through 12:43:54 UTC, **Nice 2147483645 / Priority 1**
+on initial and subsequent controller readback. No priority mutation/errors,
+no duplicate GPU job, no funded node. One B300 / 8 CPUs / 96 GiB host memory;
+8,192 environments, horizon 256, minibatch 8,192, same reward/curriculum and
+optimizer, append latest frozen parent. Counter **805,306,368→1,073,741,824**.
+Previous same-geometry steady interval was **107,723 SPS**, predicting about
+42 minutes for 268M steps plus compilation/evaluation. New steady throughput
+and learning remain to be measured; the 30k gate remains mandatory.
+
+Before submission: actual 96-game CPU population and exact-image optimizer
+binding passed; final lifecycle/continuation/hosted gates **36 tests plus 8
+subtests passed** in 14.47 seconds. Source archive was safely extracted and
+all **464 file hashes** verified. Archive **193,673,133 bytes**, SHA256
+`4feecdcf429526f60dcddc36675fb1337065f3e547163922ebfa32679903193a`.
+Immutable source/launcher `b9896e93e465adfa0f78d5866d755c9f14f5b9da`; training
+image remains `sha256:66660f4bb0d8793989a6940bc09109d42f63a6ef15544864fb279d16b0ad4e51`.
+S3 input `relh/generals-generation2-20261003T104051Z-5fcdab33/input.part000`;
+new result prefix `relh/generals-classic-results-20261003T104326Z-518462cd`.
+Credential lifetime and private rendered launcher audit passed before submit.
+
+Full queue had no Generals job. Physical check found unrelated GPU 6 usage
+**45,702 MiB** despite logical node IDLE; GPUs 0–5 and 7 were empty. No other
+process changed. Owned allocated-GPU idle/identity check runs before workload.
+Scratch 1.2 TiB free / **146,314 free inodes**, above 120k initial / 100k
+pre-unpack floors; root 21 GiB free. B300 justified by measured 202,090 MiB
+previous training footprint. Evidence `/tmp/relh-generals-generation2-final-queue.txt`
+and `...-final-physical.txt`; no node pinning or manual file staging.
+
+Launch `/tmp/relh-generals-generation2-launch.json`; durable live receipt
+`/tmp/relh-generals-generation2-a383c251.receipt.json`; terminal monitor log
+`/tmp/relh-generals-generation2-submit.log`. Single collector is armed:
+`/tmp/relh-generals-collect-35861-when-terminal.py`, log
+`/tmp/relh-generals-35861-collection-monitor.log`, intended retained output
+`/tmp/relh-generals-portable-result-35861`. No re-submission or second collector.
+Goal remains active: throughput is proven on prior runs, strong hosted wins
+against Daveey/incumbent remain unproven.
+
 ## 35860 serving qualified, hosted startup pending (2026-10-03 10:40 UTC)
 
 Selected final checkpoint now has exact-image CPU parity **46/46**, max
