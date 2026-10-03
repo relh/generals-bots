@@ -1,5 +1,54 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35882 completed: local gain, defensive failure persists (2026-10-03)
+
+35882 COMPLETED 0:0 at 21:50:25 UTC; allocation released. Receipt
+`/tmp/relh-generals-mixed-curriculum-725e8e1f.receipt.json` confirms unchanged
+Nice 2147483645 / Priority 1, finite two hours, one B300 / 8 CPUs / 96 GiB.
+All results downloaded and hash-verified under `/tmp/relh-generals-portable-result-35882`;
+log `/tmp/relh-generals-35882-collected.txt`. Collector 24853, controller 26879,
+completion observer 49461 and analysis monitor 10922 are finished. No task GPU
+job or paid node remains. Analysis logs `/tmp/relh-generals-summarize-35882-collected.log`
+and `/tmp/relh-generals-evaluate-defense-probe-35882-collected.log`.
+
+Completed 268,435,456 new steps to 2,432,696,320; 380,644 terminal games;
+zero illegal actions, nonfinite rewards or native clipped rewards.
+Epoch 1035 -> 1160: 262,144,000 steps / 2692.725 s = 97,352.682 sustained SPS,
+excluding initial compilation/warmup. Final audit interval 97,187.108 SPS.
+8192 games, H256, minibatch8192, replay .5, four native workers, ~202092 MiB.
+
+Fresh matched held-out 4096 games / 2613 distinct initial states:
+parent 2885 W / 1190 L / 21 D;
+midpoint 2950 W / 1102 L / 44 D;
+final 2996 W / 1069 L / 31 D.
+Mid-parent signed score delta +.0373535, clustered95%CI[+.0087926,+.0659723].
+Final-parent +.0566406, CI[+.0277635,+.0854973].
+Final-midpoint +.0192871, CI[-.0093306,+.0477350]: no established separation.
+Native siege wins 192 -> 208 -> 196; latest frozen d2c30 wins 245 -> 238 -> 260;
+Sentinel 252 -> 275 -> 275. Chose final for exploratory hosted screen based on
+highest broad win count and positive parent comparison, not proven superiority
+over midpoint or a tactical fix. Selection `/tmp/relh-generals-35882-serving-selection.json`.
+Final SHA `7c909b8b899a0bbefb03b6248a84ff7a30e621cc26cd806cc92eeb12143c10a6`.
+Both actual GPU serving parity audits passed 46/46; maximum probability error
+1.78814e-6 final / 1.81795e-6 midpoint.
+
+Fresh nine-state defensive diagnostic: parent/mid/final all ZERO top-ranked
+saving moves. Mean rescue probability on six Daveey states worsened from
+2.31772e-5 -> 7.04771e-6 -> 4.05588e-6; on three incumbent states
+1.22896e-4 -> 7.13921e-5 -> 5.62776e-5. This curriculum did NOT demonstrate a
+fix for the diagnosed one-turn defense failure. Full data:
+`/tmp/relh-generals-portable-result-35882/heldout-defense-diagnostic.json`.
+Do not mistake the broad score gain for proven stronger hosted defense.
+
+Actual candidate image preparation session19911 and 64-late-state parity67930
+are running; no 35882 upload/XP yet. Fresh arena manifest and champions match
+prior versions. The local serving base tag had disappeared again for an unknown
+reason; exact owned backup restored successfully (same3c767966 image ID and
+d9af23a1 archive SHA). Log `/tmp/relh-generals-35882-serving-base-restore.log`.
+Training image remained present with exact66660f4b ID. No global cleanup or
+Codex history changes. Latest hosted remains35879:10/32 Daveey,17/32 incumbent;
+strength gate unmet, goal active, champion unchanged.
+
 ## Corrected interpretation of old architecture evidence (2026-10-03)
 
 Re-read the retained 27580 and 27188 experiment records before considering any
