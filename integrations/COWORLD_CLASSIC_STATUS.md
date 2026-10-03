@@ -1,5 +1,26 @@
 # Softmax Coworld Classic 1v1 training
 
+## Continue to stronger play: bounded hard-pool learning curve (2026-10-03)
+
+User explicitly requires continuing until verified strong wins. Previous turn
+was progress: qualified GPU training/parity and complete paired heldout results,
+not goal completion. Current checkout/remote synchronized; no Generals job live.
+PPO source audit confirms absent teacher uses ppo_coefficient1; no teacher mixing.
+Next experiment extends the qualified hard-pool setup from8.39M to33.55M steps
+from the same67M parent, with native checkpoints at16.78M and33.55M. Both get
+independent GPU/serving parity and matched4096-game comparisons to one parent
+panel. This measures a learning curve; inconclusive8M results do not justify
+billions of blind steps, but do justify this bounded duration test. Sampler,
+reward,optimizer,seed,pool weights and geometry stay fixed. Native checkpoint
+interval8 verified against pinned Puffer source: saves at (epoch+1)%8==0.
+CPU checks prove bounded budgets, matched map/sample seeds across all3 panels,
+separate exports, and failure on a missing intermediate checkpoint.
+
+Cleanup fix28c766a will be exercised with actual site Enroot/tmp filesystem
+checks and no filtered path overrides. Maximum Nice2147483645/Priority1, finite
+runtime, one job only. No resource or job yet submitted for this extension.
+
+
 ## Qualified training/parity and completed game comparison35836 (2026-10-03 03:12 UTC)
 
 The full workload completed exit0:8,388,608 steps, checkpoint export, GPU/native

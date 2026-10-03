@@ -17,7 +17,14 @@ PARENT = Path("/recovery/classic-split-pool-67m-35633")
 CHECKPOINT_SHA = "3eb2fe3f22affcc4f7563c46c105a2d71e183b73447c3e6e617b1a4da7c0aeeb"
 SOURCE = Path("/work/input/source")
 OUT = Path("/work/out")
-STEPS = 8_388_608
+def pilot_steps(value):
+    steps = int(value)
+    if steps not in (8_388_608, 33_554_432):
+        raise ValueError("Pilot budget must be 8M qualification or 32M learning curve")
+    return steps
+
+
+STEPS = pilot_steps(os.environ.get("GENERALS_PILOT_STEPS", "8388608"))
 TRAIN_ENV = dict(
     METTA_SPATIAL_MUON_DENSE_ORIENTATION="canonical", METTA_SPATIAL_MUON_CONTEXT_MATRIX="1",
     METTA_SPATIAL_OPTIMIZER_LAYOUT="logical", METTA_SPATIAL_POLICY_TEMPERATURE="0.05",
@@ -177,28 +184,41 @@ def train():
         replay_ratio=.5, steady_sps=sps, epoch_uptime=times, reward_audit=audits[-1]), indent=2) + "\n")
 
 
-def evaluate():
-    checkpoint = OUT / f"run/checkpoints/metta_generals/run/{STEPS:016d}.bin"
+def export_and_audit(steps, bundle, suffix=""):
+    checkpoint = OUT / f"run/checkpoints/metta_generals/run/{steps:016d}.bin"
     digest = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
     command("export_spatial_policy_bundle", "--build", OUT / "build/build.json", "--training", OUT / "run/training.json",
             "--checkpoint", checkpoint, "--sha256", digest, "--factory-source", SOURCE / "integrations/generals_fabric.py",
-            "--output", OUT / "bundle", "--serving-move-temperature", .05, "--serving-split-temperature", .15,
+            "--output", bundle, "--serving-move-temperature", .05, "--serving-split-temperature", .15,
             "--serving-early-route-temperature", .1, "--serving-early-route-turns", 100,
             "--serving-neutral-route-bias", 6, "--serving-weak-owned-route-penalty", 4,
-            "--serving-doomed-attack-route-penalty", 4, name="export", seconds=180)
-    command("audit_spatial_checkpoint_serving_parity", "--bundle", OUT / "bundle",
+            "--serving-doomed-attack-route-penalty", 4, name="export" + suffix, seconds=180)
+    report_path = OUT / ("checkpoint-serving-parity" + suffix + ".json")
+    command("audit_spatial_checkpoint_serving_parity", "--bundle", bundle,
             "--replay-root", "/work/input/leader-root", "--factory-source", SOURCE / "integrations/generals_fabric.py",
-            "--output", OUT / "checkpoint-serving-parity.json", name="serving-parity", seconds=300)
-    report = json.loads((OUT / "checkpoint-serving-parity.json").read_text())
+            "--output", report_path, name="serving-parity" + suffix, seconds=300)
+    report = json.loads(report_path.read_text())
     if (report["checkpoint_sha256"] != digest or report["public_states"] < 40
             or report["matching_top_actions"] != report["public_states"]
             or report["max_action_probability_difference"] > 1e-5
             or report["max_logit_difference"] > 2e-5 or report["max_rollout_transform_difference"] > 1e-5):
         raise ValueError("Trained checkpoint failed serving parity")
-    for label, bundle in (("parent", OUT / "self_bundle"), ("child", OUT / "bundle")):
+
+
+def evaluate():
+    export_and_audit(STEPS, OUT / "bundle")
+    arms = [("parent", OUT / "self_bundle"), ("child", OUT / "bundle")]
+    if STEPS == 33_554_432:
+        export_and_audit(16_777_216, OUT / "bundle-mid", "-mid")
+        arms.append(("mid", OUT / "bundle-mid"))
+    for label, bundle in arms:
         command("evaluate_spatial_population", "--bundle", bundle, "--population-build", OUT / "build/build.json",
                 "--games", 4096, "--pool-size", 4096, "--seed", 37813, "--sample-seed", 8713,
                 "--output", OUT / ("heldout-" + label), name="heldout-" + label, seconds=360)
+    for label, _ in arms[1:]:
+        command("analyze_spatial_population_pair", "--baseline", OUT / "heldout-parent",
+                "--candidate", OUT / ("heldout-" + label), "--output", OUT / ("paired-" + label + ".json"),
+                name="paired-" + label, seconds=60)
 
 
 def main():
