@@ -1,5 +1,25 @@
 # Softmax Coworld Classic 1v1 training
 
+## Latest 35882 hosted losses reproduce the defensive weakness
+
+Read-only, SHA-verified replay reconstruction reproduced every recorded final
+transition in all 36 losses. Against Daveey, 14/20 losses had an army advantage
+25 turns before capture; all 20 had a smaller largest stack. Of those losses,
+9/20 had a public-legal one-turn survival move against the recorded simultaneous
+opponent action; total policy mass on these moves across the nine states was
+0.000142223. Incumbent losses: 2/16 had a one-turn survival alternative, total
+mass 7.16e-10. No immediate winning alternative was found. This is retrospective
+fixed-action diagnosis, not an adaptive-opponent or eventual-win guarantee.
+No action labels or hidden replay information enters training.
+
+Bounded CPU reconstruction exited zero; exact pinned engine used. Artifacts:
+`/tmp/relh-generals-serving-35882-final/one-turn-defense-diagnostic.json` and
+`late-loss-diagnostics-v2.json`; logs `/tmp/relh-generals-35882-one-turn-defense.log`
+and `/tmp/relh-generals-35882-late-loss-diagnostics-v2.log`.
+Pilot 35887 remains the only live task job; no new training intervention was
+added after launch. Analysis monitor 54159 will compare verified pilot results
+and the previous independent nine-state defense probe after collection.
+
 ## Opponent-weight pilot 35887 launched (2026-10-03 22:22 UTC)
 
 One bounded job, 35887, is RUNNING on Slurm-selected metta-fabric-b300-1.
