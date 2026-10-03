@@ -1,5 +1,19 @@
 # Softmax Coworld Classic 1v1 training
 
+## Corrected interpretation of old architecture evidence (2026-10-03)
+
+Re-read the retained 27580 and 27188 experiment records before considering any
+future architecture change. Job 27580 (four local / sixteen global features,
+radius two) completed its build but spent five minutes compiling with ZERO
+epochs; it was stopped by the startup guard. It did NOT measure 27k SPS.
+The 27,440/27,795 SPS result belongs to older job 27188's two-minibatch spatial
+PPO setup with rollout environment time dominating. Do not conflate these runs
+or claim a measured radius-two throughput ceiling. Existing record around the
+27580 section already states that throughput/quality cannot be projected.
+No architecture was changed or additional GPU job submitted. Current 35882
+continues its controlled curriculum run; any different model would require its
+own complete CPU/serving/optimizer audit and bounded throughput qualification.
+
 ## 35882 midpoint verified; second-half training continues (2026-10-03)
 
 Authoritative job 35882 is RUNNING at 21:18 UTC, still the only task GPU job.
