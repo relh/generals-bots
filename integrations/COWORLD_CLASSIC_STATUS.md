@@ -1,5 +1,56 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35876 past midpoint; serving image recovered and durably backed up (2026-10-03)
+
+Live training9 observation: epoch843, epoch8411523.828→8431568.273,
+4194304steps/44.445s =94370.6604environmentSPS. Periodic138412032newstep audit:
+197566terminalgames,0nonfinite/0clipped rewards. Actual midpoint file
+`0000001761607680.bin` is present (2282672bytes) among retained checkpoints;
+not yet an evaluated or selected policy. One35876 remainsRUNNING, maxNice/Priority1.
+Remaining training+evaluation/hosted quality gates remain pending (full budget268435456).
+GPU7 external activity reached97420MiB/97%, with no additional B300 Slurm job
+in full queue. OwnGPU0 stays202090MiB, and measuredSPS~93.2–94.4k remains stable;
+no observed direct GPU memory contention or measured slowdown. Others untouched.
+
+A real downstream blocker was found before the new checkpoint arrived: local
+35867 serving tag/image was missing again (only training image66660f4b remained
+under Generals tags). Docker system df also reports a missing old snapshot16750.
+No cleanup/reset/global Docker change was performed by this task; cause of cache
+loss is unproven. Same-role pull of our published immutable35867 image was denied
+HEAD403 by its registry; no privilege escalation or changed identity attempted.
+Original hosted metadata/source/checkpoints/replays remain unchanged.
+
+Rebuilt a new owned serving base from retained runtime0b3e9a9e and original pinned
+Python digestdddfd7e07f9d15aeeca61529320492139d21cac7f0070c00609243e51e4e0016.
+Tag `relh-generals-serving-base:35876`, Docker image/index ID
+**sha256:3c767966bd055090c24891041ef4ed71c0fde8c47af9b9e7d8907b85a43e3940**.
+Root `/tmp/relh-generals-serving-base-35876-rebuilt`, proof.json records UID10001,
+amd64,46/46golden (maxprob7.5996e-7),32/32wire (max49.48ms local, notproduction).
+First proof harness mistook config digest2d308342 for Docker29 image/index ID;
+corrected to build's actual manifest-list digest. Logs retained, final proof
+`/tmp/relh-generals-serving-base-35876-rebuilt-cpu-v2.log` passed.
+
+Actual checkpoint-replacement Dockerfile inherited this base, replaced the old
+bundle entirely and preserved runtime config. CPU proof passed46/46 and32/32,
+using previously verified35867 weights, not new35876 weights. Proof image
+adb5221c9dbe9f699a8fda3e37f3964ae9d2fe68afe61cbba8e8adb5ed7d00ac;
+`/tmp/relh-generals-serving-35876-image-path-proof-v2/proof.json`.
+Future `...prepare-serving-35876.py` and `...upload-35876.py` now bind new base3c767966,
+not missing550bd531. New selected checkpoint still must pass its own full CPU/
+late-state/GPU-export parity and held-out/publication gates.
+
+Owned compressed Docker base archive229844211bytes durably stored in sandbox:
+`relh/generals-serving-base-35876-20261003T180222Z-71699735/image.tar.gz`, SHA
+**d9af23a1a361a3ae6ae336d99b85cbbf379a57158010e521746301d450db4716**.
+Full presigned GET readback hash verified; exact Docker load re-import verified
+without deleting any image. `backup-verified.json` and restore-proof JSONs under
+new base root; `/tmp/relh-generals-serving-base-35876-import-proof.log`.
+Helper `/tmp/relh-generals-restore-backed-serving-base-35876.py` checks existing
+image identity, restores only this owned hash-bound backup if missing, fails on
+other Docker lookup errors, preserves mismatching/partial archives. Future build
+invokes it before use. No protected history/session/database touched; no new
+hosted policy/XP/champion and no paidGPU spend.
+
 ## 35876 healthy at41.9M new steps; selected-policy hosting path prepared (2026-10-03)
 
 Authoritative scontrol recheck confirmed35876 RUNNING, Nice2147483645/Priority1,
