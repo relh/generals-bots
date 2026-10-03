@@ -1,5 +1,53 @@
 # Softmax Coworld Classic 1v1 training
 
+## Fixed continuation retry35876 running; CPU boundary audit complete (2026-10-03)
+
+ONE job35876 RUNNING since17:33:57UTC, Slurm-selectedmetta-fabric-b300-1,
+1B300/8CPU/96GiB/120min; Nice2147483645/Priority1 verified unchanged.
+Previous35873 terminalFAILED1:0, no steps trained, all results verified and
+failed scratch retained. No duplicate Generals GPU job. Other owners35874/35875
+on4090 nodes untouched. No paid node/spending or priority escalation.
+
+Source/launcher **7e72131** includes the single-opponent worker metadata fix.
+Native actual CLI completed16 full games in19.25s with legal/finite transitions,
+8W8L;31 regression/continuation tests passed;128-game current staged pool/reset
+proof passed. Exact pinned66660f4b image verified policy/Muon/config restore and
+actual CLI lineage/constructor/reset/both forwards/sampled legal transitions
+for16games×4steps, then exited at the explicit bounded CPU-test boundary.
+Evidence `/tmp/relh-generals-siege-workers4-long-retry-image-proof-v3/image-cpu.log`.
+This image smoke makes no completed-game or strength claim; native CPU supplies
+the full16-game completion check. First image full16-game attempt timed out420s
+after12games (QEMU); second two-game harness correctly failed inherited base
+seat-group divisibility. Both retained, neither counted as a passing run.
+Final v3 retains16 lanes and bounds steps instead; no game-rule modification.
+
+Initial signing failed safely because cached SSO access token expired. Normal
+boto3 sandbox provider refreshed the same role; STS confirmed sandbox015142856185
+and same PowerUserAccess role, new role expiry2026-10-04T05:33Z. No shared logout,
+identity switch, printed credentials or URLs. Signing/expiry audit then passed.
+
+All8physicalB300 GPUs0MiB/0% before retry. Scratch1.2TiB/77430freeinodes with
+35873 failed container retained. Initial floor60000 remains; pre-step floor40000
+covers29244 measured image inodes plus10756reserve. Prior job consumed33620
+inodes including build; expected~43k free after new unpack, enough for this
+bounded job/checkpoints. No other owner files/containers or protected histories
+touched. Repeated pre-step guards remain active; stop safely if space changes.
+
+Input `relh/generals-siege-workers4-long-retry-20261003T172123Z-93df55eb/input.part000`
+SHA131d6e0b3e1cac2157da898b6c7a6b7250698cf1b584d640eecebb9e88634549,
+193698316bytes;467 hashes roundtrip-verified. Actual input key in launch receipt.
+Results `relh/generals-classic-results-20261003T173339Z-c357fa5e`.
+Same target1627389952→1895825408, midpoint1761607680,13-opponent pool,
+4workers,25%curriculum and preserved optimizer. No changes to hosted champion;
+Daveey12/32 and incumbent16/32 remain below acceptance.
+
+Launch `/tmp/relh-generals-siege-workers4-long-retry-launch.json`; receipt
+`/tmp/relh-generals-siege-workers4-long-retry-cf672475.receipt.json`.
+Submit/controller monitor10797; one collector33224 (`...collect-35876-when-terminal.py`),
+one physical observer58879 (`...monitor-35876.py`). Results collector output
+`...35876-collected.txt` once terminal. Prepared `...observe-35876.py` only after
+container exists; `...summarize-35876.py` after verified results. Do not duplicate.
+
 ## 35873 stopped in self-match; worker-option boundary fixed on CPU (2026-10-03)
 
 35873 FAILED1:0 before training, all artifacts downloaded/hash-verified at
