@@ -1,5 +1,39 @@
 # Softmax Coworld Classic 1v1 training
 
+##35853 private native-runtime screen;35854 past46M (2026-10-03)
+
+Long35854 latest observed epoch23,46,137,344 auditedsteps,62,999terminals;
+4,194,304steps/(491.411-453.894)s=111,797.425SPS. Zero clipped/nonfinite rewards.
+Assigned physicalGPU0 UUIDGPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7 was0MiB/0%
+beforeJAX. Currentjob remains oneB300/Nice2147483645/Priority1; no duplicate.
+Live interval `/tmp/relh-generals-35854-live-interval.json`; finalauditstillpending.
+
+Curriculum33M privately registered `relh-classic-hardpool-35853-final`, policy
+82da8404-48c4-40c9-b305-e891fdf9ce78; imageimg_b330df0b-a3ed-445c-973e-cfc917bea17d.
+ImageIDsha256:58d37b03d3dac3c9ea812e03b3138f552f47098328fa5df246eb62a2c859a02f;
+registrymanifestaf3625e846fbe84c922b8a3e8a4756d7788fb559380e51342ca53cc7e711f849.
+Exact-image new-checkpoint numerical proof46/46topactions,maxprob1.371e-6.
+
+Candidate-specific localwire checks timed out at180s and300s under observed
+Macload85→127,~9.9GiBswap. Instrumentedretry spent185.38s inimports, connected
+at233.54s, but producedno replybeforedeadline. Both ownedCPUcontainers stopped;
+retryharnessnow stops its exactnamedcontainer in finally afterCLI timeout.
+These are NOT claimed as completed32-reply tests, nor productionlatency evidence.
+Evidence and rationale for native startup screen: immutable35852 parent image
+already passed32/32protocol replies; exactparentlayerprefixverified in35853 image;
+controlledDockerfile only replaces/app/policy; code/dependencies unchanged;
+newcheckpoint passesactualimage46-view numerical proof andGPU46-view parity.
+`cpu-readiness.json` explicitly marks wireproof INHERITED and retains failed
+candidateattempts/timings. No furtherQEMU retries or otherowners' jobs were touched.
+
+Alllocalrecords `/tmp/relh-generals-serving-35853-final`. Two nativehostedstartup
+requests pending: seat0xreq_deef1f9d-892d-49f8-a34f-73c1bfd0f03e and
+seat1xreq_8489158c-6935-4221-856d-81a3b7f97aa2. Monitor
+`/tmp/relh-generals-watch-35853-xp.py` (logxp-watch.log) requests the mainbalanced
+screen only afterbothstartupgamescomplete withzeroexecutionfailures; stable
+idempotencykeys and persistedresponses preventduplicatewrites. No championchange.
+Do not reupload/reregister/reissueexistingrequests. Long35854 continuesindependently.
+
 ## Active268M curriculum learning curve35854 (2026-10-03)
 
 35853 COMPLETED0:0 at06:11:58UTC; all source/results/manifest checks passed at
