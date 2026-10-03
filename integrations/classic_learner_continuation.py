@@ -149,6 +149,16 @@ def load_continuation(manifest_path, additional_steps):
         )
     elif "opponent_evaluation" in manifest:
         raise ValueError("Opponent evaluation requires an explicit reweighting recipe")
+    context_recipe = manifest.get("context_extension", "preserve")
+    if context_recipe not in ("preserve", "zero_extend_radius2"):
+        raise ValueError("Unknown context extension recipe")
+    if context_recipe == "zero_extend_radius2":
+        if (additional_steps != 33_554_432
+                or any(recipe != "preserve" for recipe in
+                       (pool_recipe, script_recipe, execution_recipe, weight_recipe))
+                or build["fabric"]["options"]["context_radius"] != 1.01):
+            raise ValueError("Context extension requires an isolated bounded 33M pilot")
+        build["fabric"]["options"]["context_radius"] = 2.01
     options["frozen_bundle"] = options["frozen_bundles"][0]
     run["total_timesteps"] = start + additional_steps
     run["initialize"] = dict(
@@ -169,6 +179,7 @@ def load_continuation(manifest_path, additional_steps):
             policy_sha256=manifest["policy_sha256"],
             learner_sha256=manifest["state_sha256"],
             restore_learner=True,
+            context_extension=context_recipe,
             opponent_generation=pool_recipe,
             scripted_opponent_generation=script_recipe,
             native_opponent_execution=execution_recipe,

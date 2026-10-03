@@ -83,6 +83,8 @@ def allocated_gpu():
 
 
 def continuation_parent():
+    if (OUT / "context-parent/migration.json").is_file():
+        return OUT / "context-parent"
     path = os.environ.get("GENERALS_PILOT_CONTINUATION_MANIFEST")
     return Path(path).parent / "parent" if path else PARENT
 
@@ -124,7 +126,8 @@ def prepare_configs(parent=PARENT, output=OUT):
 
             curriculum = configure_positions(options, position_manifest)
             (output / "position-curriculum.json").write_text(json.dumps(curriculum, indent=2) + "\n")
-        shutil.copytree(parent / "bundle", output / "self_bundle")
+        if resume["context_extension"] == "preserve":
+            shutil.copytree(parent / "bundle", output / "self_bundle")
         for name, value in (("build-config.json", build), ("config.json", run), ("continuation.json", resume)):
             (output / name).write_text(json.dumps(value, indent=2) + "\n")
         return build, run
@@ -280,8 +283,22 @@ def build():
         seconds=540,
     )
     manifest = json.loads((OUT / "build/build.json").read_text())
-    if manifest["model_sha256"] != "811e8de55c3fe327a670a362b076f88fc8e56b9525a347ed89c945cfe9e8863b":
+    from integrations.materialize_spatial_context_extension import EXTENDED_MODEL, PARENT_MODEL, materialize
+
+    radius = manifest["config"]["fabric"]["options"]["context_radius"]
+    if radius not in (1.01, 2.01) or manifest["model_sha256"] != (
+        EXTENDED_MODEL if radius == 2.01 else PARENT_MODEL
+    ):
         raise ValueError("Native model fingerprint changed during image migration")
+    continuation = OUT / "continuation.json"
+    if continuation.is_file() and json.loads(continuation.read_text()).get("context_extension") == "zero_extend_radius2":
+        reference = materialize(continuation_parent(), OUT / "build", OUT / "context-parent",
+                                SOURCE / "integrations/generals_fabric.py")
+        run_path = OUT / "config.json"
+        run = json.loads(run_path.read_text())
+        run["initialize"] = reference
+        run_path.write_text(json.dumps(run, indent=2) + "\n")
+        shutil.copytree(OUT / "context-parent/bundle", OUT / "self_bundle")
 
 
 def sampling_gate():

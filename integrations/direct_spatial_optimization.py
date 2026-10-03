@@ -16,6 +16,7 @@ import jax.numpy as jnp
 import numpy as np
 
 from integrations.memoryless_optimization import BRIDGE_SHA256, verify_configuration
+from integrations.spatial_context_geometry import context_offsets
 
 
 @dataclass(frozen=True)
@@ -127,12 +128,18 @@ class DirectSpatial:
             elif pair == ("SiLU", "ContextSiLU"):
                 dx = (src // features) % 21 - (dst // features) % 21
                 dy = (src // features) // 21 - (dst // features) // 21
-                if np.any(np.abs(dx) + np.abs(dy) > 1):
-                    raise ValueError("Context exceeds the verified cross stencil")
-                if len(src) != (5 * cells - 4 * 21) * features ** 2:
-                    raise ValueError("Context cross stencil is incomplete")
-                self.context_kernel = shared((3, 3, features, features),
-                                             (dy + 1, dx + 1, src % features, dst % features), weights)
+                extent = int(max(np.abs(dx).max(), np.abs(dy).max()))
+                offsets = context_offsets(extent + .01)
+                actual = set(zip(dy.tolist(), dx.tolist()))
+                if actual != set(offsets):
+                    raise ValueError("Context differs from the supported stencil")
+                expected = sum((21 - abs(y)) * (21 - abs(x)) for y, x in offsets)
+                if len(src) != expected * features ** 2:
+                    raise ValueError("Context stencil is incomplete")
+                self.context_kernel = shared((2 * extent + 1, 2 * extent + 1, features, features),
+                                             (dy + extent, dx + extent, src % features, dst % features), weights)
+                if any(np.any(self.context_kernel[y + extent, x + extent] < 0) for y, x in offsets):
+                    raise ValueError("Context feature projection is incomplete")
             elif pair == ("ContextSiLU", "Output"):
                 if np.any(dst >= cells * 8) or not np.all(src // features == dst % cells):
                     raise ValueError("Action readout reaches another site or non-move output")

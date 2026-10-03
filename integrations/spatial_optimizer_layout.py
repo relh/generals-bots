@@ -25,11 +25,12 @@ def logical_optimizer_shapes(model, buffers, *, context_matrix=False):
     register("global", model.global_kernel, model.global_kernel.shape)
     register("readout", model.readout_kernel, model.readout_kernel.shape)
     if context_matrix:
-        from integrations.spatial_muon_context import OFFSET, SHAPE, validate_model_gather
-        validate_model_gather(model)
-        if OFFSET in matrices:
+        from integrations.spatial_muon_context import geometry, validate_model_gather
+        gather = validate_model_gather(model)
+        offset, shape, _, _, _ = geometry(model.context_kernel.shape[0] // 2 + .01)
+        if offset in matrices:
             raise ValueError("Convolution optimizer block overlaps another matrix")
-        matrices[OFFSET] = ("context", SHAPE, 5120)
+        matrices[offset] = ("context", shape, len(gather))
 
     shapes, report = [], []
     offset = 0

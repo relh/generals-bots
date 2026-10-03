@@ -79,6 +79,28 @@ class ContinuationTests(unittest.TestCase):
         self.assertEqual(audit["additional_steps"], 268_435_456)
         self.assertEqual(run["overrides"]["train.learning_rate"], 0.0002)
 
+    def test_context_extension_is_bounded_and_preserves_parent(self):
+        training = self.parent / "run/training.json"
+        record = json.loads(training.read_text())
+        record["build"]["config"]["fabric"] = dict(options=dict(context_radius=1.01))
+        training.write_text(json.dumps(record))
+        original = training.read_bytes()
+        self.data["run_sha256"] = self.identity["run_sha256"] = hashlib.sha256(original).hexdigest()
+        Path(str(self.state) + ".json").write_text(json.dumps(self.identity))
+        self.data["context_extension"] = "zero_extend_radius2"
+        self.write_manifest()
+        _, build, run, audit = load_continuation(self.manifest, 33_554_432)
+        self.assertEqual(build["fabric"]["options"]["context_radius"], 2.01)
+        self.assertEqual(audit["context_extension"], "zero_extend_radius2")
+        self.assertTrue(run["initialize"]["restore_learner"])
+        self.assertEqual(training.read_bytes(), original)
+        with self.assertRaisesRegex(ValueError, "isolated bounded"):
+            load_continuation(self.manifest, 268_435_456)
+        self.data["opponent_generation"] = "drop_oldest_append_parent_weight8"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "isolated bounded"):
+            load_continuation(self.manifest, 33_554_432)
+
     def test_corrupted_optimizer_is_rejected(self):
         self.state.write_bytes(self.state.read_bytes()[:-1] + b"\xff")
         with self.assertRaisesRegex(ValueError, "state_sha256"):

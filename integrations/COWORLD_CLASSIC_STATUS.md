@@ -1,5 +1,56 @@
 # Softmax Coworld Classic 1v1 training
 
+## Wider-context implementation: CPU transfer passes; image audit in progress
+
+Goal remains ACTIVE: hosted strength is not established. No new Generals GPU
+job or XP request; 35887 and its 64 hosted games are complete. Future Slurm
+Nice=2147483645 / Priority=1, finite runtime, one task job, no escalation.
+
+Implemented radius2.01 (13-cell) direct/NumPy inference, verified native Muon
+layout and gather/source guards, and an isolated 33M continuation recipe.
+`materialize_spatial_context_extension.py` creates a separately labeled derived
+initialization with original lineage and `migration.json`, zero additional
+training steps, and no fabricated completed-run record. Original source runs,
+policy/optimizer snapshots, and histories remain untouched. Pool, rewards,
+sampler, native opponent workers and optimizer settings are retained.
+
+CPU native forward/gradient proof:
+`/tmp/relh-generals-wide-context-cpu-proof/audit.json`.
+570668 -> 578860 parameters; all 8192 new connections start at zero. All 46
+reference outputs remain exactly identical. Perturbed new connections match
+actual native forward within 1.400709e-6 and gradient within 6.258488e-7;
+new-neighbor gradient norm 1.125798 confirms a learning path.
+Native mapping SHA256 dd2d1dd66681be35a7d64865ba4bd097ebb40fb5c41b576f3eb0808b5321cc9a.
+
+Actual migration plus native `prepare_run` CPU proof:
+`/tmp/relh-generals-wide-context-prepare-proof/audit.json`.
+All retained momentum values match exactly, new momentum is zero, epoch1176
+and step2466250752 are preserved. Transferred policy
+0d6ee314fb416322412a6cfdf5fcf39fbb09864af893833e43728215cbf6f208;
+transferred learner 3c0fd4a6d3f4535ce07eff6775e932a91b6542c039b347b578d0fb5e6d2bedc9.
+New model fd64a611cb6ba1d721ddf519e5b15f7b26e207cd8c045d10483b04bbe2217f85.
+This first prepare proof used a clearly labeled CPU fixture binary, never
+executed; it does not qualify GPU execution. 60 focused tests pass, including
+corrupt learner snapshots and rejecting combined/unbounded context recipes.
+
+Next exact-image proof is RUNNING, not yet passed:
+`/tmp/relh-generals-wide-context-image-proof/image-cpu.log`, exec session7740,
+owned CPU-only Docker container `relh-generals-wide-context-image-cpu`, finite
+1140-second outer timeout, 4CPU/6GiB, network disabled, no GPU access.
+It compiles actual CUDA sm_103 code in image66660f4b..., validates optimizer
+source/receipts, then checks actual checkpoint migration and native preparation.
+New frozen input `/tmp/relh-generals-portable-wide-context-input`; no S3 upload
+or scheduling yet. Original radius-one generated CUDA source hash is unchanged;
+radius-two source e89c78a1aae29e3e725c8c1bd8de1f114e2e38db1037c1f6a376c86fd7b5bfbd.
+
+Still required before GPU: finish image proof, audit actual bootstrapped runtime
+and serving image with new spatial_context_geometry dependency, lifecycle/input
+binding, and live full queue/physical GPU/space/inodes preflight. Then one bounded
+33M pilot, >=30k steady end-to-end SPS gate, fresh held-out and hosted comparison.
+No claim wider context improves wins yet. Local disk ~1.1GiB free; protected
+Codex history remains untouched. Preserve current sources/results and owned
+stopped serving-image retention containers.
+
 ## 35887 hosted conclusion: win target still unmet; next CPU investigation
 
 All64 hosted games completed and raw replays audited. Daveey9W/22L/1D

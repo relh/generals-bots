@@ -134,7 +134,12 @@ class SpatialPlayerPolicy:
         with np.load(bundle / "weights.npz", allow_pickle=False) as data:
             self.weights = {name: data[name].copy() for name in data.files}
         f, g = manifest["features"], manifest["global_features"]
-        shapes = dict(input_kernel=(self.channels, f), context_kernel=(3, 3, f, f),
+        from integrations.spatial_context_geometry import context_offsets
+
+        radius = config["options"].get("context_radius", 1.01)
+        offsets = context_offsets(radius)
+        extent = int(radius)
+        shapes = dict(input_kernel=(self.channels, f), context_kernel=(2 * extent + 1, 2 * extent + 1, f, f),
                       local_weight=(f,), local_bias=(f,), context_weight=(f,), context_bias=(f,),
                       global_kernel=(441 * f, g), global_weight=(g,), global_bias=(g,),
                       readout_kernel=(g, 3530), action_kernel=(f, 8),
@@ -154,6 +159,11 @@ class SpatialPlayerPolicy:
                     raise ValueError("Spatial prior source exceeds the observation")
             elif value.dtype != np.float32:
                 raise ValueError("Spatial inference requires float32 weights")
+        active = {(y + extent, x + extent) for y, x in offsets}
+        kernel = self.weights["context_kernel"]
+        if any(np.any(kernel[y, x] != 0) for y in range(kernel.shape[0])
+               for x in range(kernel.shape[1]) if (y, x) not in active):
+            raise ValueError("Spatial context has weights outside its declared stencil")
         self.features = f
         self.reset("spatial-policy-default")
 
@@ -178,9 +188,13 @@ class SpatialPlayerPolicy:
             observations = xp.concatenate((observations[:, :4851], xp.zeros_like(observations[:, 4851:])), axis=1)
         obs = observations.reshape(-1, self.channels, 21, 21).transpose(0, 2, 3, 1)
         local = self.silu((obs @ w["input_kernel"]) * w["local_weight"] + w["local_bias"], xp)
-        padded = xp.pad(local, ((0, 0), (1, 1), (1, 1), (0, 0)))
+        from integrations.spatial_context_geometry import kernel_offsets
+
+        size = w["context_kernel"].shape[0]
+        extent = size // 2
+        padded = xp.pad(local, ((0, 0), (extent, extent), (extent, extent), (0, 0)))
         context = xp.zeros_like(local)
-        for dy, dx in ((0, 1), (1, 0), (1, 1), (1, 2), (2, 1)):
+        for dy, dx in kernel_offsets(size):
             context += padded[:, dy:dy + 21, dx:dx + 21] @ w["context_kernel"][dy, dx]
         context = self.silu(context * w["context_weight"] + w["context_bias"], xp)
         global_values = self.silu((context.reshape(-1, 441 * self.features) @ w["global_kernel"])

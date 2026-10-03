@@ -3,16 +3,22 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
+from integrations.spatial_context_geometry import kernel_offsets
 from integrations.spatial_muon_context import (
-    MARKER, OFFSET, context_source, load_gather, validate_model_gather,
+    MARKER,
+    OFFSET,
+    context_source,
+    load_gather,
+    validate_model_gather,
 )
 from integrations.spatial_muon_orientation import validate_build_mode
 
 
-def model():
-    kernel = np.full((3, 3, 32, 32), -1, np.int32)
-    neighbors = [(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)]
-    gather = load_gather().reshape(32, 32, 5)
+def model(radius=1.01):
+    size = 2 * int(radius) + 1
+    kernel = np.full((size, size, 32, 32), -1, np.int32)
+    neighbors = kernel_offsets(size)
+    gather = load_gather(radius).reshape(32, 32, len(neighbors))
     for output in range(32):
         for input_ in range(32):
             for index, (y, x) in enumerate(neighbors):
@@ -20,14 +26,15 @@ def model():
     return SimpleNamespace(context_kernel=kernel)
 
 
-def test_gather_preserves_all_physical_weights_and_roundtrips():
-    gather = validate_model_gather(model())
-    physical = np.arange(5120, dtype=np.float32)
-    matrix = physical[gather].reshape(32, 160)
+@pytest.mark.parametrize("radius", [1.01, 2.01])
+def test_gather_preserves_all_physical_weights_and_roundtrips(radius):
+    gather = validate_model_gather(model(radius))
+    physical = np.arange(len(gather), dtype=np.float32)
+    matrix = physical[gather].reshape(32, -1)
     restored = np.empty_like(physical)
     restored[gather] = matrix.reshape(-1)
     np.testing.assert_array_equal(restored, physical)
-    assert not np.array_equal(gather, np.arange(5120))
+    assert not np.array_equal(gather, np.arange(len(gather)))
 
 
 def test_changed_actual_sharing_order_is_refused():

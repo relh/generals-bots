@@ -10,7 +10,6 @@ import hashlib
 import json
 from pathlib import Path
 
-
 INSTALLED_ALGO_SHA256 = "ffce514b8bb9fb7bd36922722ddfd42c90ace6d167004b5b732b8cba710682b0"
 CANONICAL_ALGO_SHA256 = "cee5f060a2c381f2a2b245695436c15641b31f971dcc7b87a76ea2916f1cb878"
 MARKER = "generals_spatial_muon_dense_orientation=canonical_v1"
@@ -40,10 +39,11 @@ def validate_geometry(config):
     raw = config.model_dump() if hasattr(config, "model_dump") else config
     options = raw["options"]
     expected = dict(height=21, width=21, channels=16, features_per_site=32,
-                    global_features=32, context_radius=1.01, factorized_actions=False)
+                    global_features=32, factorized_actions=False)
     if (raw["factory"] != "integrations.generals_fabric:two_stage_tied_local_action_policy"
             or raw["observation_size"] != 7056 or list(raw["action_sizes"]) != [3529]
-            or any(options.get(key) != value for key, value in expected.items())):
+            or any(options.get(key) != value for key, value in expected.items())
+            or options.get("context_radius") not in (1.01, 2.01)):
         raise ValueError("Dense Muon orientation requires the verified sixteen-channel F32 model")
     if any(raw.get(key) for key in (
         "teacher", "losses", "horde", "rnd", "routing", "self_distillation",
@@ -92,7 +92,7 @@ def validate_build_mode(build, mode, *, context_matrix=False):
     if context_matrix and mode != "canonical":
         raise ValueError("Convolution matrix mode requires canonical dense scaling")
     build = Path(build)
-    from integrations.spatial_muon_context import CONTEXT_ALGO_SHA256, validate_context_build
+    from integrations.spatial_muon_context import config_radius, geometry, validate_context_build
     validate_context_build(build, context_matrix)
     marked = MARKER.encode() in (build / "puffer").read_bytes()
     if marked != (mode == "canonical"):
@@ -103,7 +103,8 @@ def validate_build_mode(build, mode, *, context_matrix=False):
     validate_geometry(manifest["config"]["fabric"])
     receipt = json.loads((build / "spatial-muon-orientation.json").read_text())
     source_hash = hashlib.sha256((build / "source/src/algo.cu").read_bytes()).hexdigest()
-    expected_hash = CONTEXT_ALGO_SHA256 if context_matrix else CANONICAL_ALGO_SHA256
+    expected_hash = (geometry(config_radius(manifest["config"]["fabric"]))[3]
+                     if context_matrix else CANONICAL_ALGO_SHA256)
     if (receipt["mode"] != "canonical_dense" or receipt["marker"] != MARKER
             or receipt["original_algo_sha256"] != INSTALLED_ALGO_SHA256
             or receipt["patched_algo_sha256"] != source_hash
