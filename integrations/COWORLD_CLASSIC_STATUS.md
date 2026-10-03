@@ -1,5 +1,50 @@
 # Softmax Coworld Classic 1v1 training
 
+## Active268M curriculum learning curve35854 (2026-10-03)
+
+35853 COMPLETED0:0 at06:11:58UTC; all source/results/manifest checks passed at
+`/tmp/relh-generals-portable-result-35853`. Final1837W/2160L/99D versus parent
+1761W/2248L/87D; pairedsigneddelta+.040039, map-cluster95%CI[+.010643,+.070350].
+Mid1785W/2219L/92D, delta+.012939CI[-.014995,+.040886]. Finalvs corrected35852
+control1821W/2194L/81D:delta+.012207CI[-.016185,+.040887]; curriculum superiority
+over control is uncertain, although its parent improvement and learning-curve
+trend justify a bounded longer test. Expanderwins259→277, Sentinel201→226.
+Same-parent per-game outcomes are identical across both controls, confirming
+fresh-map evaluation isolation. Both checkpoints46/46 servingtopactions;
+maxprobability error9.54e-7(final),4.77e-7(mid). Finalcheckpoint
+15271c27c62bf5e730711d1ce547ff44b1b2a69203ed0fbbaaa0ad3e6e4adef5.
+Warm epoch14→16:4,194,304steps/36.979s=113,423.943SPS; firstepoch82.301s,
+8192games/H256/mb8192/replay.5, B300197.4GiB. Zero clipped/nonfinite/illegal;
+45,289 terminal traininggames. Nice2147483645/Priority1 unchanged toterminal.
+
+35854 RUNNING from06:15:43UTC, finite120min; oneB300/8CPU/96GiBhost,
+Nice2147483645/Priority1 controller readback, source6faecd3. No duplicate
+Generals work; previous jobterminal/resultsverified and allphysicalGPUs0MiB/0%
+beforelaunch. No paidfallback/spend. Same67Mparent/.5reward/25%positioncurriculum,
+268,435,456steps with134,217,728midpoint, freshheldoutseeds37841/8729.
+At113.4kSPS expected trainingtimeabout39.4min pluscompile/build/evaluation.
+Innertrain3240s, Slurmtrainstep3300s; allsteps6420s plus600s shutdown reserve
+within7200s. Presigning rechecks expiry; no priority escalation or nodepinning.
+
+Publiclaunch `/tmp/relh-generals-learning256m-launch.json`; monitor
+`/tmp/relh-generals-learning256m-submit.log`; controller
+`/tmp/relh-generals-long-0dc8dcda.receipt.json`. Resultprefix
+`relh/generals-classic-results-20261003T061447Z-868f0366` insoftmax-slurm-artifacts.
+InputSHA97e823761c203e7bea3468f4416ecd0926745834309221b37d650236fae38b11.
+All401inputsverified; onlypilot source differs from35853 (budget/midpoint/fresh
+validationseeds). Exactimmutableimage CPU proof passed both268Mconfigurations,
+pilotSHAe678dce13e4a21785ccb27debe5fc56149122f3cb0c16eec3e9d65a74ac9ba38.
+Proof `/tmp/relh-generals-long-image-proof/image-cpu.log`;8curve/throughputtests
+passed2.75s; unchangedlifecycle26tests/11subtests passed58.86s. Maintain30kSPS,
+finite/unclippedreward andillegalaction gates. Do not submit another GPU job.
+
+Curriculum35853 private-serving CPU preparation is separate and underway.
+The old local35836-fixture image tag disappeared; retained35852-final imageID
+90b71de34054885fa0f740f3c47894c287504a1307d060cc5fb53949d2d06631 is the
+same qualified runtime and is used as immutable checked parent. Only/app/policy
+is replaced inside the owned image. Failedpreparationlog preserved; no APIwrite
+occurred on that failed attempt. CPUwire/golden checks precede any upload.
+
 ## Hosted35852 final is still weak; winning gate remains unmet (2026-10-03)
 
 All64 requested hosted episodes completed with zero execution failures.
