@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35860 serving qualified, hosted startup pending (2026-10-03 10:40 UTC)
+
+Selected final checkpoint now has exact-image CPU parity **46/46**, max
+probability difference **7.152557e-7**, and wire **32/32 legal replies**.
+Local CPU cold readiness 12.729 seconds, maximum reply 0.05291 seconds;
+these are local emulation timings, not production latency. Image
+`sha256:33f7443040f99e7b2caf979ae1d21d6c190e81654f609c72944316a342ea0efd`
+preserves the qualified 35858 runtime layer prefix. Docker push's known
+post-layer HEAD failure was reconciled through verified registry manifest
+`234f846ff3af79c980a913267ab8bde61c5d16b502b26e537add27e52809dd16`;
+image registration completed, no duplicate upload.
+
+Private image `img_eeb12065-38ea-48e9-9646-3129d9f6389c`, policy
+`3ba939e8-f925-4865-92e3-9306fde3f9c3` (`relh-classic-hardpool-35860-final`).
+Startup request IDs: seat 0 `xreq_90d1a3c8-37dd-4938-8654-a9293fa38da4`,
+seat 1 `xreq_dd86fa35-0782-4ef2-9aec-7a4bbdab0029`. Both pending at this
+readback. Strict watcher `/tmp/relh-generals-watch-35860-xp.py` advances to
+64 total games only after both startup records complete successfully.
+Evidence root `/tmp/relh-generals-serving-35860-final`; monitor log
+`/tmp/relh-generals-35860-xp-monitor.log`. Champions rechecked; pinned Daveey
+and relh target IDs unchanged. No champion change.
+
+A potential next generation is staged separately at
+`/tmp/relh-generals-portable-generation2-input`: append verified final parent,
+drop oldest frozen entry, weights `[1,1,1,1,2,2,2,2,8,8,8,6]`, preserve Muon
+state, counters 805,306,368→1,073,741,824. Actual local CPU environment passed
+one finite legal step with **96 games**, all 12 opponents on both seats.
+Earlier check sizes 80 (below weighted cycle minimum) and 84 (inherited base
+opponent grouping constraint) were rejected before stepping; corrected 96
+passed. Exact training-image native prepare_run/pilot reward/optimizer
+binding passed. This is preparation only: no archive upload/signing/GPU
+submission yet, and hosted outcome will steer the run decision. Readiness
+`/tmp/relh-generals-generation2-cpu-readiness.json` records remaining gates.
+There is no live Generals GPU allocation or funded node. Goal remains active.
+
 ## 35860 completed: refreshed-pool improvement, hosted validation pending (2026-10-03 10:32 UTC)
 
 Job **35860 COMPLETED 0:0** at 10:25:21 UTC. Nice **2147483645 / Priority 1**
