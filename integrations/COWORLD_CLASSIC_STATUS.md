@@ -1,5 +1,25 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35861 training complete; final evaluation pending (2026-10-03)
+
+The sole job **35861** completed native epoch **512**, reaching
+**1,073,741,824 total steps** after **268,435,456 new steps**. Full action
+audit: **268,435,456 actions, zero illegal**. Final reward audit:
+**378,296 terminal games**, zero nonfinite/clipped rewards. Training uptime
+**2,593.167 seconds**; first resumed epoch 385 **97.155 seconds**.
+Epochs **510→512** advanced 4,194,304 steps in **39.046 seconds**
+(2554.121→2593.167) = **107,419.556 steady environment SPS**, including
+rollout and optimization. Same one B300 / 8,192 environments / horizon256 /
+minibatch8,192 / replay0.5 setup. Evidence:
+`/tmp/relh-generals-35861-live-training-final-check.json`.
+
+The job remains active for the same-allocation checkpoint parity and fresh
+paired parent/midpoint/final comparisons. Those results and the final
+checkpoint identity are pending; completed training is not a strength result.
+Keep **Nice2147483645/Priority1**, finite original deadline, and sole-job
+ownership. Terminal monitor and collector remain live; no subsequent GPU job
+or 35861 serving upload/XP request has been started. Goal remains active.
+
 ## 35861 crosses one billion optimized steps (2026-10-03)
 
 Native completed epoch **486** reaches **1,019,215,872 total optimized steps**,
