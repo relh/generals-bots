@@ -1,5 +1,52 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35887 hosted conclusion: win target still unmet; next CPU investigation
+
+All64 hosted games completed and raw replays audited. Daveey9W/22L/1D
+(seat0:3W/13L; seat1:6W/9L/1D); incumbent18W/13L/1D
+(seat0:9W/6L/1D; seat1:9W/7L). Zero failed episodes, timeouts or audited
+illegal moves.64unique seeds, no overlap35882. Artifacts
+`/tmp/relh-generals-serving-35887-final/hosted-results-summary.json`,
+`hosted-replay-panel-audit.json`, `hosted-seed-audit.json`.
+Watcher36650 and finalizer14575 finished. No128-game confirmation or promotion;
+small held-out improvement did not establish stronger hosted play. Do not scale
+this unchanged configuration into another long run solely on the local gain.
+No live Generals Slurm job, paid node, duplicate XP request, or active goal blocker.
+
+Panel XP IDs: incumbent0 xreq_d655a82e-e278-4872-b24c-7693f1b60d26;
+incumbent1 xreq_cc45343e-5192-4779-83a1-06027b95a70e;
+Daveey0 xreq_5acfaa84-53c5-4bdf-b415-4c156ace3e6a;
+Daveey1 xreq_d203895e-34d3-4c62-96d5-941a192fa6dd.
+The smoke IDs and policy/image identities are in the preceding entry. Do not
+reissue these completed requests. Keep goal ACTIVE: meaningful strong hosted
+wins have not been demonstrated. Source fixes are pushed through this status.
+
+Next bounded investigation: wider local context (radius2.01,13cells versus
+radius1.01,5cells), supported by the defensive component/reach diagnostics.
+This is a hypothesis, not a demonstrated fix. Start with complete CPU
+implementation, lossless checkpoint extension and optimizer/serving audit;
+no GPU until all gates pass. The existing factory accepts radius2, but
+DirectSpatial, NumPy bundle inference, Muon geometry/gather/source guards and
+portable model-hash gate currently pin the cross stencil. Preserve current
+behavior/defaults, compare forward AND gradient against actual native Fabric,
+verify exact trained-parameter transfer with zero new weights, explicit momentum
+mapping, and ordinary plus late-state serving parity. New runtime must be
+built/tested in the actual image. Keep pool/rewards/sampler fixed to isolate
+context; qualify one bounded pilot before any longer training. No architecture
+code has been changed yet. No proof radius2 is slow exists:27580 had zero epochs.
+
+Additional source check: `SpatialFrozenOpponentPufferEnvironment.step_device`
+refreshes the map pool at its environment horizon using a new folded-in seed.
+Do not describe training as indefinitely restricted to one static8192-map pool.
+A prior possible map-memorization hypothesis remains unproven.
+
+Retain the two owned stopped Docker image-reference containers recorded below
+while this task continues; they consume no GPU/CPU execution. Their purpose is
+to protect audit images from the observed unexplained image disappearance.
+Do not prune shared Docker state or protected agent history. The three removed
+input transport archives are reconstructible from preserved expanded inputs
+and fully hash-verified S3 copies; all source and results remain available.
+
 ## 35887 publication recovered; hosted requests active
 
 Published policy789ec2ed-5e94-44bd-82b5-64c6aafbc8bc,
