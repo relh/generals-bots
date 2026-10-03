@@ -62,8 +62,11 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
     early_temperature = float(early_temperature) if early_temperature is not None else None
     early_turns = int(early_turns) if early_turns is not None else None
     scheduled = early_temperature is not None
-    baseline_early_temperature = early_temperature if route_half_weight else None
-    baseline_early_turns = early_turns if route_half_weight else None
+    continuing = bool(initialization.get("restore_learner"))
+    if continuing and report.get("gate_mode") != "same_sampler_continuation":
+        raise ValueError("Learner continuation requires the actual resumed sampler self-match")
+    baseline_early_temperature = early_temperature if route_half_weight or continuing else None
+    baseline_early_turns = early_turns if route_half_weight or continuing else None
     if scheduled and (not options.get("public_scalar_features") or options.get("public_scalar_ablation")):
         raise ValueError("Early route schedule requires full public scalar turn observations")
     if (report.get("baseline_sha256") != source or report.get("candidate_sha256") != source
@@ -74,7 +77,7 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
             or report.get("candidate_sampling_temperature") != temperature
             or report.get("candidate_split_sampling_temperature") != split_temperature
             or (scheduled and report.get("baseline_split_sampling_temperature") != split_temperature)
-            or report.get("baseline_route_half_weight", 0.0) != 0.0
+            or report.get("baseline_route_half_weight", 0.0) != (route_half_weight if continuing else 0.0)
             or report.get("candidate_route_half_weight", 0.0) != route_half_weight
             or report.get("baseline_early_route_temperature") != baseline_early_temperature
             or report.get("baseline_early_route_turns") != baseline_early_turns

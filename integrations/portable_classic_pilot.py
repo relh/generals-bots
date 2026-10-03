@@ -285,7 +285,10 @@ def build():
 
 
 def sampling_gate():
-    for label in ("baseline", "candidate"):
+    continuing = bool(starting_steps())
+    # A resumed policy already uses the scheduled sampler. Its viability check
+    # must not require winning with the obsolete unscheduled ablation.
+    for label in (("candidate",) if continuing else ("baseline", "candidate")):
         extra = ["--early-route-temperature", ".10", "--early-route-turns", "100"] if label == "candidate" else []
         command(
             "evaluate_spatial_frozen_match",
@@ -324,7 +327,7 @@ def sampling_gate():
     command(
         "analyze_spatial_frozen_match_pair",
         "--baseline",
-        OUT / "gate/baseline",
+        OUT / ("gate/candidate" if continuing else "gate/baseline"),
         "--candidate",
         OUT / "gate/candidate",
         "--allow-policy-mode-change",
@@ -336,6 +339,10 @@ def sampling_gate():
         seconds=60,
     )
     report = json.loads((OUT / "sampling-gate.json").read_text())
+    if continuing:
+        report["gate_mode"] = "same_sampler_continuation"
+        report["scope"] = "One 512-game self-match under the resumed sampler; no improvement comparison"
+        (OUT / "sampling-gate.json").write_text(json.dumps(report, indent=2) + "\n")
     if report["score_delta"] < -0.12 or report["candidate_wld"][0] < 128:
         raise ValueError("Parent policy fails the training sampler gate")
 

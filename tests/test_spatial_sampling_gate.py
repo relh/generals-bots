@@ -147,3 +147,70 @@ def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):
     report["baseline_early_route_turns"] = 100
     path.write_text(json.dumps(report))
     validate_sampling_gate(argv, environment)
+
+
+def test_continuation_qualifies_actual_sampler_without_obsolete_ablation(tmp_path):
+    build = tmp_path / "build"
+    build.mkdir()
+    (build / "build.json").write_text(json.dumps(dict(config=dict(python_environment=dict(
+        factory="integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
+        spec=dict(action_sizes=[3529]), options=dict(terminal_reward_mode="win_only",
+                                                 public_scalar_features=True, public_scalar_ablation=False),
+    )))))
+    config = tmp_path / "config.json"
+    config.write_text(json.dumps(dict(initialize=dict(sha256=SHA, restore_learner=True))))
+    argv = ["launcher", "train", "--build", str(build), "--config", str(config)]
+    report = dict(baseline_sha256=SHA, candidate_sha256=SHA, opponent_sha256=SHA,
+                  baseline_action_selection="sample", candidate_action_selection="sample",
+                  baseline_sampling_temperature=.05, candidate_sampling_temperature=.05,
+                  baseline_split_sampling_temperature=.15, candidate_split_sampling_temperature=.15,
+                  baseline_early_route_temperature=.1, baseline_early_route_turns=100,
+                  candidate_early_route_temperature=.1, candidate_early_route_turns=100,
+                  baseline_wld=[245, 259, 8], candidate_wld=[245, 259, 8],
+                  games=512, unique_initial_maps=325, gate_mode="same_sampler_continuation")
+    path = tmp_path / "report.json"
+    path.write_text(json.dumps(report))
+    environment = dict(METTA_SPATIAL_POLICY_TEMPERATURE=".05", METTA_SPATIAL_SPLIT_TEMPERATURE=".15",
+                       METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE=".1", METTA_SPATIAL_EARLY_ROUTE_TURNS="100",
+                       METTA_SPATIAL_SAMPLING_GATE_REPORT=str(path))
+    validate_sampling_gate(argv, environment)
+    # Keep the actual-policy viability threshold. A genuinely collapsed sampler
+    # remains a failure even when restoring the optimizer.
+    report["candidate_wld"] = [100, 404, 8]
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="Rollout sampling wins"):
+        validate_sampling_gate(argv, environment)
+    report["candidate_wld"] = [245, 259, 8]
+    report["baseline_early_route_temperature"] = None
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report.pop("gate_mode")
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="actual resumed sampler"):
+        validate_sampling_gate(argv, environment)
+
+
+def test_continuation_pilot_runs_one_actual_sampler_panel(tmp_path, monkeypatch):
+    from integrations import portable_classic_pilot as pilot
+
+    calls = []
+
+    def retained_evaluation(module, *args, **kwargs):
+        calls.append((module, args))
+        if module == "analyze_spatial_frozen_match_pair":
+            baseline = args[args.index("--baseline") + 1]
+            candidate = args[args.index("--candidate") + 1]
+            assert baseline == candidate == tmp_path / "gate/candidate"
+            (tmp_path / "sampling-gate.json").write_text(json.dumps(dict(
+                score_delta=0., candidate_wld=[245, 259, 8])))
+
+    monkeypatch.setattr(pilot, "OUT", tmp_path)
+    monkeypatch.setattr(pilot, "starting_steps", lambda: 268_435_456)
+    monkeypatch.setattr(pilot, "command", retained_evaluation)
+    pilot.sampling_gate()
+    panels = [args for module, args in calls if module == "evaluate_spatial_frozen_match"]
+    assert len(panels) == 1
+    assert panels[0][panels[0].index("--early-route-temperature") + 1] == ".10"
+    assert panels[0][panels[0].index("--early-route-turns") + 1] == "100"
+    assert json.loads((tmp_path / "sampling-gate.json").read_text())["gate_mode"] == "same_sampler_continuation"

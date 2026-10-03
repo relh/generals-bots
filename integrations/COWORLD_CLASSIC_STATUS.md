@@ -1,5 +1,43 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35857 retained failure: obsolete sampler ablation blocked continuation
+
+Job **35857 FAILED 1:0 at 2026-10-03 07:58:57 UTC**, after smoke, build and
+sampler evaluations, before any optimizer training. Nice **2147483645 /
+Priority 1** remained unchanged. No cancellation, requeue or duplicate job.
+Raw results and archive are verified at `/tmp/relh-generals-portable-result-35857`.
+The collector and terminal receipt are complete. GPU 0 was idle before allocation
+and has been released; external GPU 6/7 users were not touched.
+
+Exact retained failure in `out/train-native.log`:
+`Sampled source wins only 121/512 in its self-match`.
+The actual resumed sampler (temperature 0.1 through turn 100, then 0.05;
+split temperature 0.15) won **245 / 512**, with 259 losses and 8 draws on
+325 unique maps. The rejected 121-win arm disabled the early schedule and was
+an older ablation, not the sampler being resumed. The optimizer loader itself
+had already passed its CPU checks.
+
+The fix qualifies continuation with one actual-sampler self-match. Its report
+explicitly says `same_sampler_continuation`, with no claimed improvement
+comparison. Checkpoint hashes, actual sampler settings, minimum map/game counts
+and the original 25% viability floor remain checked. New-policy transfer keeps
+its existing comparison gate. A CPU reproduction using the exact retained
+failure and candidate evaluation reproduced the old rejection and passed the
+corrected validator. Evidence: `/tmp/relh-generals-sampling-resume-proof.log`.
+Exact-image reproduction is pending before another GPU submission.
+
+A separate bounded CPU defense diagnostic verified the pinned engine against
+the terminal replay frame for all **27 Daveey losses**. Five had at least one
+enumerated legal alternative that avoided immediate defeat against the recorded
+enemy move; none had an enumerated immediate win. This is a one-turn diagnostic,
+not proof those games were winnable or that other actions could not help. The
+final policy assigned under 0.05% probability to those defensive alternatives
+in four of the five cases (one was about 3.6%). Actual played moves remained
+legal and had nonzero probability under the reconstructed public observation.
+Reports: `last-turn-defense-audit.json` and `last-turn-defense-policy-audit.json`
+in `/tmp/relh-generals-serving-35854-final`. No teacher labels or hidden inputs
+were added to training. The winning-performance goal remains unmet.
+
 ## Optimizer continuation job 35857 running; 268M hosted result remains weak
 
 Job **35857** started 2026-10-03 **07:52:34 UTC**, source **e3a4f7e**, name
