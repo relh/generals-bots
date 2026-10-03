@@ -1,5 +1,36 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35876 training complete; post-step race fixed, evaluation recovery preparing (2026-10-03)
+
+Job35876 ended FAILED1:0 at18:29:28UTC after successful training. All results
+were collected and hash-verified in `/tmp/relh-generals-portable-result-35876`.
+All268435456newsteps completed:1627389952→1895825408, epochs777–904,
+8192games,H256,minibatch8192,replay0.5,4nativeworkers,1B300/8CPU/96GiB.
+Steady end-to-end environment SPS94596.26965;386794terminalgames,
+0illegal actions/0nonfinite/0clipped rewards. Warmup through epoch777;
+epoch778118.159s→9042924.629s gives264241152steps/2806.470s.
+Nice2147483645/Priority1 before/after; no escalation, no live Generals job.
+
+Exact failure: `RuntimeError: Remote step completion not confirmed` after train.
+Our read-only metadata observer remained registered briefly as training ended;
+the immediate all-steps-gone check falsely failed before evaluation. This was
+our observer/launcher interaction, not a failed learning run. Finalization waited
+safely and preserved every checkpoint. No evaluate.log exists; no training replay
+is needed. Reproduction before fix fails with that exact error; after fix the
+same real-child CPU harness completes both phases. Launcher now uses the existing
+bounded45s remote-step grace before phase transition, preserving fail-closed
+archive/cleanup behavior. Lifecycle suite19tests+7subtests passed, including
+success, workload failure, signal checkpoint/write ordering, upload failure,
+lingering step and bounded unconfirmed-step behavior. Logs:
+`/tmp/relh-generals-35876-step-transition-before.log` and `...-after.log`.
+
+Evaluation-only recovery preparation uses the immutable35876source and exact
+parent, midpoint1761607680, final1895825408. RTX4090preferred based on prior
+3810MiB measured evaluation footprint, under the explicit user guide override
+of the older B200/B300-only local instruction. CPU image/input and lifecycle
+readiness must pass before one bounded maxNice job; no submission yet.
+Strong hosted wins remain unproven (previous35867 Daveey12/32, incumbent16/32).
+
 ## 35876 second half healthy; current hosted targets verified (2026-10-03)
 
 Authoritative controller confirms35876 RUNNING, maxNice/Priority1 unchanged.

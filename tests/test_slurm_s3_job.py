@@ -19,7 +19,7 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
                 image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False, batch_gpu_absent=False,
-                cleanup_failure=False, job_scoped=False, image_parallelism=1):
+                cleanup_failure=False, job_scoped=False, image_parallelism=1, lingering_reads=0):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -31,7 +31,12 @@ class S3JobTests(unittest.TestCase):
                 target.addfile(member, io.BytesIO(b"data"))
             scripts = {
                 "scontrol": f"print('JobId=999 Nice={100 if low_nice else 2147483645} Priority=1 TimeLimit=00:10:00')",
-                "squeue": "import pathlib; print('999.0' if pathlib.Path('writing').exists() else '')",
+                "squeue": f"""import pathlib
+counter = pathlib.Path('queue-reads')
+reads = int(counter.read_text()) if counter.exists() else 0
+counter.write_text(str(reads + 1))
+print('999.0' if pathlib.Path('writing').exists() or reads < {lingering_reads} else '')
+""",
                 "enroot": f'''import os,pathlib,sys
 assert not pathlib.Path('writing').exists()
 assert not any(k in os.environ for k in ('ENROOT_DATA_PATH','ENROOT_TEMP_PATH','ENROOT_CACHE_PATH','ENROOT_RUNTIME_PATH'))
@@ -157,6 +162,22 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertTrue(r["cleaned"])
         self.assertFalse(r["scratch"])
         self.assertEqual(r["manifest"]["receipt"]["workload_exit_code"], 0)
+
+    def test_success_waits_for_lingering_remote_step(self):
+        r = self.run_job(lingering_reads=2)
+        self.assertEqual(r["code"], 0, r)
+        self.assertEqual(r["events"].count("READY"), 2)
+        self.assertTrue(r["cleaned"])
+        self.assertEqual(r["manifest"]["receipt"]["workload_exit_code"], 0)
+
+    def test_unconfirmed_remote_step_wait_is_bounded(self):
+        job = SlurmJob.__new__(SlurmJob)
+        job.process = None
+        with patch.object(job, "steps_stopped", return_value=False) as stopped, \
+                patch("integrations.slurm_s3_job.time.monotonic", side_effect=[0, 0, 46]), \
+                patch("integrations.slurm_s3_job.time.sleep"):
+            self.assertFalse(job.stop_and_wait())
+        stopped.assert_called_once()
 
     def test_failed_training(self):
         r = self.run_job("fail")

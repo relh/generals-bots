@@ -271,7 +271,10 @@ class SlurmJob:
             # Keep the Popen reference until finalization confirms remote steps.
             if code:
                 raise subprocess.CalledProcessError(code, [name])
-        if not self.steps_stopped():
+        # A successful srun can precede controller retirement of its step or
+        # a bounded read-only observer. Keep the same fail-closed grace used
+        # before archiving; the completed process is never terminated here.
+        if not self.stop_and_wait():
             raise RuntimeError("Remote step completion not confirmed")
         self.process = None
 
