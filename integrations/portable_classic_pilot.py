@@ -383,13 +383,23 @@ def train():
         hashlib.sha256((Path(bundle) / "policy.bin").read_bytes()).hexdigest()
         for bundle in expected_pool["frozen_bundles"]
     ]
+    expected_scripts = expected_pool.get("scripted_opponents", ["expander_harvester", "sentinel"])
+    expected_names = {"frozen_" + digest[:12] for digest in expected_hashes} | set(expected_scripts)
     if (
         len(population["frozen_action_selection"]) != 10
         or population["opponent_weights"] != expected_pool["opponent_weights"]
         or population["frozen_policy_sha256"] != expected_hashes
+        or set(population["counts"]) != expected_names
         or not all(c["0"] > 0 and c["0"] == c["1"] for c in population["counts"].values())
     ):
         raise ValueError("Opponent pool or balanced seat allocation differs")
+    if "classic_siege_padded" in expected_scripts:
+        from integrations.classic_siege_native import SOURCE
+
+        native = population.get("native_opponent", {})
+        if (native.get("name") != "classic_siege_padded"
+                or native.get("source_sha256") != hashlib.sha256(SOURCE.read_bytes()).hexdigest()):
+            raise ValueError("Native siege opponent source binding differs")
     from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
 
     times = completed_epoch_times(text)

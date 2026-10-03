@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35863 training complete; native image callback and lifecycle gates pass (2026-10-03)
+
+Sole35863 remains active for evaluation, Nice2147483645/Priority1 unchanged.
+Training reached epoch640 / **1,342,177,280 cumulative steps**, adding
+**268,435,456**. Final interval638→640:4194304steps/39.231s =
+**106,913.002 environment SPS**; full training uptime2585.778s, initial resumed
+epoch99.124s. Same oneB300/8192games/horizon256/minibatch8192. Final audit:
+**268435456 actions, zero illegal;379265 terminal games; zero nonfinite or
+clipped rewards**. `/tmp/relh-generals-35863-live-training-complete.json`.
+Heldout/serving parity/results collection still pending. No new job launched.
+
+The broad112-game emulated Linux population proof hit its420s CPU deadline
+after initialization. It did NOT pass; log retained at
+`/tmp/relh-generals-siege-population-image-proof.log`, owned CPU container
+stopped/removed by its failure cleanup. A smaller isolated proof then compiled
+the final native source inside exact image66660f4b… and passed3912/3912 replay
+actions plus32 diverse JIT callback actions, returned memories and selective
+completed-episode memory resets. Evidence
+`/tmp/relh-generals-siege-callback-image-proof.log`, sourceSHA
+**3b68a8ab27ca2bde301986082611dcbe3758cc4b7e5f0a3b4267ce66aeac4708**.
+This validates the new image callback path alongside the local full13-opponent
+population audit, not the timed-out full emulated population check or GPU SPS.
+
+Pilot post-training checks now also require exact opponent names and the
+native sourceSHA binding. Focused continuation/portable gates **23passed**;
+launch lifecycle success/failure/signal/upload-failure gates **26passed plus
+11subtests**. Existing source/image/CPU audits are sufficient to prepare the
+bounded8M candidate, but staging/final archive binding and current physical
+allocation checks remain mandatory before any GPU submission. Future scripts
+`/tmp/relh-generals-prepare-native-siege-input.py` and
+`/tmp/relh-generals-upload-native-siege.py` are prepared only, await the35863
+selected policy, and have not staged/uploaded/signed/submitted anything.
+Keep one task job, maximum Nice, and preserve terminal receipt/results. Current
+hosted strength9/32Daveey,16/32incumbent remains below acceptance; goal active.
+
 ## Native siege candidate: CPU fidelity, explicit memory, opt-in pilot (2026-10-03)
 
 Implemented `integrations/native/classic_siege.cpp`, the validated Python ABI
