@@ -1,5 +1,42 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35877 evaluation-only recovery RUNNING after full CPU audit (2026-10-03)
+
+Exactly one Generals job:35877, relh-generals-eval-35876-b413de93,
+RTX4090/metta0,1GPU/8CPU/32GiB,finite60min, Nice2147483645/Priority1
+controller readback unchanged. No new training/optimizer updates. Original35876
+all268Msteps remain retained. Current fullqueue only other pb_6535874/metta1
+and pb_6635875/metta4; neither touched. Physicalmetta0GPU idle1MiB/0% before
+launch,driver580.173.02,UUIDGPU-bf0a4fb8-8eed-f633-7bea-e8e6c0e7732f;
+696GiB/232268335inodes free. No observed contention.
+
+Fix pushed e395572cde9cdafe3202326407516aba8401adbc. Combined launcher/lifecycle
+CPU suite25tests+12subtests passed. Exact image66660f4b restored actual parent,
+midpoint1761607680 and final1895825408 plus both optimizer identities; matching
+prepare_configs outputs preserved. Native Mac final export31.08s, all arrays
+finite. Current496input hashes and archive extraction verified before submission.
+Image0fca887c5c38c00c1bc4465ccbbb4eb0d49c1b32976f05f3a580cd6dabbb1be0,
+training source7e721314b5bbadcf5b8fe97177ded7d9bba4754e unchanged; only restore
+helper added to input. Input210748407bytes,SHA75e61ce86defcb8112402d562b824dee153e33f4ff3d8e0516745d539401cfa1,
+S3softmax-slurm-artifacts/relh/generals-35876-evaluation-20261003T184522Z-f83cb2c5/input.part000.
+Results keyrelh/generals-35876-evaluation-results-20261003T184759Z-42d4cefc.
+
+Manifest `/tmp/relh-generals-35876-evaluation-retry-launch.json`;
+receipt `/tmp/relh-generals-eval-35876-b413de93.receipt.json`;
+controller session23020. Collector`/tmp/relh-generals-collect-35877-when-terminal.py`
+and direct host physical monitor`/tmp/relh-generals-monitor-35877.py` active.
+Do not start an allocation-internal observer spanning phase transitions.
+Evaluation checks46-state parity per child/mid and4096fresh matched games per
+parent/mid/final, seeds38647/9529. Source/output readiness record
+`/tmp/relh-generals-35876-evaluation-cpu-readiness.json`.
+Prepared serving publication now requires actual recovery evaluation receipt and
+its verified result log, not training job35876's FAILED receipt. No policy/XP
+published for35876 yet. Strong wins and hosted promotion remain unproven.
+
+For precise throughput reporting:94596.26965SPS is the final audit's steady
+measurement; the broader post-warmup epoch778→904 interval is94154.27637SPS
+(264241152steps/2806.470s). Both include rollout and optimizer updates.
+
 ## 35876 training complete; post-step race fixed, evaluation recovery preparing (2026-10-03)
 
 Job35876 ended FAILED1:0 at18:29:28UTC after successful training. All results
