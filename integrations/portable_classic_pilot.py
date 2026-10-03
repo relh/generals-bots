@@ -79,9 +79,12 @@ def prepare_configs(parent=PARENT, output=OUT):
     if len(options["frozen_bundles"]) != 9:
         raise ValueError("Parent opponent pool differs")
     bound = configure_reward_scale(options, os.environ.get("GENERALS_PILOT_REWARD_SCALE", "1"))
+    from integrations.environment_reward_audit import population_win_threshold
+
+    threshold = population_win_threshold(options["terminal_reward_mode"], options)
     (output / "reward-contract.json").write_text(json.dumps(dict(
         reward_scale=options["reward_scale"], absolute_reward_bound=bound,
-        native_clamp=[-1, 1], expected_unclipped=bound <= 1,
+        native_clamp=[-1, 1], expected_unclipped=bound <= 1, population_win_threshold=threshold,
     ), indent=2) + "\n")
     shutil.copytree(parent / "bundle", output / "self_bundle")
     options["frozen_bundles"].append(str(output / "self_bundle"))

@@ -2,9 +2,10 @@
 
 import atexit
 import functools
-import json
 import importlib.abc
 import importlib.machinery
+import json
+import math
 import os
 import sys
 
@@ -38,16 +39,32 @@ def accumulate_flat_splits(counts, actions):
 
 
 @jax.jit
-def accumulate_population_outcomes(counts, rewards, terminals, labels, sides):
+def accumulate_population_outcomes(counts, rewards, terminals, labels, sides, win_threshold=0.5):
     """Count finished games and unambiguous win-only rewards by opponent/seat."""
     group = labels * 2 + sides
     ended = terminals != 0
-    wins = ended & (rewards > 0.5)
+    wins = ended & (rewards > win_threshold)
     delta = jnp.stack((
         jnp.bincount(group, weights=ended.astype(jnp.int32), length=counts.shape[1]),
         jnp.bincount(group, weights=wins.astype(jnp.int32), length=counts.shape[1]),
     ))
     return counts + delta.astype(jnp.int32)
+
+
+def population_win_threshold(mode, weights):
+    """Separate win/loss reward intervals after positive whole-reward scaling."""
+    scale = weights["reward_scale"]
+    bound = abs(weights["shaping_weight"]) * sum(
+        abs(weights.get(name, 0.0)) for name in (
+            "army_shaping_weight", "land_shaping_weight",
+            "castle_shaping_weight", "frontier_shaping_weight",
+        )
+    )
+    if (mode != "win_only" or weights.get("land_gain_reward_weight", 0.0) != 0
+            or not math.isfinite(scale) or scale <= 0
+            or not math.isfinite(bound) or bound >= .5):
+        raise ValueError("Population win audit requires bounded win-only rewards")
+    return .5 * scale
 
 
 def install(environment_class):
@@ -71,18 +88,9 @@ def install(environment_class):
                 self._split_audit_counts = jnp.zeros(3, jnp.uint32)
             if audit_population:
                 weights = self._reward_options
-                maximum_terminal_shaping = weights["shaping_weight"] * sum(
-                    weights.get(name, 0.0) for name in (
-                        "army_shaping_weight", "land_shaping_weight",
-                        "castle_shaping_weight", "frontier_shaping_weight",
-                    )
-                )
-                if (self._terminal_reward_mode != "win_only"
-                        or weights.get("land_gain_reward_weight", 0.0) != 0
-                        or weights["reward_scale"] != 1
-                        or maximum_terminal_shaping >= 0.5
-                        or not hasattr(self, "_population_labels")):
-                    raise ValueError("Population win audit requires bounded win-only rewards")
+                self._population_win_threshold = population_win_threshold(self._terminal_reward_mode, weights)
+                if not hasattr(self, "_population_labels"):
+                    raise ValueError("Population win audit requires opponent labels")
                 self._population_audit_labels = jnp.asarray(self._population_labels, jnp.int32)
                 self._population_audit_names = tuple(
                     "frozen_" + digest[:12] for digest in self._population_checksums
@@ -105,6 +113,7 @@ def install(environment_class):
                     if full + half + passing != record["agent_steps"]:
                         raise ValueError("Spatial split audit did not count every action")
                 if audit_population:
+                    record["population_win_threshold"] = self._population_win_threshold
                     finished, wins = ([int(value) for value in row]
                                       for row in jax.device_get(self._population_audit_counts))
                     if sum(finished) != record["terminal_agents"] or any(
@@ -130,6 +139,7 @@ def install(environment_class):
             self._population_audit_counts = accumulate_population_outcomes(
                 self._population_audit_counts, result[2], result[3],
                 self._population_audit_labels, self.sides,
+                self._population_win_threshold,
             )
         self._reward_audit_ticks += 1
         if self._reward_audit_ticks % 512 == 0:

@@ -1,5 +1,41 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35851 audit-wrapper failure reproduced and fixed before retry (2026-10-03)
+
+35851 terminal FAILED1:0 at04:55:27UTC; Nice2147483645/Priority1 unchanged.
+Build/sampling gate passed, but the native process aborted in the first audited
+step: environment_reward_audit.py rejected reward_scale !=1. This is a
+measurement-wrapper compatibility bug, not a reward-equation or learning result.
+No completed epoch/qualified SPS/strength result from this run.
+Source/results preserved at `/tmp/relh-generals-portable-result-35851`, archive
+SHA65186cead7080eae5c4d250bc42d9fefc463242fadaf902c76d7d1d5e4f3760e.
+Initial local GET hit180s limit; preserved177MiB partial and empty archive,
+resumed the same immutable object by Range, checked full size/SHA, then extracted.
+No compute retry was used to retrieve results.
+
+Fix: derive threshold0.5*reward_scale, validate positive finite scale and
+nonoverlapping win/loss potential intervals, preserve all transitions. The .5
+recipe now uses threshold.25. Pilot preparation exercises the actual audit
+contract and records threshold before native training. Nine CPU tests passed,
+including wrapper counts at scales1,.5,.02 and rejection of ambiguous objectives.
+Actual immutable image CPU proof reproduced the old35851 exception, then passed
+the fixed wrapper at all3scales. Audit source SHA
+9d4548acebe6d27cf493091988e9747d89980fdba684b6575bd05a777be06207;
+proof `/tmp/relh-generals-audit-wrapper-proof/image-cpu.log`.
+A fresh retry must overlay BOTH environment_reward_audit.py and pilot source.
+Keep the reward-only comparison isolated from the separately prepared curriculum.
+
+Curriculum preparation is separate/unlaunched:192 SHA-verified real midgame
+positions from64 owned hosted games, at25/75/150turns before termination,
+with both players still alive. Variable boards padded bottom/right with mountains;
+no actions or teacher labels in position archive. Archive SHA
+6103a28439eb7da8f4dcc5b72338e47022f049775c590f86b96c5718e906c37d,
+`/tmp/relh-generals-position-curriculum-35848/positions.npz`. Initial unpadded
+export failed before writing data; fixed export retained separately. Nine CPU
+checks passed covering hashes/live states/reset mixing/recycle/public observations,
+18x21/21x18/19x20 transition parity under padding, and held-out fresh-map isolation.
+Curriculum source remains separate from the next reward-only immutable input.
+
 ## Active reward-scale comparison35851 (2026-10-03 04:47 UTC)
 
 The same exact-image CPU Classic capture/draw/recycle proof completed successfully
