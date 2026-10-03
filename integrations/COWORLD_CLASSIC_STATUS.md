@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35879 midpoint checkpoint verified; healthy second half continues (2026-10-03)
+
+Authoritativecontroller confirms35879RUNNING; trainingstep35879.3 remains after
+boundedmidpointobserver26872 exitednormally. CurrentCPUobserverallgone; do not
+restartstoppedobservers or duplicatejob. Thisgoalturn wasverifiedwaiting for
+specificlivejob35879 and yieldedexactmidpointidentity/reward/throughputevidence.
+Maincontroller87428,collector73001,physicalmonitor11612remainactive.
+
+Latestepoch968:134217728newsteps,188213terminalgames,0nonfinite/0clippedrewards.
+Completedepoch9661448.207s→9681492.508s gives4194304steps/44.301s=
+94677.41135end-to-end environmentSPS. Same1B300/8192games/H256/minibatch8192/
+replay.5/4nativeworkers/8CPU/96GiB,firstepoch905100.449s excluded aswarmup.
+OwnGPU0~202090MiB/47%; externalGPU7activityended independently(no actionbyus).
+Nice2147483645/Priority1 unchanged; no measuredthroughputcollapse/contention.
+
+Actualmidpoint2030043136(epoch968) policySHA
+3c774a1f9736d6572581f276ce9d6bbe296e355813c62c31c332d07be8299432,
+MuonSHA7916a2b1d04d3b40a24e5b3dff4497af3ba34fda8888c844a1c2a655a12f5a08.
+Bothcomputedfromownednodefilesandmatchedcheckpointidentity. Evidence
+`/tmp/relh-generals-35879-midpoint-window.jsonl`; nodecheckpointverified,
+notyetexported/evaluated orclaimedS3-collected. ObservercheckedexacttrainingPID
+andstoppedonverifiedmidpoint,leavingonlytrainingstep. Normaljobfinalizationwill
+preserve/uploadallresults; no trainingreplay/cancel/requeue.
+
+Remaining134217728steps toward2164260864, then samejobparent/mid/final
+comparison. Prepared35879scriptsremainconditionalonactualcompletedverified
+artifacts; no newhostedpolicy/XP yet. Candidatefuturemerged384positioncurriculum
+remainsseparateandunusedinthisrun. Latesthosted9/32Daveey,19/32incumbent;
+strongwinacceptanceunmet,goalactive. No paidnode/spend, no schedulerescalation.
+
 ## Fresh replay diagnosis and verified candidate curriculum (2026-10-03)
 
 Controller revalidated35879RUNNING at22m44s runtime; no otherGenerals job.
