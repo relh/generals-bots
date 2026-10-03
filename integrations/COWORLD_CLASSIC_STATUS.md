@@ -1,5 +1,71 @@
 # Softmax Coworld Classic 1v1 training
 
+## Continuation preflight and hosted IDs (2026-10-03 07:45 UTC)
+
+The 268M final policy is `f5a79e7a-1e65-4180-a2f3-6213aa6c3ea6`, private image
+`img_a3ab2757-0981-4acd-9a3f-4318b500543b`. Registry manifest SHA:
+`330f13490018d8adda872bf428bc037b7f13e51a661cb68a97bb4b3b442a2a5c`.
+Startup XP IDs: `xreq_757ea52d-5307-42c7-bb58-d9c0d3caebd4` and
+`xreq_cf78664d-6dc0-40e6-a924-2875a5e13a55`. Reconcile these before any retry.
+
+Physical preflight found B300 GPUs 6 and 7 occupied (125,566 and 129,794 MiB,
+8% and 17% utilization), despite Slurm reporting the node idle. GPUs 0–5 were
+empty. These external processes were not touched. The task has no live or
+pending GPU job; a future job must still pass the allocated-UUID idle check.
+Scratch had 1.2 TiB free and 180,257 free inodes; root had 25 GiB free.
+Evidence: `/tmp/relh-generals-continuation-physical-preflight.txt` and
+`/tmp/relh-generals-continuation-slurm-preflight.txt`.
+
+## 268M run completed with a positive fresh-map trend (2026-10-03)
+
+Job **35854 COMPLETED 0:0 at 07:14:12 UTC**. Source `6faecd3`;
+Nice **2147483645 / Priority 1** before and after, no scheduling changes or
+errors. One B300, 8 CPUs, 96 GiB host memory, finite 120 minutes. No other
+Generals GPU job was submitted. Results, manifest and archive are verified in
+`/tmp/relh-generals-portable-result-35854`; terminal receipt:
+`/tmp/relh-generals-long-0dc8dcda.receipt.json`. S3 result prefix:
+`relh/generals-classic-results-20261003T061447Z-868f0366`.
+
+Training completed **268,435,456 new steps**, 381,526 terminal games, with
+zero illegal actions, nonfinite rewards or clipped rewards. Steady end-to-end
+throughput was **113,029.643 SPS**: 4,194,304 steps / 37.108 seconds after warmup.
+The first epoch took 82.089 seconds; total training uptime was 2,448.990 seconds.
+Configuration: 8,192 parallel games, horizon 256, minibatch 8,192, replay ratio
+0.5, learning rate 0.0002, no entropy bonus; GPU memory about 197.4 GiB.
+The reward remains win-only plus bounded potential, scale 0.5, with 25% verified
+midgame starts and 75% fresh maps. Ten frozen opponents plus Expander/Sentinel.
+
+Fresh matched evaluation used seeds 37841/8729, 4,096 games and 2,601 unique
+initial maps. Parent: **1,794 W / 2,227 L / 75 D**; midpoint at 134M:
+**1,831 / 2,190 / 75**; final: **1,890 / 2,125 / 81**. Final signed-score delta
+versus parent +0.048340, map-cluster 95% CI [+0.017675, +0.077776]. Final versus
+midpoint +0.030273, CI [+0.001200, +0.060089]. This supports further learning;
+it does not establish strong hosted play. The final checkpoint SHA is
+`9b479d2b3c641b7f0a709070dd1f0f28b5471c6ccf1975ebc3540ca8b0a42a05`.
+Its GPU/NumPy parity check matched 46/46 top actions, maximum probability error
+1.252e-6. Private hosted screening is being prepared; no champion changed.
+
+The protocol harness now checks its plain-terrain fixture independently instead
+of compiling a redundant reference codec. For 35853 this passed 32/32 replies,
+maximum 80 ms locally. Correction to earlier timeout interpretation: the old
+marker followed reference encoding, so its absence did not prove no reply had
+arrived. The 35854 image also passed 46/46 golden views and 32/32 protocol
+replies. Its local emulation took 192 seconds to connect and up to 615 ms per
+reply under heavy Mac load; these are not hosted latency measurements. One
+previous 360-second import attempt timed out, and only its owned container was
+stopped. Evidence: `/tmp/relh-generals-serving-35854-final/cpu-readiness.json`.
+
+Continuation implementation preserves policy, Muon momentum, learning rate and
+absolute learner counters. CPU preparation using the actual saved learner
+snapshot passed. Another 268M steps would end at counter 536,870,912, with
+midpoint 402,653,184; the physical action/reward audits count only the new steps.
+Device-resident environment states are not checkpointed: episodes restart.
+Keep the frozen opponent pool fixed for this duration comparison. Sampling-gate
+and held-out evaluation both disable midgame starts. The 35-test CPU suite passed (79.564 seconds), including lifecycle success,
+failure, signal, and upload-failure paths. Exact-image qualification remains
+pending before any new GPU submission. Goal remains
+active and unmet: require fresh hosted wins, including against Daveey.
+
 ## Hosted curriculum screen complete; long run past midpoint (2026-10-03)
 
 Job 35854 remains RUNNING, Nice 2147483645 / Priority 1, with no second
