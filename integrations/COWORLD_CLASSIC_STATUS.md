@@ -1,5 +1,39 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35876 healthy at41.9M new steps; selected-policy hosting path prepared (2026-10-03)
+
+Authoritative scontrol recheck confirmed35876 RUNNING, Nice2147483645/Priority1,
+no second Generals job. `/tmp/relh-generals-35876-live-training6.json`: epoch796,
+epoch794473.281→796517.705 =4194304steps/44.424s =94415.2710environmentSPS.
+Periodic41943040-step audit:57761terminalgames,0nonfinite/0clipped rewards.
+Previous goal turn made concrete progress: fixed worker metadata boundary,
+pushed regression-tested code and verified the real GPU path. Current state is
+healthy training, not a blocker or a completion claim. Existing one collector/
+observer retained; no new allocation or XP request.
+
+Prepared, syntax-checked but NOT EXECUTED future artifacts:
+`/tmp/relh-generals-prepare-serving-35876.py` requires completed verified results
+and explicit `/tmp/relh-generals-35876-serving-selection.json` with purpose
+heldout_selected_for_hosted_screen, checkpoint/final-or-mid SHA/steps/SPS,
+evaluation_out/evaluation_receipt/source_revision. It inherits the previously
+CPU-qualified flat serving image550bd531 (tag35867-final) only after checking
+its immutable ID and unchanged serving source/model-source. The new bundle
+replaces the old one entirely in a new owned image, then46golden/32wire tests
+must pass. This avoids rebuilding damaged legacy base layers and limits local
+disk growth. It is a prepared recipe, not evidence that the future image works.
+
+`...audit-35876-late-parity.py` checks selected checkpoint on64 retained late
+public states from8owned35863 replays; inference diagnostic, not new strength.
+`...upload-35876.py` requires completed evaluation, exact selected weights and
+sampler, current image CPU proof, and64/64late parity before publication.
+`...35876-xp.py`, `...watch-35876-xp.py`, `...finalize-hosted-35876.py`,
+`...summarize-hosted-35876.py`, `...35876-replay-panel.py` are staged for the
+64-game two-seat screen. Replay audit additionally checks64unique seeds and
+no overlap with35867. Re-read current champions before XP; scripts currently
+reference establishedDaveeyv7/incumbent IDs. Do not execute until selection/
+container proofs exist, and reconcile existing requests before any retry.
+No champion update is prepared or authorized by a passing smoke alone.
+
 ## 35876 real launch fixed; long training sustains94.8kSPS (2026-10-03)
 
 `/tmp/relh-generals-35876-live-training5.json` confirms successful512-game GPU
