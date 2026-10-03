@@ -1,5 +1,47 @@
 # Softmax Coworld Classic 1v1 training
 
+## Fresh replay diagnosis and verified candidate curriculum (2026-10-03)
+
+Controller revalidated35879RUNNING at22m44s runtime; no otherGenerals job.
+Current immutableinput and ongoingtraining unchanged. Priorgoalturn wasverified
+livewaiting pluspreparedpostrunhelpers; thisturn adds concrete replay evidence
+andCPU-verified futuretrainingdata. Goalactive,stronghostedwinsnotproven.
+
+Actual35876losses vsDaveey23games:25turnsbeforedefeat, ownlandahead21/23,
+ownarmyahead15/23, butownlargeststacksmaller22/23;14/23hadarmyadvantagewhile
+largeststackwassmaller. Atfatalpreturn16/23stillhadarmyadvantage;0/23movedout
+ofowngeneralonfatalturn. This points to studying concentration/generaldefense;
+it doesnot establish a causalmechanism or justify changingservingactions.
+Raw64replays unchanged. Reproduciblederivedaudit:
+`/tmp/relh-generals-35876-late-loss-diagnostics-v2.py` and
+`/tmp/relh-generals-serving-35876-final/late-loss-diagnostics-v2.json`.
+
+Reconstructed192positions at25/75/150turnsbeforetermination fromall64newhosted
+games,includingwinsandlosses. EveryreplaySHA verified; everycapturedposition
+exactlymatchedpinnedofficialClassicengine frames. Newpool
+`/tmp/relh-generals-position-curriculum-35876`,SHA
+cc26d1f2c6ee03e62875b2df91d523a89bae253b0bdf7a6f69145d474d9ee48e.
+All384publicviews/masks matchedwireencoding exactly(maxdifference0).
+
+Candidatefuturepool combinesretained192+new192positions,384total/128episodes,
+noepisodeorseedoverlapbetweensources. Root
+`/tmp/relh-generals-position-curriculum-mixed-35848-35876`,SHA
+d68ee1625da50fd9f91fcf2181855dc5a4c476150ff5aa01920aa1b3942b311c.
+Concatenationcheckedarray-for-array againstbothindependentlyverifiedsources;
+768publicviewscovered. Containsengine resetstatesonly,noactionlabels ornew
+policyfeatures. Heldoutmustremainfreshstartsandnewhostedseeds.
+
+Native256-gameCPU instantiationwithcurrent10frozen+3scripts and4nativeworkers
+passesbothseatsforallopponents,legalopponentactions,finiterewards andforced
+nonzero-curriculum memory resets atunchanged25%positionprobability. Record
+`/tmp/relh-generals-mixed-curriculum-35876-cpu-readiness.json`, log
+`...mixed-curriculum-35876-cpu.log`, helper`...audit-mixed-curriculum-35876-cpu.py`.
+Thisis acandidateforafuturecontrolledcomparison, NOT active35879input,notproof
+oflearningbenefit,notsubmitted/uploaded. Futureusemustbindactualchosenparent,
+freezeinput,passapplicableexact-image/lifecycleaudit andoneboundedGPUgate.
+Current35879mustfinishfirst; do notstartduplicateGPUwork. No policy/XPwrites,
+no prioritychanges,no paidnode/spend,no history orrawresultsmodified.
+
 ## 35879 reached33.6M newsteps; warmobserver exits, post-run pipeline prepared (2026-10-03)
 
 Currentcontroller revalidated35879RUNNING,maxNice2147483645/Priority1. Previous
