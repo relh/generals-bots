@@ -19,8 +19,8 @@ SOURCE = Path("/work/input/source")
 OUT = Path("/work/out")
 def pilot_steps(value):
     steps = int(value)
-    if steps not in (8_388_608, 33_554_432):
-        raise ValueError("Pilot budget must be 8M qualification or 32M learning curve")
+    if steps not in (8_388_608, 33_554_432, 268_435_456):
+        raise ValueError("Budget must be 8M qualification, 32M comparison, or 256M learning curve")
     return steps
 
 
@@ -194,7 +194,8 @@ def sampling_gate():
 def train():
     (OUT / "timing").mkdir()
     command("launch_spatial_selfplay_training", "train", "--config", OUT / "config.json",
-            "--build", OUT / "build", "--output", OUT / "run", name="train-native", seconds=840, train=True)
+            "--build", OUT / "build", "--output", OUT / "run", name="train-native",
+            seconds=3240 if STEPS == 268_435_456 else 840, train=True)
     if not (OUT / "run/completed.json").is_file():
         raise ValueError("Trainer did not finish and validate its checkpoints")
     text = (OUT / "run/console.log").read_text()
@@ -246,8 +247,8 @@ def export_and_audit(steps, bundle, suffix=""):
 def evaluate():
     export_and_audit(STEPS, OUT / "bundle")
     arms = [("parent", OUT / "self_bundle"), ("child", OUT / "bundle")]
-    if STEPS == 33_554_432:
-        export_and_audit(16_777_216, OUT / "bundle-mid", "-mid")
+    if STEPS >= 33_554_432:
+        export_and_audit(STEPS // 2, OUT / "bundle-mid", "-mid")
         arms.append(("mid", OUT / "bundle-mid"))
     for label, bundle in arms:
         command("evaluate_spatial_population", "--bundle", bundle, "--population-build", OUT / "build/build.json",

@@ -1,5 +1,33 @@
 # Softmax Coworld Classic 1v1 training
 
+## Active curriculum job35853 (2026-10-03)
+
+35853 RUNNING from05:48:45UTC; oneB300/8CPU/96GiB, finite80min,
+sourcecb9bbce. Nice2147483645/Priority1 unchanged at submit/controller readback.
+No duplicate Generals work;35852 terminal and results verified before submission.
+All physical GPUs were idle in fresh preflight. Slurm still has unrelated4090
+jobs35837/35838 and pending fabric-nightly35840; untouched.
+
+Public launch `/tmp/relh-generals-curriculum32m-launch.json`; controller receipt
+`/tmp/relh-generals-portable-7dd9a17b.receipt.json`; monitor
+`/tmp/relh-generals-curriculum32m-submit.log`. S3 result prefix
+`relh/generals-classic-results-20261003T054825Z-7c2fe1b8` insoftmax-slurm-artifacts.
+InputSHA74b42de752e62bef5afd2feb912e3aaddfb83ebd05c84a8078044ebbb25252bf.
+401 source/data inputs verified. Manifest diff versus35852 is exactly four
+curriculum-related source files plus dataset/manifest/wire-parity receipt.
+Staged prepare_configs passed actual parent/data/.5reward/33.55M assertions.
+CPU lifecycle26tests +11subtests passed58.86s, covering completion, failure,
+signal shutdown-before-upload, upload failure, occupied GPU and ownership cleanup.
+Same immutable image and prior exact-image curriculum proof. No hosted promotion.
+
+Separate future readiness: pilot now accepts bounded268,435,456-step learning
+curves with a134,217,728 midpoint and54-minute inner train limit; existing short
+budgets unchanged. This is NOT in35853 input and NOT another submission. A future
+120-minute launcher must budget3300s train, preserve600s shutdown/upload, recheck
+credential expiry, and only scale after reviewing current curriculum quality/SPS.
+The live30kSPS/illegal/nonfinite/clipping gates remain active. Tests cover the
+extended midpoint and identical held-out panels; no claim of long-run learning yet.
+
 ## 35852 completed; next controlled combat-position experiment (2026-10-03)
 
 35852 COMPLETED 0:0 at 05:41:54 UTC, including evaluation, verified S3 upload
