@@ -1,5 +1,47 @@
 # Softmax Coworld Classic 1v1 training
 
+## Exact incumbent source reproduced; 35863 throughput remains healthy (2026-10-03)
+
+Read-only Observatory metadata for owned incumbent
+**e53e30be-0b23-4d62-b944-4dd249a483fe** confirms `kind=docker-img`, entrypoint
+`python -m integrations.softmax.expander_player`, environment
+`CO_GAS_VARIANT=relhalpha`; no container-image ID exposed in this legacy row.
+Metadata retained privately at `/tmp/relh-generals-owned-incumbent-version.json`.
+The retained Co-Gas source-backed candidate
+`/tmp/coworld-sidecar-audit/co-gas/experiments/candidates/generals-multiformat-frontier-castle-20260917.yaml`
+links this exact policy ID to Generals commit **cee053c**. That commit's
+`competition/agents/expander_python/agent.py` SHA256 is
+`bf281f9e83432200001d28eee2c4ef226128b6e6a7579cccd7a2f10d2fa56970`.
+Current file SHA12e8ca4d… differs by FFA-only home-defense handling; do not
+claim byte identity. The Co-Gas candidate's referenced old commit832606230
+was unavailable in the retained snapshot's objects; no source claim relies
+on the failed lookup. Co-Gas snapshot was inspected/fetched read-only; no
+files, policies, memberships, or other-task work were changed there.
+
+Bounded CPU reproduction used **the actual cee053c source**, the pinned
+Classic engine SHAf39e448a…, and four longest owned hosted incumbent episodes
+(wins/losses, both seats). Every recorded transition matched the engine;
+source policy received only the authoritative public observations.
+**3,912 /3,912 actions matched**, zero mismatches across episode lengths
+999,937,1246,730. Evidence directory
+`/tmp/relh-generals-incumbent-action-reproduction`, `result.json`, pinned
+`agent.py`, and log `/tmp/relh-generals-incumbent-action-reproduction.log`.
+This is a source/behavior diagnostic, not a new strength panel or teacher
+labels. It identifies a reproducible opponent distinct from current JAX
+ExpanderHarvester/Sentinel scripts. A GPU-batchable implementation still needs
+CPU behavior and state-reset audit plus throughput qualification before adding
+it to training; no opponent/trainer code changed yet.
+
+Sole **35863** remains active, Nice2147483645/Priority1. Its idle allocated
+GPU0 preflight and restored learner SHAce5b923a… match the audit. Latest
+completed epoch **533** means **44,040,192 new optimized steps**. Epochs
+531→533 advance 4,194,304 steps in **39.121 seconds** = **107,213.619 SPS**;
+first resumed epoch513 **99.124 seconds**. Same one B300 /8192 environments /
+horizon256/minibatch8192 geometry. Periodic reward audit: **41,943,040 steps /
+56,485 terminal games**, zero nonfinite/clipped rewards. Evidence
+`/tmp/relh-generals-35863-live-steady.json`. Terminal collector remains live.
+Goal remains active; current hosted strength still below gate.
+
 ## 35861 hosted screen complete: 9/32 Daveey, 16/32 incumbent (2026-10-03)
 
 All **64 unique records** completed and all **64 replays** were downloaded and
