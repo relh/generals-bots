@@ -115,6 +115,29 @@ def transfer(url, path, upload=False, deadline=None):
         raise RuntimeError(f"S3 {'upload' if upload else 'download'} failed (curl {result.returncode})")
 
 
+def download_parts(parts):
+    """Fetch at most four parts with one owned, interruptible curl process."""
+    if not 1 <= len(parts) <= 4:
+        raise ValueError("Parallel download requires one to four parts")
+    sections = []
+    for url, path in parts:
+        if not url.startswith("https://") or any(c in url for c in '\r\n"\\'):
+            raise ValueError("Invalid presigned URL")
+        path = str(path)
+        if any(c in path for c in '\r\n"\\'):
+            raise ValueError("Invalid download path")
+        sections.append(f'url = "{url}"\noutput = "{path}"\n'
+                        'silent\nfail\nconnect-timeout = 15\nmax-time = 600\n')
+    # subprocess.run kills and waits for this sole child on signal exceptions
+    # as well as timeouts. No downloader may outlive preparation/finalization.
+    result = subprocess.run(
+        ["curl", "--parallel", "--parallel-max", "4", "--fail-early", "--config", "-"],
+        input="next\n".join(sections), text=True, capture_output=True, timeout=605,
+    )
+    if result.returncode:
+        raise RuntimeError(f"S3 parallel download failed (curl {result.returncode})")
+
+
 class SlurmJob:
     def __init__(self, config):
         self.config = config
@@ -177,6 +200,10 @@ class SlurmJob:
         extract_input(archive, self.root / "input", self.config["input_unpacked_bytes"],
                       self.config["input_members"])
         if self.config.get("image_parts"):
+            parallelism = self.config.get("image_download_parallelism", 1)
+            if isinstance(parallelism, bool) or not isinstance(parallelism, int) or not 1 <= parallelism <= 4:
+                raise ValueError("Image download parallelism must be one to four")
+            started = time.monotonic()
             image = self.root / "input/image.sqsh"
             if image.exists():
                 raise ValueError("Image must come from exactly one declared input source")
@@ -184,7 +211,12 @@ class SlurmJob:
             with image.open("xb") as target:
                 for index, part in enumerate(self.config["image_parts"]):
                     path = self.root / f"image-input.part{index:03d}"
-                    transfer(part["url"], path)
+                    if parallelism == 1:
+                        transfer(part["url"], path)
+                    elif index % parallelism == 0:
+                        group = self.config["image_parts"][index:index + parallelism]
+                        download_parts([(entry["url"], self.root / f"image-input.part{index + offset:03d}")
+                                        for offset, entry in enumerate(group)])
                     if path.stat().st_size != part["bytes"] or part["bytes"] >= 4_000_000_000:
                         raise ValueError("Image input part size differs")
                     part_digest = hashlib.sha256()
@@ -198,6 +230,9 @@ class SlurmJob:
                     path.unlink()  # Verified bytes are retained in the owned image.
             if digest.hexdigest() != self.config["image_sha256"]:
                 raise ValueError("Reassembled image digest differs")
+            self.receipt["image_download"] = dict(
+                parallelism=parallelism, seconds=time.monotonic() - started, bytes=image.stat().st_size,
+            )
 
 
     def run_step(self, name, argv, seconds):

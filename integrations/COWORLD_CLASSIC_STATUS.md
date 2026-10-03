@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35868 terminal124: setup budget corrected; CPU-audited parallel transfer (2026-10-03)
+
+35868 FAILED ExitCode124:0 at15:52:52UTC after the scheduled USR1 termination,
+Nice2147483645/Priority1 unchanged. All artifacts collected/hash-verified:
+`/tmp/relh-generals-portable-result-35868`; archive21516892bytes SHA
+ d39ccb034b97640ee7ab4ee9c13ec1458a915d4d0356ba81869edd0536f7f134.
+Smoke passed JAX0.11.0/CUDA13 onRTX4090. Restore verified20files; final and actual
+1476395008 midpoint both passed46/46 GPU-serving top actions, max probability
+differences1.7881393432617188e-6 and1.9073486328125e-6 respectively. Mid SHA
+ a56b61221b2cd29cc64d3230ef4af84ceee4412a1aa17f9af6107497a133152c.
+Parent panel stopped after turn901; NO completed held-out comparison and no
+hosted strength claim. Stop/wait/upload succeeded, results preserved; no retry yet.
+
+Concrete preparation bottleneck:6.9GB image first observed fully downloaded at
+15:49:03UTC, about30m45s after allocation. Peak sampled evaluation GPU memory
+3810MiB; no evidence of GPU memory contention or >24GiB requirement. Other
+owners35864/35865 untouched. Failed owned scratch/container remain preserved.
+
+`slurm_s3_job.py` now optionally downloads image parts in groups of at most4
+using one curl process; credentials stay on stdin, each part and full image
+still hash-verified, bounded transfer kills/waits on signal before finalization.
+Default remains serial; records transfer seconds/bytes/concurrency in receipt.
+Real local HTTPS/curl success/concurrency,404 failure, and SIGUSR1 interruption
+passed3tests (`/tmp/relh-generals-real-parallel-download-tests.log`). Existing
+success/failure/signal/upload-failure lifecycle suite plus parallel hash gates:
+23tests +12subtests passed (`...parallel-image-lifecycle-tests.log`).
+Host metta0 curl8.5.0 supports required parallel options. No GPU submission
+until this CPU audit; plan one60min RTX4090 retry, four concurrent image parts,
+same verified source/input/checkpoints/seeds, fresh result key and maxNice.
+
+Official Autoresearch docs and funded-token node listing succeeded read-only;
+no paid node, quote, reservation or spending. Slurm4090 currently available;
+retain fallback for an unavailable/queued qualified experiment. Do not duplicate
+Slurm with funded execution. Goal remains active and strong hosted wins unproven.
+
 ## Explicit four-worker continuation probe recipe CPU-verified (2026-10-03)
 
 `classic_learner_continuation.py` now supports manifest

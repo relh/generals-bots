@@ -19,7 +19,7 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
                 image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False, batch_gpu_absent=False,
-                cleanup_failure=False, job_scoped=False):
+                cleanup_failure=False, job_scoped=False, image_parallelism=1):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -100,6 +100,7 @@ sys.exit(7 if sys.argv[1]=='fail' else 0)
                           steps=[dict(name="smoke", argv=["--", sys.executable, str(worker), "success"], seconds=5),
                                  dict(name="train", argv=["--", sys.executable, str(worker), mode], seconds=20)])
             if image_parts:
+                config["image_download_parallelism"] = image_parallelism
                 config["image_parts"] = []
                 for index, data in enumerate((b"first", b"second")):
                     (root / f"image{index}").write_bytes(data)
@@ -119,6 +120,7 @@ def transfer(url,path,upload=False,deadline=None):
         shutil.copyfile(path, 'uploaded-'+path.name)
     else: shutil.copyfile(url.removeprefix('https://') if url.startswith('https://image') else 'input.tar.gz',path)
 m.transfer=transfer
+m.download_parts=lambda parts: [transfer(url,path) for url,path in parts]
 if {result_part_bytes!r}: m.MAX_PART_BYTES={result_part_bytes!r}
 sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
 ''')
@@ -207,6 +209,22 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertEqual(bad["code"],1,bad)
         self.assertNotIn("READY",bad["events"])
         self.assertTrue(bad["scratch"])
+
+    def test_parallel_image_parts_preserve_hash_gate_and_receipt(self):
+        good = self.run_job(image_parts=True, image_parallelism=4)
+        self.assertEqual(good["code"], 0, good)
+        self.assertEqual(good["manifest"]["receipt"]["image_download"]["bytes"], 11)
+        self.assertEqual(good["manifest"]["receipt"]["image_download"]["parallelism"], 4)
+        bad = self.run_job(image_parts=True, image_parallelism=4, bad_image=True)
+        self.assertEqual(bad["code"], 1, bad)
+        self.assertNotIn("READY", bad["events"])
+
+    def test_invalid_image_parallelism_never_starts_step(self):
+        for value in (0, 5, True, 1.5):
+            with self.subTest(parallelism=value):
+                result = self.run_job(image_parts=True, image_parallelism=value)
+                self.assertEqual(result["code"], 1, result)
+                self.assertNotIn("READY", result["events"])
 
     def test_busy_physical_gpu_prevents_workload(self):
         result=self.run_job(busy_gpu=True)
