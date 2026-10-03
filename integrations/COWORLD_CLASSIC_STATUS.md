@@ -1,5 +1,78 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35863 selected final: fresh paired gain, hosted startup live; native pilot CPU ready (2026-10-03)
+
+**35863 COMPLETED0:0**,11:54:40→12:55:16UTC, Nice2147483645/Priority1
+before/after unchanged. No scheduler errors, escalation or duplicate task job.
+Terminal receipt `/tmp/relh-generals-generation3-6281cda1.receipt.json` saved
+before controller expiry. Collector completed exactly once; all result bytes
+verified/extracted at `/tmp/relh-generals-portable-result-35863`. Archive
+277698650bytes,SHA9c5053b6d4644e3e895285969524142f8ab9b6840f72f5a3ed6662bc271a1aed;
+S3prefix relh/generals-classic-results-20261003T115153Z-143ed179.
+
+Fresh4096-game panel,2575 distinct initial states,seeds38383/9265, no curriculum:
+parent2132W/1922L/42D; midpoint2437W/1615L/44D; final**2662W/1394L/40D**.
+Final paired signed-score gain **+.25830078125**, clustered95%CI
+**[+.225382436,+.290638980]**; midpoint→final+.108886719,
+CI[+.076922135,+.140567201]. Final adds530wins:250against frozen opponents,
+280against scripts. Both intermediate/final GPU serving parity46/46; final
+max action-probability difference9.8347664e-7. Selected final
+**83dc8144eafcaf9c9e0ccac4a59353ea18d2abd81cff261c56f037dd9243b5d2**,
+1342177280steps,106913.002SPS. LearnerSHA
+**cfa0f0886f0e7eb20653be667f52da3aa14b501de77dfef07024d067545efdaf**.
+Selection `/tmp/relh-generals-35863-serving-selection.json`, paired evidence
+`learning-curve-summary.json` under collected results.
+
+Local35861 serving image/tag was absent. Same-role sandbox ECR auth succeeded
+but private digest pull returned403; logged out only our recovery config,
+no credential/identity escalation or repeat denied access. Logs retained in
+`/tmp/relh-generals-serving-image-recovery-35861`. Rebuilt35863 directly from
+existing Dockerfile.neural, pinned dependencies and retained pure-source
+runtime.tar.gz SHA0b3e9a9e1f5d8206f24ccddcfdaadfc9093fc2628e46aa5b3b32820ab9711d28.
+No copied virtualenv or assumption of previous image byte identity.
+New local image **3cdacbc030461294f3a7a3ca543fa5eeb214c51959738277d2ac61d8dcc290e9**,
+AMD64,UID10001. CPUgolden46/46,maxdifference5.9604645e-7; wire32/32,
+cold13.6778s,maxreply.059615s (local emulation, not hosted latency).
+`/tmp/relh-generals-serving-35863-final/cpu-readiness.json`.
+
+Uploaded private image **img_65a0c926-7fe8-4757-b6a5-b0e1077346aa**;
+Docker HEAD403 handled by existing verified-blob/manifest completion helper,
+registrydigest **2ddd3e30f4a5457b07dd40c99bde3cf7f68c17b11034b4e0491f4ed1f54ea54f**.
+Policy **eda1614a-a267-4ee4-98c7-d1792a500dcf**, relh-classic-hardpool-35863-final.
+Hosted startup requests:seat0 **xreq_d1da2fc6-ff28-422a-96b0-00ccd31ff72f**,
+seat1 **xreq_e0da689b-7c69-470c-a4ab-1908eec1634b**. Watcher and single finalizer
+live; do not duplicate requests. Champion IDs rechecked unchanged in
+`/tmp/relh-generals-live-champions-35863.json`. No champion changed. Hosted
+strength remains unproven until the complete64-game screen/replay audit.
+
+Native opponent readiness advanced: original112-game emulated image check
+hit420s; reduced10-game harness rejected invalid base seat grouping (needs
+multiples of8). Corrected **16-game**,two-frozen/three-script complete image
+step/reset proof passed, including legal opposing actions and finite rewards:
+`/tmp/relh-generals-siege-small16-image-proof.log`. Existing native-only image
+3912-action/32callback proof and local full13-opponent audits also pass.
+
+Actual staged candidate `/tmp/relh-generals-portable-native-siege-input` now
+binds35863 final+learner, ten iterated frozen policies plus ALL three scripts,
+weights **[1,1,2,2,2,2,8,8,8,8,8,6,6]**, explicit append-siege recipe, **8388608**
+new steps (1342177280→1350565888). **128-game actual staged CPU population**
+passes all13 both seats, legal opponent actions, finite transition, terminal
+memory resets into nonzero-turn curriculum. Evidence
+`/tmp/relh-generals-native-siege-staged-cpu-readiness.json` and matching log.
+Actual pinned-image native prepare_run restores verified learner/policy and
+keeps reward bound.6,scale.5,curriculum.25; proof
+`/tmp/relh-generals-native-siege-resume-image-proof/image-cpu.log`.
+
+Fresh preflight shows no Generals allocation and all8physicalB300 GPUs at
+0MiB/0%; no observed contention. B300 justified by measured202090MiB baseline
+training footprint. `/tmp`1.2TiBfree/146313freeinodes, image29244inodes;
+root19GiBfree. Other4090 jobs35864/35865 untouched. Evidence
+`/tmp/relh-generals-native-siege-preflight-{queue,physical}.txt`. No new GPU job
+or paid spend yet. Finish archive binding, sign fresh keys and recheck placement
+before the sole bounded8M qualification; no long native-opponent run before
+measured>=30kSPS. User maxNice override continues to supersede skill nice100
+and guide Docker/nodelist examples. Goal active; strong hosted wins still open.
+
 ## 35863 training complete; native image callback and lifecycle gates pass (2026-10-03)
 
 Sole35863 remains active for evaluation, Nice2147483645/Priority1 unchanged.
