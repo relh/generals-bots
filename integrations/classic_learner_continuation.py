@@ -80,12 +80,27 @@ def load_continuation(manifest_path, additional_steps):
     if pool_recipe not in ("preserve", "drop_oldest_append_parent_weight8"):
         raise ValueError("Unknown opponent generation recipe")
     weights = options["opponent_weights"]
+    scripts = list(options.get("scripted_opponents", ["expander_harvester", "sentinel"]))
+    qualified_scripts = ["expander_harvester", "sentinel"]
+    siege_scripts = qualified_scripts + ["classic_siege_padded"]
+    expected_tail = [8, 6] if scripts == qualified_scripts else [8, 6, 6]
     if (
-        len(weights) != 12
+        scripts not in (qualified_scripts, siege_scripts)
+        or len(weights) != 10 + len(scripts)
         or any(isinstance(w, bool) or not isinstance(w, int) or w <= 0 for w in weights)
-        or weights[-2:] != [8, 6]
+        or weights[10:] != expected_tail
     ):
         raise ValueError("Expected ten frozen weights and the qualified scripted opponents")
+    script_recipe = manifest.get("scripted_opponent_generation", "preserve")
+    if script_recipe not in ("preserve", "append_classic_siege_padded_weight6"):
+        raise ValueError("Unknown scripted opponent generation recipe")
+    if script_recipe == "append_classic_siege_padded_weight6":
+        if scripts != qualified_scripts or additional_steps != 8_388_608:
+            raise ValueError("New native siege opponent requires the bounded 8M qualification pilot")
+        scripts = siege_scripts
+        weights = weights + [6]
+        options["opponent_weights"] = weights
+        options["scripted_opponents"] = scripts
     dropped_sha = None
     if pool_recipe == "drop_oldest_append_parent_weight8":
         if manifest["policy_sha256"] in pool_hashes:
@@ -115,6 +130,8 @@ def load_continuation(manifest_path, additional_steps):
             learner_sha256=manifest["state_sha256"],
             restore_learner=True,
             opponent_generation=pool_recipe,
+            scripted_opponent_generation=script_recipe,
+            scripted_opponents=scripts,
             dropped_opponent_sha256=dropped_sha,
             frozen_policy_sha256=pool_hashes,
             opponent_weights=options["opponent_weights"],

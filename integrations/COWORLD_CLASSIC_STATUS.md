@@ -1,5 +1,58 @@
 # Softmax Coworld Classic 1v1 training
 
+## Native siege candidate: CPU fidelity, explicit memory, opt-in pilot (2026-10-03)
+
+Implemented `integrations/native/classic_siege.cpp`, the validated Python ABI
+`classic_siege_native.py`, and reusable public-input replay audit
+`audit_classic_siege_native.py`. Classic-only opponent uses public type/owner/army
+planes and explicit city/general/spearhead memory. It is derived from cee053c,
+with row-major frontier ties rather than Python set iteration. It is not a
+universal byte/behavior equivalence claim. Native code caches component surplus
+within a decision instead of repeating identical owned-component searches.
+
+Four retained incumbent episodes: **3912/3912 native actions AND memory updates
+match** the reproduced Python source. `/tmp/relh-generals-native-siege-audit`
+contains cases.npz (SHA619b5bd404d28f3220903c2a1cb220b186485c393b770c4f2842d3ff3a2f8f60),
+result.json, portable-audit.json, and batch-timing.json. Isolated Mac CPU timing:
+native 0.1355s vs Python 2.6676s for sequential decisions; validated batches
+median **50354.8 opponent actions/s**, excluding environment, transfers and
+optimization. This is **not training SPS**. Compiling/running the batch inside
+immutable Linux training image 66660f4b… also matched all3912. Evidence
+`/tmp/relh-generals-native-siege-image-proof.log`. Source formatting subsequently
+changed only whitespace; final source/image integration proof remains required.
+
+Training integration is explicitly named **classic_siege_padded**: fixed21x21
+public observation geometry affects edge preference, and differed on **12/3912**
+one-step cases with reference memory. Do not call it exact hosted incumbent.
+One pure batched callback returns both actions and memory; no mutable agent
+state inside callback, no teacher labels or learner action override. Episode
+completion resets memory, including nonzero-turn curriculum starts. Existing
+population defaults remain the original scripts. Opt-in continuation recipe
+`append_classic_siege_padded_weight6` retains all ten frozen policies plus
+Expander/Sentinel and appends siege weight6. Addition is restricted to an
+**8,388,608-step qualification pilot**, not an unqualified long run.
+
+Local112-game thirteen-opponent population audit passed both seats, legal
+opposing actions, finite transition and forced terminal resets back into the
+actual25% midgame curriculum. Evidence
+`/tmp/relh-generals-siege-population13-cpu.log`; earlier12-opponent audit at
+`...siege-population-cpu.log`. Unit/regression gates:40passed before adding the
+manifest recipe, then22passed covering final native callback and continuation
+recipe. Exact-image population audit is still running; source/archive binding,
+lifecycle checks and actual GPU throughput/strength qualification remain open.
+No new GPU job, paid node, upload, XP request or champion change from this work.
+
+Sole **35863** remains RUNNING, Nice2147483645/Priority1 unchanged, no scheduler
+errors/escalation/duplicate. Latest epoch615 = **216006656 new optimized steps**;
+steady **106978.448 environment SPS** (epochs613→615,4194304steps/39.207s).
+Midpoint1207959552 policy SHA
+053269f9cd722c232b5e8da598712a96e3973dbe7a487cdecd1d771ff26eb541
+matches its learner identity. `/tmp/relh-generals-35863-live-progress3.json`.
+Existing terminal collector remains live. Serving/upload/XP scripts for35863
+are prepared under `/tmp` but not executed; select only after fresh heldout
+results and parity. Last completed hosted strength remains9/32Daveey and
+16/32incumbent, below the strong-win gate. Goal stays active.
+
 ## Exact incumbent source reproduced; 35863 throughput remains healthy (2026-10-03)
 
 Read-only Observatory metadata for owned incumbent

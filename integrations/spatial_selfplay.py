@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import tempfile
 from pathlib import Path
 
 import jax
@@ -111,6 +112,7 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
             self.states, self.base.pool, paired, jnp.zeros_like(paired), self.keys
         )
         self._cached_values, self._cached_masks = values, masks
+        self._reset_completed_opponents(done)
         self.turn += 1
         if self.turn >= self.horizon:
             self.turn = 0
@@ -118,6 +120,9 @@ class SpatialFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnviro
             self.base.pool, _ = self.base.env.reset(jax.random.fold_in(self._pool_seed, self._pool_generation))
         return (values[self._rows, self.sides], masks[self._rows, self.sides].astype(jnp.uint8),
                 rewards[self._rows, self.sides].astype(jnp.float32), done.astype(jnp.float32), False)
+
+    def _reset_completed_opponents(self, done):
+        """Stateless opponents need no episode cleanup."""
 
     def _opposing_indices(self, values, masks):
         opposing_sides = 1 - self.sides
@@ -212,7 +217,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
                  scripted_opponents=("expander_harvester", "sentinel"), **options):
         bundles = tuple(map(Path, frozen_bundles))
         script_names = tuple(scripted_opponents)
-        available_scripts = ("expander_harvester", "sentinel", "sentinel_v5")
+        available_scripts = ("expander_harvester", "sentinel", "sentinel_v5", "classic_siege_padded")
         if (not script_names or len(set(script_names)) != len(script_names)
                 or any(name not in available_scripts for name in script_names)):
             raise ValueError("Population scripts must be distinct known opponent names")
@@ -287,10 +292,27 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
 
         script_factories = {"expander_harvester": ExpanderHarvesterAgent,
                             "sentinel": SentinelAgent, "sentinel_v5": SentinelV5Agent}
-        scripts = tuple(script_factories[name]() for name in script_names)
+        scripts = tuple(script_factories[name]() if name in script_factories else None for name in script_names)
         self._population_script_names = script_names
+        self._siege_rows = None
+        self._native_opponent_contract = None
+        native_siege = None
+        if "classic_siege_padded" in script_names:
+            from integrations.classic_siege_native import SOURCE, ClassicSiegeBatch, compile_library, padded_device_actions
 
-        def opposing_indices(states, sides, keys, values, masks):
+            context.output.mkdir(parents=True, exist_ok=True)
+            self._siege_build_directory = tempfile.TemporaryDirectory(prefix="native-siege-", dir=context.output)
+            native_siege = ClassicSiegeBatch(compile_library(Path(self._siege_build_directory.name) / "opponent.so"))
+            self._siege_rows = self._population_rows[len(frozen) + script_names.index("classic_siege_padded")]
+            self._native_opponent_contract = dict(
+                name="classic_siege_padded", source_sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
+                observation="Public wire grids padded to 21x21", frontier_tie_break="row-major",
+                memory="Explicit arrays reset on every completed episode, including curriculum resets",
+                execution="One pure batched CPU callback; end-to-end GPU throughput requires qualification",
+            )
+        self._siege_memory = jnp.full((0 if self._siege_rows is None else len(self._siege_rows), 3), -1, jnp.int32)
+
+        def opposing_indices(states, sides, keys, values, masks, siege_memory):
             result = jnp.zeros(parallel_games, jnp.int32)
             for rows, policy in zip(self._population_rows[:len(frozen)], frozen, strict=True):
                 with jax.default_matmul_precision("highest"):
@@ -300,15 +322,21 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
                 result = result.at[rows].set(chosen)
             for rows, agent in zip(self._population_rows[len(frozen):], scripts, strict=True):
                 selected = jax.tree_util.tree_map(lambda leaf: leaf[rows], states)
-                selected_keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(keys[rows])
-                result = result.at[rows].set(scripted_indices(selected, sides[rows], selected_keys, agent))
-            return result
+                if agent is None:
+                    observations = jax.vmap(game.get_observation)(selected, sides[rows])
+                    chosen, siege_memory = padded_device_actions(native_siege, observations, siege_memory)
+                    result = result.at[rows].set(chosen)
+                else:
+                    selected_keys = jax.vmap(lambda key: jax.random.fold_in(key, 833))(keys[rows])
+                    result = result.at[rows].set(scripted_indices(selected, sides[rows], selected_keys, agent))
+            return result, siege_memory
 
         self._population_opposing_indices = jax.jit(opposing_indices)
         self._population_output = context.output / "spatial-opponent-population.json"
 
     def reset_device(self, seed):
         result = super().reset_device(seed)
+        self._siege_memory = jnp.full_like(self._siege_memory, -1)
         sides = np.asarray(self.sides)
         names = tuple("frozen_" + digest[:12] for digest in self._population_checksums) + self._population_script_names
         counts = {
@@ -324,12 +352,21 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
                       episode_limit=self.horizon, coworld_classic_rules=self.base.env.coworld_classic_rules,
                       observation_size=self.spec.observation_size,
                       scope="Opponent actions only; no teacher targets or learner action overrides")
+        if self._native_opponent_contract is not None:
+            record["native_opponent"] = self._native_opponent_contract
         self._population_output.parent.mkdir(parents=True, exist_ok=True)
         self._population_output.write_text(json.dumps(record, indent=2) + "\n")
         print("SPATIAL_OPPONENT_POPULATION " + json.dumps(record), flush=True)
         return result
 
     def _opposing_indices(self, values, masks):
-        return self._population_opposing_indices(
-            self.states, 1 - self.sides, self.keys, values, masks
+        result, self._siege_memory = self._population_opposing_indices(
+            self.states, 1 - self.sides, self.keys, values, masks, self._siege_memory
         )
+        return result
+
+    def _reset_completed_opponents(self, done):
+        if self._siege_rows is not None:
+            from integrations.classic_siege_native import reset_completed_memory
+
+            self._siege_memory = reset_completed_memory(self._siege_memory, done[self._siege_rows])

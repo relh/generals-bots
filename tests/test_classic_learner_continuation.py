@@ -145,6 +145,32 @@ class ContinuationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unknown opponent generation"):
             load_continuation(self.manifest, self.steps)
 
+    def test_native_siege_recipe_keeps_all_existing_opponents(self):
+        self.data["scripted_opponent_generation"] = "append_classic_siege_padded_weight6"
+        self.data["opponent_generation"] = "drop_oldest_append_parent_weight8"
+        self.write_manifest()
+        _, build, run, audit = load_continuation(self.manifest, 8_388_608)
+        options = build["python_environment"]["options"]
+        self.assertEqual(options["scripted_opponents"],
+                         ["expander_harvester", "sentinel", "classic_siege_padded"])
+        self.assertEqual(options["opponent_weights"][-3:], [8, 6, 6])
+        self.assertEqual(len(options["opponent_weights"]), 13)
+        self.assertEqual(len(audit["frozen_policy_sha256"]), 10)
+        self.assertEqual(audit["scripted_opponents"], options["scripted_opponents"])
+        self.assertTrue(run["initialize"]["restore_learner"])
+
+    def test_native_siege_addition_requires_bounded_qualification(self):
+        self.data["scripted_opponent_generation"] = "append_classic_siege_padded_weight6"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "bounded 8M"):
+            load_continuation(self.manifest, self.steps)
+
+    def test_unknown_scripted_recipe_is_rejected(self):
+        self.data["scripted_opponent_generation"] = "unreviewed_opponent"
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "Unknown scripted"):
+            load_continuation(self.manifest, self.steps)
+
     def test_evaluation_uses_resumed_counters_and_new_maps(self):
         with (
             patch.dict(os.environ, GENERALS_PILOT_CONTINUATION_MANIFEST=str(self.manifest)),
