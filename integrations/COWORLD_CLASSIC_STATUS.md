@@ -1,5 +1,34 @@
 # Softmax Coworld Classic 1v1 training
 
+## Evaluation retry35869 running with audited preparation fix (2026-10-03 16:00 UTC)
+
+One taskGPU job35869 started16:00:49UTC, Slurm-selectedmetta0 RTX4090,8CPU,
+32GiB host memory,60min finite limit. Nice2147483645/Priority1 verified at
+submission/readback, unchanged; no priority errors/escalation. Prior35868
+terminalFAILED124 and verified outputs preserved. No training updates, no paid
+node/spending, no second pending job. Other owners35864/35865 untouched.
+Preflight physical4090:1MiB/0%, driver580.173.02;724GiB scratch/232477602 free
+inodes. No nodelist, metta4 excluded, same-job Pyxis smoke/restore/evaluate.
+
+Host launcher1c316e12b2e770afe4272b43dda334b022960f0a: optional4-part downloader
+CPU-audited before submission. Input stays immutablec3d82d1 overlay/original
+serial native source; no new worker recipe used. Input key
+`relh/generals-35867-evaluation-20261003T150819Z-6fc25bdb/input.part000` unchanged.
+Fresh results `relh/generals-35867-evaluation-results-20261003T160026Z-bf890589`
+in softmax-slurm-artifacts. Receipt
+`/tmp/relh-generals-eval-retry-6dcf0121.receipt.json`; launch
+`/tmp/relh-generals-35867-evaluation-retry-launch.json`. One terminal collector
+`/tmp/relh-generals-collect-35869-when-terminal.py` and one bounded read-only
+GPU observer `...monitor-35869.py` already live. No duplicate collectors/jobs.
+Expected result directory `/tmp/relh-generals-portable-result-35869`; paired
+summary helper `/tmp/relh-generals-summarize-35869.py` prepared, not yet run.
+
+Next: verify completed paired panels, bind actual selected policy/steps and
+COMPLETED evaluation receipt in serving-selection JSON; reuse provisional final
+image/late proof if selected, otherwise build midpoint. Then private hosted
+screen and independent confirmation; no champion until acceptance is proved.
+Latest hosted12/32Daveey and12/32incumbent remains below acceptance. Goal active.
+
 ## 35868 terminal124: setup budget corrected; CPU-audited parallel transfer (2026-10-03)
 
 35868 FAILED ExitCode124:0 at15:52:52UTC after the scheduled USR1 termination,
