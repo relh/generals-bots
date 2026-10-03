@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <system_error>
+#include <thread>
 #include <tuple>
 #include <vector>
 
@@ -337,5 +339,51 @@ extern "C" int classic_siege_batch(int count, const int32_t *dimensions,
     Action a = agent.act();
     std::copy(a.begin(), a.end(), actions + 5 * i);
   }
+  return 0;
+}
+
+extern "C" int
+classic_siege_batch_parallel(int count, const int32_t *dimensions,
+                             const int32_t *turns, const int32_t *grids,
+                             const int32_t *memories, int32_t *actions,
+                             int32_t *next_memories, int workers) {
+  if (count < 0 || workers < 1 || workers > 8)
+    return 4;
+  if (!count)
+    return 0;
+  workers = std::min(workers, count);
+  std::array<int, 8> status{};
+  // Each worker owns disjoint rows. Joining precedes every return, including
+  // rejected inputs, so a callback never exposes buffers still being written.
+  auto work = [&](int worker) {
+    int begin =
+        static_cast<int>(static_cast<int64_t>(count) * worker / workers);
+    int end =
+        static_cast<int>(static_cast<int64_t>(count) * (worker + 1) / workers);
+    try {
+      status[worker] = classic_siege_batch(
+          end - begin, dimensions + 2 * begin, turns + begin,
+          grids + 3 * N * begin, memories + 3 * begin, actions + 5 * begin,
+          next_memories + 3 * begin);
+    } catch (...) {
+      status[worker] = 5;
+    }
+  };
+  std::array<std::thread, 7> threads;
+  for (int i = 1; i < workers; ++i) {
+    try {
+      threads[i - 1] = std::thread(work, i);
+    } catch (const std::system_error &) {
+      // Finish this chunk on the caller if the OS cannot create a thread.
+      work(i);
+    }
+  }
+  work(0);
+  for (auto &thread : threads)
+    if (thread.joinable())
+      thread.join();
+  for (int i = 0; i < workers; ++i)
+    if (status[i])
+      return status[i];
   return 0;
 }

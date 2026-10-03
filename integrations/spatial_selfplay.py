@@ -213,7 +213,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
     """Balanced Classic games against frozen policies and selected scripts."""
 
     def __init__(self, *, frozen_bundles, context, parallel_games=4096,
-                 opponent_weights=None,
+                 opponent_weights=None, classic_siege_workers=1,
                  scripted_opponents=("expander_harvester", "sentinel"), **options):
         bundles = tuple(map(Path, frozen_bundles))
         script_names = tuple(scripted_opponents)
@@ -302,10 +302,14 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
 
             context.output.mkdir(parents=True, exist_ok=True)
             self._siege_build_directory = tempfile.TemporaryDirectory(prefix="native-siege-", dir=context.output)
-            native_siege = ClassicSiegeBatch(compile_library(Path(self._siege_build_directory.name) / "opponent.so"))
+            native_siege = ClassicSiegeBatch(
+                compile_library(Path(self._siege_build_directory.name) / "opponent.so"),
+                workers=classic_siege_workers,
+            )
             self._siege_rows = self._population_rows[len(frozen) + script_names.index("classic_siege_padded")]
             self._native_opponent_contract = dict(
                 name="classic_siege_padded", source_sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
+                workers=native_siege.workers,
                 observation="Public wire grids padded to 21x21", frontier_tie_break="row-major",
                 memory="Explicit arrays reset on every completed episode, including curriculum resets",
                 execution="One pure batched CPU callback; end-to-end GPU throughput requires qualification",

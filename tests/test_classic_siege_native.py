@@ -8,8 +8,19 @@ from integrations.classic_siege_native import ClassicSiegeBatch, compile_library
 
 
 @pytest.fixture(scope="module")
-def native(tmp_path_factory):
-    return ClassicSiegeBatch(compile_library(tmp_path_factory.mktemp("siege") / "opponent.so"))
+def library(tmp_path_factory):
+    return compile_library(tmp_path_factory.mktemp("siege") / "opponent.so")
+
+
+@pytest.fixture(scope="module", params=[1, 2, 4, 8])
+def native(library, request):
+    return ClassicSiegeBatch(library, workers=request.param)
+
+
+@pytest.mark.parametrize("workers", [0, -1, 9, True, 1.5, "4"])
+def test_workers_are_explicit_and_bounded(workers):
+    with pytest.raises(ValueError, match="workers"):
+        ClassicSiegeBatch("unused.so", workers=workers)
 
 
 def observation(grid, h, w, turn):
@@ -84,6 +95,33 @@ def test_malformed_arrays_are_rejected(native):
     with pytest.raises(ValueError, match="int32"):
         native(np.array([[21, 21]], np.int64), np.array([0], np.int32),
                np.zeros((1, 3, 21, 21), np.int32), native.initial_memory(1))
+
+
+@pytest.mark.parametrize("count", [0, 1, 13])
+def test_parallel_batch_boundaries_preserve_serial_results(native, library, count):
+    dims = np.full((count, 2), 21, np.int32)
+    turns = np.full(count, 1000, np.int32)
+    grids = np.zeros((count, 3, 21, 21), np.int32)
+    grids[:, 0] = 1
+    grids[:, 1, 3:9, 3:9] = 1
+    grids[:, 2, 3:9, 3:9] = 20
+    memory = native.initial_memory(count)
+    expected = ClassicSiegeBatch(library)(dims, turns, grids, memory)
+    actual = native(dims, turns, grids, memory)
+    for before, after in zip(expected, actual):
+        np.testing.assert_array_equal(before, after)
+
+
+def test_rejected_later_chunk_finishes_without_mutating_inputs(native):
+    dims = np.full((13, 2), 21, np.int32)
+    turns = np.zeros(13, np.int32)
+    grids = np.zeros((13, 3, 21, 21), np.int32)
+    memory = native.initial_memory(13)
+    memory[-1, -1] = 441
+    before = memory.copy()
+    with pytest.raises(ValueError, match="code 3"):
+        native(dims, turns, grids, memory)
+    np.testing.assert_array_equal(memory, before)
 
 
 def test_compiled_callback_and_episode_memory_reset(native):

@@ -21,7 +21,7 @@ def compile_library(output, *, compiler="c++"):
     output = Path(output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        [compiler, "-std=c++17", "-O3", "-Wall", "-Wextra", "-Werror", "-shared", "-fPIC",
+        [compiler, "-std=c++17", "-O3", "-Wall", "-Wextra", "-Werror", "-shared", "-fPIC", "-pthread",
          str(SOURCE), "-o", str(output)],
         check=True, timeout=120,
     )
@@ -29,11 +29,23 @@ def compile_library(output, *, compiler="c++"):
 
 
 class ClassicSiegeBatch:
-    def __init__(self, library):
+    """Pure row-independent decisions; workers includes the calling thread.
+
+    Default serial execution preserves the qualified training configuration.
+    Additional workers require an explicit CPU budget and GPU throughput trial.
+    """
+
+    def __init__(self, library, *, workers=1):
+        if isinstance(workers, bool) or not isinstance(workers, int) or not 1 <= workers <= 8:
+            raise ValueError("Native siege workers must be an integer from 1 to 8")
+        self.workers = workers
         self.library = ctypes.CDLL(str(Path(library).resolve()))
         pointer = np.ctypeslib.ndpointer(dtype=np.int32, flags="C_CONTIGUOUS")
         self.library.classic_siege_batch.argtypes = [ctypes.c_int] + [pointer] * 6
         self.library.classic_siege_batch.restype = ctypes.c_int
+        if workers > 1:
+            self.library.classic_siege_batch_parallel.argtypes = [ctypes.c_int] + [pointer] * 6 + [ctypes.c_int]
+            self.library.classic_siege_batch_parallel.restype = ctypes.c_int
 
     @staticmethod
     def initial_memory(count):
@@ -66,9 +78,9 @@ class ClassicSiegeBatch:
             raise ValueError("Invalid public wire grids")
         actions = np.empty((count, 5), np.int32)
         next_memory = np.empty_like(memory)
-        rc = self.library.classic_siege_batch(
-            count, *(np.ascontiguousarray(x) for x in inputs), actions, next_memory,
-        )
+        arguments = (count, *(np.ascontiguousarray(x) for x in inputs), actions, next_memory)
+        rc = (self.library.classic_siege_batch(*arguments) if self.workers == 1
+              else self.library.classic_siege_batch_parallel(*arguments, self.workers))
         if rc:
             raise ValueError(f"Native siege input rejected with code {rc}")
         return actions, next_memory

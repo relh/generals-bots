@@ -1,5 +1,45 @@
 # Softmax Coworld Classic 1v1 training
 
+## Optional parallel native opponent passes CPU/image checks;35867 unchanged (2026-10-03)
+
+Investigated the measured native-opponent CPU rollout cost while the sole
+35867 training job continues. Added explicit `classic_siege_workers` population
+option and `ClassicSiegeBatch(..., workers=N)`, bounded1..8 including caller.
+Default remains1 (the qualified live configuration). C++ batches use disjoint
+rows, join all workers before returning, and complete a chunk on the caller if
+OS thread creation fails. Explicit input/output memory and episode resets stay
+unchanged. Worker count is recorded in population metadata and checked against
+build config in the post-training audit. CLI native audit accepts--workers.
+No teacher, learner action override, sampler, reward, or opponent strategy change.
+
+Retained3912 public replay cases: every action and memory update matches serial
+for1/2/4/8 workers. Interleaved Mac CPU benchmark,792rows,10 measured repeats:
+serial median14.855ms;2 workers7.673ms;4 workers4.124ms;8 workers2.625ms.
+Four workers give~3.6x component speedup. These are native CPU component
+measurements, **not training/environment SPS or a300k training result**.
+Prototype `/tmp/relh-generals-siege-thread-prototype/{benchmark.py,result.json}`.
+Final C++ SHA1979e5357bccbfe925a0f439854f4c4e06840023528504dfc2dc75e9f357d367.
+
+Pinned training image66660f4b… compiled final source and passed3912 replay
+moves+serial memory equivalence at4 workers,32 JIT callback cases and selective
+reset. Full reduced16-game population/step/forced terminal reset also passed
+inside that image, including the configured worker receipt. Local128-game,
+all13-opponent population at4 workers passed legal actions, finite values/rewards,
+both seats and reset into nonzero-turn curriculum.59 native/gate/learning-curve
+tests and17 continuation/reward tests passed; diff/clang-format checks clean.
+Logs `/tmp/relh-generals-siege-thread-image-proof.log`,
+`...siege-thread-population-image-proof.log`, `...siege-thread-population-cpu.log`,
+`...siege-thread-tests-final.log`, `...siege-thread-regression-tests.log`.
+Owned CPU proof containers stopped/removed after completion; no GPU allocation.
+
+**Not yet GPU-qualified with>1 worker.** Keep35867 immutable at source6e03bd1
+and serial callback. A future bounded, single-job probe must measure end-to-end
+SPS/resource contention with an explicit<=8CPU budget before scaling workers.
+No next job prepared/submitted. Latest35867 epoch700=117440512new steps,
+71374.19 environmentSPS,167877finishedgames, no nonfinite/clipped rewards;
+`/tmp/relh-generals-35867-live-training8.json`. Fresh win-rate evaluation pending.
+Goal remains active, Nice2147483645/Priority1 unchanged; no champion promotion.
+
 ## Latest hosted policy passes64 late-game parity states;35867 reaches33.55M (2026-10-03)
 
 35863 checkpoint83dc8144… CPU native-Fabric vs exported NumPy/serving

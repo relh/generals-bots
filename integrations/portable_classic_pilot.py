@@ -401,6 +401,7 @@ def train():
 
         native = population.get("native_opponent", {})
         if (native.get("name") != "classic_siege_padded"
+                or native.get("workers") != expected_pool.get("classic_siege_workers", 1)
                 or native.get("source_sha256") != hashlib.sha256(SOURCE.read_bytes()).hexdigest()):
             raise ValueError("Native siege opponent source binding differs")
     from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
