@@ -38,7 +38,16 @@ B300 scratch1.2TiB/111051 free inodes at preflight. Budget calibrated to measure
 29244image inodes plus input/build and~30000reserve:60000both initial/pre-step
 floors; no other jobs/files/containers removed. After unpack/build77215 free,
 still above floor. Existing source/results and failed-job scratch preserved.
-Job passed smoke/build and entered sampling gate; NO steady-state SPS yet.
+Job passed smoke/build/sampling and completed all8388608new training steps.
+Live `/tmp/relh-generals-35870-live-training2.json`: epochs774→776 span44.591s,
+4194304steps,94061.6716environmentSPS after warmup (firstepoch773uptime96.214s).
+8192games/H256/minibatch8192, four native workers, exact restored Muon SHA
+ d0a493fadb349d67d6a48391b8632abe99e0d1d11151518650fe9daaa87db0e0.
+9464terminalgames, zero illegal/nonfinite/clipped rewards. Training phase ended;
+held-out parent/child evaluation still running, so do not launch longer training
+yet. Performance exceeds30k but not300k. Metadata observer used read-only Python
+in the existing allocation; Pyxis reported mount flags ignored on attachment,
+so read-only behavior came from the observer code, not a remounted filesystem.
 Image parts use audited4-way bounded downloader. Input key
 `relh/generals-siege-workers4-20261003T163421Z-67be8f59/input.part000`, SHA
 3b4a5f9b27401515716a780bf91d2abfcb4fb0ce8de48cfed2523bba27b907af (193698240bytes).
