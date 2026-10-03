@@ -1,5 +1,44 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35863 sole continuation running; 35861 hosted panel active (2026-10-03 11:55 UTC)
+
+Both 35861 startup episodes completed successfully, zero execution failures.
+Full remaining panel submitted: incumbent seat0
+`xreq_b15628f8-7633-40c2-a80c-9838b373d0df`, seat1
+`xreq_2721099c-59e6-4fde-9dd7-bb4643c7cccc`; Daveey seat0
+`xreq_f84fa0da-7ddc-40b5-bbd6-ee60b8ce09a8`, seat1
+`xreq_bcd3d349-6712-4a83-be41-40fc7ca3110b`. Watcher and single finalizer
+remain live; await all 64 unique records and hashed replay audit. No champion
+change. Prior 35860 screen remains 11/32 Daveey, 12/32 incumbent until new
+results are complete.
+
+Given positive fresh paired improvement and successful serving/startup gates,
+**35863 RUNNING**, start **11:54:40 UTC**, finite end **13:54:40 UTC**,
+**Nice2147483645/Priority1** verified before/after initial readback, no priority
+changes or errors. One B300 /8 CPUs/96GiB host; same 8,192 environments,
+horizon256, minibatch8,192, reward/curriculum/optimizer settings. Restore
+learner ce5b923a…5404bbb5d and train **268,435,456 new steps**, counter
+**1,073,741,824→1,342,177,280**, with updated frozen pool recorded below.
+Prior same-geometry **107,419.556 SPS** predicts about 42 minutes training
+plus startup/evaluation; new live throughput must still pass the 30k gate.
+
+Final queue/physical preflight immediately before submit again showed no
+Generals job and all eight GPUs **0MiB/0%**; no contention or modifications to
+other work. Evidence `/tmp/relh-generals-generation3-submit-queue.txt` and
+`...-submit-physical.txt`. All CPU/image/archive/lifecycle gates below passed
+before submission. No paid resource or duplicate task job. Source/input/image
+and new S3 result prefix remain as recorded in generation3 readiness.
+
+Launch `/tmp/relh-generals-generation3-launch.json`; durable controller
+receipt `/tmp/relh-generals-generation3-6281cda1.receipt.json`; monitor log
+`/tmp/relh-generals-generation3-submit.log`. Sole result collector armed:
+`/tmp/relh-generals-collect-35863-when-terminal.py`, log
+`/tmp/relh-generals-35863-collection-monitor.log`; intended local result root
+`/tmp/relh-generals-portable-result-35863`. New observer scripts
+`/tmp/relh-generals-observe-35863.py` and `...-evaluation.py` are prepared,
+not executed during initial input staging. Midpoint counter **1,207,959,552**.
+Keep goal active until strong held-out and hosted wins are verified.
+
 ## 35861 hosted startup submitted; generation3 CPU-ready (2026-10-03)
 
 Exact serving image `sha256:8da936437849e0a80573c67f1c6efcedd2c10e3ed71d945bfd911515321fbb5c`
