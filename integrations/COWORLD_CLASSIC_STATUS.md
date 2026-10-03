@@ -1,5 +1,61 @@
 # Softmax Coworld Classic 1v1 training
 
+## Active iterated self-play 35860; hosted 35858 panel (2026-10-03 09:25 UTC)
+
+**ONE live Generals job: 35860**, started **09:24:40 UTC**, finite two hours
+through 11:24:40, B300 / 8 CPUs / 96 GiB host memory. Controller before/after
+readback is **Nice 2147483645 / Priority 1**, unchanged; no scheduling errors,
+no escalation/requeue, and no duplicate task job. Source **e4417be**, name
+`relh-generals-generation-9f270eb0`, node `metta-fabric-b300-1` selected by
+Slurm. Public launch: `/tmp/relh-generals-generation-launch.json`; terminal
+receipt monitor: `/tmp/relh-generals-generation-submit.log`. Collector and
+paired analysis are already armed; do not duplicate downloads or submissions.
+
+This resumes verified final policy 201e147f and its Muon state from
+536,870,912 to **805,306,368**, adding **268,435,456 physical environment
+steps**. Its explicit opponent recipe replaces oldest d261ac6d with this
+parent at weight 8, retaining nine other frozen policies and both scripts.
+Reward, curriculum probability, optimizer settings, architecture, and 8,192
+parallel games remain fixed. Fresh evaluation seeds are **38127 / 9009**.
+The measured predecessor speed, 108,988 SPS, projects about 41 minutes of
+training; the native monitor enforces the throughput floor during this run.
+
+Full queue and physical checks immediately before submission found no live
+Generals allocation and all eight B300 GPUs at **0 MiB / 0%**, with no actual
+contention. `/tmp` had 1.2 TiB and 146,317 inodes free; the image contains
+29,244 inodes. The 120,000 initial / 100,000 pre-unpack inode gates remain.
+Evidence: `/tmp/relh-generals-generation-final-queue.txt` and
+`/tmp/relh-generals-generation-final-physical.txt`. No unrelated files,
+containers, jobs, scheduler settings, or user identities were changed.
+
+CPU environment, exact-image native restore, extraction, all **464 input file
+hashes**, signed-script syntax, lifecycle implementation, and credential
+lifetime were qualified before submission. S3 input archive 193,668,588 bytes,
+SHA `2c247f35f4b70e166e962d2a53a7bbbd9a822164d61553f048644dd8cfb2031b`;
+key `relh/generals-generation-20261003T091948Z-42125b94/input.part000`.
+Result prefix `relh/generals-classic-results-20261003T092301Z-8e4131c3`.
+All node transfers use presigned S3; URLs remain private. Same-job smoke,
+compile, actual-sampler viability, training, and fresh evaluation are bounded.
+Owned steps must finish before final upload/cleanup. No funded GPU spend.
+
+The 536M policy is privately registered as
+`d70d2ab2-cddf-4b53-9283-21c27001faa5` (`relh-classic-hardpool-35858-final`).
+Its image is ready; registry manifest SHA
+`5cfcb3759d814673283ad73a21be5efe99882f4fd7f31a290398e2cf7bb33caa`.
+Both startup episodes completed without execution failure and the main panel
+is now running. Preserve these requests:
+
+- Startup relh seat 0: `xreq_c7a56c83-dfd2-4009-adfe-25d2adbe8ca6`.
+- Startup relh seat 1: `xreq_d43257df-d0aa-40d0-939b-4eff224d707d`.
+- Incumbent seat 0: `xreq_4d3370b8-d7c9-4836-b255-0fbcc835294b` (15 games).
+- Incumbent seat 1: `xreq_867e181c-4e0c-4564-9ebb-3058f2f0cd7b` (15 games).
+- Daveey seat 0: `xreq_b4709801-a1b0-4b00-8968-11b13ad07b9b` (16 games).
+- Daveey seat 1: `xreq_b654e1c6-57c2-4434-bebe-9064be1f8594` (16 games).
+
+Watcher: `/tmp/relh-generals-35858-xp-watch.log`; strict all-64 record gate.
+No champion changed. The goal is still incomplete pending strong fresh and
+hosted wins, especially against Daveey.
+
 ## 35858 complete: further learning, second-half plateau (2026-10-03)
 
 Job **35858 COMPLETED 0:0** at **09:15:04 UTC** (started 08:16:25), still
