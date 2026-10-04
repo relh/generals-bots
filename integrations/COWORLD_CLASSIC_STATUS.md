@@ -1,5 +1,39 @@
 # Softmax Coworld Classic 1v1 training
 
+## Live temperature2 pilot 35893; pass-two closer NOT READY
+
+Submitted once at 2026-10-04T02:48:14 UTC after CPU/source/image/lifecycle
+qualification. Controller readback at runtime 00:08:49: RUNNING on
+metta-fabric-b300-1, partition b300, one GPU, 8 CPUs, 96 GiB host RAM,
+finite 01:10:00 limit, no requeue. Nice2147483645/Priority1 before and after;
+no priority changes or escalation errors. No duplicate task job or paid node.
+Fresh physical preflight found all eight B300 GPUs idle; other owners' jobs
+35874 and 35875 were left untouched. Actual assigned-device receipt remains
+inside job scratch pending collection; do not infer its UUID from preflight.
+
+Smoke, build and actual-temperature 512-game sampling gate completed; training
+is active. This is a bounded 33,554,432-step continuation from2499805184 to
+2533359616, full_action_temperature2,8192 games,H256,minibatch8192,
+replay0.5,4 opponent workers, unchanged13-opponent pool and reward settings.
+New steady SPS and both hot-initialization/cold-parent game comparisons are
+still pending. Prior83.5k SPS is not proof for this pilot.
+
+Frozen trainer source2895e9cea4d0c86d6361cb102d23aa88b44688a6 plus explicitly
+recorded pinned factory override; launcherdb09ed13dd075165ac38d1d9d6a7d061deb6f24a.
+Receipt /tmp/relh-generals-temperature2-19542a6c.receipt.json; launch metadata
+/tmp/relh-generals-temperature2-launch.json. Controller monitor session48272
+must finish and retain the terminal receipt. Result bucket softmax-slurm-artifacts,
+prefix relh/generals-temperature2-results-20261004T024655Z-f46d51f3.
+Compute host log /tmp/relh-generals-temperature2-19542a6c-35893.log.
+Owned scratch /tmp/relh-generals-35893 is unreadable by the ordinary relh SSH
+login (PermissionError); no identity/permission changes or observer srun used.
+Use numeric host progress and final S3 archive, preserving source and results.
+
+Latest completed hosted policy remains9/32 against Daveey and18/32 against
+incumbent: strong wins are unproven. CI has seven independently reproduced
+unchanged Sentinel baseline failures; owned focused tests pass. No deployment,
+merge or champion promotion. CLOSER_NOT_READY closer-pass2-20261003-mbp-27.
+
 ## Temperature2 CPU/input/image qualification complete; no GPU submitted yet
 
 Exact image NVCC compilation completed. Audit then exposed missing /recovery
