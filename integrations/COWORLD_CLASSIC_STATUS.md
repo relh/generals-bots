@@ -1,5 +1,22 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35892 training completed; held-out comparison running
+
+Host marker STEP_DONE train observed01:04:06UTC, followed by evaluate.
+Thus the bounded33554432-step training command completed its existing SPS,
+finite/reward/checkpoint gates; exact audit values await S3 collection.
+Physical GPU during training~210278MiB, sampled30-100% utilization, one GPU.
+No claim of 300k SPS or stronger hosted play. Goal stays active.
+Controller92084, collector74727, physical monitor26037, local result-analysis
+waiter23781. No additional Slurm step/job. Nice2147483645/Priority1 unchanged.
+
+Retired exactly five redundant input transport archives for completed35860,
+35861,35863,35866,35870 after full presigned GET SHA and every expanded input
+file verification. Reclaimed968422029 bytes. Exact record:
+`/tmp/relh-generals-input-transport-retirement-20261004.json`.
+All expanded source/inputs, checkpoints/results, S3 copies and protected history
+retained. Disk free~4.9GiB after other concurrent disk changes and this retirement.
+
 ## Host-only numeric training progress added for future launches
 
 Current35892 is in training, one B300 using~210278MiB, sampled30-100% GPU
