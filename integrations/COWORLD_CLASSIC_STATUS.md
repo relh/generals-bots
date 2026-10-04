@@ -11,18 +11,23 @@ Fresh physical preflight found all eight B300 GPUs idle; other owners' jobs
 35874 and 35875 were left untouched. Actual assigned-device receipt remains
 inside job scratch pending collection; do not infer its UUID from preflight.
 
-Smoke, build and actual-temperature 512-game sampling gate completed; training
-is active. This is a bounded 33,554,432-step continuation from2499805184 to
+Smoke, build, actual-temperature 512-game sampling gate and training completed;
+evaluation is active (900-second bounded phase). This is a bounded 33,554,432-step continuation from2499805184 to
 2533359616, full_action_temperature2,8192 games,H256,minibatch8192,
 replay0.5,4 opponent workers, unchanged13-opponent pool and reward settings.
-New steady SPS and both hot-initialization/cold-parent game comparisons are
-still pending. Prior83.5k SPS is not proof for this pilot.
+Host progress measured two-epoch training intervals of77,690–78,661 environment
+SPS after warmup (8192 games ×256 horizon); epoch1195 uptime166.808 seconds
+and epoch1207 uptime488.665 seconds imply25,165,824 steps/321.857 seconds
+=78,189.4 SPS. Final archived metrics/rewards and both hot-initialization and
+cold-parent game comparisons remain pending; no new strength claim.
 
 Frozen trainer source2895e9cea4d0c86d6361cb102d23aa88b44688a6 plus explicitly
 recorded pinned factory override; launcherdb09ed13dd075165ac38d1d9d6a7d061deb6f24a.
 Receipt /tmp/relh-generals-temperature2-19542a6c.receipt.json; launch metadata
 /tmp/relh-generals-temperature2-launch.json. Controller monitor session48272
-must finish and retain the terminal receipt. Result bucket softmax-slurm-artifacts,
+must finish and retain the terminal receipt. Collection monitor session7497
+and post-collection diagnostic session23756 are live, bounded, and must be
+reconciled. No other task GPU job or hosted request is queued. Result bucket softmax-slurm-artifacts,
 prefix relh/generals-temperature2-results-20261004T024655Z-f46d51f3.
 Compute host log /tmp/relh-generals-temperature2-19542a6c-35893.log.
 Owned scratch /tmp/relh-generals-35893 is unreadable by the ordinary relh SSH
@@ -31,7 +36,8 @@ Use numeric host progress and final S3 archive, preserving source and results.
 
 Latest completed hosted policy remains9/32 against Daveey and18/32 against
 incumbent: strong wins are unproven. CI has seven independently reproduced
-unchanged Sentinel baseline failures; owned focused tests pass. No deployment,
+unchanged Sentinel baseline failures; factory-fix commitdb09ed1 CI run37171853473
+finished with1090passed,17skipped,23subtests. Owned focused tests pass. No deployment,
 merge or champion promotion. CLOSER_NOT_READY closer-pass2-20261003-mbp-27.
 
 ## Temperature2 CPU/input/image qualification complete; no GPU submitted yet
