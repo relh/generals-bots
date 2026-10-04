@@ -1,5 +1,29 @@
 # Softmax Coworld Classic 1v1 training
 
+## Closer pass two: temperature10 rejected before GPU; temperature2 next to qualify
+
+CLOSER_NOT_READY closer-pass2-20261003-mbp-27. Full assigned strong-play goal
+remains incomplete. PR4 remains open/unmerged; e53acc2 source pushed. No new
+GPU, paid node, hosted request, deployment or champion change. CPU probes below
+are terminal and bounded; other owners/history/checkpoints untouched.
+
+Matched CPU diagnostic,16 games/12 unique initial states, map40841/sample9937,
+same35892 checkpoint on both sides, official Classic2000-turn episodes:
+unchanged temperature1:9W7L; temperature2:6W10L; temperature5:3W13L;
+temperature10:0W16L. Each run took12–24s after setup. Initial states and sides
+verified byte-identical. No illegal actions; these CPU smoke results are NOT
+hosted strength evidence or a substitute for512-game GPU sampling qualification.
+Reject5/10 for the next pilot; qualify2, retaining the win threshold and both
+parent comparisons. Broader rescue support alone did not imply viable play.
+
+Artifacts `/tmp/relh-generals-temperature-cpu-panels/comparison.json` and
+per-temperature game arrays/logs; temperature10 retained separately under
+`/tmp/relh-generals-temperature10-cpu-game-smoke`. Reproduction script
+`/tmp/relh-generals-temperature-cpu-panels.py`. Fixed receipt omissions:
+frozen-opponent reports now include early-route temperature/cutoff; population
+paired reports retain both full action-selection contracts. Focused gate and
+learning-curve tests pass. CI remains pending; no green/complete claim.
+
 ## Full-action exploration implementation: CPU verified, not yet GPU qualified
 
 Added explicit full_action_temperature, default1 preserving old bundles. It

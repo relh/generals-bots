@@ -326,6 +326,8 @@ def main():
                       dict(
                            move_temperature=env._frozen.move_temperature,
                            split_temperature=env._frozen.split_temperature,
+                           early_route_temperature=env._frozen.early_route_temperature,
+                           early_route_turns=env._frozen.early_route_turns,
                            route_half_weight=env._frozen.route_half_weight,
                            full_action_temperature=env._frozen.full_action_temperature,
                            neutral_route_bias=env._frozen.neutral_route_bias,

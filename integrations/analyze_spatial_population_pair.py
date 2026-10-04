@@ -85,6 +85,8 @@ def compare(baseline, candidate, *, seed=35687, resamples=10000):
                   games=base["games"], unique_initial_states=unique,
                   baseline_checkpoint_sha256=base["checkpoint_sha256"],
                   candidate_checkpoint_sha256=child["checkpoint_sha256"],
+                  baseline_action_selection=base.get("action_selection"),
+                  candidate_action_selection=child.get("action_selection"),
                   baseline=count_outcomes(before), candidate=count_outcomes(after),
                   paired_signed_score_delta=float(difference.mean()),
                   initial_state_cluster_ci95=interval,
