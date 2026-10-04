@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from integrations.spatial_context_geometry import context_offsets, kernel_offsets
-from integrations.spatial_context_transfer import LEARNER_HEADER, extend_flat, extend_learner
+from integrations.spatial_context_transfer import LEARNER_HEADER, extend_flat, extend_learner, qualified_mapping
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
 
@@ -89,3 +89,22 @@ def test_learner_extension_preserves_clocks_and_rejects_bad_snapshots():
                 header + np.array([1, np.inf, 2], dtype="<f4").tobytes()]:
         with pytest.raises(ValueError):
             transfer(bad)
+
+
+def test_qualified_mapping_rejects_changed_convolution_permutation(monkeypatch):
+    from integrations import spatial_muon_context
+
+    original = spatial_muon_context.load_gather
+    mapping = qualified_mapping()
+    assert len(mapping) == 578860
+    assert np.count_nonzero(mapping == -1) == 8192 + 13  # New weights plus alignment padding.
+
+    def changed(radius):
+        values = original(radius).copy()
+        if radius == 2.01:
+            values[2], values[6] = values[6], values[2]
+        return values
+
+    monkeypatch.setattr(spatial_muon_context, "load_gather", changed)
+    with pytest.raises(ValueError, match="independently audited"):
+        qualified_mapping()

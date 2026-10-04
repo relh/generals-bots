@@ -31,7 +31,7 @@ def main():
 
     from integrations.direct_spatial_optimization import DirectSpatial
     from integrations.memoryless_optimization import verify_configuration
-    from integrations.spatial_context_transfer import extend_flat, parameter_mapping
+    from integrations.spatial_context_transfer import extend_flat, parameter_mapping, qualified_mapping
     from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
     portable = SpatialPlayerPolicy(args.parent_bundle)
@@ -47,6 +47,7 @@ def main():
     new_policy = NativeFabricPolicy(json.dumps(wide_config))
     new = DirectSpatial(new_policy)
     mapping = parameter_mapping(old, new, old_policy.buffers, new_policy.buffers)
+    np.testing.assert_array_equal(mapping, qualified_mapping())
     parameters = np.frombuffer((args.parent_bundle / "policy.bin").read_bytes(), "<f4")
     extended = extend_flat(parameters, mapping)
     np.save(args.output / "parameter-mapping.npy", mapping)

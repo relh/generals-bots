@@ -1,11 +1,39 @@
 """Extend the local stencil while retaining every learned parameter and momentum."""
 
+import hashlib
 import math
 import struct
 
 import numpy as np
 
 LEARNER_HEADER = struct.Struct("<8sQQQf")
+MAPPING_SHA256 = "dd2d1dd66681be35a7d64865ba4bd097ebb40fb5c41b576f3eb0808b5321cc9a"
+
+
+def qualified_mapping():
+    """Reconstruct the mapping proven against both pinned native F32 layouts.
+
+    This avoids assembling two multi-million-edge graphs again during every
+    initialization. The caller must first verify both complete model hashes.
+    The native CPU audit independently reconstructs and compares every index.
+    """
+    from integrations.spatial_context_geometry import context_offsets
+    from integrations.spatial_muon_context import OFFSET, load_gather
+
+    old_offsets, new_offsets = context_offsets(1.01), context_offsets(2.01)
+    old = OFFSET + load_gather(1.01).reshape(32, 32, 5)
+    new = OFFSET + load_gather(2.01).reshape(32, 32, 13)
+    mapping = np.full(578860, -1, np.int32)
+    mapping[:OFFSET] = np.arange(OFFSET)
+    for index, offset in enumerate(old_offsets):
+        mapping[new[:, :, new_offsets.index(offset)]] = old[:, :, index]
+    mapping[OFFSET + 13312:] = np.arange(OFFSET + 5120, 570668)
+    # Exact native alignment padding, not learned parameters.
+    mapping[[138, 139, 150, 151, 578273, 578274, 578275,
+             578277, 578278, 578279, 578281, 578282, 578283]] = -1
+    if hashlib.sha256(mapping.astype("<i4").tobytes()).hexdigest() != MAPPING_SHA256:
+        raise ValueError("Context mapping differs from the independently audited native layouts")
+    return mapping
 
 
 def parameter_mapping(old, new, old_buffers, new_buffers):

@@ -379,7 +379,9 @@ def train():
         # The qualified native-siege pool sustains ~72k environment SPS;
         # 268M steps need ~62 minutes before compilation/checkpoint overhead.
         # The host step and finite Slurm allocation remain the outer limits.
-        seconds=4440 if STEPS == 268_435_456 else 840,
+        # The 33M architecture pilot must accommodate the 30k SPS floor plus
+        # bounded warmup, rather than implicitly requiring the parent's 85k.
+        seconds=4440 if STEPS == 268_435_456 else (1440 if STEPS == 33_554_432 else 840),
         train=True,
     )
     if not (OUT / "run/completed.json").is_file():

@@ -11,6 +11,18 @@ from integrations import portable_classic_pilot as pilot
 
 
 class PilotGateTests(unittest.TestCase):
+    def test_architecture_pilot_budget_covers_sps_floor_and_warmup(self):
+        class CommandCaptured(Exception):
+            pass
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+                pilot, 'OUT', Path(directory)), patch.object(
+                pilot, 'STEPS', 33_554_432), patch.object(
+                pilot, 'command', side_effect=CommandCaptured) as command:
+            with self.assertRaises(CommandCaptured):
+                pilot.train()
+        self.assertGreater(command.call_args.kwargs['seconds'], 33_554_432 / 30_000 + 180)
+
     def test_long_training_budget_covers_qualified_siege_throughput(self):
         class CommandCaptured(Exception):
             pass

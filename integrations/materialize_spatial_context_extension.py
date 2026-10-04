@@ -12,7 +12,7 @@ PARENT_MODEL = "811e8de55c3fe327a670a362b076f88fc8e56b9525a347ed89c945cfe9e8863b
 EXTENDED_MODEL = "fd64a611cb6ba1d721ddf519e5b15f7b26e207cd8c045d10483b04bbe2217f85"
 
 
-def materialize(parent, build, output, factory_source):
+def materialize(parent, build, output, factory_source, *, audit_native_layout=False):
     """Return a lossless initialization record, never a claim of additional training.
 
     Original training lineage is retained in initialization.json; migration.json
@@ -21,17 +21,14 @@ def materialize(parent, build, output, factory_source):
     """
     from metta_training.learner import LearnerCheckpointIdentity, publish_checkpoint
     from metta_training.native_build import fabric_fingerprint
-    from metta_training.native_fabric import NativeFabricPolicy
 
-    from integrations.direct_spatial_optimization import DirectSpatial
     from integrations.puffer_coworld_frozen_transfer import (
         BuildManifest,
         InitializationRecord,
         TrainingRecord,
         training_lineage_seeds,
     )
-    from integrations.spatial_context_transfer import extend_flat, extend_learner, parameter_mapping
-    from integrations.spatial_optimizer_layout import logical_optimizer_shapes
+    from integrations.spatial_context_transfer import extend_flat, extend_learner, qualified_mapping
     from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
     parent, build, output = Path(parent), Path(build), Path(output)
@@ -74,17 +71,28 @@ def materialize(parent, build, output, factory_source):
             or identity.run_sha256 != hashlib.sha256(source_path.read_bytes()).hexdigest()
             or identity.environment_sha256):
         raise ValueError("Parent policy, momentum, or original run identity differs")
-    models = []
-    for manifest in (source.build, target):
-        cpu = manifest.config.fabric.model_copy(update={"platform": "cpu"})
-        policy = NativeFabricPolicy(cpu.model_dump_json())
-        model = DirectSpatial(policy)
-        logical_optimizer_shapes(model, policy.buffers, context_matrix=True)
-        models.append((model, policy.buffers))
-    (old, old_buffers), (new, new_buffers) = models
-    mapping = parameter_mapping(old, new, old_buffers, new_buffers)
+    mapping = qualified_mapping()
+    if audit_native_layout:
+        import jax
+        from metta_training.native_fabric import NativeFabricPolicy
+
+        from integrations.direct_spatial_optimization import DirectSpatial
+        from integrations.spatial_context_transfer import parameter_mapping
+        from integrations.spatial_optimizer_layout import logical_optimizer_shapes
+
+        models = []
+        for manifest in (source.build, target):
+            cpu = manifest.config.fabric.model_copy(update={"platform": "cpu"})
+            # NativeFabricPolicy does not select a device from config.platform.
+            with jax.default_device(jax.devices("cpu")[0]):
+                policy = NativeFabricPolicy(cpu.model_dump_json())
+                model = DirectSpatial(policy)
+                logical_optimizer_shapes(model, policy.buffers, context_matrix=True)
+            models.append((model, policy.buffers))
+        (old, old_buffers), (new, new_buffers) = models
+        np.testing.assert_array_equal(mapping, parameter_mapping(old, new, old_buffers, new_buffers))
     parameters = np.frombuffer(policy_bytes, "<f4")
-    if parameters.size != old_buffers.parameter_words:
+    if parameters.size != 570668:
         raise ValueError("Parent checkpoint size differs from the actual native layout")
     extended = extend_flat(parameters, mapping).astype("<f4").tobytes()
     extended_learner = extend_learner(
@@ -118,18 +126,19 @@ def materialize(parent, build, output, factory_source):
     (bundle / "policy.bin").write_bytes(extended)
     weights = {name: value.copy() for name, value in parent_policy.weights.items()}
     weights["context_kernel"] = np.pad(weights["context_kernel"], ((1, 1), (1, 1), (0, 0), (0, 0)))
-    values = np.frombuffer(extended, "<f4")
-    for name in ("input_kernel", "context_kernel", "action_kernel"):
-        indices = getattr(new, name)
-        np.testing.assert_array_equal(weights[name], np.where(indices >= 0, values[np.maximum(indices, 0)], 0))
-    for name in ("local_weight", "local_bias", "context_weight", "context_bias"):
-        np.testing.assert_array_equal(weights[name], values[getattr(new, name)[0]])
-    for name in ("global_weight", "global_bias", "global_kernel", "readout_kernel", "output_weight", "output_bias"):
-        np.testing.assert_array_equal(weights[name], values[getattr(new, name)])
-    for index, (prior_source, indices) in enumerate(new.priors):
-        np.testing.assert_array_equal(weights[f"prior_source_{index}"], prior_source)
-        np.testing.assert_array_equal(weights[f"prior_weight_{index}"],
-                                      np.where(indices >= 0, values[np.maximum(indices, 0)], 0))
+    if audit_native_layout:
+        values = np.frombuffer(extended, "<f4")
+        for name in ("input_kernel", "context_kernel", "action_kernel"):
+            indices = getattr(new, name)
+            np.testing.assert_array_equal(weights[name], np.where(indices >= 0, values[np.maximum(indices, 0)], 0))
+        for name in ("local_weight", "local_bias", "context_weight", "context_bias"):
+            np.testing.assert_array_equal(weights[name], values[getattr(new, name)[0]])
+        for name in ("global_weight", "global_bias", "global_kernel", "readout_kernel", "output_weight", "output_bias"):
+            np.testing.assert_array_equal(weights[name], values[getattr(new, name)])
+        for index, (prior_source, indices) in enumerate(new.priors):
+            np.testing.assert_array_equal(weights[f"prior_source_{index}"], prior_source)
+            np.testing.assert_array_equal(weights[f"prior_weight_{index}"],
+                                          np.where(indices >= 0, values[np.maximum(indices, 0)], 0))
     np.savez_compressed(bundle / "weights.npz", **weights)
     metadata = json.loads((parent / "bundle/spatial-policy.json").read_text())
     metadata["files"] = {name: hashlib.sha256((bundle / name).read_bytes()).hexdigest()

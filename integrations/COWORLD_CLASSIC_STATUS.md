@@ -1,5 +1,63 @@
 # Softmax Coworld Classic 1v1 training
 
+## Wider-context CPU/image/serving gates passed; no GPU submission yet
+
+67 focused tests pass; launcher/lifecycle gates additionally passed43 tests and
+17 subtests (success/failure/signal/upload failure). Active goal remains unmet:
+new architecture has no GPU SPS or hosted strength result yet.
+
+The exact training image compiled radius-two CUDA sm_103 successfully:
+binary5f2be8d57ecaa1e72bcab280c68dda022a7601f9fde237ae5a98197bd98d7ea3,
+sourcee89c78a1aae29e3e725c8c1bd8de1f114e2e38db1037c1f6a376c86fd7b5bfbd.
+Initial CPU audit then failed while publishing environment fingerprint because
+its Docker invocation omitted `/recovery`. Production Slurm already mounts it.
+Original failed log/source snapshot/compiled artifacts are preserved under
+`/tmp/relh-generals-wide-context-image-proof`. With the exact recovery input
+mounted, completed only missing manifest publication using independently
+constructed actual native state layout:77684 state words,578860 parameters.
+No recompile, GPU execution, or fabricated training result. Recovery provenance
+is in `recovery-proof/metadata-recovery.json`; artifact digests are in
+`compiled-artifact.json`; actual native state/optimizer proof is
+`/tmp/relh-generals-wide-context-state-layout.json`.
+
+Image recovery session77068 completed0. Actual image `prepare_run`, exact
+policy/momentum transfer,46 identical reference serving outputs, and actual
+wider-policy evaluation CLI all passed. The bounded game check used16 games,
+4 steps/game; it makes no completed-game or strength claim. Files:
+`recovery-proof/audit.json`, `recovery-proof/match-audit.json`,
+`image-cpu-recovery.log`.
+
+Production migration now reconstructs the fully pinned, native-audited mapping
+from both Muon gathers and13 alignment-padding slots. Mapping bytes exactly
+match the independently derived native array and SHA dd2d1dd6...; both complete
+model fingerprints are checked before use. This avoids rebuilding both large
+graphs at every initialization. Optional full native verification remains.
+Fast CPU preparation gives exactly the same policy/learner digests as before;
+proof `/tmp/relh-generals-wide-context-fast-prepare-proof/audit.json`.
+The33M trainer timeout now allows the30k SPS floor plus180s warmup (1440s),
+instead of implicitly requiring the parent's higher speed. Future wrapper must
+allow1500s training and600s build in a finite70-minute allocation.
+
+New serving base `relh-generals-serving-base:radius2-v1`, image
+486f51f122025af0efc29ee1d653771a16ef4d249fa08e511f1899bb73ce08f7,
+adds only the changed NumPy policy and new geometry module over the exact
+previous audited base. All46 reference top actions match; max probability
+error3.814697e-6.32/32 wire replies legal; max70.6ms in local emulated Linux
+(not production latency). Proof `/tmp/relh-generals-serving-base-radius2/proof.json`.
+Owned stopped retention container `relh-generals-serving-radius2-retention`
+protects this runtime. No hosted policy registration or XP issued.
+
+Read-only queue/physical preflight: only other jobs35874 and35875; no Generals
+job. All8 B300 GPUs zero memory/utilization/no compute PIDs. No contention.
+B300 `/tmp`1.2TiB free/88244 free inodes; recheck before scheduling. Slurm26.05.3.
+No existing task job to reprioritize. Future Nice2147483645 / Priority1, no
+escalation, one bounded job, preserve other owners. B300 is justified by the
+parent's~202092MiB training footprint. No paid compute or reservation.
+
+Next: freeze/hash/roundtrip input, bind these CPU proofs and audited serving
+runtime, current queue/physical/space preflight, then one33M pilot with fixed
+pool/rewards/sampler and fresh held-out comparison. Push source before launch.
+
 ## Wider-context implementation: CPU transfer passes; image audit in progress
 
 Goal remains ACTIVE: hosted strength is not established. No new Generals GPU
