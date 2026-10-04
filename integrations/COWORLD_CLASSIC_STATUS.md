@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35890 RUNNING: one bounded wider-context pilot, maximum Nice
+
+Submitted exactly one job after complete CPU/image/serving and lifecycle gates:
+job35890, `relh-generals-wide-context-14a014b0`, B300 placement by Slurm on
+metta-fabric-b300-1,1GPU/8CPU/96GiB,TimeLimit01:10:00. Nice2147483645 and
+Priority1 at initial controller readback, unchanged (before/after identical).
+No priority adjustment/escalation/requeue, no other owner's job altered.
+No paid node, duplicate queued job, or hosted XP request. Goal remains ACTIVE.
+
+Frozen source and launcher d8630370d8da8eede6e32fcf0fd5299432b371ba.
+2466250752 ->2499805184 agent/environment steps,33554432 new.8192 games,
+horizon256,minibatch8192,replay0.5. Model radius2.01/13cells; fixed prior
+opponents/weights/rewards/sampler/curriculum; zero-extended policy and fully
+mapped Muon restore. Actual trained GPU SPS/strength remain unqualified.
+Same-job smoke/build/sampling gate/train/evaluation with bounded phase budgets;
+train stops below30k steady SPS. Parent/mid/final held-out comparison follows.
+
+Input archive193806156 bytes,473 file hashes checked after extraction,
+SHAaf351e2b81d34a93f500156ceaf933cb2b184929d9faefa8b668c0e1b57f993a,
+S3 `relh/generals-wide-context-20261004T000740Z-0f643f72/input.part000`.
+Results `relh/generals-classic-results-20261004T001012Z-303ccf73`.
+Image remains66660f4b... / sqsh0fca887c..., mounted new source is hash-verified.
+Readiness `/tmp/relh-generals-wide-context-cpu-readiness.json` binds239 source
+files, exact image CPU proofs, mapping, full model fingerprint and serving proof.
+Final full queue had other35889 onmetta0 and35874/35875 onmetta1/metta4;
+no Generals job. Physical B300 all8 idle, no compute PIDs,1.2TiB/88244inodes.
+No contention. Live TaskProlog=task_prolog.sh; no identity/prolog changes.
+
+Receipt `/tmp/relh-generals-wide-context-14a014b0.receipt.json`;
+launch `/tmp/relh-generals-wide-context-launch.json`.
+Controller monitor session90346 captures terminal receipt before retention;
+result collector67801 waits on that receipt; physical observer4271.
+No warm-window srun observer has started yet. Preserve running job/results;
+never resubmit because an observer or SSH call fails.
+
 ## Wider-context CPU/image/serving gates passed; no GPU submission yet
 
 67 focused tests pass; launcher/lifecycle gates additionally passed43 tests and
