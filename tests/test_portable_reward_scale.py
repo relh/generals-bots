@@ -24,6 +24,7 @@ def test_bound_and_explicit_control():
 
 
 def test_half_reward_preserves_classic_capture_draw_live_and_recycle(tmp_path):
+    pytest.importorskip("metta_training", reason="Optional private training adapter; exercised with pinned framework")
     import jax
     import jax.numpy as jnp
     from metta_training.environment import EnvironmentContext

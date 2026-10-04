@@ -1,5 +1,34 @@
 # Softmax Coworld Classic 1v1 training
 
+## Closer CI audit: task failures fixed;13 failures reproduce on untouched main
+
+Standard full run before repair:1015passed,51failed,5skipped,23subtests.
+Isolated detached `/tmp/relh-generals-closer-main-audit` at origin/main1a59cc3
+reproduces EXACTLY13 of those failures (116passed), in unchanged Sentinelv3-v5,
+Softmax websocket shutdown and macOS /proc-dependent arena/probe tests.
+Those files and dependency declarations are identical between branch and main;
+no other owner's Sentinel/arena work changed. Raw baseline log:
+`/tmp/relh-generals-closer-main-baseline.log`.
+
+Remaining38 task-specific failures addressed:26 continuation tests depended on
+Metta merely to inspect METTAL01;11 optional actual-framework cases were not
+marked optional;1 generic-engine fixture omitted Match._game after bypassing
+its constructor. New portable read-only validator checks complete header/count/
+payload and finite learning rate/momentum. It matches the PINNED actual trainer
+reader on35892's578860-parameter snapshot, preserving epoch1192/steps2499805184.
+12 standalone corruption/format tests plus28 continuation tests pass; optional
+reader parity is additionally checked with actual framework.
+
+Standard focused suite now64passed/15optional-framework skips. With pinned
+framework, affected integration subset51passed plus prior frozen suite10passed;
+no private training adapter check is claimed covered by dependency-free CI.
+Ruff on new modules/tests and diff check pass. All original failure/raw artifacts
+preserved. Current GitHub run37168439818 was started before latest fixes;
+inspect final/new head separately. No paid compute/deployment/champion change.
+Goal remains active: strong hosted play and next exploration experiment undone.
+Closer stays NOT READY until full assignment fulfilled; publish review-ready
+fork PR with honest existing-main failure evidence, leave unmerged.
+
 ## Closer audit closer-20261003-mbp-27: NOT READY; CI repair underway
 
 Full scope remains open:83k SPS and checked train/serve alignment demonstrated,

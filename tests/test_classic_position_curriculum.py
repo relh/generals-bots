@@ -74,6 +74,7 @@ def test_mixed_reset_is_deterministic_and_keeps_fresh_maps(tmp_path):
 
 
 def test_selfplay_recycles_into_valid_public_curriculum_observations(tmp_path):
+    pytest.importorskip("metta_training", reason="Optional private training adapter; exercised with pinned framework")
     from metta_training.environment import EnvironmentContext
 
     from integrations.metta_puffer import BatchedGeneralsSelfPlayPufferEnvironment
@@ -111,6 +112,7 @@ def test_selfplay_recycles_into_valid_public_curriculum_observations(tmp_path):
 
 
 def test_population_evaluation_disables_training_start_pool(tmp_path):
+    pytest.importorskip("metta_training", reason="Optional private training adapter; exercised with pinned framework")
     from integrations import evaluate_spatial_population as evaluation
 
     build = tmp_path / "build.json"

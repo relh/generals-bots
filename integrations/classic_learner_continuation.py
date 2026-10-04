@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 def load_continuation(manifest_path, additional_steps):
-    from metta_training.learner import LearnerCheckpoint
+    from integrations.learner_checkpoint import LearnerCheckpoint
 
     if additional_steps not in (8_388_608, 33_554_432, 268_435_456):
         raise ValueError("Continuation requires a bounded additional-step budget")

@@ -15,7 +15,7 @@ from integrations.spatial_frozen_sampling import frozen_action_indices
 
 @pytest.mark.parametrize("workers", [1, 4, 8])
 def test_single_frozen_match_accepts_population_worker_metadata(tmp_path, monkeypatch, workers):
-    pytest.importorskip("metta_training.environment")
+    pytest.importorskip("metta_training")
     from integrations import spatial_selfplay as module
 
     (tmp_path / "build.json").write_text(json.dumps({

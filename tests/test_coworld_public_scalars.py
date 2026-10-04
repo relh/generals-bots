@@ -9,6 +9,7 @@ from integrations.softmax.neural_codec import encode_wire_observation, training_
 
 @pytest.mark.parametrize("height,width", [(18, 21), (21, 18), (19, 20), (21, 21)])
 def test_public_scalar_wire_training_prefix_and_ablation(height, width, tmp_path):
+    pytest.importorskip("metta_training", reason="Optional private training adapter; exercised with pinned framework")
     from metta_training.environment import EnvironmentContext
     from integrations.metta_puffer import GeneralsPufferEnvironment
 

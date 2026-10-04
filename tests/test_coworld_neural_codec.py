@@ -22,6 +22,7 @@ from integrations.softmax.neural_codec import encode_wire_observation, training_
 
 @pytest.mark.parametrize("height,width", [(18, 21), (21, 18), (19, 20), (21, 21)])
 def test_calibrated_context_wire_matches_training_and_preserves_teacher_actions(height, width, tmp_path):
+    pytest.importorskip("metta_training", reason="Optional private training adapter; exercised with pinned framework")
     from metta_training.environment import EnvironmentContext
 
     from integrations.metta_puffer import GeneralsPufferEnvironment
@@ -91,6 +92,7 @@ def test_coworld_wire_view_matches_padded_training_view():
     grid[2, 2] = -2
     padded = np.pad(grid, ((0, 21 - height), (0, 21 - width)), constant_values=-2)
     match = Match.__new__(Match)
+    match._game = game  # This fixture intentionally uses the generic engine.
     match.state = game.create_initial_state(jnp.asarray(grid))
     match.height, match.width = height, width
     match.last_move_executed = [None, None]
