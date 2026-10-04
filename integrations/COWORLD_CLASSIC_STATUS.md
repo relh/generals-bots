@@ -1,5 +1,27 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35891 recovery verified; retry ready without external srun observers
+
+Archive-only maintenance35891 COMPLETED0:0, no GPU, requested1CPU/1GiB/5min.
+Nice2147483645/Priority1 before and after, unchanged; no escalation.
+S3 `relh/generals-35890-recovery-20261004T003011Z-1bc68873` verified locally:
+204968717 bytes, SHA f15c76812f656d57b042ee0cd895efe3bd9e2b21b756dcc824dcb33820cbbe88.
+Source/results retained at `/tmp/relh-generals-portable-result-35890`.
+Exact gate completed512 self-match games,250W262L0D,325 unique initial maps;
+this is sampler validation, not improvement evidence. Migration retained all
+policy/momentum/clocks, new8192 connections zero, no new training steps.
+
+Retry reuses frozen audited inputd863037 and image66660f4b; updated host launcher
+5d5e306 emits phase markers. No additional srun monitoring steps permitted.
+Only verified inactive35890 container may retire; its source/results remain.
+Fresh full queue: other35889/35875/35874, no Generals; B300 all8 GPUs idle,
+no compute processes,1.2TiB free,54364 inodes before owned-container retirement.
+B300 justified by measured parent202092MiB peak; no paid allocation.
+Only redundant input/image transport archives were removed after full S3 GET
+hash verification and preserved expanded inputs/image references; protected
+history and all result archives untouched. Local recovery fully verified.
+Goal remains active; previous hosted Daveey9/32 wins is below acceptance.
+
 ## 35890 FAILED125: observer caused a phase barrier; retained results recovery
 
 35890 ended00:17:45UTC,FAILED125:0, Nice2147483645/Priority1 unchanged.
