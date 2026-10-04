@@ -1,5 +1,53 @@
 # Softmax Coworld Classic 1v1 training
 
+## Recovery35894 completed; temperature2 candidate rejected for scaling
+
+Job35894 COMPLETED0:0 at2026-10-04T03:54:22 UTC, runtime11m34s onmetta1
+RTX4090 UUIDGPU-e3744200-da98-82f8-430c-c055a0a2d364. Nice2147483645/
+Priority1 unchanged. Smoke256/256legal,finite rewards; recovered4096-game panel
+completed108.474seconds (evaluation wall time, NOT training SPS). Observed GPU
+memory5858MiB/utilization66%; image transfer dominated startup548.709seconds
+for6900146176bytes. No contention observed. Controller96874 and collector39320
+terminal; fresh squeue had no35894 steps and physical GPU had no compute process.
+No owned GPU/CPU job, monitor, hosted request or paid node remains running.
+
+Verified archive5329637bytes,SHA256
+3718d32c45523389df55efd462febb02cee89e6096d04c471130b74b5f117d83,
+/tmp/relh-generals-portable-result-35894/results.tar.gz. Terminal receipt
+/tmp/relh-generals-panel-recovery-f0ccd1de.receipt.json and verified collection
+/tmp/relh-generals-35894-collected.txt retained. Original35893 data unchanged.
+Recovery used the same2593 unique initial states/maps,sides,opponents and seeds;
+paired comparison validation passed against all three completed panels.
+
+Original cold parent2742W1324L30D/4096. Hot initialization2680W1384L32D,
+mid2709W1354L33D,final2715W1355L26D. Final vs original signed-score delta
+-0.01416015625,95%map-clusterCI[-0.0468035321,+0.0186278970]. Midpoint likewise
+inconclusive/negative point estimate. The apparent improvement over the weaker
+hot initialization did NOT establish improvement over the qualified original.
+Reject35893 for longer scaling,promotion or a strong-play claim. Preserve its
+checkpoint/optimizer for diagnosis; no hosted publication made. Latest hosted
+strength remains9/32againstDaveey,18/32againstincumbent.
+
+Additional READ-ONLY exploration diagnosis: on nine public fatal states,T2
+minimum rescue probability5.61e-16 still effectively excludes those actions.
+Experimental legal-maximum log-gap compression atscale4 raises that diagnostic
+minimum to1.15e-5 with mean top probability0.817(vsT2 0.803),but no defensive
+argmax is fixed. Small matched16-game CPU diagnostic:scale4 5W11L,scale8 7W9L,
+original9W7L. Both initial arrays verified identical. This is NOT a qualified
+sampler or strength evidence. Artifacts /tmp/relh-generals-log-gap-cpu-panels,
+/tmp/relh-generals-portable-result-35892/log-gap-exploration-diagnostic.json.
+Smooth all-action centering was also diagnosed and spreads mass more broadly;
+no implementation or training claim. CPU handle46336 terminal. Next investigate
+trainable rare-action exploration with exact native/serving gradients and a
+viability gate before any more training; do not simply extend rejectedT2.
+
+Recovery commit19faae2 CI run37174299493:1078passed,17skipped,23subtests;
+8failures =7unchangedSentinel plus unchangedSoftmax wrong/duplicate connection
+shutdown (also reproduced in untouched-main baseline log). No new recovery
+failure. Source and all proof retained; no other-owner fixes absorbed.
+CLOSER_NOT_READY closer-pass3-20261003-mbp-27; strong meaningful play remains
+unmet despite~78k trainingSPS and passed native/serving parity.
+
 ## Live recovery35894 on RTX4090; only missing panel, no training
 
 After CPU/source/input/image/lifecycle audits and fresh full queue/physical
