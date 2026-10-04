@@ -78,6 +78,20 @@ TRAIN_ENV = dict(
 )
 
 
+def training_geometry():
+    """Read the actual rollout dimensions; never inflate SPS using a parent batch."""
+    overrides = json.loads((OUT / "config.json").read_text())["overrides"]
+    names = {"parallel_games": "vec.total_agents", "horizon": "train.horizon",
+             "minibatch": "train.minibatch_size"}
+    values = {name: overrides[key] for name, key in names.items()}
+    if any(isinstance(v, bool) or not isinstance(v, int) or v <= 0 for v in values.values()):
+        raise ValueError("Training geometry requires positive integer dimensions")
+    values["steps_per_epoch"] = values["parallel_games"] * values["horizon"]
+    if values["steps_per_epoch"] % values["minibatch"]:
+        raise ValueError("Training minibatch must divide the complete rollout")
+    return values
+
+
 def allocated_gpu():
     from integrations.slurm_s3_job import allocated_gpu_identity
 
@@ -238,7 +252,7 @@ def command(module, *args, name, seconds=600, train=False):
                     from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
 
                     times = completed_epoch_times(text)
-                    sps = interval_sps(times, span=2, steps_per_epoch=8192 * 256)
+                    sps = interval_sps(times, span=2, steps_per_epoch=training_geometry()["steps_per_epoch"])
                     if max(times, default=0) >= 3 and sps is not None and sps < 30_000:
                         process.terminate()
                         raise RuntimeError("Sustained end-to-end training SPS below 30000")
@@ -466,7 +480,7 @@ def train():
     from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
 
     times = completed_epoch_times(text)
-    sps = interval_sps(times, span=2, steps_per_epoch=8192 * 256)
+    sps = interval_sps(times, span=2, steps_per_epoch=training_geometry()["steps_per_epoch"])
     if sps is None or sps < 30_000:
         raise ValueError("Measured end-to-end training interval failed the SPS gate")
     (OUT / "training-audit.json").write_text(
@@ -475,9 +489,7 @@ def train():
                 environment_steps=STEPS,
                 starting_agent_steps=starting_steps(),
                 ending_agent_steps=starting_steps() + STEPS,
-                parallel_games=8192,
-                horizon=256,
-                minibatch=8192,
+                **training_geometry(),
                 replay_ratio=0.5,
                 steady_sps=sps,
                 epoch_uptime=times,
@@ -566,7 +578,7 @@ def midpoint_checkpoint_steps(start, additional_steps):
     interval = config["overrides"]["base.checkpoint_interval"]
     if isinstance(interval, bool) or not isinstance(interval, int) or interval <= 0:
         raise ValueError("Expected a positive checkpoint epoch interval")
-    if abs(selected - requested) > interval * 8192 * 256 // 2:
+    if abs(selected - requested) > interval * training_geometry()["steps_per_epoch"] // 2:
         raise FileNotFoundError("No retained checkpoint within half a save interval of midpoint")
     (OUT / "midpoint-selection.json").write_text(json.dumps(dict(
         requested_agent_steps=requested, selected_agent_steps=selected,

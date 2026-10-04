@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## Clarification pass: fixed rollout-dependent SPS and checkpoint spacing
+
+Auditing the single-H100 fallback exposed hardcoded8192*256 batch dimensions
+in the portable pilot's live/final throughput gate and midpoint tolerance.
+Changed these paths to read positive integer agents,horizon,minibatch from the
+actual run configuration and reject partial minibatches. Training receipts now
+record actual steps_per_epoch. Default8192-game behavior remains verified.
+Regression:2048games/horizon256 over two epochs in40seconds correctly reports
+26214.4SPS (fails30k); old parent dimensions would have falsely reported104857.6.
+Smaller rollout also rejects a checkpoint outside its actual half-save interval.
+
+Focused standard24passed/1optional-framework skip/2subtests; pinned framework
+25passed/2subtests. Retained real35892/35893 logs reproduce previous measured
+83326.1284/78001.6365SPS exactly with the new configuration-based calculation.
+Proof /tmp/relh-generals-geometry-retained-runs-proof.json;
+logs /tmp/relh-generals-h100-geometry-tests.log and -pinned-tests.log.
+
+Further H100 readiness gap is explicit: prepare_run requires identical training
+overrides and learner.epoch*batch_steps==learner.agent_steps. Reducing games
+alone cannot resume the current optimizer checkpoint. A deliberate copied-state
+migration with preserved policy/momentum and audited counters is needed before
+reduced-memory training, then SM90 image and real GPU/SPS qualification. No
+checkpoint rewritten, optimizer reset, allocation or spend. Existing frozen
+7d069d0 B300 input remains intact and independently qualified.
+
+Fresh B300 storage remains49683free inodes vs60000required; no owned job/GPU
+process. No Metta merge or production deployment is being awaited. Work and
+remaining scientific proof stay on this fork branch/PR4. No winning claim:
+latest Daveey score9/32. CLOSER_NOT_READY closer8-clarify-mbp-27.
+
 ## Hour0 closer: funded access verified; cleanup ownership and memory gates checked
 
 Read-only service-token access to official Autoresearch/default works; all4

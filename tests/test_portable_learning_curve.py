@@ -84,7 +84,7 @@ class LearningCurveTests(unittest.TestCase):
         checkpoints.mkdir(parents=True)
         for epoch in epochs:
             (checkpoints / f'{epoch * 2097152:016d}.bin').write_bytes(b'fixture')
-        (root / 'config.json').write_text(json.dumps({'overrides': {'base.checkpoint_interval': interval}}))
+        (root / 'config.json').write_text(json.dumps({'overrides': {'base.checkpoint_interval': interval, 'vec.total_agents': 8192, 'train.horizon': 256, 'train.minibatch_size': 8192}}))
         return root
 
     def test_resumed_pilot_midpoint_between_save_boundaries(self):
