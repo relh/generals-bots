@@ -1,5 +1,37 @@
 # Softmax Coworld Classic 1v1 training
 
+## Hour0 closer: funded access verified; cleanup ownership and memory gates checked
+
+Read-only service-token access to official Autoresearch/default works; all4
+listed nodes are stopped and belong to other task scopes. No node created,
+woken, modified or stopped; no spend/reservation/billing changes. Token stayed
+private in executor environment; file mode0600. Existing shared100USD ledger
+has outstanding reservations, so its historical balance is not free budget.
+
+Fresh Slurm check: no Generals job or physical B300 GPU process; B200 drained.
+B300 /tmp49683 free inodes vs60000required; root filesystem4.0GiB free.
+Cleanup inspection found old owned-task roots35893/35890/35876/35873 now owned
+by ec2-user UID1000,mode0700; current SSH identity is relh UID1002 and directory
+inspection is denied. No identity switching, sudo, deletions or permission
+changes attempted. Site Pyxis still uses/tmp for Enroot and filters path
+overrides; free/dev/shm capacity alone does not bypass this established policy.
+
+The qualified8192-game training geometry measured210278MiB GPU memory.
+The permitted single-H100 fallback needs reduced-geometry and SM90 image,
+lifecycle and throughput qualification before reservation/allocation; current
+B300 readiness is not H100 readiness. Credentials are not the blocker.
+Immediate path: authorized owner restores sufficient/tmp inodes for the
+already-qualified B300 pilot; alternative is the explicit H100 requalification.
+Preserve all archived checkpoints/results and protected history.
+
+CI at aec8409 completed:37177672522 has1115passed/7failed;
+37177670061 has1097passed/7failed; both17skipped/23subtests. Exactly the seven
+Sentinel baseline failures independently reproduced on untouched origin/main;
+those source/tests still have no branch diff. No new task-specific failures.
+PR4 open/unmerged; winning goal remains incomplete (latest Daveey9/32).
+Audit /tmp/relh-generals-log-gap-image-proof-r2/closer-hour0-access-audit.json.
+CLOSER_NOT_READY closer8-hour0-mbp-27.
+
 ## Follow-up: launch budget audited; storage gate persists
 
 Fresh full queue/physical check again found no owned job or GPU process,
