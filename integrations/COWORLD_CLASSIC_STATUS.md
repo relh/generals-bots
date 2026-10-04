@@ -1,5 +1,33 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35892 hosted64 screen active; no GPU held
+
+Registered policy64649097-765f-4706-8310-910e57067a34,
+`relh-classic-radius2-35892-final`, imageimg_5d9dcc4c-2774-420a-afaf-74e3ce455a65.
+Docker layer transfer exit1 was followed by the existing verified registry
+manifest commit/readback, image ready and policy registration; no duplicate.
+Local image95470a2393954d99638888a452067af46e16ab42373c81e413438731ad7d1628.
+Both hosted smoke requests completed without failures; screen expands to32
+per opponent, balanced seats. Requests:
+smoke relh0 xreq_7f7166a9-5cfb-4133-88a7-e43b49f1a11f;
+smoke relh1 xreq_96b666e9-0c38-4abe-bb93-16eb242a96af;
+panel relh0 xreq_5a3830d6-15d1-45c3-b39b-f7dd3ff481ef;
+panel relh1 xreq_16fa4ad8-575a-467b-85eb-bc54b4f49819;
+panel Daveey0 xreq_a5ccdc07-3e90-4857-bc09-252713d5cc01;
+panel Daveey1 xreq_853c9820-54d0-490a-a415-fd1d0c399eb5.
+Watcher37665; finalizer/replay audit41323. Inspect these receipts before any
+resubmission. No champion change. No128-game confirmation yet.
+
+Training console explicitly confirms33554432 actions,illegal0. New diagnostic
+`/tmp/relh-generals-portable-result-35892/exploration-audit.json` finds the nine
+failed public states have mean action entropy.328 nats and rescue probabilities
+as low as~1e-31. Counterfactually dividing all acting logits including priors
+by10 raises mean entropy3.989 and rescue mass~.0007-.0202. This is an exploration
+hypothesis, not trained improvement or game strength. No sampler changed.
+Earlier archived teacher-based entropy experiments are not the current spatial
+policy; prior35854 counterfactual temperature finding is acknowledged, not new
+proof. Wait for actual hosted outcome before deciding the next controlled recipe.
+
 ## 35892 complete:83.3k SPS, inconclusive local gain; diagnostic hosted screen
 
 35892 COMPLETED0:0,00:47:54->01:16:11UTC October4. Nice2147483645/Priority1
