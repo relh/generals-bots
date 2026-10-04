@@ -7,6 +7,16 @@ import json
 from pathlib import Path
 
 
+def verify_factory_source(parent, source):
+    """Reject accidental generic-factory substitution before any model build."""
+    manifest = json.loads((Path(parent) / "bundle/spatial-policy.json").read_text())
+    expected = manifest.get("factory_source_sha256")
+    actual = hashlib.sha256(Path(source).read_bytes()).hexdigest()
+    if expected != actual:
+        raise ValueError("Continuation factory source differs from the frozen checkpoint; preserve its pinned source")
+    return actual
+
+
 def load_continuation(manifest_path, additional_steps):
     from integrations.learner_checkpoint import LearnerCheckpoint
 

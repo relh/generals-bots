@@ -1,5 +1,47 @@
 # Softmax Coworld Classic 1v1 training
 
+## Temperature2 CPU/input/image qualification complete; no GPU submitted yet
+
+Exact image NVCC compilation completed. Audit then exposed missing /recovery
+in the LOCAL harness, not the Slurm runner (which mounts it). Retained compiled
+binary and all generated CUDA/config artifacts are byte-identical to the prior
+qualified radius2 build; no recompilation or binary rewriting used in recovery.
+Binary SHA5f2be8d57ecaa1e72bcab280c68dda022a7601f9fde237ae5a98197bd98d7ea3.
+Corrected mount allowed metadata publication and native prepare_run to pass.
+Recovered proof `/tmp/relh-generals-temperature2-image-proof-r2/recovery-proof/audit.json`:
+policy f4ef5616..., learner1c4832d6...,578860parameters,2499805184steps,
+optimizer bytes preserved exactly,9 finite public states and legal frozen actions.
+All local image-audit containers terminal; stopped serving retention remains.
+
+A REAL staging mistake was also caught: copying every tracked source replaced
+archived factory5221cd60... with generic checkoute8f6c596... (a12-channel guard
+change), invalidating the model fingerprint. New immutable input-v2 restores
+exact parent-pinned factory and records its explicit source override. Original
+input/archive/failure logs preserved. Added early verify_factory_source guard
+before portable continuation builds;36 tests pass including generic-factory
+rejection. Do not silently rewrite parent manifests to accept another factory.
+
+Qualified input `/tmp/relh-generals-portable-temperature2-input-v2`, frozen
+revision2895e9c plus explicit pinned factory override,1131members/224178944
+unpacked bytes. Archive207722426bytes, SHA256
+bb86e05f7c51acacab9573a6848d290bceb966af2a66334566cad21db00ac7a9.
+Extraction, all hashes and repeated staged pool/reset audit pass. Readiness:
+`/tmp/relh-generals-temperature2-cpu-readiness.json`, assembled by
+`/tmp/relh-generals-assemble-temperature2-readiness-v2.py`. Current host's new
+factory guard additionally validates this exact frozen input; the already
+qualified frozen trainer remains source2895e9c, not falsely relabeled as HEAD.
+
+Updated LOCAL serving image336186b636f18b6071168ced73cb9d3b462a72221b559a6f9cea9822a352c877
+uses current sampler/parser.46golden top actions match, maxprobability gap2.414e-6;
+32/32wire replies legal,max77.5mslocalqemu (not production latency). Proof:
+`/tmp/relh-generals-serving-base-temperature2/proof.json`. No hosted publication.
+
+Next one finite maximumNice/Priority1 Slurm pilot only after fresh queue,
+physical allocation and credentials checks. Same-job512-game sampler gate must
+pass before33M continuation; new steady training SPS>=30k and dual-parent
+held-out comparisons remain required. No paid compute/deployment/merge.
+CLOSER_NOT_READY closer-pass2-20261003-mbp-27; strong hosted wins still unproven.
+
 ## Temperature2 qualification in progress; pass-two closer remains NOT READY
 
 Frozen local input source2895e9cea4d0c86d6361cb102d23aa88b44688a6 at

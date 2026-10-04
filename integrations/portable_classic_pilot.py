@@ -98,8 +98,9 @@ def starting_steps():
 def prepare_configs(parent=PARENT, output=OUT):
     continuation = os.environ.get("GENERALS_PILOT_CONTINUATION_MANIFEST")
     if continuation:
-        from integrations.classic_learner_continuation import load_continuation
+        from integrations.classic_learner_continuation import load_continuation, verify_factory_source
 
+        verify_factory_source(Path(continuation).parent / "parent", Path(__file__).with_name("generals_fabric.py"))
         parent, build, run, resume = load_continuation(continuation, STEPS)
         options = build["python_environment"]["options"]
         # Validate the same potential objective without scaling it twice.
