@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35890 FAILED125: observer caused a phase barrier; retained results recovery
+
+35890 ended00:17:45UTC,FAILED125:0, Nice2147483645/Priority1 unchanged.
+No training began. Exact host log: sampling_gate failed with "Remote step
+completion not confirmed"; finalization retained scratch without archiving.
+Root cause was THIS agent's added startup srun observer6378: it waited for the
+next train phase while the launcher waited for every numbered step (including
+that observer) to retire. The job then terminated the observer143. This was a
+monitoring mistake, not evidence the wider policy failed to learn.
+
+Controller90346 captured terminal receipt; collector67801 failed because no S3
+manifest had been published. Original collector log is retained. All GPUs are
+now idle; scratch `/tmp/relh-generals-35890` is retained,UID1000/mode0700.
+Normal relh SSH can read the batch log but cannot enter owned Slurm scratch;
+normal ec2-user SSH was rejected. No admin/sudo/identity change attempted.
+
+REMOVE cross-phase srun observers entirely. Monitor host STEP_START/STEP_DONE
+markers and S3 results; the launcher now emits these markers. Never weaken the
+all-step completion barrier or archive while a step could still be writing.
+No retry training until original artifacts are recovered and exact gate output
+inspected. Current status of sampling gate beyond its phase end awaits recovery.
+
+Implemented a narrow archive-only maintenance helper with original terminal
+receipt/owner/path/live-job/live-step checks, exclusive recovery output guards,
+no workload restart and no cleanup.32 CPU tests plus12 subtests passed,
+including active observers, upload failure, and preserved original checkpoint.
+Next is one tiny CPU-only owned-result transfer (no GPU, one CPU, finite5min,
+maximum Nice) through sandbox S3, consistent with the authorized small CPU
+maintenance exception. No CPU-heavy Slurm computation or GPU resubmission.
+Recover to a NEW S3 key; retain original source/results and failed-container
+root until remote archive verification. Free inodes~54372; a future pilot must
+retire only verified owned35890 container before its60k inode gate.
+
 ## 35890 RUNNING: one bounded wider-context pilot, maximum Nice
 
 Submitted exactly one job after complete CPU/image/serving and lifecycle gates:

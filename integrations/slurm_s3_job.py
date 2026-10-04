@@ -304,6 +304,7 @@ class SlurmJob:
         mounts = f"{self.root}:/work"
         if self.config.get("mount_recovery"):
             mounts += f",{self.root}/input/recovery:/recovery:ro"
+        print(f"STEP_START {name} budget_seconds={seconds}", flush=True)
         command = ["srun", f"--nice={NICE}", "--nodes=1", "--ntasks=1", "--gres=gpu:1",
                    "--kill-on-bad-exit=1", "--unbuffered",
                    f"--container-image={image}",
@@ -327,12 +328,14 @@ class SlurmJob:
             # Keep the Popen reference until finalization confirms remote steps.
             if code:
                 raise subprocess.CalledProcessError(code, [name])
-        # A successful srun can precede controller retirement of its step or
-        # a bounded read-only observer. Keep the same fail-closed grace used
-        # before archiving; the completed process is never terminated here.
+        # A successful srun can precede controller retirement of its step.
+        # Do not attach external srun observers: they
+        # participate in this barrier and can prevent the next phase starting.
+        # Monitor these host-log markers and retained results instead.
         if not self.stop_and_wait():
             raise RuntimeError("Remote step completion not confirmed")
         self.process = None
+        print(f"STEP_DONE {name}", flush=True)
 
     def steps_stopped(self):
         if not self.step_started:
