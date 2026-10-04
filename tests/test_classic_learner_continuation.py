@@ -42,7 +42,7 @@ class ContinuationTests(unittest.TestCase):
                     )
                 )
             ),
-            config=dict(seed=8842, overrides={"train.gamma": 0.999, "train.learning_rate": 0.0002}),
+            config=dict(seed=8842, overrides={"train.gamma": 0.999, "train.learning_rate": 0.0002, "vec.total_agents": 8192, "train.horizon": 256}),
         )
         training = self.parent / "run/training.json"
         training.write_text(json.dumps(record))
@@ -100,6 +100,31 @@ class ContinuationTests(unittest.TestCase):
         self.write_manifest()
         with self.assertRaisesRegex(ValueError, "isolated bounded"):
             load_continuation(self.manifest, 33_554_432)
+
+    def test_continuation_accepts_completed_smaller_rollout_clock(self):
+        training = self.parent / "run/training.json"
+        record = json.loads(training.read_text())
+        record["config"]["overrides"]["vec.total_agents"] = 2048
+        training.write_text(json.dumps(record))
+        state = bytearray(self.state.read_bytes())
+        struct.pack_into("<Q", state, 8, self.steps // (2048 * 256))
+        self.state.write_bytes(state)
+        for key, path in (("run_sha256", training), ("state_sha256", self.state)):
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            self.identity[key] = self.data[key] = digest
+        Path(str(self.state) + ".json").write_text(json.dumps(self.identity))
+        self.write_manifest()
+        _, _, run, receipt = load_continuation(self.manifest, 8_388_608)
+        self.assertEqual(receipt["starting_agent_steps"], self.steps)
+        self.assertEqual(run["overrides"]["vec.total_agents"], 2048)
+        struct.pack_into("<Q", state, 8, self.steps // (8192 * 256))
+        self.state.write_bytes(state)
+        digest = hashlib.sha256(state).hexdigest()
+        self.identity["state_sha256"] = self.data["state_sha256"] = digest
+        Path(str(self.state) + ".json").write_text(json.dumps(self.identity))
+        self.write_manifest()
+        with self.assertRaisesRegex(ValueError, "counters"):
+            load_continuation(self.manifest, 8_388_608)
 
     def test_corrupted_optimizer_is_rejected(self):
         self.state.write_bytes(self.state.read_bytes()[:-1] + b"\xff")

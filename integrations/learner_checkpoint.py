@@ -22,7 +22,10 @@ class LearnerCheckpoint:
 
     @classmethod
     def read(cls, path: Path, parameter_count: int) -> 'LearnerCheckpoint':
-        data = path.read_bytes()
+        return cls.from_bytes(path.read_bytes(), parameter_count)
+
+    @classmethod
+    def from_bytes(cls, data: bytes, parameter_count: int) -> 'LearnerCheckpoint':
         if len(data) < LEARNER_HEADER.size:
             raise ValueError('Learner checkpoint header is truncated')
         magic, epoch, steps, count, rate = LEARNER_HEADER.unpack_from(data)

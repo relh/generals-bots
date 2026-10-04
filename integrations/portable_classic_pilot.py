@@ -93,6 +93,10 @@ def training_geometry():
 
 
 def allocated_gpu():
+    if os.environ.get("GENERALS_COMPUTE_PROVIDER") == "autoresearch":
+        from integrations.autoresearch_gpu import identity
+
+        return identity()["uuid"]
     from integrations.slurm_s3_job import allocated_gpu_identity
 
     return allocated_gpu_identity()["uuid"]
@@ -118,6 +122,15 @@ def prepare_configs(parent=PARENT, output=OUT):
         verify_factory_source(Path(continuation).parent / "parent", Path(__file__).with_name("generals_fabric.py"))
         parent, build, run, resume = load_continuation(continuation, STEPS)
         options = build["python_environment"]["options"]
+        requested_games = int(os.environ.get("GENERALS_PILOT_PARALLEL_GAMES", options["parallel_games"]))
+        if requested_games != options["parallel_games"]:
+            if requested_games != 2048 or options["parallel_games"] != 8192 or STEPS != 8_388_608:
+                raise ValueError("Changed rollout requires the bounded 8M 8192-to-2048 qualification")
+            options["parallel_games"] = requested_games
+            build["python_environment"]["spec"]["agents"] = requested_games
+            run["overrides"]["vec.total_agents"] = requested_games
+            run["initialize"]["migrate_classic_rollout"] = True
+            resume["rollout_migration"] = "classic_8192_to_2048"
         # Validate the same potential objective without scaling it twice.
         unscaled = dict(options, reward_scale=1.0)
         bound = configure_reward_scale(unscaled, options["reward_scale"])
@@ -264,7 +277,12 @@ def command(module, *args, name, seconds=600, train=False):
 def smoke():
     from integrations.slurm_s3_job import verify_allocated_gpu_idle
 
-    identity = verify_allocated_gpu_idle()
+    if os.environ.get("GENERALS_COMPUTE_PROVIDER") == "autoresearch":
+        from integrations.autoresearch_gpu import verify_idle
+
+        identity = verify_idle()
+    else:
+        identity = verify_allocated_gpu_idle()
     (OUT / "gpu-preflight.json").write_text(json.dumps(identity, indent=2) + "\n")
     import jax
 

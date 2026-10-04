@@ -1,5 +1,44 @@
 # Softmax Coworld Classic 1v1 training
 
+## H100 continuation implemented; real optimizer migration and SM90 CPU proof pass
+
+Explicit migrate_classic_rollout admits only8192->2048 parallel games with
+unchanged horizon256,minibatch8192,replay0.5,seed,constant learning rate and
+zero entropy coefficient. Restricted to the qualified memoryless Classic
+model/device environment. prepare_run still verifies original policy, optimizer
+and training-record hashes before migration; original files never rewritten.
+Only the METTAL01 epoch uint64 changes:1192->4768 at2499805184agent steps.
+All other bytes, including learning rate and578860 momentum entries, unchanged.
+Migration identity is recorded in initialization.json; subsequent2048-game
+continuation uses its recorded rollout clock. Pilot admission is bounded8M.
+
+Real source optimizer1c4832d6... migrated to
+b7ea14edd850275f3e156390621e1b70c81a5e7691c0f0c0ba1653140ee92b97;
+momentum SHA c2e620e7c697f310a4fc1faad812bcdd87dc6404df0ec755894c9291b0f5abc3.
+Policy f4ef5616... unchanged. Local proof
+/tmp/relh-generals-h100-migration-checkpoint-proof/proof.json.
+Exact pinned CUDA13/JAX image compiled SM90 trainer on CPU, native binary
+4a148d1b96e342f386dab7d73e0570375feb91982601cdc45d7301a7566e3edd.
+cuobjdump confirms two sm_90 cubins. Actual prepare_run restores migrated
+optimizer and original policy, target2508193792steps,9finite/legally sampled
+public states atT1/log-gap4. CPU-only evidence retained in
+/tmp/relh-generals-h100-migration-image-proof/out/audit.json and migration.json;
+no GPU throughput or learning claim. CPU build handle40388 terminal.
+
+Added explicit funded-provider GPU identity (one H100, reject occupied device)
+and a bounded qualification wrapper preserving output under GMN_OUTPUT_DIR.
+It never submits/retries/buys compute. Every step owns a new process group;
+timeout/signal cleanup waits for its leader and stops remaining descendants
+before result capture. No fake Slurm assignments. Existing Slurm path unchanged.
+Focused suite77passed/2subtests; actual timeout/signal/writer lifecycle tests pass.
+Final package/image binding and platform result-capture audit remain before GPU.
+
+Official free job validation quotes2.97USD maximum runtime for one H100/60min;
+not a reservation or allocation. Shared ledger unchanged. No paid smoke, live
+Generals Slurm job or paid resource. Reservation must include final source/image
+binding and remain within the shared budget. Still required: H100 GPU memory,
+SPS>=30000,learning and strong hosted play. CLOSER_NOT_READY closer8-hour1-mbp-27.
+
 ## Clarification pass: fixed rollout-dependent SPS and checkpoint spacing
 
 Auditing the single-H100 fallback exposed hardcoded8192*256 batch dimensions

@@ -565,6 +565,7 @@ class CheckpointInitialization(Configuration):
     restore_horde: bool = False
     restore_rnd: bool = False
     restore_learner: bool = False
+    migrate_classic_rollout: bool = False
 
 
 class RunConfig(Configuration):
@@ -629,6 +630,7 @@ class InitializationRecord(Record):
     source: TrainingRecord
     checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     training_seeds: list[int] = Field(min_length=1)
+    rollout_migration: dict | None = None
 
 
 def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
@@ -795,6 +797,11 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     environment["METTA_RUN_RECORD"] = str(output / "training.json")
     if config.initialize:
         reference = config.initialize
+        if reference.migrate_classic_rollout and (
+            not reference.restore_learner or not reference.allow_environment_transfer
+            or reference.restore_ema or reference.restore_horde or reference.restore_rnd
+        ):
+            raise ValueError("Rollout migration requires only a device-resident learner resume")
         source_run = reference.run.resolve()
         checkpoint = reference.checkpoint.resolve()
         source = TrainingRecord.model_validate_json((source_run / "training.json").read_text())
@@ -887,7 +894,8 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
                 raise ValueError("Learner resume currently requires synchronous single-GPU training")
             if settings.getint("selfplay", "enabled", fallback=0):
                 raise ValueError("Learner resume requires opponent history recovery for self-play")
-            if source.config.overrides != config.overrides or source.config.seed != config.seed:
+            if (source.config.seed != config.seed
+                    or (source.config.overrides != config.overrides and not reference.migrate_classic_rollout)):
                 raise ValueError("Learner resume requires the identical native build, seed, and training overrides")
             state_path = Path(str(checkpoint) + ".learner")
             identity = LearnerCheckpointIdentity.model_validate_json(Path(str(state_path) + ".json").read_text())
@@ -910,6 +918,23 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             if initial_environments:
                 environment["METTA_INITIAL_ENVIRONMENT"] = str(output / "initial-policy.bin")
             learner = LearnerCheckpoint.read(state_path, len(initial_parameters) // 4)
+            if reference.migrate_classic_rollout:
+                target_env = manifest.config.python_environment
+                if (environment_count or not target_env or not target_env.device_resident
+                        or not target_env.options.get("coworld_classic")
+                        or target_env.options.get("teacher") is not None
+                        or target_env.options.get("teacher_rollouts")
+                        or not fabric or fabric.self_distillation or fabric.ema_prior
+                        or manifest.model_sha256 != "fd64a611cb6ba1d721ddf519e5b15f7b26e207cd8c045d10483b04bbe2217f85"):
+                    raise ValueError("Rollout migration requires the qualified memoryless Classic model")
+                from integrations.classic_rollout_migration import migrate_learner
+
+                initial_learner, audit = migrate_learner(
+                    initial_learner, len(initial_parameters) // 4,
+                    source.config.overrides, config.overrides,
+                )
+                initialization = initialization.model_copy(update={"rollout_migration": audit})
+                learner = learner.model_copy(update={"epoch": audit["target_epoch"]})
             if learner.epoch * batch_steps != learner.agent_steps or learner.agent_steps != int(checkpoint.stem):
                 raise ValueError("Learner snapshot counters differ from its checkpoint or rollout dimensions")
             if learner.agent_steps >= expected_step:

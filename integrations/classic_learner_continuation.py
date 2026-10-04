@@ -28,7 +28,7 @@ def load_continuation(manifest_path, additional_steps):
         raise ValueError("Unknown continuation schema")
     parent = manifest_path.parent / "parent"
     start = manifest["agent_steps"]
-    if not isinstance(start, int) or start <= 0 or start % (8192 * 256):
+    if not isinstance(start, int) or start <= 0:
         raise ValueError("Continuation must start at a complete rollout")
     checkpoint = parent / f"run/checkpoints/metta_generals/run/{start:016d}.bin"
     paths = {
@@ -45,9 +45,13 @@ def load_continuation(manifest_path, additional_steps):
     if any(identity[key] != manifest[key] for key in paths) or identity["environment_sha256"]:
         raise ValueError("Expected the verified device-resident learner snapshot")
     learner = LearnerCheckpoint.read(paths["state_sha256"], checkpoint.stat().st_size // 4)
-    if learner.agent_steps != start or learner.epoch * (8192 * 256) != start:
-        raise ValueError("Continuation counters differ")
     record = json.loads(paths["run_sha256"].read_text())
+    geometry = record["config"]["overrides"]
+    agents, horizon = geometry["vec.total_agents"], geometry["train.horizon"]
+    if agents not in (2048, 8192) or horizon != 256:
+        raise ValueError("Continuation rollout geometry is not qualified")
+    if learner.agent_steps != start or learner.epoch * agents * horizon != start:
+        raise ValueError("Continuation counters differ")
     build = record["build"]["config"]
     run = record["config"]
     options = build["python_environment"]["options"]
