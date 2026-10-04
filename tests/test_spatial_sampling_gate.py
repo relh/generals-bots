@@ -184,6 +184,16 @@ def test_continuation_qualifies_actual_sampler_without_obsolete_ablation(tmp_pat
     report["baseline_full_action_temperature"] = 10
     path.write_text(json.dumps(report))
     validate_sampling_gate(argv, environment)
+    environment["METTA_SPATIAL_LOG_GAP_SCALE"] = "4"
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report["candidate_log_gap_scale"] = 4
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report["baseline_log_gap_scale"] = 4
+    path.write_text(json.dumps(report))
+    validate_sampling_gate(argv, environment)
     # Keep the actual-policy viability threshold. A genuinely collapsed sampler
     # remains a failure even when restoring the optimizer.
     report["candidate_wld"] = [100, 404, 8]

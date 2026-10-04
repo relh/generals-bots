@@ -80,6 +80,10 @@ def rollout_probabilities(outputs, observations, legal, policy):
     if policy.doomed_attack_route_penalty:
         acting += public_doomed_attack_route_penalty(values, policy.doomed_attack_route_penalty, jnp)
     acting = acting / policy.full_action_temperature
+    if policy.log_gap_scale:
+        from integrations.spatial_exploration import log_gap_logits, public_action_mask
+
+        acting = log_gap_logits(acting, public_action_mask(values, jnp), policy.log_gap_scale, jnp)
     logits = jnp.where(jnp.asarray(legal[None, None, :]), acting, -jnp.inf)
     return np.asarray(jax.nn.softmax(logits)[0, 0])
 
@@ -109,6 +113,7 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
         "METTA_SPATIAL_SPLIT_TEMPERATURE": str(portable.split_temperature),
         "METTA_SPATIAL_ROUTE_HALF_WEIGHT": str(portable.route_half_weight),
         "METTA_SPATIAL_FULL_ACTION_TEMPERATURE": str(portable.full_action_temperature),
+        "METTA_SPATIAL_LOG_GAP_SCALE": str(portable.log_gap_scale),
         "METTA_SPATIAL_NEUTRAL_ROUTE_BIAS": str(portable.neutral_route_bias),
         "METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY": str(portable.weak_owned_route_penalty),
         "METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY": str(portable.doomed_attack_route_penalty),
@@ -167,7 +172,7 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
                       weak_owned_route_penalty=portable.weak_owned_route_penalty,
                       doomed_attack_route_penalty=portable.doomed_attack_route_penalty,
                       route_half_weight=portable.route_half_weight,
-                      full_action_temperature=portable.full_action_temperature)
+                      full_action_temperature=portable.full_action_temperature, log_gap_scale=portable.log_gap_scale)
         direct_logits = native_acting[index, :3529]
         rollout_logits = np.where(legal, direct_logits, -np.inf)
         native_prob = np.exp(rollout_logits - np.max(rollout_logits))

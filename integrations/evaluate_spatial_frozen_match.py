@@ -44,6 +44,7 @@ def main():
     parser.add_argument("--split-sampling-temperature", type=float,
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
     parser.add_argument("--full-action-temperature", type=float, default=1.0)
+    parser.add_argument("--log-gap-scale", type=float, default=0.0)
     parser.add_argument("--route-half-weight", type=float, default=0.0,
                         help="Fraction of the half head included in each route score")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
@@ -82,6 +83,11 @@ def main():
         raise ValueError("Nondefault temperature requires sampled or acting-greedy actions")
     from integrations.spatial_action_sampling import validate_full_action_temperature
 
+    from integrations.spatial_exploration import validate_log_gap_scale
+
+    validate_log_gap_scale(args.log_gap_scale)
+    if args.log_gap_scale and (args.split_sampling_temperature is None or args.sample_seed is None):
+        raise ValueError("Log gap exploration requires structured sampled actions")
     validate_full_action_temperature(args.full_action_temperature)
     if args.full_action_temperature != 1 and args.split_sampling_temperature is None:
         raise ValueError("Full action temperature requires structured sampling")
@@ -259,6 +265,13 @@ def main():
                     logits += jnp.asarray(public_doomed_attack_route_penalty(
                         np.asarray(values), args.doomed_attack_route_penalty, np))
                 logits = logits / args.full_action_temperature
+                if args.log_gap_scale:
+                    from integrations.spatial_exploration import log_gap_logits, public_action_mask
+
+                    public_mask = public_action_mask(jnp.asarray(values), jnp)
+                    if not np.array_equal(np.asarray(public_mask), legal):
+                        raise ValueError("Public exploration mask differs from environment")
+                    logits = log_gap_logits(logits, public_mask, args.log_gap_scale, jnp)
                 chosen = np.asarray(sample_flat_logits(
                     key, logits, jnp.asarray(legal),
                 ))
@@ -310,6 +323,7 @@ def main():
                   split_sampling_temperature=args.split_sampling_temperature,
                   route_half_weight=args.route_half_weight,
                   full_action_temperature=args.full_action_temperature,
+                  log_gap_scale=args.log_gap_scale,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
                   owned_split_bias=args.owned_split_bias,
@@ -330,6 +344,7 @@ def main():
                            early_route_turns=env._frozen.early_route_turns,
                            route_half_weight=env._frozen.route_half_weight,
                            full_action_temperature=env._frozen.full_action_temperature,
+                           log_gap_scale=env._frozen.log_gap_scale,
                            neutral_route_bias=env._frozen.neutral_route_bias,
                            weak_owned_route_penalty=env._frozen.weak_owned_route_penalty,
                            doomed_attack_route_penalty=env._frozen.doomed_attack_route_penalty)

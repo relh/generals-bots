@@ -82,6 +82,8 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
             if not chosen.any():
                 raise ValueError(f"No nonpass actions in {part}")
     policy = SpatialPlayerPolicy(bundle)
+    if policy.log_gap_scale and mode == "conditional_split":
+        raise ValueError("Conditional-split replay does not support coupled log-gap exploration")
     if policy.action_mode != "structured_sample" or policy.channels != 16:
         raise ValueError("Replay opponent requires the structured sixteen-plane Classic policy")
     if mode == "conditional_split" and route_temperature != policy.move_temperature:
@@ -112,6 +114,10 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
         if policy.doomed_attack_route_penalty:
             logits += public_doomed_attack_route_penalty(values, policy.doomed_attack_route_penalty, jnp)
         logits = logits / policy.full_action_temperature
+        if policy.log_gap_scale:
+            from integrations.spatial_exploration import log_gap_logits, public_action_mask
+
+            logits = log_gap_logits(logits, public_action_mask(values, jnp), policy.log_gap_scale, jnp)
         return jnp.where(masks, logits, -1e9)
 
     def cross_entropy(weights, observations, masks, actions):
@@ -214,6 +220,7 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
               "route_temperature": route_temperature, "split_temperature": policy.split_temperature,
               "route_half_weight": policy.route_half_weight,
               "full_action_temperature": policy.full_action_temperature,
+              "log_gap_scale": policy.log_gap_scale,
               "early_route_temperature": policy.early_route_temperature if mode == "conditional_split" else None,
               "early_route_turns": policy.early_route_turns if mode == "conditional_split" else None,
               "trainable_names": TRAINABLE_NAMES, "seed": seed, "history": history,

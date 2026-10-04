@@ -1,5 +1,49 @@
 # Softmax Coworld Classic 1v1 training
 
+## Opt-in log-gap exploration implemented; CPU behavior/gradient proof passes
+
+Added shared spatial_exploration primitives: reconstruct the legal3529-action
+mask from sixteen public planes, compress legal logit gaps with
+-c*log1p((legal_max-logit)/c), and apply its exact VJP including tied maxima.
+Invalid logits have finite placeholders and remain categorically masked.
+Scale0 preserves existing behavior. No teacher/rescue targets or hidden-state
+features were added; retained rescue masks are diagnostic labels only.
+
+Wired opt-in log_gap_scale through native rollout/PPO, frozen sampling,
+NumPy serving, export, sampling gates, audits and population records.
+Native tape retains pre-transform logits; values and value gradients are not
+scaled. Conditional-split replay explicitly rejects this coupled transform;
+legacy replay remains unchanged. Dockerfile.neural includes both new helper
+and context geometry. Pilot envGENERALS_LOG_GAP_SCALE binds export and gate,
+retains both exploratory and original parent comparisons. New paired
+GENERALS_EVAL_SEED/GENERALS_EVAL_SAMPLE_SEED overrides permit genuinely fresh
+panels when branching from the same parent counter.
+
+Public mask reconstruction matched55 retained public states exactly and
+four generated board-edge/fog cases. Integrated16-game CPU run checked24880
+mask rows against the engine with zero differences and reproduced the earlier
+prototype's exact maps,sides,outcomes:5W11L atscale4. This is viability diagnosis,
+NOT improved play. /tmp/relh-generals-log-gap-integrated-cpu contains full results.
+
+Actual578860-parameter native adapter proof on parent35892 atT1/log_gap_scale4:
+9 public states; maxnative/NumPy probability gap6.333e-7; maxparameter gradient
+gap vs independent full autodiff2.384e-7; value cotangents preserved.
+/tmp/relh-generals-log-gap-native-proof/proof.json records source/script hashes;
+raw log and script retained. Core tests cover tied maxima, masked larger
+logits, sole legal action, shift/rank invariance, invalid scales, full PPO chain,
+and frozen-sampler frequencies. Standard focused59passed/3optional-framework
+skips/2subtests; pinned-framework suite64passed/2subtests before the final
+standalone evaluation-seed test, which passed in the standard suite. Ruff and
+diff checks pass. All CPU handles29161,63769,91539,32617,3663,44842 terminal.
+
+Next: immutable input and exact training/serving-image binding, lifecycle and
+CPU readiness audit, then at most one bounded GPU pilot with512-game actual
+sampler viability gate before training. Use original35892 parent, not rejected
+35893. Fresh held-out seed pair required. Allocate enough evaluation budget for
+FOUR panels (old900seconds failed); do not repeat that limit. New sampler GPU
+SPS and learning are UNQUALIFIED. No GPU job, paid node, deployment or promotion
+started for this change. CLOSER_NOT_READY closer-pass3-20261003-mbp-27.
+
 ## Recovery35894 completed; temperature2 candidate rejected for scaling
 
 Job35894 COMPLETED0:0 at2026-10-04T03:54:22 UTC, runtime11m34s onmetta1

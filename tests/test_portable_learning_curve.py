@@ -8,6 +8,16 @@ from integrations import portable_classic_pilot as pilot
 
 
 class LearningCurveTests(unittest.TestCase):
+    def test_branching_from_same_parent_can_use_fresh_matched_seeds(self):
+        with patch.dict(pilot.os.environ, GENERALS_EVAL_SEED="40913", GENERALS_EVAL_SAMPLE_SEED="10211"):
+            self.assertEqual(pilot.evaluation_seeds(), (40913, 10211))
+        with patch.dict(pilot.os.environ, {"GENERALS_EVAL_SEED": "40913"}, clear=True):
+            with self.assertRaisesRegex(ValueError, 'paired'):
+                pilot.evaluation_seeds()
+        with patch.dict(pilot.os.environ, GENERALS_EVAL_SEED="-1", GENERALS_EVAL_SAMPLE_SEED="10211"):
+            with self.assertRaisesRegex(ValueError, 'uint32'):
+                pilot.evaluation_seeds()
+
     def test_budget_is_bounded(self):
         self.assertEqual(pilot.pilot_steps("33554432"), 33_554_432)
         self.assertEqual(pilot.pilot_steps("268435456"), 268_435_456)

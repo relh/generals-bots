@@ -57,6 +57,9 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
     from integrations.spatial_action_sampling import validate_full_action_temperature
 
     full_temperature = validate_full_action_temperature(float(environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1")))
+    from integrations.spatial_exploration import validate_log_gap_scale
+
+    log_gap_scale = validate_log_gap_scale(float(environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0")))
     route_half_weight = float(environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
     early_temperature = environ.get("METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE")
     early_turns = environ.get("METTA_SPATIAL_EARLY_ROUTE_TURNS")
@@ -82,6 +85,8 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
             or (scheduled and report.get("baseline_split_sampling_temperature") != split_temperature)
             or report.get("baseline_route_half_weight", 0.0) != (route_half_weight if continuing else 0.0)
             or report.get("candidate_route_half_weight", 0.0) != route_half_weight
+            or report.get("candidate_log_gap_scale", 0.0) != log_gap_scale
+            or report.get("baseline_log_gap_scale", 0.0) != (log_gap_scale if continuing else 0.0)
             or report.get("candidate_full_action_temperature", 1.0) != full_temperature
             or report.get("baseline_full_action_temperature", 1.0) != (full_temperature if continuing else 1.0)
             or report.get("baseline_early_route_temperature") != baseline_early_temperature

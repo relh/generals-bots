@@ -13,11 +13,16 @@ import numpy as np
 def export_bundle(build, training, checkpoint, sha256, factory_source, output, *,
                   serving_move_temperature=None, serving_split_temperature=None,
                   serving_early_route_temperature=None, serving_early_route_turns=None,
-                  serving_route_half_weight=0.0, serving_full_action_temperature=1.0,
+                  serving_route_half_weight=0.0, serving_full_action_temperature=1.0, serving_log_gap_scale=0.0,
                   serving_neutral_route_bias=0.0, serving_weak_owned_route_penalty=0.0,
                   serving_doomed_attack_route_penalty=0.0):
     from integrations.spatial_action_sampling import validate_full_action_temperature
 
+    from integrations.spatial_exploration import validate_log_gap_scale
+
+    validate_log_gap_scale(serving_log_gap_scale)
+    if serving_log_gap_scale and serving_move_temperature is None:
+        raise ValueError("Log gap exploration requires structured serving")
     validate_full_action_temperature(serving_full_action_temperature)
     if serving_full_action_temperature != 1 and serving_move_temperature is None:
         raise ValueError("Full action temperature requires structured serving")
@@ -68,6 +73,8 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
     verify_configuration(configuration)
     policy = NativeFabricPolicy(configuration)
     model = DirectSpatial(policy)
+    if serving_log_gap_scale and model.channels != 16:
+        raise ValueError("Log gap exploration requires sixteen public planes")
     if serving_early_route_temperature is not None and (
             model.channels != 16 or manifest["config"]["python_environment"]["options"].get("public_scalar_ablation")):
         raise ValueError("Early route schedule requires full public scalar observations")
@@ -99,6 +106,8 @@ def export_bundle(build, training, checkpoint, sha256, factory_source, output, *
              split_temperature=serving_split_temperature)
         if serving_move_temperature is not None else dict(mode="argmax")
     )
+    if serving_log_gap_scale:
+        serving_action_selection["log_gap_scale"] = serving_log_gap_scale
     if serving_full_action_temperature != 1:
         serving_action_selection["full_action_temperature"] = serving_full_action_temperature
     if serving_neutral_route_bias:
@@ -131,6 +140,7 @@ def main():
     parser.add_argument("--serving-early-route-temperature", type=float)
     parser.add_argument("--serving-early-route-turns", type=int)
     parser.add_argument("--serving-full-action-temperature", type=float, default=1.0)
+    parser.add_argument("--serving-log-gap-scale", type=float, default=0.0)
     parser.add_argument("--serving-route-half-weight", type=float, default=0.0)
     parser.add_argument("--serving-neutral-route-bias", type=float, default=0.0)
     parser.add_argument("--serving-weak-owned-route-penalty", type=float, default=0.0)
@@ -143,6 +153,7 @@ def main():
                   serving_early_route_turns=args.serving_early_route_turns,
                   serving_route_half_weight=args.serving_route_half_weight,
                   serving_full_action_temperature=args.serving_full_action_temperature,
+                  serving_log_gap_scale=args.serving_log_gap_scale,
                   serving_neutral_route_bias=args.serving_neutral_route_bias,
                   serving_weak_owned_route_penalty=args.serving_weak_owned_route_penalty,
                   serving_doomed_attack_route_penalty=args.serving_doomed_attack_route_penalty)

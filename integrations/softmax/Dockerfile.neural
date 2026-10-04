@@ -13,6 +13,7 @@ RUN tar -xzf /tmp/runtime.tar.gz -C /app && rm /tmp/runtime.tar.gz
 COPY generals /app/generals
 COPY integrations/__init__.py integrations/generals_fabric.py integrations/puffer_codec.py integrations/sparse_teacher.py /app/integrations/
 COPY integrations/native_puffer_policy.py integrations/native_policy_bundle.py integrations/spatial_action_sampling.py integrations/spatial_policy_bundle.py /app/integrations/
+COPY integrations/spatial_context_geometry.py integrations/spatial_exploration.py /app/integrations/
 COPY integrations/softmax/__init__.py integrations/softmax/protocol.py integrations/softmax/neural_codec.py integrations/softmax/neural_player.py /app/integrations/softmax/
 COPY --from=policy / /app/policy/
 RUN if test -f /app/policy/model-source/generals_fabric.py; then \

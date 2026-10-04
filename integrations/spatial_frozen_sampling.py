@@ -37,6 +37,10 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
                 raise ValueError("Doomed attack route penalty requires frozen public observations")
             logits += public_doomed_attack_route_penalty(observations, policy.doomed_attack_route_penalty, jnp)
         logits = scale_action_logits(logits, getattr(policy, "full_action_temperature", 1.0))
+        if getattr(policy, "log_gap_scale", 0.0):
+            from integrations.spatial_exploration import log_gap_logits, public_action_mask
+
+            logits = log_gap_logits(logits, public_action_mask(observations, jnp), policy.log_gap_scale, jnp)
         legal_logits = jnp.where(masks, logits, -jnp.inf)
         random_keys = jax.vmap(lambda key: jax.random.fold_in(key, 834))(keys)
         return jax.vmap(jax.random.categorical)(random_keys, legal_logits).astype(jnp.int32)

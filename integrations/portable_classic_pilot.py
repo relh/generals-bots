@@ -60,6 +60,7 @@ TRAIN_ENV = dict(
     METTA_SPATIAL_POLICY_TEMPERATURE="0.05",
     METTA_SPATIAL_SPLIT_TEMPERATURE="0.15",
     METTA_SPATIAL_FULL_ACTION_TEMPERATURE=os.environ.get("GENERALS_FULL_ACTION_TEMPERATURE", "1"),
+    METTA_SPATIAL_LOG_GAP_SCALE=os.environ.get("GENERALS_LOG_GAP_SCALE", "0"),
     METTA_SPATIAL_ROUTE_HALF_WEIGHT="0.0",
     METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE="0.10",
     METTA_SPATIAL_EARLY_ROUTE_TURNS="100",
@@ -309,6 +310,12 @@ def full_action_temperature():
     return validate_full_action_temperature(float(TRAIN_ENV["METTA_SPATIAL_FULL_ACTION_TEMPERATURE"]))
 
 
+def log_gap_scale():
+    from integrations.spatial_exploration import validate_log_gap_scale
+
+    return validate_log_gap_scale(float(TRAIN_ENV["METTA_SPATIAL_LOG_GAP_SCALE"]))
+
+
 def exploratory_initialization():
     """Copy the qualified parent with the exact acting sampler, retaining the cold parent."""
     from integrations.spatial_policy_bundle import SpatialPlayerPolicy
@@ -322,9 +329,10 @@ def exploratory_initialization():
     if record["serving_action_selection"]["mode"] != "structured_sample":
         raise ValueError("Exploration requires a structured parent policy")
     record["serving_action_selection"]["full_action_temperature"] = temperature
+    record["serving_action_selection"]["log_gap_scale"] = log_gap_scale()
     path.write_text(json.dumps(record, indent=2) + "\n")
     policy = SpatialPlayerPolicy(target)
-    if policy.full_action_temperature != temperature:
+    if policy.full_action_temperature != temperature or policy.log_gap_scale != log_gap_scale():
         raise ValueError("Exploratory initialization sampler differs")
     return target
 
@@ -359,6 +367,8 @@ def sampling_gate():
             0.15,
             "--full-action-temperature",
             full_action_temperature() if label == "candidate" else 1.0,
+            "--log-gap-scale",
+            log_gap_scale() if label == "candidate" else 0.0,
             "--neutral-route-bias",
             6,
             "--weak-owned-route-penalty",
@@ -502,6 +512,8 @@ def export_and_audit(steps, bundle, suffix=""):
         0.15,
         "--serving-full-action-temperature",
         full_action_temperature(),
+        "--serving-log-gap-scale",
+        log_gap_scale(),
         "--serving-early-route-temperature",
         0.1,
         "--serving-early-route-turns",
@@ -564,18 +576,32 @@ def midpoint_checkpoint_steps(start, additional_steps):
     return selected
 
 
-def evaluate():
-    export_and_audit(starting_steps() + STEPS, OUT / "bundle")
+def evaluation_seeds():
+    """Allow a fresh held-out panel when branching again from the same parent."""
+    overrides = [os.environ.get(key) for key in ("GENERALS_EVAL_SEED", "GENERALS_EVAL_SAMPLE_SEED")]
+    if any(value is not None for value in overrides):
+        if any(value is None for value in overrides):
+            raise ValueError("Evaluation map and sampling seed overrides must be paired")
+        seeds = tuple(int(value) for value in overrides)
+        if any(not 0 <= value < 2**32 for value in seeds):
+            raise ValueError("Evaluation seed overrides must be uint32 values")
+        return seeds
     # Keep the extended run off the repeatedly used short-pilot development maps.
     map_seed, sample_seed = (37841, 8729) if STEPS == 268_435_456 else (37813, 8713)
     # Distinct checkpoint counters, including a chosen midpoint, get new maps.
     if starting_steps():
         map_seed, sample_seed = 37871 + starting_steps() // (8192 * 256), 8753 + starting_steps() // (8192 * 256)
+    return map_seed, sample_seed
+
+
+def evaluate():
+    map_seed, sample_seed = evaluation_seeds()
+    export_and_audit(starting_steps() + STEPS, OUT / "bundle")
     arms = [("parent", OUT / "self_bundle"), ("child", OUT / "bundle")]
     if STEPS >= 33_554_432:
         export_and_audit(midpoint_checkpoint_steps(starting_steps(), STEPS), OUT / "bundle-mid", "-mid")
         arms.append(("mid", OUT / "bundle-mid"))
-    if full_action_temperature() != 1:
+    if full_action_temperature() != 1 or log_gap_scale():
         # Improvement over a hotter initialization alone is insufficient: retain
         # an independent matched panel against the original qualified parent.
         arms[0] = ("parent", exploratory_initialization())
@@ -601,7 +627,7 @@ def evaluate():
             seconds=360,
         )
     comparisons = [("parent", label, "paired-" + label) for label, _ in arms[1:]]
-    if full_action_temperature() != 1:
+    if full_action_temperature() != 1 or log_gap_scale():
         comparisons += [("cold-parent", label, "paired-cold-" + label)
                         for label, _ in arms if label in ("child", "mid")]
     for baseline, label, report_name in comparisons:

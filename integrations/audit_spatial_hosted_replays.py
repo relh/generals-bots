@@ -98,7 +98,8 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
                 weak_owned_route_penalty=policy.weak_owned_route_penalty,
                 doomed_attack_route_penalty=policy.doomed_attack_route_penalty,
                 route_half_weight=policy.route_half_weight,
-                full_action_temperature=policy.full_action_temperature)
+                full_action_temperature=policy.full_action_temperature,
+                log_gap_scale=policy.log_gap_scale)
             action = actions[index]
             predicted = int(np.argmax(probabilities))
             logprob.append(float(np.log(probabilities[action])))
