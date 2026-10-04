@@ -1,5 +1,19 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35892 running: bounded wider-context retry, no external srun observers
+
+Job35892, `relh-generals-wide-context-ff0d55aa`, RUNNING on B300,1GPU/8CPU/96GiB,
+finite70min. Nice2147483645/Priority1 initial readback, unchanged.
+Frozen training inputd863037; host launcherb85776d (5d5e306 code).
+Results `relh/generals-classic-results-20261004T004731Z-ee3fda7c`.
+Receipt `/tmp/relh-generals-wide-context-ff0d55aa.receipt.json`.
+42 CPU tests plus21 subtests passed before launch, including lifecycle and
+verified inactive-container retirement. Controller monitor92084 captures terminal;
+physical read-only SSH monitor26037; collector74727 waits for terminal receipt.
+No external srun observer. No duplicate job, paid allocation or priority change.
+Train/evaluate33554432 new steps, preserve prior recipe except wider context.
+Actual training SPS and gameplay improvement await result artifacts.
+
 ## 35891 recovery verified; retry ready without external srun observers
 
 Archive-only maintenance35891 COMPLETED0:0, no GPU, requested1CPU/1GiB/5min.
