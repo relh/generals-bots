@@ -14,7 +14,7 @@ from integrations.spatial_action_sampling import (acting_logits, public_doomed_a
 def structured_action_probabilities(outputs, legal, move_temperature, split_temperature,
                                     *, observations=None, neutral_route_bias=0.0,
                                     weak_owned_route_penalty=0.0, doomed_attack_route_penalty=0.0,
-                                    route_half_weight=0.0):
+                                    route_half_weight=0.0, full_action_temperature=1.0):
     """Match the native rollout categorical on the legal flat action set."""
     outputs = np.asarray(outputs, dtype=np.float32)
     legal = np.asarray(legal, dtype=bool)
@@ -45,6 +45,9 @@ def structured_action_probabilities(outputs, legal, move_temperature, split_temp
             transformed += public_weak_owned_route_penalty(public, weak_owned_route_penalty, np)
         if doomed_attack_route_penalty:
             transformed += public_doomed_attack_route_penalty(public, doomed_attack_route_penalty, np)
+    from integrations.spatial_action_sampling import scale_action_logits
+
+    transformed = scale_action_logits(transformed, full_action_temperature)
     logits = np.where(legal, transformed, -np.inf)
     probabilities = np.exp(logits - logits.max())
     return probabilities / probabilities.sum()
@@ -77,9 +80,12 @@ class SpatialPlayerPolicy:
         acting = manifest.get("serving_action_selection", {"mode": "argmax"})
         if not isinstance(acting, dict):
             raise ValueError("Invalid spatial serving action selection")
+        from integrations.spatial_action_sampling import validate_full_action_temperature
+
+        self.full_action_temperature = validate_full_action_temperature(acting.get("full_action_temperature", 1.0))
         required = {"mode", "move_temperature", "split_temperature"}
         allowed = required | {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty",
-                              "early_route_temperature", "early_route_turns", "route_half_weight"}
+                              "early_route_temperature", "early_route_turns", "route_half_weight", "full_action_temperature"}
         if acting.get("mode") == "structured_sample" and required <= set(acting) <= allowed and all(
             isinstance(acting[key], (int, float)) and not isinstance(acting[key], bool)
                   and np.isfinite(acting[key]) and acting[key] > 0 for key in (
@@ -231,6 +237,7 @@ class SpatialPlayerPolicy:
                 weak_owned_route_penalty=self.weak_owned_route_penalty,
                 doomed_attack_route_penalty=self.doomed_attack_route_penalty,
                 route_half_weight=self.route_half_weight,
+                full_action_temperature=self.full_action_temperature,
             )
         else:
             logits = np.where(mask[0], output[:3529], -np.inf)

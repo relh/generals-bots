@@ -43,6 +43,7 @@ def main():
                         help="Number of opening turns using --early-route-temperature")
     parser.add_argument("--split-sampling-temperature", type=float,
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
+    parser.add_argument("--full-action-temperature", type=float, default=1.0)
     parser.add_argument("--route-half-weight", type=float, default=0.0,
                         help="Fraction of the half head included in each route score")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
@@ -79,6 +80,11 @@ def main():
         raise ValueError("Acting-greedy requires the structured route/split transform")
     if args.sampling_temperature != 1 and args.sample_seed is None and not args.acting_greedy:
         raise ValueError("Nondefault temperature requires sampled or acting-greedy actions")
+    from integrations.spatial_action_sampling import validate_full_action_temperature
+
+    validate_full_action_temperature(args.full_action_temperature)
+    if args.full_action_temperature != 1 and args.split_sampling_temperature is None:
+        raise ValueError("Full action temperature requires structured sampling")
     if (not np.isfinite(args.route_half_weight) or not 0 <= args.route_half_weight <= 1 or
             (args.route_half_weight and args.split_sampling_temperature is None)):
         raise ValueError("Route half weight requires structured sampling and must be between zero and one")
@@ -252,6 +258,7 @@ def main():
                 if args.doomed_attack_route_penalty:
                     logits += jnp.asarray(public_doomed_attack_route_penalty(
                         np.asarray(values), args.doomed_attack_route_penalty, np))
+                logits = logits / args.full_action_temperature
                 chosen = np.asarray(sample_flat_logits(
                     key, logits, jnp.asarray(legal),
                 ))
@@ -302,6 +309,7 @@ def main():
                   early_route_turns=args.early_route_turns,
                   split_sampling_temperature=args.split_sampling_temperature,
                   route_half_weight=args.route_half_weight,
+                  full_action_temperature=args.full_action_temperature,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
                   owned_split_bias=args.owned_split_bias,
@@ -319,6 +327,7 @@ def main():
                            move_temperature=env._frozen.move_temperature,
                            split_temperature=env._frozen.split_temperature,
                            route_half_weight=env._frozen.route_half_weight,
+                           full_action_temperature=env._frozen.full_action_temperature,
                            neutral_route_bias=env._frozen.neutral_route_bias,
                            weak_owned_route_penalty=env._frozen.weak_owned_route_penalty,
                            doomed_attack_route_penalty=env._frozen.doomed_attack_route_penalty)

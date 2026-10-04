@@ -10,7 +10,6 @@ can therefore use it without changing the native action codec.
 
 import math
 
-
 MOVE_COUNT = 1764
 PASS_INDEX = 3528
 
@@ -180,6 +179,20 @@ def public_doomed_attack_route_penalty(observations, strength, xp):
               (source_army - 1 <= target_army))
     penalty = -doomed.astype(observations.dtype) * strength
     return xp.concatenate((penalty, penalty, xp.zeros_like(penalty[..., :1])), axis=-1)
+
+
+def validate_full_action_temperature(temperature):
+    """A static multiplier applied after every action-logit adjustment."""
+    if (not isinstance(temperature, (int, float)) or isinstance(temperature, bool)
+            or not math.isfinite(temperature) or temperature <= 0):
+        raise ValueError("Full action temperature must be finite and positive")
+    return temperature
+
+
+def scale_action_logits(logits, temperature):
+    """Scale actions only; callers must exclude values and apply all priors first."""
+    validate_full_action_temperature(temperature)
+    return logits if temperature == 1 else logits / temperature
 
 
 def acting_logits(predictions, move_temperature, split_temperature, xp, split_bias=None,

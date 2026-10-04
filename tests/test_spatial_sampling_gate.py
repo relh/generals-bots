@@ -174,6 +174,16 @@ def test_continuation_qualifies_actual_sampler_without_obsolete_ablation(tmp_pat
                        METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE=".1", METTA_SPATIAL_EARLY_ROUTE_TURNS="100",
                        METTA_SPATIAL_SAMPLING_GATE_REPORT=str(path))
     validate_sampling_gate(argv, environment)
+    environment["METTA_SPATIAL_FULL_ACTION_TEMPERATURE"] = "10"
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report["candidate_full_action_temperature"] = 10
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout action settings"):
+        validate_sampling_gate(argv, environment)
+    report["baseline_full_action_temperature"] = 10
+    path.write_text(json.dumps(report))
+    validate_sampling_gate(argv, environment)
     # Keep the actual-policy viability threshold. A genuinely collapsed sampler
     # remains a failure even when restoring the optimizer.
     report["candidate_wld"] = [100, 404, 8]
@@ -208,9 +218,11 @@ def test_continuation_pilot_runs_one_actual_sampler_panel(tmp_path, monkeypatch)
     monkeypatch.setattr(pilot, "OUT", tmp_path)
     monkeypatch.setattr(pilot, "starting_steps", lambda: 268_435_456)
     monkeypatch.setattr(pilot, "command", retained_evaluation)
+    monkeypatch.setitem(pilot.TRAIN_ENV, "METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "10")
     pilot.sampling_gate()
     panels = [args for module, args in calls if module == "evaluate_spatial_frozen_match"]
     assert len(panels) == 1
+    assert panels[0][panels[0].index("--full-action-temperature") + 1] == 10
     assert panels[0][panels[0].index("--early-route-temperature") + 1] == ".10"
     assert panels[0][panels[0].index("--early-route-turns") + 1] == "100"
     assert json.loads((tmp_path / "sampling-gate.json").read_text())["gate_mode"] == "same_sampler_continuation"

@@ -29,6 +29,25 @@ class LearningCurveTests(unittest.TestCase):
         pairs = [call for call in command.call_args_list if call.args[0] == 'analyze_spatial_population_pair']
         self.assertEqual([call.kwargs['name'] for call in pairs], ['paired-child', 'paired-mid'])
 
+    def test_exploration_retains_qualified_parent_and_actual_initialization(self):
+        with patch.dict(pilot.TRAIN_ENV, METTA_SPATIAL_FULL_ACTION_TEMPERATURE="10"), patch.object(
+                pilot, 'STEPS', 33_554_432), patch.object(pilot, 'starting_steps', return_value=0), patch.object(
+                pilot, 'midpoint_checkpoint_steps', return_value=16_777_216), patch.object(
+                pilot, 'exploratory_initialization', return_value=pilot.OUT / 'exploratory-initialization'), patch.object(
+                pilot, 'export_and_audit'), patch.object(pilot, 'command') as command:
+            pilot.evaluate()
+        panels = {call.kwargs['name']: call for call in command.call_args_list
+                  if call.args[0] == 'evaluate_spatial_population'}
+        self.assertEqual(set(panels), {'heldout-parent', 'heldout-child', 'heldout-mid', 'heldout-cold-parent'})
+        for name, bundle in [('heldout-parent', 'exploratory-initialization'), ('heldout-cold-parent', 'self_bundle')]:
+            call = panels[name]
+            self.assertEqual(call.args[call.args.index('--bundle') + 1], pilot.OUT / bundle)
+        pairs = {call.kwargs['name']: call for call in command.call_args_list
+                 if call.args[0] == 'analyze_spatial_population_pair'}
+        for name in ('paired-cold-child', 'paired-cold-mid'):
+            self.assertEqual(pairs[name].args[pairs[name].args.index('--baseline') + 1],
+                             pilot.OUT / 'heldout-cold-parent')
+
     def test_missing_intermediate_checkpoint_cannot_silently_use_final(self):
         with tempfile.TemporaryDirectory() as directory, patch.object(pilot, 'OUT', Path(directory)), patch.object(
                 pilot, 'command') as command:

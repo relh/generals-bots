@@ -79,6 +79,7 @@ def rollout_probabilities(outputs, observations, legal, policy):
         acting += public_weak_owned_route_penalty(values, policy.weak_owned_route_penalty, jnp)
     if policy.doomed_attack_route_penalty:
         acting += public_doomed_attack_route_penalty(values, policy.doomed_attack_route_penalty, jnp)
+    acting = acting / policy.full_action_temperature
     logits = jnp.where(jnp.asarray(legal[None, None, :]), acting, -jnp.inf)
     return np.asarray(jax.nn.softmax(logits)[0, 0])
 
@@ -107,6 +108,7 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
         "METTA_SPATIAL_POLICY_TEMPERATURE": str(portable.move_temperature),
         "METTA_SPATIAL_SPLIT_TEMPERATURE": str(portable.split_temperature),
         "METTA_SPATIAL_ROUTE_HALF_WEIGHT": str(portable.route_half_weight),
+        "METTA_SPATIAL_FULL_ACTION_TEMPERATURE": str(portable.full_action_temperature),
         "METTA_SPATIAL_NEUTRAL_ROUTE_BIAS": str(portable.neutral_route_bias),
         "METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY": str(portable.weak_owned_route_penalty),
         "METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY": str(portable.doomed_attack_route_penalty),
@@ -164,7 +166,8 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
         kwargs = dict(observations=observation, neutral_route_bias=portable.neutral_route_bias,
                       weak_owned_route_penalty=portable.weak_owned_route_penalty,
                       doomed_attack_route_penalty=portable.doomed_attack_route_penalty,
-                      route_half_weight=portable.route_half_weight)
+                      route_half_weight=portable.route_half_weight,
+                      full_action_temperature=portable.full_action_temperature)
         direct_logits = native_acting[index, :3529]
         rollout_logits = np.where(legal, direct_logits, -np.inf)
         native_prob = np.exp(rollout_logits - np.max(rollout_logits))
@@ -180,6 +183,8 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
         raise ValueError("Native and serving action distributions differ")
     return dict(checkpoint_sha256=hashlib.sha256((bundle / "policy.bin").read_bytes()).hexdigest(),
                 factory_source_sha256=source_sha, engine_sha256=ENGINE_SHA256,
+                serving_action_selection=bundle_manifest["serving_action_selection"],
+                bundle_manifest_sha256=hashlib.sha256((bundle / "spatial-policy.json").read_bytes()).hexdigest(),
                 hosted_games=len(game_indices), replay_turns=sorted({item[1] for item in labels}),
                 public_states=len(views), native_batch=batch_size,
                 max_logit_difference=maximum, max_action_probability_difference=probability_max,

@@ -1,5 +1,46 @@
 # Softmax Coworld Classic 1v1 training
 
+## Full-action exploration implementation: CPU verified, not yet GPU qualified
+
+Added explicit full_action_temperature, default1 preserving old bundles. It
+divides ALL acting logits after route/split transformation and public priors.
+Native rollout, PPO action cotangents, NumPy serving, frozen JAX opponents,
+replay opponents, independent match evaluation, export and parity audit agree.
+Value outputs and cotangents are not divided. Sampling reports bind candidate
+and continuation-baseline temperature, rejecting stale default-temperature
+reports. No teacher/rescue labels enter training. Existing pool/rewards retained.
+
+Portable pilot opt-in GENERALS_FULL_ACTION_TEMPERATURE is bound to evaluation,
+training env and export. Non-default evaluation retains BOTH the unchanged
+qualified parent and a separately copied actual exploratory initialization;
+child and midpoint each get paired comparisons against both. Do not accept
+improvement over the exploratory initialization alone as stronger policy.
+
+CPU proof on actual35892 checkpoint, native578860-parameter adapter and nine
+public retrospective states at temperature10: maximum native/NumPy probability
+gap2.98e-7, maximum parameter-gradient difference from independent complete
+JAX autodiff9.54e-7. Value gradients preserved. Report plus source hashes:
+`/tmp/relh-generals-full-temperature-native-proof/proof.json`; reproduction:
+`/tmp/relh-generals-full-temperature-native-proof.py`. Original bundle untouched;
+temperature10 bundle is local diagnostic only, not published or promoted.
+
+Focused action/serving/frozen/gate/learning-curve suite47passed/2subtests;
+final targeted suite including actual position-curriculum adapters30passed/
+2subtests. New tests cover complete-transform VJP, masked stochastic frequencies,
+route-prior scaling, invalid temperatures, legacy defaults, stale sampling
+reports, and dual-parent evaluation. Ruff on new test/shared action module,
+diff check and Coworld manifest check pass. No game-strength claim from these
+checks. Native CPU process is terminal; no GPU job submitted.
+
+Next: qualify updated source/input/image and lifecycle before GPU, run the
+bounded actual-temperature game sampling gate, and only train if viable. The
+new sampler has NOT yet passed game viability or measured training throughput.
+Do not reuse35892 source/image readiness receipts for this changed code.
+GitHub older59ed09 run37168439818 finished45failed/1021passed (38 since-fixed
+task failures plus7 baseline Sentinel failures);46e9/43a717b runs still pending.
+Strong-play goal remains ACTIVE and CLOSER_NOT_READY closer-20261003-mbp-27.
+No paid compute, deployment, merge, champion change, or priority change.
+
 ## Closer continuation: PR4 open, strength goal remains active
 
 Fork PR https://github.com/relh/generals-bots/pull/4 is OPEN, non-draft and

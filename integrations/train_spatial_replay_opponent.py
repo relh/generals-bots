@@ -111,6 +111,7 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
             logits += public_weak_owned_route_penalty(values, policy.weak_owned_route_penalty, jnp)
         if policy.doomed_attack_route_penalty:
             logits += public_doomed_attack_route_penalty(values, policy.doomed_attack_route_penalty, jnp)
+        logits = logits / policy.full_action_temperature
         return jnp.where(masks, logits, -1e9)
 
     def cross_entropy(weights, observations, masks, actions):
@@ -119,7 +120,7 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
             routes = actions % 1764
             full = jnp.take_along_axis(outputs[:, :1764], routes[:, None], axis=1)[:, 0]
             half = jnp.take_along_axis(outputs[:, 1764:3528], routes[:, None], axis=1)[:, 0]
-            difference = (half - full) / policy.split_temperature
+            difference = (half - full) / (policy.split_temperature * policy.full_action_temperature)
             is_half = actions >= 1764
             return jax.nn.softplus(difference) - is_half * difference
         log_prob = jax.nn.log_softmax(action_logits(weights, observations, masks))
@@ -212,6 +213,7 @@ def fit(bundle: Path, dataset: Path, output: Path, *, steps: int, batch_size: in
               "mode": mode,
               "route_temperature": route_temperature, "split_temperature": policy.split_temperature,
               "route_half_weight": policy.route_half_weight,
+              "full_action_temperature": policy.full_action_temperature,
               "early_route_temperature": policy.early_route_temperature if mode == "conditional_split" else None,
               "early_route_turns": policy.early_route_turns if mode == "conditional_split" else None,
               "trainable_names": TRAINABLE_NAMES, "seed": seed, "history": history,

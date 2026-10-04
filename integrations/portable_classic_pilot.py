@@ -59,6 +59,7 @@ TRAIN_ENV = dict(
     METTA_SPATIAL_OPTIMIZER_LAYOUT="logical",
     METTA_SPATIAL_POLICY_TEMPERATURE="0.05",
     METTA_SPATIAL_SPLIT_TEMPERATURE="0.15",
+    METTA_SPATIAL_FULL_ACTION_TEMPERATURE=os.environ.get("GENERALS_FULL_ACTION_TEMPERATURE", "1"),
     METTA_SPATIAL_ROUTE_HALF_WEIGHT="0.0",
     METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE="0.10",
     METTA_SPATIAL_EARLY_ROUTE_TURNS="100",
@@ -301,6 +302,32 @@ def build():
         shutil.copytree(OUT / "context-parent/bundle", OUT / "self_bundle")
 
 
+def full_action_temperature():
+    from integrations.spatial_action_sampling import validate_full_action_temperature
+
+    return validate_full_action_temperature(float(TRAIN_ENV["METTA_SPATIAL_FULL_ACTION_TEMPERATURE"]))
+
+
+def exploratory_initialization():
+    """Copy the qualified parent with the exact acting sampler, retaining the cold parent."""
+    from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+
+    source, target = OUT / "self_bundle", OUT / "exploratory-initialization"
+    SpatialPlayerPolicy(source)  # Verify source payloads before copying anything.
+    temperature = full_action_temperature()
+    shutil.copytree(source, target)
+    path = target / "spatial-policy.json"
+    record = json.loads(path.read_text())
+    if record["serving_action_selection"]["mode"] != "structured_sample":
+        raise ValueError("Exploration requires a structured parent policy")
+    record["serving_action_selection"]["full_action_temperature"] = temperature
+    path.write_text(json.dumps(record, indent=2) + "\n")
+    policy = SpatialPlayerPolicy(target)
+    if policy.full_action_temperature != temperature:
+        raise ValueError("Exploratory initialization sampler differs")
+    return target
+
+
 def sampling_gate():
     continuing = bool(starting_steps())
     # A resumed policy already uses the scheduled sampler. Its viability check
@@ -329,6 +356,8 @@ def sampling_gate():
             0.05,
             "--split-sampling-temperature",
             0.15,
+            "--full-action-temperature",
+            full_action_temperature() if label == "candidate" else 1.0,
             "--neutral-route-bias",
             6,
             "--weak-owned-route-penalty",
@@ -470,6 +499,8 @@ def export_and_audit(steps, bundle, suffix=""):
         0.05,
         "--serving-split-temperature",
         0.15,
+        "--serving-full-action-temperature",
+        full_action_temperature(),
         "--serving-early-route-temperature",
         0.1,
         "--serving-early-route-turns",
@@ -543,6 +574,11 @@ def evaluate():
     if STEPS >= 33_554_432:
         export_and_audit(midpoint_checkpoint_steps(starting_steps(), STEPS), OUT / "bundle-mid", "-mid")
         arms.append(("mid", OUT / "bundle-mid"))
+    if full_action_temperature() != 1:
+        # Improvement over a hotter initialization alone is insufficient: retain
+        # an independent matched panel against the original qualified parent.
+        arms[0] = ("parent", exploratory_initialization())
+        arms.append(("cold-parent", OUT / "self_bundle"))
     for label, bundle in arms:
         command(
             "evaluate_spatial_population",
@@ -563,16 +599,20 @@ def evaluate():
             name="heldout-" + label,
             seconds=360,
         )
-    for label, _ in arms[1:]:
+    comparisons = [("parent", label, "paired-" + label) for label, _ in arms[1:]]
+    if full_action_temperature() != 1:
+        comparisons += [("cold-parent", label, "paired-cold-" + label)
+                        for label, _ in arms if label in ("child", "mid")]
+    for baseline, label, report_name in comparisons:
         command(
             "analyze_spatial_population_pair",
             "--baseline",
-            OUT / "heldout-parent",
+            OUT / ("heldout-" + baseline),
             "--candidate",
             OUT / ("heldout-" + label),
             "--output",
-            OUT / ("paired-" + label + ".json"),
-            name="paired-" + label,
+            OUT / (report_name + ".json"),
+            name=report_name,
             seconds=60,
         )
 

@@ -244,6 +244,13 @@ def install(native_module=None):
         if self.spatial_split_temperature is not None and (
                 not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0):
             raise ValueError("Spatial split temperature must be finite and positive")
+        from integrations.spatial_action_sampling import validate_full_action_temperature
+
+        self.spatial_full_action_temperature = validate_full_action_temperature(
+            float(os.environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1")))
+        if self.spatial_full_action_temperature != 1 and (
+                not self.direct_spatial_rollout or self.spatial_split_temperature is None):
+            raise ValueError("Full action temperature requires direct structured rollout")
         self.spatial_route_half_weight = float(os.environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
         if (not np.isfinite(self.spatial_route_half_weight) or
                 not 0 <= self.spatial_route_half_weight <= 1 or
@@ -314,6 +321,8 @@ def install(native_module=None):
 
             penalty = public_doomed_attack_route_penalty(transported, self.spatial_doomed_attack_route_penalty, jnp)
             acting = acting.at[..., :3529].add(penalty)
+        if self.spatial_full_action_temperature != 1:
+            acting = acting.at[..., :3529].divide(self.spatial_full_action_temperature)
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
         return acting, state, DirectTape(parameters, transported, outputs)
@@ -327,6 +336,8 @@ def install(native_module=None):
         self.updates += 1
         self.active_objectives.clear()
         coefficient = self.teacher_phase.ppo_coefficient
+        # Chain rule for the final action-only transform; preserve value gradients.
+        logits = logits / self.spatial_full_action_temperature
         if self.spatial_split_temperature is not None:
             from integrations.spatial_action_sampling import raw_cotangents
 
