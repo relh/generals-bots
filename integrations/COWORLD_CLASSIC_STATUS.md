@@ -1,5 +1,42 @@
 # Softmax Coworld Classic 1v1 training
 
+## Closer continuation: PR4 open, strength goal remains active
+
+Fork PR https://github.com/relh/generals-bots/pull/4 is OPEN, non-draft and
+mergeable, for code review only; not merged or deployed. Implementation commits
+59ed09f and46e9a15 fix the task-specific CI failures described below. GitHub
+push37169015505 and PR37169044257 are still running at 2026-10-04 01:54UTC;
+do not claim CI green. Older37168439818 is also unfinished. Review the final
+receipts and distinguish the reproduced untouched-main failures from new ones.
+
+Fresh full Slurm queue contains only other owners'35874/35875. No Generals GPU
+job, paid node or hosted request remains active. No submission, purchase,
+deployment, merge or champion change in this closer audit. All future Slurm
+work remains maximumNice2147483645/Priority1 with CPU readiness before GPU.
+Latest closer prohibits buying compute/deployment; preserve that steering.
+
+Additional bounded CPU diagnosis of the SAME nine retrospective public states:
+removing fixed route priors still selects zero rescue actions. Learned
+top-minus-best-rescue logit gaps are7.39–70.33; fixed-prior contributions are
+zero on seven states and4 on two. Minimum rescue probability2.88e-31 and
+entropy-gradient magnitude2.03e-29 persist without priors. Counterfactual full
+temperature10 raises minimum rescue probability to7.26e-4 and rescue entropy
+gradient magnitude to4.16e-4, but STILL changes no argmax to a rescue. This
+supports testing exploration; it does not establish winning, eventual rescue,
+or that entropy alone cannot recover. Rescue labels are diagnostic only.
+
+Artifact `/tmp/relh-generals-portable-result-35892/exploration-decomposition.json`
+binds policy/probe SHA256; read-only reproduction script:
+`/tmp/relh-generals-35892-exploration-decomposition.py`. No model, sampling
+recipe, reward or serving bundle changed. Next exploration implementation must
+retain the sampling/gradient/export/parity and cold-parent comparison gates
+specified below. New frozen inputs must include spatial_frozen_sampling.py
+and learner_checkpoint.py; do not mutate completed35892's frozen inputs.
+
+All assigned work is NOT complete:9/32 Daveey and18/32 incumbent wins fail
+competitive acceptance. CI receipts and controlled exploration remain owed.
+CLOSER_NOT_READY closer-20261003-mbp-27. Keep the existing goal active.
+
 ## Closer CI audit: task failures fixed;13 failures reproduce on untouched main
 
 Standard full run before repair:1015passed,51failed,5skipped,23subtests.
