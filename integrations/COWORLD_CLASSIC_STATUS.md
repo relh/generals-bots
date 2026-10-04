@@ -1,5 +1,38 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35892 end-to-end conclusion: working83k SPS, still not winning well
+
+ALL64 hosted games and replays are complete and audited. Final frozen radius2
+policy64649097-765f-4706-8310-910e57067a34 won9/32 against Daveeyv7 and18/32
+against incumbent relh. Daveey:seat0 3W13L,seat1 6W10L. Incumbent:eachseat9W7L.
+No failed requests,timeouts or illegal replay moves;64 unique fresh seeds,
+no overlap with previous35887 panel. No128-game confirmation or promotion.
+These results do not establish improvement over35887 (also9/32 and18/32 wins).
+Wider context is implemented, gradient-active, serving-aligned and performant;
+it did not fix competitive strength in this bounded33M continuation.
+
+Raw results/source/checkpoints, registry/XP receipts and all replays retained.
+Root `/tmp/relh-generals-serving-35892-final`; hosted-results-summary.json,
+hosted-replay-panel-audit.json and hosted-seed-audit.json are complete.
+Watcher37665/finalizer41323 terminal; all Slurm work terminal, no paid nodes.
+Fixes and status pushed on relh/coworld-classic-neural; goal remains ACTIVE.
+
+NEXT: investigate a controlled exploration change for this teacher-free spatial
+policy rather than another unchanged long run. Current training entropy~.212;
+nine held-out fatal states show near-zero rescue probability despite nonzero
+new-ring learning. CPU counterfactual full-logit scaling10 gives finite rescue
+support on all nine, but is NOT match evidence. Keep route priors and split
+normalization in the algebra; merely changing move temperature is not equivalent
+to dividing all acting logits. Any implementation must bind native rollout,
+PPO cotangents, frozen opponents, export/serving, sampling gate and late parity;
+value outputs/gradients must not be temperature-scaled. Audit full source/image
+and CPU lifecycle before any GPU. Compare learned candidate against BOTH its
+actual exploratory initialization and unchanged qualified cold parent on fresh
+matched games; do not mislabel improvement over a weaker sampler as stronger
+than the existing policy. Keep13-opponent pool/both seats and learner lineage.
+No new sampling recipe selected or GPU submitted yet. MaximumNice2147483645,
+Priority1, one finite job, S3/Pyxis, no external srun observers continue mandatory.
+
 ## 35892 hosted64 screen active; no GPU held
 
 Registered policy64649097-765f-4706-8310-910e57067a34,
