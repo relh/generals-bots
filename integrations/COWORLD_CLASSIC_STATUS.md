@@ -1,5 +1,25 @@
 # Softmax Coworld Classic 1v1 training
 
+## Closer audit closer-20261003-mbp-27: NOT READY; CI repair underway
+
+Full scope remains open:83k SPS and checked train/serve alignment demonstrated,
+but9/32 Daveey wins fails strong-play acceptance. No owned Slurm job/live hosted
+request remains; no paid compute/new submission. Latest all64 replay audit is
+complete. Protected history/source/checkpoints/results preserved. No merge or
+champion change. Branch was pushed but had no PR in the fork at this audit.
+
+Fresh GitHub run37168264210 failed collection because standalone frozen sampler
+tests eagerly imported optional metta_training through spatial_selfplay.
+Moved the identical pure JAX function to spatial_frozen_sampling, re-exported
+from the environment module. Standalone sampler tests run in standard CI;
+only three actual Metta-environment tests require the optional framework.
+7passed without Metta/3 optional skips;10passed with pinned Metta framework.
+Full suite in isolated Python3.12 with declared dev/train/softmax extras is
+running (43937); original local audit also exposed missing local equinox, not
+an additional GitHub failure. Do not claim full CI green until actual result.
+Next publish review-ready fork PR after resolving concrete CI issues, and
+continue competitive-learning scope. CLOSER_NOT_READY closer-20261003-mbp-27.
+
 ## 35892 end-to-end conclusion: working83k SPS, still not winning well
 
 ALL64 hosted games and replays are complete and audited. Final frozen radius2
