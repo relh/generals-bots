@@ -1,5 +1,52 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35893 training preserved; evaluation deadline exposed incomplete cold-parent panel
+
+Job35893 FAILED1:0 at2026-10-04T03:19:19 UTC after31m05s, solely because
+its evaluate phase exceeded900seconds. Training completed33,554,432 steps to
+2533359616. Nice2147483645/Priority1 unchanged before/after; no escalation,
+requeue or duplicate. Terminal controller receipt retained. Monitor48272,
+collector7497 and diagnostic watcher23756 terminal; watcher correctly rejected
+the missing cold-parent evaluation. Late CPU parity session13084 also terminal.
+Fresh squeue showed no remaining35893 steps; physical nvidia-smi showed no
+remaining compute process. No owned GPU job or hosted request is left running.
+
+Verified S3 archive223268749bytes, SHA256
+3e1665d0ccb7d9b6fa6b92bd202aaf1b28a39ebe276f85d2d280859cb0c4b34f,
+retained at /tmp/relh-generals-portable-result-35893/results.tar.gz with all
+extracted results. Result prefix and exact frozen source/launcher are below.
+Final checkpointdc2728027d75e0e3c67d97671293b96acb12789c67ffb6c7a8cb09307b32234b;
+Muon a783223bda22118db1117750930bdcee7774d8a5bcc2e80c559c905b9af483c7.
+Midpoint2516582400:35e4e940623af3002f89c73e8e0a1e17a1c9a44850d3551a189bf1cdbb9bc8b1.
+
+Archived training audit:78001.64 steady SPS; wider epoch1195–1207 interval
+25,165,824/321.857=78189.46 SPS. One B300 GPU UUID
+GPU-bce8f97b-720b-5afa-cbb7-ad8b68cc14f7;8192games,H256,mb8192,replay0.5,
+4 native workers.45670 terminal games,28912 wins; all13 opponents on both
+seats,zero nonfinite or clipped rewards. Sampling gate251W260L1D/512 passed.
+
+Completed matched4096-game panels: hot initialization2680W1384L32D;
+mid2709W1354L33D; final2715W1355L26D. Final signed score delta+0.015625,
+95% map-cluster CI[-0.014843,+0.046139]; midpoint CI also crosses zero.
+These are INCONCLUSIVE against the hot initialization. Cold-parent panel
+was interrupted at turn201; its initial arrays/logs are retained, but no
+outcome file exists. The added fourth arm did not fit the old900-second
+monolithic evaluation limit. Do not repeat training or completed panels.
+Next: implement/audit resumable evaluation and complete ONLY the missing
+matched cold-parent panel with a properly bounded evaluation budget.
+
+GPU native/serving parity:46/46 top actions, maximum probability gap8.64e-7.
+Separate late-game CPU parity:64/64,maximum1.43e-6; proof
+/tmp/relh-generals-35893-late-parity/parity.json. Nine retained defense probes
+remain0/9 top defensive actions for every arm. Partial-paired and defense
+reports are saved beside the archive. No evidence yet supports scaling or
+promotion. Latest hosted policy remains9/32 against Daveey; no new deployment.
+
+CLOSER_NOT_READY closer-pass3-20261003-mbp-27. Remaining: recover the missing
+comparison, improve meaningful play and verify hosted strength. Original goal
+remains active. CPU/source/image/lifecycle gates, one-job rule and maximum
+Nice remain mandatory before another GPU submission; no paid compute/merge.
+
 ## Live temperature2 pilot 35893; pass-two closer NOT READY
 
 Submitted once at 2026-10-04T02:48:14 UTC after CPU/source/image/lifecycle
