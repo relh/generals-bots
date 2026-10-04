@@ -1,5 +1,46 @@
 # Softmax Coworld Classic 1v1 training
 
+## 35892 complete:83.3k SPS, inconclusive local gain; diagnostic hosted screen
+
+35892 COMPLETED0:0,00:47:54->01:16:11UTC October4. Nice2147483645/Priority1
+before/after unchanged. Full queue and physical check show no remaining owned
+GPU process/job. No paid allocation. All results verified locally and in S3:
+`relh/generals-classic-results-20261004T004731Z-ee3fda7c`,
+archive SHA744e8d92b59a019cf0738acf56a62535a927dbc483fb2d0cec7d167fc9abb8b1.
+Only verified old35890 Enroot root retired; its source/results remain intact.
+
+Single B300,8192 games,H256,minibatch8192,replay0.5,4 native opponent workers.
+2466250752->2499805184,33554432 new steps. Final audited steady SPS83326.13;
+broad post-warmup25165824 steps over301.407s=83494.49 SPS. First epoch native
+uptime111.555s, broad interval188.524->489.931s. GPU~210278MiB, sampled30-100%
+utilization. Not300k.46252 terminal games,30130 wins; all13 opponents both seats.
+Zero nonfinite/clipped rewards. Same win-only/shaping/sampler/pool/curriculum.
+
+Fresh matched4096-game panel,2613 unique initial states:
+parent2699W1364L33D; mid2712W1358L26D; final2713W1348L35D.
+Final signed-score delta+.007324, clustered95%CI[-.022176,+.036830], INCONCLUSIVE.
+Mid and mid-to-final also inconclusive. No claimed improvement or promotion.
+Final policy f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14;
+Muon1c4832d6f5516ed85a97cf0b476b303ba8829467defeac4b5a7e6d1f6b11599b.
+All8192 new context connections learn nonzero values, finalL2=.1849704.
+Nine retrospective fatal-state probes still0/9 top defenses. Wider context alone
+has not repaired this behavior in33M steps; no plan to blindly scale unchanged.
+
+Explicitly selected final for a bounded DIAGNOSTIC hosted screen of the new
+architecture after inspecting inconclusive local evidence. Original positive-CI
+selection helper preserved; separate diagnostic selection records this decision.
+GPU native/NumPy parity46/46 for both snapshots. Final late CPU parity64/64,
+max probability gap2.2054e-6. Serving image95470a23... on audited radius2 base,
+46/46 golden,32/32 wire legal,max64.35ms locally (not hosted latency).
+OrbStack stopped after disk-full I/O errors at14:58 local; normal start/readback
+found exact retained base486f51f1 intact. Preserved failed build log/bundle;
+verified every partial bundle file before resuming. No reset/prune/global cleanup.
+
+Live Coworld definition byte-equivalent to preceding snapshot; Daveeyv7 still
+rank1, own champions unchanged. Upload session20869 pending; inspect receipt
+before any repeat publication. Root `/tmp/relh-generals-serving-35892-final`.
+Goal active: hosted strong-win acceptance remains unmet.
+
 ## 35892 training completed; held-out comparison running
 
 Host marker STEP_DONE train observed01:04:06UTC, followed by evaluate.
