@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## Missing-panel recovery implementation and pinned-image CPU proof
+
+Added integrations.recover_spatial_population_panel to recover exactly one
+interrupted panel in a fresh output directory. It validates completed reference
+outcomes/seat counts, exact population-build hash, pinned checkpoint AND bundle
+manifest (including sampler), and all interrupted initial map/side/opponent
+arrays against the completed reference. Existing outcomes/output or nested input
+writes are rejected. Execution replaces the process, retaining the outer Slurm
+step's lifecycle ownership; no training or completed panel is repeated.
+
+Actual35893 CPU plan passes with original policyf4ef5616..., manifest
+604215c09c6de6b6534158601a34435f6cff44dcaa408a97edc0ef9440c47329,
+build3d878c4ff2fb9e634978330d7e3a9b08e6233971928e97bfd7d9bca39a4d70d5,
+4096games/pool4096,seed39063,sample9945. Local plan:
+/tmp/relh-generals-35893-recovery-cpu-plan.json. Exact pinned training image
+66660f4b... CPU CLI plan also PASSED with retained results mounted read-only:
+/tmp/relh-generals-panel-recovery-cpu/plan.json and image-cpu.log.
+CPU image handle28725 terminal; no GPU submitted. Source overlay is frozen
+under that directory. Focused suite24passed/2subtests, Ruff and diff checks pass.
+
+Next launch must contain only recovery plus result checks, with an independent
+bounded panel budget (at least the existing360-second evaluator allowance,
+plus startup/finalization). Future four-arm training pilots must increase or
+split the old900-second monolithic evaluation phase; that budget demonstrably
+omitted time needed for the fourth panel and its independent JAX setup.
+Complete transport/input/lifecycle audit and fresh queue/physical preflight
+before scheduling. No new training, paid compute, deployment or promotion.
+CLOSER_NOT_READY closer-pass3-20261003-mbp-27; missing cold comparison and
+strong hosted wins remain unresolved. No owned jobs/processes are live.
+
 ## 35893 training preserved; evaluation deadline exposed incomplete cold-parent panel
 
 Job35893 FAILED1:0 at2026-10-04T03:19:19 UTC after31m05s, solely because
