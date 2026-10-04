@@ -1,5 +1,45 @@
 # Softmax Coworld Classic 1v1 training
 
+## Live recovery35894 on RTX4090; only missing panel, no training
+
+After CPU/source/input/image/lifecycle audits and fresh full queue/physical
+checks, submitted once:35894,relh-generals-panel-recovery-f0ccd1de,Slurm chose
+metta1 onrtx4090. Controller RUNNING,Nice2147483645/Priority1 unchanged,
+finite00:30:00,oneGPU,8CPUs,32GiB hostRAM,no requeue,nodelist or paid node.
+Other jobs had naturally finished; full queue was empty immediately before
+submission. metta0/metta1 GPUs physically idle,driver580.173.02,~117–119GiB
+availableRAM,286/381GiB disk and>229million free inodes. No contention observed.
+Project-prohibitedmetta4 excluded; no node pinned. Preflight files:
+/tmp/relh-generals-panel-recovery-{submit,metta0,metta1}-preflight.txt.
+
+Input1012members/77305183unpackedbytes; archive62217479bytes,SHA256
+62aead00f3e6d2a76adccc7c1f6ad2f02a3772f273e875d25070db3bf429b528.
+Source is qualified2895e9c plus pinned factory and recovery module19faae2;
+explicit per-file payload hashes include the task runtime entrypoint.
+Input key relh/generals-panel-recovery-20261004T034201Z-ae7835d4/input.part000.
+Same pinned6.9GB training image66660f4b...; no virtualenv copied.
+
+CPU rehearsal caught missing CPU override and insufficient64-game weighted
+cycle before any GPU launch. Both failed logs/scripts preserved. Corrected
+256-game image smoke PASSED:all actions legal,finite rewards,13 opponents on
+both seats. Proof /tmp/relh-generals-panel-recovery-image-smoke-r3/out/smoke-proof.json.
+CPU handle54047 terminal. Lifecycle31passed/15subtests in
+/tmp/relh-generals-panel-recovery-lifecycle.log; focused recovery24passed/2subtests.
+
+Same-job phases:smoke180s,recover600s,compare90s,with600s finalization reserve.
+Recover ONLY original parent4096games,seed39063/sample9945,write fresh
+heldout-cold-parent-recovered; compare against the three retained completed
+panels. No checkpoint training,export or completed panel replay.
+Receipt /tmp/relh-generals-panel-recovery-f0ccd1de.receipt.json;
+launch /tmp/relh-generals-panel-recovery-launch.json; controller monitor96874
+is live and must preserve terminal receipt. Result bucket softmax-slurm-artifacts,
+prefix relh/generals-panel-recovery-results-20261004T034224Z-53827637.
+Collection script /tmp/relh-generals-collect-35894-when-terminal.py is live.
+Host log /tmp/relh-generals-panel-recovery-f0ccd1de-35894.log onmetta1.
+
+CLOSER_NOT_READY closer-pass3-20261003-mbp-27. Finish recovery/collection and
+strength analysis; hosted superiority remains unproven. No deployment/merge.
+
 ## Missing-panel recovery implementation and pinned-image CPU proof
 
 Added integrations.recover_spatial_population_panel to recover exactly one
