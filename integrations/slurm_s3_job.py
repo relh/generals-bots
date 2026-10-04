@@ -321,10 +321,21 @@ class SlurmJob:
                     preexec_fn=lambda: signal.pthread_sigmask(signal.SIG_SETMASK, mask))
             finally:
                 signal.pthread_sigmask(signal.SIG_SETMASK, mask)
-            try:
-                code = self.process.wait(timeout=seconds)
-            except subprocess.TimeoutExpired:
-                raise RuntimeError(f"{name} exceeded its bounded runtime") from None
+            deadline = time.monotonic() + seconds
+            previous_progress = None
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise RuntimeError(f"{name} exceeded its bounded runtime")
+                try:
+                    code = self.process.wait(timeout=min(30, remaining))
+                    break
+                except subprocess.TimeoutExpired:
+                    if name == "train":
+                        progress = self.training_progress()
+                        if progress and progress != previous_progress:
+                            print(progress, flush=True)
+                            previous_progress = progress
             # Keep the Popen reference until finalization confirms remote steps.
             if code:
                 raise subprocess.CalledProcessError(code, [name])
@@ -336,6 +347,43 @@ class SlurmJob:
             raise RuntimeError("Remote step completion not confirmed")
         self.process = None
         print(f"STEP_DONE {name}", flush=True)
+
+    def training_progress(self):
+        """Expose numeric Puffer progress from the batch host, without a step.
+
+        Read only a bounded tail of our console. Never forward raw log text:
+        the public batch log must not accidentally expose credentials.
+        This is observation only; the workload owns its throughput gate.
+        """
+        path = self.root / "out/run/console.log"
+        try:
+            with path.open("rb") as source:
+                source.seek(0, os.SEEK_END)
+                source.seek(max(0, source.tell() - 131072))
+                history = source.read(131072).decode(errors="replace")
+        except OSError:
+            return None
+        times = {}
+        for block in history.split("╭"):
+            epoch = re.search(r"Epoch\s+(\d+)", block)
+            uptime = re.search(r"Uptime\s+((?:\d+(?:ms|[dhms])\s*)+)", block)
+            if epoch and uptime:
+                factors = {"d": 86400, "h": 3600, "m": 60, "s": 1, "ms": .001}
+                times[int(epoch[1])] = sum(int(v) * factors[u] for v, u in
+                                          re.findall(r"(\d+)(ms|[dhms])", uptime[1]))
+        if not times:
+            return None
+        last = max(times)
+        progress = f"TRAIN_PROGRESS epoch={last} uptime_seconds={times[last]:.3f}"
+        first = last - 2
+        games = self.config.get("receipt", {}).get("environment_count")
+        horizon = self.config.get("receipt", {}).get("horizon")
+        if (first in times and times[last] > times[first]
+                and type(games) is int and games > 0
+                and type(horizon) is int and horizon > 0):
+            sps = 2 * games * horizon / (times[last] - times[first])
+            progress += f" environment_sps_last_two_epochs={sps:.2f}"
+        return progress
 
     def steps_stopped(self):
         if not self.step_started:

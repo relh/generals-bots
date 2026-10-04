@@ -1,5 +1,24 @@
 # Softmax Coworld Classic 1v1 training
 
+## Host-only numeric training progress added for future launches
+
+Current35892 is in training, one B300 using~210278MiB, sampled30-100% GPU
+utilization; actual completed-step SPS awaits results. No other GPU process;
+other CPU work exists on host, native trainer restricted to CPUs0-3,96-99.
+Added bounded console-tail numeric progress to future host launchers so no
+external srun observer is needed. Phase timeout/signal/barrier/archive semantics
+remain enforced.36 CPU tests plus15 subtests passed, including lifecycle;
+progress tests cover incomplete dashboards, bounded reads, secret exclusion and
+qualified SPS arithmetic. Existing lint import-order/broad-exception findings
+are outside these changes. No mutation of current job/priority/settings.
+
+Local disk is shrinking from unrelated activity. Preparing only five redundant
+owned input transport archives for retirement after full remote GET SHA and
+expanded manifest verification; all results/checkpoints/source/history retained.
+A one-part collector passes success/corruption/path-traversal/space/inode CPU
+checks and avoids a redundant compressed copy if original collector disk gate
+blocks. Runtime results remain durable in sandbox S3 regardless of local disk.
+
 ## 35892 running: bounded wider-context retry, no external srun observers
 
 Job35892, `relh-generals-wide-context-ff0d55aa`, RUNNING on B300,1GPU/8CPU/96GiB,
