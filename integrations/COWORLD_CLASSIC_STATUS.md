@@ -1,5 +1,36 @@
 # Softmax Coworld Classic 1v1 training
 
+## Final H100 CPU image passed; shared reservation requested, no GPU allocation
+
+Source5961ce211e5a4f40b0986266994a5e4c078c7b53 is pushed in PR4.
+The final local image binds immutable input3e2a95dbc8df298c724bcbe3aeee0c8f671b06a22fd6b73e400022aa59457a69
+and SM90 binary4a148d1b96e342f386dab7d73e0570375feb91982601cdc45d7301a7566e3edd.
+Image sha256:3b126bf5728feb21652238f6c99e3ef8df006e57fda5bb2b557c507b9b72bd9b
+passed actual prepare_run, exact momentum preservation, dependency equality,
+and owned phase success/failure/timeout checks. /work and /recovery absent
+in final image; stopped retention container relh-generals-h100-migration-proof-retained.
+Evidence /tmp/relh-generals-h100-final-image-proof/cpu-ready.json and cpu-prepare.log.
+OrbStack overlay reports unknown zero inodes; build proof used bounded tmpfs,
+leaving runtime byte/inode guards intact. Failed builds/logs preserved.
+Cloud rebuild has the same CPU gate before GPU; its image digest remains pending.
+Host collector CPU checks accept a valid archive and reject hash/size mismatch
+and path traversal; actual provider artifact shape checked read-only. Evidence
+/tmp/relh-generals-h100-collection-cpu-proof.json. Real capture/download awaits run.
+Fresh provider listing contains no Generals job. Coordinator reservation is
+absent; previous coordinator pane has a fresh session, live owner requested.
+
+Coordinator packet: /tmp/relh-october-dispatch/generals-h100-migration-reservation-request.json.
+Current validated quote one H100,60min,2.97USD runtime. Requested shared hold7USD
+includes60min build0.60, conservative30GB-month storage3.00 and0.43margin;
+no free allowance assumed. Ledger untouched. Await coordinator reservation
+in generals-h100-migration-reservation-decision.json before paid submission.
+One finite8M pilot, explicit resume none, matched4096-game fresh panels,
+>=30kSPS and serving parity gates. No duplicate Slurm/paid job, no priority change.
+No owned Slurm jobs require Nice adjustment; future Nice2147483645/Priority1.
+New source CI still pending; prior seven Sentinel baseline failures remain separate.
+GPU throughput, learning improvement and strong hosted play remain unproved.
+CLOSER_NOT_READY closer8-hour1-mbp-27.
+
 ## H100 continuation implemented; real optimizer migration and SM90 CPU proof pass
 
 Explicit migrate_classic_rollout admits only8192->2048 parallel games with
