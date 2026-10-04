@@ -1,5 +1,58 @@
 # Softmax Coworld Classic 1v1 training
 
+## Log-gap input and CPU image qualification complete; storage gate blocks pilot
+
+Frozen implementation: 7d069d092e1eb6bd4ce6e1138301658499c55b67.
+Original35892 policy f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14
+and Muon state 1c4832d6f5516ed85a97cf0b476b303ba8829467defeac4b5a7e6d1f6b11599b
+remain byte-identical. Proposed bounded comparison uses full temperature1,
+log_gap_scale4,33,554,432steps, and fresh evaluation seeds40913/10211.
+The pinned factory5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474
+is explicitly recorded as an input override; original parent manifests unchanged.
+
+Local immutable input /tmp/relh-generals-portable-log-gap-input.tar.gz:
+210529020bytes,1499members,241136778unpackedbytes, SHA256
+c41410fdd464d11dd1f74b7b22661d9b4e790538c6e92e4b6f8ad97ec875b1e9.
+All source/input hashes and extraction verified. CPU population check passed:
+256games,13opponents on both sides, legal opposing actions, finite rewards,
+25% position curriculum and native siege memory reset at episode boundaries.
+Lifecycle suite38passed/21subtests; log /tmp/relh-generals-log-gap-lifecycle.log.
+
+Exact training image66660f4b CPU prepare/resume passed with578860parameters,
+2499805184->2533359616 steps,9 finite public states and legal frozen actions.
+Reused unchanged verified CUDA binary5f2be8d57ecaa1e72bcab280c68dda022a7601f9fde237ae5a98197bd98d7ea3;
+no recompilation or GPU claim. Initial audit correctly rejected stale environment
+metadata in the copied fixture. New isolated fixture binds current environment
+fingerprint91b74f38abc7d199b12222c31d545f1fdd42d4f667e4f83c6263fe630a02cc84,
+validates identical model/config/artifact hashes, then restores policy and
+optimizer bytes exactly. Failed and successful evidence both retained under
+/tmp/relh-generals-log-gap-image-proof and its -r2 sibling.
+
+Local serving base relh-generals-serving-base:log-gap-v1,
+sha256:41f835053fa93764ded594c4ca0df64c6f4b132c769cf30cb11bf853c70e3ee3:
+46/46 golden top actions match, maximum probability difference4.292e-6;
+32/32 legal wire replies. Maximum local emulated reply59.3ms is not production
+latency proof. No hosted publication. Proof /tmp/relh-generals-serving-base-log-gap/proof.json.
+Combined binding /tmp/relh-generals-log-gap-cpu-readiness.json.
+
+Fresh full Slurm/physical preflight: only unrelated pending jobs35895/35896;
+no Generals job, all8 B300 GPUs0MiB/0% with no compute process. Slurm26.05.3,
+B300 idle. Actual resource blocker: B300 /tmp has49698 free inodes, below the
+launcher's60000 floor despite1.1TiB free; disk fallback /var/tmp has only3.6GiB.
+Do not lower the floor or touch other-owner files. No GPU submission, no paid
+node, no priority change. For this check jobID/Nice/Priority before/after are
+N/A because no owned job exists. Future Nice2147483645/Priority1 remains mandatory.
+Preflight receipt /tmp/relh-generals-log-gap-image-proof-r2/preflight-storage-gate.json.
+All local CPU/image handles15089,8349,76715,80011,67181,38504,86324 terminal;
+only a stopped image-retention container remains. Other Docker services untouched.
+
+Still required: recheck actual storage capacity before one bounded pilot,
+512-game sampler viability, new steady training SPS>=30000, four matched panels
+with more than900seconds evaluation budget, and meaningful competitive gain.
+Existing best hosted strength remains9/32 vsDaveey; temperature2 was rejected.
+PR4 remains open/unmerged; latest7d069d0 CI still in progress at this check.
+CLOSER_NOT_READY closer-pass3-20261003-mbp-27. Active goal remains unfinished.
+
 ## Opt-in log-gap exploration implemented; CPU behavior/gradient proof passes
 
 Added shared spatial_exploration primitives: reconstruct the legal3529-action
