@@ -1,5 +1,26 @@
 # Softmax Coworld Classic 1v1 training
 
+## Follow-up: launch budget audited; storage gate persists
+
+Fresh full queue/physical check again found no owned job or GPU process,
+B300 /tmp49698 free inodes and disk fallback3.6GiB; the60000-inode floor
+remains unchanged. No submission, paid compute, cleanup or priority change.
+Latest PR-head CI and implementation-head7d069d0 CI remain in progress.
+
+Completed CPU-only render audit for the next bounded pilot:
+90minutes total; smoke180s,build600s,sampling gate300s,train1500s,evaluate1800s;
+600s termination/upload reserve plus420s startup margin. This fixes the old
+900-second four-panel evaluation budget failure. Full temperature1/log-gap4,
+fresh seeds40913/10211,8CPU96GiB,one B300 justified by measured>24GiB memory.
+MaxNice2147483645,no requeue,no node pinning; unchanged60000/40000 inode floors.
+Shell syntax and embedded Python compilation passed. Signer also refuses
+signing if a fresh remote storage check fails. No live credentials were created
+for this audit; all dry-run URLs replaced by invalid placeholders.
+Proof /tmp/relh-generals-log-gap-launch-cpu-proof.json;
+signer /tmp/relh-generals-sign-log-gap-job.py (not executed).
+The original winning/throughput goal remains active and incomplete.
+CLOSER_NOT_READY closer-pass3-20261003-mbp-27.
+
 ## Log-gap input and CPU image qualification complete; storage gate blocks pilot
 
 Frozen implementation: 7d069d092e1eb6bd4ce6e1138301658499c55b67.
