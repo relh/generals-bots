@@ -1,5 +1,45 @@
 # Softmax Coworld Classic 1v1 training
 
+## Temperature2 qualification in progress; pass-two closer remains NOT READY
+
+Frozen local input source2895e9cea4d0c86d6361cb102d23aa88b44688a6 at
+`/tmp/relh-generals-portable-temperature2-input`,895 tracked source files,
+including both new dependency-free modules. Package1131members/224178570
+unpacked bytes; archive207722412bytes, SHA256
+466c77f8c976362e560ea204abc5095775006e5e2dcee288468d27078570e1a8.
+Extraction and every member hash verified; package not yet uploaded or GPU
+qualified. Receipt `/tmp/relh-generals-temperature2-package.json`.
+
+Staged256-game CPU pool/reset audit PASSED:13 opponents on both seats,
+weights unchanged, legal opposing actions, finite rewards,25% position mix,
+correct native memory reset on forced boundaries. Receipt:
+`/tmp/relh-generals-temperature2-staged-cpu-readiness.json`.
+Lifecycle/Slurm runner CPU suite36passed/15subtests, including success,
+failure,signal and upload failure handling. No GPU work submitted.
+
+Exact-image CPU compiler proof currently LIVE, session63606, owned container
+`relh-generals-temperature2-image-cpu-r2`, bounded1140seconds. Root:
+`/tmp/relh-generals-temperature2-image-proof-r2`; inspect image-cpu.log and
+out/audit.json plus terminal handle before any retry. First local harness
+attempt lacked /work/out; it stopped before compilation, was corrected in a
+new proof root, and its log is preserved. No training/runtime defect inferred.
+
+Re-read both Metta skills, their operational references and actual Jordan
+Downloads guide. Older repo docs still prescribe node pinning/Docker/nice100;
+user S3/Pyxis/no-pin and maximumNice2147483645 overrides remain authoritative.
+No documentation derived from the informal guide published. Fresh preflight
+shows only other owners35874/35875 on4090s; all8 B300 GPUs empty. B300 CPU load
+25.13 across192 CPUs, /tmp86,179free inodes and1.2TBfree; no observed GPU
+contention. Recheck before submission. Records temperature2-slurm-preflight.txt
+and temperature2-physical-preflight.txt in /tmp/relh-generals-*.
+
+CI37169015505 on46e9a15 now terminal:1060passed,17skipped,23subtests; the ONLY
+7 failures are baseline Sentinelv3-v5 cases reproduced on untouched main.
+Newer exploration-head CI remains live. Raw failed CI log retained. No claim
+of green CI or competitive completion. Goal active; GPU sampler gate, training
+improvement, held-out/hosted acceptance and current CI conclusion remain owed.
+CLOSER_NOT_READY closer-pass2-20261003-mbp-27.
+
 ## Closer pass two: temperature10 rejected before GPU; temperature2 next to qualify
 
 CLOSER_NOT_READY closer-pass2-20261003-mbp-27. Full assigned strong-play goal
