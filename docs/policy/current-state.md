@@ -200,6 +200,18 @@ defense, with extremely low rescue-action probability. The matched exploration e
 The defense warmstart improves tactical support but still needs broad strength
 evaluation and fresh hosted confirmation.
 
+Fresh public-view data is sealed at
+`/tmp/generals-fresh-public-curriculum-770-780-v1/`: 2,048 unique training views
+and 512 independent confirmation views, balanced across both seats, all four
+attack directions and all sixteen Classic board shapes. All 2,560 teacher
+labels are legal and survive the prescribed attack; 24 already-lost controls
+also passed. Healthy public counterfactuals are retained for a possible
+behavior-preservation objective if broad results require it. No learned
+candidate has been evaluated on the new confirmation set. The training set
+has four times the previous 512 unique views. Proof SHA-256:
+`3c2d31a86863bbaa555adbfa1d78742f0fa8120cb56587b1b187b2c8f2923efb`.
+This is data preparation, with zero new policy optimization or RL steps.
+
 ## Current artifact and source contract
 
 The cleaned current factory contains only the sixteen-plane F32/G32 flat

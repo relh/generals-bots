@@ -48,7 +48,7 @@ def test_generated_archive_is_paired_independent_and_binds_teacher_free_reset(tm
     states = load_positions(output / "positions.npz", manifest["positions_sha256"])
     np.testing.assert_array_equal(states.ownership[0], states.ownership[1][::-1])
     assert hashlib.sha256((output / "positions.npz").read_bytes()).hexdigest() == manifest["positions_sha256"]
-    options = {"coworld_classic": True, "teacher": None}
+    options = {}
     configure_positions(options, output / "manifest.json")
     assert options["coworld_position_probability"] == 0.25
     assert not any(row["competent_on_this_probe"] for row in report["teacher_admission"].values())
