@@ -13,24 +13,33 @@ infrastructure cleanup alone does not complete the goal.
 | 5. Learning | Controlled changes that address observed losses | Broad improvement with preservation against strong controls; qualified throughput |
 | 6. Hosted qualification | Frozen serving bundle and confirmed winning advantage | Fresh hosted acceptance panels and recorded champion promotion |
 
-Stages 1–3 are active implementation work. Stages 4–6 require execution evidence
-and remain open. Existing results are documented in [current-state.md](current-state.md).
+Consolidation and the shared Classic contract are implemented. The repaired
+Puffer path completed a bounded B300 qualification at 76,357 end-to-end SPS;
+the selected baseline also passed native AMD64 hosted serving smoke. A stricter
+same-sampler startup gate has been repaired and must pass in the next trial.
+Baseline comparisons and loss diagnosis are available. Learning improvement
+and hosted winning qualification remain open; see [current-state.md](current-state.md).
 
 ## Experiment decisions
 
-Begin with the fast spatial baseline and its retained learner state. Resolve the
-stale launcher binding and baseline input availability before GPU submission.
-Use the established population as a starting point and verify every opponent has
-samples on both seats. Fix sampler and reward-contract discrepancies before
-interpreting a learning curve.
+Retain baseline `f4ef5616…` with log-gap scale 0. The latest 8M-step exploration
+candidate regressed against both its initialization and the unchanged baseline
+on matched development games and was rejected. The stale launcher binding is
+resolved; repeating that intervention or scaling its training is unjustified.
 
-Prioritize evidence-supported experiments in exploration and hard-opponent
-exposure. Diagnose expansion, force concentration, half moves, capital defense,
-fog memory, and attack timing using losing replays. Change architecture or add
-memory when the loss analysis warrants it. Test one substantive hypothesis at a
-time with matched budgets; repeat seeds when needed to distinguish variation
-from learning. End a run that fails its throughput or strength gate, preserving
-its evidence and checkpoints.
+The next decision is a matched public-defense warmstart trial. Separate
+synthetic training and held-out maps supply legal Sentinel tactical labels.
+Distillation changes only policy weights; both control and warm PPO arms use
+fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
+position curriculum, opponent pool and rewards. Compare source, distilled,
+control and warm bundles on the same broad development games before selecting
+a candidate for fresh confirmation and hosted qualification.
+
+Preserve throughput, legality, train/serve parity, opponent-by-seat coverage and
+frozen artifact identities. Reject failed hypotheses using their paired evidence;
+choose subsequent changes from losing-replay diagnosis rather than unchanged
+long runs. Additional architecture or memory work should address measured
+failures in expansion, force concentration, half moves, defense or attack timing.
 
 Use targeted tests for changed behavior and required execution gates. Broaden
 verification when a concrete failure needs resolution. Integrate working

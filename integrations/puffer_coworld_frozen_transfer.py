@@ -168,9 +168,7 @@ class BuildManifest(BaseModel):
 
 SPATIAL_FACTORY = "integrations.generals_fabric:two_stage_tied_local_action_policy"
 SPATIAL_ENVIRONMENTS = {
-    "integrations.metta_puffer:BatchedGeneralsPufferEnvironment",
     "integrations.spatial_selfplay:SpatialFrozenOpponentPufferEnvironment",
-    "integrations.spatial_selfplay:SpatialMixedFrozenOpponentPufferEnvironment",
     "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
 }
 # These change the opponent distribution or reset positions, not the policy
@@ -184,7 +182,7 @@ DISTRIBUTION_OPTIONS = {
 
 def validate_spatial_transfer(source, target, run):
     """Verify current Classic policy ABI instead of whitelisting old checkpoints."""
-    from integrations.classic_contract import validate_training_contract
+    from integrations.classic_contract import project_current_options, validate_training_contract
 
     before, after = source.build, target
     old, new = before.config.python_environment, after.config.python_environment
@@ -205,13 +203,15 @@ def validate_spatial_transfer(source, target, run):
             or old.spec.model_copy(update={"agents": new.spec.agents}) != new.spec):
         raise ValueError("Spatial transfer requires the same current factory, model fingerprint and policy ABI")
     for build, config in ((before.config, source.config), (after.config, run)):
-        options = build.python_environment.options
-        if (options.get("teacher") is not None or options.get("teacher_rollouts")
-                or options.get("supervise_teacher") or options.get("terminal_reward_mode") != "win_only"):
+        options = project_current_options(build.python_environment.options)
+        if options.get("terminal_reward_mode") != "win_only":
             raise ValueError("Spatial transfer requires the teacher-free Classic win objective")
         validate_training_contract(build.model_dump(mode="json"), config.model_dump(mode="json"))
-    old_options = {k: v for k, v in old.options.items() if k not in DISTRIBUTION_OPTIONS}
-    new_options = {k: v for k, v in new.options.items() if k not in DISTRIBUTION_OPTIONS}
+    old_options, new_options = (project_current_options(env.options) for env in (old, new))
+    for options in (old_options, new_options):
+        options.setdefault("require_gpu", True)
+    old_options = {k: v for k, v in old_options.items() if k not in DISTRIBUTION_OPTIONS}
+    new_options = {k: v for k, v in new_options.items() if k not in DISTRIBUTION_OPTIONS}
     if old_options != new_options:
         raise ValueError("Spatial transfer cannot change game, observation or reward semantics")
 
@@ -228,13 +228,15 @@ class CheckpointInitialization(Configuration):
     restore_horde: bool = False
     restore_rnd: bool = False
     restore_learner: bool = False
-    migrate_classic_rollout: bool = False
+    # This fixed schema marker preserves the identity of already sealed records.
+    # Changing optimizer geometry is unsupported; migration cannot be requested.
+    migrate_classic_rollout: Literal[False] = False
 
     @model_validator(mode="after")
     def validate_policy_only(self):
         if self.allow_policy_only_transfer and (
             not self.allow_environment_transfer or self.restore_learner
-            or self.restore_ema or self.restore_horde or self.restore_rnd or self.migrate_classic_rollout
+            or self.restore_ema or self.restore_horde or self.restore_rnd
         ):
             raise ValueError("Policy-only transfer requires a fresh optimizer and explicit environment transfer")
         return self
@@ -336,7 +338,7 @@ class InitializationRecord(Record):
     source: TrainingRecord
     checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     training_seeds: list[int] = Field(min_length=1)
-    rollout_migration: dict | None = None
+    rollout_migration: None = None
     supervised_transfer: SupervisedPolicyTransfer | None = None
 
 
@@ -527,11 +529,6 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     environment["METTA_RUN_RECORD"] = str(output / "training.json")
     if config.initialize:
         reference = config.initialize
-        if reference.migrate_classic_rollout and (
-            not reference.restore_learner or not reference.allow_environment_transfer
-            or reference.restore_ema or reference.restore_horde or reference.restore_rnd
-        ):
-            raise ValueError("Rollout migration requires only a device-resident learner resume")
         source_run = reference.run.resolve()
         checkpoint = reference.checkpoint.resolve()
         transfer_path = source_run / "policy-transfer.json"
@@ -582,8 +579,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
                 raise ValueError("Learner resume currently requires synchronous single-GPU training")
             if settings.getint("selfplay", "enabled", fallback=0):
                 raise ValueError("Learner resume requires opponent history recovery for self-play")
-            if (source.config.seed != config.seed
-                    or (source.config.overrides != config.overrides and not reference.migrate_classic_rollout)):
+            if source.config.seed != config.seed or source.config.overrides != config.overrides:
                 raise ValueError("Learner resume requires the identical native build, seed, and training overrides")
             state_path = Path(str(checkpoint) + ".learner")
             identity = LearnerCheckpointIdentity.model_validate_json(Path(str(state_path) + ".json").read_text())
@@ -606,23 +602,6 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             if initial_environments:
                 environment["METTA_INITIAL_ENVIRONMENT"] = str(output / "initial-policy.bin")
             learner = LearnerCheckpoint.read(state_path, len(initial_parameters) // 4)
-            if reference.migrate_classic_rollout:
-                target_env = manifest.config.python_environment
-                if (environment_count or not target_env or not target_env.device_resident
-                        or not target_env.options.get("coworld_classic")
-                        or target_env.options.get("teacher") is not None
-                        or target_env.options.get("teacher_rollouts")
-                        or not fabric or fabric.self_distillation or fabric.ema_prior
-                        or fabric.factory != SPATIAL_FACTORY or fabric.options.get("channels") != 16):
-                    raise ValueError("Rollout migration requires the qualified memoryless Classic model")
-                from integrations.classic_rollout_migration import migrate_learner
-
-                initial_learner, audit = migrate_learner(
-                    initial_learner, len(initial_parameters) // 4,
-                    source.config.overrides, config.overrides,
-                )
-                initialization = initialization.model_copy(update={"rollout_migration": audit})
-                learner = learner.model_copy(update={"epoch": audit["target_epoch"]})
             if learner.epoch * batch_steps != learner.agent_steps or learner.agent_steps != int(checkpoint.stem):
                 raise ValueError("Learner snapshot counters differ from its checkpoint or rollout dimensions")
             if learner.agent_steps >= expected_step:

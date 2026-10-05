@@ -14,6 +14,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
+from integrations.classic_contract import project_current_options
 
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_destination_audit import destination_categories
@@ -61,17 +62,15 @@ def main():
     environment = build["config"]["python_environment"]
     if environment["factory"] != "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment":
         raise ValueError("Expected a pinned Classic spatial population build")
-    options = environment["options"].copy()
-    if not options.get("coworld_classic") or options.get("terminal_reward_mode") != "win_only":
+    options = project_current_options(environment["options"])
+    if options.get("terminal_reward_mode") != "win_only":
         raise ValueError("Population build must use win-only official Classic rules")
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
-                   shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0,
+                   shaping_weight=0.0, reward_scale=1.0,
                    terminal_reward_mode="signed")
     # A training curriculum must never change the held-out starting distribution.
     if "coworld_position_probability" in options:
         options["coworld_position_probability"] = 0.0
-    if options.get("public_scalar_features"):
-        options["public_scalar_ablation"] = False
     args.output.mkdir(parents=True, exist_ok=False)
     context = EnvironmentContext(seed=args.seed, index=0, mode="train", output=args.output)
     env = SpatialPopulationOpponentPufferEnvironment(context=context, **options)

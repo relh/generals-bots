@@ -61,7 +61,7 @@ def test_incompatible_transfer_rejected(trainer, source, change):
         trainer.validate_spatial_transfer(source, target, source.config)
 
 
-@pytest.mark.parametrize("restore", ["restore_learner", "restore_ema", "restore_horde", "restore_rnd", "migrate_classic_rollout"])
+@pytest.mark.parametrize("restore", ["restore_learner", "restore_ema", "restore_horde", "restore_rnd"])
 def test_policy_only_never_restores_optimizer_or_auxiliary_state(trainer, restore):
     with pytest.raises(ValueError, match="fresh optimizer"):
         trainer.CheckpointInitialization(run="source", checkpoint="source/checkpoints/policy.bin",
@@ -134,3 +134,23 @@ def test_owned_lineage_reads_supervised_artifact_and_detects_wrong_bundle(traine
     (bundle / "policy.bin").write_bytes(struct.pack("<4f", 1, 2, 3, 5))
     with pytest.raises(ValueError, match="checkpoint ABI"):
         trainer.policy_training_lineage_seeds(bundle, run)
+
+
+def test_changed_optimizer_geometry_cannot_be_requested(trainer):
+    with pytest.raises(ValueError):
+        trainer.CheckpointInitialization(run="source", checkpoint="source/checkpoints/policy.bin",
+            sha256="a" * 64, allow_environment_transfer=True, restore_learner=True,
+            migrate_classic_rollout=True)
+
+
+def test_fixed_archived_option_projection_preserves_current_transfer(trainer, source):
+    from integrations.classic_contract import project_current_options
+
+    target = source.build.model_copy(deep=True)
+    source.build.config.python_environment.options.update(coworld_classic=True, directional_features=True,
+        public_scalar_features=True, public_scalar_ablation=False, teacher=None, teacher_rollouts=False,
+        require_gpu=True)
+    cleaned = project_current_options(target.config.python_environment.options)
+    target.config.python_environment.options.clear()
+    target.config.python_environment.options.update(cleaned)
+    trainer.validate_spatial_transfer(source, target, source.config)

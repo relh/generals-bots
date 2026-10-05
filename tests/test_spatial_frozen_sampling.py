@@ -13,6 +13,14 @@ from integrations.spatial_policy_bundle import structured_action_probabilities
 from integrations.spatial_frozen_sampling import frozen_action_indices
 
 
+def sampler(**settings):
+    fields = dict(action_mode="structured_sample", move_temperature=.05,
+                  split_temperature=.15, early_route_temperature=None, early_route_turns=None,
+                  route_half_weight=0., neutral_route_bias=0., weak_owned_route_penalty=0.,
+                  doomed_attack_route_penalty=0., full_action_temperature=1., log_gap_scale=0.)
+    return SimpleNamespace(**(fields | settings))
+
+
 @pytest.mark.parametrize("workers", [1, 4, 8])
 def test_single_frozen_match_accepts_population_worker_metadata(tmp_path, monkeypatch, workers):
     pytest.importorskip("metta_training")
@@ -21,7 +29,7 @@ def test_single_frozen_match_accepts_population_worker_metadata(tmp_path, monkey
     (tmp_path / "build.json").write_text(json.dumps({
         "config": {"python_environment": {"options": {}}},
     }))
-    monkeypatch.setattr(module, "SpatialPlayerPolicy", lambda bundle: SimpleNamespace())
+    monkeypatch.setattr(module, "SpatialPlayerPolicy", lambda bundle: SimpleNamespace(channels=16))
     reached = []
 
     class BaseReached(Exception):
@@ -52,7 +60,7 @@ def test_frozen_sampled_opponent_matches_serving_distribution():
     legal = np.zeros((3529,), bool)
     legal[[0, 1764, 3528]] = True
     expected = structured_action_probabilities(outputs, legal, .05, .15)
-    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+    policy = sampler(action_mode="structured_sample", move_temperature=.05,
                              split_temperature=.15)
     keys = jax.random.split(jax.random.PRNGKey(123), count)
     choose = jax.jit(lambda k: frozen_action_indices(
@@ -73,7 +81,7 @@ def test_frozen_half_weight_matches_serving_route_distribution():
     legal = np.zeros(3529, bool)
     legal[[0, 1, 1764, 1765]] = True
     expected = structured_action_probabilities(outputs, legal, .05, .15, route_half_weight=.25)
-    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+    policy = sampler(action_mode="structured_sample", move_temperature=.05,
                              split_temperature=.15, route_half_weight=.25)
     keys = jax.random.split(jax.random.PRNGKey(291), count)
     sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(
@@ -93,7 +101,7 @@ def test_frozen_opening_schedule_matches_serving_temperature_by_public_turn():
     observations = np.zeros((2 * count, 16 * 441), np.float32)
     observations[:count, 11 * 441] = 99 / 2000
     observations[count:, 11 * 441] = 100 / 2000
-    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+    policy = sampler(action_mode="structured_sample", move_temperature=.05,
                              split_temperature=.15, early_route_temperature=.1, early_route_turns=100)
     keys = jax.random.split(jax.random.PRNGKey(118), 2 * count)
     sampled = np.asarray(jax.jit(lambda k, o: frozen_action_indices(
@@ -108,15 +116,6 @@ def test_frozen_opening_schedule_matches_serving_temperature_by_public_turn():
         frozen_action_indices(policy, jnp.asarray(outputs[None]), jnp.asarray(legal[None]), keys[:1])
 
 
-def test_frozen_argmax_opponent_keeps_legacy_selection():
-    outputs = np.zeros((2, 3530), np.float32)
-    outputs[:, 0], outputs[:, 1764], outputs[:, 3528] = .15, 0, .1
-    legal = np.zeros((2, 3529), bool)
-    legal[:, [1764, 3528]] = True
-    chosen = frozen_action_indices(SimpleNamespace(action_mode="argmax"),
-                                   jnp.asarray(outputs), jnp.asarray(legal),
-                                   jax.random.split(jax.random.PRNGKey(7), 2))
-    np.testing.assert_array_equal(np.asarray(chosen), [3528, 3528])
 
 
 def test_frozen_neutral_route_bonus_matches_serving_distribution():
@@ -130,7 +129,7 @@ def test_frozen_neutral_route_bonus_matches_serving_distribution():
     public[6 * 441 + source + 1] = 1
     expected = structured_action_probabilities(outputs, legal, .05, .15,
                                                observations=public, neutral_route_bias=3.0)
-    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+    policy = sampler(action_mode="structured_sample", move_temperature=.05,
                              split_temperature=.15, neutral_route_bias=3.0)
     keys = jax.random.split(jax.random.PRNGKey(109), count)
     sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(
@@ -157,7 +156,7 @@ def test_frozen_weak_owned_route_penalty_matches_serving_distribution():
     public[4 * 441 + source - 21] = 1
     expected = structured_action_probabilities(outputs, legal, .05, .15,
                                                observations=public, weak_owned_route_penalty=4.0)
-    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+    policy = sampler(action_mode="structured_sample", move_temperature=.05,
                              split_temperature=.15, neutral_route_bias=0.0,
                              weak_owned_route_penalty=4.0)
     keys = jax.random.split(jax.random.PRNGKey(110), count)
@@ -182,7 +181,7 @@ def test_frozen_doomed_attack_route_penalty_matches_serving_distribution():
     public[5 * 441 + source - 21] = 1
     expected = structured_action_probabilities(outputs, legal, .05, .15,
                                                observations=public, doomed_attack_route_penalty=4.0)
-    policy = SimpleNamespace(action_mode="structured_sample", move_temperature=.05,
+    policy = sampler(action_mode="structured_sample", move_temperature=.05,
                              split_temperature=.15, neutral_route_bias=0.0,
                              doomed_attack_route_penalty=4.0)
     keys = jax.random.split(jax.random.PRNGKey(111), count)

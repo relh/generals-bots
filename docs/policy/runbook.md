@@ -192,6 +192,21 @@ Collection verifies preserved payload hashes and frozen episode rosters, then
 writes `summary.json` for the promotion report, including incomplete/failing
 requests and recorded episode costs. It performs no champion change.
 
+Operational promotion requires the current hosted summary and its complete
+preserved panel directory, plus explicit frozen identities:
+
+```bash
+python -m integrations.policy promotion --summary PANEL_DIRECTORY/summary.json \
+  --panel PANEL_DIRECTORY --opponents incumbent Daveey \
+  --checkpoint-sha256 CHECKPOINT_SHA256 --image-digest sha256:IMAGE_SHA256 \
+  --source-commit SOURCE_COMMIT --output PANEL_DIRECTORY/promotion.json
+```
+
+It recomputes the summary from hashed payloads and retained request receipts and
+states. Pending or incomplete panels cannot qualify, even when completed games
+already exceed statistical thresholds. The independent `strength_report`
+function evaluates counts alone and does not establish artifact readiness.
+
 Authentication uses `SOFTMAX_TOKEN` or the SDK's canonical saved **user** token;
 install the Coworld/Softmax SDK in the execution environment for saved-token
 loading. Tokens and signed asset URLs are never printed. Read existing request

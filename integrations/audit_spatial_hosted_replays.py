@@ -19,10 +19,8 @@ from integrations.softmax.neural_codec import training_observation
 from integrations.spatial_action_sampling import public_early_route_temperature
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy, structured_action_probabilities
 
-
 FRAME_FIELDS = ("turn", "type_grid", "owner_grid", "army_grid", "army", "land")
-encode = jax.jit(lambda obs: encode_coworld_directional_observation(
-    obs, factorized_actions=False, public_scalar_features=True))
+encode = jax.jit(lambda obs: encode_coworld_directional_observation(obs))
 
 
 def flat_action(action):

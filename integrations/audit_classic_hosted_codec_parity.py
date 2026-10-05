@@ -14,7 +14,6 @@ from integrations.puffer_codec import encode_coworld_directional_observation
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import encode_wire_observation
 
-
 ENGINE_SHA256 = "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318"
 FRAME_FIELDS = ("turn", "type_grid", "owner_grid", "army_grid", "army", "land")
 SPATIAL_FIELDS = ("armies", "ownership_neutral", "generals", "castles", "mountains", "passable")
@@ -40,14 +39,9 @@ def compare_state(match):
     padded = padded_training_state(match.state)
     maximum = 0.0
     for side in (0, 1):
-        hosted_values, hosted_mask = encode_wire_observation(
-            match.observation(side), directional=True, factorized_actions=False,
-            public_scalar_features=True,
-        )
+        hosted_values, hosted_mask = encode_wire_observation(match.observation(side))
         training_observation = game.get_observation(padded, side)
-        training_values, training_mask = encode_coworld_directional_observation(
-            training_observation, factorized_actions=False, public_scalar_features=True,
-        )
+        training_values, training_mask = encode_coworld_directional_observation(training_observation)
         training_values = np.asarray(training_values, np.float32)
         training_mask = np.asarray(training_mask, bool)
         if hosted_values.shape != (7056,) or training_values.shape != (7056,):

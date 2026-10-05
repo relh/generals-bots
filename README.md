@@ -22,8 +22,7 @@ contracts must also match observation features, actions, and sampling. The
 [engine provenance](generals/core/COWORLD_ENGINE.md) records the pinned official
 engine and hosted replay checks.
 
-The simulator also supplies scripted agents and explicit rule configurations. The 10×10 policy's 0.830 held-out result is a useful
-historical benchmark. Hosted Classic qualification requires its own results.
+The simulator also supplies scripted agents and explicit rule configurations.
 
 ## Installation and navigation
 

@@ -142,9 +142,7 @@ def dataset(manifest_path):
         matches = np.all(np.asarray(actions) == action, axis=1)
         if not matches.any() or not survivors[matches].any():
             raise ValueError("Public Sentinel teacher must demonstrate a legal surviving action for every example")
-        encoded, mask = encode_coworld_directional_observation(
-            obs, factorized_actions=False, public_scalar_features=True
-        )
+        encoded, mask = encode_coworld_directional_observation(obs)
         label = int((action[4] * 4 + action[3]) * 441 + action[1] * 21 + action[2])
         if action[0]:
             label = 3528

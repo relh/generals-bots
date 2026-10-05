@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import math
+from copy import deepcopy
 from pathlib import Path
 
 ENGINE_SHA256 = "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318"
@@ -30,6 +31,75 @@ CLASSIC_MAP_OPTIONS = {
 }
 
 
+CURRENT_ENVIRONMENT_FIELDS = {
+    "parallel_games",
+    "coworld_pool_size",
+    "horizon",
+    "require_gpu",
+    "shaping_weight",
+    "shaping_gamma",
+    "reward_scale",
+    "army_shaping_weight",
+    "land_shaping_weight",
+    "terminal_reward_mode",
+    "balance_opponent_sides",
+    "coworld_position_pool",
+    "coworld_position_pool_sha256",
+    "coworld_position_probability",
+    "frozen_bundle",
+    "frozen_bundles",
+    "opponent_weights",
+    "scripted_opponents",
+    "classic_siege_workers",
+}
+# Authentic current-parent records contain these inactive/fixed metadata fields.
+# They are verified during configuration authoring, never interpreted by runtime.
+FIXED_SOURCE_FIELDS = {
+    "opponent": "strong_mixed",
+    "teacher": None,
+    "supervise_teacher": False,
+    "factorized_actions": False,
+    "coworld_classic": True,
+    "compact_features": True,
+    "lean_features": True,
+    "sparse_teacher": False,
+    "packed_directional_features": False,
+    "hint_features": False,
+    "teacher_rollouts": False,
+    "prior_hint_features": False,
+    "sprint_hint_features": False,
+    "expander_hint_features": False,
+    "sentinel_teacher_fraction": 0.0,
+    "sentinel_teacher_interval": 1,
+    "sentinel_teacher_only": False,
+    "imitation_weight": 0.0,
+    "land_gain_reward_weight": 0.0,
+    "castle_shaping_weight": 0.0,
+    "frontier_shaping_weight": 0.0,
+    "deduplicate_opponent_branches": False,
+    "group_device_opponents": False,
+    "context_hint_features": False,
+    "directional_features": True,
+    "public_scalar_features": True,
+    "public_scalar_ablation": False,
+    "coworld_small_map_curriculum": False,
+    "coworld_tiny_map_curriculum": False,
+}
+
+
+def project_current_options(options: dict) -> dict:
+    """Author the current runtime config from verified effective source values."""
+    if not isinstance(options, dict):
+        raise ValueError("Environment options must be an object")
+    unknown = set(options) - CURRENT_ENVIRONMENT_FIELDS - FIXED_SOURCE_FIELDS.keys()
+    if unknown:
+        raise ValueError("Unsupported environment option fields: " + ", ".join(sorted(unknown)))
+    for name, expected in FIXED_SOURCE_FIELDS.items():
+        if name in options and options[name] != expected:
+            raise ValueError("Source option is outside the current Classic game/codec/reward contract: " + name)
+    return {key: deepcopy(value) for key, value in options.items() if key in CURRENT_ENVIRONMENT_FIELDS}
+
+
 def verify_engine(path: Path | None = None) -> str:
     path = path or Path(__file__).resolve().parents[1] / "generals/core/coworld_game.py"
     actual = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -41,12 +111,8 @@ def verify_engine(path: Path | None = None) -> str:
 def validate_training_contract(build: dict, run: dict, *, engine_path: Path | None = None) -> dict:
     """Reject game, discount, and rollout mismatches before GPU work."""
     env = build["python_environment"]
-    options = env["options"]
+    options = project_current_options(env["options"])
     overrides = run["overrides"]
-    if options.get("coworld_classic") is not True:
-        raise ValueError("Hosted qualification requires coworld_classic=True")
-    if any(options.get(key, False) for key in ("coworld_small_map_curriculum", "coworld_tiny_map_curriculum")):
-        raise ValueError("Hosted qualification requires independently sampled 18–21 tile maps")
     if options.get("horizon") != 2000:
         raise ValueError("Hosted qualification requires a 2000-turn game limit")
     gamma = overrides.get("train.gamma")

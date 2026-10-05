@@ -39,8 +39,7 @@ def test_public_mask_matches_codec_on_visible_edges_and_fog(height, width):
                    my_land=int(owned.sum()), my_army=int(armies.sum()),
                    opp_land=int((owners == 2).sum()), opp_army=0, turn=1999)
     observation = training_observation(message)
-    values, expected = encode_coworld_directional_observation(
-        observation, factorized_actions=False, public_scalar_features=True)
+    values, expected = encode_coworld_directional_observation(observation)
     np.testing.assert_array_equal(public_action_mask(np.asarray(values), np), expected)
     np.testing.assert_array_equal(jax.jit(lambda x: public_action_mask(x, jnp))(values), expected)
 
@@ -124,7 +123,9 @@ def test_frozen_sampling_frequencies_match_portable_probabilities():
     expected = structured_action_probabilities(raw, legal, .05, .15,
                                               observations=public, log_gap_scale=4)
     policy = SimpleNamespace(action_mode='structured_sample', move_temperature=.05,
-                             split_temperature=.15, log_gap_scale=4)
+        early_route_temperature=None, early_route_turns=None, route_half_weight=0.,
+        weak_owned_route_penalty=0., doomed_attack_route_penalty=0.,
+                             split_temperature=.15, log_gap_scale=4, full_action_temperature=1., neutral_route_bias=0.)
     count = 8192
     keys = jax.random.split(jax.random.PRNGKey(7), count)
     samples = np.asarray(jax.jit(lambda k: frozen_action_indices(

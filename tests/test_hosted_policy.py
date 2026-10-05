@@ -3,7 +3,7 @@ import json
 import pytest
 
 from integrations.hosted_policy import load_panel, prepare, save, submit, summarize
-from integrations.policy_promotion import promotion_report
+from integrations.policy_promotion import strength_report
 
 POLICY = '5ef78e23-c02e-4d13-bc8e-2f9ab47fb0a1'
 OPPONENT = 'e53e30be-0b23-4d62-b944-4dd249a483fe'
@@ -71,13 +71,13 @@ def test_frozen_balanced_results_integrate_with_promotion_and_preserve_failures(
     current = states(intent)
     summary = summarize(intent, current)
     assert summary['completed'] == 2 and summary['cost_usd'] == 0.004
-    report = promotion_report(summary, ['incumbent'], min_games=2)
+    report = strength_report(summary, ['incumbent'], min_games=2)
     assert report['failed_requests'] == 0
     assert not report['strength_gate_passes']  # Two wins cannot establish confidence.
     current['incumbent-seat0']['status'] = 'failed'
     failed = summarize(intent, current)
     assert failed['failed'] == 1
-    assert not promotion_report(failed, ['incumbent'], min_games=2)['strength_gate_passes']
+    assert not strength_report(failed, ['incumbent'], min_games=2)['strength_gate_passes']
 
 
 def test_collection_rejects_changed_policy_identity():

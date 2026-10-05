@@ -10,6 +10,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
+from integrations.classic_contract import project_current_options
 from integrations.puffer_coworld_frozen_transfer import policy_training_lineage_seeds
 
 from integrations.spatial_frozen_sampling import sample_flat_logits
@@ -129,17 +130,13 @@ def main():
         raise RuntimeError("Frozen match evaluation requires GPU execution")
     policy = SpatialPlayerPolicy(args.bundle)
     record = json.loads((args.bundle / "build.json").read_text())
-    options = record["config"]["python_environment"]["options"].copy()
+    options = project_current_options(record["config"]["python_environment"]["options"])
     for k in ("frozen_bundle", "frozen_bundles", "frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
         options.pop(k, None)
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
                    coworld_position_probability=0.0,
-                   shaping_weight=0.0, reward_scale=1.0, land_gain_reward_weight=0.0,
+                   shaping_weight=0.0, reward_scale=1.0,
                    terminal_reward_mode="signed")
-    if options.get("public_scalar_features"):
-        # Each portable actor applies its own ablation; both receive the full
-        # public view so a zero-scalar candidate can face a full-scalar actor.
-        options["public_scalar_ablation"] = False
     if args.smoke_cpu:
         options.update(require_gpu=False, horizon=4)
     args.output.mkdir(parents=True, exist_ok=False)

@@ -62,3 +62,41 @@ class ClassicContractTests(unittest.TestCase):
                 run["overrides"][key] = value
                 with self.assertRaises(ValueError):
                     validate_training_contract(self.build, run)
+
+
+def test_projection_validates_fixed_source_fields_and_does_not_mutate_source():
+    from integrations.classic_contract import project_current_options
+
+    source = {
+        "parallel_games": 8192,
+        "coworld_classic": True,
+        "directional_features": True,
+        "public_scalar_features": True,
+        "teacher": None,
+        "imitation_weight": 0.0,
+        "frozen_bundles": ["source-one", "source-two"],
+    }
+    projected = project_current_options(source)
+    assert set(projected) == {"parallel_games", "frozen_bundles"}
+    projected["frozen_bundles"].append("another")
+    assert source["frozen_bundles"] == ["source-one", "source-two"]
+    assert project_current_options({"terminal_reward_mode": "signed", "horizon": 4}) == {
+        "terminal_reward_mode": "signed",
+        "horizon": 4,
+    }
+
+
+def test_projection_rejects_unsupported_effective_features_and_unknown_fields():
+    import pytest
+
+    from integrations.classic_contract import project_current_options
+
+    for unsupported in (
+        {"teacher": "sentinel"},
+        {"coworld_classic": False},
+        {"public_scalar_ablation": True},
+        {"land_gain_reward_weight": 0.2},
+        {"unrecognized_feature": False},
+    ):
+        with pytest.raises(ValueError):
+            project_current_options(unsupported)

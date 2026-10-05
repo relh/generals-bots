@@ -6,8 +6,8 @@ import hashlib
 import importlib.util
 import json
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
@@ -17,11 +17,13 @@ from generals.core import coworld_game
 from integrations.softmax.engine import Match
 from integrations.softmax.neural_codec import encode_wire_observation
 from integrations.spatial_action_sampling import (
-    acting_logits, public_doomed_attack_route_penalty, public_early_route_temperature,
-    public_neutral_route_bonus, public_weak_owned_route_penalty,
+    acting_logits,
+    public_doomed_attack_route_penalty,
+    public_early_route_temperature,
+    public_neutral_route_bonus,
+    public_weak_owned_route_penalty,
 )
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy, structured_action_probabilities
-
 
 ENGINE_SHA256 = "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318"
 FRAME_FIELDS = ("turn", "type_grid", "owner_grid", "army_grid", "army", "land")
@@ -49,10 +51,7 @@ def verified_views(replay_root, game_indices, turns):
                 raise ValueError(f"Hosted Classic replay diverged: game {index}, turn {turn_index}")
             if turn_index in turns:
                 for side in (0, 1):
-                    values, legal = encode_wire_observation(
-                        match.observation(side), directional=True, factorized_actions=False,
-                        public_scalar_features=True,
-                    )
+                    values, legal = encode_wire_observation(match.observation(side))
                     views.append(values)
                     masks.append(legal)
                     labels.append((index, turn_index, side))
@@ -195,7 +194,8 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
                 max_logit_difference=maximum, max_action_probability_difference=probability_max,
                 max_rollout_transform_difference=rollout_transform_max,
                 matching_top_actions=action_matches, jax_backend=jax.default_backend(),
-                scope="Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations")
+                scope=("Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled "
+                       "action probabilities on SHA-verified Classic hosted observations"))
 
 
 def main():

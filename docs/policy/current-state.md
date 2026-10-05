@@ -6,6 +6,51 @@ before resuming or deploying any policy.
 
 ## Latest qualification and selected decision
 
+The dashboard's five H100 attempts (`job-xyrtm`, `job-xwjya`, `job-vmn9x`,
+`job-hhccv`, `job-gsp6k`) all failed on 2026-10-05, 01:40–02:20 UTC.
+The first four failed during context packaging or image/CPU preparation; the
+final attempt passed runtime smoke and sampling but stopped on
+`ValueError: Pinned Puffer trainer changed`, before optimizer updates.
+The H100 migration path is retired. Its raw result remains at
+`/tmp/relh-generals-autoresearch-result-gsp6k/`; terminal dashboard records
+remain in `/tmp/relh-generals-h100-{terminal,observation}-job-*.json`.
+The repaired current path is B300 with the real-launch source binding checked
+before submission.
+
+Trial **35934** completed GPU distillation but failed before PPO, after
+7m17s. Training-only population reward audits had been applied to signed
+self-match rewards. Commit `9ea67c7` enables these audits only for native
+training. Real finite CPU self-matches with both the source and retained
+warmstart now pass with identical actor/opponent sampler settings.
+Verified results are retained at `/tmp/generals-policy-overhaul-results-35934/`.
+
+The 256 supervised B300 updates took **7.17s**, adding **zero RL steps**.
+Held-out defense survival probability improved **0.88% → 56.08%** and teacher
+action accuracy **0.78% → 57.81%**. Training accuracy was 100%, indicating
+incomplete generalization; the paired dataset contains 512 distinct training
+views and 128 distinct held-out views. Most remaining errors choose the
+expansion distractor. Warmstart checkpoint:
+`a8539b584587623c31d1d3608cd5b927678893cddecc5e8613c3031f9932c901`.
+These tactical metrics do not establish gameplay improvement.
+
+Retry **35935** is running from committed source `9ea67c7`, started
+2026-10-05 20:38:48 UTC, with the same sealed matched experiment. Controller
+readback confirms Nice **2147483645**, Priority **1**, and a finite two-hour
+cap. Smoke, native build, CPU preflight and distillation passed; the control
+arm is active. No new match-strength result is available yet. Receipt:
+`/tmp/relh-generals-matched-warmstart-b300-20261005T203634Z-71612557.receipt.json`.
+
+Matched defense trial **35933** failed before any supervised or PPO updates
+from source `bd9bb9dae2ea93083b63bfb497a6d347dabf6b32`. It started
+2026-10-05 20:06:14 UTC and stopped after 1m37s, exit 1:0. Controller readback
+confirmed one B300 GPU, eight CPUs, 96 GiB memory, Nice **2147483645**,
+Priority **1**, and a finite two-hour cap. Smoke passed; the build phase hit
+`FileExistsError` because nested subprocess logging collided with the outer
+runner's `build.log`. Commit `e5c9c92` gives inner processes distinct owned
+log names. A retry preserves the same sealed experiment; no learning result
+has been produced. Verified failure evidence is retained at
+`/tmp/generals-policy-overhaul-results-35933/`.
+
 The consolidated code is on `relh/policy-overhaul`, with integration review in
 [PR #5](https://github.com/relh/generals-bots/pull/5). Old experiment versions
 are retained in Git history.
@@ -98,9 +143,9 @@ Retained evidence locations recorded in the handoff:
 Wider spatial context learned nonzero weights and passed serving parity, but
 its bounded continuation produced inconclusive local gains and unchanged
 hosted win totals. Nine retrospective fatal-state probes still missed the top
-defense, with extremely low rescue-action probability. Counterfactual scaling
-of acting logits increased rescue support; this is a hypothesis for controlled
-exploration experiments, not evidence of improved match strength.
+defense, with extremely low rescue-action probability. The matched exploration experiment subsequently regressed and was rejected.
+The defense warmstart improves tactical support but still needs broad strength
+evaluation and fresh hosted confirmation.
 
 During the overhaul, the production factory has been restored to canonical
 SHA-256 `5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474`.

@@ -1,92 +1,28 @@
-"""Convert the public Coworld wire view to the padded Puffer training view."""
+"""Translate the public Classic wire to the canonical padded policy contract."""
 
 import jax
 import numpy as np
 
 from generals.core.observation import Observation
-from integrations.puffer_codec import (
-    calibrate_hint_features,
-    encode_coworld_directional_observation,
-    encode_coworld_hinted_observation,
-    encode_coworld_lean_observation,
-    encode_coworld_observation,
-    encode_coworld_packed_directional_observation,
-    encode_observation,
-)
-
+from integrations.puffer_codec import encode_coworld_directional_observation
 
 BOARD_SIZE = 21
+_encode = jax.jit(encode_coworld_directional_observation)
 
 
-def decode_policy_action(probabilities, *, factorized_actions: bool = True, rng=None) -> list[int]:
-    """Convert either trained action layout to the Coworld move tuple."""
+def decode_policy_action(probabilities, *, rng) -> list[int]:
+    """Sample and decode the legal flat categorical used by native training."""
     probabilities = np.asarray(probabilities)
-    expected_size = 1767 if factorized_actions else 3529
-    if probabilities.shape != (expected_size,) or not np.isfinite(probabilities).all():
-        raise ValueError("Policy probabilities differ from the Coworld action layout")
-    if rng is not None:
-        if factorized_actions or np.any(probabilities < 0) or probabilities.sum() <= 0:
-            raise ValueError("Sampling requires nonnegative flat-action probabilities")
-        index = int(rng.choice(expected_size, p=probabilities / probabilities.sum()))
-        if index == 3528:
-            return [1, 0, 0, 0, 0]
-        split, source = divmod(index, 1764)
-        direction, cell = divmod(source, 441)
-        row, col = divmod(cell, 21)
-        return [0, row, col, direction, split]
-    if factorized_actions:
-        source = int(np.argmax(probabilities[:1765]))
-        split = int(np.argmax(probabilities[1765:]))
-        if source == 1764:
-            return [1, 0, 0, 0, 0]
-    else:
-        index = int(np.argmax(probabilities))
-        if index == 3528:
-            return [1, 0, 0, 0, 0]
-        split, source = divmod(index, 1764)
+    if (probabilities.shape != (3529,) or not np.isfinite(probabilities).all()
+            or np.any(probabilities < 0) or probabilities.sum() <= 0 or rng is None):
+        raise ValueError("Structured serving requires a finite nonnegative 3529-action categorical and RNG")
+    index = int(rng.choice(3529, p=probabilities / probabilities.sum()))
+    if index == 3528:
+        return [1, 0, 0, 0, 0]
+    split, source = divmod(index, 1764)
     direction, cell = divmod(source, 441)
     row, col = divmod(cell, 21)
     return [0, row, col, direction, split]
-
-
-_calibrate_hints = jax.jit(
-    calibrate_hint_features,
-    static_argnames=("board_size", "move_hint_scale", "split_hint_scale"),
-)
-_encode_lean = jax.jit(encode_coworld_lean_observation)
-_encode_directional = jax.jit(
-    encode_coworld_directional_observation,
-    static_argnames=("factorized_actions", "include_timestep", "public_scalar_features", "public_scalar_ablation"),
-)
-_encode_packed_directional = jax.jit(encode_coworld_packed_directional_observation)
-_encode_hinted = jax.jit(encode_coworld_hinted_observation)
-_encode_prior_hinted = jax.jit(lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True))
-_encode_sprint_prior_hinted = jax.jit(
-    lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True, sprint_hint=True)
-)
-_encode_expander_prior_hinted = jax.jit(
-    lambda obs: encode_coworld_hinted_observation(obs, signed_flags=True, expander_hint=True)
-)
-_encode_expander_context_prior_hinted = jax.jit(
-    lambda obs: encode_coworld_hinted_observation(
-        obs, signed_flags=True, expander_hint=True, context_features=True,
-    )
-)
-_encode_expander_packed_context_prior_hinted = jax.jit(
-    lambda obs: encode_coworld_hinted_observation(
-        obs, signed_flags=True, expander_hint=True, packed_context_features=True,
-    )
-)
-_encode_expander_neighbor_threat_prior_hinted = jax.jit(
-    lambda obs: encode_coworld_hinted_observation(
-        obs, signed_flags=True, expander_hint=True, neighbor_threat_features=True,
-    )
-)
-_encode_expander_general_distance_prior_hinted = jax.jit(
-    lambda obs: encode_coworld_hinted_observation(
-        obs, signed_flags=True, expander_hint=True, general_distance_features=True,
-    )
-)
 
 
 def training_observation(message: dict) -> Observation:
@@ -133,74 +69,6 @@ def training_observation(message: dict) -> Observation:
     )
 
 
-def encode_wire_observation(
-    message: dict, *, compact: bool = False, lean: bool = False,
-    directional: bool = False, packed_directional: bool = False, hinted: bool = False,
-    prior_hinted: bool = False,
-    sprint_prior_hinted: bool = False,
-    expander_prior_hinted: bool = False,
-    expander_context_prior_hinted: bool = False,
-    expander_packed_context_prior_hinted: bool = False,
-    expander_neighbor_threat_prior_hinted: bool = False,
-    expander_general_distance_prior_hinted: bool = False,
-    move_hint_scale: float = 1.0,
-    split_hint_scale: float = 1.0,
-    factorized_actions: bool = True,
-    directional_time_features: bool = False,
-    public_scalar_features: bool = False,
-    public_scalar_ablation: bool = False,
-):
-    if not factorized_actions and not directional:
-        raise ValueError("Flat Coworld serving requires the directional codec")
-    if directional_time_features and not directional:
-        raise ValueError("Directional time features require the directional codec")
-    if public_scalar_features and not directional:
-        raise ValueError("Public scalar features require the directional codec")
-    if public_scalar_ablation and not public_scalar_features:
-        raise ValueError("Scalar ablation requires public scalar features")
-    observation = training_observation(message)
-    values, mask = (
-        _encode_expander_general_distance_prior_hinted(observation)
-        if expander_general_distance_prior_hinted
-        else _encode_expander_neighbor_threat_prior_hinted(observation)
-        if expander_neighbor_threat_prior_hinted
-        else _encode_expander_packed_context_prior_hinted(observation)
-        if expander_packed_context_prior_hinted
-        else _encode_expander_context_prior_hinted(observation)
-        if expander_context_prior_hinted
-        else _encode_expander_prior_hinted(observation)
-        if expander_prior_hinted
-        else _encode_sprint_prior_hinted(observation)
-        if sprint_prior_hinted
-        else _encode_prior_hinted(observation)
-        if prior_hinted
-        else _encode_hinted(observation)
-        if hinted
-        else _encode_packed_directional(observation)
-        if packed_directional
-        else _encode_directional(
-            observation, factorized_actions=factorized_actions, include_timestep=directional_time_features,
-            public_scalar_features=public_scalar_features, public_scalar_ablation=public_scalar_ablation,
-        )
-        if directional
-        else _encode_lean(observation)
-        if lean
-        else encode_coworld_observation(observation)
-        if compact
-        else encode_observation(observation, factorized_actions=True, goal_features=True)
-    )
-    if move_hint_scale != 1 or split_hint_scale != 1:
-        if not any(
-            (
-                prior_hinted,
-                sprint_prior_hinted,
-                expander_prior_hinted,
-                expander_context_prior_hinted,
-                expander_packed_context_prior_hinted,
-                expander_neighbor_threat_prior_hinted,
-                expander_general_distance_prior_hinted,
-            )
-        ):
-            raise ValueError("Hint calibration requires signed prior features")
-        values = _calibrate_hints(values, 21, move_hint_scale=move_hint_scale, split_hint_scale=split_hint_scale)
+def encode_wire_observation(message: dict):
+    values, mask = _encode(training_observation(message))
     return np.asarray(values, dtype=np.float32), np.asarray(mask, dtype=bool)

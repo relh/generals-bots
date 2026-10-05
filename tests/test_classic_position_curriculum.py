@@ -84,16 +84,11 @@ def test_selfplay_recycles_into_valid_public_curriculum_observations(tmp_path):
         context=EnvironmentContext(seed=1, index=0, mode="train", output=tmp_path),
         parallel_games=4,
         require_gpu=False,
-        coworld_classic=True,
         coworld_pool_size=16,
         balance_opponent_sides=True,
         coworld_position_pool=str(path),
         coworld_position_pool_sha256=digest,
         coworld_position_probability=1.0,
-        directional_features=True,
-        compact_features=True,
-        lean_features=True,
-        public_scalar_features=True,
         terminal_reward_mode="win_only",
         shaping_weight=0.0,
     )
@@ -123,8 +118,7 @@ def test_population_evaluation_disables_training_start_pool(tmp_path):
                     python_environment=dict(
                         factory="integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
                         options=dict(
-                            coworld_classic=True,
-                            terminal_reward_mode="win_only",
+                                                terminal_reward_mode="win_only",
                             coworld_position_probability=0.25,
                             coworld_position_pool="private-training-only.npz",
                         ),

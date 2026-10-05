@@ -60,7 +60,7 @@ def _outcomes(state, actions, opponent_action, seat):
 
 def legal_actions(state, seat):
     observation = engine.get_observation(state, seat)
-    _, mask = encode_coworld_directional_observation(observation, factorized_actions=False, public_scalar_features=True)
+    _, mask = encode_coworld_directional_observation(observation)
     indices = np.flatnonzero(np.asarray(mask))
     return observation, indices, jnp.stack([decode_action(int(index), 21) for index in indices])
 
@@ -225,9 +225,7 @@ def generate(output, *, seed, pairs=32, excluded_seeds=(), bundle=None):
                 match = np.all(np.asarray(actions) == action, axis=1)
                 probe["policies"][name] = {"legal": bool(match.any()), "survives_attack": bool(survivors[match].any())}
             if policy:
-                values, mask = encode_coworld_directional_observation(
-                    obs, factorized_actions=False, public_scalar_features=True
-                )
+                values, mask = encode_coworld_directional_observation(obs)
                 probabilities = np.asarray(
                     policy.predict(
                         0, SimpleNamespace(values=[np.asarray(values)], action_masks=[np.asarray(mask)])

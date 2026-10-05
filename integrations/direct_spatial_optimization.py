@@ -1,15 +1,15 @@
 """Evaluate the pinned memoryless actor with convolutions and matrix products.
 
 Build every weight lookup from Fabric's realized topology and sharing tables.
-Puffer still owns PPO, parameter storage, and updates. Rollout uses the original
-bridge unless METTA_DIRECT_SPATIAL_ROLLOUT=1 explicitly enables the same algebra.
+Puffer owns PPO, parameter storage, and updates. The supported native path uses
+the same canonical spatial algebra for rollout and optimization.
 """
 
-from dataclasses import dataclass
 import functools
 import hashlib
 import importlib
 import os
+from dataclasses import dataclass
 
 import jax
 import jax.numpy as jnp
@@ -48,10 +48,10 @@ class DirectSpatial:
         if pops["SiLU"].n != cells * features or pops["ContextSiLU"].n != cells * features:
             raise ValueError("Spatial population dimensions differ")
         self.features = features
-        self.channels = pops["input"].n // cells
-        self.observation_size = cells * self.channels
-        if self.channels not in (11, 12, 16) or pops["input"].n != self.observation_size:
-            raise ValueError("Unsupported directional spatial observation layout")
+        self.channels = 16
+        self.observation_size = 7056
+        if pops["input"].n != self.observation_size:
+            raise ValueError("Direct spatial optimization requires the canonical sixteen public planes")
         self.global_features = global_features
         leaves = jax.tree_util.tree_flatten_with_path(fn.params(buffers.template))[0]
         layout = {
@@ -215,22 +215,16 @@ def install(native_module=None):
         verify_configuration(configuration)
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
-        self.spatial_optimizer_layout = os.environ.get("METTA_SPATIAL_OPTIMIZER_LAYOUT", "native")
-        context_mode = os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX", "0")
-        if context_mode not in ("0", "1") or (context_mode == "1" and (
-                self.spatial_optimizer_layout != "logical"
-                or os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION") != "canonical")):
-            raise ValueError("Convolution Muon requires logical layout and canonical dense scaling")
-        if self.spatial_optimizer_layout == "logical":
-            from integrations.spatial_optimizer_layout import logical_optimizer_shapes
+        if (os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") != "1"
+                or os.environ.get("METTA_SPATIAL_OPTIMIZER_LAYOUT") != "logical"
+                or os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") != "1"
+                or os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION") != "canonical"):
+            raise ValueError("Spatial training requires direct rollout and canonical logical context Muon")
+        from integrations.spatial_optimizer_layout import logical_optimizer_shapes
 
-            self.shapes, self.spatial_optimizer_layout_report = logical_optimizer_shapes(
-                self.direct_spatial, self.buffers,
-                context_matrix=context_mode == "1",
-            )
-        elif self.spatial_optimizer_layout != "native":
-            raise ValueError("Spatial optimizer layout must be native or logical")
-        self.direct_spatial_rollout = os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") == "1"
+        self.shapes, self.spatial_optimizer_layout_report = logical_optimizer_shapes(
+            self.direct_spatial, self.buffers, context_matrix=True,
+        )
         self.spatial_policy_temperature = float(os.environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
         if not np.isfinite(self.spatial_policy_temperature) or self.spatial_policy_temperature <= 0:
             raise ValueError("Spatial policy temperature must be finite and positive")
@@ -240,64 +234,42 @@ def install(native_module=None):
             raise ValueError("Early route temperature and turns must be set together")
         self.spatial_early_route_temperature = float(early_temperature) if early_temperature is not None else None
         self.spatial_early_route_turns = int(early_turns) if early_turns is not None else None
-        split_temperature = os.environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE")
-        self.spatial_split_temperature = float(split_temperature) if split_temperature is not None else None
-        if self.spatial_split_temperature is not None and (
-                not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0):
+        self.spatial_split_temperature = float(os.environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE", "1"))
+        if not np.isfinite(self.spatial_split_temperature) or self.spatial_split_temperature <= 0:
             raise ValueError("Spatial split temperature must be finite and positive")
         from integrations.spatial_action_sampling import validate_full_action_temperature
 
         self.spatial_full_action_temperature = validate_full_action_temperature(
             float(os.environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1")))
-        if self.spatial_full_action_temperature != 1 and (
-                not self.direct_spatial_rollout or self.spatial_split_temperature is None):
-            raise ValueError("Full action temperature requires direct structured rollout")
         from integrations.spatial_exploration import validate_log_gap_scale
 
         self.spatial_log_gap_scale = validate_log_gap_scale(
             float(os.environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0")))
-        if self.spatial_log_gap_scale and (not self.direct_spatial_rollout or self.spatial_split_temperature is None):
-            raise ValueError("Log gap exploration requires direct structured rollout")
         self.spatial_route_half_weight = float(os.environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
         if (not np.isfinite(self.spatial_route_half_weight) or
-                not 0 <= self.spatial_route_half_weight <= 1 or
-                (self.spatial_route_half_weight and self.spatial_split_temperature is None)):
+                not 0 <= self.spatial_route_half_weight <= 1):
             raise ValueError("Route half weight requires structured sampling and must be between zero and one")
         if self.spatial_early_route_temperature is not None:
             from integrations.spatial_action_sampling import public_early_route_temperature
 
-            if self.spatial_split_temperature is None:
-                raise ValueError("Early route temperature requires structured sampling")
             public_early_route_temperature(np.zeros((1, 16 * 441), np.float32), self.spatial_policy_temperature,
                                            self.spatial_early_route_temperature, self.spatial_early_route_turns, np)
-            if self.direct_spatial.observation_size != 16 * 441:
-                raise ValueError("Early route temperature requires sixteen public planes")
         self.spatial_neutral_route_bias = float(os.environ.get("METTA_SPATIAL_NEUTRAL_ROUTE_BIAS", "0"))
         if not np.isfinite(self.spatial_neutral_route_bias) or self.spatial_neutral_route_bias < 0:
             raise ValueError("Neutral route bias must be finite and nonnegative")
-        if self.spatial_neutral_route_bias and self.spatial_split_temperature is None:
-            raise ValueError("Neutral route bias requires structured route and split sampling")
         self.spatial_weak_owned_route_penalty = float(os.environ.get("METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY", "0"))
         if not np.isfinite(self.spatial_weak_owned_route_penalty) or self.spatial_weak_owned_route_penalty < 0:
             raise ValueError("Weak owned route penalty must be finite and nonnegative")
-        if self.spatial_weak_owned_route_penalty and self.spatial_split_temperature is None:
-            raise ValueError("Weak owned route penalty requires structured route and split sampling")
-        self.spatial_doomed_attack_route_penalty = float(os.environ.get("METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY", "0"))
+        self.spatial_doomed_attack_route_penalty = float(
+            os.environ.get("METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY", "0"))
         if not np.isfinite(self.spatial_doomed_attack_route_penalty) or self.spatial_doomed_attack_route_penalty < 0:
             raise ValueError("Doomed attack route penalty must be finite and nonnegative")
-        if self.spatial_doomed_attack_route_penalty and self.spatial_split_temperature is None:
-            raise ValueError("Doomed attack route penalty requires structured route and split sampling")
-        if (self.spatial_policy_temperature != 1 or self.spatial_split_temperature is not None) and not self.direct_spatial_rollout:
-            raise ValueError("Temperature requires identical direct rollout and optimization algebra")
 
     @functools.wraps(forward)
     def direct_forward(self, parameters, state, transported, terminals, batch, time, rollout):
-        if rollout and not self.direct_spatial_rollout:
-            return forward(self, parameters, state, transported, terminals, batch, time, rollout)
         if transported.shape != (batch, time, self.direct_spatial.observation_size) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
-        acting = outputs
         move_temperature = self.spatial_policy_temperature
         if self.spatial_early_route_temperature is not None:
             from integrations.spatial_action_sampling import public_early_route_temperature
@@ -305,14 +277,10 @@ def install(native_module=None):
             move_temperature = public_early_route_temperature(
                 transported, move_temperature, self.spatial_early_route_temperature,
                 self.spatial_early_route_turns, jnp)
-        if self.spatial_split_temperature is not None:
-            from integrations.spatial_action_sampling import acting_logits
+        from integrations.spatial_action_sampling import acting_logits
 
-            acting = acting_logits(outputs, move_temperature,
-                                  self.spatial_split_temperature, jnp,
-                                  route_half_weight=self.spatial_route_half_weight)
-        elif self.spatial_policy_temperature != 1:
-            acting = outputs.at[..., :3529].divide(self.spatial_policy_temperature)
+        acting = acting_logits(outputs, move_temperature, self.spatial_split_temperature, jnp,
+                               route_half_weight=self.spatial_route_half_weight)
         if self.spatial_neutral_route_bias:
             from integrations.spatial_action_sampling import public_neutral_route_bonus
 
@@ -344,7 +312,7 @@ def install(native_module=None):
     @functools.wraps(backward)
     def direct_backward(self, tape, logits, values):
         if not isinstance(tape, DirectTape):
-            return backward(self, tape, logits, values)
+            raise TypeError("Direct PPO backward requires its canonical forward tape")
         if logits.shape != tape.predictions.shape[:-1] + (3529,) or values.shape != tape.predictions.shape[:-1]:
             raise ValueError("Direct PPO cotangents differ from predictions")
         self.updates += 1
@@ -357,23 +325,18 @@ def install(native_module=None):
             logits = log_gap_cotangents(tape.exploration_logits, public_action_mask(tape.observations, jnp),
                                        logits, self.spatial_log_gap_scale, jnp)
         logits = logits / self.spatial_full_action_temperature
-        if self.spatial_split_temperature is not None:
-            from integrations.spatial_action_sampling import raw_cotangents
+        from integrations.spatial_action_sampling import raw_cotangents
 
-            move_temperature = self.spatial_policy_temperature
-            if self.spatial_early_route_temperature is not None:
-                from integrations.spatial_action_sampling import public_early_route_temperature
+        move_temperature = self.spatial_policy_temperature
+        if self.spatial_early_route_temperature is not None:
+            from integrations.spatial_action_sampling import public_early_route_temperature
 
-                move_temperature = public_early_route_temperature(
-                    tape.observations, move_temperature, self.spatial_early_route_temperature,
-                    self.spatial_early_route_turns, jnp)
-            cotangents = raw_cotangents(tape.predictions, logits, values,
-                                       move_temperature,
-                                       self.spatial_split_temperature, jnp,
-                                       route_half_weight=self.spatial_route_half_weight) * coefficient
-        else:
-            cotangents = jnp.concatenate((logits / self.spatial_policy_temperature,
-                                          values[..., None]), axis=-1) * coefficient
+            move_temperature = public_early_route_temperature(
+                tape.observations, move_temperature, self.spatial_early_route_temperature,
+                self.spatial_early_route_turns, jnp)
+        cotangents = raw_cotangents(tape.predictions, logits, values, move_temperature,
+                                   self.spatial_split_temperature, jnp,
+                                   route_half_weight=self.spatial_route_half_weight) * coefficient
         gradient = self.direct_spatial.gradient(tape.parameters, tape.observations, cotangents)
         if not bool(jnp.isfinite(gradient).all()):
             raise FloatingPointError("Direct spatial gradients became nonfinite")

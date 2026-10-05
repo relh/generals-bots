@@ -15,15 +15,16 @@ ENGINE_SHA256 = "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a31
 
 def configure_positions(options, manifest_path):
     """Bind the bounded 25% training experiment to verified, versioned inputs."""
+    from integrations.classic_contract import project_current_options
+
+    projected = project_current_options(options)
+    if projected != options:
+        raise ValueError("Curriculum configuration requires current Classic runtime options")
     manifest_path = Path(manifest_path)
     manifest = json.loads(manifest_path.read_text())
     if (
         manifest.get("schema") != "classic-midgame-positions-v1"
         or manifest.get("engine_sha256") != ENGINE_SHA256
-        or not options.get("coworld_classic")
-        or options.get("teacher") is not None
-        or any(options.get(key) for key in ("teacher_rollouts", "supervise_teacher", "sparse_teacher"))
-        or options.get("imitation_weight", 0)
     ):
         raise ValueError("Position curriculum requires verified teacher-free Classic inputs")
     path = manifest_path.parent / "positions.npz"
