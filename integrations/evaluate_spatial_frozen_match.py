@@ -12,7 +12,7 @@ import numpy as np
 from metta_training.environment import EnvironmentContext
 from metta_training.puffer import TrainingRecord, training_lineage_seeds
 
-from integrations.evaluate_coworld_frozen_greedy import sample_flat_logits
+from integrations.spatial_frozen_sampling import sample_flat_logits
 from integrations.spatial_action_sampling import (acting_logits, public_neutral_route_bonus,
                                                   public_owned_split_bias, public_safe_owned_split_bias,
                                                   public_guided_owned_split_bias,

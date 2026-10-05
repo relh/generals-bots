@@ -13,6 +13,11 @@ from integrations.spatial_action_sampling import (
 )
 
 
+@jax.jit
+def sample_flat_logits(key, logits, legal):
+    return jax.random.categorical(key, jnp.where(legal, logits, -jnp.inf), axis=-1)
+
+
 def frozen_action_indices(policy, outputs, masks, keys, observations=None):
     """Select frozen opponent actions using the bundle's serving contract."""
     if policy.action_mode == "structured_sample":
@@ -45,4 +50,3 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
         random_keys = jax.vmap(lambda key: jax.random.fold_in(key, 834))(keys)
         return jax.vmap(jax.random.categorical)(random_keys, legal_logits).astype(jnp.int32)
     return jnp.argmax(jnp.where(masks, outputs[:, :3529], -jnp.inf), axis=1).astype(jnp.int32)
-

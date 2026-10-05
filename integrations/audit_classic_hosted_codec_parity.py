@@ -76,7 +76,7 @@ def audit(replay_root, game_indices, turns):
         replay = json.loads(gzip.decompress(blob))
         if replay["ruleset"] != "classic":
             raise ValueError(f"Replay {index} is not Classic")
-        match = Match(replay["seed"], coworld_classic_rules=True)
+        match = Match(replay["seed"])
         checked, maximum = [], 0.0
         for turn_index, receipt in enumerate(replay["turns"]):
             if turn_index > max(turns):

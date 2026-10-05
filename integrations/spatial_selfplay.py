@@ -187,7 +187,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
                  scripted_opponents=("expander_harvester", "sentinel"), **options):
         bundles = tuple(map(Path, frozen_bundles))
         script_names = tuple(scripted_opponents)
-        available_scripts = ("expander_harvester", "sentinel", "sentinel_v5", "classic_siege_padded")
+        available_scripts = ("expander_harvester", "sentinel", "classic_siege_padded")
         if (not script_names or len(set(script_names)) != len(script_names)
                 or any(name not in available_scripts for name in script_names)):
             raise ValueError("Population scripts must be distinct known opponent names")
@@ -200,7 +200,6 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
             raise ValueError("Population opponents require official Coworld Classic rules")
         from generals.agents.harvester_agent import ExpanderHarvesterAgent
         from generals.agents.sentinel_agent import SentinelAgent
-        from generals.agents.sentinel_v5_agent import SentinelV5Agent
         from generals.core import game
 
         frozen = (self._frozen,) + tuple(SpatialPlayerPolicy(path) for path in bundles[1:])
@@ -264,7 +263,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
             return jnp.where(actions[:, 0] != 0, 3528, moves).astype(jnp.int32)
 
         script_factories = {"expander_harvester": ExpanderHarvesterAgent,
-                            "sentinel": SentinelAgent, "sentinel_v5": SentinelV5Agent}
+                            "sentinel": SentinelAgent}
         scripts = tuple(script_factories[name]() if name in script_factories else None for name in script_names)
         self._population_script_names = script_names
         self._siege_rows = None

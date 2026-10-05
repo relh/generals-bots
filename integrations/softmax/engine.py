@@ -5,8 +5,9 @@ import jax.numpy as jnp
 import numpy as np
 
 from generals import GeneralsEnv
-from generals.core import coworld_game, game
-from generals.core.match import make_board, make_transition
+from generals.core import coworld_game
+from generals.core.match import make_board
+from integrations.classic_contract import CLASSIC_MAP_OPTIONS, verify_engine
 
 from .protocol import PASS, VERSION
 
@@ -15,23 +16,6 @@ RULESET = "classic"
 
 @jax.jit
 def executed_moves(state, actions):
-    """Receipts for the base moves, using the engine's actual resolution order.
-
-    Observe each action separately, before growth or the other action can mask
-    its effects.
-    """
-    executed = jnp.zeros((2,), dtype=bool)
-    for player in game._determine_move_order(state, actions):
-        action = actions[player]
-        r, c = action[1], action[2]
-        before = state.armies[r, c]
-        state = game.execute_action(state, player, action)
-        executed = executed.at[player].set((action[0] == 0) & (state.armies[r, c] < before))
-    return executed
-
-
-@jax.jit
-def classic_executed_moves(state, actions):
     """Classic move receipts use the pinned Coworld resolution order."""
     executed = jnp.zeros((2,), dtype=bool)
     for player in coworld_game._determine_move_order(state, actions):
@@ -44,20 +28,13 @@ def classic_executed_moves(state, actions):
 
 
 class Match:
-    def __init__(self, seed: int, *, coworld_classic_rules: bool = False):
-        # Keep the hosted 1v1 map dimensions, using ordinary engine combat and
-        # neutral castles (40–50 defenders), without the competition modifiers.
-        self.env = GeneralsEnv(
-            min_grid_size=18, max_grid_size=21, pad_to=21, truncation=1200,
-            mountain_density_range=(0.24, 0.26), min_generals_distance=17,
-            build_castles=False, deathtouch_turn=None,
-            coworld_classic_rules=coworld_classic_rules,
-        )
+    def __init__(self, seed: int):
+        verify_engine()
+        self.env = GeneralsEnv(**CLASSIC_MAP_OPTIONS)
         self.state = make_board(self.env, seed)
-        self._game = coworld_game if coworld_classic_rules else game
-        self._executed_moves = classic_executed_moves if coworld_classic_rules else executed_moves
-        self.transition = (jax.jit(lambda state, actions: coworld_game.step(state, actions, general_trade=False))
-                           if coworld_classic_rules else jax.jit(make_transition(self.env)))
+        self._game = coworld_game
+        self._executed_moves = executed_moves
+        self.transition = jax.jit(lambda state, actions: coworld_game.step(state, actions, general_trade=False))
         self.last_move_executed = [None, None]
         # Compile before /healthz and before player deadlines begin.
         jax.block_until_ready(self.transition(self.state, jnp.array([PASS, PASS], dtype=jnp.int32)))

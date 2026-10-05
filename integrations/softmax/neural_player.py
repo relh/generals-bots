@@ -8,42 +8,29 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import TYPE_CHECKING
+from types import SimpleNamespace
 
-from metta_training.environment import NumericObservation
 from websockets.asyncio.client import connect
 
-from integrations.native_policy_bundle import NativePlayerPolicy
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 
 from .neural_codec import decode_policy_action, encode_wire_observation
 from .protocol import VERSION
 
-if TYPE_CHECKING:
-    from metta_training.inference import FrozenPolicy
-
-
-def select_action(policy: FrozenPolicy | NativePlayerPolicy | SpatialPlayerPolicy, message: dict, codec_kwargs: dict) -> list[int]:
+def select_action(policy: SpatialPlayerPolicy, message: dict, codec_kwargs: dict) -> list[int]:
     values, mask = encode_wire_observation(message, **codec_kwargs)
     prediction = policy.predict(
-        0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()])
+        0, SimpleNamespace(values=[values], action_masks=[mask])
     )
     return decode_policy_action(
         prediction.probabilities, factorized_actions=codec_kwargs.get("factorized_actions", True),
-        rng=policy.action_rng if isinstance(policy, SpatialPlayerPolicy)
-        and policy.action_mode == "structured_sample" else None,
+        rng=policy.action_rng if policy.action_mode == "structured_sample" else None,
     )
 
 
 async def play(url: str, bundle: Path) -> None:
-    native = (bundle / "native-policy.json").exists()
-    spatial = (bundle / "spatial-policy.json").exists()
-    if not native and not spatial:
-        from metta_training.inference import FrozenPolicy
-        from metta_training.policy_bundle import load_frozen_policy_bundle
-
-    config = None if native or spatial else load_frozen_policy_bundle(bundle)
-    build = json.loads((bundle / "build.json" if native or spatial else config.build).read_text())
+    policy = SpatialPlayerPolicy(bundle)
+    build = json.loads((bundle / "build.json").read_text())
     options = build["config"]["python_environment"]["options"]
     codec_kwargs = (
         {"expander_general_distance_prior_hinted": True}
@@ -70,7 +57,6 @@ async def play(url: str, bundle: Path) -> None:
         public_scalar_features=options.get("public_scalar_features", False),
         public_scalar_ablation=options.get("public_scalar_ablation", False),
     )
-    policy = SpatialPlayerPolicy(bundle) if spatial else NativePlayerPolicy(bundle) if native else FrozenPolicy(config)
     policy.reset("coworld-classic")
     # Compile both the wire codec and graph before the first 500 ms deadline.
     kinds = [[1] * 21 for _ in range(21)]
@@ -82,8 +68,8 @@ async def play(url: str, bundle: Path) -> None:
         "my_land": 1, "my_army": 1, "opp_land": 1, "opp_army": 1, "turn": 0,
     }
     values, mask = encode_wire_observation(warmup, **codec_kwargs)
-    policy.predict(0, NumericObservation(values=[values.tolist()], action_masks=[mask.tolist()]))
-    policy.reset(os.urandom(16).hex() if spatial and policy.action_mode == "structured_sample" else "coworld-classic")
+    policy.predict(0, SimpleNamespace(values=[values], action_masks=[mask]))
+    policy.reset(os.urandom(16).hex() if policy.action_mode == "structured_sample" else "coworld-classic")
     replies, slowest = 0, 0.0
     async with connect(url, ping_timeout=None, max_size=128 * 1024, open_timeout=30) as ws:
         async for raw in ws:

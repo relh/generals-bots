@@ -27,11 +27,14 @@ def entropy_resume_overrides_compatible(before, after):
 
 def entropy_resume_source(source):
     """Replace exactly the overrides equality guard, leaving seed checks intact."""
-    old = "if source.config.overrides != config.overrides or source.config.seed != config.seed:"
+    old = (
+        "if (source.config.seed != config.seed\n"
+        "                    or (source.config.overrides != config.overrides and not reference.migrate_classic_rollout)):"
+    )
     new = (
-        "if (source.config.overrides != config.overrides and not "
-        "entropy_resume_overrides_compatible(source.config.overrides, config.overrides)) "
-        "or source.config.seed != config.seed:"
+        "if (source.config.seed != config.seed\n"
+        "                    or (source.config.overrides != config.overrides and not reference.migrate_classic_rollout\n"
+        "                        and not entropy_resume_overrides_compatible(source.config.overrides, config.overrides))):"
     )
     if source.count(old) != 1:
         raise ValueError("Pinned learner resume guard differs from its expected source")

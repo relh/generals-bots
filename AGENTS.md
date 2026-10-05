@@ -15,7 +15,7 @@
   stop or requeue running work. Terminal jobs have no scheduling action left.
 - Keep one bounded task job and finish implementation and end-to-end launch
   audits before GPU submission. Record job IDs, before/after Nice/Priority,
-  terminal state, and errors in `integrations/COWORLD_CLASSIC_STATUS.md`.
+  terminal state, and errors in `docs/policy/current-state.md`.
   Preserve this policy in every task handoff.
 
 ## GPU throughput gate

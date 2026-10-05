@@ -200,17 +200,19 @@ class GeneralsPufferEnvironment:
         self.training = context.mode == "train"
         self.terminal_reward_mode = terminal_reward_mode
         if coworld_classic:
-            self.env = GeneralsEnv(
-                min_grid_size=6 if coworld_tiny_map_curriculum else 10 if coworld_small_map_curriculum else 18,
-                max_grid_size=8 if coworld_tiny_map_curriculum else 12 if coworld_small_map_curriculum else 21,
-                pad_to=21, truncation=horizon,
-                mountain_density_range=(0.18, 0.22) if coworld_tiny_map_curriculum else (0.24, 0.26),
-                min_generals_distance=4 if coworld_tiny_map_curriculum else 8 if coworld_small_map_curriculum else 17,
-                num_castles_range=(0, 3) if coworld_tiny_map_curriculum else (2, 5) if coworld_small_map_curriculum else (9, 11),
-                castle_val_range=(10, 21) if coworld_tiny_map_curriculum else (20, 41) if coworld_small_map_curriculum else (40, 51),
-                build_castles=False, deathtouch_turn=None, coworld_classic_rules=True,
-                pool_size=coworld_pool_size, dynamic_pool=True,
-            )
+            from integrations.classic_contract import CLASSIC_MAP_OPTIONS
+
+            map_options = dict(CLASSIC_MAP_OPTIONS, truncation=horizon, pool_size=coworld_pool_size)
+            if coworld_tiny_map_curriculum or coworld_small_map_curriculum:
+                tiny = coworld_tiny_map_curriculum
+                map_options.update(
+                    min_grid_size=6 if tiny else 10, max_grid_size=8 if tiny else 12,
+                    mountain_density_range=(0.18, 0.22) if tiny else (0.24, 0.26),
+                    min_generals_distance=4 if tiny else 8,
+                    num_castles_range=(0, 3) if tiny else (2, 5),
+                    castle_val_range=(10, 21) if tiny else (20, 41),
+                )
+            self.env = GeneralsEnv(**map_options)
         else:
             map_options = (
                 {"min_generals_distance": board_size - 2, "castle_val_range": (20, 41)} if classic_maps else {}
@@ -1043,207 +1045,3 @@ class BatchedGeneralsSelfPlayPufferEnvironment(BatchedGeneralsPufferEnvironment)
 
     def step(self, actions):
         raise NotImplementedError("Self-play uses device-resident training only")
-
-
-class BatchedGeneralsFrozenOpponentPufferEnvironment(BatchedGeneralsSelfPlayPufferEnvironment):
-    """Expose one learner seat per game against a frozen actor and optional scripted mix."""
-
-    def __init__(self, *, frozen_build: str, frozen_checkpoint: str, frozen_sha256: str,
-                 context: EnvironmentContext, parallel_games: int = 16,
-                 scripted_hint_fraction: float = 0.0, frozen_codec: str = "same",
-                 frozen_legacy_fabric: str | None = None, **options):
-        from metta_training.inference import FrozenPolicy
-        from metta_training.model_config import FrozenPolicyConfig
-        from metta_training.native_fabric import compile_policy
-
-        factorized = bool(options.get("factorized_actions", False))
-        if frozen_codec not in ("same", "hinted_gen0"):
-            raise ValueError("Unknown frozen opponent codec")
-        if frozen_codec == "hinted_gen0" and (
-            factorized or not options.get("directional_features", False)
-            or options.get("hint_features", False)
-            or frozen_sha256 != "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf"
-        ):
-            raise ValueError("Generation-0 opponent requires a pinned flat hint-free learner")
-        if not factorized and scripted_hint_fraction:
-            raise ValueError("Scripted hint mix requires factorized actions")
-
-        super().__init__(context=context, parallel_games=parallel_games, **options)
-        self._frozen_codec = frozen_codec
-        self.spec = self.spec.model_copy(update={"agents": parallel_games})
-        if scripted_hint_fraction not in (0.0, 0.5) or (scripted_hint_fraction and parallel_games % 4):
-            raise ValueError("Scripted hint mix requires half of games in balanced four-game groups")
-        self._rows = jnp.arange(parallel_games)
-        self._frozen_rows = jnp.arange(parallel_games) if not scripted_hint_fraction else jnp.asarray(
-            [row for row in range(parallel_games) if row % 4 < 2], jnp.int32
-        )
-        self._scripted_rows = jnp.asarray(
-            [row for row in range(parallel_games) if row % 4 >= 2], jnp.int32
-        ) if scripted_hint_fraction else None
-        frozen_slots = parallel_games if not scripted_hint_fraction else parallel_games // 2
-        move_scale = options.get("move_hint_scale", 1.0)
-        split_scale = options.get("split_hint_scale", 1.0)
-        if factorized and (move_scale != split_scale or move_scale not in (0.25, 1.0)):
-            raise ValueError("Frozen generation-0 opponent requires the audited hint codecs")
-        frozen_hint_gain = 1.0 / move_scale if factorized else 1.0
-        frozen_config = FrozenPolicyConfig(
-            build=Path(frozen_build), checkpoint=Path(frozen_checkpoint),
-            sha256=frozen_sha256, device="cuda:0",
-        )
-        if frozen_codec == "hinted_gen0":
-            import importlib.util
-            import sys
-
-            legacy_path = Path(frozen_legacy_fabric) if frozen_legacy_fabric else None
-            if legacy_path is None or hashlib.sha256(legacy_path.read_bytes()).hexdigest() != (
-                "04d317499de676eb74a91deb2e8b52528c97831d5895a0e1f80b991426238992"
-            ):
-                raise ValueError("Generation-0 opponent requires its pinned Fabric implementation")
-            module_name = "integrations.generals_fabric"
-            current_module = sys.modules.get(module_name)
-            spec = importlib.util.spec_from_file_location(module_name, legacy_path)
-            if spec is None or spec.loader is None:
-                raise ValueError("Cannot load pinned generation-0 Fabric implementation")
-            legacy_module = importlib.util.module_from_spec(spec)
-            try:
-                sys.modules[module_name] = legacy_module
-                spec.loader.exec_module(legacy_module)
-                frozen = FrozenPolicy(frozen_config)
-            finally:
-                if current_module is None:
-                    sys.modules.pop(module_name, None)
-                else:
-                    sys.modules[module_name] = current_module
-        else:
-            frozen = FrozenPolicy(frozen_config)
-        model = frozen.policy
-        expected_frozen_model = (
-            "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
-            if frozen_codec == "hinted_gen0" else
-            "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
-            if factorized else
-            "c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d"
-        )
-        if json.loads(Path(frozen_build).read_text())["model_sha256"] != expected_frozen_model:
-            raise ValueError("Frozen opponent graph does not match the audited action codec")
-        if frozen_codec == "hinted_gen0":
-            if model.observation_size != 14 * self.base.size**2 or model.action_sizes != [4 * self.base.size**2 + 1, 2]:
-                raise ValueError("Generation-0 opponent has the wrong observation or action layout")
-            self._frozen_observe = jax.jit(jax.vmap(
-                lambda state, side: encode_coworld_hinted_observation(
-                    game.get_observation(state, side),
-                    signed_flags=True, expander_hint=True, context_features=True,
-                )
-            ))
-        elif model.observation_size != self.base.spec.observation_size or model.action_sizes != self.base.spec.action_sizes:
-            raise ValueError("Frozen opponent model and game codec differ")
-        self._frozen_model = model
-        self._frozen_function = compile_policy(
-            model.graph, inputs=model.inputs, outputs=model.outputs, slots=frozen_slots,
-            output_order=model.output_order, standard=model.standard_compile,
-        )
-        parameters = jnp.asarray(np.frombuffer(frozen.parameters, np.float32).copy())
-        state = jnp.zeros((frozen_slots, model.state_words), jnp.float32)
-        self._frozen_sigma = model.buffers.unpack_device(parameters, state)
-
-        @jax.jit
-        def frozen_actions(values, masks):
-            board_values = values[:, :model.observation_size]
-            if factorized:
-                planes = board_values.reshape(frozen_slots, 14, self.base.size**2)
-                board_values = jnp.concatenate((planes[:, :2], planes[:, 2:8] * frozen_hint_gain,
-                                                planes[:, 8:]), axis=1).reshape(frozen_slots, -1)
-            board = board_values.reshape(frozen_slots, 1, model.observation_size)
-            board = board.transpose(1, 2, 0)[..., None]
-            board = jnp.pad(board, ((0, 0), (0, model.graph_input_size - model.observation_size),
-                                    (0, 0), (0, 0)))
-            _, prediction = self._frozen_function.forward(
-                self._frozen_sigma, {"observations": board},
-                reset=jnp.zeros((1, frozen_slots), bool),
-            )
-            logits = model.model_predictions_device(self._frozen_function, prediction)[:, 0]
-            moves = model.action_sizes[0]
-            move = jnp.argmax(jnp.where(masks[:, :moves], logits[:, :moves], -jnp.inf), axis=1)
-            if frozen_codec == "hinted_gen0":
-                split = jnp.argmax(jnp.where(masks[:, moves:], logits[:, moves:moves + 2], -jnp.inf), axis=1)
-                cells = self.base.size**2
-                return jnp.where(move == 4 * cells, 8 * cells, move + 4 * cells * split)[:, None].astype(jnp.int32)
-            if not factorized:
-                return move[:, None].astype(jnp.int32)
-            split = jnp.argmax(jnp.where(masks[:, moves:], logits[:, moves:moves + 2], -jnp.inf), axis=1)
-            return jnp.stack((move, split), axis=1).astype(jnp.int32)
-
-        self._frozen_actions = frozen_actions
-        if scripted_hint_fraction:
-            @jax.jit
-            def scripted_actions(values):
-                action = jax.vmap(lambda row: hinted_teacher_action_device(row, self.base.size))(values)
-                cells = self.base.size**2
-                index = jnp.where(
-                    action[:, 0] == 1, 4 * cells,
-                    action[:, 3] * cells + action[:, 1] * self.base.size + action[:, 2],
-                )
-                return jnp.stack((index, action[:, 4]), axis=1).astype(jnp.int32)
-            self._scripted_actions = scripted_actions
-
-    def reset_device(self, seed: str):
-        self._reset_states(seed)
-        values, masks = self._observe_both(self.states)
-        self._cached_values, self._cached_masks = values, masks
-        learner_values = values[self._rows, self.sides]
-        learner_masks = masks[self._rows, self.sides]
-        if self.base.supervise_teacher:
-            learner_values = self._self_transport(learner_values, learner_masks, self.states)
-        return (
-            learner_values,
-            learner_masks.astype(jnp.uint8),
-        )
-
-    def step_device(self, actions):
-        expected = (self.parallel_games, len(self.spec.action_sizes))
-        if actions.shape != expected:
-            raise ValueError(f"Learner action shape {actions.shape}; expected {expected}")
-        values, masks = self._cached_values, self._cached_masks
-        frozen_sides = 1 - self.sides
-        if self._frozen_codec == "hinted_gen0":
-            frozen_states = jax.tree.map(lambda field: field[self._frozen_rows], self.states)
-            frozen_values, frozen_masks = self._frozen_observe(
-                frozen_states, frozen_sides[self._frozen_rows]
-            )
-        else:
-            frozen_values = values[self._frozen_rows, frozen_sides[self._frozen_rows]]
-            frozen_masks = masks[self._frozen_rows, frozen_sides[self._frozen_rows]]
-        frozen = self._frozen_actions(frozen_values, frozen_masks)
-        opponent = jnp.zeros((self.parallel_games, len(self.spec.action_sizes)), jnp.int32)
-        opponent = opponent.at[self._frozen_rows].set(frozen)
-        if self._scripted_rows is not None:
-            scripted = self._scripted_actions(
-                values[self._scripted_rows, frozen_sides[self._scripted_rows]]
-            )
-            opponent = opponent.at[self._scripted_rows].set(scripted)
-        paired = jnp.zeros((self.parallel_games, 2, len(self.spec.action_sizes)), jnp.int32)
-        paired = paired.at[self._rows, self.sides].set(actions.astype(jnp.int32))
-        paired = paired.at[self._rows, frozen_sides].set(opponent)
-        self.states, self.keys, values, masks, rewards, done = self._advance_self_states(
-            self.states, self.base.pool, paired[:, :, 0], paired[:, :, 1], self.keys
-        )
-        self._cached_values, self._cached_masks = values, masks
-        self.turn += 1
-        if self.turn >= self.horizon:
-            self.turn = 0
-            if self.base.coworld_classic:
-                self._pool_generation += 1
-                self.base.pool, _ = self.base.env.reset(
-                    jax.random.fold_in(self._pool_seed, self._pool_generation)
-                )
-        learner_values = values[self._rows, self.sides]
-        learner_masks = masks[self._rows, self.sides]
-        if self.base.supervise_teacher:
-            learner_values = self._self_transport(learner_values, learner_masks, self.states)
-        return (
-            learner_values,
-            learner_masks.astype(jnp.uint8),
-            rewards[self._rows, self.sides].astype(jnp.float32),
-            done.astype(jnp.float32),
-            False,
-        )

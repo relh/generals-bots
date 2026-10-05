@@ -1,7 +1,7 @@
 [project]
 name = "generals-bots"
 version = "2.6.0"
-description = "Fast JAX generals.io engine — RL environment and the Generals Competition ruleset"
+description = "Coworld Classic policy training with native PufferLib and a vectorized JAX game engine"
 authors = [{name = "Matej Straka", email = "strakammm@gmail.com"}]
 license = {text = "MIT"}
 readme = "README.md"
@@ -35,12 +35,18 @@ Homepage = "https://generals.bot"
 Repository = "https://github.com/relh/generals-bots"
 Upstream = "https://github.com/strakam/generals-bots"
 
+[project.scripts]
+generals-policy = "integrations.policy:main"
+
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["generals*"]
+include = ["generals*", "integrations*"]
+
+[tool.setuptools.package-data]
+integrations = ["policy_baseline.json", "spatial_context_muon*.json", "*.cuh", "native/*.cpp"]
 
 [tool.ruff]
 line-length = 120

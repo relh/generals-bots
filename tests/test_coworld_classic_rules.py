@@ -81,7 +81,7 @@ def test_classic_replay_match_uses_hosted_head_on_order():
     generic, _ = game.step(state, actions)
     assert int(expected.armies[2, 2]) != int(generic.armies[2, 2])
 
-    match = Match(7, coworld_classic_rules=True)
+    match = Match(7)
     match.state = state
     match.height = match.width = 5
     match.advance(np.asarray(actions).tolist())
@@ -90,7 +90,7 @@ def test_classic_replay_match_uses_hosted_head_on_order():
 
 
 def test_classic_environment_uses_official_transitions_and_observations():
-    env = GeneralsEnv(grid_dims=(5, 5), pool_size=1, coworld_classic_rules=True)
+    env = GeneralsEnv(grid_dims=(5, 5), pool_size=1)
     state = claim(claim(board(), 0, 2, 1, 10), 1, 2, 3, 5)
     pool = jax.tree.map(lambda x: x[None], state)
     actions = jnp.asarray([[0, 2, 1, 3, 0], [0, 2, 3, 2, 0]], jnp.int32)

@@ -212,22 +212,23 @@ def verify_runtime_bootstrap(environ=os.environ):
         raise RuntimeError("Direct spatial adapter import hook is not active")
 
 
-def main():
-    verify_runtime_bootstrap()
-    validate_training_geometry()
-    validate_sampling_gate()
-    prepare_temporary_directory()
+# Reviewed trainer includes guarded 8192-to-2048 learner rollout migration.
+# Keep this identity explicit: updating trainer code requires reviewing its ABI
+# and updating this binding together; an archive manifest alone is insufficient.
+PINNED_TRAINER_SHA256 = "61851e5313593bee63047b122bf94ccfa281fbea8e254b4363c75bfd834546b9"
 
-    import jax
 
-    if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
-        from integrations.environment_reward_audit import activate
-        activate()
-    source = Path(__file__).with_name("puffer_coworld_frozen_transfer.py")
-    if hashlib.sha256(source.read_bytes()).hexdigest() != "9e09bbd9b541f3e1522195d07083e9be972d0a7ba6d187a8b21ff8c1e522d63e":
-        raise ValueError("Pinned Puffer trainer changed")
-    if jax.devices()[0].platform != "gpu" or not jax.devices("cpu"):
-        raise RuntimeError("Spatial self-play requires GPU and CPU JAX backends")
+def verify_trainer_source(source=None):
+    source = Path(source) if source is not None else Path(__file__).with_name("puffer_coworld_frozen_transfer.py")
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    if digest != PINNED_TRAINER_SHA256:
+        raise ValueError(f"Pinned Puffer trainer changed: expected {PINNED_TRAINER_SHA256}, found {digest}")
+    return source
+
+
+def load_pinned_trainer():
+    """Load the identical checked trainer and runtime hooks on CPU and GPU."""
+    source = verify_trainer_source()
     spec = importlib.util.spec_from_file_location("metta_training.puffer", source)
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
@@ -258,6 +259,56 @@ def main():
     module.verified_classic_frozen_opponent_transfer = lambda a, b, c: (
         original(a, b, c) or spatial_transfer(a, b, c) or spatial_self_play_transfer(a, b, c)
     )
+    return module
+
+
+def cpu_preflight(argv):
+    """Exercise launch binding, native build guard and resume without GPU work."""
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument("--build", type=Path, required=True)
+    parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args(argv)
+    # Preflight has the same rollout geometry requirements as training.
+    validate_training_geometry([sys.argv[0], "train", "--config", str(args.config)])
+    from integrations.classic_contract import validate_training_contract
+
+    run_config = json.loads(args.config.read_text())
+    contract = validate_training_contract(json.loads((args.build / "build.json").read_text())["config"], run_config)
+    module = load_pinned_trainer()
+    prepared = module.prepare_run(args.build, args.output,
+        module.RunConfig.model_validate(run_config))
+    receipt = dict(trainer_sha256=PINNED_TRAINER_SHA256,
+                   puffer_revision=module.PUFFER_REVISION,
+                   contract=contract,
+                   batch_steps=prepared.batch_steps,
+                   initialization_verified=prepared.initialization is not None,
+                   scope="CPU launcher, build and initialization; sampling and GPU execution require runtime qualification")
+    print("SPATIAL_LAUNCH_CPU_READY " + json.dumps(receipt), flush=True)
+    return receipt
+
+
+def main():
+    verify_runtime_bootstrap()
+    prepare_temporary_directory()
+    if len(sys.argv) > 1 and sys.argv[1] == "preflight":
+        cpu_preflight(sys.argv[2:])
+        return
+    validate_training_geometry()
+    validate_sampling_gate()
+    # Check source before device discovery so an obsolete binding is caught
+    # even on machines without a GPU.
+    verify_trainer_source()
+    import jax
+
+    if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
+        from integrations.environment_reward_audit import activate
+        activate()
+    if jax.devices()[0].platform != "gpu" or not jax.devices("cpu"):
+        raise RuntimeError("Spatial self-play requires GPU and CPU JAX backends")
+    load_pinned_trainer()
     runpy.run_module("metta_training.cli", run_name="__main__")
 
 

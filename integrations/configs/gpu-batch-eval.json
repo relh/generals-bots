@@ -1,5 +1,0 @@
-{
-  "seeds": [1001, 1002, 1003, 1004, 1005],
-  "episodes_per_seed": 16,
-  "timeout_seconds": 600
-}

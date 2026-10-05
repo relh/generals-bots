@@ -93,10 +93,6 @@ def training_geometry():
 
 
 def allocated_gpu():
-    if os.environ.get("GENERALS_COMPUTE_PROVIDER") == "autoresearch":
-        from integrations.autoresearch_gpu import identity
-
-        return identity()["uuid"]
     from integrations.slurm_s3_job import allocated_gpu_identity
 
     return allocated_gpu_identity()["uuid"]
@@ -274,15 +270,41 @@ def command(module, *args, name, seconds=600, train=False):
             raise subprocess.CalledProcessError(process.returncode, [name])
 
 
+def cpu_preflight(build, config, output):
+    """Run the real launcher and bootstrap before packaging a GPU pilot."""
+    source = Path(__file__).resolve().parents[1]
+    env = dict(os.environ, **TRAIN_ENV)
+    env.update(
+        PYTHONPATH=f"{source}/integrations/puffer_bootstrap:{source}:" + os.environ.get("PYTHONPATH", ""),
+        JAX_PLATFORMS="cpu",
+        METTA_AUDIT_DEVICE_REWARDS="0",
+    )
+    try:
+        return subprocess.run(
+            [sys.executable, "-m", "integrations.launch_spatial_selfplay_training",
+             "preflight", "--build", str(build), "--config", str(config), "--output", str(output)],
+            env=env, check=True, capture_output=True, text=True, timeout=120,
+        )
+    except subprocess.CalledProcessError as error:
+        # The container build captures this stream; retain the failing guard's
+        # traceback instead of reporting only the subprocess exit status.
+        print(error.stdout or "", end="", flush=True)
+        print(error.stderr or "", end="", file=sys.stderr, flush=True)
+        raise
+
+
+def preflight():
+    result = cpu_preflight(OUT / "build", OUT / "config.json", OUT / "preflight-prepare")
+    (OUT / "launcher-cpu-preflight.log").write_text(result.stdout + result.stderr)
+    if "SPATIAL_LAUNCH_CPU_READY" not in result.stdout:
+        raise RuntimeError("Launcher CPU preflight did not produce its success receipt")
+    print(result.stdout, end="", flush=True)
+
+
 def smoke():
     from integrations.slurm_s3_job import verify_allocated_gpu_idle
 
-    if os.environ.get("GENERALS_COMPUTE_PROVIDER") == "autoresearch":
-        from integrations.autoresearch_gpu import verify_idle
-
-        identity = verify_idle()
-    else:
-        identity = verify_allocated_gpu_idle()
+    identity = verify_allocated_gpu_idle()
     (OUT / "gpu-preflight.json").write_text(json.dumps(identity, indent=2) + "\n")
     import jax
 
@@ -676,7 +698,7 @@ def evaluate():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("phase", choices=("smoke", "build", "sampling_gate", "train", "evaluate"))
+    parser.add_argument("phase", choices=("smoke", "build", "preflight", "sampling_gate", "train", "evaluate"))
     args = parser.parse_args()
     from integrations.cuda_runtime_binding import audit, configure
 

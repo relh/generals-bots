@@ -1,267 +1,108 @@
-# Generals · Classic 1v1 Softmax Coworld
+# Coworld Classic 1v1
 
-A bounded **1v1** territory-control game, running this repository's
-regular `GeneralsEnv` rules, with neutral castles to capture, no castle building,
-and no Deathtouch. The authoritative engine is Python/JAX
-on CPU. Players run separately and connect over WebSocket. A lightweight bridge
-lets existing Python, C++, and Rust competition bots keep their stdio protocol.
+The local server and policy pipeline use the same pinned Classic engine and
+shared map configuration: independently sampled 18–21 tile dimensions, fog of
+war, neutral castles, capture-only victory, and a **2,000-turn cap**. See
+[engine provenance](../../generals/core/COWORLD_ENGINE.md) and the
+[policy runbook](../../docs/policy/runbook.md).
 
-Release 0.2.0 replaces the competition modifiers used by 0.1.0. The registered
-Coworld name (`generals-competition`) and bot variant ID (`competition`) remain
-stable so existing links work. The repository's competition preset is unchanged.
-
-Release 0.2.1 fixes human lobby connections through Softmax's hosted proxy.
-Browser pages accept its `address` parameter containing the complete player
-WebSocket URL, while local player links continue to accept `slot` and `token`.
-Release 0.2.2 also serves live assets and completed replays under `/client/`,
-which Softmax's hosted-play proxy forwards. Replay access still requires the
-match to finish; no live hidden state is exposed.
-Release 0.2.3 keeps tile icons and queue arrows mounted across turn updates,
-updating army counts and arrow state in place to avoid visual flicker.
-Release 0.2.4 sends automatic passes early enough for the hosted proxy and gives
-human lobbies a one-second network deadline. Their normal minimum tick interval
-remains 500 ms; slow connections can extend a turn. Status text stays steady
-while idle instead of alternating messages each tick.
-Release 0.2.5 tracks separately selected army routes: a failed route is removed
-while other queued routes continue in order.
-
-## Play locally
-
-From the repository root, with Python 3.12:
+## Local play
 
 ```bash
 pip install -e '.[softmax]'
 python -m integrations.softmax.local --human
-```
-
-Open the printed player link. Select an owned tile, then use arrow keys/WASD or
-click neighboring cells to queue a route. Black arrows with white outlines show queued moves;
-a white arrow marks the move already submitted for this turn. E undoes the last
-queued action; Q clears all remaining actions. Neither cancels an action already
-submitted. H toggles half-army moves for new inputs, and Space clears the tile
-selection while keeping queued moves intact. The Pass
-button queues a pass. Moves execute one per turn. If a move cannot execute
-(including insufficient army), fails to secure its destination, or an obstacle
-blocks the queued route, only that route is cancelled. Other queued routes
-continue in order, starting on the same turn when possible. Selecting another
-owned tile starts a separate route; use Space first when an adjacent click would
-otherwise extend your current route. A failure clears the selection only if it
-belongs to the failed route. The general is never selected automatically.
-Mountains and fog obstacles cannot be queued into. A castle
-hidden by a fog obstacle can be entered once revealed.
-The browser passes automatically if you do not act. Queues are local
-to the browser and reset on disconnect or reload. The human
-configuration advances at two turns per second. After the match, use the same
-page to watch the full replay. Ctrl+C stops the local server.
-
-For two bundled bots playing as fast as they can:
-
-```bash
 python -m integrations.softmax.local --seed 7 --keep-open
 ```
 
-`--max-turns 40` makes a short smoke test; the competition variant always uses
-1,200. Each local run writes into its own ignored `local-output/episode-*`
-directory. `config.json` contains local player tokens; do not publish it. The
-shareable outputs are `results.json` and `replay.json`. `--port` selects another
-local port. The local launcher binds only to loopback.
+Open the printed player link for human play. Arrow keys/WASD or adjacent clicks
+queue moves; H selects half moves, E undoes the last queued move, Q clears queues,
+and Space clears the selected tile. Queues execute one action per turn. Human
+play advances at two turns per second and allows one second for action delivery.
 
-## Rules and scoring
+Use `--max-turns 40` for a bounded smoke, `--port` to choose another port, and
+`--player-image IMAGE` to exercise a built player image. Local runs write
+`local-output/episode-*`. Share completed `results.json` and `replay.json`;
+`config.json` contains player authentication tokens.
 
-- Two opposing generals on an independently sampled 18–21 by 18–21 board.
-- Fog of war: a player sees its owned tiles and their neighbors. Public army
-  and land totals remain visible. Unexplored mountains/castles share one
-  structure marker. Enemy generals are hidden until visible.
-- A move sends all but one army, or half the source army (rounded down), into
-  one orthogonally adjacent cell. Mountains cannot be entered. Friendly armies
-  combine; attacking armies subtract from defenders. You must exceed the
-  defending army to take a cell under normal combat.
-- Generals and owned castles grow each even tick; owned land grows every 50
-  ticks. Neutral castles start on the map with 40–50 defenders and can be captured.
-- Castle building is disabled. The server rejects build actions; players can
-  only move or pass. The standard engine controls movement and combat order.
-- General capture always requires beating its defending army, including after
-  turn 800. There is no Deathtouch rule.
-- Capture scores **+1** for the winner and **−1** for the loser. Reaching the
-  1,200-turn cap scores **0 / 0**, regardless of army or land advantage.
+## Rules and protocol
 
-The hosted runtime adds explicit failure rules: bot matches have a 500 ms action
-deadline; human lobbies allow one second for transport, while normally advancing
-at two turns per second. Deadlines start at publication of each observation. A missing action is
-a pass. After 20 consecutive missed turns a player forfeits; if both reach the
-threshold together, both score zero. A valid pass resets the counter. If a
-player never connects before the 180-second start deadline, the episode emits a
-typed player failure instead of competitive scores. Reconnection is allowed
-during play with the original token, but never resets timeout counters.
+Move all but one army, or half the source army rounded down, to an orthogonally
+adjacent cell. Mountains block movement. Friendly armies combine; attacks
+subtract defending armies, and capture requires strictly more attackers.
+Generals and owned castles grow on even ticks; owned land grows every 50 ticks.
+Neutral castles begin with 40–50 defenders. Castle building and Deathtouch are
+disabled. General capture scores +1/−1; a turn-limit draw scores 0/0.
 
-Competitive episodes omit `seed`, generating a fresh server-private 32-bit seed.
-Explicit seeds are for reproducible local tests/evaluations. The seed is recorded
-only in the completed replay. Do not pin a league to a known fixed seed: a bot
-could reconstruct the hidden map.
+Bot action delivery has a 500 ms deadline. Missing actions become passes;
+20 consecutive misses cause forfeiture. A valid pass resets the counter.
+Competitive matches generate a fresh private seed, recorded only after the
+match in its replay. Explicit seeds are for reproducible local checks.
 
-## Player protocol
-
-See [PLAYER_PROTOCOL.md](PLAYER_PROTOCOL.md) for the exact JSON contract and
-the existing [competition protocol](../../competition/protocol.py) for stdio bots.
-The bundled player is the repository's pure-Python Expander; it does not need
-JAX or access to the engine.
-
-To bridge another bot, run in its player container:
+Players receive public observations over authenticated WebSockets. See
+[PLAYER_PROTOCOL.md](PLAYER_PROTOCOL.md) for JSON and stdio formats. To connect
+an external stdio bot:
 
 ```bash
-python -m integrations.softmax.player -- /path/to/compiled-bot
+python -m integrations.softmax.player -- /path/to/bot
 ```
 
-The runner supplies `COWORLD_PLAYER_WS_URL`. Python scripts can be passed as
-`-- python -u /path/to/main.py`. Build C++/Rust executables into the player image
-ahead of time. The bridge owns only its child process; the game owns scoring.
+The runner supplies `COWORLD_PLAYER_WS_URL`; compile or install the bot into its
+player image before use. The bundled Expander is a scripted execution control.
+
+## Frozen neural policy
+
+Neural serving loads an exported spatial bundle through `SpatialPlayerPolicy`.
+It requires the bundle's weights, model metadata, and exact sampling settings;
+serving does not require the private Metta training runtime or factory source.
+
+```bash
+docker build --platform linux/amd64   --build-context policy=/absolute/path/to/exported-bundle   -f integrations/softmax/Dockerfile.neural -t generals-policy:local .
+python -m integrations.softmax.local --player-image generals-policy:local --seed 42
+```
+
+Verify bundle parity, legal wire actions, zero timeouts, and completed captures.
+A functioning serving image does not qualify competitive strength. The latest
+recorded baseline remains 9/32 against Daveey and 18/32 against the incumbent;
+see [current state](../../docs/policy/current-state.md).
 
 ## Spectators and replays
 
-`/client/global` shows live public scores and match status. **It deliberately
-does not show the live board.** Player containers can reach the game server, so
-an unauthenticated omniscient WebSocket would defeat fog of war. Player pages
-and `/player` require the slot's token. The public stream accepts no game-control
-commands, and `/replay.json` is unavailable until all success artifacts are saved.
+`/client/global` exposes live public scores and status. Live boards remain
+restricted to authenticated players. Completed `/replay.json` contains board
+frames, submitted/applied actions, seed, timeout flags, and results. See
+[GLOBAL_PROTOCOL.md](GLOBAL_PROTOCOL.md).
 
-The completed replay includes every board frame and the submitted/applied
-actions, seed, timeout flags, and result. The tile renderer and styles from `generals-competition` serve player views
-and replays. Crown, castle, and mountain sprites come directly from this repo's
-`generals/assets/images`, with the same assets copied into the static bundle. The static replay bundle needs no Python server, JAX, WASM,
-or network access beyond fetching its replay and local assets. It supports
-autoplay, looping, pause, seek, playback speed, resize, and gzip replay bytes.
-Historical releases keep their own immutable viewer bundle.
-
-For a standalone replay, serve the generated bundle and a replay over HTTP:
+To serve a standalone completed replay:
 
 ```bash
 integrations/softmax/tools/build_replay_viewer.sh integrations/softmax/dist/replay-viewer
-# Copy only a completed replay into dist/replay-viewer/replay.json, then:
+# Copy the completed replay to dist/replay-viewer/replay.json.
 python -m http.server 8090 --directory integrations/softmax/dist/replay-viewer
-# Open http://localhost:8090/#replay=replay.json
 ```
 
-See [GLOBAL_PROTOCOL.md](GLOBAL_PROTOCOL.md). Full live board spectating would
-require a separate trusted-viewer authorization contract with Softmax; it must
-not be enabled by copying the example's public omniscient stream.
+Open `http://localhost:8090/#replay=replay.json`. The replay bundle supports
+pause, seek, playback speed, and gzip replay bytes.
 
-## Build and certify
+## Build and verify
 
-The project lives in this directory so the training package does not depend on
-the Coworld SDK. It needs Docker with Compose/Buildx and Docker daemon access.
-Keep the SDK in a separate Python environment. The initial integration targets
-the public Coworld contract at commit
-`4c26e51` (2026-09-08); pin and review SDK updates before releases.
-
-From the repository root:
+Regenerate the embedded schema and documentation after changes:
 
 ```bash
+python -m integrations.softmax.tools.manifest
 python -m integrations.softmax.tools.manifest --check
-coworld build --project integrations/softmax --version 0.2.5
-coworld certify integrations/softmax/dist/coworld_manifest.json
 ```
 
-`compose.yaml` builds separate CPU game and lightweight player images. The
-manifest template embeds the protocol/rules docs and derives its config schema
-from the runtime model. If those sources change, regenerate it with
-`python -m integrations.softmax.tools.manifest`. The build hook recreates the
-static replay directory and Coworld resolves images to immutable identifiers.
+With the Coworld SDK and Docker installed, build the project with an explicit
+release version and certify `integrations/softmax/dist/coworld_manifest.json`.
+Inspect real episodes, scores, player shutdown, logs, and replay output before
+uploading a release. Keep release source URLs and container identities fixed.
 
-Before publishing, commit and push the release inputs on the integration branch
-so the pinned source URL resolves, inspect a full-length match and static replay,
-and confirm the game name/account ownership with Softmax. Then use the
-authenticated SDK:
+Targeted integration checks:
 
 ```bash
-coworld upload-coworld integrations/softmax/dist/coworld_manifest.json
-```
-
-Hosted verification must exercise real episodes, result scores, player shutdown,
-logs, and the hosted replay. A local pass is not evidence of hosted operation.
-League setup uses Softmax's platform scheduler; no custom commissioner,
-reporter, grader, or optimizer is required for this release.
-
-## Maintenance and tests
-
-```bash
-JAX_PLATFORMS=cpu pytest -q tests/test_softmax.py tests/test_matchup.py
-```
-
-The integration tests cover real engine observation/wire parity, action
-validation, authentication, information boundaries, deterministic replay,
-timeouts, startup failures, regular general-capture scoring, neutral castles,
-rejected build actions, and failed artifact writes.
-Before releases, run the complete engine suite, local container certification,
-and browser checks for live player controls and the static replay bundle.
-
-To run the real Chromium checks (including mobile layout, gzip, corrupt replays,
-and WebSocket pong), install `playwright` and Chromium, then run:
-
-```bash
+JAX_PLATFORMS=cpu pytest -q tests/test_softmax.py
 GENERALS_BROWSER_TESTS=1 pytest -q tests/test_softmax_browser.py
 ```
 
-Set `CHROMIUM_PATH` if Chromium is not on PATH, or use Playwright's installed
-browser. Deployment dependencies, including transitive packages, are pinned in
-`requirements.lock`; regenerate it with `uv pip compile requirements.txt
---python-version 3.12 --output-file requirements.lock` from this directory when
-deliberately updating the runtime.
-
-Both this adapter and the local competition runner call `generals.core.match`.
-The adapter selects regular rules; the competition runner keeps its competition
-preset. Publish a new Coworld version for rules,
-protocol, rendering, or dependency changes. Preserve old replay fixtures when
-the format changes. Keep participant support and league balancing distinct from
-technical adapter maintenance. Hosting/resource allowances and ongoing support
-ownership need agreement with Softmax.
-
-## Visual sources
-
-`static/board.js` reuses the tile-rendering function from
-`generals-competition/board.js` at commit `83a9b23`. `static/board.css` contains
-that repo's tile styles and color variables from the same commit. Only the
-Coworld snapshot-to-tile mapping and selected-cell indicator are adapter-specific.
-The surrounding layout follows its `assets/site.css` replay viewer. There is no
-procedural game fallback or second game simulation in this renderer.
-
-Keep the tile styling aligned with the competition site when updating it.
-Sprites stay owned by `generals/assets/images`, and the Quicksand font comes
-from `generals/assets/fonts`, including its license in the replay bundle. No
-copied source assets need to be synchronized manually.
-
-### Expander player debugging
-
-The `player` Docker target runs `integrations.softmax.expander_player` directly.
-It imports the dependency-free strategy before opening its WebSocket, so Python
-subprocess startup and JAX compilation cannot consume the first observation's
-500 ms deadline. The separate `integrations.softmax.player` entrypoint remains
-available for bridging arbitrary stdio programs; those programs must meet the
-first-turn deadline themselves.
-
-Build and exercise the actual submitted Linux image against the local classic
-rules server (requires the game dependencies in your Python environment):
-
-```sh
-docker build --platform linux/amd64 --target player -f integrations/softmax/Dockerfile -t generals-expander:local .
-python -m integrations.softmax.local --player-image generals-expander:local --seed 42
-```
-
-Check `results.json` for zero timeouts, inspect `replay.json` for captures, and
-check each player log for reply count and maximum reply time. An episode marked
-`completed` with `reason: double_forfeit` does not demonstrate working players.
-
-Expander prioritizes captures over friendly transfers, including one-army
-frontier captures. It gathers reachable surplus within six owned steps of a
-city when that surplus exceeds the defenders plus a small margin. Reinforcement
-moves follow shortest owned paths; large gathering stacks advance before fresh
-one-army capital growth. In the late game it advances the strongest viable
-border stack. A revealed enemy general becomes a persistent objective: the bot
-holds an understrength adjacent siege, routes connected surplus to it, ignores
-isolated one-army dead ends, and attacks as soon as the stack is sufficient.
-This is a heuristic and does not establish competitive strength against other
-strategies.
-
-For the 0.3.0 multi-format Coworld, Expander also resets a late spearhead once
-it becomes an interior tile, preventing the two-cell reinforcement loops seen
-after FFA eliminations. In the `build_castles` ruleset it funds and builds one
-opening castle before returning to the shared expansion and siege policy.
+The browser harness uses Chromium/Playwright. Deployment dependencies are
+pinned in `requirements.lock`; deliberate updates must regenerate that lock.
