@@ -81,7 +81,7 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
 
     previous_sigterm = signal.signal(signal.SIGTERM, interrupted)
     try:
-        with (output / f"{name}.log").open("xb") as log:
+        with (output / f"{name}-process.log").open("xb") as log:
             process = subprocess.Popen(
                 [sys.executable, "-m", "integrations." + module, *map(str, arguments)],
                 env=env,

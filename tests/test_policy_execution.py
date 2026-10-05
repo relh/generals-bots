@@ -70,7 +70,7 @@ def test_timeout_stops_stubborn_owned_descendant_and_preserves_unrelated_process
         assert heartbeat.read_text() == recorded
         assert unrelated.poll() is None
         assert signal.getsignal(signal.SIGTERM) == previous
-        assert (tmp_path / "logs/timeout.log").exists()
+        assert (tmp_path / "logs/timeout-process.log").exists()
     finally:
         unrelated.terminate()
         unrelated.wait(timeout=5)
