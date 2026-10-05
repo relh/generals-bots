@@ -15,6 +15,10 @@ B300, eight CPUs and 96 GiB memory using the direct Enroot backend with owned
 Its 313-file input archive SHA-256 is
 `f34d7e56ab893615ec14acc88092efdbe25309e39b4484db2e346bca52849c6d`.
 
+Latest read-only controller inspection found the B300 node in
+`MIXED+DRAIN+DYNAMIC_NORM`, reason `temporary`. The job remains queued at the
+required lowest priority; node state and competing work are unchanged.
+
 The first allocated-step gate must verify host GPU cgroup visibility, idle GPU
 ownership and matching container UUID. That actual host-step scope is still
 unverified; installed cgroup configuration and three prior batch-shell
