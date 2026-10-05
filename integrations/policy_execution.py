@@ -43,10 +43,10 @@ def runtime_environment(source, output, sampler):
         METTA_SPATIAL_MUON_DENSE_ORIENTATION="canonical",
         METTA_SPATIAL_MUON_CONTEXT_MATRIX="1",
         METTA_SPATIAL_OPTIMIZER_LAYOUT="logical",
-        METTA_AUDIT_DEVICE_REWARDS="1",
-        METTA_AUDIT_SPATIAL_SPLITS="1",
+        METTA_AUDIT_DEVICE_REWARDS="0",
+        METTA_AUDIT_SPATIAL_SPLITS="0",
         METTA_AUDIT_ACTION_MASK="1",
-        METTA_AUDIT_POPULATION_WINS="1",
+        METTA_AUDIT_POPULATION_WINS="0",
         METTA_EPOCH_TIMING_DIR=str(output / "timing"),
         METTA_SPATIAL_SAMPLING_GATE_REPORT=str(output / "sampling-gate.json"),
     )
@@ -73,6 +73,8 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
         env.update(JAX_PLATFORMS="cpu", METTA_AUDIT_DEVICE_REWARDS="0")
     steps_per_epoch = None
     if training_config:
+        env.update(METTA_AUDIT_DEVICE_REWARDS="1", METTA_AUDIT_SPATIAL_SPLITS="1",
+                   METTA_AUDIT_POPULATION_WINS="1")
         config = json.loads(Path(training_config).read_text())["overrides"]
         steps_per_epoch = config["vec.total_agents"] * config["train.horizon"]
 

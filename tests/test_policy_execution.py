@@ -74,3 +74,20 @@ def test_timeout_stops_stubborn_owned_descendant_and_preserves_unrelated_process
     finally:
         unrelated.terminate()
         unrelated.wait(timeout=5)
+
+
+def test_nested_process_preserves_existing_outer_phase_log(tmp_path, monkeypatch):
+    package = tmp_path / "integrations"
+    package.mkdir()
+    (package / "__init__.py").write_text("")
+    (package / "worker.py").write_text("print('native phase completed')\n")
+    monkeypatch.chdir(tmp_path)
+    logs = tmp_path / "logs"
+    logs.mkdir()
+    outer = logs / "build.log"
+    outer.write_bytes(b"outer scheduler phase evidence\n")
+    execute("worker", [], source=tmp_path, output=logs,
+            sampler={"mode": "structured_sample", "move_temperature": .05, "split_temperature": .15},
+            name="build", seconds=5)
+    assert outer.read_bytes() == b"outer scheduler phase evidence\n"
+    assert (logs / "build-process.log").read_text() == "native phase completed\n"
