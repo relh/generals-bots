@@ -124,7 +124,7 @@ class Trial:
             "--weak-owned-route-penalty", self.sampler["weak_owned_route_penalty"],
             "--doomed-attack-route-penalty", self.sampler["doomed_attack_route_penalty"],
             "--output", directory,
-        ], name="sampling", seconds=360, arm=arm)
+        ], name="sampling", seconds=300, arm=arm)
         report = source_sampling_gate_report(directory)
         (self.output / arm / "sampling-gate.json").write_text(json.dumps(report, indent=2) + "\n")
 
@@ -135,7 +135,7 @@ class Trial:
         self.call("launch_spatial_selfplay_training", [
             "train", "--build", self.output / "build", "--config", self.output / arm / "config.json",
             "--output", self.output / arm / "run",
-        ], name="train", seconds=840, arm=arm, training=True)
+        ], name="train", seconds=660, arm=arm, training=True)
         config = json.loads((self.output / arm / "config.json").read_text())
         training_audit(self.output / arm, config)
         checkpoint = self.output / arm / f"run/checkpoints/metta_generals/run/{STEPS:016d}.bin"
@@ -146,12 +146,12 @@ class Trial:
         for key, value in self.sampler.items():
             if key != "mode":
                 args.extend(["--serving-" + key.replace("_", "-"), value])
-        self.call("export_spatial_policy_bundle", args, name="export", seconds=180, arm=arm)
+        self.call("export_spatial_policy_bundle", args, name="export", seconds=120, arm=arm)
         self.call("audit_spatial_checkpoint_serving_parity", [
             "--bundle", self.output / arm / "bundle", "--replay-root", self.inputs / "leader-root",
             "--factory-source", self.source / "integrations/generals_fabric.py",
             "--output", self.output / arm / "serving-parity.json",
-        ], name="parity", seconds=180, arm=arm)
+        ], name="parity", seconds=120, arm=arm)
 
     def evaluate(self):
         arms = {"source": self.bundle, "distilled": self.output / "distill/bundle",
@@ -162,7 +162,7 @@ class Trial:
                 "--games", 4096, "--pool-size", 4096,
                 "--seed", EVAL_SEED, "--sample-seed", EVAL_SAMPLE_SEED, "--destination-audit",
                 "--output", self.output / ("heldout-" + name),
-            ], name="evaluate-" + name, seconds=480)
+            ], name="evaluate-" + name, seconds=360)
         for before, after in (("source", "control"), ("source", "distilled"), ("source", "warm"), ("control", "warm")):
             name = f"paired-{before}-{after}"
             self.call("analyze_spatial_population_pair", [
