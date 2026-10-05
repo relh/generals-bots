@@ -1,5 +1,26 @@
 # Softmax Coworld Classic 1v1 training
 
+## Direct ownership accepted; bounded H100 reservation reconciled
+
+Richard delegated reservation coordination directly to this task on October4.
+Fresh API quote: one H100/60min2.97USD maximum runtime. Shared ledger audit
+retained every other unreleased ceiling plus historical spend:90.4524USD
+committed before this task,97.4524USD after the7USD all-inclusive hold.
+No other owner's reservation changed. Decision and exact current quote in
+/tmp/relh-october-dispatch/generals-h100-migration-reservation-decision.json
+and /tmp/relh-generals-h100-quote-20261005.json.
+No Generals paid job or Slurm duplicate at preflight; all listed paid nodes stopped.
+USTAR context7db6a676f5790ccd09b7655eab43ea83e2ec081e2174b224dcf34b64c780465c,
+497684480bytes, all members compared with CPU-qualified source before upload.
+Only reproducible owned staging was removed after byte verification against
+retained input archive; checkpoints/results/history remain intact. Local space
+subsequently recovered to16GiB. Output collection remains bounded/hash-verified.
+
+Full CI37188770982 on438a608 finished1118passed,7failed,17skipped,23subtests.
+Exactly the same seven independently reproduced baseline Sentinel failures;
+no additional changed-source failure. H100 runtime qualification and strength
+remain outstanding. Existing CPU proof remains source5961ce2.
+
 ## Final H100 CPU image passed; shared reservation requested, no GPU allocation
 
 Source5961ce211e5a4f40b0986266994a5e4c078c7b53 is pushed in PR4.
