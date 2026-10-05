@@ -34,7 +34,10 @@ class BootstrapTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             package = Path(directory)/'integrations'; package.mkdir()
             (package/'__init__.py').touch()
-            r = subprocess.run([sys.executable, '-c', 'print("UNSAFE_START")'],
+            # Disable installed editable import hooks so this dependency failure
+            # cannot accidentally resolve to the real training adapter.
+            code = f'import runpy; runpy.run_path({str(BOOT / "sitecustomize.py")!r}); print("UNSAFE_START")'
+            r = subprocess.run([sys.executable, '-S', '-c', code],
                                cwd=directory, env=self.env(f'{BOOT}:{directory}'),
                                capture_output=True, text=True, timeout=20)
             self.assertEqual(r.returncode, 78)

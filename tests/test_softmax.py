@@ -85,7 +85,7 @@ def test_action_turn_is_exact(turn):
     "fields",
     [
         {"tokens": ["same", "same"]},
-        {"max_turns": 1201},
+        {"max_turns": 2001},
         {"seed": -1},
         {"perfect_info": True},
         {"seed": True},

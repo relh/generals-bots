@@ -4,6 +4,26 @@ Baseline evidence reconciled on **2026-10-05**. The overhaul is in progress.
 This page describes recorded results; verify artifact availability and hashes
 before resuming or deploying any policy.
 
+## Active execution
+
+The consolidated code is pushed on `relh/policy-overhaul`, with integration
+review in [PR #5](https://github.com/relh/generals-bots/pull/5).
+
+B300 Slurm job **35932** started on 2026-10-05 at 19:01:43 UTC from source
+`57be9f95e4531c907ab312ceee0041f02cd311ab`. It requests one GPU, eight CPUs,
+96 GiB host memory and a finite 80-minute allocation. Controller readback
+confirmed Nice **2147483645**, Priority **1**, and `TresPerNode=gres/gpu:1`.
+The qualification budget is **8,388,608 new steps**, 8,192 games, horizon 256,
+minibatch 8,192, preserving the parent optimizer and using log-gap exploration
+scale 4. Fresh paired evaluation seeds are 51113 / 17231.
+
+Its phase order is source/GPU smoke, native build, real CPU launcher preflight,
+sampling gate, bounded training, and matched population/serving evaluation.
+No new throughput or strength result is established until those phases complete.
+The source/input receipt is recorded in the task's local
+`/tmp/relh-generals-overhaul-b300-20261005T185744Z-306bdfc5.public.json`;
+S3 inputs and output destinations are immutable and hash-verified.
+
 ## Qualification
 
 **The hosted winning-policy objective remains unmet.** The latest completed
