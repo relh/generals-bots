@@ -1,5 +1,27 @@
 # Softmax Coworld Classic 1v1 training
 
+## Funded transport debug: rootless archive fixed, native image gate building
+
+The shared7USD hold now owns one live job-gsp6k; oneH100/60min,build60min,
+resume none,max_restarts0,queue TTL60min. Runtime source remains5961ce2;
+transport fixes published in48019e3. No Slurm submission or priority change.
+Prior exact jobs xyrtm,xwjya,vmn9x,hhccv all terminal build_failed with no
+GPU attempts and zero runtime receipt. Logs/receipts retained per job in/tmp.
+Failures were respectively unsupported plain tar, empty extracted Dockerfile,
+private directory mode unreadable by rootless BuildKit, and ARM-host QEMU
+incorrectly invoked by native x86 builder. None is a learning result.
+
+Normalized GNU/zstd context ctx-0067dae9 SHA
+c7ff933a3c8ffa38655e518c7992551a3a332474e305d797e30bc65e8943558c;
+all2766file hashes and263directory modes checked before upload. Inline Dockerfile
+and checksum list validate2763payload files before CPU preparation. No runtime
+source/checkpoint changes. CPU gate now executes natively on AMD64; identical
+preparation body is published with a main guard, checked by AST equivalence.
+Packager regression suite4passed, Ruff clean, exact generated tar matches the
+uploaded normalized archive. Proof /tmp/relh-generals-context-packager-proof.json.
+Cloud GPU/SPS/learning and hosted strength remain outstanding. Keep monitoring
+exact job-gsp6k; never submit a duplicate while it is building/queued/running.
+
 ## Direct ownership accepted; bounded H100 reservation reconciled
 
 Richard delegated reservation coordination directly to this task on October4.
