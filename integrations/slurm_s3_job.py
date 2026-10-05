@@ -263,7 +263,7 @@ class SlurmJob:
             key: os.environ.get(key) for key in
             ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS", "CUDA_VISIBLE_DEVICES", "NVIDIA_VISIBLE_DEVICES")}
         # A batch shell is not the GPU execution context. Record its visibility,
-        # but enforce device ownership/occupancy inside the allocated Pyxis step.
+        # but enforce device ownership/occupancy inside the allocated Slurm step.
         try:
             self.receipt["batch_gpu_visibility"] = gpu_query(
                 "--query-gpu=index,uuid", "--format=csv,noheader,nounits")

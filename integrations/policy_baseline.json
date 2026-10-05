@@ -125,7 +125,12 @@
       "sha256": "fc2049cef71ec1cd13d0969de1a361d1ecb55d6296fc20c18b4748aa31ba569a",
       "bytes": 21116
     },
-    "pending_reason": "B300 node MIXED+DRAIN+DYNAMIC_NORM; controller reason temporary"
+    "pending_reason": "B300 node MIXED+DRAIN+DYNAMIC_NORM; temporary drain for cleanup maintenance",
+    "credential_window": {
+      "latest_full_budget_start_before_utc": "2026-10-06T03:16:50Z",
+      "effective_expiry_utc": "2026-10-06T05:06:50Z",
+      "evidence": "/tmp/generals-policy-job-35956-credential-window.json"
+    }
   },
   "latest_training_throughput": {
     "job": "35935",
