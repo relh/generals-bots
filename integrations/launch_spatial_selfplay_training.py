@@ -162,9 +162,7 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
         raise ValueError("Policy initialization requires METTA_SPATIAL_SAMPLING_GATE_REPORT")
     report = json.loads(Path(path).read_text())
     settings = rollout_sampler_settings(environ)
-    if settings["early_route_temperature"] is not None and (
-        not options.get("public_scalar_features") or options.get("public_scalar_ablation")
-    ):
+    if settings["early_route_temperature"] is not None and environment.get("spec", {}).get("observation_size") != 7056:
         raise ValueError("Early route schedule requires full public scalar turn observations")
     from integrations.native_spatial_asset import load_asset
 

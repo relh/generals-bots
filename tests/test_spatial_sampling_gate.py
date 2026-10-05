@@ -119,7 +119,7 @@ def gate_fixture(tmp_path, restore=False):
                 config=dict(
                     python_environment=dict(
                         factory="integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
-                        spec=dict(action_sizes=[3529]),
+                        spec=dict(action_sizes=[3529], observation_size=7056),
                         options=dict(
                             terminal_reward_mode="win_only", public_scalar_features=True, public_scalar_ablation=False
                         ),
