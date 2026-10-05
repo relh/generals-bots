@@ -123,8 +123,10 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
             METTA_SPATIAL_EARLY_ROUTE_TURNS=str(portable.early_route_turns),
         )
     os.environ.update(acting_environment)
-    install()
-    from metta_training.native_fabric import NativeFabricPolicy
+    import metta_training.native_fabric as native_module
+    if not getattr(native_module.NativeFabricPolicy, "_generals_direct_spatial", False):
+        install(native_module)
+    NativeFabricPolicy = native_module.NativeFabricPolicy
 
     build = json.loads((bundle / "build.json").read_text())
     native = NativeFabricPolicy(json.dumps(build["config"]["fabric"]))
