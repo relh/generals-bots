@@ -310,3 +310,24 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_storage_failure_records_exact_available_and_required_values(tmp_path):
+    from types import SimpleNamespace
+    import pytest
+    from integrations.slurm_s3_job import check_space
+    receipt = {}
+    with patch('os.statvfs', return_value=SimpleNamespace(f_bavail=1000, f_frsize=4096, f_favail=13)):
+        with pytest.raises(RuntimeError, match='available_inodes.*13') as error:
+            check_space(tmp_path, 1024, 60, receipt=receipt)
+    expected = dict(path=str(tmp_path.resolve()), available_bytes=4096000, required_bytes=1024,
+                    available_inodes=13, required_inodes=60)
+    assert receipt['storage_checks'] == [expected]
+    assert json.loads(str(error.value).split(': ', 1)[1]) == expected
+
+
+def test_retired_recovery_mount_configuration_is_rejected():
+    import pytest
+    with patch.dict(os.environ, {'SLURM_JOB_ID': '999'}):
+        with pytest.raises(ValueError, match='mount_recovery'):
+            SlurmJob(dict(scratch_parent='/tmp', receipt={}, mount_recovery=True))

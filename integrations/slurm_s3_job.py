@@ -75,10 +75,17 @@ class JobSignal(Exception):
             self.status = 124
 
 
-def check_space(path, required_bytes, required_inodes):
+def check_space(path, required_bytes, required_inodes, *, receipt=None):
     stat = os.statvfs(path)
-    if stat.f_bavail * stat.f_frsize < required_bytes or stat.f_favail < required_inodes:
-        raise RuntimeError("Insufficient free bytes or inodes on owned scratch filesystem")
+    gauges = dict(path=str(Path(path).resolve()), available_bytes=stat.f_bavail * stat.f_frsize,
+                  required_bytes=required_bytes, available_inodes=stat.f_favail,
+                  required_inodes=required_inodes)
+    if receipt is not None:
+        receipt.setdefault("storage_checks", []).append(gauges)
+    if gauges["available_bytes"] < required_bytes or gauges["available_inodes"] < required_inodes:
+        raise RuntimeError("Insufficient free bytes or inodes on owned scratch filesystem: "
+                           + json.dumps(gauges, sort_keys=True))
+    return gauges
 
 
 def extract_input(archive, destination, max_bytes, max_members):
@@ -144,6 +151,8 @@ class SlurmJob:
         self.job_id = os.environ["SLURM_JOB_ID"]
         if not re.fullmatch(r"\d+", self.job_id):
             raise ValueError("Invalid job ID")
+        if "mount_recovery" in config:
+            raise ValueError("Unsupported launch configuration: mount_recovery")
         self.root = Path(config["scratch_parent"]) / f"relh-generals-{self.job_id}"
         self.container = f"relh-generals-{self.job_id}"
         self.process = None
@@ -232,7 +241,7 @@ class SlurmJob:
             self.runtime_env.pop(variable, None)
         self.runtime_env["ENROOT_MAX_PROCESSORS"] = str(self.config.get("cpus", 8))
         self.retire_verified_container()
-        check_space(self.root, self.config["scratch_bytes"], self.config["scratch_inodes"])
+        check_space(self.root, self.config["scratch_bytes"], self.config["scratch_inodes"], receipt=self.receipt)
         self.receipt["gpu_environment"] = {
             key: os.environ.get(key) for key in
             ("SLURM_JOB_GPUS", "SLURM_STEP_GPUS", "CUDA_VISIBLE_DEVICES", "NVIDIA_VISIBLE_DEVICES")}
@@ -293,17 +302,15 @@ class SlurmJob:
 
     def run_step(self, name, argv, seconds):
         # Repeat immediately before Pyxis/Enroot may unpack an image.
-        check_space(self.root, self.config["image_unpacked_bytes"], self.config["image_inodes"])
+        check_space(self.root, self.config["image_unpacked_bytes"], self.config["image_inodes"], receipt=self.receipt)
         # These are the actual site-configured unpack/temp filesystems, verified
         # before submission. Never assume filtered ENROOT_* overrides applied.
         for path in self.config.get("enroot_storage_paths", []):
-            check_space(path, self.config["image_unpacked_bytes"], self.config["image_inodes"])
+            check_space(path, self.config["image_unpacked_bytes"], self.config["image_inodes"], receipt=self.receipt)
         image = self.config["image"]
         if image == "input/image.sqsh":
             image = str(self.root / image)
         mounts = f"{self.root}:/work"
-        if self.config.get("mount_recovery"):
-            mounts += f",{self.root}/input/recovery:/recovery:ro"
         print(f"STEP_START {name} budget_seconds={seconds}", flush=True)
         command = ["srun", f"--nice={NICE}", "--nodes=1", "--ntasks=1", "--gres=gpu:1",
                    "--kill-on-bad-exit=1", "--unbuffered",

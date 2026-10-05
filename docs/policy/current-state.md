@@ -6,6 +6,37 @@ before resuming or deploying any policy.
 
 ## Latest qualification and selected decision
 
+Continuation **35949** terminated **FAILED, exit 1:0**, after **one second**
+on `metta-fabric-b300-1`, from source
+`4ca2e9926858a8f53a0f7a7d2141916fbe00ff4c`. Host `PREPARE` rejected insufficient
+free bytes or inodes on its owned `/tmp` scratch filesystem. It required
+32 GiB free and 60,000 available inodes; the error did not record actual gauges.
+No input/image downloads, GPU visibility query, parity, build, warm training
+or evaluation were reached. **Zero new training steps** were produced.
+Controller readback confirmed Nice **2147483645**, Priority **1**, one B300,
+eight CPUs, 96 GiB memory and the finite **01:40:00** cap.
+
+A subsequent read-only node inspection found about **1.45 TB free bytes but
+13,170 available inodes**, below the declared requirement. Storage selection
+and the site's Enroot filesystems must be audited before another submission.
+The next preparer also omits the obsolete `mount_recovery` key: the signed
+35949 configuration set it true despite the sealed current input containing
+no recovery tree. That later mismatch was not reached in 35949.
+
+The original sealed current NativeSpatialAsset inputs and completed control/CE
+policies from 35935 remain preserved; no completed computation was repeated.
+Submission/source receipts share prefix
+`/tmp/relh-generals-current-continuation-b300-20261005t221200z-v2-core`.
+The input archive SHA-256 remains
+`f569da1390893d384c8be3e7f2174bbaf1abaa66fec3c6795589008825bb6fcc`.
+The 9,355-byte terminal archive has three files and SHA-256
+`7bca77aed10597e45c0bf817df11145ea86538a200a0c5b741906d72bd3c0c78`;
+parts and extraction were verified under
+`/tmp/generals-policy-overhaul-results-35949/`.
+There is no current running Generals trial recorded here, and no new warm PPO,
+evaluation or strength result. No upload or retry is prepared until the
+storage audit and corrected runtime/source sealing are complete.
+
 All five H100 attempts failed before optimizer updates on 2026-10-05:
 
 | Attempt | Terminal failure |
@@ -55,7 +86,7 @@ reached. Raw logs, source receipt and verified archive are retained at
 `/tmp/generals-policy-overhaul-results-35936/`.
 Both submissions recorded Nice **2147483645**, Priority **1**, one B300, eight
 CPUs and 96 GiB host memory; finite caps were two hours / 90 minutes respectively.
-No trial is currently recorded as running here.
+These submissions are terminal; the later 35949 continuation also failed.
 
 Trial **35934** previously completed distillation but failed before PPO because
 training-only reward audits were applied to signed evaluation rewards. That
@@ -70,8 +101,8 @@ confirmed one B300 GPU, eight CPUs, 96 GiB memory, Nice **2147483645**,
 Priority **1**, and a finite two-hour cap. Smoke passed; the build phase hit
 `FileExistsError` because nested subprocess logging collided with the outer
 runner's `build.log`. Commit `e5c9c92` gives inner processes distinct owned
-log names. A retry preserves the same sealed experiment; no learning result
-has been produced. Verified failure evidence is retained at
+log names. The retry preserved the same sealed experiment; 35933 produced no learning
+result. Verified failure evidence is retained at
 `/tmp/generals-policy-overhaul-results-35933/`.
 
 The consolidated code is on `relh/policy-overhaul`, with integration review in
@@ -196,7 +227,9 @@ serving excludes optimizer state. Current derived inputs are at
 `/tmp/generals-current-policy-input-v2/`; successful current GPU execution and
 fresh hosted strength remain required before qualification.
 
-Next: diagnose and prove native parity in the current immutable CUDA runtime,
-then complete warm training and matched broad evaluation using the preserved
-control/CE artifacts where the effective experiment remains identical. Retain
-the baseline until a candidate passes broad and fresh hosted evidence.
+Active next decision: choose and verify scratch/Enroot storage with sufficient
+actual capacity, record byte/inode gauges, and remove the unused recovery mount
+before sealing a corrected continuation. Its first GPU computation must still
+prove control CUDA parity before warm training and broad evaluation. Reuse the
+preserved control/CE artifacts under the proven equivalent effective experiment.
+Retain the baseline until broad and fresh hosted evidence qualifies a candidate.

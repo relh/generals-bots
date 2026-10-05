@@ -14,6 +14,8 @@ from integrations.slurm_s3_job import NICE
 
 
 def render(config, *, name, partition, minutes, cpus, memory_gib):
+    if "mount_recovery" in config:
+        raise ValueError("Unsupported launch configuration: mount_recovery")
     if not re.fullmatch(r"relh-generals-[a-z0-9-]+", name):
         raise ValueError("Expected a unique relh-generals task job name")
     if partition not in ("rtx4090", "b200", "b300"):

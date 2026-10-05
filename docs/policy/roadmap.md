@@ -19,7 +19,10 @@ the selected baseline also passed native AMD64 hosted serving smoke. The
 same-sampler source gate passed in 35935. That trial completed control
 PPO and supervised warmstart, but parity failed; retry 35936 segfaulted in
 native GPU parity. Current source cleanup has exact CPU structural/numeric
-proof, while current GPU parity and the warm arm remain unresolved.
+proof. Continuation 35949 failed in host scratch preparation after one second:
+13,170 available `/tmp` inodes were below the declared 60,000 requirement.
+No downloads, GPU query, parity or new training/evaluation occurred. Storage
+and Enroot paths must be audited before retrying; no trial is currently running.
 Baseline comparisons and loss diagnosis are available. Learning improvement
 and hosted winning qualification remain open; see [current-state.md](current-state.md).
 
@@ -36,9 +39,12 @@ Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
 position curriculum, opponent pool and rewards. Compare source, distilled,
 control and warm bundles on the same broad development games before selecting
-a candidate for fresh confirmation and hosted qualification. First diagnose
-and prove current native GPU parity; retain completed control and supervised
-artifacts from 35935. Neither failed parity run provides a warm-arm result.
+a candidate for fresh confirmation and hosted qualification. First resolve
+scratch/Enroot storage and remove the obsolete recovery-mount setting. A newly
+sealed continuation must prove control CUDA parity before building the current
+runtime, executing the warm arm and evaluating broad panels. Retain completed
+control and supervised artifacts from 35935; those computations are not repeated.
+The failed retries provide no warm-arm result.
 
 Preserve throughput, legality, train/serve parity, opponent-by-seat coverage and
 frozen artifact identities. Reject failed hypotheses using their paired evidence;
