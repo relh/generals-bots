@@ -1,0 +1,6 @@
+FROM nvcr.io/nvidia/pytorch:25.08-py3
+
+# PufferLib's pinned native build expects these linker names.
+RUN apt-get update -qq && apt-get install -y --no-install-recommends ccache libomp5 libgl1 && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/lib/x86_64-linux-gnu/libomp.so.5 /usr/lib/x86_64-linux-gnu/libomp5.so \
+    && ln -s /usr/lib/x86_64-linux-gnu/libGL.so.1 /usr/lib/x86_64-linux-gnu/libGL.so

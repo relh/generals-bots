@@ -29,7 +29,18 @@ def _bfs(passable, sources):
         )
         return jnp.where(sources, jnp.int32(0), jnp.where(passable, jnp.minimum(d, nb + 1), INF))
 
-    return jax.lax.fori_loop(0, H * W, relax, jnp.where(sources, jnp.int32(0), INF))
+    def still_changing(state):
+        steps, _, changed = state
+        return changed & (steps < H * W)
+
+    def advance(state):
+        steps, distances, _ = state
+        updated = relax(None, distances)
+        return steps + 1, updated, jnp.any(updated != distances)
+
+    initial = jnp.where(sources, jnp.int32(0), INF)
+    _, distances, _ = jax.lax.while_loop(still_changing, advance, (jnp.int32(0), initial, jnp.bool_(True)))
+    return distances
 
 
 def _toward(field, passable):

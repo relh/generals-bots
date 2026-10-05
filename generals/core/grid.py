@@ -145,6 +145,7 @@ def _shift_false(mask: jax.Array, dr: int, dc: int) -> jax.Array:
 def generate_grid(
     key: jax.random.PRNGKey,
     grid_dims: tuple[int, int] = (23, 23),
+    playable_dims: jax.Array | None = None,
     pad_to: int | None = None,
     mountain_density_range: tuple[float, float] = (0.18, 0.26),
     num_castles_range: tuple[int, int] = (9, 11),
@@ -187,6 +188,9 @@ def generate_grid(
     Args:
         key: JAX random key
         grid_dims: Grid dimensions (height, width) - supports non-square grids
+        playable_dims: Optional dynamic playable rectangle inside `grid_dims`;
+            the remainder is impassable padding. This lets a mixed-size pool
+            share one compiled 21×21 generator.
         pad_to: Pad grid to this size for batching (None = max(h, w) + 1)
         mountain_density_range: (min, max) fraction of tiles that are mountains
         num_castles_range: (min, max) number of castles to place
@@ -209,8 +213,12 @@ def generate_grid(
     keys = jax.random.split(key, 14)
 
     ah, aw = grid_dims
-    playable = jnp.ones(grid_dims, dtype=bool)
-    area = ah * aw
+    playable = (
+        jnp.ones(grid_dims, dtype=bool)
+        if playable_dims is None
+        else (jnp.arange(ah)[:, None] < playable_dims[0]) & (jnp.arange(aw)[None, :] < playable_dims[1])
+    )
+    area = ah * aw if playable_dims is None else playable_dims[0] * playable_dims[1]
 
     grid_dims = (ah, aw)          # from here on: the ARRAY shape
     num_tiles = ah * aw
@@ -246,7 +254,9 @@ def generate_grid(
     # length is num_tiles // 4 — a hundred-odd sequential steps, each writing a
     # single cell of the whole board. The indices are distinct (top_k), so one
     # masked scatter does the same work in one op.
-    mountain_mask = jnp.arange(max_mountains) < num_mountains
+    # The fixed-shape generator takes at most area//4 mountain candidates.
+    # Keep that bound on smaller playable rectangles inside a padded array.
+    mountain_mask = jnp.arange(max_mountains) < jnp.minimum(num_mountains, area // 4)
     chosen_m = jnp.zeros(num_tiles, dtype=bool).at[mountain_indices].set(mountain_mask)
     grid = jnp.where(chosen_m.reshape(grid_dims), -2, grid)
 

@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=relh-classic-native-policy-feedforward-distribution-v4
+#SBATCH --partition=b300
+#SBATCH --nodelist=metta-fabric-b300-1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=96G
+#SBATCH --time=00:15:00
+#SBATCH --nice=2147483645
+#SBATCH --chdir=/tmp
+#SBATCH --output=/var/tmp/relh-generals-recovery/native-policy-feedforward-distribution-v4-%j.log
+set -euo pipefail
+
+# Mandatory user policy: verify lowest scheduling priority before workload startup.
+slurm_task_priority_record=$(scontrol show job -o "${SLURM_JOB_ID:?}")
+[[ " $slurm_task_priority_record " == *" Nice=2147483645 "* ]] || { printf 'Lowest Slurm Nice verification failed\n' >&2; exit 1; }
+slurm_task_priority=unknown
+for slurm_task_field in $slurm_task_priority_record; do
+  case "$slurm_task_field" in Priority=*) slurm_task_priority=${slurm_task_field#Priority=} ;; esac
+done
+[[ "$slurm_task_priority" =~ ^[0-9]+$ ]] || exit 1
+printf 'SLURM_PRIORITY_READBACK JobId=%s Nice=2147483645 Priority=%s\n' "$SLURM_JOB_ID" "$slurm_task_priority" >&2
+unset slurm_task_priority_record slurm_task_field
+
+
+python3 - /var/tmp/relh-generals-recovery <<'STAGEPY'
+import base64,sys
+from pathlib import Path
+path=Path(sys.argv[1])/"audit_native_action_distributions-strata-20260927.py"
+data=base64.b64decode("IiIiQ29tcGFyZSB2ZXJpZmllZCBjaGVja3BvaW50cyBvbiBpZGVudGljYWwsIHBsYXllci12aXNpYmxlIENsYXNzaWMgdHJhamVjdG9yaWVzLiIiIgoKaW1wb3J0IGFyZ3BhcnNlCmltcG9ydCBqc29uCmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAoKaW1wb3J0IGpheAppbXBvcnQgbnVtcHkgYXMgbnAKZnJvbSBtZXR0YV90cmFpbmluZy5lbnZpcm9ubWVudCBpbXBvcnQgRW52aXJvbm1lbnRDb250ZXh0Cgpmcm9tIGludGVncmF0aW9ucy5tZXR0YV9wdWZmZXIgaW1wb3J0IEJhdGNoZWRHZW5lcmFsc1B1ZmZlckVudmlyb25tZW50CmZyb20gaW50ZWdyYXRpb25zLm5hdGl2ZV9wdWZmZXJfcG9saWN5IGltcG9ydCBOYXRpdmVQdWZmZXJQb2xpY3kKCgpkZWYgbWFpbigpOgogICAgcGFyc2VyID0gYXJncGFyc2UuQXJndW1lbnRQYXJzZXIoKQogICAgcGFyc2VyLmFkZF9hcmd1bWVudCgiLS1jb25maWciLCB0eXBlPVBhdGgsIHJlcXVpcmVkPVRydWUpCiAgICBwYXJzZXIuYWRkX2FyZ3VtZW50KCItLW91dHB1dCIsIHR5cGU9UGF0aCwgcmVxdWlyZWQ9VHJ1ZSkKICAgIGFyZ3MgPSBwYXJzZXIucGFyc2VfYXJncygpCiAgICBjb25maWcgPSBqc29uLmxvYWRzKGFyZ3MuY29uZmlnLnJlYWRfdGV4dCgpKQogICAgYXJncy5vdXRwdXQubWtkaXIocGFyZW50cz1UcnVlLCBleGlzdF9vaz1GYWxzZSkKICAgIHBvbGljaWVzID0gewogICAgICAgIG5hbWU6IE5hdGl2ZVB1ZmZlclBvbGljeSgqKntrZXk6IFBhdGgodmFsdWUpIGlmIGtleSAhPSAic2hhMjU2IiBlbHNlIHZhbHVlIGZvciBrZXksIHZhbHVlIGluIHJlZmVyZW5jZS5pdGVtcygpfSkKICAgICAgICBmb3IgbmFtZSwgcmVmZXJlbmNlIGluIGNvbmZpZ1sicG9saWNpZXMiXS5pdGVtcygpCiAgICB9CiAgICBzdGF0ZXMgPSB7bmFtZTogcG9saWN5LmluaXRpYWxfc3RhdGUoY29uZmlnWyJnYW1lcyJdKSBmb3IgbmFtZSwgcG9saWN5IGluIHBvbGljaWVzLml0ZW1zKCl9CiAgICBvcHRpb25zID0ganNvbi5sb2FkcyhQYXRoKGNvbmZpZ1siZW52aXJvbm1lbnRfYnVpbGQiXSkucmVhZF90ZXh0KCkpWyJjb25maWciXVsicHl0aG9uX2Vudmlyb25tZW50Il1bIm9wdGlvbnMiXQogICAgb3B0aW9ucy51cGRhdGUocGFyYWxsZWxfZ2FtZXM9Y29uZmlnWyJnYW1lcyJdLCBzdXBlcnZpc2VfdGVhY2hlcj1GYWxzZSwgdGVhY2hlcl9yb2xsb3V0cz1GYWxzZSkKICAgIGVudiA9IEJhdGNoZWRHZW5lcmFsc1B1ZmZlckVudmlyb25tZW50KAogICAgICAgIGNvbnRleHQ9RW52aXJvbm1lbnRDb250ZXh0KHNlZWQ9Y29uZmlnWyJzZWVkIl0sIGluZGV4PTAsIG1vZGU9InRyYWluIiwgb3V0cHV0PWFyZ3Mub3V0cHV0KSwgKipvcHRpb25zCiAgICApCiAgICBvYnNlcnZhdGlvbiA9IGVudi5yZXNldChzdHIoY29uZmlnWyJzZWVkIl0pKQogICAgc2VhdHMgPSBsaXN0KHJhbmdlKGNvbmZpZ1siZ2FtZXMiXSkpCiAgICBzYW1wbGVzID0ge25hbWU6IFtdIGZvciBuYW1lIGluIHBvbGljaWVzfQogICAgcGFyYW1ldGVyX3JlcG9ydHMgPSB7fQogICAgYmFzZWxpbmUgPSBwb2xpY2llc1tjb25maWdbInBhcmVudCJdXQogICAgZm9yIG5hbWUsIHBvbGljeSBpbiBwb2xpY2llcy5pdGVtcygpOgogICAgICAgIHJlcG9ydCA9IHt9CiAgICAgICAgZm9yIGtleSBpbiAoImVuY29kZXIiLCAiZGVjb2RlciIsICJyZWN1cnJlbnQiKToKICAgICAgICAgICAgY3VycmVudCA9IG5wLmFzYXJyYXkoZ2V0YXR0cihwb2xpY3ksIGtleSkpCiAgICAgICAgICAgIG9yaWdpbmFsID0gbnAuYXNhcnJheShnZXRhdHRyKGJhc2VsaW5lLCBrZXkpKQogICAgICAgICAgICBkZWx0YSA9IGN1cnJlbnQgLSBvcmlnaW5hbAogICAgICAgICAgICByZXBvcnRba2V5XSA9IGRpY3QoCiAgICAgICAgICAgICAgICBwYXJhbWV0ZXJzPWludChkZWx0YS5zaXplKSwKICAgICAgICAgICAgICAgIHJtc19jaGFuZ2U9ZmxvYXQobnAuc3FydChucC5tZWFuKGRlbHRhKioyKSkpIGlmIGRlbHRhLnNpemUgZWxzZSAwLjAsCiAgICAgICAgICAgICAgICBtYXhfY2hhbmdlPWZsb2F0KG5wLm1heChucC5hYnMoZGVsdGEpKSkgaWYgZGVsdGEuc2l6ZSBlbHNlIDAuMCwKICAgICAgICAgICAgKQogICAgICAgIHBhcmFtZXRlcl9yZXBvcnRzW25hbWVdID0gcmVwb3J0CiAgICB0cnk6CiAgICAgICAgZm9yIHR1cm4gaW4gcmFuZ2UoY29uZmlnWyJ0dXJucyJdKToKICAgICAgICAgICAgcGxhbmVzID0gbnAuYXNhcnJheShvYnNlcnZhdGlvbi52YWx1ZXMpLnJlc2hhcGUobGVuKHNlYXRzKSwgMTQsIDQ0MSkKICAgICAgICAgICAgc291cmNlID0gcGxhbmVzWzosIDQ6OF0ucmVzaGFwZShsZW4oc2VhdHMpLCAxNzY0KS5hcmdtYXgoYXhpcz0xKQogICAgICAgICAgICBwYXNzaW5nID0gcGxhbmVzWzosIDMsIDBdID4gMAogICAgICAgICAgICBoaW50ID0gbnAuc3RhY2soKG5wLndoZXJlKHBhc3NpbmcsIDE3NjQsIHNvdXJjZSksIHBsYW5lc1s6LCAyLCAwXSA+IDApLCBheGlzPTEpCiAgICAgICAgICAgIGxlZ2FsID0gbnAuYXNhcnJheShvYnNlcnZhdGlvbi5hY3Rpb25fbWFza3MsIGJvb2wpCiAgICAgICAgICAgIGZsZXhpYmxlID0gbGVnYWxbOiwgOjE3NjVdLnN1bShheGlzPTEpID4gMQogICAgICAgICAgICBncmVlZHkgPSB7fQogICAgICAgICAgICBmb3IgbmFtZSwgcG9saWN5IGluIHBvbGljaWVzLml0ZW1zKCk6CiAgICAgICAgICAgICAgICBkZWNvZGVkLCBzdGF0ZXNbbmFtZV0gPSBwb2xpY3kuZm9yd2FyZCgKICAgICAgICAgICAgICAgICAgICBqYXgubnVtcHkuYXNhcnJheShvYnNlcnZhdGlvbi52YWx1ZXMsIGR0eXBlPWpheC5udW1weS5mbG9hdDMyKSwgc3RhdGVzW25hbWVdLAogICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgYXNzZXJ0IG5wLmlzZmluaXRlKG5wLmFzYXJyYXkoZGVjb2RlZCkpLmFsbCgpCiAgICAgICAgICAgICAgICBsb2dpdHMgPSBqYXgubnVtcHkud2hlcmUoamF4Lm51bXB5LmFzYXJyYXkobGVnYWwpLCBkZWNvZGVkWzosIDoxNzY3XSwgLWpheC5udW1weS5pbmYpCiAgICAgICAgICAgICAgICBwcm9iYWJpbGl0aWVzID0gbnAuYXNhcnJheShqYXgubnVtcHkuY29uY2F0ZW5hdGUoKAogICAgICAgICAgICAgICAgICAgIGpheC5ubi5zb2Z0bWF4KGxvZ2l0c1s6LCA6MTc2NV0sIGF4aXM9LTEpLAogICAgICAgICAgICAgICAgICAgIGpheC5ubi5zb2Z0bWF4KGxvZ2l0c1s6LCAxNzY1Ol0sIGF4aXM9LTEpLAogICAgICAgICAgICAgICAgKSwgYXhpcz0tMSksIGR0eXBlPW5wLmZsb2F0NjQpCiAgICAgICAgICAgICAgICBtb3Zlcywgc3BsaXRzID0gcHJvYmFiaWxpdGllc1s6LCA6MTc2NV0sIHByb2JhYmlsaXRpZXNbOiwgMTc2NTpdCiAgICAgICAgICAgICAgICBncmVlZHlbbmFtZV0gPSBucC5zdGFjaygobW92ZXMuYXJnbWF4KGF4aXM9MSksIHNwbGl0cy5hcmdtYXgoYXhpcz0xKSksIGF4aXM9MSkKICAgICAgICAgICAgICAgIGFzc2VydCBsZWdhbFtucC5hcmFuZ2UobGVuKHNlYXRzKSksIGdyZWVkeVtuYW1lXVs6LCAwXV0uYWxsKCkKICAgICAgICAgICAgICAgIHRlYWNoZXJfbGVnYWwgPSBsZWdhbFtucC5hcmFuZ2UobGVuKHNlYXRzKSksIGhpbnRbOiwgMF1dCiAgICAgICAgICAgICAgICBhZ3JlZW1lbnQgPSAoZ3JlZWR5W25hbWVdWzosIDBdID09IGhpbnRbOiwgMF0pICYgKAogICAgICAgICAgICAgICAgICAgIChoaW50WzosIDBdID09IDE3NjQpIHwgKGdyZWVkeVtuYW1lXVs6LCAxXSA9PSBoaW50WzosIDFdKQogICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgc2FtcGxlc1tuYW1lXS5hcHBlbmQoCiAgICAgICAgICAgICAgICAgICAgZGljdCgKICAgICAgICAgICAgICAgICAgICAgICAgdHVybj10dXJuLAogICAgICAgICAgICAgICAgICAgICAgICBmbGV4aWJsZT1mbGV4aWJsZSwKICAgICAgICAgICAgICAgICAgICAgICAgdGVhY2hlcl9sZWdhbD10ZWFjaGVyX2xlZ2FsLAogICAgICAgICAgICAgICAgICAgICAgICBhZ3JlZW1lbnQ9YWdyZWVtZW50LAogICAgICAgICAgICAgICAgICAgICAgICBtb3ZlX2NoYW5nZWRfZnJvbV9oaW50PWdyZWVkeVtuYW1lXVs6LCAwXSAhPSBoaW50WzosIDBdLAogICAgICAgICAgICAgICAgICAgICAgICBzcGxpdF9jaGFuZ2VkX2Zyb21faGludD0oZ3JlZWR5W25hbWVdWzosIDBdID09IGhpbnRbOiwgMF0pICYgKAogICAgICAgICAgICAgICAgICAgICAgICAgICAgaGludFs6LCAwXSAhPSAxNzY0KSAmIChncmVlZHlbbmFtZV1bOiwgMV0gIT0gaGludFs6LCAxXQogICAgICAgICAgICAgICAgICAgICAgICApLAogICAgICAgICAgICAgICAgICAgICAgICBtb3ZlX2VudHJvcHk9LShtb3ZlcyAqIG5wLmxvZyhucC5tYXhpbXVtKG1vdmVzLCAxZS0zMDApKSkuc3VtKGF4aXM9MSksCiAgICAgICAgICAgICAgICAgICAgICAgIHNwbGl0X2VudHJvcHk9LShzcGxpdHMgKiBucC5sb2cobnAubWF4aW11bShzcGxpdHMsIDFlLTMwMCkpKS5zdW0oYXhpcz0xKSwKICAgICAgICAgICAgICAgICAgICAgICAgbW92ZV9tYXg9bW92ZXMubWF4KGF4aXM9MSksCiAgICAgICAgICAgICAgICAgICAgICAgIHBhc3NfcHJlZGljdGlvbj1ncmVlZHlbbmFtZV1bOiwgMF0gPT0gMTc2NCwKICAgICAgICAgICAgICAgICAgICAgICAgdGVhY2hlcl9wcm9iYWJpbGl0eT1tb3Zlc1tucC5hcmFuZ2UobGVuKHNlYXRzKSksIGhpbnRbOiwgMF1dLAogICAgICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgICAgICkKICAgICAgICAgICAgcGFyZW50ID0gZ3JlZWR5W2NvbmZpZ1sicGFyZW50Il1dCiAgICAgICAgICAgIGZvciBuYW1lIGluIHBvbGljaWVzOgogICAgICAgICAgICAgICAgY2hhbmdlZCA9IChncmVlZHlbbmFtZV1bOiwgMF0gIT0gcGFyZW50WzosIDBdKSB8ICgKICAgICAgICAgICAgICAgICAgICAoZ3JlZWR5W25hbWVdWzosIDBdICE9IDE3NjQpICYgKGdyZWVkeVtuYW1lXVs6LCAxXSAhPSBwYXJlbnRbOiwgMV0pCiAgICAgICAgICAgICAgICApCiAgICAgICAgICAgICAgICBzYW1wbGVzW25hbWVdWy0xXVsiY2hhbmdlZF9mcm9tX3BhcmVudCJdID0gY2hhbmdlZAogICAgICAgICAgICAjIFRoZSBwdWJsaWMgRXhwYW5kZXIgaGludCBkcml2ZXMgZXZlcnkgcG9saWN5J3MgaWRlbnRpY2FsIHRyYWplY3RvcnkuCiAgICAgICAgICAgIGFzc2VydCBsZWdhbFtucC5hcmFuZ2UobGVuKHNlYXRzKSksIGhpbnRbOiwgMF1dLmFsbCgpCiAgICAgICAgICAgIHRyYW5zaXRpb24gPSBlbnYuc3RlcChoaW50KQogICAgICAgICAgICBvYnNlcnZhdGlvbiA9IHRyYW5zaXRpb24ub2JzZXJ2YXRpb24KICAgICAgICAgICAgZG9uZSA9IG5wLmFzYXJyYXkodHJhbnNpdGlvbi50ZXJtaW5hdGVkLCBkdHlwZT1ib29sKQogICAgICAgICAgICBmb3IgbmFtZSBpbiBwb2xpY2llczoKICAgICAgICAgICAgICAgIHN0YXRlc1tuYW1lXSA9IGpheC5udW1weS53aGVyZShqYXgubnVtcHkuYXNhcnJheShkb25lKVtOb25lLCA6LCBOb25lXSwgMCwgc3RhdGVzW25hbWVdKQogICAgZmluYWxseToKICAgICAgICBlbnYuY2xvc2UoKQogICAgcmVzdWx0ID0gZGljdCgKICAgICAgICBzY29wZT0iSWRlbnRpY2FsIHJlYWwgdHJhaW5pbmcgdHJhamVjdG9yaWVzOyBkaWFnbm9zdGljLCBub3QgaGVsZC1vdXQgbWF0Y2ggcGVyZm9ybWFuY2UiLCBjb25maWc9Y29uZmlnCiAgICApCiAgICByZXN1bHRbInBhcmFtZXRlcl9jaGFuZ2VzIl0gPSBwYXJhbWV0ZXJfcmVwb3J0cwogICAgcmVzdWx0WyJwb2xpY2llcyJdID0ge30KICAgIGZvciBuYW1lLCByb3dzIGluIHNhbXBsZXMuaXRlbXMoKToKICAgICAgICBhcnJheXMgPSB7a2V5OiBucC5jb25jYXRlbmF0ZShbcm93W2tleV0gZm9yIHJvdyBpbiByb3dzXSkgZm9yIGtleSBpbiByb3dzWzBdIGlmIGtleSAhPSAidHVybiJ9CiAgICAgICAgdHVybnMgPSBucC5yZXBlYXQobnAuYXJhbmdlKGNvbmZpZ1sidHVybnMiXSksIGNvbmZpZ1siZ2FtZXMiXSkKICAgICAgICBmbGV4aWJsZSA9IGFycmF5c1siZmxleGlibGUiXQogICAgICAgIGFzc2VydCBmbGV4aWJsZS5hbnkoKQogICAgICAgIHJlc3VsdFsicG9saWNpZXMiXVtuYW1lXSA9IGRpY3QoCiAgICAgICAgICAgIGRlY2lzaW9ucz1pbnQobGVuKGZsZXhpYmxlKSksCiAgICAgICAgICAgIGZsZXhpYmxlX2RlY2lzaW9ucz1pbnQoZmxleGlibGUuc3VtKCkpLAogICAgICAgICAgICB0ZWFjaGVyX2xlZ2FsX2ZyYWN0aW9uPWZsb2F0KGFycmF5c1sidGVhY2hlcl9sZWdhbCJdLm1lYW4oKSksCiAgICAgICAgICAgIHRlYWNoZXJfYWdyZWVtZW50PWZsb2F0KGFycmF5c1siYWdyZWVtZW50Il1bZmxleGlibGVdLm1lYW4oKSksCiAgICAgICAgICAgIG1vdmVfY2hhbmdlZF9mcm9tX2hpbnQ9ZmxvYXQoYXJyYXlzWyJtb3ZlX2NoYW5nZWRfZnJvbV9oaW50Il1bZmxleGlibGVdLm1lYW4oKSksCiAgICAgICAgICAgIHNhbWVfbW92ZV93cm9uZ19zcGxpdD1mbG9hdChhcnJheXNbInNwbGl0X2NoYW5nZWRfZnJvbV9oaW50Il1bZmxleGlibGVdLm1lYW4oKSksCiAgICAgICAgICAgIGhpbnRfYWdyZWVtZW50X2J5X3R1cm5fd2luZG93PVsKICAgICAgICAgICAgICAgIGRpY3QoZmlyc3RfdHVybj1zdGFydCwgbGFzdF90dXJuPW1pbihzdGFydCArIDYzLCBjb25maWdbInR1cm5zIl0gLSAxKSwKICAgICAgICAgICAgICAgICAgICAgZGVjaXNpb25zPWludCgoZmxleGlibGUgJiAodHVybnMgPj0gc3RhcnQpICYgKHR1cm5zIDwgc3RhcnQgKyA2NCkpLnN1bSgpKSwKICAgICAgICAgICAgICAgICAgICAgYWdyZWVtZW50PWZsb2F0KGFycmF5c1siYWdyZWVtZW50Il1bZmxleGlibGUgJiAodHVybnMgPj0gc3RhcnQpICYgKHR1cm5zIDwgc3RhcnQgKyA2NCldLm1lYW4oKSkpCiAgICAgICAgICAgICAgICBmb3Igc3RhcnQgaW4gcmFuZ2UoMCwgY29uZmlnWyJ0dXJucyJdLCA2NCkKICAgICAgICAgICAgXSwKICAgICAgICAgICAgY2hhbmdlZF9mcm9tX3BhcmVudD1mbG9hdChhcnJheXNbImNoYW5nZWRfZnJvbV9wYXJlbnQiXVtmbGV4aWJsZV0ubWVhbigpKSwKICAgICAgICAgICAgcHJlZGljdGVkX3Bhc3NfZnJhY3Rpb249ZmxvYXQoYXJyYXlzWyJwYXNzX3ByZWRpY3Rpb24iXVtmbGV4aWJsZV0ubWVhbigpKSwKICAgICAgICAgICAgbW92ZV9lbnRyb3B5PWZsb2F0KGFycmF5c1sibW92ZV9lbnRyb3B5Il1bZmxleGlibGVdLm1lYW4oKSksCiAgICAgICAgICAgIHNwbGl0X2VudHJvcHk9ZmxvYXQoYXJyYXlzWyJzcGxpdF9lbnRyb3B5Il1bZmxleGlibGVdLm1lYW4oKSksCiAgICAgICAgICAgIHRlYWNoZXJfbW92ZV9wcm9iYWJpbGl0eT1mbG9hdChhcnJheXNbInRlYWNoZXJfcHJvYmFiaWxpdHkiXVtmbGV4aWJsZV0ubWVhbigpKSwKICAgICAgICAgICAgbW92ZV9tYXhfcXVhbnRpbGVzPW5wLnF1YW50aWxlKGFycmF5c1sibW92ZV9tYXgiXVtmbGV4aWJsZV0sIFswLjEsIDAuNSwgMC45XSkudG9saXN0KCksCiAgICAgICAgKQogICAgKGFyZ3Mub3V0cHV0IC8gImF1ZGl0Lmpzb24iKS53cml0ZV90ZXh0KGpzb24uZHVtcHMocmVzdWx0LCBpbmRlbnQ9MikgKyAiXG4iKQogICAgcHJpbnQoanNvbi5kdW1wcyhyZXN1bHRbInBvbGljaWVzIl0sIHNvcnRfa2V5cz1UcnVlKSwgZmx1c2g9VHJ1ZSkKCgppZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgogICAgbWFpbigpCg==")
+if path.exists():
+    assert path.read_bytes()==data
+else:
+    with path.open("xb") as f:
+        f.write(data)
+STAGEPY
+
+srun --nice=2147483645 --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=16 bash -c '
+set -euo pipefail
+w=/tmp/relh-generals-coworld
+job=$SLURM_JOB_ID
+disk=/var/tmp/relh-generals-recovery
+printf "%s  %s\n" 24034ec915b7b91a8a3e9333ce12b3dcbd9e517c0eb7c828cdf500c297d2fc06 \
+    "$w/metta-device-wide-source.tar.gz" | sha256sum -c -
+printf "%s  %s\n" 17171d409be5d618b85ac6578f43576876e96f1e86ade540bb9f2a07c0f661a2 \
+    "$disk/metta_puffer-terminal-boundary-fixed-20260927.py" | sha256sum -c -
+printf "%s  %s\n" 020dbafc66861496295787330361b07e0492c892805594105fdbb050dcbb37f5 \
+    "$disk/puffer_codec-calibrated-v1.py" | sha256sum -c -
+disk=/var/tmp/relh-generals-recovery
+out=$disk/native-policy-feedforward-distribution-v4-$job
+mkdir -p "$out"
+printf "%s  %s\n" e5691723d137e61a44db53c6dd20eac8050b8e7be732c3045e4fe207c0238519 "$disk/native_puffer_policy-feedforward-20260927.py" | sha256sum -c -
+printf "%s  %s\n" 7aaa2a8b40e5bf70cd4c1d69896cf6939d0f6f4f5d591189ef7992dd022294ae "$disk/audit_native_action_distributions-strata-20260927.py" | sha256sum -c -
+python3 - "$out/config.json" <<"PY"
+import hashlib,json,sys
+from pathlib import Path
+root="/recovery"
+build=root+"/native-policy-feedforward-state-fixed-33m-probe-v2-26484/build/build.json"
+short=root+"/native-policy-feedforward-state-fixed-33m-probe-v2-26484/run"
+long=root+"/native-policy-feedforward-state-fixed-134m-probe-26604/run"
+refs={}
+for name,run,relative,digest in (
+ ("start",short,"initial-policy.bin","f04f89d95e81bbf9622a1534e11bd8e56951e7fc227a9e4afe48eb2007698fba"),
+ ("short",short,"checkpoints/metta_generals/run/0000000033554432.bin","be80b8ad266d43eda19993b40f52bbffc00e307e3fff728444dfc1614b0a6876"),
+ ("long",long,"checkpoints/metta_generals/run/0000000134217728.bin","95a3e18dad11b3d8c97537fd7b135d89f391bc84139df7c382ac5226cfc0e095"),
+):
+    checkpoint=run+"/"+relative
+    assert hashlib.sha256(Path(checkpoint.replace("/recovery/", "/var/tmp/relh-generals-recovery/", 1)).read_bytes()).hexdigest()==digest
+    refs[name]=dict(build=build,training=run+"/training.json",checkpoint=checkpoint,sha256=digest)
+Path(sys.argv[1]).write_text(json.dumps(dict(policies=refs,environment_build=build,seed=1390,
+                                            games=64,turns=192,parent="start"))+"\n")
+PY
+IFS=, read -r -a allocated_gpus <<< "$SLURM_STEP_GPUS"
+test "${#allocated_gpus[@]}" -eq 1
+usage=$(nvidia-smi --query-gpu=uuid,memory.used,utilization.gpu --format=csv,noheader,nounits)
+mapfile -t rows <<< "$usage"
+test "${#rows[@]}" -eq 1
+IFS=, read -r gpu memory utilization <<< "${rows[0]}"
+gpu=${gpu//[[:space:]]/}
+memory=${memory//[[:space:]]/}
+utilization=${utilization//[[:space:]]/}
+[[ "$gpu" == GPU-* && "$memory" =~ ^[0-9]+$ && "$utilization" =~ ^[0-9]+$ ]]
+(( memory < 2048 && utilization < 20 ))
+test -n "$gpu"
+name=relh-classic-native-policy-feedforward-distribution-v4-$job
+cleanup() { docker stop -t 5 "$name" >/dev/null 2>&1 || true; }
+trap cleanup EXIT
+trap "exit 143" TERM
+timeout -k 30s 12m docker run --rm --name "$name" --gpus "device=$gpu" --cpus=16 \
+    --ulimit core=0:0 --user "$(id -u):$(id -g)" \
+    -v "$w:/work" \
+    -v "$out:/recovery-output" \
+    -v "$disk:/recovery" \
+    -v "$disk/native_puffer_policy-feedforward-20260927.py:/work/source-normalized-16245/integrations/native_puffer_policy.py:ro" \
+    -v /var/tmp/relh-generals-jax-cache:/cache \
+    -v "$disk/metta_puffer-terminal-boundary-fixed-20260927.py:/work/source-normalized-16245/integrations/metta_puffer.py:ro" \
+    -v "$disk/puffer_codec-calibrated-v1.py:/work/source-normalized-16245/integrations/puffer_codec.py:ro" \
+    -v /tmp/relh-generals-gpu/runtime:/work/runtime:ro \
+    -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work \
+    -e XDG_CACHE_HOME=/recovery-output/cache -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-normalized-16245:/work/oldsource \
+    -e JAX_COMPILATION_CACHE_DIR=/cache -e JAX_PLATFORMS=cuda,cpu -e XLA_PYTHON_CLIENT_PREALLOCATE=false \
+    -e LD_LIBRARY_PATH=/work/runtime/nvidia/cu13/lib \
+    relh-generals-b300:20260923b python /recovery/audit_native_action_distributions-strata-20260927.py \
+    --config /recovery-output/config.json --output /recovery-output/proof > "$out/container.log" 2>&1
+cat "$out/proof/audit.json"
+'
