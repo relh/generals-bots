@@ -45,14 +45,17 @@ these are not interchangeable general launchers.
 | `integrations.metta_puffer` | One-seat and batched JAX environments |
 | `integrations.spatial_selfplay` | Frozen and population policy opponents |
 | `integrations.launch_spatial_selfplay_training` | Native launcher, transfer and sampler guards |
-| `integrations.portable_classic_pilot` | Immutable-input pilot phases: `smoke`, `build`, `sampling_gate`, `train`, `evaluate` |
+| `integrations.policy_trial` | Matched control/warmstart phases with explicit inputs and audits |
 | `integrations.classic_learner_continuation` | Checked learner/optimizer continuation and constrained geometry migration |
 | `integrations.audit_spatial_hosted_replays` | Public-action legality and serving comparison against hosted replay panels |
 
-The portable pilot assumes `/work/input`, `/work/out`, and retained parent
-artifacts under `/recovery` or an explicit continuation manifest. It is designed
-for the prepared GPU container. Running its phases on an ordinary editable
-checkout does not reconstruct those inputs. Use the operational facade below for the supported commands.
+The matched trial defaults to immutable inputs at `/work/input` and results at
+`/work/out`; `--input` and `--output` select explicit alternate directories.
+Inputs include `source/`, `source-manifest.json`, `continuation/parent/` and its
+`bundle/`, `continuation/manifest.json`, `curriculum/manifest.json`, separate
+`defense/train/` and `defense/heldout/` manifests, and `leader-root/` replay
+fixtures. The supported CUDA container supplies Metta/Puffer and runtime assets.
+An ordinary editable checkout does not reconstruct those inputs.
 
 ## Operational commands
 
@@ -70,20 +73,28 @@ an existing native build directory and exercises the real CPU launcher using
 its run configuration, writing evidence to a new output directory. Native
 preflight requires the supported Metta/Puffer container runtime and dependencies.
 
-The packaged GPU container exposes the existing bounded pilot phases:
+The prepared GPU container executes the matched qualification workflow:
 
 ```bash
-python -m integrations.policy pilot smoke
-python -m integrations.policy pilot build
-python -m integrations.policy pilot preflight
-python -m integrations.policy pilot sampling_gate
-python -m integrations.policy pilot train
-python -m integrations.policy pilot evaluate
+python -m integrations.policy trial smoke
+python -m integrations.policy trial build
+python -m integrations.policy trial preflight
+python -m integrations.policy trial distill
+python -m integrations.policy trial control
+python -m integrations.policy trial warm
+python -m integrations.policy trial evaluate
 ```
 
-These operate on the container's prepared `/work/input`, `/work/out`, and
-recovery artifacts. They do not stage missing inputs or provide arbitrary
-profiles for ordinary local checkouts.
+Run these phases in order inside the prepared GPU allocation. Both PPO arms
+start fresh optimizers (`restore_learner=False`) and use the same sampler,
+opponents, position curriculum, reward settings, seed, and **8,388,608 RL steps
+per arm**. `distill` records 256 supervised updates on separate public-defense
+training/held-out data; the warm arm initializes from those recorded policy
+weights. Supervised updates add no RL environment steps. Each arm runs its own
+512-game sampler gate; warm training repeats CPU preflight after distillation.
+The final phase compares source, distilled, control, and warm bundles on the
+same 4,096-game evaluation seeds and writes paired comparisons. This is a
+policy-weight intervention with matched fresh optimizers, not learner resume.
 
 `train` and `resume` forward the complete native launcher arguments and perform
 its bootstrap. Use their supported container environment, with the audited
@@ -152,6 +163,39 @@ source. Build `integrations/softmax/Dockerfile.neural` with the exported bundle
 as its named `policy` build context. See the
 [local serving commands](../../integrations/softmax/README.md#frozen-neural-policy).
 A local serving pass does not supply new training or hosted strength evidence.
+
+## Hosted panels
+
+Register the frozen AMD64 image using the installed Coworld SDK `upload-policy`
+command, then retain its immutable policy version and registry digest. Build and
+registration stay with Docker/SDK; the supported match workflow is
+`integrations.hosted_policy`. It uses the current Observatory HTTP contract,
+without the SDK's outdated typed pagination parser.
+
+```bash
+python -m integrations.hosted_policy submit --dry-run \
+  --policy POLICY_VERSION_ID --opponent incumbent=OPPONENT_VERSION_ID \
+  --games-per-opponent 2 --key UNIQUE_PANEL_KEY \
+  --checkpoint-sha256 CHECKPOINT_SHA256 --source-commit SOURCE_COMMIT \
+  --image-digest sha256:IMAGE_SHA256 --output NEW_PANEL_DIRECTORY
+# Repeat the same command without --dry-run to submit the preserved intent.
+python -m integrations.hosted_policy status --output NEW_PANEL_DIRECTORY
+python -m integrations.hosted_policy collect --output NEW_PANEL_DIRECTORY
+```
+
+Each opponent gets equal games in both seats; the explicit count includes both
+seats. Add repeated `--opponent NAME=VERSION_ID` arguments for a larger fixed
+pool. Dry run writes exact request bodies and hashes without authentication or
+external writes. Submission reads owned requests first, preserves receipts, and
+uses stable idempotency keys; repeating the identical intent reuses requests.
+Collection verifies preserved payload hashes and frozen episode rosters, then
+writes `summary.json` for the promotion report, including incomplete/failing
+requests and recorded episode costs. It performs no champion change.
+
+Authentication uses `SOFTMAX_TOKEN` or the SDK's canonical saved **user** token;
+install the Coworld/Softmax SDK in the execution environment for saved-token
+loading. Tokens and signed asset URLs are never printed. Read existing request
+IDs until terminal; do not treat a polling deadline as permission for new games.
 
 ## Evidence and documentation updates
 

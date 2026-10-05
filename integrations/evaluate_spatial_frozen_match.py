@@ -10,7 +10,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
-from metta_training.puffer import TrainingRecord, training_lineage_seeds
+from integrations.puffer_coworld_frozen_transfer import policy_training_lineage_seeds
 
 from integrations.spatial_frozen_sampling import sample_flat_logits
 from integrations.spatial_action_sampling import (acting_logits, public_neutral_route_bonus,
@@ -122,16 +122,8 @@ def main():
             args.doomed_attack_route_penalty and args.split_sampling_temperature is None):
         raise ValueError("Doomed attack route penalty requires structured actions and a finite nonnegative value")
     for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
-        training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
         run = explicit_run or bundle.parent / "run"
-        if (run / "training.json").exists():
-            if (run / "training.json").read_bytes() != (bundle / "training.json").read_bytes():
-                raise ValueError("Training lineage run does not match its policy bundle")
-        elif training.config.initialize:
-            raise ValueError("Initialized policy requires its source run for lineage verification")
-        else:
-            run = bundle
-        if args.seed in training_lineage_seeds(run, training):
+        if args.seed in policy_training_lineage_seeds(bundle, run):
             raise ValueError("Match seed must be absent from both training lineages")
     if not args.smoke_cpu and jax.devices()[0].platform != "gpu":
         raise RuntimeError("Frozen match evaluation requires GPU execution")

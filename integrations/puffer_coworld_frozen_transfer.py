@@ -166,391 +166,54 @@ class BuildManifest(BaseModel):
         return self
 
 
-def verified_spatial_population_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Allow only the pinned 234M actor into the win-only population reward pilots."""
-    old, new = source.config.python_environment, target.config.python_environment
-    if old is None or new is None:
-        return False
-    if (
-        checkpoint_sha256 != "0025c722be56c0c6d03044d844f64729008b44c0bacc6f62653508f08bc84204"
-        or old.factory != "integrations.spatial_selfplay:SpatialMixedFrozenOpponentPufferEnvironment"
-        or new.factory != "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment"
-        or old.spec.model_copy(update={"agents": new.spec.agents}) != new.spec
-        or source.model_sha256 != target.model_sha256
-        or source.model_state_words != target.model_state_words
-        or source.revision != target.revision
-        or source.config.model_dump(exclude={"python_environment"})
-        != target.config.model_dump(exclude={"python_environment"})
-    ):
-        return False
-    options = dict(new.options)
-    bundles = options.pop("frozen_bundles", None)
-    if not isinstance(bundles, list) or len(bundles) < 2 or bundles[0] != options.get("frozen_bundle"):
-        return False
-    if options.pop("terminal_reward_mode", None) != "win_only":
-        return False
-    if options.pop("shaping_weight", None) != 0.25 or options.pop("reward_scale", None) != 1.0:
-        return False
-    if options.pop("land_gain_reward_weight", None) not in (0.0, 0.02):
-        return False
-    if options.pop("frontier_shaping_weight", 0.0) not in (0.0, 1.0):
-        return False
-    options["shaping_weight"] = old.options["shaping_weight"]
-    options["reward_scale"] = old.options["reward_scale"]
-    options["land_gain_reward_weight"] = old.options["land_gain_reward_weight"]
-    options["frozen_bundle"] = old.options["frozen_bundle"]
-    options["parallel_games"] = old.options["parallel_games"]
-    return options == old.options and old.options["shaping_gamma"] == 0.999
+SPATIAL_FACTORY = "integrations.generals_fabric:two_stage_tied_local_action_policy"
+SPATIAL_ENVIRONMENTS = {
+    "integrations.metta_puffer:BatchedGeneralsPufferEnvironment",
+    "integrations.spatial_selfplay:SpatialFrozenOpponentPufferEnvironment",
+    "integrations.spatial_selfplay:SpatialMixedFrozenOpponentPufferEnvironment",
+    "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
+}
+# These change the opponent distribution or reset positions, not the policy
+# codec/game/reward objective. Each experiment still needs strength qualification.
+DISTRIBUTION_OPTIONS = {
+    "parallel_games", "frozen_bundle", "frozen_bundles", "opponent_weights",
+    "scripted_opponents", "classic_siege_workers", "coworld_position_pool",
+    "coworld_position_pool_sha256", "coworld_position_probability",
+}
 
 
-def verified_v11_policy_transfer(source: BuildManifest, target: BuildManifest, checkpoint_sha256: str) -> bool:
-    """Permit only the archived v11 sparse-teacher policy into its dense-teacher GPU graph."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    if source_env is None or target_env is None or source.config.fabric is None or target.config.fabric is None:
-        return False
-    if (
-        source.model_sha256 != "c199a856c706ad2d859ff0ea1091d191ff7922e3ffc08af2097383b1afbf55c9"
-        or target.model_sha256
-        not in {
-            "5ba4d2d8d83cf6f7ae3276269d9f39519a502857d6a730577f7a80dbd81e247f",
-            "a8fdf4cef1cbdb157206b237959234d71c37fb0a36ff4ee5289464f66d7333f4",
-        }
-        or checkpoint_sha256 != "939e71adc493980122badd44939944d4af470b15dd52c696ee3b55425811a499"
-        or source.model_state_words != 12360
-        or target.model_state_words != 12360
-        or source.revision != target.revision
-        or source_env.factory != target_env.factory
-        or source_env.spec.observation_size != target_env.spec.observation_size
-        or source_env.spec.action_sizes != target_env.spec.action_sizes
-        or source_env.spec.replay_metadata_size != 2
-        or source_env.spec.teacher
-        or target_env.spec.replay_metadata_size != 0
-        or not target_env.spec.teacher
-        or source_env.device_resident
-        or not target_env.device_resident
-    ):
-        return False
-    if source_env.model_dump(exclude={"options", "spec", "device_resident"}) != target_env.model_dump(
-        exclude={"options", "spec", "device_resident"}
-    ):
-        return False
-    if source_env.spec.model_dump(exclude={"agents", "replay_metadata_size", "teacher"}) != target_env.spec.model_dump(
-        exclude={"agents", "replay_metadata_size", "teacher"}
-    ):
-        return False
-    source_options = dict(source_env.options)
-    target_options = dict(target_env.options)
-    source_changes = {"opponent": "mixed", "parallel_games": 1024, "sparse_teacher": True, "supervise_teacher": False}
-    target_changes = {
-        "opponent": "strong_mixed",
-        "parallel_games": 4096,
-        "sparse_teacher": False,
-        "supervise_teacher": True,
-        "imitation_weight": 0.0,
-    }
-    if any(source_options.pop(name, None) != value for name, value in source_changes.items()):
-        return False
-    if any(target_options.pop(name, None) != value for name, value in target_changes.items()):
-        return False
-    if source_options != target_options:
-        return False
-    source_build = source.config.model_dump(exclude={"python_environment"})
-    target_build = target.config.model_dump(exclude={"python_environment"})
-    source_build["environment_backend"] = target_build["environment_backend"]
-    for config in (source_build, target_build):
-        fabric = config["fabric"]
-        for field in ("teacher", "losses", "replay_metadata_size"):
-            fabric.pop(field)
-    return source_build == target_build
+def validate_spatial_transfer(source, target, run):
+    """Verify current Classic policy ABI instead of whitelisting old checkpoints."""
+    from integrations.classic_contract import validate_training_contract
 
-
-def verified_classic_selfplay_policy_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Allow only the frozen-logit-parity-audited Classic policy into two-seat training."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    source_fabric, target_fabric = source.config.fabric, target.config.fabric
-    if source_env is None or target_env is None or source_fabric is None or target_fabric is None:
-        return False
-    if (
-        source.model_sha256 != "2f075e32c9979c3a550608f015fcef401f1ac1b8b50d02bc67b7a4636c163e8d"
-        or target.model_sha256 != "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
-        or checkpoint_sha256 != "c6cc6db63b3b5855d1ab7f38b99baf8ed25cfcb51f2c34819a43a1d58b51fe3a"
-        or source.model_state_words != target.model_state_words
-        or source.model_state_words != 22956
-        or source.revision != target.revision
-        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsPufferEnvironment"
-        or target_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        or source_env.spec != target_env.spec
-        or source_env.spec.agents != 8192
-        or source_env.spec.observation_size != 14 * 21 * 21
-        or source_env.spec.action_sizes != [1765, 2]
-        or source_fabric.model_dump(exclude={"teacher"}) != target_fabric.model_dump(exclude={"teacher"})
-        or source.config.model_dump(exclude={"python_environment", "fabric"})
-        != target.config.model_dump(exclude={"python_environment", "fabric"})
-        or source_env.model_dump(exclude={"factory", "options"})
-        != target_env.model_dump(exclude={"factory", "options"})
-    ):
-        return False
-    source_options = dict(source_env.options)
-    target_options = dict(target_env.options)
-    if source_options.pop("parallel_games", None) != 8192:
-        return False
-    if target_options.pop("parallel_games", None) != 4096:
-        return False
-    return source_options == target_options
-
-
-def verified_classic_iter1_calibrated_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Permit one parity-audited self-play checkpoint into the calibrated PPO build."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    source_fabric, target_fabric = source.config.fabric, target.config.fabric
-    if source_env is None or target_env is None or source_fabric is None or target_fabric is None:
-        return False
-    if (
-        source.model_sha256 != "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
-        or target.model_sha256 != "4f718ad75a43d99e6c33de5a23bdc553443b243f23ad5268f66d9f276bf10a67"
-        or checkpoint_sha256 != "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf"
-        or source.model_state_words != target.model_state_words
-        or source.model_state_words != 22956
-        or source.revision != target.revision
-        or source_env.factory != target_env.factory
-        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        or source_env.spec != target_env.spec
-        or source_env.spec.agents != 8192
-        or source_env.spec.observation_size != 14 * 21 * 21
-        or source_env.spec.action_sizes != [1765, 2]
-        or source_fabric.model_dump(exclude={"teacher"}) != target_fabric.model_dump(exclude={"teacher"})
-        or source.config.model_dump(exclude={"python_environment", "fabric"})
-        != target.config.model_dump(exclude={"python_environment", "fabric"})
-        or source_env.model_dump(exclude={"options"}) != target_env.model_dump(exclude={"options"})
-    ):
-        return False
-    source_options = dict(source_env.options)
-    target_options = dict(target_env.options)
-    if "move_hint_scale" in source_options or "split_hint_scale" in source_options:
-        return False
-    if target_options.pop("move_hint_scale", None) != 0.25:
-        return False
-    if target_options.pop("split_hint_scale", None) != 0.25:
-        return False
-    if source_options != target_options:
-        return False
-    source_phases = source_fabric.model_dump()["teacher"]["phases"]
-    target_phases = target_fabric.model_dump()["teacher"]["phases"]
-    if [phase["action_mix"] for phase in source_phases] != [1.0, 0.0]:
-        return False
-    return len(target_phases) == 1 and all(
-        target_phases[0][key] == value
-        for key, value in {
-            "agent_steps": 0, "ppo_coefficient": 1.0, "coefficient": 0.0, "action_mix": 0.0
-        }.items()
-    )
-
-
-def verified_classic_frozen_opponent_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Move the pinned generation-1 learner into one-seat frozen-opponent training."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    if source_env is None or target_env is None:
-        return False
-    if (
-        checkpoint_sha256 != "d27cb8552a78b083201575a604a1c3f6b2c43336f4e32e45221cf3d11b77a032"
-        or source.model_sha256 != target.model_sha256
-        or source.model_sha256 != "4f718ad75a43d99e6c33de5a23bdc553443b243f23ad5268f66d9f276bf10a67"
-        or source.model_state_words != target.model_state_words
-        or source.revision != target.revision
-        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        or target_env.factory != "integrations.metta_puffer:BatchedGeneralsFrozenOpponentPufferEnvironment"
-        or source_env.spec.agents != 8192
-        or target_env.spec.agents != 4096
-        or source_env.spec.model_copy(update={"agents": 4096}) != target_env.spec
-        or source_env.model_dump(exclude={"factory", "spec", "options"})
-        != target_env.model_dump(exclude={"factory", "spec", "options"})
-        or source.config.model_dump(exclude={"python_environment"})
-        != target.config.model_dump(exclude={"python_environment"})
-    ):
-        return False
-    options = dict(target_env.options)
-    if options.pop("frozen_sha256", None) != "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf":
-        return False
-    if options.pop("frozen_build", None) != "/recovery/classic-selfplay-teacher-h128-build-27857/build.json":
-        return False
-    if options.pop("frozen_checkpoint", None) != (
-        "/recovery/classic-selfplay-init134-h128-27957/run/checkpoints/metta_generals/run/0000000033554432.bin"
-    ):
-        return False
-    if options.pop("scripted_hint_fraction", 0.0) not in (0.0, 0.5):
-        return False
-    return options == source_env.options
-
-
-def verified_classic_flat_gen0_opponent_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Initialize the flat learner from its early checkpoint against frozen generation 0."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    if source_env is None or target_env is None:
-        return False
-    if (
-        checkpoint_sha256 != "5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71"
-        or source.model_sha256 != target.model_sha256
-        or source.model_sha256 != "c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d"
-        or source.model_state_words != target.model_state_words
-        or source.revision != target.revision
-        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        or target_env.factory != "integrations.metta_puffer:BatchedGeneralsFrozenOpponentPufferEnvironment"
-        or source_env.spec.agents != 8192
-        or target_env.spec.agents != 4096
-        or source_env.spec.model_copy(update={"agents": 4096}) != target_env.spec
-        or source_env.model_dump(exclude={"factory", "spec", "options"})
-        != target_env.model_dump(exclude={"factory", "spec", "options"})
-        or source.config.model_dump(exclude={"python_environment"})
-        != target.config.model_dump(exclude={"python_environment"})
-    ):
-        return False
-    options = dict(target_env.options)
-    required = {
-        "frozen_sha256": "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf",
-        "frozen_build": "/recovery/classic-selfplay-teacher-h128-build-27857/build.json",
-        "frozen_checkpoint": (
-            "/recovery/classic-selfplay-init134-h128-27957/run/checkpoints/"
-            "metta_generals/run/0000000033554432.bin"
-        ),
-        "frozen_codec": "hinted_gen0",
-        "frozen_legacy_fabric": (
-            "/recovery/classic-flat-gen0-frozen-audit-29311/staged/legacy/generals_fabric.py"
-        ),
-    }
-    if any(options.pop(key, None) != value for key, value in required.items()):
-        return False
-    return options == source_env.options
-
-
-def verified_classic_flat_scripted_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Move the pinned early flat actor from two-seat play to scripted one-seat play."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    if source_env is None or target_env is None:
-        return False
-    return (
-        checkpoint_sha256 == "5303af89afaa579657c0254eb29754c9cc7638ef86134b9a0eaadccbc451fd71"
-        and source.model_sha256 == target.model_sha256
-        and source.model_sha256 == "c0046141f74f771e8eba6b5296f04913f8736eae6803dab717b90a49fe8b161d"
-        and source.model_state_words == target.model_state_words
-        and source.revision == target.revision
-        and source_env.factory == "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        and target_env.factory == "integrations.metta_puffer:BatchedGeneralsPufferEnvironment"
-        and source_env.spec.agents == 8192
-        and target_env.spec.agents == 4096
-        and source_env.spec.model_copy(update={"agents": 4096}) == target_env.spec
-        and source_env.model_dump(exclude={"factory", "spec"})
-        == target_env.model_dump(exclude={"factory", "spec"})
-        and source.config.model_dump(exclude={"python_environment"})
-        == target.config.model_dump(exclude={"python_environment"})
-    )
-
-
-def verified_classic_gen0_frozen_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Start one-seat PPO from the parity-audited unscaled generation-0 actor."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    source_fabric, target_fabric = source.config.fabric, target.config.fabric
-    if source_env is None or target_env is None or source_fabric is None or target_fabric is None:
-        return False
-    if (
-        checkpoint_sha256 != "e9c909e4f8143a66192686db2f8891dcab2d9144af38f0c0fde4211b770817cf"
-        or source.model_sha256 != "a5a48d16d5c44f057f8c8323b6c531ccce6f06de26a0a47cefe4d68f527de2dd"
-        or target.model_sha256 != "4f718ad75a43d99e6c33de5a23bdc553443b243f23ad5268f66d9f276bf10a67"
-        or source.model_state_words != target.model_state_words
-        or source.model_state_words != 22956
-        or source.revision != target.revision
-        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        or target_env.factory != "integrations.metta_puffer:BatchedGeneralsFrozenOpponentPufferEnvironment"
-        or source_env.spec.agents != 8192
-        or target_env.spec.agents != 4096
-        or source_env.spec.model_copy(update={"agents": 4096}) != target_env.spec
-        or source_env.model_dump(exclude={"factory", "spec", "options"})
-        != target_env.model_dump(exclude={"factory", "spec", "options"})
-        or source_fabric.model_dump(exclude={"teacher"}) != target_fabric.model_dump(exclude={"teacher"})
-        or source.config.model_dump(exclude={"python_environment", "fabric"})
-        != target.config.model_dump(exclude={"python_environment", "fabric"})
-    ):
-        return False
-    options = dict(target_env.options)
-    if options.pop("frozen_sha256", None) != checkpoint_sha256:
-        return False
-    if options.pop("frozen_build", None) != "/recovery/classic-selfplay-teacher-h128-build-27857/build.json":
-        return False
-    if options.pop("frozen_checkpoint", None) != (
-        "/recovery/classic-selfplay-init134-h128-27957/run/checkpoints/metta_generals/run/0000000033554432.bin"
-    ):
-        return False
-    if options.pop("scripted_hint_fraction", 0.0) != 0.0:
-        return False
-    # The reward-clamp pilot keeps the actor and game codec unchanged. Permit
-    # only its pinned reward rescaling, then compare every remaining option.
-    if options.get("reward_scale") == 0.02 and source_env.options.get("reward_scale") == 0.5:
-        options["reward_scale"] = 0.5
-    if options != source_env.options:
-        return False
-    source_phases = source_fabric.model_dump()["teacher"]["phases"]
-    target_phases = target_fabric.model_dump()["teacher"]["phases"]
-    if [phase["action_mix"] for phase in source_phases] != [1.0, 0.0]:
-        return False
-    return len(target_phases) == 1 and all(
-        target_phases[0][key] == value
-        for key, value in {
-            "agent_steps": 0, "ppo_coefficient": 1.0, "coefficient": 0.0, "action_mix": 0.0
-        }.items()
-    )
-
-
-def verified_classic_nohint_dagger_transfer(
-    source: BuildManifest, target: BuildManifest, checkpoint_sha256: str
-) -> bool:
-    """Carry the exact hint-free actor into a changed teacher action schedule."""
-    source_env, target_env = source.config.python_environment, target.config.python_environment
-    source_fabric, target_fabric = source.config.fabric, target.config.fabric
-    if source_env is None or target_env is None or source_fabric is None or target_fabric is None:
-        return False
-    if (
-        checkpoint_sha256 != "f075b076cb428b69049e8ce3975284f5b69f837e27c94ec7c59541d26aaf0609"
-        or source.model_sha256 != "327d1aee8ae7245c60377667f65cbc6d52d1f30f87b890efc52f042a8c77ecb9"
-        or target.model_sha256 != "f64e6030af8ef5f01a44d067f4ac31cd9573c02296a9b7872dce5b33b2ffe627"
-        or source.model_state_words != target.model_state_words
-        or source.model_state_words != 17664
-        or source.revision != target.revision
-        or source_env.factory != "integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment"
-        or source_env != target_env
-        or source_env.spec.agents != 8192
-        or source_env.spec.observation_size != 8 * 21 * 21
-        or source_env.spec.action_sizes != [1765, 2]
-        or source_fabric.model_dump(exclude={"teacher"}) != target_fabric.model_dump(exclude={"teacher"})
-        or source.config.model_dump(exclude={"fabric"}) != target.config.model_dump(exclude={"fabric"})
-    ):
-        return False
-    source_phases = source_fabric.model_dump()["teacher"]["phases"]
-    target_phases = target_fabric.model_dump()["teacher"]["phases"]
-    return (
-        len(source_phases) == len(target_phases) == 2
-        and source_phases[0]["action_mix"] == 1.0
-        and source_phases[1]["agent_steps"] == 33_554_432
-        and target_phases[0]["action_mix"] == 0.5
-        and target_phases[1]["agent_steps"] == 100_663_296
-        and all(
-            {key: value for key, value in source_phase.items() if key not in ("agent_steps", "action_mix")}
-            == {key: value for key, value in target_phase.items() if key not in ("agent_steps", "action_mix")}
-            for source_phase, target_phase in zip(source_phases, target_phases, strict=True)
-        )
-    )
+    before, after = source.build, target
+    old, new = before.config.python_environment, after.config.python_environment
+    if old is None or new is None or before.config.fabric is None or after.config.fabric is None:
+        raise ValueError("Spatial transfer requires explicit Python environments and Fabric models")
+    fabric = after.config.fabric
+    if (fabric.factory != SPATIAL_FACTORY or fabric.options.get("channels") != 16
+            or fabric.observation_size != 7056 or fabric.action_sizes != [3529]
+            or fabric.teacher is not None or old.spec.teacher or new.spec.teacher
+            or old.factory != new.factory or new.factory not in SPATIAL_ENVIRONMENTS
+            or not old.device_resident or not new.device_resident
+            or before.revision != after.revision
+            or before.model_sha256 != after.model_sha256
+            or before.model_state_words != after.model_state_words
+            or before.config.model_dump(exclude={"python_environment"})
+                != after.config.model_dump(exclude={"python_environment"})
+            or old.model_dump(exclude={"options", "spec"}) != new.model_dump(exclude={"options", "spec"})
+            or old.spec.model_copy(update={"agents": new.spec.agents}) != new.spec):
+        raise ValueError("Spatial transfer requires the same current factory, model fingerprint and policy ABI")
+    for build, config in ((before.config, source.config), (after.config, run)):
+        options = build.python_environment.options
+        if (options.get("teacher") is not None or options.get("teacher_rollouts")
+                or options.get("supervise_teacher") or options.get("terminal_reward_mode") != "win_only"):
+            raise ValueError("Spatial transfer requires the teacher-free Classic win objective")
+        validate_training_contract(build.model_dump(mode="json"), config.model_dump(mode="json"))
+    old_options = {k: v for k, v in old.options.items() if k not in DISTRIBUTION_OPTIONS}
+    new_options = {k: v for k, v in new.options.items() if k not in DISTRIBUTION_OPTIONS}
+    if old_options != new_options:
+        raise ValueError("Spatial transfer cannot change game, observation or reward semantics")
 
 
 class CheckpointInitialization(Configuration):
@@ -566,6 +229,15 @@ class CheckpointInitialization(Configuration):
     restore_rnd: bool = False
     restore_learner: bool = False
     migrate_classic_rollout: bool = False
+
+    @model_validator(mode="after")
+    def validate_policy_only(self):
+        if self.allow_policy_only_transfer and (
+            not self.allow_environment_transfer or self.restore_learner
+            or self.restore_ema or self.restore_horde or self.restore_rnd or self.migrate_classic_rollout
+        ):
+            raise ValueError("Policy-only transfer requires a fresh optimizer and explicit environment transfer")
+        return self
 
 
 class RunConfig(Configuration):
@@ -626,11 +298,46 @@ class TrainingRecord(Record):
     config: RunConfig
 
 
+def training_record_sha256(record):
+    import json
+
+    if isinstance(record, dict):
+        record = TrainingRecord.model_validate(record)
+    canonical = json.dumps(record.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode()).hexdigest()
+
+
+class SupervisedPolicyTransfer(Record):
+    """A new policy trained from an actual RL ancestor, with fresh PPO state."""
+
+    schema_version: Literal[1] = 1
+    method: Literal["supervised"] = "supervised"
+    source: TrainingRecord
+    source_training_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    source_checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    parameter_count: int = Field(gt=0)
+    training_seeds: list[int] = Field(min_length=1)
+    optimizer_updates: int = Field(gt=0)
+    training_data_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+    @model_validator(mode="after")
+    def validate_lineage(self):
+        if training_record_sha256(self.source) != self.source_training_sha256:
+            raise ValueError("Supervised policy source differs from its recorded training identity")
+        if (self.source.config.seed not in self.training_seeds
+                or any(seed < 0 for seed in self.training_seeds)
+                or len(set(self.training_seeds)) != len(self.training_seeds)):
+            raise ValueError("Supervised policy must retain its actual ancestor training seeds")
+        return self
+
+
 class InitializationRecord(Record):
     source: TrainingRecord
     checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     training_seeds: list[int] = Field(min_length=1)
     rollout_migration: dict | None = None
+    supervised_transfer: SupervisedPolicyTransfer | None = None
 
 
 def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
@@ -639,6 +346,29 @@ def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
         initialization = InitializationRecord.model_validate_json((run / "initialization.json").read_text())
         seeds.update(initialization.training_seeds)
     return seeds
+
+
+def policy_training_lineage_seeds(bundle: Path, run: Path) -> set[int]:
+    """Verify either an RL run or a supervised transfer before held-out matches."""
+    bundle, run = Path(bundle), Path(run)
+    training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
+    build = BuildManifest.model_validate_json((bundle / "build.json").read_text())
+    if build != training.build:
+        raise ValueError("Policy bundle model identity differs from its training provenance")
+    transfer = run / "policy-transfer.json"
+    if transfer.is_file():
+        artifact = SupervisedPolicyTransfer.model_validate_json(transfer.read_text())
+        policy = (bundle / "policy.bin").read_bytes()
+        if (artifact.source != training or hashlib.sha256(policy).hexdigest() != artifact.checkpoint_sha256
+                or len(policy) != 4 * artifact.parameter_count):
+            raise ValueError("Supervised policy bundle differs from its source identity or checkpoint ABI")
+        checkpoints = list((run / "checkpoints").rglob("*.bin"))
+        if not any(path.read_bytes() == policy for path in checkpoints):
+            raise ValueError("Supervised policy is absent from its declared artifact checkpoints")
+        return set(artifact.training_seeds)
+    if (run / "training.json").read_bytes() != (bundle / "training.json").read_bytes():
+        raise ValueError("Training lineage run does not match its policy bundle")
+    return training_lineage_seeds(run, training)
 
 
 class TrainingResult(Record):
@@ -804,74 +534,29 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             raise ValueError("Rollout migration requires only a device-resident learner resume")
         source_run = reference.run.resolve()
         checkpoint = reference.checkpoint.resolve()
-        source = TrainingRecord.model_validate_json((source_run / "training.json").read_text())
+        transfer_path = source_run / "policy-transfer.json"
+        supervised = None
+        if reference.allow_policy_only_transfer and transfer_path.is_file():
+            supervised = SupervisedPolicyTransfer.model_validate_json(transfer_path.read_text())
+            source = supervised.source
+            if supervised.checkpoint_sha256 != reference.sha256:
+                raise ValueError("Supervised checkpoint differs from its declared initialization identity")
+        else:
+            source = TrainingRecord.model_validate_json((source_run / "training.json").read_text())
         if not checkpoint.is_relative_to(source_run / "checkpoints"):
             raise ValueError("Initialization checkpoint must belong to its source run")
-        if not reference.restore_learner:
+        if not reference.restore_learner and supervised is None:
             completed = TrainingResult.model_validate_json((source_run / "completed.json").read_text())
-            if checkpoint.relative_to(source_run) not in completed.checkpoints:
-                raise ValueError("Initialization checkpoint is absent from the completed run")
-        classic_selfplay_transfer = reference.allow_policy_only_transfer and verified_classic_selfplay_policy_transfer(
-            source.build, manifest, reference.sha256
-        )
-        gen0_frozen_transfer = verified_classic_gen0_frozen_transfer(
-            source.build, manifest, reference.sha256
-        )
-        frozen_transfer = (
-            verified_classic_frozen_opponent_transfer(source.build, manifest, reference.sha256)
-            or verified_classic_flat_gen0_opponent_transfer(source.build, manifest, reference.sha256)
-            or verified_classic_flat_scripted_transfer(source.build, manifest, reference.sha256)
-            or gen0_frozen_transfer
-        )
-        policy_only_transfer = reference.allow_policy_only_transfer and (
-            classic_selfplay_transfer
-            or verified_classic_iter1_calibrated_transfer(source.build, manifest, reference.sha256)
-            or verified_v11_policy_transfer(source.build, manifest, reference.sha256)
-            or gen0_frozen_transfer
-            or verified_classic_nohint_dagger_transfer(source.build, manifest, reference.sha256)
-        )
-        if reference.allow_policy_only_transfer and (
-            not reference.allow_environment_transfer
-            or reference.restore_learner
-            or reference.restore_ema
-            or reference.restore_horde
-            or reference.restore_rnd
-            or not policy_only_transfer
-        ):
-            raise ValueError("Policy-only transfer requires a verified checkpoint and GPU target")
+            if (checkpoint.relative_to(source_run) not in completed.checkpoints
+                    or completed.revision != source.build.revision):
+                raise ValueError("Initialization checkpoint is absent from the completed source run")
         if reference.allow_environment_transfer:
-            source_env = source.build.config.python_environment
-            target_env = manifest.config.python_environment
-            spatial_population_transfer = verified_spatial_population_transfer(
-                source.build, manifest, reference.sha256
-            )
-            compatible_environment = (
-                source_env is not None
-                and target_env is not None
-                and (source_env.factory == target_env.factory or classic_selfplay_transfer
-                     or frozen_transfer or spatial_population_transfer)
-                and (
-                    source_env.spec.model_copy(update={"agents": target_env.spec.agents}) == target_env.spec
-                    or policy_only_transfer
-                )
-                and (
-                    source.build.config.model_dump(exclude={"python_environment"})
-                    == manifest.config.model_dump(exclude={"python_environment"})
-                    or policy_only_transfer
-                )
-                and source.build.revision == manifest.revision
-            )
-        else:
-            compatible_environment = (
-                source.build.config == manifest.config
-                and source.build.environment_sha256 == manifest.environment_sha256
-            )
-        if (
-            not compatible_environment
-            or (source.build.model_sha256 != manifest.model_sha256 and not policy_only_transfer)
-            or source.build.model_state_words != manifest.model_state_words
-        ):
-            raise ValueError("Initialization requires matching model and compatible environment configuration")
+            validate_spatial_transfer(source, manifest, config)
+        elif (source.build.config != manifest.config
+                or source.build.environment_sha256 != manifest.environment_sha256
+                or source.build.model_sha256 != manifest.model_sha256
+                or source.build.model_state_words != manifest.model_state_words):
+            raise ValueError("Initialization requires matching model and environment configuration")
         source_policy = {key: value for key, value in source.config.overrides.items() if key.startswith("policy.")}
         target_policy = {key: value for key, value in config.overrides.items() if key.startswith("policy.")}
         if source_policy != target_policy:
@@ -883,9 +568,12 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             raise ValueError("Initialization requires a nonempty float32 checkpoint")
         if not all(math.isfinite(value) for (value,) in struct.iter_unpack("<f", initial_parameters)):
             raise ValueError("Initialization checkpoint contains nonfinite parameters")
-        seeds = training_lineage_seeds(source_run, source)
+        if supervised is not None and len(initial_parameters) // 4 != supervised.parameter_count:
+            raise ValueError("Supervised checkpoint parameter count differs from its recorded policy ABI")
+        seeds = set(supervised.training_seeds) if supervised is not None else training_lineage_seeds(source_run, source)
         initialization = InitializationRecord(
-            source=source, checkpoint_sha256=reference.sha256, training_seeds=sorted(seeds)
+            source=source, checkpoint_sha256=reference.sha256, training_seeds=sorted(seeds),
+            supervised_transfer=supervised,
         )
         environment["METTA_INITIAL_POLICY"] = str(output / "initial-policy.bin")
         fabric = manifest.config.fabric
@@ -925,7 +613,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
                         or target_env.options.get("teacher") is not None
                         or target_env.options.get("teacher_rollouts")
                         or not fabric or fabric.self_distillation or fabric.ema_prior
-                        or manifest.model_sha256 != "fd64a611cb6ba1d721ddf519e5b15f7b26e207cd8c045d10483b04bbe2217f85"):
+                        or fabric.factory != SPATIAL_FACTORY or fabric.options.get("channels") != 16):
                     raise ValueError("Rollout migration requires the qualified memoryless Classic model")
                 from integrations.classic_rollout_migration import migrate_learner
 

@@ -23,43 +23,18 @@ def analyze(baseline: Path, candidate: Path, *, seed: int, resamples: int,
         if not record["coworld_classic_rules"]:
             raise ValueError("Both matches must use official Coworld Classic rules")
     settings = ("games", "seed", "pool_size", "opponent_sha256", "episode_limit",
-                "coworld_classic_rules")
-    # Historical records hard-coded "argmax" even when the frozen bundle
-    # sampled actions. Compare the recorded contract when both records have it;
-    # the exact opponent checkpoint still has to match in every case.
-    if all("opponent_action_parameters" in record for record in records):
-        settings += ("opponent_action_selection", "opponent_action_parameters")
+                "coworld_classic_rules", "opponent_action_selection", "opponent_action_parameters")
     if not allow_policy_mode_change:
-        settings += ("action_selection", "sample_seed", "sampling_temperature", "half_logit_bias")
+        settings += ("action_selection", "sample_seed", "sampling_temperature", "half_logit_bias",
+                     "split_sampling_temperature", "full_action_temperature", "log_gap_scale",
+                     "route_half_weight", "early_route_temperature", "early_route_turns", "neutral_route_bias",
+                     "owned_split_bias", "safe_owned_split_bias", "guided_owned_split_bias",
+                     "weak_owned_route_penalty", "doomed_attack_route_penalty")
     elif records[0]["checkpoint_sha256"] != records[1]["checkpoint_sha256"]:
         raise ValueError("Changing action selection requires the same checkpoint")
     for field in settings:
-        if records[0][field] != records[1][field]:
-            raise ValueError(f"Match settings differ: {field}")
-    if not allow_policy_mode_change and records[0].get("split_sampling_temperature") != records[1].get("split_sampling_temperature"):
-        raise ValueError("Match settings differ: split_sampling_temperature")
-    if not allow_policy_mode_change and records[0].get("full_action_temperature", 1.0) != records[1].get("full_action_temperature", 1.0):
-        raise ValueError("Match settings differ: full_action_temperature")
-    if not allow_policy_mode_change and records[0].get("log_gap_scale", 0.0) != records[1].get("log_gap_scale", 0.0):
-        raise ValueError("Match settings differ: log_gap_scale")
-    if not allow_policy_mode_change and records[0].get("route_half_weight", 0.0) != records[1].get("route_half_weight", 0.0):
-        raise ValueError("Match settings differ: route_half_weight")
-    if not allow_policy_mode_change and any(
-            records[0].get(field) != records[1].get(field)
-            for field in ("early_route_temperature", "early_route_turns")):
-        raise ValueError("Match settings differ: early route schedule")
-    if not allow_policy_mode_change and records[0].get("neutral_route_bias", 0.0) != records[1].get("neutral_route_bias", 0.0):
-        raise ValueError("Match settings differ: neutral_route_bias")
-    if not allow_policy_mode_change and records[0].get("owned_split_bias", 0.0) != records[1].get("owned_split_bias", 0.0):
-        raise ValueError("Match settings differ: owned_split_bias")
-    if not allow_policy_mode_change and records[0].get("safe_owned_split_bias", 0.0) != records[1].get("safe_owned_split_bias", 0.0):
-        raise ValueError("Match settings differ: safe_owned_split_bias")
-    if not allow_policy_mode_change and records[0].get("guided_owned_split_bias", 0.0) != records[1].get("guided_owned_split_bias", 0.0):
-        raise ValueError("Match settings differ: guided_owned_split_bias")
-    if not allow_policy_mode_change and records[0].get("weak_owned_route_penalty", 0.0) != records[1].get("weak_owned_route_penalty", 0.0):
-        raise ValueError("Match settings differ: weak_owned_route_penalty")
-    if not allow_policy_mode_change and records[0].get("doomed_attack_route_penalty", 0.0) != records[1].get("doomed_attack_route_penalty", 0.0):
-        raise ValueError("Match settings differ: doomed_attack_route_penalty")
+        if any(field not in record for record in records) or records[0][field] != records[1][field]:
+            raise ValueError(f"Match settings differ or are missing: {field}")
     arrays = []
     for filename in ("initial_state_sha256.npy", "initial_sides.npy"):
         left, right = (np.load(directory / filename) for directory in (baseline, candidate))

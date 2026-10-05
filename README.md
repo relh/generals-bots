@@ -6,8 +6,8 @@ Classic 1v1**, using a batched JAX game engine and native GPU training.
 **Readiness: competitive strength is not qualified.** The latest recorded hosted
 policy won 9/32 games against Daveey and 18/32 against the incumbent. A prior
 Classic B300 run sustained about 83,000 training steps/s, but its continuation
-showed no statistically clear improvement. The latest H100 attempt stopped
-before optimizer updates at a stale trainer source binding.
+showed no statistically clear improvement. The repaired pipeline completed a new 8M-step qualification at 76,357 SPS;
+its exploration candidate regressed and was rejected.
 
 Start with the [current policy state](docs/policy/current-state.md),
 [runbook](docs/policy/runbook.md), and [roadmap](docs/policy/roadmap.md).
@@ -22,8 +22,7 @@ contracts must also match observation features, actions, and sampling. The
 [engine provenance](generals/core/COWORLD_ENGINE.md) records the pinned official
 engine and hosted replay checks.
 
-The simulator also supports other game configurations, scripted agents, and
-legacy experiments. The 10×10 policy's 0.830 held-out result is a useful
+The simulator also supplies scripted agents and explicit rule configurations. The 10×10 policy's 0.830 held-out result is a useful
 historical benchmark. Hosted Classic qualification requires its own results.
 
 ## Installation and navigation
@@ -39,7 +38,7 @@ python -m integrations.policy status
 python -m integrations.policy validate --build BUILD_CONFIG_JSON --run RUN_CONFIG_JSON
 ```
 
-Native launch preflight, pilot training, resume, evaluation, and export commands
+Native launch preflight, matched training, resume, evaluation, and export commands
 are described in the [runbook](docs/policy/runbook.md). Native execution requires
 the supported pinned Metta/Puffer container and CUDA build artifacts.
 

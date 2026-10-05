@@ -4,7 +4,8 @@ import numpy as np
 import pytest
 
 from integrations.analyze_spatial_frozen_match_pair import analyze
-from integrations.launch_spatial_selfplay_training import validate_sampling_gate
+from integrations.launch_spatial_selfplay_training import (validate_sampling_gate, rollout_sampler_settings,
+                                                          source_sampling_gate_report)
 
 
 SHA = "a" * 64
@@ -23,8 +24,11 @@ def _match(directory, *, outcomes, mode, temperature, half_bias=0.0,
         action_selection=mode, sample_seed=7 if mode == "sample" else None,
         sampling_temperature=temperature, half_logit_bias=half_bias,
         opponent_action_selection=opponent_selection, checkpoint_sha256=SHA,
-        **({"opponent_action_parameters": opponent_parameters}
-           if opponent_parameters is not None else {}),
+        opponent_action_parameters=opponent_parameters or {},
+        split_sampling_temperature=None, early_route_temperature=None, early_route_turns=None,
+        full_action_temperature=1.0, log_gap_scale=0.0, route_half_weight=0.0,
+        neutral_route_bias=0.0, owned_split_bias=0.0, safe_owned_split_bias=0.0, guided_owned_split_bias=0.0,
+        weak_owned_route_penalty=0.0, doomed_attack_route_penalty=0.0,
         wins=int((outcomes == 1).sum()), losses=int((outcomes == -1).sum()),
         draws=int((outcomes == 0).sum()), score=float(outcomes.mean()),
     )))
@@ -61,7 +65,7 @@ def test_pair_analysis_records_split_bias(tmp_path):
 
 
 def test_pair_analysis_checks_recorded_frozen_sampler(tmp_path):
-    baseline, changed, legacy = (tmp_path / name for name in ("baseline", "changed", "legacy"))
+    baseline, changed = (tmp_path / name for name in ("baseline", "changed"))
     outcomes = [1, -1, 1, -1]
     _match(baseline, outcomes=outcomes, mode="sample", temperature=.05,
            opponent_selection="structured_sample", opponent_parameters={"move_temperature": .05})
@@ -69,11 +73,8 @@ def test_pair_analysis_checks_recorded_frozen_sampler(tmp_path):
            opponent_selection="structured_sample", opponent_parameters={"move_temperature": .10})
     with pytest.raises(ValueError, match="opponent_action_parameters"):
         analyze(baseline, changed, seed=1, resamples=100)
-    _match(legacy, outcomes=outcomes, mode="sample", temperature=.05)
-    assert analyze(legacy, baseline, seed=1, resamples=100)["score_delta"] == 0
 
-
-def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):
+def gate_fixture(tmp_path, restore=False):
     build = tmp_path / "build"
     build.mkdir()
     (build / "build.json").write_text(json.dumps(dict(config=dict(python_environment=dict(
@@ -82,157 +83,79 @@ def test_wide_win_only_transfer_requires_viable_sampled_source(tmp_path):
                                                  public_scalar_features=True, public_scalar_ablation=False),
     )))))
     config = tmp_path / "config.json"
-    config.write_text(json.dumps(dict(initialize=dict(sha256=SHA))))
+    config.write_text(json.dumps(dict(initialize=dict(sha256=SHA, restore_learner=restore))))
     argv = ["launcher", "train", "--build", str(build), "--config", str(config)]
+    env = dict(METTA_SPATIAL_POLICY_TEMPERATURE=".05", METTA_SPATIAL_SPLIT_TEMPERATURE=".15",
+               METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE=".10", METTA_SPATIAL_EARLY_ROUTE_TURNS="100")
+    sampler = rollout_sampler_settings(env)
+    report = dict(gate_mode="same_sampler_source", source_sha256=SHA, opponent_sha256=SHA,
+                  sampler=sampler, opponent_sampler=sampler.copy(), games=512, unique_initial_maps=325,
+                  seat_counts={"0": 256, "1": 256}, wld=[242, 268, 2],
+                  held_out=True, smoke_cpu=False, coworld_classic_rules=True, episode_limit=2000)
+    path = tmp_path / "report.json"
+    env["METTA_SPATIAL_SAMPLING_GATE_REPORT"] = str(path)
+    path.write_text(json.dumps(report))
+    return argv, env, path, report
+
+
+@pytest.mark.parametrize("restore", [False, True])
+def test_fresh_optimizer_and_resume_require_same_source_sampler(tmp_path, restore):
+    argv, env, path, report = gate_fixture(tmp_path, restore)
+    validate_sampling_gate(argv, env)
+    env.pop("METTA_SPATIAL_SAMPLING_GATE_REPORT")
     with pytest.raises(ValueError, match="SAMPLING_GATE_REPORT"):
-        validate_sampling_gate(argv, {"METTA_SPATIAL_POLICY_TEMPERATURE": ".05"})
-    report = dict(baseline_sha256=SHA, candidate_sha256=SHA, opponent_sha256=SHA,
-                  baseline_action_selection="argmax", candidate_action_selection="sample",
-                  baseline_sampling_temperature=None, candidate_sampling_temperature=.05,
-                  games=512, unique_initial_maps=126,
-                  baseline_wld=[247, 265, 0], candidate_wld=[3, 506, 3])
-    path = tmp_path / "report.json"
-    path.write_text(json.dumps(report))
-    environment = dict(METTA_SPATIAL_POLICY_TEMPERATURE=".05",
-                       METTA_SPATIAL_SAMPLING_GATE_REPORT=str(path))
-    with pytest.raises(ValueError, match="Rollout sampling wins"):
-        validate_sampling_gate(argv, environment)
-    report["candidate_wld"] = [216, 294, 2]
-    path.write_text(json.dumps(report))
-    validate_sampling_gate(argv, environment)
-    report["baseline_wld"] = [40, 472, 0]
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="Greedy source wins"):
-        validate_sampling_gate(argv, environment)
-    report["baseline_wld"] = [247, 265, 0]
-    path.write_text(json.dumps(report))
-    environment["METTA_SPATIAL_POLICY_TEMPERATURE"] = ".25"
-    with pytest.raises(ValueError, match="exact source policy"):
-        validate_sampling_gate(argv, environment)
-    environment["METTA_SPATIAL_POLICY_TEMPERATURE"] = ".05"
-    environment["METTA_SPATIAL_SPLIT_TEMPERATURE"] = ".25"
-    with pytest.raises(ValueError, match="exact source policy"):
-        validate_sampling_gate(argv, environment)
-    report["candidate_split_sampling_temperature"] = .25
-    path.write_text(json.dumps(report))
-    validate_sampling_gate(argv, environment)
-
-    report.update(baseline_action_selection="sample", candidate_action_selection="sample",
-                  baseline_sampling_temperature=.05, candidate_sampling_temperature=.05,
-                  baseline_split_sampling_temperature=.15, candidate_split_sampling_temperature=.15,
-                  baseline_early_route_temperature=None, baseline_early_route_turns=None,
-                  candidate_early_route_temperature=.1, candidate_early_route_turns=100,
-                  baseline_wld=[496, 499, 29], candidate_wld=[649, 346, 29],
-                  games=1024, unique_initial_maps=446)
-    path.write_text(json.dumps(report))
-    environment.update(METTA_SPATIAL_SPLIT_TEMPERATURE=".15",
-                       METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE=".1",
-                       METTA_SPATIAL_EARLY_ROUTE_TURNS="100")
-    validate_sampling_gate(argv, environment)
-    report["candidate_early_route_turns"] = 50
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["candidate_early_route_turns"] = 100
-    environment["METTA_SPATIAL_ROUTE_HALF_WEIGHT"] = ".25"
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["baseline_route_half_weight"] = 0.0
-    report["candidate_route_half_weight"] = .25
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["baseline_early_route_temperature"] = .1
-    report["baseline_early_route_turns"] = 100
-    path.write_text(json.dumps(report))
-    validate_sampling_gate(argv, environment)
+        validate_sampling_gate(argv, env)
 
 
-def test_continuation_qualifies_actual_sampler_without_obsolete_ablation(tmp_path):
-    build = tmp_path / "build"
-    build.mkdir()
-    (build / "build.json").write_text(json.dumps(dict(config=dict(python_environment=dict(
-        factory="integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
-        spec=dict(action_sizes=[3529]), options=dict(terminal_reward_mode="win_only",
-                                                 public_scalar_features=True, public_scalar_ablation=False),
-    )))))
-    config = tmp_path / "config.json"
-    config.write_text(json.dumps(dict(initialize=dict(sha256=SHA, restore_learner=True))))
-    argv = ["launcher", "train", "--build", str(build), "--config", str(config)]
-    report = dict(baseline_sha256=SHA, candidate_sha256=SHA, opponent_sha256=SHA,
-                  baseline_action_selection="sample", candidate_action_selection="sample",
-                  baseline_sampling_temperature=.05, candidate_sampling_temperature=.05,
-                  baseline_split_sampling_temperature=.15, candidate_split_sampling_temperature=.15,
-                  baseline_early_route_temperature=.1, baseline_early_route_turns=100,
-                  candidate_early_route_temperature=.1, candidate_early_route_turns=100,
-                  baseline_wld=[245, 259, 8], candidate_wld=[245, 259, 8],
-                  games=512, unique_initial_maps=325, gate_mode="same_sampler_continuation")
-    path = tmp_path / "report.json"
+@pytest.mark.parametrize("field,value", [
+    ("opponent_sha256", "b"*64), ("gate_mode", "greedy_ablation"),
+    ("games", 256), ("unique_initial_maps", 255), ("seat_counts", {"0": 300, "1": 212}),
+    ("coworld_classic_rules", False), ("smoke_cpu", True), ("episode_limit", 1000),
+])
+def test_bad_source_gate_evidence_rejected(tmp_path, field, value):
+    argv, env, path, report = gate_fixture(tmp_path)
+    report[field] = value
     path.write_text(json.dumps(report))
-    environment = dict(METTA_SPATIAL_POLICY_TEMPERATURE=".05", METTA_SPATIAL_SPLIT_TEMPERATURE=".15",
-                       METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE=".1", METTA_SPATIAL_EARLY_ROUTE_TURNS="100",
-                       METTA_SPATIAL_SAMPLING_GATE_REPORT=str(path))
-    validate_sampling_gate(argv, environment)
-    environment["METTA_SPATIAL_FULL_ACTION_TEMPERATURE"] = "10"
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["candidate_full_action_temperature"] = 10
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["baseline_full_action_temperature"] = 10
-    path.write_text(json.dumps(report))
-    validate_sampling_gate(argv, environment)
-    environment["METTA_SPATIAL_LOG_GAP_SCALE"] = "4"
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["candidate_log_gap_scale"] = 4
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report["baseline_log_gap_scale"] = 4
-    path.write_text(json.dumps(report))
-    validate_sampling_gate(argv, environment)
-    # Keep the actual-policy viability threshold. A genuinely collapsed sampler
-    # remains a failure even when restoring the optimizer.
-    report["candidate_wld"] = [100, 404, 8]
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="Rollout sampling wins"):
-        validate_sampling_gate(argv, environment)
-    report["candidate_wld"] = [245, 259, 8]
-    report["baseline_early_route_temperature"] = None
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="intended rollout action settings"):
-        validate_sampling_gate(argv, environment)
-    report.pop("gate_mode")
-    path.write_text(json.dumps(report))
-    with pytest.raises(ValueError, match="actual resumed sampler"):
-        validate_sampling_gate(argv, environment)
+    with pytest.raises(ValueError, match="exact policy"):
+        validate_sampling_gate(argv, env)
 
 
-def test_continuation_pilot_runs_one_actual_sampler_panel(tmp_path, monkeypatch):
-    from integrations import portable_classic_pilot as pilot
+@pytest.mark.parametrize("actor", ["sampler", "opponent_sampler"])
+@pytest.mark.parametrize("setting,value", [("log_gap_scale", 4), ("full_action_temperature", 10),
+    ("move_temperature", .10), ("early_route_turns", 50)])
+def test_both_actors_must_use_exact_rollout_sampler(tmp_path, actor, setting, value):
+    argv, env, path, report = gate_fixture(tmp_path)
+    report[actor][setting] = value
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="intended rollout sampler"):
+        validate_sampling_gate(argv, env)
 
-    calls = []
 
-    def retained_evaluation(module, *args, **kwargs):
-        calls.append((module, args))
-        if module == "analyze_spatial_frozen_match_pair":
-            baseline = args[args.index("--baseline") + 1]
-            candidate = args[args.index("--candidate") + 1]
-            assert baseline == candidate == tmp_path / "gate/candidate"
-            (tmp_path / "sampling-gate.json").write_text(json.dumps(dict(
-                score_delta=0., candidate_wld=[245, 259, 8])))
+def test_collapsed_source_sampler_rejected(tmp_path):
+    argv, env, path, report = gate_fixture(tmp_path)
+    report["wld"] = [100, 404, 8]
+    path.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="wins too few"):
+        validate_sampling_gate(argv, env)
 
-    monkeypatch.setattr(pilot, "OUT", tmp_path)
-    monkeypatch.setattr(pilot, "starting_steps", lambda: 268_435_456)
-    monkeypatch.setattr(pilot, "command", retained_evaluation)
-    monkeypatch.setitem(pilot.TRAIN_ENV, "METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "10")
-    pilot.sampling_gate()
-    panels = [args for module, args in calls if module == "evaluate_spatial_frozen_match"]
-    assert len(panels) == 1
-    assert panels[0][panels[0].index("--full-action-temperature") + 1] == 10
-    assert panels[0][panels[0].index("--early-route-temperature") + 1] == ".10"
-    assert panels[0][panels[0].index("--early-route-turns") + 1] == "100"
-    assert json.loads((tmp_path / "sampling-gate.json").read_text())["gate_mode"] == "same_sampler_continuation"
+
+def test_report_uses_real_saved_seats_and_outcomes(tmp_path):
+    match = tmp_path / "match"
+    match.mkdir()
+    sampler = rollout_sampler_settings({})
+    record = dict(held_out=True, smoke_cpu=False, coworld_classic_rules=True, episode_limit=2000,
+        action_selection="sample", opponent_action_selection="structured_sample", opponent_action_parameters={k:v for k,v in sampler.items() if k != "mode"},
+        checkpoint_sha256=SHA, opponent_sha256=SHA, games=512, seed=111, sample_seed=222,
+        wins=256, losses=256, draws=0, sampling_temperature=1., split_sampling_temperature=1.,
+        half_logit_bias=0., owned_split_bias=0., safe_owned_split_bias=0., guided_owned_split_bias=0.,
+        **{k:v for k,v in sampler.items() if k not in ("mode", "move_temperature", "split_temperature")})
+    (match / "evaluation.json").write_text(json.dumps(record))
+    np.save(match / "outcomes.npy", np.tile([1, -1], 256))
+    np.save(match / "initial_sides.npy", np.tile([0, 1], 256))
+    np.save(match / "initial_state_sha256.npy", np.asarray([str(i) for i in range(512)]))
+    report = source_sampling_gate_report(match)
+    assert report["gate_mode"] == "same_sampler_source"
+    assert report["wld"] == [256, 256, 0]
+    assert report["seat_counts"] == {"0": 256, "1": 256}
+    assert report["sampler"] == report["opponent_sampler"] == sampler
+    assert "baseline_sha256" not in report and "candidate_sha256" not in report

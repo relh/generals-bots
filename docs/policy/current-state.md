@@ -4,25 +4,51 @@ Baseline evidence reconciled on **2026-10-05**. The overhaul is in progress.
 This page describes recorded results; verify artifact availability and hashes
 before resuming or deploying any policy.
 
-## Active execution
+## Latest qualification and selected decision
 
-The consolidated code is pushed on `relh/policy-overhaul`, with integration
-review in [PR #5](https://github.com/relh/generals-bots/pull/5).
+The consolidated code is on `relh/policy-overhaul`, with integration review in
+[PR #5](https://github.com/relh/generals-bots/pull/5). Old experiment versions
+are retained in Git history.
 
-B300 Slurm job **35932** started on 2026-10-05 at 19:01:43 UTC from source
-`57be9f95e4531c907ab312ceee0041f02cd311ab`. It requests one GPU, eight CPUs,
-96 GiB host memory and a finite 80-minute allocation. Controller readback
-confirmed Nice **2147483645**, Priority **1**, and `TresPerNode=gres/gpu:1`.
-The qualification budget is **8,388,608 new steps**, 8,192 games, horizon 256,
-minibatch 8,192, preserving the parent optimizer and using log-gap exploration
-scale 4. Fresh paired evaluation seeds are 51113 / 17231.
+B300 job **35932** completed with exit 0 on 2026-10-05 from source
+`57be9f95e4531c907ab312ceee0041f02cd311ab`. It used one B300, eight CPUs,
+96 GiB host memory, 8,192 games, horizon 256, minibatch 8,192 and replay 0.5.
+Controller readback confirmed Nice **2147483645**, Priority **1**, and a finite
+80-minute cap; actual allocation time was 20m14s.
 
-Its phase order is source/GPU smoke, native build, real CPU launcher preflight,
-sampling gate, bounded training, and matched population/serving evaluation.
-No new throughput or strength result is established until those phases complete.
-The source/input receipt is recorded in the task's local
-`/tmp/relh-generals-overhaul-b300-20261005T185744Z-306bdfc5.public.json`;
-S3 inputs and output destinations are immutable and hash-verified.
+After two warmup epochs (141.083 seconds), the trainer advanced **4,194,304
+steps in 54.93 seconds: 76,357 end-to-end SPS**. It completed 8,388,608 new
+steps with no illegal actions, nonfinite rewards, clipped rewards or missing
+terminal rewards. All 13 opponents had samples on both seats. Serving parity
+passed 46 public states, with maximum logit difference 1.67e-6. The result
+archive and parts were SHA-verified and collected under
+`/tmp/generals-policy-overhaul-results-35932/`; analysis is in `analysis.json`.
+
+On 4,096 matched development games, the trained exploration candidate scored
+**64.66%** (wins plus half draws), its exploratory initialization 66.05%, and
+the unchanged cold baseline **68.29%**. Candidate minus cold signed-score
+change was −0.07251, clustered 95% CI [−0.10446, −0.04044]. **Reject the
+exploration candidate; retain baseline `f4ef5616…` with log-gap scale 0.**
+These development results do not establish hosted winning strength.
+
+A subsequent stricter startup audit found that job 35932's self-match used
+log-gap scale 4 for the actor and scale 0 for its opponent. The old report
+incorrectly called it a same-sampler check. Throughput, legality, serving parity
+and broad paired results remain valid; genuine same-sampler startup readiness
+was not established. The current gate verifies both sampler dictionaries and
+raw maps, seats and outcomes directly. The next trial uses scale 0 for both.
+
+The minimal serving image also completed two native AMD64 hosted runtime
+smokes with no timeouts or illegal actions. Maximum replies were 5.1 / 13.4 ms;
+the unchanged baseline lost both. Frozen runtime policy ID is
+`5ef78e23-c02e-4d13-bc8e-2f9ab47fb0a1`, image digest
+`sha256:daa8f48fa7ea6ac01a0f07e5a452e6321f5dcd8abab7813cbe4bba3464753d25`.
+This qualifies execution; it is not a new strength result.
+
+Next is an isolated public Sentinel defense warmstart followed by equal-budget
+Puffer training against an unchanged fresh-optimizer control. Independent
+synthetic maps, explicit teacher legality, held-out tactical metrics, broad
+paired games and fresh hosted confirmation are required.
 
 ## Qualification
 
@@ -67,25 +93,6 @@ Retained evidence locations recorded in the handoff:
   archive SHA-256 `744e8d92b59a019cf0738acf56a62535a927dbc483fb2d0cec7d167fc9abb8b1`.
 - Full settings, receipts, and experiment lineage: [historical Classic status](https://github.com/relh/generals-bots/blob/106ac6af647d8a2148f9ebd1d43409b73edd4ddb/integrations/COWORLD_CLASSIC_STATUS.md).
 
-## Latest failed attempt
-
-The H100 job `job-gsp6k` reached GPU smoke and a 512-game same-sampler gate
-(242W/268L/2D), then failed **before optimizer updates**. The launcher rejected
-its stale pinned trainer SHA-256: expected
-`9e09bbd9b541f3e1522195d07083e9be972d0a7ba6d187a8b21ff8c1e522d63e`,
-actual migrated source
-`61851e5313593bee63047b122bf94ccfa281fbea8e254b4363c75bfd834546b9`.
-The CPU preparation gate had not exercised that launcher guard.
-
-Recorded closeout: terminal FAILED, one H100 80GB, 177 billed seconds,
-$0.1452 runtime, no new training SPS or strength result. No live owned job
-remained at that historical closeout; this is not a live resource inventory.
-The result archive was collected at
-`/tmp/relh-generals-autoresearch-result-gsp6k/`, SHA-256
-`767932f9927b4babf4c6ed145ecae506d1c9333f7ca36cc1ae4066a906ddd067`.
-Current compute instructions in `AGENTS.md` require B200/B300 Slurm runs;
-the historical H100 attempt is not an approved default recipe.
-
 ## Learning diagnosis and next decisions
 
 Wider spatial context learned nonzero weights and passed serving parity, but
@@ -97,30 +104,8 @@ exploration experiments, not evidence of improved match strength.
 
 During the overhaul, the production factory has been restored to canonical
 SHA-256 `5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474`.
-The operational facade adds real-launch CPU preflight. These repairs have not
-produced a new GPU training or strength result.
+The operational facade adds real-launch CPU preflight. The repaired pipeline passed the bounded GPU qualification above; hosted
+winning strength remains unqualified.
 
-Next: exercise the repaired launcher preflight, verify usable baseline artifacts,
-freeze a matched broad evaluation pool, and qualify a bounded GPU run. Compare any
-exploration candidate with both its actual initialization sampler and the
-unchanged qualified baseline.
-
-## Historical 10×10 result
-
-B300 job `8794` trained two policies for 31,457,280 steps each at 56,591 aggregate
-SPS (1,024 games/JAX batch and 4,096 Puffer agents per trainer, horizon 32,
-minibatch 8,192; warm utilization 68.2%). Selected policy 1 scored **0.8302492**
-on 20,480 held-out 10×10 games against mixed scripted opponents. Checkpoint:
-`18489fe680cca211ace244ab0f9d17023a3d003b1ca7bc4eef3d5376cbeba489`.
-Durable archive recorded at
-`/home/metta/relh-generals-puffer/goalaction-two-30m-8794` on metta0.
-See [the original Puffer report](https://github.com/relh/generals-bots/blob/106ac6af647d8a2148f9ebd1d43409b73edd4ddb/integrations/METTA_PUFFER.md).
-This result qualifies its historical 10×10 benchmark.
-
-## Active execution record
-
-Record new jobs here with dates, job IDs, source/checkpoint identities, settings,
-controller Nice/Priority and finite TimeLimit readback, terminal status, SPS and
-strength outcomes, and durable evidence locations. No new overhaul compute
-result is recorded yet. [baseline manifest](../../integrations/policy_baseline.json) stores the retained
-baseline metadata for the operational `status` command.
+The exploration probe is now rejected by matched evidence. The next experiment
+uses independent public defense examples and the selected unchanged sampler.

@@ -1,7 +1,7 @@
 """Operational entry point for the supported Coworld Classic policy pipeline.
 
 Status and contract commands work on a normal checkout. Native commands need
-the pinned training environment; pilot phases require the prepared /work mounts.
+the pinned training environment; trial phases require the prepared /work mounts.
 """
 from __future__ import annotations
 
@@ -18,7 +18,9 @@ MODULES = {
     "export": "integrations.export_spatial_policy_bundle",
     "compare": "integrations.analyze_spatial_population_pair",
     "promotion": "integrations.policy_promotion",
-    "pilot": "integrations.portable_classic_pilot",
+    "hosted": "integrations.hosted_policy",
+    "trial": "integrations.policy_trial",
+    "distill": "integrations.distill_defense",
 }
 NATIVE = {"preflight", "train", "resume", "build"}
 

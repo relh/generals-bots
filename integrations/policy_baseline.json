@@ -688,5 +688,24 @@
     "asset_paths_are_recovery_locations_not_portable_defaults": true,
     "restore_rule": "Use exact file digests and preserve parent manifests. Stage /work/input/continuation and /work/input/curriculum or create explicit derived build metadata with relocated assets.",
     "factory_rule": "Original factory source is pinned independently from the checkout; do not silently bind a checkpoint to current generals_fabric.py."
+  },
+  "latest_qualification": {
+    "job_id": "35932",
+    "source_commit": "57be9f95e4531c907ab312ceee0041f02cd311ab",
+    "completed": true,
+    "hardware": "NVIDIA B300 SXM6 AC",
+    "environment_count": 8192,
+    "horizon": 256,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_seconds": 141.083,
+    "steady_interval_steps": 4194304,
+    "steady_interval_seconds": 54.93,
+    "steady_end_to_end_sps": 76357.25468778444,
+    "additional_training_steps": 8388608,
+    "illegal_actions": 0,
+    "nonfinite_rewards": 0,
+    "decision": "Reject exploration candidate; retain selected cold baseline and original sampler.",
+    "analysis_path": "/tmp/generals-policy-overhaul-results-35932/analysis.json"
   }
 }

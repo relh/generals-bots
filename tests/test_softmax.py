@@ -1,5 +1,6 @@
 """Coworld rule parity, player boundaries, and complete episode lifecycle."""
 
+import asyncio
 import json
 
 import jax.numpy as jnp
@@ -174,6 +175,13 @@ def test_episode_records_reproducible_replay_and_scores(tmp_path):
 
 
 def test_live_public_routes_do_not_reveal_hidden_state(tmp_path):
+    async def wait_disconnected(registrations):
+        # Finish the ASGI disconnect before TestClient cancels its websocket
+        # task; cancellation at context teardown races the handler's cleanup.
+        async with asyncio.timeout(2):
+            while registrations:
+                await asyncio.sleep(0)
+
     with client_for(tmp_path) as client:
         assert client.get("/healthz").status_code == 200
         assert client.get("/replay.json").status_code == 409
@@ -216,6 +224,8 @@ def test_live_public_routes_do_not_reveal_hidden_state(tmp_path):
             }
             assert "secret" not in json.dumps(message)
             assert "seed" not in json.dumps(message)
+            global_ws.close()
+            client.portal.call(wait_disconnected, client.app.state.episode.viewers)
         with connect(client, 0) as red, connect(client, 1) as blue:
             obs = receive(red, "observation")
             receive(blue, "observation")
@@ -227,6 +237,9 @@ def test_live_public_routes_do_not_reveal_hidden_state(tmp_path):
                     if kind in (0, 5):
                         assert army == 0 and owner == 0
             assert client.get("/replay.json").status_code == 409
+            red.close()
+            blue.close()
+            client.portal.call(wait_disconnected, client.app.state.episode.reserved_slots)
 
 
 def test_wrong_and_duplicate_player_connections_are_rejected(tmp_path):
