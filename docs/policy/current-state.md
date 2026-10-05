@@ -6,6 +6,26 @@ before resuming or deploying any policy.
 
 ## Latest qualification and selected decision
 
+Current job **35956** is **PENDING** in partition `b300`, from sealed source
+`4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`. Controller readback confirms Nice
+**2147483645**, Priority **1**, and a finite **01:40:00** cap. It requests one
+B300, eight CPUs and 96 GiB memory using the direct Enroot backend with owned
+`/var/tmp` storage. Source, submission and signed transport receipts share prefix
+`/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2`.
+Its 313-file input archive SHA-256 is
+`f34d7e56ab893615ec14acc88092efdbe25309e39b4484db2e346bca52849c6d`.
+
+The first allocated-step gate must verify host GPU cgroup visibility, idle GPU
+ownership and matching container UUID. That actual host-step scope is still
+unverified; installed cgroup configuration and three prior batch-shell
+single-GPU receipts support the implementation but do not replace this gate.
+The preserved control's native CUDA parity audit then runs first: 46 hosted
+public states, batch 8, 300-second child cap, CPU layout and GPU inference.
+Only after those gates pass may the current build, fresh-optimizer warm arm
+and matched broad panels run. Completed control/CE work from 35935 is preserved
+and not repeated. There are **no new GPU measurements, warm PPO steps,
+evaluation results or strength qualification** from 35956 yet.
+
 Continuation **35949** terminated **FAILED, exit 1:0**, after **one second**
 on `metta-fabric-b300-1`, from source
 `4ca2e9926858a8f53a0f7a7d2141916fbe00ff4c`. Host `PREPARE` rejected insufficient
@@ -33,9 +53,8 @@ The 9,355-byte terminal archive has three files and SHA-256
 `7bca77aed10597e45c0bf817df11145ea86538a200a0c5b741906d72bd3c0c78`;
 parts and extraction were verified under
 `/tmp/generals-policy-overhaul-results-35949/`.
-There is no current running Generals trial recorded here, and no new warm PPO,
-evaluation or strength result. The corrected backend below is being sealed;
-no replacement has been uploaded or submitted.
+35949 is terminal. The corrected replacement 35956 is submitted and pending;
+no new warm PPO, evaluation or strength result is available.
 
 The direct Enroot backend is now implemented at source
 `4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`. It creates fresh mode-0700 job storage
@@ -257,9 +276,7 @@ serving excludes optimizer state. Current derived inputs are at
 `/tmp/generals-current-policy-input-v2/`; successful current GPU execution and
 fresh hosted strength remain required before qualification.
 
-Active next decision: review the newly sealed direct Enroot capsule and its
-transport/storage configuration before any upload or submission. The first
-allocated GPU computation must prove preserved-control CUDA parity before warm
-training and broad evaluation. Reuse control/CE artifacts under the proven
-equivalent effective experiment. Retain the baseline until broad and fresh
-hosted evidence qualifies a candidate.
+Active next decision: collect 35956's allocated host/container GPU-scope and
+preserved-control CUDA parity gates before warm training and broad evaluation.
+Reuse control/CE artifacts under the proven equivalent effective experiment.
+Retain the baseline until broad and fresh hosted evidence qualifies a candidate.

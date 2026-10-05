@@ -109,21 +109,22 @@
     }
   },
   "latest_attempt": {
-    "job": "35949",
-    "state": "FAILED",
-    "source_revision": "4ca2e9926858a8f53a0f7a7d2141916fbe00ff4c",
-    "phase": "host_prepare",
-    "new_training_steps": 0,
+    "job": "35956",
+    "state": "PENDING",
+    "source_revision": "4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7",
+    "execution_backend": "direct_enroot",
+    "scratch_parent": "/var/tmp",
+    "phase": "awaiting allocation; host GPU context and parity required before warm PPO",
+    "new_training_steps": null,
     "nice": 2147483645,
     "priority": 1,
     "time_limit": "01:40:00",
     "hardware_partition": "b300",
     "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35949/analysis.json",
-      "sha256": "fc4ff2157398372c406bcca2aa32119875c8f21d2b58d61c84eb302810a29d27",
-      "bytes": 1021
-    },
-    "error": "Insufficient scratch filesystem bytes or inodes; stopped before download, GPU query or parity."
+      "path": "/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2.public.json",
+      "sha256": "fc2049cef71ec1cd13d0969de1a361d1ecb55d6296fc20c18b4748aa31ba569a",
+      "bytes": 21116
+    }
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -145,15 +146,20 @@
     }
   },
   "previous_failure": {
-    "job": "35936",
-    "state": "failed",
-    "phase": "control-parity",
-    "error": "Native GPU parity process exited -11 (SIGSEGV); warm PPO and evaluation never started.",
+    "job": "35949",
+    "state": "FAILED",
+    "source_revision": "4ca2e9926858a8f53a0f7a7d2141916fbe00ff4c",
+    "phase": "host_prepare",
     "new_training_steps": 0,
+    "nice": 2147483645,
+    "priority": 1,
+    "time_limit": "01:40:00",
+    "hardware_partition": "b300",
     "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35936/analysis.json",
-      "sha256": "723035d7732503b475153a1e8b0660bfdf56fa427cccc5ac35c3eab3c34b3f44",
-      "bytes": 2206
-    }
+      "path": "/tmp/generals-policy-overhaul-results-35949/analysis.json",
+      "sha256": "fc4ff2157398372c406bcca2aa32119875c8f21d2b58d61c84eb302810a29d27",
+      "bytes": 1021
+    },
+    "error": "Insufficient scratch filesystem bytes or inodes; stopped before download, GPU query or parity."
   }
 }

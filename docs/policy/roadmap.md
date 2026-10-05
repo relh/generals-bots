@@ -23,8 +23,10 @@ proof. Continuation 35949 failed in host scratch preparation after one second:
 13,170 available `/tmp` inodes were below the declared 60,000 requirement.
 No downloads, GPU query, parity or new training/evaluation occurred. Storage
 and Enroot paths were then audited. The direct Enroot replacement has installed
-source and CPU lifecycle proof; no allocated GPU proof exists and no trial is
-currently running.
+source and CPU lifecycle proof. Current job 35956 is pending from source
+`4c7dfc2` with one B300, maximum Nice, Priority 1 and a 100-minute cap. Its
+actual allocated host/container GPU scope and CUDA parity remain unverified;
+no new GPU measurements, warm training or evaluation results are available.
 Baseline comparisons and loss diagnosis are available. Learning improvement
 and hosted winning qualification remain open; see [current-state.md](current-state.md).
 
@@ -41,9 +43,10 @@ Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
 position curriculum, opponent pool and rewards. Compare source, distilled,
 control and warm bundles on the same broad development games before selecting
-a candidate for fresh confirmation and hosted qualification. Review the newly
-sealed direct Enroot capsule with owned `/var/tmp` storage before upload or
-submission. That continuation must prove control CUDA parity before building the current
+a candidate for fresh confirmation and hosted qualification. Pending job
+35956 must first prove allocated host/container GPU scope and preserved-control
+CUDA parity using the direct Enroot backend and owned `/var/tmp` storage. Only
+then may it build the current
 runtime, executing the warm arm and evaluating broad panels. Retain completed
 control and supervised artifacts from 35935; those computations are not repeated.
 The failed retries provide no warm-arm result.
