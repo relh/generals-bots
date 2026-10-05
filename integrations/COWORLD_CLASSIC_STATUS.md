@@ -1,5 +1,40 @@
 # Softmax Coworld Classic 1v1 training
 
+## CLOSE-JOIN terminal readback complete; no live owned compute or monitor
+
+Existing job-gsp6k is terminal FAILED(exit1),one H10080GB,177billed seconds.
+Provider receipt and mission both report0.1452USD runtime,total0.1452USD,
+build0USD and accruing=false. Image digest
+sha256:c9cd5ed124d19f5b1821fc77deeb42f33c52638fd83e712efdb222e46cce84c2.
+Detached observerPID2213 exited after verified collection; no owned queued/running
+job, persistent paid node, Slurm job or hosted request remains. No retry started.
+
+Archive art-7x2ew,239022080bytes,SHA
+767932f9927b4babf4c6ed145ecae506d1c9333f7ca36cc1ae4066a906ddd067
+was independently rehashed locally and safely extracted under
+/tmp/relh-generals-autoresearch-result-gsp6k/. Terminal receipt/collection proof
+in /tmp/relh-generals-close-monitor-gsp6k/{terminal,collection,done}.json.
+Mission accounting /tmp/relh-generals-terminal-mission.json. Shared ledger
+released3.8548USD from the7USD hold;0.1452USD spent and3USD remains reserved
+only for retained context/image/artifact storage pending final billing.
+Reconciliation /tmp/relh-october-dispatch/generals-close-join-terminal-reconciliation.json.
+No other owner's reservation or resources changed.
+
+Actual outcome: GPU smoke and512-game same-sampler gate passed (242wins,
+268losses,2draws; this is not a learning comparison). Training stopped before
+updates at launch_spatial_selfplay_training.py's stale pinned-trainer hash.
+Expected9e09bbd9b541f3e1522195d07083e9be972d0a7ba6d187a8b21ff8c1e522d63e;
+actual migrated source61851e5313593bee63047b122bf94ccfa281fbea8e254b4363c75bfd834546b9.
+Cloud CPU preparation had passed, but did not invoke this launcher guard.
+No new training SPS, learning curve or strong-play proof exists.
+
+Exact remaining work for a future explicitly resumed task: update and test the
+launcher source binding with the real CPU launch preflight, then qualify GPU
+training and matched held-out/hosted strength. No further run is authorized by
+this closeout. PR4 remains draft; goal unfinished. Only accounting follow-up is
+retained storage settlement within3USD; no active resource monitoring remains.
+Safe to replace this cdx; preserve all inputs, archives, history and evidence.
+
 ## STEER-CLOSE checkpoint: no further runs; existing job handed to bounded observer
 
 Richard's latest stop-expansion/close steering supersedes the earlier broad
