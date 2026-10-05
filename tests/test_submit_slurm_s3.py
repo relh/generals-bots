@@ -1,4 +1,5 @@
 import json
+import hashlib
 from pathlib import Path
 import subprocess
 import tempfile
@@ -11,8 +12,8 @@ from integrations.submit_slurm_s3 import render, submit, monitor
 
 class SubmissionTests(unittest.TestCase):
     def config(self):
-        return dict(runtime_seconds=3300, credential_expiry=time.time()+36000,
-                    enroot_storage_paths=["/tmp"],
+        return dict(receipt={"source_hashes":{"integrations/slurm_s3_job.py":hashlib.sha256((Path(__file__).resolve().parents[1]/"integrations/slurm_s3_job.py").read_bytes()).hexdigest()}}, runtime_seconds=3300, credential_expiry=time.time()+36000,
+                    scratch_parent="/var/tmp",
                     required_gpu_memory_gib=198, steps=[dict(name="smoke", seconds=60)],
                     input_url="https://example.invalid/credential-SECRET")
 
@@ -34,14 +35,6 @@ class SubmissionTests(unittest.TestCase):
             with self.subTest(override=override),self.assertRaises(ValueError):
                 render(self.config()|override,name="relh-generals-test",partition="b300",minutes=55,cpus=8,memory_gib=64)
 
-    def test_4090_leaves_placement_to_slurm_and_excludes_prohibited_host(self):
-        script = render(self.config() | dict(required_gpu_memory_gib=24),
-                        name="relh-generals-test", partition="rtx4090", minutes=55,
-                        cpus=8, memory_gib=32)
-        self.assertIn("#SBATCH --exclude=metta4\n", script)
-        self.assertIn("#SBATCH --nice=2147483645", script)
-        self.assertNotIn("--nodelist", script)
-        self.assertNotIn("#SBATCH --exclude=metta0", script)
 
     def test_live_task_prevents_submission(self):
         result=subprocess.CompletedProcess([],0,"35687|relh-classic-old\n","")

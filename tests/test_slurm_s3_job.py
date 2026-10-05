@@ -19,16 +19,22 @@ from integrations.slurm_s3_job import extract_input, SlurmJob
 class S3JobTests(unittest.TestCase):
     def run_job(self, mode="success", sent_signal=None, fail_upload=False, low_nice=False,
                 image_parts=False, bad_image=False, result_part_bytes=None, busy_gpu=False, gpu_query_failure=False, batch_gpu_absent=False,
-                cleanup_failure=False, job_scoped=False, image_parallelism=1, lingering_reads=0):
+                cleanup_failure=False, image_parallelism=1, lingering_reads=0):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
             commands.mkdir()
             archive = root / "input.tar.gz"
+            runtime = Path(__file__).resolve().parents[1] / 'integrations/slurm_s3_job.py'
             with tarfile.open(archive, "w:gz") as target:
                 member = tarfile.TarInfo("source.txt")
                 member.size = 4
                 target.addfile(member, io.BytesIO(b"data"))
+                target.add(runtime, arcname='source/integrations/slurm_s3_job.py')
+                if not image_parts:
+                    member = tarfile.TarInfo('image.sqsh')
+                    member.size = 5
+                    target.addfile(member, io.BytesIO(b'image'))
             scripts = {
                 "scontrol": f"print('JobId=999 Nice={100 if low_nice else 2147483645} Priority=1 TimeLimit=00:10:00')",
                 "squeue": f"""import pathlib
@@ -37,18 +43,33 @@ reads = int(counter.read_text()) if counter.exists() else 0
 counter.write_text(str(reads + 1))
 print('999.0' if pathlib.Path('writing').exists() or reads < {lingering_reads} else '')
 """,
-                "enroot": f'''import os,pathlib,sys
+                "enroot": f'''import os,pathlib,sys,shutil
 assert not pathlib.Path('writing').exists()
-assert not any(k in os.environ for k in ('ENROOT_DATA_PATH','ENROOT_TEMP_PATH','ENROOT_CACHE_PATH','ENROOT_RUNTIME_PATH'))
-name={'pyxis_999_relh-generals-999' if job_scoped else 'pyxis_relh-generals-999'!r}
-if sys.argv[1]=='list':
-    print('unrelated-container')
-    if not pathlib.Path('cleaned').exists(): print(name)
-else:
+name='relh-generals-999'
+data=pathlib.Path(os.environ['ENROOT_DATA_PATH'])
+assert data.parent.parent.name == name
+assert os.environ['ENROOT_MOUNT_HOME']=='no'
+assert pathlib.Path(os.environ['ENROOT_CONFIG_PATH']).parent == data.parent
+if sys.argv[1]=='create':
+    assert sys.argv[2:4]==['--name',name]
+    (data/name).mkdir()
+elif sys.argv[1]=='start':
+    assert os.environ['NVIDIA_VISIBLE_DEVICES']=='GPU-abcd'
+    assert os.environ['CUDA_VISIBLE_DEVICES']=='GPU-abcd'
+    assert os.environ['NVIDIA_DRIVER_CAPABILITIES']=='compute,utility'
+    index=sys.argv.index('--')
+    assert sys.argv[index+1]==name
+    assert sys.argv[index+2:index+6]==['/bin/sh','-c','cd /work && exec "$@"','generals-workload']
+    command=sys.argv[index+6:]
+    os.execv(command[0],command)
+elif sys.argv[1]=='remove':
     assert sys.argv[1:]==['remove','--force',name]
     if {cleanup_failure!r}:
         print('owned root removal denied',file=sys.stderr); sys.exit(7)
     pathlib.Path('cleaned').touch()
+    shutil.rmtree(data/name)
+else:
+    raise AssertionError('No global Enroot namespace listing permitted')
 ''',
                 "nvidia-smi": f'''import sys,os
 if {gpu_query_failure!r} or '--id=1' in sys.argv or ({batch_gpu_absent!r} and not os.environ.get('SLURM_STEP_GPUS')):
@@ -64,10 +85,9 @@ assert '--gres=gpu:1' in sys.argv
 os.environ['SLURM_STEP_GPUS']='1'
 from integrations.slurm_s3_job import verify_allocated_gpu_idle
 verify_allocated_gpu_idle()
-assert '--no-container-mount-home' in sys.argv
-assert any(x.startswith('--container-name=relh-generals-999') for x in sys.argv)
-index = sys.argv.index('--')
-os.execv(sys.argv[index+1], sys.argv[index+1:])
+assert not any(x.startswith('--container-') for x in sys.argv)
+index = sys.argv.index('python3')
+os.execv(sys.executable, sys.argv[index:])
 ''',
             }
             for name, body in scripts.items():
@@ -94,16 +114,18 @@ pathlib.Path('writing').unlink()
 emit('STOPPED')
 sys.exit(7 if sys.argv[1]=='fail' else 0)
 ''')
-            config = dict(scratch_parent=str(root), receipt=dict(source="test"),
+            config = dict(scratch_parent=str(root), receipt=dict(source="test", source_hashes={
+                              'integrations/slurm_s3_job.py':hashlib.sha256(runtime.read_bytes()).hexdigest()}),
                           scratch_bytes=1, scratch_inodes=1, runtime_seconds=600,
                           credential_expiry=time.time()+3600,
                           input_url="https://input", input_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),
-                          input_unpacked_bytes=100, input_members=10,
-                          enroot_unpack_path=str(root), image_unpacked_bytes=1, image_inodes=1,
-                          enroot_storage_paths=[str(root)],
-                          image="test-image", output_urls=["https://part"], manifest_url="https://manifest",
-                          steps=[dict(name="smoke", argv=["--", sys.executable, str(worker), "success"], seconds=5),
-                                 dict(name="train", argv=["--", sys.executable, str(worker), mode], seconds=20)])
+                          input_unpacked_bytes=100000, input_members=10,
+                          image_unpacked_bytes=1, image_inodes=1,
+                          workload_bytes=1, workload_inodes=1,
+                          image="input/image.sqsh", image_sha256=hashlib.sha256(b'image').hexdigest(),
+                          output_urls=["https://part"], manifest_url="https://manifest",
+                          steps=[dict(name="smoke", argv=[sys.executable, str(worker), "success"], seconds=5),
+                                 dict(name="train", argv=[sys.executable, str(worker), mode], seconds=20)])
             if image_parts:
                 config["image_download_parallelism"] = image_parallelism
                 config["image_parts"] = []
@@ -173,6 +195,7 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
     def test_unconfirmed_remote_step_wait_is_bounded(self):
         job = SlurmJob.__new__(SlurmJob)
         job.process = None
+        job.create_process = None
         with patch.object(job, "steps_stopped", return_value=False) as stopped, \
                 patch("integrations.slurm_s3_job.time.monotonic", side_effect=[0, 0, 46]), \
                 patch("integrations.slurm_s3_job.time.sleep"):
@@ -183,13 +206,8 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         r = self.run_job("fail")
         self.assertEqual(r["code"], 7, r)
         self.assertTrue(r["scratch"])
-        self.assertFalse(r["cleaned"])
+        self.assertTrue(r["cleaned"])
         self.assertEqual(r["manifest"]["receipt"]["workload_exit_code"], 7)
-
-    def test_job_scoped_owned_container_cleanup(self):
-        r = self.run_job(job_scoped=True)
-        self.assertEqual(r['code'], 0, r)
-        self.assertTrue(r['cleaned'])
 
     def test_cleanup_failure_preserves_uploaded_success_and_diagnostic(self):
         r = self.run_job(cleanup_failure=True)
@@ -197,7 +215,8 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         self.assertTrue(r['scratch'])
         self.assertFalse(r['cleaned'])
         self.assertEqual(r['manifest']['receipt']['workload_exit_code'], 0)
-        self.assertIn(b'owned root removal denied', r['stdout'])
+        self.assertIn('Owned container cleanup failed', r['manifest']['receipt']['container_cleanup_failure'])
+        self.assertEqual(r['manifest']['receipt']['runner_exit_code'],74)
 
     def test_signaled_training_finishes_writes_before_upload(self):
         for sig, code in ((signal.SIGUSR1,124),(signal.SIGTERM,143),(signal.SIGINT,130)):
@@ -207,14 +226,14 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
                 events=r["events"]
                 self.assertLess(events.index("LAST_WRITE"),events.index("UPLOAD"))
                 self.assertTrue(r["scratch"])
-                self.assertFalse(r["cleaned"])
+                self.assertTrue(r["cleaned"])
                 self.assertEqual(r["manifest"]["receipt"]["workload_exit_code"],code)
 
     def test_upload_failure(self):
         r=self.run_job(fail_upload=True)
         self.assertEqual(r["code"],74,r)
         self.assertTrue(r["scratch"])
-        self.assertFalse(r["cleaned"])
+        self.assertTrue(r["cleaned"])
         self.assertNotIn("manifest",r)
 
     def test_wrong_priority_never_downloads_or_starts(self):
@@ -251,7 +270,7 @@ sys.exit(m.SlurmJob(json.load(open('config.json'))).execute())
         result=self.run_job(busy_gpu=True)
         self.assertEqual(result["code"],1,result)
         self.assertNotIn("READY",result["events"])
-        self.assertFalse(result["cleaned"])
+        self.assertTrue(result["cleaned"])
 
     def test_global_gpu_ordinal_is_resolved_to_visible_uuid(self):
         # Fake NVML exposes physical minor1 as visible index0. -i1 returns6,
@@ -331,3 +350,41 @@ def test_retired_recovery_mount_configuration_is_rejected():
     with patch.dict(os.environ, {'SLURM_JOB_ID': '999'}):
         with pytest.raises(ValueError, match='mount_recovery'):
             SlurmJob(dict(scratch_parent='/tmp', receipt={}, mount_recovery=True))
+
+
+def test_timed_out_container_creation_stops_descendant_writer_before_archive(tmp_path):
+    import pytest
+    from integrations.slurm_s3_job import SlurmJob
+    program = '''import os,pathlib,signal,sys,time
+root=pathlib.Path(sys.argv[1])
+if os.fork()==0:
+    def stop(*args):
+        time.sleep(.1)
+        (root/'last-write').write_text('finished')
+        (root/'writing').unlink()
+        os._exit(0)
+    signal.signal(signal.SIGTERM,stop)
+    (root/'writing').touch()
+    while True: time.sleep(.01)
+while True: time.sleep(.01)
+'''
+    with patch.dict(os.environ, {'SLURM_JOB_ID':'999'}):
+        job=SlurmJob(dict(scratch_parent=str(tmp_path),receipt={}))
+    job.create_process=subprocess.Popen([sys.executable,'-c',program,str(tmp_path)],start_new_session=True)
+    process=job.create_process
+    try:
+        deadline=time.monotonic()+3
+        while not (tmp_path/'writing').exists():
+            assert time.monotonic()<deadline
+            time.sleep(.01)
+        with pytest.raises(subprocess.TimeoutExpired):
+            process.wait(timeout=.05)
+        assert job.stop_and_wait()
+        assert (tmp_path/'last-write').read_text()=='finished'
+        assert not (tmp_path/'writing').exists()
+        assert job.create_process is None
+        assert job.receipt['container_creation_stopped'] is True
+    finally:
+        if process.poll() is None:
+            os.killpg(process.pid,signal.SIGKILL)
+            process.wait(timeout=3)

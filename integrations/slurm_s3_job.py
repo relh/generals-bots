@@ -1,4 +1,4 @@
-"""Host-side, single-job Pyxis execution with bounded S3 transfers.
+"""Host-side, single-job Enroot execution with bounded S3 transfers.
 
 The submitter embeds this module in a host sbatch script. Credentials remain
 in memory; only the public receipt is written into the result directory.
@@ -13,12 +13,14 @@ import re
 import shutil
 import signal
 import subprocess
+import sys
 import tarfile
 import time
 
 
 MAX_PART_BYTES = 3_500_000_000
 NICE = 2147483645
+CONTAINER_CREATE_SECONDS = 300
 
 
 def gpu_query(*arguments):
@@ -48,6 +50,9 @@ def allocated_gpu_identity(environ=None):
     if (len(fields) != 2 or not fields[0].isdigit()
             or not re.fullmatch(r"GPU-[a-fA-F0-9-]+", fields[1])):
         raise RuntimeError("Unrecognized visible GPU identity")
+    expected = environ.get("GENERALS_ALLOCATED_GPU_UUID")
+    if expected is not None and expected != fields[1]:
+        raise RuntimeError("Container GPU UUID differs from its allocated host step")
     if assigned.startswith("GPU-") and assigned != fields[1]:
         raise RuntimeError("Visible GPU UUID differs from controller assignment")
     return dict(slurm_assignment=assigned, visible_index=fields[0], uuid=fields[1])
@@ -66,6 +71,58 @@ def verify_allocated_gpu_idle():
         raise RuntimeError("Allocated physical GPU is not idle before workload startup")
     identity.update(memory_mib=float(fields[1]), utilization_percent=float(fields[2]))
     return identity
+
+
+def enroot_step(specification):
+    """Resolve ownership in the allocated host cgroup, then enter its container."""
+    import resource
+
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+    specification = Path(specification)
+    spec = json.loads(specification.read_text())
+    root = Path(spec["root"])
+    if (root.is_symlink() or root.stat().st_uid != os.getuid()
+            or root.name != "relh-generals-" + os.environ["SLURM_JOB_ID"]
+            or spec["container"] != root.name or specification.parent != root):
+        raise ValueError("Enroot step requires its exclusively owned job root")
+    assignment = root / "out/gpu-assignment.json"
+    if spec["first"]:
+        identity = verify_allocated_gpu_idle()
+        with assignment.open("x") as record:
+            record.write(json.dumps(identity, indent=2) + "\n")
+    else:
+        identity = allocated_gpu_identity()
+        if identity["uuid"] != json.loads(assignment.read_text())["uuid"]:
+            raise RuntimeError("Physical GPU changed between owned workload phases")
+        if gpu_query("--id=" + identity["uuid"], "--query-compute-apps=pid", "--format=csv,noheader,nounits"):
+            raise RuntimeError("Allocated physical GPU has compute processes before the next phase")
+    (root / "out" / spec["gpu_receipt"]).write_text(json.dumps(identity, indent=2) + "\n")
+    uuid = identity["uuid"]
+    env = dict(os.environ, NVIDIA_VISIBLE_DEVICES=uuid, CUDA_VISIBLE_DEVICES=uuid,
+               NVIDIA_DRIVER_CAPABILITIES="compute,utility", GENERALS_ALLOCATED_GPU_UUID=uuid,
+               ENROOT_MOUNT_HOME="no", ENROOT_ROOTFS_WRITABLE="no")
+    for name in ("DATA", "TEMP", "CACHE", "RUNTIME", "CONFIG"):
+        path = root / "enroot" / name.lower()
+        if not path.is_dir() or path.is_symlink() or path.stat().st_uid != os.getuid():
+            raise ValueError("Enroot step storage escaped its owned job root")
+        # Derive canonical paths here too: Slurm plugins may filter environment
+        # overrides before this host step starts, but no plugin starts Enroot.
+        env["ENROOT_" + name + "_PATH"] = str(path)
+    command = ["enroot", "start", "--mount", str(root) + ":/work",
+               "--env", "NVIDIA_VISIBLE_DEVICES=" + uuid,
+               "--env", "CUDA_VISIBLE_DEVICES=" + uuid,
+               "--env", "NVIDIA_DRIVER_CAPABILITIES=compute,utility",
+               "--env", "GENERALS_ALLOCATED_GPU_UUID=" + uuid]
+    for key, value in (("TMPDIR", "/work/tmp"), ("XDG_CACHE_HOME", "/work/cache"),
+                       ("JAX_COMPILATION_CACHE_DIR", "/work/jax-cache"),
+                       ("FABRIC_VERIFY_CACHE", "/work/fabric-verify")):
+        command.extend(["--env", key + "=" + value])
+    for key in ("SLURM_JOB_ID", "SLURM_JOB_GPUS", "SLURM_STEP_GPUS"):
+        if key in env:
+            command.extend(["--env", key + "=" + env[key]])
+    command.extend(["--", spec["container"], "/bin/sh", "-c", 'cd /work && exec "$@"',
+                    "generals-workload", *spec["argv"]])
+    os.execvpe(command[0], command, env)
 
 
 class JobSignal(Exception):
@@ -151,13 +208,16 @@ class SlurmJob:
         self.job_id = os.environ["SLURM_JOB_ID"]
         if not re.fullmatch(r"\d+", self.job_id):
             raise ValueError("Invalid job ID")
-        if "mount_recovery" in config:
-            raise ValueError("Unsupported launch configuration: mount_recovery")
+        obsolete = {"mount_recovery", "enroot_storage_paths", "retained_container"} & config.keys()
+        if obsolete:
+            raise ValueError("Unsupported launch configuration: " + ", ".join(sorted(obsolete)))
         self.root = Path(config["scratch_parent"]) / f"relh-generals-{self.job_id}"
         self.container = f"relh-generals-{self.job_id}"
         self.process = None
         self.step_started = False
         self.owns_root = False
+        self.container_create_attempted = False
+        self.create_process = None
         self.runtime_env = dict(os.environ)
         self.receipt = dict(config["receipt"], job_id=self.job_id,
                             node=os.environ.get("SLURMD_NODENAME", "unknown"))
@@ -173,74 +233,31 @@ class SlurmJob:
         self.receipt.update({key: fields.get(key) for key in (
             "Nice", "Priority", "TimeLimit", "Partition", "NumCPUs", "ReqTRES", "NodeList")})
 
-    def retire_verified_container(self):
-        """Remove one explicitly named old task container, preserving its scratch.
-
-        The caller supplies the SHA of the fully collected, S3-verified archive.
-        Neither retained source/results nor any other container is removed.
-        """
-        retained = self.config.get("retained_container")
-        if retained is None:
-            return
-        prior = retained.get("job_id", "")
-        expected = retained.get("results_sha256", "")
-        if (not isinstance(prior, str) or not re.fullmatch(r"[1-9][0-9]*", prior)
-                or int(prior) >= int(self.job_id)
-                or not isinstance(expected, str) or not re.fullmatch(r"[0-9a-f]{64}", expected)):
-            raise ValueError("Invalid retained task container identity")
-        root = self.root.parent / f"relh-generals-{prior}"
-        archive = root / "results.tar.gz"
-        receipt = root / "out/receipt.json"
-        for path in (root, root / "out", archive, receipt):
-            if path.is_symlink() or path.stat().st_uid != os.getuid():
-                raise ValueError("Retained task path ownership differs")
-        if json.loads(receipt.read_text()).get("job_id") != prior:
-            raise ValueError("Retained receipt belongs to another job")
-        digest = hashlib.sha256()
-        with archive.open("rb") as stream:
-            for block in iter(lambda: stream.read(1024 * 1024), b""):
-                digest.update(block)
-        if digest.hexdigest() != expected:
-            raise ValueError("Retained archive differs from verified collected results")
-        for steps in (False, True):
-            command = ["squeue", "--noheader", "--format=%i"]
-            if steps:
-                command.append("--steps")
-            state = subprocess.run(command, capture_output=True, text=True, timeout=15)
-            if state.returncode:
-                raise RuntimeError("Cannot confirm retained job is inactive")
-            if any(line.strip().split(".")[0].split("_")[0] == prior
-                   for line in state.stdout.splitlines()):
-                raise RuntimeError("Retained job or step remains active")
-        def enroot(*args):
-            result = subprocess.run(["enroot", *args], capture_output=True, text=True,
-                                    timeout=60, env=self.runtime_env)
-            if result.returncode:
-                raise RuntimeError("Retained owned container operation failed")
-            return set(result.stdout.splitlines())
-        allowed = {f"pyxis_relh-generals-{prior}", f"pyxis_{prior}_relh-generals-{prior}"}
-        removed = sorted(enroot("list") & allowed)
-        for name in removed:
-            enroot("remove", "--force", name)
-        if enroot("list") & allowed:
-            raise RuntimeError("Retained owned container remains after removal")
-        self.receipt["retired_owned_container"] = dict(
-            job_id=prior, results_sha256=expected, removed=removed,
-            retained_scratch=str(root), source_and_results_preserved=True)
-
     def prepare(self):
         self.check_priority()
         # Refuse reuse, including accidental restarts with the same job ID.
         self.root.mkdir(mode=0o700)
         self.owns_root = True
         (self.root / "out").mkdir()
-        # Pyxis filters these job environment overrides. Host enroot commands
-        # must use the same site defaults, or cleanup targets an empty tree.
-        for variable in ("ENROOT_TEMP_PATH", "ENROOT_CACHE_PATH", "ENROOT_DATA_PATH",
-                         "ENROOT_RUNTIME_PATH", "ENROOT_LIBRARY_PATH", "ENROOT_SYSCONF_PATH"):
+        for name in ("tmp", "cache", "jax-cache", "fabric-verify"):
+            (self.root / name).mkdir(mode=0o700)
+        # Direct Enroot honors these environment values before site defaults.
+        # Every mutable runtime path is inside this exclusively created root.
+        for variable in ("ENROOT_LIBRARY_PATH", "ENROOT_SYSCONF_PATH"):
             self.runtime_env.pop(variable, None)
-        self.runtime_env["ENROOT_MAX_PROCESSORS"] = str(self.config.get("cpus", 8))
-        self.retire_verified_container()
+        self.runtime_env.update(ENROOT_MAX_PROCESSORS=str(self.config.get("cpus", 8)),
+                                ENROOT_MOUNT_HOME="no", ENROOT_ROOTFS_WRITABLE="no")
+        storage = {}
+        for name in ("DATA", "TEMP", "CACHE", "RUNTIME"):
+            path = self.root / "enroot" / name.lower()
+            path.mkdir(parents=True, mode=0o700)
+            self.runtime_env["ENROOT_" + name + "_PATH"] = str(path)
+            storage[name.lower()] = str(path)
+        configuration = self.root / "enroot/config"
+        configuration.mkdir(mode=0o700)
+        self.runtime_env["ENROOT_CONFIG_PATH"] = str(configuration)
+        self.receipt["execution_backend"] = "direct_enroot"
+        self.receipt["enroot_storage"] = storage
         check_space(self.root, self.config["scratch_bytes"], self.config["scratch_inodes"], receipt=self.receipt)
         self.receipt["gpu_environment"] = {
             key: os.environ.get(key) for key in
@@ -299,24 +316,65 @@ class SlurmJob:
                 parallelism=parallelism, seconds=time.monotonic() - started, bytes=image.stat().st_size,
             )
 
+        runtime = self.root / "input/source/integrations/slurm_s3_job.py"
+        expected = self.config["receipt"]["source_hashes"]["integrations/slurm_s3_job.py"]
+        if runtime.is_symlink() or hashlib.sha256(runtime.read_bytes()).hexdigest() != expected:
+            raise ValueError("Allocated step runtime differs from its sealed source identity")
+        self.receipt["step_runtime_sha256"] = expected
+        image = self.root / self.config["image"]
+        if self.config["image"] != "input/image.sqsh" or image.is_symlink():
+            raise ValueError("Direct Enroot requires its verified immutable input image")
+        self.check_container_storage()
+        digest = hashlib.sha256()
+        with image.open("rb") as stream:
+            for block in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(block)
+        if digest.hexdigest() != self.config["image_sha256"]:
+            raise ValueError("Immutable image differs before Enroot creation")
+        destination = Path(self.runtime_env["ENROOT_DATA_PATH"]) / self.container
+        if destination.exists():
+            raise ValueError("Refuse reuse of an existing container root filesystem")
+        self.container_create_attempted = True
+        with (self.root / "out/container-create.log").open("xb") as log:
+            mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGUSR1, signal.SIGTERM, signal.SIGINT})
+            try:
+                self.create_process = subprocess.Popen(
+                    ["enroot", "create", "--name", self.container, str(image)],
+                    env=self.runtime_env, stdout=log, stderr=subprocess.STDOUT,
+                    start_new_session=True,
+                    preexec_fn=lambda: signal.pthread_sigmask(signal.SIG_SETMASK, mask))
+            finally:
+                signal.pthread_sigmask(signal.SIG_SETMASK, mask)
+            try:
+                code = self.create_process.wait(timeout=CONTAINER_CREATE_SECONDS)
+            except subprocess.TimeoutExpired:
+                raise RuntimeError("Container creation exceeded its bounded runtime") from None
+            if code:
+                raise subprocess.CalledProcessError(code, ["enroot-create"])
+            self.create_process = None
+        if not destination.is_dir() or destination.is_symlink() or destination.stat().st_uid != os.getuid():
+            raise ValueError("Created container root filesystem ownership differs")
+        self.receipt["container"] = self.container
+
+    def check_container_storage(self):
+        for name in ("DATA", "TEMP", "CACHE", "RUNTIME"):
+            check_space(self.runtime_env["ENROOT_" + name + "_PATH"],
+                        self.config["image_unpacked_bytes"], self.config["image_inodes"], receipt=self.receipt)
+
 
     def run_step(self, name, argv, seconds):
-        # Repeat immediately before Pyxis/Enroot may unpack an image.
-        check_space(self.root, self.config["image_unpacked_bytes"], self.config["image_inodes"], receipt=self.receipt)
-        # These are the actual site-configured unpack/temp filesystems, verified
-        # before submission. Never assume filtered ENROOT_* overrides applied.
-        for path in self.config.get("enroot_storage_paths", []):
-            check_space(path, self.config["image_unpacked_bytes"], self.config["image_inodes"], receipt=self.receipt)
-        image = self.config["image"]
-        if image == "input/image.sqsh":
-            image = str(self.root / image)
-        mounts = f"{self.root}:/work"
+        if not re.fullmatch(r"[a-z][a-z0-9-]*", name):
+            raise ValueError("Invalid current workload phase name")
+        check_space(self.root, self.config["workload_bytes"], self.config["workload_inodes"], receipt=self.receipt)
+        specification = self.root / "enroot-step.json"
+        specification.write_text(json.dumps(dict(root=str(self.root), container=self.container,
+            argv=argv, first=name == self.config["steps"][0]["name"],
+            gpu_receipt="gpu-step-" + name + ".json")) + "\n")
+        runtime = self.root / "input/source/integrations/slurm_s3_job.py"
         print(f"STEP_START {name} budget_seconds={seconds}", flush=True)
         command = ["srun", f"--nice={NICE}", "--nodes=1", "--ntasks=1", "--gres=gpu:1",
-                   "--kill-on-bad-exit=1", "--unbuffered",
-                   f"--container-image={image}",
-                   f"--container-name={self.container}", "--no-container-mount-home",
-                   f"--container-mounts={mounts}", "--container-workdir=/work", *argv]
+                   "--kill-on-bad-exit=1", "--unbuffered", "python3", str(runtime),
+                   "--enroot-step", str(specification)]
         with (self.root / "out" / f"{name}.log").open("wb") as log:
             self.step_started = True
             # A signal between spawn and PID assignment must not orphan a step
@@ -353,6 +411,7 @@ class SlurmJob:
         if not self.stop_and_wait():
             raise RuntimeError("Remote step completion not confirmed")
         self.process = None
+        self.receipt["allocated_gpu"] = json.loads((self.root / "out/gpu-assignment.json").read_text())
         print(f"STEP_DONE {name}", flush=True)
 
     def training_progress(self):
@@ -405,6 +464,32 @@ class SlurmJob:
                    for line in result.stdout.splitlines() if line.strip())
 
     def stop_and_wait(self):
+        if self.create_process is not None:
+            process = self.create_process
+            def group_exists():
+                process.poll()
+                try:
+                    os.killpg(process.pid, 0)
+                    return True
+                except ProcessLookupError:
+                    return False
+            try:
+                os.killpg(process.pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+            deadline = time.monotonic() + 10
+            while group_exists() and time.monotonic() < deadline:
+                time.sleep(.05)
+            if group_exists():
+                os.killpg(process.pid, signal.SIGKILL)
+                deadline = time.monotonic() + 10
+                while group_exists() and time.monotonic() < deadline:
+                    time.sleep(.05)
+            if group_exists():
+                return False
+            process.wait(timeout=1)
+            self.create_process = None
+            self.receipt["container_creation_stopped"] = True
         if self.process is not None and self.process.poll() is None:
             self.process.terminate()  # srun forwards TERM to this job's step.
             try:
@@ -459,24 +544,26 @@ class SlurmJob:
         # This final upload is the result-completion marker.
         transfer(self.config["manifest_url"], manifest, upload=True, deadline=self.finalization_deadline)
 
+    def remove_container(self):
+        if self.container_create_attempted:
+            data = Path(self.runtime_env["ENROOT_DATA_PATH"])
+            target = data / self.container
+            if target.exists():
+                if target.is_symlink() or data.parent.parent != self.root or target.stat().st_uid != os.getuid():
+                    raise RuntimeError("Owned container cleanup identity differs")
+                try:
+                    with (self.root / "out/container-cleanup.log").open("xb") as log:
+                        result = subprocess.run(["enroot", "remove", "--force", self.container], timeout=60,
+                                                stdout=log, stderr=subprocess.STDOUT, env=self.runtime_env)
+                except subprocess.TimeoutExpired:
+                    raise RuntimeError("Owned container cleanup exceeded its bounded runtime; preserving scratch") from None
+                if result.returncode or target.exists():
+                    raise RuntimeError("Owned container cleanup failed; preserving scratch")
+        self.receipt["owned_container_removed"] = True
+
     def cleanup(self):
-        if self.step_started:
-            def enroot(*arguments):
-                result = subprocess.run(["enroot", *arguments], timeout=60,
-                                        capture_output=True, text=True, env=self.runtime_env)
-                if result.returncode:
-                    # This command contains only list/remove and our container
-                    # name, never transport URLs. Retain its real diagnostic.
-                    detail = (result.stdout + result.stderr).strip()[:2000]
-                    raise RuntimeError(f"Owned container cleanup exit {result.returncode}: {detail}")
-                return set(result.stdout.splitlines())
-            allowed = {f"pyxis_{self.container}", f"pyxis_{self.job_id}_{self.container}"}
-            owned = enroot("list") & allowed
-            for name in sorted(owned):
-                enroot("remove", "--force", name)
-            if enroot("list") & allowed:
-                raise RuntimeError("Owned container remains after cleanup")
-        # root was created exclusively by this process and is never reused.
+        # No namespace list or global cache pruning. This fresh root is ours,
+        # and its complete results have already been uploaded and verified.
         shutil.rmtree(self.root)
 
     def execute(self):
@@ -521,7 +608,14 @@ class SlurmJob:
             if not self.stop_and_wait():
                 print("Step completion unconfirmed; retaining scratch without archiving", flush=True)
                 return 125
-            self.archive_upload(status)
+            workload_status = status
+            try:
+                self.remove_container()
+            except RuntimeError as error:
+                self.receipt["container_cleanup_failure"] = str(error)
+                status = status or 74
+            self.receipt["runner_exit_code"] = status
+            self.archive_upload(workload_status)
             if status == 0:
                 self.cleanup()
         except Exception as error:
@@ -531,3 +625,9 @@ class SlurmJob:
             print(f"Finalization failed: {type(error).__name__}{detail}; retaining scratch", flush=True)
             return 74
         return status
+
+
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "--enroot-step":
+    if len(sys.argv) != 3:
+        raise SystemExit("Expected one owned Enroot step specification")
+    enroot_step(sys.argv[2])

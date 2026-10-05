@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,13 +15,14 @@ from integrations.slurm_s3_job import NICE
 
 
 def render(config, *, name, partition, minutes, cpus, memory_gib):
-    if "mount_recovery" in config:
-        raise ValueError("Unsupported launch configuration: mount_recovery")
+    obsolete = {"mount_recovery", "enroot_storage_paths", "retained_container"} & config.keys()
+    if obsolete:
+        raise ValueError("Unsupported launch configuration: " + ", ".join(sorted(obsolete)))
     if not re.fullmatch(r"relh-generals-[a-z0-9-]+", name):
         raise ValueError("Expected a unique relh-generals task job name")
-    if partition not in ("rtx4090", "b200", "b300"):
+    if partition not in ("b200", "b300"):
         raise ValueError("Partition is not allowed")
-    if partition != "rtx4090" and config.get("required_gpu_memory_gib", 0) <= 24:
+    if config.get("required_gpu_memory_gib", 0) <= 24:
         raise ValueError("This single-GPU job needs a measured >24 GiB requirement for a large partition")
     if not 1 <= cpus <= 24 or not 1 <= memory_gib <= 128 or not 11 <= minutes <= 120:
         raise ValueError("Resources exceed this bounded task launcher's limits")
@@ -30,20 +32,18 @@ def render(config, *, name, partition, minutes, cpus, memory_gib):
         raise ValueError("Step budgets leave insufficient upload/termination time")
     if not config["steps"] or config["steps"][0]["name"] != "smoke":
         raise ValueError("The first step must smoke-test the image")
-    storage = config.get("enroot_storage_paths")
-    if not isinstance(storage, list) or not storage or any(
-            not isinstance(path, str) or not Path(path).is_absolute() for path in storage):
-        raise ValueError("Record actual site Enroot unpack/temp filesystems before submission")
+    if not isinstance(config.get("scratch_parent"), str) or not Path(config["scratch_parent"]).is_absolute():
+        raise ValueError("Record an explicit absolute scratch filesystem for owned Enroot storage")
     if time.time() + minutes * 60 + 600 >= config["credential_expiry"]:
         raise ValueError("Signing credentials expire too soon")
     code = Path(__file__).with_name("slurm_s3_job.py").read_text()
-    # Keep the project-prohibited host out of the shared 4090 partition while
-    # leaving Slurm free to choose among the other eligible nodes.
-    excluded = "#SBATCH --exclude=metta4\n" if partition == "rtx4090" else ""
+    expected = config["receipt"]["source_hashes"]["integrations/slurm_s3_job.py"]
+    if hashlib.sha256(code.encode()).hexdigest() != expected:
+        raise ValueError("Embedded host runtime differs from the sealed allocated-step source")
     return f'''#!/bin/bash
 #SBATCH --job-name={name}
 #SBATCH --partition={partition}
-{excluded}#SBATCH --nodes=1
+#SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task={cpus}
@@ -65,7 +65,7 @@ GENERALS_HOST_RUNNER
 
 
 def remote(host, args, **kwargs):
-    if host not in ("metta0", "metta1", "metta4"):
+    if host not in ("metta0", "metta1"):
         raise ValueError("Use an allowed submit host without changing user identity")
     return subprocess.run(["ssh", "-o", "BatchMode=yes", host, shlex.join(args)],
                           capture_output=True, text=True, **kwargs)
@@ -134,12 +134,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True, help="Private signed job configuration")
     parser.add_argument("--name", required=True)
-    parser.add_argument("--partition", choices=("rtx4090", "b200", "b300"), default="rtx4090")
+    parser.add_argument("--partition", choices=("b200", "b300"), default="b300")
     parser.add_argument("--minutes", type=int, default=55)
     parser.add_argument("--cpus", type=int, default=8)
     parser.add_argument("--memory-gib", type=int, default=64)
     parser.add_argument("--output", type=Path, required=True, help="Private rendered batch script")
-    parser.add_argument("--submit-host", choices=("metta0", "metta1", "metta4"))
+    parser.add_argument("--submit-host", choices=("metta0", "metta1"))
     parser.add_argument("--receipt", type=Path)
     args = parser.parse_args()
     config = json.loads(args.config.read_text())
