@@ -30,8 +30,12 @@ def realized_model(configuration, factory_source, source_sha):
     from integrations.spatial_native_contract import verify_configuration
 
     verify_configuration(json.dumps(config))
-    native = NativeFabricPolicy(json.dumps(config))
-    model = DirectSpatial(native)
+    import jax
+
+    # Asset publication only needs host topology and parameter gather maps.
+    with jax.default_device(jax.devices("cpu")[0]):
+        native = NativeFabricPolicy(json.dumps(config))
+        model = DirectSpatial(native)
     return native, model, fabric_fingerprint(FabricConfig.model_validate(config)), abi_digest(native)
 
 
