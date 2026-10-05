@@ -1,5 +1,35 @@
 # Softmax Coworld Classic 1v1 training
 
+## STEER-CLOSE checkpoint: no further runs; existing job handed to bounded observer
+
+Richard's latest stop-expansion/close steering supersedes the earlier broad
+continue requests. PR4 is now DRAFT because GPU throughput/learning and strong
+hosted play remain unfinished. No new run is authorized by this handoff.
+Existing sole job job-gsp6k is building/pushing its CPU-qualified image.
+It is bounded to60min build,60min queue TTL,60min runtime,oneH100,max_restarts0,
+resume none. Four earlier jobs are terminal build_failed,zero GPU attempts;
+all exact receipts remain under /tmp/relh-generals-h100-terminal-job-*.json.
+No Slurm job, persistent paid node or hosted request is owned/live.
+
+Detached read-only observer PID2213 handles ONLY existing job-gsp6k:
+/tmp/relh-generals-gsp6k-close-monitor.py, state and heartbeat under
+/tmp/relh-generals-close-monitor-gsp6k/. It never submits/retries/resumes compute.
+It retains the terminal receipt, attempts hash-verified result download to
+/tmp/relh-generals-autoresearch-result-gsp6k, records collection failures without
+removing evidence, and updates only this task's ledger row. Four-hour observer
+bound; provider job limits independently stop the allocation. Monitor lock
+prevents duplicates. Inspect done.json/needs-owner.json and collection.json.
+
+Handoff duties: verify final provider state and spend; inspect retained actual
+GPU identity, memory, SPS (>=30k), reward/legality, serving parity and4096-game
+paired comparisons. Resolve actual run failures before proposing more compute.
+No improvement/strength claim is made: latest hosted parent remains9/32Daveey,
+18/32incumbent. Strong-play goal is unfinished. Shared7USD hold remains until
+runtime plus build/storage costs are reconciled; never reclaim another hold.
+Other owners/history/checkpoints remain untouched. Future Slurm remains
+Nice2147483645/Priority1. Replacement cdx may resume from this checkpoint;
+no need to keep this conversation process alive for the bounded observer.
+
 ## Funded transport debug: rootless archive fixed, native image gate building
 
 The shared7USD hold now owns one live job-gsp6k; oneH100/60min,build60min,
