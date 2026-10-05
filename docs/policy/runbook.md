@@ -248,8 +248,35 @@ A local serving pass does not supply new training or hosted strength evidence.
 ## Hosted panels
 
 Register the frozen AMD64 image using the installed Coworld SDK `upload-policy`
-command, then retain its immutable policy version and registry digest. Build and
-registration stay with Docker/SDK; the supported match workflow is
+command, then retain its immutable policy version and registry digest.
+Before scheduling the panel, verify the frozen identity chain:
+
+1. Record `docker image inspect --format '{{.Id}} {{.Os}}/{{.Architecture}}' IMAGE`.
+   Use that immutable config ID for readback, rather than the mutable tag:
+
+   ```bash
+   docker run --rm --platform linux/amd64 --read-only --network none \
+     --entrypoint python IMAGE_CONFIG_ID -c 'import hashlib,json; from pathlib import Path; from integrations.spatial_policy_bundle import SpatialPlayerPolicy; p=Path("/app/policy"); policy=SpatialPlayerPolicy(p); print(json.dumps({"bundle_manifest_sha256":hashlib.sha256((p/"spatial-policy.json").read_bytes()).hexdigest(),"files":{n:hashlib.sha256((p/n).read_bytes()).hexdigest() for n in ("asset.json","policy.bin","weights.npz")},"policy_sha256":policy.asset.metadata["policy_sha256"]}))' \
+     > image-bundle-readback.json
+   ```
+
+   Compare every reported hash with the selected exported bundle. Successful
+   loading validates the current `asset.json` bundle and sampler; it does not
+   establish wire parity or strength. Keep the build's frozen source revision.
+2. Read the server image's ready metadata through SDK `get_image(IMAGE_ID)`.
+   Require `status=ready`, `client_hash=IMAGE_CONFIG_ID`, and retain the returned
+   immutable `image_digest`. The SDK uses Docker's config ID as `client_hash`;
+   that ID covers the image's rootfs layers. The registry digest can differ.
+3. Retain the authenticated registration request with `container_image_id` and
+   its response containing the immutable policy version ID. Use that returned
+   version in the panel. Also verify a server policy-to-image association if
+   the API exposes it. The known baseline's current policy lookup returns
+   `container_image_id=null`; it does **not** independently prove this link.
+   The retained request/response records the original registration transaction.
+
+The promotion report checks panel identities and outcomes; its caller-supplied
+checkpoint/image/source fields do not prove this image-to-policy chain.
+Build and registration stay with Docker/SDK; the supported match workflow is
 `integrations.hosted_policy`. It uses the current Observatory HTTP contract,
 without the SDK's outdated typed pagination parser.
 
@@ -272,6 +299,24 @@ uses stable idempotency keys; repeating the identical intent reuses requests.
 Collection verifies preserved payload hashes and frozen episode rosters, then
 writes `summary.json` for the promotion report, including incomplete/failing
 requests and recorded episode costs. It performs no champion change.
+
+After the two-game runtime smoke passes, prepare fresh confirmation against
+both frozen opponent versions. This schedules 256 games per opponent, 128 in
+each seat (512 games total):
+
+```bash
+python -m integrations.hosted_policy submit --dry-run \
+  --policy POLICY_VERSION_ID \
+  --opponent incumbent=e53e30be-0b23-4d62-b944-4dd249a483fe \
+  --opponent Daveey=76b0a083-f0a4-4ec7-9811-038349266633 \
+  --games-per-opponent 256 --key UNIQUE_CONFIRMATION_KEY \
+  --checkpoint-sha256 CHECKPOINT_SHA256 --source-commit SOURCE_COMMIT \
+  --image-digest sha256:IMAGE_SHA256 --output CONFIRMATION_PANEL_DIRECTORY
+# Submit the identical preserved intent without --dry-run, then status/collect.
+```
+
+These IDs are the recorded frozen opponents; confirm their identities before
+submission. Preserve the complete panel even when an early result looks strong.
 
 Operational promotion requires the current hosted summary and its complete
 preserved panel directory, plus explicit frozen identities:
