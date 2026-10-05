@@ -58,6 +58,35 @@ Inputs include `source/`, `source-manifest.json`, `build-config.json`,
 manifests, and `leader-root/` replay fixtures. The supported CUDA container
 supplies Metta/Puffer. An editable checkout does not reconstruct these inputs.
 
+## GPU container backend and storage
+
+The supported Slurm runner uses direct Enroot in a single allocated GPU step.
+It creates one container from the verified immutable image, then executes the
+sealed `integrations/slurm_s3_job.py --enroot-step` within the Slurm GPU cgroup.
+The allocated-step runner SHA must match the input source receipt. Container
+GPU identity is checked against the host step's assigned UUID.
+
+Set `scratch_parent=/var/tmp`. A fresh job root with mode `0700` owns Enroot
+DATA, TEMP, CACHE, RUNTIME and CONFIG directories, together with workload caches
+and results. Storage paths are derived by the runner; personal Enroot config
+and shared site storage are not used. The launch schema rejects
+`enroot_storage_paths`, `mount_recovery` and `retained_container`.
+
+Current capacity declarations are:
+
+| Stage | Free bytes | Available inodes |
+| --- | --- | --- |
+| Startup | 32 GiB | 60,000 |
+| Image unpack | 15 GiB | 40,000 |
+| Each workload phase | 8 GiB | 20,000 |
+
+Verify real filesystem availability and installed Enroot hooks before submission.
+The runner records actual byte/inode gauges on failures. A read-only installed
+backend audit and CPU lifecycle tests passed for the current implementation;
+they do not prove an allocated GPU launch or native CUDA parity. Job 35949
+failed before downloads because `/tmp` had only 13,170 available inodes.
+The new `/var/tmp` backend still needs its first bounded GPU execution proof.
+
 ## Current native asset boundary
 
 `generals-native-spatial-asset-v1` stores `asset.json`, `policy.bin` and optional

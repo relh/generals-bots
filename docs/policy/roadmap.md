@@ -22,7 +22,9 @@ native GPU parity. Current source cleanup has exact CPU structural/numeric
 proof. Continuation 35949 failed in host scratch preparation after one second:
 13,170 available `/tmp` inodes were below the declared 60,000 requirement.
 No downloads, GPU query, parity or new training/evaluation occurred. Storage
-and Enroot paths must be audited before retrying; no trial is currently running.
+and Enroot paths were then audited. The direct Enroot replacement has installed
+source and CPU lifecycle proof; no allocated GPU proof exists and no trial is
+currently running.
 Baseline comparisons and loss diagnosis are available. Learning improvement
 and hosted winning qualification remain open; see [current-state.md](current-state.md).
 
@@ -39,9 +41,9 @@ Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
 position curriculum, opponent pool and rewards. Compare source, distilled,
 control and warm bundles on the same broad development games before selecting
-a candidate for fresh confirmation and hosted qualification. First resolve
-scratch/Enroot storage and remove the obsolete recovery-mount setting. A newly
-sealed continuation must prove control CUDA parity before building the current
+a candidate for fresh confirmation and hosted qualification. Review the newly
+sealed direct Enroot capsule with owned `/var/tmp` storage before upload or
+submission. That continuation must prove control CUDA parity before building the current
 runtime, executing the warm arm and evaluating broad panels. Retain completed
 control and supervised artifacts from 35935; those computations are not repeated.
 The failed retries provide no warm-arm result.

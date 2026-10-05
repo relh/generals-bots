@@ -34,8 +34,26 @@ The 9,355-byte terminal archive has three files and SHA-256
 parts and extraction were verified under
 `/tmp/generals-policy-overhaul-results-35949/`.
 There is no current running Generals trial recorded here, and no new warm PPO,
-evaluation or strength result. No upload or retry is prepared until the
-storage audit and corrected runtime/source sealing are complete.
+evaluation or strength result. The corrected backend below is being sealed;
+no replacement has been uploaded or submitted.
+
+The direct Enroot backend is now implemented at source
+`4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`. It creates fresh mode-0700 job storage
+under `/var/tmp`, derives its own DATA/TEMP/CACHE/RUNTIME/CONFIG paths, and runs
+one sealed source runner inside the assigned Slurm GPU cgroup. It rejects old
+site-storage, recovery-mount and retained-container configuration. Startup
+requires 32 GiB/60,000 inodes, image unpack 15 GiB/40,000, and workload phases
+8 GiB/20,000; actual filesystem gauges are recorded.
+
+Read-only installed Enroot source/hook review and CPU lifecycle tests passed.
+Packaged installed audit: `/tmp/generals-installed-enroot-audit.json`, SHA-256
+`a7d831ac21b15eb8769ca1b95df5616781b825897c0bd80e3eb670b2ffc2b0cd`.
+Those proofs establish implementation and ownership checks only. **The new
+backend has not passed an allocated GPU launch or CUDA parity.** A newly sealed
+capsule retains all 13 native/portable policies and the completed 35935
+control/CE work. It reuses the actual native two-graph proof only after checking
+all model-related source bytes remain identical, records the reviewed
+non-model source delta, and reruns the current source sampling guard.
 
 All five H100 attempts failed before optimizer updates on 2026-10-05:
 
@@ -239,9 +257,9 @@ serving excludes optimizer state. Current derived inputs are at
 `/tmp/generals-current-policy-input-v2/`; successful current GPU execution and
 fresh hosted strength remain required before qualification.
 
-Active next decision: choose and verify scratch/Enroot storage with sufficient
-actual capacity, record byte/inode gauges, and remove the unused recovery mount
-before sealing a corrected continuation. Its first GPU computation must still
-prove control CUDA parity before warm training and broad evaluation. Reuse the
-preserved control/CE artifacts under the proven equivalent effective experiment.
-Retain the baseline until broad and fresh hosted evidence qualifies a candidate.
+Active next decision: review the newly sealed direct Enroot capsule and its
+transport/storage configuration before any upload or submission. The first
+allocated GPU computation must prove preserved-control CUDA parity before warm
+training and broad evaluation. Reuse control/CE artifacts under the proven
+equivalent effective experiment. Retain the baseline until broad and fresh
+hosted evidence qualifies a candidate.
