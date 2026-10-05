@@ -124,7 +124,8 @@
       "path": "/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2.public.json",
       "sha256": "fc2049cef71ec1cd13d0969de1a361d1ecb55d6296fc20c18b4748aa31ba569a",
       "bytes": 21116
-    }
+    },
+    "pending_reason": "B300 node MIXED+DRAIN+DYNAMIC_NORM; controller reason temporary"
   },
   "latest_training_throughput": {
     "job": "35935",
