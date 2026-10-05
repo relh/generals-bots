@@ -19,24 +19,29 @@ def test_neighborhoods_and_unsupported_geometry():
 def toy_policy(size):
     policy = object.__new__(SpatialPlayerPolicy)
     policy.channels = 16
-    policy.features = 1
+    policy.features = 32
     policy.observation_size = 7056
-    policy.prior_count = 0
+    policy.prior_count = 5
     policy.weights = dict(
-        input_kernel=np.concatenate((np.ones((1, 1), np.float32), np.zeros((15, 1), np.float32))),
-        local_weight=np.ones(1, np.float32),
-        local_bias=np.zeros(1, np.float32),
-        context_kernel=np.zeros((size, size, 1, 1), np.float32),
-        context_weight=np.ones(1, np.float32),
-        context_bias=np.zeros(1, np.float32),
-        global_kernel=np.zeros((441, 1), np.float32),
-        global_weight=np.ones(1, np.float32),
-        global_bias=np.zeros(1, np.float32),
-        readout_kernel=np.zeros((1, 3530), np.float32),
-        action_kernel=np.ones((1, 8), np.float32),
+        input_kernel=np.zeros((16, 32), np.float32),
+        local_weight=np.ones(32, np.float32),
+        local_bias=np.zeros(32, np.float32),
+        context_kernel=np.zeros((size, size, 32, 32), np.float32),
+        context_weight=np.ones(32, np.float32),
+        context_bias=np.zeros(32, np.float32),
+        global_kernel=np.zeros((441 * 32, 32), np.float32),
+        global_weight=np.ones(32, np.float32),
+        global_bias=np.zeros(32, np.float32),
+        readout_kernel=np.zeros((32, 3530), np.float32),
+        action_kernel=np.zeros((32, 8), np.float32),
         output_weight=np.ones(3530, np.float32),
         output_bias=np.zeros(3530, np.float32),
     )
+    policy.weights["input_kernel"][0, 0] = 1
+    policy.weights["action_kernel"][0] = 1
+    for i in range(5):
+        policy.weights[f"prior_source_{i}"] = np.zeros(3530, np.int32)
+        policy.weights[f"prior_weight_{i}"] = np.zeros(3530, np.float32)
     return policy
 
 

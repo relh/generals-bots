@@ -3,22 +3,24 @@
 import argparse
 import hashlib
 import json
-from pathlib import Path
 import time
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
-from integrations.classic_contract import project_current_options
-from integrations.puffer_coworld_frozen_transfer import policy_training_lineage_seeds
 
+from integrations.spatial_action_sampling import (
+    acting_logits,
+    public_doomed_attack_route_penalty,
+    public_guided_owned_split_bias,
+    public_neutral_route_bonus,
+    public_owned_split_bias,
+    public_safe_owned_split_bias,
+    public_weak_owned_route_penalty,
+)
 from integrations.spatial_frozen_sampling import sample_flat_logits
-from integrations.spatial_action_sampling import (acting_logits, public_neutral_route_bonus,
-                                                  public_owned_split_bias, public_safe_owned_split_bias,
-                                                  public_guided_owned_split_bias,
-                                                  public_weak_owned_route_penalty,
-                                                  public_doomed_attack_route_penalty)
 from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
 
@@ -27,8 +29,6 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--bundle", type=Path, required=True)
     parser.add_argument("--opponent-bundle", type=Path, required=True)
-    parser.add_argument("--run", type=Path, help="Learner run containing its initialization lineage")
-    parser.add_argument("--opponent-run", type=Path, help="Opponent run containing its initialization lineage")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--games", type=int, default=512)
     parser.add_argument("--pool-size", type=int, default=128)
@@ -83,7 +83,6 @@ def main():
     if args.sampling_temperature != 1 and args.sample_seed is None and not args.acting_greedy:
         raise ValueError("Nondefault temperature requires sampled or acting-greedy actions")
     from integrations.spatial_action_sampling import validate_full_action_temperature
-
     from integrations.spatial_exploration import validate_log_gap_scale
 
     validate_log_gap_scale(args.log_gap_scale)
@@ -99,7 +98,8 @@ def main():
             (args.sample_seed is None and not args.acting_greedy) or not np.isfinite(args.split_sampling_temperature)
             or args.split_sampling_temperature <= 0):
         raise ValueError("Split temperature requires sampled or acting-greedy actions and a positive finite value")
-    if not np.isfinite(args.half_logit_bias) or (args.half_logit_bias and (args.sample_seed is not None or args.acting_greedy)):
+    if not np.isfinite(args.half_logit_bias) or (
+            args.half_logit_bias and (args.sample_seed is not None or args.acting_greedy)):
         raise ValueError("Half-logit bias requires greedy learner actions")
     if not np.isfinite(args.neutral_route_bias) or args.neutral_route_bias < 0 or (
             args.neutral_route_bias and args.sample_seed is None and not args.acting_greedy):
@@ -122,21 +122,15 @@ def main():
     if not np.isfinite(args.doomed_attack_route_penalty) or args.doomed_attack_route_penalty < 0 or (
             args.doomed_attack_route_penalty and args.split_sampling_temperature is None):
         raise ValueError("Doomed attack route penalty requires structured actions and a finite nonnegative value")
-    for bundle, explicit_run in ((args.bundle, args.run), (args.opponent_bundle, args.opponent_run)):
-        run = explicit_run or bundle.parent / "run"
-        if args.seed in policy_training_lineage_seeds(bundle, run):
-            raise ValueError("Match seed must be absent from both training lineages")
+    policy = SpatialPlayerPolicy(args.bundle)
+    opponent = SpatialPlayerPolicy(args.opponent_bundle)
+    if any(args.seed in actor.asset.metadata["training_seeds"] for actor in (policy, opponent)):
+        raise ValueError("Match seed must be absent from both training lineages")
     if not args.smoke_cpu and jax.devices()[0].platform != "gpu":
         raise RuntimeError("Frozen match evaluation requires GPU execution")
-    policy = SpatialPlayerPolicy(args.bundle)
-    record = json.loads((args.bundle / "build.json").read_text())
-    options = project_current_options(record["config"]["python_environment"]["options"])
-    for k in ("frozen_bundle", "frozen_bundles", "frozen_build", "frozen_training", "frozen_checkpoint", "frozen_sha256"):
-        options.pop(k, None)
-    options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
-                   coworld_position_probability=0.0,
-                   shaping_weight=0.0, reward_scale=1.0,
-                   terminal_reward_mode="signed")
+    options = dict(parallel_games=args.games, coworld_pool_size=args.pool_size,
+                   coworld_position_probability=0.0, shaping_weight=0.0,
+                   reward_scale=1.0, terminal_reward_mode="signed")
     if args.smoke_cpu:
         options.update(require_gpu=False, horizon=4)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -225,7 +219,8 @@ def main():
                     if args.weak_owned_route_penalty:
                         logits += public_weak_owned_route_penalty(np.asarray(values), args.weak_owned_route_penalty, np)
                     if args.doomed_attack_route_penalty:
-                        logits += public_doomed_attack_route_penalty(np.asarray(values), args.doomed_attack_route_penalty, np)
+                        logits += public_doomed_attack_route_penalty(
+                            np.asarray(values), args.doomed_attack_route_penalty, np)
                     chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
                 else:
                     chosen = biased_greedy
@@ -287,7 +282,8 @@ def main():
                     reference[:, 1764:3528] += args.half_logit_bias
                 assert np.allclose(outputs, reference, rtol=2e-5, atol=2e-5)
                 if args.sample_seed is None and not args.acting_greedy:
-                    assert np.array_equal(actions[:, 0], np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
+                    assert np.array_equal(
+                        actions[:, 0], np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
             values, masks, rewards, done, _ = env.step_device(jnp.asarray(actions))
             ended = np.asarray(done, bool) & ~finished
             reward = np.asarray(rewards)
@@ -304,9 +300,13 @@ def main():
     result = dict(scope="First held-out episodes between frozen public-view actors; CPU smoke is not strength evidence",
                   smoke_cpu=args.smoke_cpu, games=args.games, seed=args.seed, pool_size=args.pool_size,
                   held_out=True, unique_initial_states=len(set(hashes)),
-                  action_selection="argmax_acting" if args.acting_greedy else "argmax" if args.sample_seed is None else "sample",
+                  training_seeds=policy.asset.metadata["training_seeds"],
+                  opponent_training_seeds=opponent.asset.metadata["training_seeds"],
+                  action_selection=("argmax_acting" if args.acting_greedy
+                                    else "argmax" if args.sample_seed is None else "sample"),
                   sample_seed=args.sample_seed,
-                  sampling_temperature=args.sampling_temperature if (args.sample_seed is not None or args.acting_greedy) else None,
+                  sampling_temperature=(args.sampling_temperature
+                                        if (args.sample_seed is not None or args.acting_greedy) else None),
                   early_route_temperature=args.early_route_temperature,
                   early_route_turns=args.early_route_turns,
                   split_sampling_temperature=args.split_sampling_temperature,
@@ -340,8 +340,8 @@ def main():
                       if env._frozen.action_mode == "structured_sample"
                       else {}
                   ),
-                  checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
-                  opponent_sha256=hashlib.sha256((args.opponent_bundle / "policy.bin").read_bytes()).hexdigest(),
+                  checkpoint_sha256=policy.asset.metadata["policy_sha256"],
+                  opponent_sha256=opponent.asset.metadata["policy_sha256"],
                   episode_limit=env.horizon,
                   coworld_classic_rules=env.base.env.coworld_classic_rules,
                   pool_generation=int(env._pool_generation),

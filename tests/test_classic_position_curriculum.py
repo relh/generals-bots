@@ -118,7 +118,9 @@ def test_population_evaluation_disables_training_start_pool(tmp_path):
                     python_environment=dict(
                         factory="integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
                         options=dict(
-                                                terminal_reward_mode="win_only",
+                            terminal_reward_mode="win_only",
+                            frozen_bundle="opponent",
+                            frozen_bundles=["opponent"],
                             coworld_position_probability=0.25,
                             coworld_position_pool="private-training-only.npz",
                         ),
@@ -151,7 +153,13 @@ def test_population_evaluation_disables_training_start_pool(tmp_path):
     with (
         patch("sys.argv", argv),
         patch.object(evaluation.jax, "devices", return_value=[SimpleNamespace(platform="gpu")]),
-        patch.object(evaluation, "SpatialPlayerPolicy", return_value=SimpleNamespace(action_mode="structured_sample")),
+        patch.object(
+            evaluation,
+            "SpatialPlayerPolicy",
+            return_value=SimpleNamespace(
+                action_mode="structured_sample", asset=SimpleNamespace(metadata={"training_seeds": [1]})
+            ),
+        ),
         patch.object(evaluation, "SpatialPopulationOpponentPufferEnvironment", side_effect=construct),
     ):
         with pytest.raises(Captured):

@@ -1,9 +1,7 @@
 """Build and execute a pinned upstream PufferLib engine."""
 
 import hashlib
-import math
 import os
-import struct
 import subprocess
 import sys
 from configparser import ConfigParser
@@ -19,11 +17,8 @@ from metta_training.game import Record
 from metta_training.learner import LearnerCheckpoint, LearnerCheckpointIdentity
 from metta_training.lifecycle import RunIdentity, TrainingArtifact
 from metta_training.model_config import (
-    EMAState,
     FabricConfig,
-    HordeCheckpointState,
     ObjectiveSettings,
-    RNDCheckpointState,
 )
 from metta_training.native_build import (
     cuda_runtime_environment,
@@ -166,80 +161,12 @@ class BuildManifest(BaseModel):
         return self
 
 
-SPATIAL_FACTORY = "integrations.generals_fabric:two_stage_tied_local_action_policy"
-SPATIAL_ENVIRONMENTS = {
-    "integrations.spatial_selfplay:SpatialFrozenOpponentPufferEnvironment",
-    "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment",
-}
-# These change the opponent distribution or reset positions, not the policy
-# codec/game/reward objective. Each experiment still needs strength qualification.
-DISTRIBUTION_OPTIONS = {
-    "parallel_games", "frozen_bundle", "frozen_bundles", "opponent_weights",
-    "scripted_opponents", "classic_siege_workers", "coworld_position_pool",
-    "coworld_position_pool_sha256", "coworld_position_probability",
-}
-
-
-def validate_spatial_transfer(source, target, run):
-    """Verify current Classic policy ABI instead of whitelisting old checkpoints."""
-    from integrations.classic_contract import project_current_options, validate_training_contract
-
-    before, after = source.build, target
-    old, new = before.config.python_environment, after.config.python_environment
-    if old is None or new is None or before.config.fabric is None or after.config.fabric is None:
-        raise ValueError("Spatial transfer requires explicit Python environments and Fabric models")
-    fabric = after.config.fabric
-    if (fabric.factory != SPATIAL_FACTORY or fabric.options.get("channels") != 16
-            or fabric.observation_size != 7056 or fabric.action_sizes != [3529]
-            or fabric.teacher is not None or old.spec.teacher or new.spec.teacher
-            or old.factory != new.factory or new.factory not in SPATIAL_ENVIRONMENTS
-            or not old.device_resident or not new.device_resident
-            or before.revision != after.revision
-            or before.model_sha256 != after.model_sha256
-            or before.model_state_words != after.model_state_words
-            or before.config.model_dump(exclude={"python_environment"})
-                != after.config.model_dump(exclude={"python_environment"})
-            or old.model_dump(exclude={"options", "spec"}) != new.model_dump(exclude={"options", "spec"})
-            or old.spec.model_copy(update={"agents": new.spec.agents}) != new.spec):
-        raise ValueError("Spatial transfer requires the same current factory, model fingerprint and policy ABI")
-    for build, config in ((before.config, source.config), (after.config, run)):
-        options = project_current_options(build.python_environment.options)
-        if options.get("terminal_reward_mode") != "win_only":
-            raise ValueError("Spatial transfer requires the teacher-free Classic win objective")
-        validate_training_contract(build.model_dump(mode="json"), config.model_dump(mode="json"))
-    old_options, new_options = (project_current_options(env.options) for env in (old, new))
-    for options in (old_options, new_options):
-        options.setdefault("require_gpu", True)
-    old_options = {k: v for k, v in old_options.items() if k not in DISTRIBUTION_OPTIONS}
-    new_options = {k: v for k, v in new_options.items() if k not in DISTRIBUTION_OPTIONS}
-    if old_options != new_options:
-        raise ValueError("Spatial transfer cannot change game, observation or reward semantics")
-
-
 class CheckpointInitialization(Configuration):
-    """Verified policy initialization, optionally restoring optimizer and learner clocks."""
+    """One verified native policy asset, with explicit learner restoration."""
 
-    run: Path
-    checkpoint: Path
-    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    allow_environment_transfer: bool = False
-    allow_policy_only_transfer: bool = False
-    restore_ema: bool = False
-    restore_horde: bool = False
-    restore_rnd: bool = False
-    restore_learner: bool = False
-    # This fixed schema marker preserves the identity of already sealed records.
-    # Changing optimizer geometry is unsupported; migration cannot be requested.
-    migrate_classic_rollout: Literal[False] = False
-
-    @model_validator(mode="after")
-    def validate_policy_only(self):
-        if self.allow_policy_only_transfer and (
-            not self.allow_environment_transfer or self.restore_learner
-            or self.restore_ema or self.restore_horde or self.restore_rnd
-        ):
-            raise ValueError("Policy-only transfer requires a fresh optimizer and explicit environment transfer")
-        return self
+    asset: Path
+    manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    restore_learner: bool
 
 
 class RunConfig(Configuration):
@@ -300,46 +227,12 @@ class TrainingRecord(Record):
     config: RunConfig
 
 
-def training_record_sha256(record):
-    import json
-
-    if isinstance(record, dict):
-        record = TrainingRecord.model_validate(record)
-    canonical = json.dumps(record.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(canonical.encode()).hexdigest()
-
-
-class SupervisedPolicyTransfer(Record):
-    """A new policy trained from an actual RL ancestor, with fresh PPO state."""
-
-    schema_version: Literal[1] = 1
-    method: Literal["supervised"] = "supervised"
-    source: TrainingRecord
-    source_training_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    source_checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    parameter_count: int = Field(gt=0)
-    training_seeds: list[int] = Field(min_length=1)
-    optimizer_updates: int = Field(gt=0)
-    training_data_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-
-    @model_validator(mode="after")
-    def validate_lineage(self):
-        if training_record_sha256(self.source) != self.source_training_sha256:
-            raise ValueError("Supervised policy source differs from its recorded training identity")
-        if (self.source.config.seed not in self.training_seeds
-                or any(seed < 0 for seed in self.training_seeds)
-                or len(set(self.training_seeds)) != len(self.training_seeds)):
-            raise ValueError("Supervised policy must retain its actual ancestor training seeds")
-        return self
-
-
 class InitializationRecord(Record):
-    source: TrainingRecord
+    asset: Path
+    manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     checkpoint_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     training_seeds: list[int] = Field(min_length=1)
-    rollout_migration: None = None
-    supervised_transfer: SupervisedPolicyTransfer | None = None
+    restore_learner: bool
 
 
 def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
@@ -348,29 +241,6 @@ def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
         initialization = InitializationRecord.model_validate_json((run / "initialization.json").read_text())
         seeds.update(initialization.training_seeds)
     return seeds
-
-
-def policy_training_lineage_seeds(bundle: Path, run: Path) -> set[int]:
-    """Verify either an RL run or a supervised transfer before held-out matches."""
-    bundle, run = Path(bundle), Path(run)
-    training = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
-    build = BuildManifest.model_validate_json((bundle / "build.json").read_text())
-    if build != training.build:
-        raise ValueError("Policy bundle model identity differs from its training provenance")
-    transfer = run / "policy-transfer.json"
-    if transfer.is_file():
-        artifact = SupervisedPolicyTransfer.model_validate_json(transfer.read_text())
-        policy = (bundle / "policy.bin").read_bytes()
-        if (artifact.source != training or hashlib.sha256(policy).hexdigest() != artifact.checkpoint_sha256
-                or len(policy) != 4 * artifact.parameter_count):
-            raise ValueError("Supervised policy bundle differs from its source identity or checkpoint ABI")
-        checkpoints = list((run / "checkpoints").rglob("*.bin"))
-        if not any(path.read_bytes() == policy for path in checkpoints):
-            raise ValueError("Supervised policy is absent from its declared artifact checkpoints")
-        return set(artifact.training_seeds)
-    if (run / "training.json").read_bytes() != (bundle / "training.json").read_bytes():
-        raise ValueError("Training lineage run does not match its policy bundle")
-    return training_lineage_seeds(run, training)
 
 
 class TrainingResult(Record):
@@ -394,11 +264,7 @@ class PreparedRun(Record):
     batch_steps: int
     environment_count: int
     initial_parameters: bytes = Field(default=b"", repr=False)
-    initial_teacher: EMAState | None = None
-    initial_horde: HordeCheckpointState | None = None
-    initial_rnd: RNDCheckpointState | None = None
     initial_learner: bytes = Field(default=b"", repr=False)
-    initial_environments: list[bytes] = Field(default_factory=list, repr=False)
     initialization: InitializationRecord | None = None
 
 
@@ -513,11 +379,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     if len(output.name.encode()) >= 64:
         raise ValueError("Puffer run directory name must fit its 63-byte run ID")
     initial_parameters = b""
-    initial_teacher = None
-    initial_horde = None
-    initial_rnd = None
     initial_learner = b""
-    initial_environments = []
     initialization = None
     environment["METTA_INITIAL_POLICY"] = ""
     environment["METTA_INITIAL_EMA"] = ""
@@ -528,123 +390,61 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     environment["METTA_PYTHON_EXECUTABLE"] = sys.executable
     environment["METTA_RUN_RECORD"] = str(output / "training.json")
     if config.initialize:
+        from integrations.native_spatial_asset import load_asset, canonical_json, training_contract
+        from integrations.export_spatial_policy_bundle import realized_model
+        from integrations.learner_checkpoint import LearnerCheckpoint as NativeLearnerCheckpoint
+        from integrations.classic_contract import validate_training_contract
+        import importlib
+        import jax
+
         reference = config.initialize
-        source_run = reference.run.resolve()
-        checkpoint = reference.checkpoint.resolve()
-        transfer_path = source_run / "policy-transfer.json"
-        supervised = None
-        if reference.allow_policy_only_transfer and transfer_path.is_file():
-            supervised = SupervisedPolicyTransfer.model_validate_json(transfer_path.read_text())
-            source = supervised.source
-            if supervised.checkpoint_sha256 != reference.sha256:
-                raise ValueError("Supervised checkpoint differs from its declared initialization identity")
-        else:
-            source = TrainingRecord.model_validate_json((source_run / "training.json").read_text())
-        if not checkpoint.is_relative_to(source_run / "checkpoints"):
-            raise ValueError("Initialization checkpoint must belong to its source run")
-        if not reference.restore_learner and supervised is None:
-            completed = TrainingResult.model_validate_json((source_run / "completed.json").read_text())
-            if (checkpoint.relative_to(source_run) not in completed.checkpoints
-                    or completed.revision != source.build.revision):
-                raise ValueError("Initialization checkpoint is absent from the completed source run")
-        if reference.allow_environment_transfer:
-            validate_spatial_transfer(source, manifest, config)
-        elif (source.build.config != manifest.config
-                or source.build.environment_sha256 != manifest.environment_sha256
-                or source.build.model_sha256 != manifest.model_sha256
-                or source.build.model_state_words != manifest.model_state_words):
-            raise ValueError("Initialization requires matching model and environment configuration")
-        source_policy = {key: value for key, value in source.config.overrides.items() if key.startswith("policy.")}
-        target_policy = {key: value for key, value in config.overrides.items() if key.startswith("policy.")}
-        if source_policy != target_policy:
-            raise ValueError("Initialization requires identical policy architecture overrides")
-        initial_parameters = checkpoint.read_bytes()
-        if hashlib.sha256(initial_parameters).hexdigest() != reference.sha256:
-            raise ValueError("Initialization checkpoint digest differs from its declared identity")
-        if not initial_parameters or len(initial_parameters) % 4:
-            raise ValueError("Initialization requires a nonempty float32 checkpoint")
-        if not all(math.isfinite(value) for (value,) in struct.iter_unpack("<f", initial_parameters)):
-            raise ValueError("Initialization checkpoint contains nonfinite parameters")
-        if supervised is not None and len(initial_parameters) // 4 != supervised.parameter_count:
-            raise ValueError("Supervised checkpoint parameter count differs from its recorded policy ABI")
-        seeds = set(supervised.training_seeds) if supervised is not None else training_lineage_seeds(source_run, source)
+        asset = load_asset(reference.asset, manifest_sha256=reference.manifest_sha256)
+        fabric = manifest.config.fabric
+        if fabric is None or manifest.config.python_environment is None:
+            raise ValueError("Native spatial initialization requires the current Fabric and Python environment")
+        validate_training_contract(manifest.config.model_dump(mode="json"), config.model_dump(mode="json"))
+        factory_module = importlib.import_module(fabric.factory.split(":", 1)[0])
+        factory_sha256 = hashlib.sha256(Path(factory_module.__file__).read_bytes()).hexdigest()
+        # Realize the actual current compiled graph. Neither archived source
+        # fingerprints nor a config-only digest establish flat layout equality.
+        with jax.default_device(jax.devices("cpu")[0]):
+            policy, _, target_model, target_abi = realized_model(
+                canonical_json(fabric.model_dump(mode="json")).decode(),
+                Path(factory_module.__file__), factory_sha256)
+        asset.verify_target(factory_source_sha256=factory_sha256,
+                            model_sha256=manifest.model_sha256, abi_sha256=target_abi)
+        if (target_model != manifest.model_sha256
+                or fabric_fingerprint(fabric) != manifest.model_sha256
+                or policy.state_words != manifest.model_state_words
+                or policy.buffers.parameter_words != asset.metadata["parameter_count"]
+                or FabricConfig.model_validate(asset.metadata["fabric"]) != fabric):
+            raise ValueError("Native asset differs from the actual target model and complete checkpoint layout")
+        initial_parameters = asset.policy
         initialization = InitializationRecord(
-            source=source, checkpoint_sha256=reference.sha256, training_seeds=sorted(seeds),
-            supervised_transfer=supervised,
+            asset=reference.asset.resolve(), manifest_sha256=reference.manifest_sha256,
+            checkpoint_sha256=asset.metadata["policy_sha256"],
+            training_seeds=asset.metadata["training_seeds"], restore_learner=reference.restore_learner,
         )
         environment["METTA_INITIAL_POLICY"] = str(output / "initial-policy.bin")
-        fabric = manifest.config.fabric
         if reference.restore_learner:
             if world_size != 1 or settings.getint("base", "async", fallback=0):
-                raise ValueError("Learner resume currently requires synchronous single-GPU training")
-            if settings.getint("selfplay", "enabled", fallback=0):
-                raise ValueError("Learner resume requires opponent history recovery for self-play")
-            if source.config.seed != config.seed or source.config.overrides != config.overrides:
-                raise ValueError("Learner resume requires the identical native build, seed, and training overrides")
-            state_path = Path(str(checkpoint) + ".learner")
-            identity = LearnerCheckpointIdentity.model_validate_json(Path(str(state_path) + ".json").read_text())
-            initial_learner = state_path.read_bytes()
-            if (
-                identity.policy_sha256 != reference.sha256
-                or identity.state_sha256 != hashlib.sha256(initial_learner).hexdigest()
-                or identity.run_sha256 != hashlib.sha256((source_run / "training.json").read_bytes()).hexdigest()
-                or len(identity.environment_sha256) != environment_count
-            ):
-                raise ValueError("Learner snapshot differs from its recorded policy or optimizer identity")
-            for index, digest in enumerate(identity.environment_sha256):
-                snapshot = Path(f"{checkpoint}.environment.{index}.json").read_bytes()
-                state = NativeEnvironmentCheckpoint.model_validate_json(snapshot)
-                if hashlib.sha256(snapshot).hexdigest() != digest or state.index != index:
-                    raise ValueError("Environment snapshot differs from its recorded identity")
-                if state.snapshot is None:
-                    raise ValueError("Learner resume requires restorable environment snapshots")
-                initial_environments.append(snapshot)
-            if initial_environments:
-                environment["METTA_INITIAL_ENVIRONMENT"] = str(output / "initial-policy.bin")
-            learner = LearnerCheckpoint.read(state_path, len(initial_parameters) // 4)
-            if learner.epoch * batch_steps != learner.agent_steps or learner.agent_steps != int(checkpoint.stem):
-                raise ValueError("Learner snapshot counters differ from its checkpoint or rollout dimensions")
+                raise ValueError("Learner restore requires synchronous single-GPU training")
+            if environment_count or settings.getint("selfplay", "enabled", fallback=0):
+                raise ValueError("Current native spatial assets restore device-resident learner state only")
+            if asset.learner is None:
+                raise ValueError("Native asset has no authentic learner state to restore")
+            if asset.metadata["learner_configuration"] != {"seed": config.seed, "overrides": config.overrides}:
+                raise ValueError("Learner restore requires identical seed and training overrides")
+            objective = training_contract(manifest.config.python_environment.options, config.overrides)
+            if asset.metadata["training_contract"] != objective:
+                raise ValueError("Learner restore requires the identical current game and reward objective")
+            learner = NativeLearnerCheckpoint.from_bytes(asset.learner, len(initial_parameters) // 4)
+            if learner.epoch * batch_steps != learner.agent_steps:
+                raise ValueError("Learner counters differ from the actual target rollout geometry")
             if learner.agent_steps >= expected_step:
-                raise ValueError("Resume budget must leave at least one complete rollout after the checkpoint")
+                raise ValueError("Restore budget must leave at least one complete rollout")
+            initial_learner = asset.learner
             environment["METTA_INITIAL_LEARNER"] = str(output / "initial-policy.bin.learner")
-        if reference.restore_ema or (
-            reference.restore_learner and fabric and (fabric.self_distillation or fabric.ema_prior)
-        ):
-            if not manifest.config.fabric or not (
-                manifest.config.fabric.self_distillation or manifest.config.fabric.ema_prior
-            ):
-                raise ValueError("Restoring an EMA prior requires an EMA model configuration")
-            initial_teacher = EMAState.model_validate_json(Path(str(checkpoint) + ".ema.json").read_text())
-            if (
-                initial_teacher.student_sha256 != reference.sha256
-                or initial_teacher.configuration_sha256
-                != hashlib.sha256(manifest.config.fabric.model_dump_json().encode()).hexdigest()
-                or 4 * len(initial_teacher.parameters) != len(initial_parameters)
-            ):
-                raise ValueError("EMA snapshot differs from the configured model or student checkpoint")
-            environment["METTA_INITIAL_EMA"] = str(output / "initial-policy.bin")
-        if reference.restore_horde or (reference.restore_learner and fabric and fabric.horde):
-            if not manifest.config.fabric or not manifest.config.fabric.horde:
-                raise ValueError("Restoring Horde requires its collection configuration")
-            initial_horde = HordeCheckpointState.model_validate_json(Path(str(checkpoint) + ".horde.json").read_text())
-            if (
-                initial_horde.student_sha256 != reference.sha256
-                or initial_horde.configuration_sha256
-                != hashlib.sha256(manifest.config.fabric.model_dump_json().encode()).hexdigest()
-            ):
-                raise ValueError("Horde snapshot differs from the configured model or student checkpoint")
-            environment["METTA_INITIAL_HORDE"] = str(output / "initial-policy.bin")
-        if reference.restore_rnd or (reference.restore_learner and fabric and fabric.rnd):
-            if not manifest.config.fabric or not manifest.config.fabric.rnd:
-                raise ValueError("Restoring RND requires its collection configuration")
-            initial_rnd = RNDCheckpointState.model_validate_json(Path(str(checkpoint) + ".rnd.json").read_text())
-            if (
-                initial_rnd.student_sha256 != reference.sha256
-                or initial_rnd.configuration_sha256
-                != hashlib.sha256(manifest.config.fabric.model_dump_json().encode()).hexdigest()
-            ):
-                raise ValueError("RND snapshot differs from the configured model or student checkpoint")
-            environment["METTA_INITIAL_RND"] = str(output / "initial-policy.bin")
     return PreparedRun(
         build=build,
         output=output,
@@ -659,11 +459,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
         environment_count=environment_count,
         initial_parameters=initial_parameters,
         initialization=initialization,
-        initial_teacher=initial_teacher,
-        initial_horde=initial_horde,
-        initial_rnd=initial_rnd,
         initial_learner=initial_learner,
-        initial_environments=initial_environments,
     )
 
 
@@ -694,16 +490,8 @@ def initialize_run(run: PreparedRun, monitor: RunMonitor) -> None:
     if run.initialization:
         (run.output / "initial-policy.bin").write_bytes(run.initial_parameters)
         (run.output / "initialization.json").write_text(run.initialization.model_dump_json(indent=2) + "\n")
-    if run.initial_teacher:
-        (run.output / "initial-policy.bin.ema.json").write_text(run.initial_teacher.model_dump_json() + "\n")
     if run.initial_learner:
         (run.output / "initial-policy.bin.learner").write_bytes(run.initial_learner)
-    for index, snapshot in enumerate(run.initial_environments):
-        (run.output / f"initial-policy.bin.environment.{index}.json").write_bytes(snapshot)
-    if run.initial_rnd:
-        (run.output / "initial-policy.bin.rnd.json").write_text(run.initial_rnd.model_dump_json() + "\n")
-    if run.initial_horde:
-        (run.output / "initial-policy.bin.horde.json").write_text(run.initial_horde.model_dump_json() + "\n")
     if run.manifest.config.python_environment:
         run.environment.update(
             environment_runtime(

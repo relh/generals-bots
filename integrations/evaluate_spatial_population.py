@@ -14,12 +14,10 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 from metta_training.environment import EnvironmentContext
-from integrations.classic_contract import project_current_options
 
-from integrations.spatial_policy_bundle import SpatialPlayerPolicy
 from integrations.spatial_destination_audit import destination_categories
-from integrations.spatial_selfplay import (SpatialPopulationOpponentPufferEnvironment,
-                                           frozen_action_indices)
+from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+from integrations.spatial_selfplay import SpatialPopulationOpponentPufferEnvironment, frozen_action_indices
 
 
 def summarize(labels, sides, outcomes, names):
@@ -62,15 +60,15 @@ def main():
     environment = build["config"]["python_environment"]
     if environment["factory"] != "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment":
         raise ValueError("Expected a pinned Classic spatial population build")
-    options = project_current_options(environment["options"])
-    if options.get("terminal_reward_mode") != "win_only":
-        raise ValueError("Population build must use win-only official Classic rules")
+    opponent_fields = {"frozen_bundle", "frozen_bundles", "opponent_weights",
+                       "scripted_opponents", "classic_siege_workers"}
+    options = {key: value for key, value in environment["options"].items() if key in opponent_fields}
+    actors = [policy] + [SpatialPlayerPolicy(Path(bundle)) for bundle in options["frozen_bundles"]]
+    if any(args.seed in actor.asset.metadata["training_seeds"] for actor in actors):
+        raise ValueError("Evaluation seed must be absent from all training lineages")
     options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
-                   shaping_weight=0.0, reward_scale=1.0,
-                   terminal_reward_mode="signed")
-    # A training curriculum must never change the held-out starting distribution.
-    if "coworld_position_probability" in options:
-        options["coworld_position_probability"] = 0.0
+                   shaping_weight=0.0, reward_scale=1.0, terminal_reward_mode="signed",
+                   coworld_position_probability=0.0)
     args.output.mkdir(parents=True, exist_ok=False)
     context = EnvironmentContext(seed=args.seed, index=0, mode="train", output=args.output)
     env = SpatialPopulationOpponentPufferEnvironment(context=context, **options)
@@ -136,7 +134,9 @@ def main():
         if not finished.all():
             raise ValueError("Some first episodes did not terminate within the Classic cap")
         result = dict(scope="Held-out first episodes by public-view opponent and learner seat",
-                      checkpoint_sha256=hashlib.sha256((args.bundle / "policy.bin").read_bytes()).hexdigest(),
+                      checkpoint_sha256=policy.asset.metadata["policy_sha256"],
+                      training_seeds=policy.asset.metadata["training_seeds"],
+                      opponent_training_seeds=[actor.asset.metadata["training_seeds"] for actor in actors[1:]],
                       population_build_sha256=hashlib.sha256(args.population_build.read_bytes()).hexdigest(),
                       frozen_policy_sha256=env._population_checksums,
                       opponent_weights=env._population_weights,

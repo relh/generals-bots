@@ -6,39 +6,62 @@ before resuming or deploying any policy.
 
 ## Latest qualification and selected decision
 
-The dashboard's five H100 attempts (`job-xyrtm`, `job-xwjya`, `job-vmn9x`,
-`job-hhccv`, `job-gsp6k`) all failed on 2026-10-05, 01:40–02:20 UTC.
-The first four failed during context packaging or image/CPU preparation; the
-final attempt passed runtime smoke and sampling but stopped on
-`ValueError: Pinned Puffer trainer changed`, before optimizer updates.
-The H100 migration path is retired. Its raw result remains at
-`/tmp/relh-generals-autoresearch-result-gsp6k/`; terminal dashboard records
-remain in `/tmp/relh-generals-h100-{terminal,observation}-job-*.json`.
-The repaired current path is B300 with the real-launch source binding checked
-before submission.
+All five H100 attempts failed before optimizer updates on 2026-10-05:
 
-Trial **35934** completed GPU distillation but failed before PPO, after
-7m17s. Training-only population reward audits had been applied to signed
-self-match rewards. Commit `9ea67c7` enables these audits only for native
-training. Real finite CPU self-matches with both the source and retained
-warmstart now pass with identical actor/opponent sampler settings.
-Verified results are retained at `/tmp/generals-policy-overhaul-results-35934/`.
+| Attempt | Terminal failure |
+| --- | --- |
+| `job-xyrtm` | Context used an unsupported compression format; zstd tar required |
+| `job-xwjya` | Empty Dockerfile |
+| `job-vmn9x` | Build context permission denied at `/ctx/pilot` |
+| `job-hhccv` | CPU preparation invoked a QEMU binary with the wrong executable format |
+| `job-gsp6k` | Runtime smoke and sampling passed; train stopped at `ValueError: Pinned Puffer trainer changed` |
 
-The 256 supervised B300 updates took **7.17s**, adding **zero RL steps**.
-Held-out defense survival probability improved **0.88% → 56.08%** and teacher
-action accuracy **0.78% → 57.81%**. Training accuracy was 100%, indicating
-incomplete generalization; the paired dataset contains 512 distinct training
-views and 128 distinct held-out views. Most remaining errors choose the
-expansion distractor. Warmstart checkpoint:
-`a8539b584587623c31d1d3608cd5b927678893cddecc5e8613c3031f9932c901`.
-These tactical metrics do not establish gameplay improvement.
+The H100 path is retired. Raw terminal/observation receipts are retained under
+`/tmp/relh-generals-h100-*-job-*.json`, with the final attempt's extracted
+result at `/tmp/relh-generals-autoresearch-result-gsp6k/`.
 
-Retry **35935** is running from committed source `9ea67c7`, started
-2026-10-05 20:38:48 UTC, with the same sealed matched experiment. Controller
-readback confirms Nice **2147483645**, Priority **1**, and a finite two-hour
-cap. Smoke, native build, CPU preflight and distillation passed; the control
-arm is active. No new match-strength result is available yet. Receipt:
-`/tmp/relh-generals-matched-warmstart-b300-20261005T203634Z-71612557.receipt.json`.
+Trial **35935** terminated **FAILED, exit 1:0**, after 15m39s from source
+`9ea67c73a489d40c3ab5013942de2bde82aa54f4`. Its fresh-optimizer control completed
+**8,388,608 RL steps**, then the native/serving parity audit installed the direct
+adapter a second time and failed. The warm PPO arm and broad evaluation did not
+run. The completed control checkpoint is
+`c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
+
+The control used one NVIDIA B300 SXM6 AC, 8,192 games, horizon 256, minibatch
+8,192 and replay 0.5. Two warmup epochs took 131.398s; then **4,194,304 steps in
+49.645s = 84,486 SPS**. Mean GPU utilization over the last 60s was 44.17%; peak
+memory was 210,518 MiB. No illegal actions, nonfinite rewards or clipped rewards
+were recorded; one terminal agent had zero reward. All 13 opponents had samples
+on both seats. This qualifies the measured control setup's throughput, not
+warm-arm throughput or stronger play.
+
+The genuine same-sampler source gate passed: 512 games, 254W/253L/5D, 314 unique
+initial maps and 256 games per seat. Distillation completed **256 supervised
+updates in 7.085s**, adding **zero RL steps**. Held-out defense survival
+probability improved 0.88% → 56.09% and teacher action accuracy 0.78% → 57.81%;
+training accuracy reached 100%. The separate sets contained 512 training and
+128 held-out maps. Its checkpoint is
+`97bc62c79f33c9124a7394f29ef5caa94e4bf02b87d5b21e41bd6c11d7645816`.
+Tactical results do not establish gameplay improvement. Complete retained
+analysis and hash-checked archives: `/tmp/generals-policy-overhaul-results-35935/`.
+
+Retry **35936**, source `0bbec52b4aa2da1559c3a1827901279ceb601ed6`, restored the
+completed control, distillation and build without repeating them. Smoke passed;
+**control parity terminated by SIGSEGV (child exit −11)** after bootstrap,
+direct-adapter activation and the graph-build notice, with no child Python
+traceback. The workload ended with exit 1; controller terminal readback was
+unavailable during collection. Warm training and held-out evaluation were never
+reached. Raw logs, source receipt and verified archive are retained at
+`/tmp/generals-policy-overhaul-results-35936/`.
+Both submissions recorded Nice **2147483645**, Priority **1**, one B300, eight
+CPUs and 96 GiB host memory; finite caps were two hours / 90 minutes respectively.
+No trial is currently recorded as running here.
+
+Trial **35934** previously completed distillation but failed before PPO because
+training-only reward audits were applied to signed evaluation rewards. That
+scope error and 35935's duplicate activation have been repaired in source;
+35936's native GPU parity crash still needs a successful actual-runtime proof.
+Evidence: `/tmp/generals-policy-overhaul-results-35934/`.
 
 Matched defense trial **35933** failed before any supervised or PPO updates
 from source `bd9bb9dae2ea93083b63bfb497a6d347dabf6b32`. It started
@@ -90,10 +113,9 @@ the unchanged baseline lost both. Frozen runtime policy ID is
 `sha256:daa8f48fa7ea6ac01a0f07e5a452e6321f5dcd8abab7813cbe4bba3464753d25`.
 This qualifies execution; it is not a new strength result.
 
-Next is an isolated public Sentinel defense warmstart followed by equal-budget
-Puffer training against an unchanged fresh-optimizer control. Independent
-synthetic maps, explicit teacher legality, held-out tactical metrics, broad
-paired games and fresh hosted confirmation are required.
+The matched public-defense experiment has completed its control and supervised
+intervention, but native parity blocked the warm arm and strength panels.
+A stronger gameplay policy has not been established.
 
 ## Qualification
 
@@ -147,10 +169,34 @@ defense, with extremely low rescue-action probability. The matched exploration e
 The defense warmstart improves tactical support but still needs broad strength
 evaluation and fresh hosted confirmation.
 
-During the overhaul, the production factory has been restored to canonical
-SHA-256 `5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474`.
-The operational facade adds real-launch CPU preflight. The repaired pipeline passed the bounded GPU qualification above; hosted
-winning strength remains unqualified.
+## Current artifact and source contract
 
-The exploration probe is now rejected by matched evidence. The next experiment
-uses independent public defense examples and the selected unchanged sampler.
+The cleaned current factory contains only the sixteen-plane F32/G32 flat
+spatial graph. Its source SHA-256 is
+`48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a`.
+One-time isolated old/new proofs passed exact parameter offsets/padding,
+complete graph/JAXPR/constants, priors, state, native callbacks, forward/VJP
+and sampler comparisons for both radii. Proof:
+`/tmp/generals-native-proof/equivalence-proof.json`, SHA-256
+`c1125da1b820a46fecb0163e7dd6d5b264709eb3df3569b0bb587a9a722d7a87`.
+This is source cleanup with **zero RL steps**; original weights, optimizer
+state and research records remain untouched.
+
+Canonical sorted current asset configuration identities:
+
+| Radius | Model SHA-256 | ABI SHA-256 |
+| --- | --- | --- |
+| 2.01 | `d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab` | `0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851` |
+| 1.01 | `81d9f696de1ef768c9af5f21d4def5cf27e19674081d4af6a3168e4996f639d1` | `fd02887c61dd313632e1d81e4b911e668d1668d505a185c5c116e7dc96216285` |
+
+The native asset explicitly binds policy/learner hashes, architecture, sampler,
+training seeds, current learner settings/objective and opaque ancestor hashes.
+The portable bundle binds `asset.json`, `policy.bin` and `weights.npz` only;
+serving excludes optimizer state. Current derived inputs are at
+`/tmp/generals-current-policy-input-v2/`; successful current GPU execution and
+fresh hosted strength remain required before qualification.
+
+Next: diagnose and prove native parity in the current immutable CUDA runtime,
+then complete warm training and matched broad evaluation using the preserved
+control/CE artifacts where the effective experiment remains identical. Retain
+the baseline until a candidate passes broad and fresh hosted evidence.

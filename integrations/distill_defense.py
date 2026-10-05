@@ -268,7 +268,6 @@ def train(
     factory_source,
     output,
     *,
-    source_run=None,
     updates=256,
     batch_size=128,
     learning_rate=1e-4,
@@ -284,43 +283,21 @@ def train(
     policy = SpatialPlayerPolicy(bundle)
     if policy.channels != 16 or policy.action_mode != "structured_sample":
         raise ValueError("Require the current sampled public-scalar spatial policy")
-    manifest = json.loads((bundle / "spatial-policy.json").read_text())
-    if hashlib.sha256(factory_source.read_bytes()).hexdigest() != manifest["factory_source_sha256"]:
-        raise ValueError("Checkpoint factory source differs")
-    from integrations.puffer_coworld_frozen_transfer import (
-        SupervisedPolicyTransfer,
-        TrainingRecord,
-        training_lineage_seeds,
-        training_record_sha256,
-    )
+    from integrations.native_spatial_asset import canonical_json, write_asset
+    from integrations.export_spatial_policy_bundle import realized_model
 
-    source_run = Path(source_run) if source_run else bundle.parent / "run"
-    source = TrainingRecord.model_validate_json((source_run / "training.json").read_text())
-    portable_source = TrainingRecord.model_validate_json((bundle / "training.json").read_text())
-    if training_record_sha256(source) != training_record_sha256(portable_source):
-        raise ValueError("Actual parent run and serving bundle training identities differ")
-    ancestor_seeds = training_lineage_seeds(source_run, source)
+    asset = policy.asset
+    source_sha = hashlib.sha256(factory_source.read_bytes()).hexdigest()
+    native, model, model_sha, abi_sha = realized_model(
+        canonical_json(asset.metadata["fabric"]).decode(), factory_source, source_sha)
+    asset.verify_target(factory_source_sha256=source_sha, model_sha256=model_sha, abi_sha256=abi_sha)
+    ancestor_seeds = set(asset.metadata["training_seeds"])
     training, heldout = load_encoded(train_manifest), load_encoded(heldout_manifest)
     validate_split(training, heldout)
-    import importlib.util
-    import sys
-
-    spec = importlib.util.spec_from_file_location("integrations.generals_fabric", factory_source)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    import metta_training.native_fabric as native_module
-    from metta_training.native_fabric import NativeFabricPolicy
-
-    from integrations.direct_spatial_optimization import DirectSpatial
-    from integrations.memoryless_optimization import BRIDGE_SHA256
-
-    if hashlib.sha256(Path(native_module.__file__).read_bytes()).hexdigest() != BRIDGE_SHA256:
-        raise ValueError("Native bridge parameter layout differs")
-    build = json.loads((bundle / "build.json").read_text())
-    native = NativeFabricPolicy(json.dumps(build["config"]["fabric"]))
-    indices, constants = native_layout(DirectSpatial(native))
-    original = np.frombuffer((bundle / "policy.bin").read_bytes(), "<f4").copy()
+    if (heldout["map_seeds"] | {heldout["root_seed"]}) & (ancestor_seeds | {seed}):
+        raise ValueError("Held-out teacher views overlap the source training lineage")
+    indices, constants = native_layout(model)
+    original = np.frombuffer(asset.policy, "<f4").copy()
     if original.size != native.buffers.parameter_words:
         raise ValueError("Native checkpoint word count differs")
     recovered = gather_weights(original, indices, constants, np)
@@ -402,43 +379,23 @@ def train(
     elapsed = time.monotonic() - start
     after = {"train": measure(training), "heldout": measure(heldout)}
     output.mkdir(parents=True)
-    checkpoint = output / "run/checkpoints/supervised.bin"
+    checkpoint = output / "supervised.bin"
     digest = write_checkpoint(checkpoint, parameters, native.buffers.parameter_words)
-    transfer = SupervisedPolicyTransfer(
-        source=source,
-        source_training_sha256=training_record_sha256(source),
-        source_checkpoint_sha256=manifest["files"]["policy.bin"],
-        checkpoint_sha256=digest,
-        parameter_count=len(original),
-        training_seeds=sorted(ancestor_seeds | training["map_seeds"] | {seed, training["root_seed"]}),
-        optimizer_updates=updates,
-        training_data_sha256=training["sha256"],
-    )
-    (output / "run/policy-transfer.json").write_text(transfer.model_dump_json(indent=2) + "\n")
-    # Source TrainingRecord remains unchanged; a dedicated lineage record governs policy-only PPO initialization.
-    lineage = {
-        "schema": "generals-defense-distillation-v1",
-        "method": "supervised",
-        "source_checkpoint_sha256": manifest["files"]["policy.bin"],
-        "checkpoint_sha256": digest,
-        "parameter_count": len(original),
-        "optimizer_updates": updates,
-        "training_data_sha256": training["sha256"],
-        "heldout_data_sha256": heldout["sha256"],
-        "training_seeds": sorted(training["map_seeds"]),
-        "heldout_seeds": sorted(heldout["map_seeds"]),
-        "reinforcement_learning_steps_added": 0,
-        "fresh_ppo_optimizer_required": True,
-        "factory_source_sha256": manifest["factory_source_sha256"],
-    }
-    (output / "lineage.json").write_text(json.dumps(lineage, indent=2) + "\n")
+    provenance = dict(operation="supervised", ancestors={
+        "source_asset": hashlib.sha256((bundle / "asset.json").read_bytes()).hexdigest(),
+        "source_policy": asset.metadata["policy_sha256"],
+        "training_data": training["sha256"],
+    }, reinforcement_learning_steps_added=0, optimizer_updates=updates,
+        optimizer_seed=seed, optimizer_learning_rate=learning_rate,
+        heldout_data_sha256=heldout["sha256"],
+        training_map_seeds=sorted(training["map_seeds"]), heldout_map_seeds=sorted(heldout["map_seeds"]))
+    asset_path = write_asset(output / "asset", fabric=asset.metadata["fabric"],
+        factory_source_sha256=source_sha, model_sha256=model_sha, abi_sha256=abi_sha,
+        policy=checkpoint, sampler=asset.metadata["sampler"], provenance=provenance,
+        training_seeds=sorted(ancestor_seeds | training["map_seeds"] | {seed, training["root_seed"]}))
     from integrations.export_spatial_policy_bundle import export_bundle
 
-    acting = manifest["serving_action_selection"]
-    kwargs = {"serving_" + name: value for name, value in acting.items() if name != "mode"}
-    export_bundle(
-        bundle / "build.json", bundle / "training.json", checkpoint, digest, factory_source, output / "bundle", **kwargs
-    )
+    export_bundle(asset_path, hashlib.sha256(asset_path.read_bytes()).hexdigest(), factory_source, output / "bundle")
     exported = SpatialPlayerPolicy(output / "bundle")
     for name, value in gather_weights(np.asarray(parameters), indices, constants, np).items():
         if not np.array_equal(exported.weights[name], value):
@@ -470,7 +427,6 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("bundle", "train-manifest", "heldout-manifest", "factory-source", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
-    parser.add_argument("--source-run", type=Path, required=True)
     parser.add_argument("--updates", type=int, default=256)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--learning-rate", type=float, default=1e-4)
@@ -484,7 +440,6 @@ def main():
                 args.heldout_manifest,
                 args.factory_source,
                 args.output,
-                source_run=args.source_run,
                 updates=args.updates,
                 batch_size=args.batch_size,
                 learning_rate=args.learning_rate,

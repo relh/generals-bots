@@ -6,13 +6,13 @@ compute policy. Historical experiments remain in [Git history](https://github.co
 
 ## Game and policy contract
 
-The normal hosted Classic target uses `coworld_classic=True` in the Puffer
-wrapper and `coworld_classic_rules=True` in `GeneralsEnv`. Dimensions are sampled
+The current Puffer wrapper always instantiates `GeneralsEnv` with
+`coworld_classic_rules=True` and pinned `CLASSIC_MAP_OPTIONS`. Dimensions are sampled
 independently in 18–21, padded to 21 for inference; games cap at 2,000 turns.
 The wrapper currently uses mountain density 0.24–0.26, minimum general distance
 17, castle range `(9, 11)`, and castle army range `(40, 51)`. Interpret range
-endpoints from the implementation. Smaller curricula are explicit experiments
-and cannot supply the final hosted qualification.
+endpoints from the implementation. Position curricula are explicit training
+inputs; held-out evaluation starts from the official initial map distribution.
 
 The local Softmax server uses this same pinned engine and shared
 `CLASSIC_MAP_OPTIONS`, including the 2,000-turn cap. Short local smoke matches
@@ -35,27 +35,59 @@ An editable install supplies the simulator and optional local dependencies:
 pip install -e '.[dev,train,softmax]'
 ```
 
-Native training also requires the matching Metta `metta_training` package,
-pinned Puffer trainer, Fabric build, CUDA/JAX runtime, model source, and matching
-build manifests. The existing pipeline has several artifact-specific adapters;
-these are not interchangeable general launchers.
+Native training requires the supported Metta/Puffer CUDA container, pinned
+trainer and native bridge, compiled Fabric build and verified current assets.
+Local CPU inference and hosted serving use the portable NumPy policy without
+private Metta dependencies.
 
 | Entry point | Scope |
 | --- | --- |
-| `integrations.metta_puffer` | One-seat and batched JAX environments |
+| `integrations.metta_puffer` | Batched device-resident Classic games |
 | `integrations.spatial_selfplay` | Frozen and population policy opponents |
 | `integrations.launch_spatial_selfplay_training` | Native launcher, transfer and sampler guards |
 | `integrations.policy_trial` | Matched control/warmstart phases with explicit inputs and audits |
-| `integrations.classic_learner_continuation` | Checked learner/optimizer continuation and constrained geometry migration |
+| `integrations.native_spatial_asset` | Current native policy/learner identity and provenance |
+| `integrations.publish_policy_asset` | Publish actual completed PPO checkpoints as native assets |
 | `integrations.audit_spatial_hosted_replays` | Public-action legality and serving comparison against hosted replay panels |
 
 The matched trial defaults to immutable inputs at `/work/input` and results at
 `/work/out`; `--input` and `--output` select explicit alternate directories.
-Inputs include `source/`, `source-manifest.json`, `continuation/parent/` and its
-`bundle/`, `continuation/manifest.json`, `curriculum/manifest.json`, separate
-`defense/train/` and `defense/heldout/` manifests, and `leader-root/` replay
-fixtures. The supported CUDA container supplies Metta/Puffer and runtime assets.
-An ordinary editable checkout does not reconstruct those inputs.
+Inputs include `source/`, `source-manifest.json`, `build-config.json`,
+`config.json`, `assets/cold/asset.json`, `bundles/cold/`, frozen opponent bundles,
+`curriculum/manifest.json`, separate `defense/train/` and `defense/heldout/`
+manifests, and `leader-root/` replay fixtures. The supported CUDA container
+supplies Metta/Puffer. An editable checkout does not reconstruct these inputs.
+
+## Current native asset boundary
+
+`generals-native-spatial-asset-v1` stores `asset.json`, `policy.bin` and optional
+`policy.bin.learner`. The manifest binds the current fabric, source/model/ABI
+hashes, complete parameter allocation, policy/learner hashes, explicit structured
+sampler, unique training seeds and provenance. Learner-bearing assets also
+require current `learner_configuration` and `training_contract`. Policy-only
+assets set both to null. Optimizer epoch, actual environment steps and learning
+rate come from the authentic `METTAL01` payload; opaque ancestor metadata is
+never used to reconstruct runtime settings.
+
+Initialization in a run JSON is exactly:
+
+```json
+{
+  "initialize": {
+    "asset": "/work/input/assets/cold/asset.json",
+    "manifest_sha256": "FULL_ASSET_MANIFEST_SHA256",
+    "restore_learner": false
+  }
+}
+```
+
+`restore_learner: false` copies policy weights into a fresh optimizer.
+`restore_learner: true` requires the asset's actual learner bytes, matching
+seed/overrides and effective game/codec/reward contract. Distribution changes
+are separate explicit settings; they cannot alter the restored objective.
+There are no historical run/checkpoint parser fallbacks. `training.json` is
+written by actual PPO execution, and used to publish completed runs; source
+cleanup and supervised updates do not manufacture PPO training records.
 
 ## Operational commands
 
@@ -92,22 +124,42 @@ per arm**. `distill` records 256 supervised updates on separate public-defense
 training/held-out data; the warm arm initializes from those recorded policy
 weights. Supervised updates add no RL environment steps. Each arm runs its own
 512-game sampler gate; warm training repeats CPU preflight after distillation.
-The final phase compares source, distilled, control, and warm bundles on the
-same 4,096-game evaluation seeds and writes paired comparisons. This is a
+The intended final phase compares source, distilled, control, and warm bundles
+on the same 4,096-game evaluation seeds and writes paired comparisons. This is a
 policy-weight intervention with matched fresh optimizers, not learner resume.
 
 `train` and `resume` forward the complete native launcher arguments and perform
-its bootstrap. Use their supported container environment, with the audited
-initialization/continuation configuration. `evaluate`, `export`, and `compare`
+its bootstrap. Use the supported container environment and explicit native
+asset initialization. `evaluate`, `export`, and `compare`
 forward the existing module arguments; inspect each command's `--help` for
 required artifacts and outputs. `promotion --help` describes the evidence
 report used to assess hosted qualification.
 
-The production factory `integrations/generals_fabric.py` has been restored to
-its canonical source SHA-256:
-`5221cd60c85a7a056717d27eb630b1e975442e6b50ce65c99a9f35b876f03474`.
-Source alignment is an implementation repair; new GPU throughput, learning,
-and hosted results still require execution.
+The cleaned production factory is pinned to SHA-256
+`48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a`.
+It supports the current sixteen-plane F32/G32 graph with five priors and radius
+1.01 or 2.01. See current-state for canonical model/ABI identities and the
+one-time byte-preserving source equivalence proof. GPU parity and training
+must still pass in the current CUDA runtime.
+
+Publish an actual completed PPO run as a native asset, then export it:
+
+```bash
+python -m integrations.policy publish --build BUILD_DIRECTORY/build.json \
+  --training RUN_DIRECTORY/training.json --checkpoint COMPLETED_CHECKPOINT \
+  --sha256 CHECKPOINT_SHA256 --sampler SAMPLER_JSON \
+  --factory-source integrations/generals_fabric.py --output NEW_NATIVE_ASSET_DIRECTORY
+python -m integrations.policy export --asset NEW_NATIVE_ASSET_DIRECTORY/asset.json \
+  --manifest-sha256 ASSET_MANIFEST_SHA256 \
+  --factory-source integrations/generals_fabric.py --output NEW_PORTABLE_BUNDLE_DIRECTORY
+```
+
+Publication verifies the real completed run, checkpoint and authentic optimizer
+clock, and adds only actual new RL steps to provenance. Export verifies the
+realized model and ABI, preserves policy bytes/sampler/seeds and creates the
+portable `generals-spatial-policy-v1` manifest. Its file map is exactly
+`asset.json`, `policy.bin`, `weights.npz`; the serving asset has no learner.
+Existing outputs must be preserved; these operations author new directories.
 
 ## Prepare and qualify a run
 

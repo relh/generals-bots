@@ -52,52 +52,14 @@ CURRENT_ENVIRONMENT_FIELDS = {
     "scripted_opponents",
     "classic_siege_workers",
 }
-# Authentic current-parent records contain these inactive/fixed metadata fields.
-# They are verified during configuration authoring, never interpreted by runtime.
-FIXED_SOURCE_FIELDS = {
-    "opponent": "strong_mixed",
-    "teacher": None,
-    "supervise_teacher": False,
-    "factorized_actions": False,
-    "coworld_classic": True,
-    "compact_features": True,
-    "lean_features": True,
-    "sparse_teacher": False,
-    "packed_directional_features": False,
-    "hint_features": False,
-    "teacher_rollouts": False,
-    "prior_hint_features": False,
-    "sprint_hint_features": False,
-    "expander_hint_features": False,
-    "sentinel_teacher_fraction": 0.0,
-    "sentinel_teacher_interval": 1,
-    "sentinel_teacher_only": False,
-    "imitation_weight": 0.0,
-    "land_gain_reward_weight": 0.0,
-    "castle_shaping_weight": 0.0,
-    "frontier_shaping_weight": 0.0,
-    "deduplicate_opponent_branches": False,
-    "group_device_opponents": False,
-    "context_hint_features": False,
-    "directional_features": True,
-    "public_scalar_features": True,
-    "public_scalar_ablation": False,
-    "coworld_small_map_curriculum": False,
-    "coworld_tiny_map_curriculum": False,
-}
-
-
-def project_current_options(options: dict) -> dict:
-    """Author the current runtime config from verified effective source values."""
+def validate_environment_options(options: dict) -> dict:
+    """Validate the single current runtime schema and copy mutable values."""
     if not isinstance(options, dict):
         raise ValueError("Environment options must be an object")
-    unknown = set(options) - CURRENT_ENVIRONMENT_FIELDS - FIXED_SOURCE_FIELDS.keys()
+    unknown = set(options) - CURRENT_ENVIRONMENT_FIELDS
     if unknown:
         raise ValueError("Unsupported environment option fields: " + ", ".join(sorted(unknown)))
-    for name, expected in FIXED_SOURCE_FIELDS.items():
-        if name in options and options[name] != expected:
-            raise ValueError("Source option is outside the current Classic game/codec/reward contract: " + name)
-    return {key: deepcopy(value) for key, value in options.items() if key in CURRENT_ENVIRONMENT_FIELDS}
+    return deepcopy(options)
 
 
 def verify_engine(path: Path | None = None) -> str:
@@ -111,7 +73,7 @@ def verify_engine(path: Path | None = None) -> str:
 def validate_training_contract(build: dict, run: dict, *, engine_path: Path | None = None) -> dict:
     """Reject game, discount, and rollout mismatches before GPU work."""
     env = build["python_environment"]
-    options = project_current_options(env["options"])
+    options = validate_environment_options(env["options"])
     overrides = run["overrides"]
     if options.get("horizon") != 2000:
         raise ValueError("Hosted qualification requires a 2000-turn game limit")

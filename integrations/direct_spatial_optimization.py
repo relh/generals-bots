@@ -15,8 +15,8 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from integrations.memoryless_optimization import BRIDGE_SHA256, verify_configuration
 from integrations.spatial_context_geometry import context_offsets
+from integrations.spatial_native_contract import BRIDGE_SHA256, verify_configuration
 
 
 @dataclass(frozen=True)
@@ -206,7 +206,7 @@ def install(native_module=None):
     if hashlib.sha256(Path(native_module.__file__).read_bytes()).hexdigest() != BRIDGE_SHA256:
         raise ValueError("Native bridge differs from the verified callback contract")
     cls = native_module.NativeFabricPolicy
-    if getattr(cls, "_generals_direct_spatial", False) or getattr(cls, "_generals_optimization_rows", False):
+    if getattr(cls, "_generals_direct_spatial", False):
         raise RuntimeError("A spatial optimization adapter is already installed")
     initialize, forward, backward = cls.__init__, cls._forward_arrays, cls.backward_device_arrays
 

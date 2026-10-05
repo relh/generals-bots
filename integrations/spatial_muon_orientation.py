@@ -37,14 +37,8 @@ def canonical_dense_source(source: bytes) -> bytes:
 
 def validate_geometry(config):
     raw = config.model_dump() if hasattr(config, "model_dump") else config
-    options = raw["options"]
-    expected = dict(height=21, width=21, channels=16, features_per_site=32,
-                    global_features=32, factorized_actions=False)
-    if (raw["factory"] != "integrations.generals_fabric:two_stage_tied_local_action_policy"
-            or raw["observation_size"] != 7056 or list(raw["action_sizes"]) != [3529]
-            or any(options.get(key) != value for key, value in expected.items())
-            or options.get("context_radius") not in (1.01, 2.01)):
-        raise ValueError("Dense Muon orientation requires the verified sixteen-channel F32 model")
+    from integrations.native_spatial_asset import validate_fabric
+    validate_fabric(raw)
     if any(raw.get(key) for key in (
         "teacher", "losses", "horde", "rnd", "routing", "self_distillation",
         "ema_prior", "group_returns", "quantile_critic", "retrace",

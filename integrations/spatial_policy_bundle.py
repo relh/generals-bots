@@ -67,28 +67,22 @@ def structured_action_probabilities(outputs, legal, move_temperature, split_temp
 
 class SpatialPlayerPolicy:
     def __init__(self, bundle):
+        from integrations.native_spatial_asset import load_asset
+
         manifest = json.loads((bundle / "spatial-policy.json").read_text())
-        if manifest["schema"] != "puffer5-generals-spatial-v1":
-            raise ValueError("Unsupported spatial policy bundle")
-        if set(manifest["files"]) != {"build.json", "training.json", "policy.bin", "weights.npz"}:
+        if set(manifest) != {"schema", "files"} or manifest["schema"] != "generals-spatial-policy-v1":
+            raise ValueError("Require the current spatial policy bundle")
+        if set(manifest["files"]) != {"asset.json", "policy.bin", "weights.npz"}:
             raise ValueError("Unexpected spatial policy bundle files")
         for name, digest in manifest["files"].items():
             if hashlib.sha256((bundle / name).read_bytes()).hexdigest() != digest:
                 raise ValueError("Spatial bundle checksum mismatch: " + name)
-        build = json.loads((bundle / "build.json").read_text())
-        training = json.loads((bundle / "training.json").read_text())
-        if training["build"] != build:
-            raise ValueError("Spatial training/build manifests differ")
-        config = build["config"]["fabric"]
-        self.channels = 16
-        self.observation_size = 7056
-        codec = build["config"]["python_environment"]["options"]
-        if (config["options"]["channels"] != 16 or config["observation_size"] != 7056
-                or config["action_sizes"] != [3529] or manifest["channels"] != 16
-                or not codec.get("public_scalar_features") or codec.get("factorized_actions")
-                or codec.get("public_scalar_ablation") or codec.get("directional_time_features")):
-            raise ValueError("Spatial bundle requires the canonical 16-plane flat Classic contract")
-        acting = manifest["serving_action_selection"]
+        self.asset = load_asset(bundle / "asset.json", manifest_sha256=manifest["files"]["asset.json"])
+        if self.asset.learner is not None:
+            raise ValueError("Serving bundles contain policy weights only")
+        config = self.asset.metadata["fabric"]
+        self.channels, self.observation_size = 16, 7056
+        acting = self.asset.metadata["sampler"]
         required = {"mode", "move_temperature", "split_temperature"}
         optional = {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty",
                     "early_route_temperature", "early_route_turns", "route_half_weight",
@@ -125,7 +119,7 @@ class SpatialPlayerPolicy:
             self.early_route_turns = int(self.early_route_turns)
         with np.load(bundle / "weights.npz", allow_pickle=False) as data:
             self.weights = {name: data[name].copy() for name in data.files}
-        f, g = manifest["features"], manifest["global_features"]
+        f, g = config["options"]["features_per_site"], config["options"]["global_features"]
         from integrations.spatial_context_geometry import context_offsets
 
         radius = config["options"]["context_radius"]
@@ -136,7 +130,7 @@ class SpatialPlayerPolicy:
                       global_kernel=(441 * f, g), global_weight=(g,), global_bias=(g,),
                       readout_kernel=(g, 3530), action_kernel=(f, 8),
                       output_weight=(3530,), output_bias=(3530,))
-        self.prior_count = manifest["prior_count"]
+        self.prior_count = 5
         for i in range(self.prior_count):
             shapes[f"prior_source_{i}"] = (3530,)
             shapes[f"prior_weight_{i}"] = (3530,)

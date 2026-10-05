@@ -60,19 +60,28 @@ def sandbox_session(profile):
     return fresh
 
 
-def collect(launch, submission, output, *, host="metta0", profile="sandbox"):
+def collect(launch, submission, output, *, host="metta0", profile="sandbox", controller_expired=False):
     job_id = str(submission["job_id"])
     if not re.fullmatch(r"\d+", job_id):
         raise ValueError("Expected a numeric controller job ID")
     result = remote(host, ["scontrol", "show", "job", "-o", job_id], timeout=30)
-    if result.returncode:
-        raise RuntimeError("Controller readback failed")
-    fields = dict(item.split("=", 1) for item in result.stdout.split() if "=" in item)
-    controller = {key: fields.get(key) for key in ("JobId", "JobState", "ExitCode", "Nice", "Priority", "NodeList", "TimeLimit", "RunTime")}
-    if controller["JobId"] != job_id or controller["Nice"] != str(NICE) or controller["Priority"] != "1":
-        raise ValueError("Controller job identity or scheduling policy differs")
-    if controller["JobState"] not in TERMINAL:
-        return dict(job_id=job_id, state=controller["JobState"], collected=False)
+    expired = bool(result.returncode)
+    if expired:
+        if not controller_expired or "Invalid job id specified" not in result.stderr:
+            raise RuntimeError("Controller readback failed")
+        if submission.get("Nice") != str(NICE) or submission.get("Priority") != "1":
+            raise ValueError("Expired controller requires authentic saved submission scheduling identity")
+        active = remote(host, ["squeue", "--jobs=" + job_id, "--noheader", "--format=%i"], timeout=30)
+        if (active.returncode and "Invalid job id specified" not in active.stderr) or active.stdout.strip():
+            raise RuntimeError("Expired controller job must be absent from the active queue")
+        controller = {"available": False, "reason": "Controller retention expired", "JobId": job_id}
+    else:
+        fields = dict(item.split("=", 1) for item in result.stdout.split() if "=" in item)
+        controller = {key: fields.get(key) for key in ("JobId", "JobState", "ExitCode", "Nice", "Priority", "NodeList", "TimeLimit", "RunTime")}
+        if controller["JobId"] != job_id or controller["Nice"] != str(NICE) or controller["Priority"] != "1":
+            raise ValueError("Controller job identity or scheduling policy differs")
+        if controller["JobState"] not in TERMINAL:
+            return dict(job_id=job_id, state=controller["JobState"], collected=False)
     from botocore.config import Config
 
     client = sandbox_session(profile).client("s3", region_name="us-east-1", config=Config(signature_version="s3v4"))
@@ -89,6 +98,11 @@ def collect(launch, submission, output, *, host="metta0", profile="sandbox"):
     download(prefix + "/manifest.json", output / "manifest.json")
     manifest = json.loads((output / "manifest.json").read_text())
     compressed = verify_manifest(manifest, expected, job_id)
+    if expired:
+        marker = manifest["receipt"]
+        if type(marker.get("workload_exit_code")) is not int or marker["workload_exit_code"] < 0:
+            raise ValueError("Expired controller requires the signed runner finalization marker")
+        (output / "submission.json").write_text(json.dumps(submission, indent=2) + "\n")
     reserve = 512 * 1024**2
     if shutil.disk_usage(output).free < 2 * compressed + reserve:
         raise RuntimeError("Insufficient collection space; manifest preserved and remote results untouched")
@@ -117,7 +131,8 @@ def collect(launch, submission, output, *, host="metta0", profile="sandbox"):
         digest = hashlib.file_digest(stream, "sha256").hexdigest()
     proof = dict(job_id=job_id, controller=controller, source_revision=expected["source_revision"],
                  compressed_bytes=compressed, unpacked_bytes=unpacked, members=len(members), archive_sha256=digest,
-                 parts_verified=True, safe_extraction=True, archive_and_parts_preserved=True, collected=True)
+                 parts_verified=True, safe_extraction=True, archive_and_parts_preserved=True, collected=True,
+                 controller_expired=expired, workload_exit_code=manifest["receipt"].get("workload_exit_code"))
     (output / "collection-proof.json").write_text(json.dumps(proof, indent=2) + "\n")
     return proof
 
@@ -129,10 +144,11 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--host", default="metta0")
     parser.add_argument("--profile", default="sandbox")
+    parser.add_argument("--controller-expired", action="store_true", help="Require final signed S3 marker and authentic submission when controller retention expired")
     args = parser.parse_args()
     try:
         result = collect(json.loads(args.launch.read_text()), json.loads(args.receipt.read_text()), args.output,
-                         host=args.host, profile=args.profile)
+                         host=args.host, profile=args.profile, controller_expired=args.controller_expired)
     except Exception as error:
         # Transport/login errors may carry private bearer data. Only our own
         # bounded messages can be shown to the caller.

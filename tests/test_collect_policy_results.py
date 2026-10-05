@@ -45,3 +45,28 @@ def test_live_job_never_downloads_or_creates_output(tmp_path, monkeypatch):
     result = collect({}, {"job_id": "35933"}, output)
     assert result == dict(job_id="35933", state="RUNNING", collected=False)
     assert not output.exists()
+
+
+def test_expired_controller_requires_explicit_mode_and_authentic_submission(tmp_path, monkeypatch):
+    from integrations import collect_policy_results as collector
+    monkeypatch.setattr(collector,'remote',lambda *a,**kw:SimpleNamespace(
+        returncode=1,stdout='',stderr='slurm_load_jobs error: Invalid job id specified'))
+    monkeypatch.setattr(collector,'sandbox_session',lambda *a:pytest.fail('Unverified submission must not read AWS'))
+    with pytest.raises(RuntimeError,match='Controller readback failed'):
+        collect({}, {'job_id':'35936'},tmp_path/'a')
+    with pytest.raises(ValueError,match='authentic saved submission'):
+        collect({}, {'job_id':'35936'},tmp_path/'b',controller_expired=True)
+    assert not (tmp_path/'b').exists()
+
+
+def test_expired_controller_never_accepts_network_failure_or_live_queue(tmp_path, monkeypatch):
+    from integrations import collect_policy_results as collector
+    submission={'job_id':'35936','Nice':str(NICE),'Priority':'1'}
+    responses=iter([SimpleNamespace(returncode=1,stdout='',stderr='Invalid job id specified'),
+                    SimpleNamespace(returncode=0,stdout='35936\n',stderr='')])
+    monkeypatch.setattr(collector,'remote',lambda *a,**kw:next(responses))
+    with pytest.raises(RuntimeError,match='absent from the active queue'):
+        collect({},submission,tmp_path/'a',controller_expired=True)
+    monkeypatch.setattr(collector,'remote',lambda *a,**kw:SimpleNamespace(returncode=255,stdout='',stderr='SSH connection failed'))
+    with pytest.raises(RuntimeError,match='Controller readback failed'):
+        collect({},submission,tmp_path/'b',controller_expired=True)

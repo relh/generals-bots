@@ -19,23 +19,40 @@ class Trial:
     def __init__(self, inputs, output):
         self.inputs, self.output = inputs, output
         self.source = inputs / "source"
-        self.parent = inputs / "continuation/parent"
-        self.bundle = self.parent / "bundle"
-        self.sampler = json.loads((self.bundle / "spatial-policy.json").read_text())["serving_action_selection"]
+        self.bundle = inputs / "bundles/cold"
+        self.source_asset = inputs / "assets/cold/asset.json"
+        self.sampler = json.loads(self.source_asset.read_text())["sampler"]
         self.sampler = dict(
             self.sampler,
             full_action_temperature=self.sampler.get("full_action_temperature", 1.0),
-            log_gap_scale=self.sampler.get("log_gap_scale", 0.0),
             route_half_weight=self.sampler.get("route_half_weight", 0.0),
         )
         if self.sampler["mode"] != "structured_sample":
             raise ValueError("Trial requires the selected structured sampler")
         if (
             self.sampler["full_action_temperature"] != 1.0
-            or self.sampler["log_gap_scale"] != 0.0
+            or self.sampler.get("log_gap_scale", 0.0) != 0.0
             or self.sampler["route_half_weight"] != 0.0
         ):
             raise ValueError("Matched warmstart must preserve the selected unmodified sampler")
+
+    def validate_source_initializer(self, run):
+        from integrations.native_spatial_asset import load_asset
+
+        reference = run.get("initialize")
+        digest = hashlib.sha256(self.source_asset.read_bytes()).hexdigest()
+        if (
+            not isinstance(reference, dict)
+            or set(reference) != {"asset", "manifest_sha256", "restore_learner"}
+            or Path(reference["asset"]).resolve() != self.source_asset.resolve()
+            or reference["manifest_sha256"] != digest
+            or reference["restore_learner"] is not False
+        ):
+            raise ValueError("Matched PPO initializer must bind the exact cold asset with a fresh optimizer")
+        asset = load_asset(self.source_asset, manifest_sha256=digest)
+        if hashlib.sha256((self.bundle / "policy.bin").read_bytes()).hexdigest() != asset.metadata["policy_sha256"]:
+            raise ValueError("Matched source serving bundle differs from the exact cold initializer")
+        return asset.metadata
 
     def call(self, module, args, *, name, seconds, arm=None, training=False):
         out = self.output / arm if arm else self.output
@@ -58,7 +75,6 @@ class Trial:
         import jax
 
         from integrations.classic_contract import validate_training_contract
-        from integrations.classic_learner_continuation import load_continuation, verify_factory_source, write_manifest
         from integrations.classic_position_curriculum import configure_positions
 
         if len(jax.devices("gpu")) != 1:
@@ -68,22 +84,20 @@ class Trial:
         for name, digest in hashes.items():
             if hashlib.sha256((self.inputs / name).read_bytes()).hexdigest() != digest:
                 raise ValueError("Input source/checkpoint/data hash differs: " + name)
-        verify_factory_source(self.parent, self.source / "integrations/generals_fabric.py")
-        # Derive current bindings from authentic artifacts; historical recipe metadata is not executable input.
-        frozen = sorted((self.inputs / "continuation/frozen").iterdir(), key=lambda path: int(path.name))
-        current = self.output / "current-continuation.json"
-        write_manifest(self.inputs / "continuation", frozen, current)
-        _, build, original, _ = load_continuation(current, STEPS)
+        asset = json.loads(self.source_asset.read_text())
+        if (
+            asset["factory_source_sha256"]
+            != hashlib.sha256((self.source / "integrations/generals_fabric.py").read_bytes()).hexdigest()
+        ):
+            raise ValueError("Input asset does not bind the current factory")
+        build = json.loads((self.inputs / "build-config.json").read_text())
+        run = json.loads((self.inputs / "config.json").read_text())
+        asset = self.validate_source_initializer(run)
+        if build["fabric"] != asset["fabric"]:
+            raise ValueError("Trial build differs from its source native asset")
+        if run["seed"] != SEED or run["total_timesteps"] != STEPS:
+            raise ValueError("Matched PPO requires the declared fresh optimizer, seed and step budget")
         configure_positions(build["python_environment"]["options"], self.inputs / "curriculum/manifest.json")
-        run = dict(original, seed=SEED, total_timesteps=STEPS)
-        run["initialize"] = {
-            "run": str(self.parent / "run"),
-            "checkpoint": original["initialize"]["checkpoint"],
-            "sha256": original["initialize"]["sha256"],
-            "allow_environment_transfer": True,
-            "allow_policy_only_transfer": True,
-            "restore_learner": False,
-        }
         validate_training_contract(build, run)
         (self.output / "build-config.json").write_text(json.dumps(build, indent=2) + "\n")
         for arm in ("control", "warm"):
@@ -137,8 +151,6 @@ class Trial:
             [
                 "--bundle",
                 self.bundle,
-                "--source-run",
-                self.parent / "run",
                 "--train-manifest",
                 self.inputs / "defense/train/manifest.json",
                 "--heldout-manifest",
@@ -161,11 +173,9 @@ class Trial:
         )
         path = self.output / "warm/config.json"
         config = json.loads(path.read_text())
-        transfer = json.loads((self.output / "distill/run/policy-transfer.json").read_text())
-        config["initialize"].update(
-            run=str(self.output / "distill/run"),
-            checkpoint=str(self.output / "distill/run/checkpoints/supervised.bin"),
-            sha256=transfer["checkpoint_sha256"],
+        asset = self.output / "distill/asset/asset.json"
+        config["initialize"] = dict(
+            asset=str(asset), manifest_sha256=hashlib.sha256(asset.read_bytes()).hexdigest(), restore_learner=False
         )
         path.write_text(json.dumps(config, indent=2) + "\n")
 
@@ -173,19 +183,14 @@ class Trial:
         from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
 
         bundle = self.bundle if arm == "control" else self.output / "distill/bundle"
-        run = self.parent / "run" if arm == "control" else self.output / "distill/run"
         directory = self.output / arm / "gate"
         self.call(
             "evaluate_spatial_frozen_match",
             [
                 "--bundle",
                 bundle,
-                "--run",
-                run,
                 "--opponent-bundle",
                 bundle,
-                "--opponent-run",
-                run,
                 "--games",
                 512,
                 "--pool-size",
@@ -241,24 +246,47 @@ class Trial:
         config = json.loads((self.output / arm / "config.json").read_text())
         training_audit(self.output / arm, config)
         checkpoint = self.output / arm / f"run/checkpoints/metta_generals/run/{STEPS:016d}.bin"
-        args = [
-            "--build",
-            self.output / "build/build.json",
-            "--training",
-            self.output / arm / "run/training.json",
-            "--checkpoint",
-            checkpoint,
-            "--sha256",
-            hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
-            "--factory-source",
-            self.source / "integrations/generals_fabric.py",
-            "--output",
-            self.output / arm / "bundle",
-        ]
-        for key, value in self.sampler.items():
-            if key != "mode":
-                args.extend(["--serving-" + key.replace("_", "-"), value])
-        self.call("export_spatial_policy_bundle", args, name="export", seconds=120, arm=arm)
+        sampler_path = self.output / arm / "sampler.json"
+        sampler_path.write_text(json.dumps(self.sampler, indent=2) + "\n")
+        self.call(
+            "publish_policy_asset",
+            [
+                "--build",
+                self.output / "build/build.json",
+                "--training",
+                self.output / arm / "run/training.json",
+                "--checkpoint",
+                checkpoint,
+                "--sha256",
+                hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+                "--sampler",
+                sampler_path,
+                "--factory-source",
+                self.source / "integrations/generals_fabric.py",
+                "--output",
+                self.output / arm / "asset",
+            ],
+            name="publish",
+            seconds=120,
+            arm=arm,
+        )
+        asset = self.output / arm / "asset/asset.json"
+        self.call(
+            "export_spatial_policy_bundle",
+            [
+                "--asset",
+                asset,
+                "--manifest-sha256",
+                hashlib.sha256(asset.read_bytes()).hexdigest(),
+                "--factory-source",
+                self.source / "integrations/generals_fabric.py",
+                "--output",
+                self.output / arm / "bundle",
+            ],
+            name="export",
+            seconds=120,
+            arm=arm,
+        )
         self.call(
             "audit_spatial_checkpoint_serving_parity",
             [

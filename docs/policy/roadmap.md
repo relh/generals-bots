@@ -15,8 +15,11 @@ infrastructure cleanup alone does not complete the goal.
 
 Consolidation and the shared Classic contract are implemented. The repaired
 Puffer path completed a bounded B300 qualification at 76,357 end-to-end SPS;
-the selected baseline also passed native AMD64 hosted serving smoke. A stricter
-same-sampler startup gate has been repaired and must pass in the next trial.
+the selected baseline also passed native AMD64 hosted serving smoke. The
+same-sampler source gate passed in 35935. That trial completed control
+PPO and supervised warmstart, but parity failed; retry 35936 segfaulted in
+native GPU parity. Current source cleanup has exact CPU structural/numeric
+proof, while current GPU parity and the warm arm remain unresolved.
 Baseline comparisons and loss diagnosis are available. Learning improvement
 and hosted winning qualification remain open; see [current-state.md](current-state.md).
 
@@ -27,13 +30,15 @@ candidate regressed against both its initialization and the unchanged baseline
 on matched development games and was rejected. The stale launcher binding is
 resolved; repeating that intervention or scaling its training is unjustified.
 
-The next decision is a matched public-defense warmstart trial. Separate
+The active experiment is the matched public-defense warmstart trial. Separate
 synthetic training and held-out maps supply legal Sentinel tactical labels.
 Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
 position curriculum, opponent pool and rewards. Compare source, distilled,
 control and warm bundles on the same broad development games before selecting
-a candidate for fresh confirmation and hosted qualification.
+a candidate for fresh confirmation and hosted qualification. First diagnose
+and prove current native GPU parity; retain completed control and supervised
+artifacts from 35935. Neither failed parity run provides a warm-arm result.
 
 Preserve throughput, legality, train/serve parity, opponent-by-seat coverage and
 frozen artifact identities. Reject failed hypotheses using their paired evidence;

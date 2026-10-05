@@ -123,7 +123,7 @@ def score(bundle, observations, masks, actions, games, move_temperature=None):
     per_game = {str(game): {"actions": int(np.sum(games == game)),
                              "nll": float(-logprob[games == game].mean())}
                 for game in np.unique(games)}
-    return {"policy_sha256": hashlib.sha256((bundle / "policy.bin").read_bytes()).hexdigest(),
+    return {"policy_sha256": policy.asset.metadata["policy_sha256"],
             "move_temperature": move_temperature, "bundle_move_temperature": policy.move_temperature,
             "early_route_temperature": policy.early_route_temperature if use_bundle_schedule else None,
             "early_route_turns": policy.early_route_turns if use_bundle_schedule else None,

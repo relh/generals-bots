@@ -16,6 +16,7 @@ MODULES = {
     "validate": "integrations.classic_contract",
     "evaluate": "integrations.evaluate_spatial_population",
     "export": "integrations.export_spatial_policy_bundle",
+    "publish": "integrations.publish_policy_asset",
     "compare": "integrations.analyze_spatial_population_pair",
     "promotion": "integrations.policy_promotion",
     "hosted": "integrations.hosted_policy",

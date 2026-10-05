@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir \
 COPY generals /app/generals
 COPY integrations/__init__.py integrations/puffer_codec.py /app/integrations/
 COPY integrations/spatial_action_sampling.py integrations/spatial_policy_bundle.py /app/integrations/
+COPY integrations/native_spatial_asset.py integrations/learner_checkpoint.py integrations/classic_contract.py /app/integrations/
 COPY integrations/spatial_context_geometry.py integrations/spatial_exploration.py /app/integrations/
 COPY integrations/softmax/__init__.py integrations/softmax/protocol.py integrations/softmax/neural_codec.py integrations/softmax/neural_player.py /app/integrations/softmax/
 COPY --from=policy / /app/policy/

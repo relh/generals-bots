@@ -8,17 +8,20 @@ import runpy
 import sys
 from pathlib import Path
 
+
 def validate_training_geometry(argv=sys.argv, environ=os.environ):
     """Fail before GPU compilation if the verified wide trainer omits row flattening."""
     if len(argv) < 2 or argv[1] != "train" or "--config" not in argv:
         return
     config_path = Path(argv[argv.index("--config") + 1])
     overrides = json.loads(config_path.read_text()).get("overrides", {})
-    if (environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") == "1"
-            and environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") == "1"
-            and int(overrides.get("vec.total_agents", 0)) >= 8192
-            and int(overrides.get("train.horizon", 0)) >= 256
-            and environ.get("METTA_MEMORYLESS_OPTIMIZATION") != "1"):
+    if (
+        environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") == "1"
+        and environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") == "1"
+        and int(overrides.get("vec.total_agents", 0)) >= 8192
+        and int(overrides.get("train.horizon", 0)) >= 256
+        and environ.get("METTA_MEMORYLESS_OPTIMIZATION") != "1"
+    ):
         raise ValueError(
             "Wide spatial PPO requires METTA_MEMORYLESS_OPTIMIZATION=1; "
             "without it JAX compiles the unflattened 8192-game device_core"
@@ -28,6 +31,7 @@ def validate_training_geometry(argv=sys.argv, environ=os.environ):
 def rollout_sampler_settings(environ=os.environ):
     """One explicit actor contract shared by source qualification and PPO."""
     import math
+
     from integrations.spatial_action_sampling import validate_full_action_temperature
     from integrations.spatial_exploration import validate_log_gap_scale
 
@@ -35,7 +39,9 @@ def rollout_sampler_settings(environ=os.environ):
         mode="structured_sample",
         move_temperature=float(environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1")),
         split_temperature=float(environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE", "1")),
-        full_action_temperature=validate_full_action_temperature(float(environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1"))),
+        full_action_temperature=validate_full_action_temperature(
+            float(environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1"))
+        ),
         log_gap_scale=validate_log_gap_scale(float(environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0"))),
         route_half_weight=float(environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0")),
         neutral_route_bias=float(environ.get("METTA_SPATIAL_NEUTRAL_ROUTE_BIAS", "0")),
@@ -46,13 +52,20 @@ def rollout_sampler_settings(environ=os.environ):
     turns = environ.get("METTA_SPATIAL_EARLY_ROUTE_TURNS")
     if (early is None) != (turns is None):
         raise ValueError("Early route sampling requires temperature and turns together")
-    settings.update(early_route_temperature=float(early) if early is not None else None,
-                    early_route_turns=int(turns) if turns is not None else None)
-    if (any(not math.isfinite(v) for v in settings.values() if isinstance(v, (float, int)))
-            or settings["move_temperature"] <= 0 or settings["split_temperature"] <= 0
-            or not 0 <= settings["route_half_weight"] <= 1
-            or any(settings[k] < 0 for k in ("neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty"))
-            or (early is not None and (settings["early_route_temperature"] <= 0 or settings["early_route_turns"] <= 0))):
+    settings.update(
+        early_route_temperature=float(early) if early is not None else None,
+        early_route_turns=int(turns) if turns is not None else None,
+    )
+    if (
+        any(not math.isfinite(v) for v in settings.values() if isinstance(v, (float, int)))
+        or settings["move_temperature"] <= 0
+        or settings["split_temperature"] <= 0
+        or not 0 <= settings["route_half_weight"] <= 1
+        or any(
+            settings[k] < 0 for k in ("neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty")
+        )
+        or (early is not None and (settings["early_route_temperature"] <= 0 or settings["early_route_turns"] <= 0))
+    ):
         raise ValueError("Rollout sampler settings must be finite and valid")
     return settings
 
@@ -63,35 +76,70 @@ def source_sampling_gate_report(match):
 
     match = Path(match)
     record = json.loads((match / "evaluation.json").read_text())
-    if (not record["held_out"] or record["smoke_cpu"] or not record["coworld_classic_rules"]
-            or record["episode_limit"] != 2000 or record["action_selection"] != "sample"
-            or record["opponent_action_selection"] != "structured_sample"):
+    if (
+        not record["held_out"]
+        or record["smoke_cpu"]
+        or not record["coworld_classic_rules"]
+        or record["episode_limit"] != 2000
+        or record["action_selection"] != "sample"
+        or record["opponent_action_selection"] != "structured_sample"
+    ):
         raise ValueError("Source gate requires held-out official GPU Classic sampled self-play")
-    if any(record[k] != 0 for k in ("half_logit_bias", "owned_split_bias", "safe_owned_split_bias", "guided_owned_split_bias")):
+    if any(
+        record[k] != 0
+        for k in ("half_logit_bias", "owned_split_bias", "safe_owned_split_bias", "guided_owned_split_bias")
+    ):
         raise ValueError("Source gate requires the actual PPO sampler without evaluation-only biases")
     hashes = np.load(match / "initial_state_sha256.npy", allow_pickle=False)
     sides = np.load(match / "initial_sides.npy", allow_pickle=False)
     outcomes = np.load(match / "outcomes.npy", allow_pickle=False)
     games = record["games"]
-    if (hashes.shape != (games,) or sides.shape != (games,) or outcomes.shape != (games,)
-            or not np.isin(outcomes, (-1, 0, 1)).all() or not np.isin(sides, (0, 1)).all()):
+    if (
+        hashes.shape != (games,)
+        or sides.shape != (games,)
+        or outcomes.shape != (games,)
+        or not np.isin(outcomes, (-1, 0, 1)).all()
+        or not np.isin(sides, (0, 1)).all()
+    ):
         raise ValueError("Source match saved state, seat or outcome arrays differ")
     wld = [int((outcomes == value).sum()) for value in (1, -1, 0)]
     if wld != [record[k] for k in ("wins", "losses", "draws")]:
         raise ValueError("Source match outcomes disagree with its evaluation record")
-    sampler = dict(mode="structured_sample", move_temperature=record["sampling_temperature"],
-                   split_temperature=record["split_sampling_temperature"])
-    for k in ("early_route_temperature", "early_route_turns", "route_half_weight", "full_action_temperature",
-              "log_gap_scale", "neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty"):
+    sampler = dict(
+        mode="structured_sample",
+        move_temperature=record["sampling_temperature"],
+        split_temperature=record["split_sampling_temperature"],
+    )
+    for k in (
+        "early_route_temperature",
+        "early_route_turns",
+        "route_half_weight",
+        "full_action_temperature",
+        "log_gap_scale",
+        "neutral_route_bias",
+        "weak_owned_route_penalty",
+        "doomed_attack_route_penalty",
+    ):
         sampler[k] = record[k]
     opponent = dict(mode=record["opponent_action_selection"], **record["opponent_action_parameters"])
-    return dict(gate_mode="same_sampler_source", source_sha256=record["checkpoint_sha256"],
-                opponent_sha256=record["opponent_sha256"], sampler=sampler, opponent_sampler=opponent,
-                games=games, unique_initial_maps=len(np.unique(hashes)),
-                initial_states_sha256=hashlib.sha256(hashes.tobytes()).hexdigest(),
-                seat_counts={str(side): int((sides == side).sum()) for side in (0, 1)}, wld=wld,
-                held_out=True, smoke_cpu=False, coworld_classic_rules=True, episode_limit=2000,
-                match_seed=record["seed"], sample_seed=record["sample_seed"])
+    return dict(
+        gate_mode="same_sampler_source",
+        source_sha256=record["checkpoint_sha256"],
+        opponent_sha256=record["opponent_sha256"],
+        sampler=sampler,
+        opponent_sampler=opponent,
+        games=games,
+        unique_initial_maps=len(np.unique(hashes)),
+        initial_states_sha256=hashlib.sha256(hashes.tobytes()).hexdigest(),
+        seat_counts={str(side): int((sides == side).sum()) for side in (0, 1)},
+        wld=wld,
+        held_out=True,
+        smoke_cpu=False,
+        coworld_classic_rules=True,
+        episode_limit=2000,
+        match_seed=record["seed"],
+        sample_seed=record["sample_seed"],
+    )
 
 
 def validate_sampling_gate(argv=sys.argv, environ=os.environ):
@@ -107,8 +155,7 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
     initialization = training.get("initialize")
     if not initialization:
         return
-    if (environment.get("spec", {}).get("action_sizes") != [3529]
-            or options.get("terminal_reward_mode") != "win_only"):
+    if environment.get("spec", {}).get("action_sizes") != [3529] or options.get("terminal_reward_mode") != "win_only":
         raise ValueError("Source qualification requires the current flat Classic win objective")
     path = environ.get("METTA_SPATIAL_SAMPLING_GATE_REPORT")
     if not path:
@@ -116,22 +163,41 @@ def validate_sampling_gate(argv=sys.argv, environ=os.environ):
     report = json.loads(Path(path).read_text())
     settings = rollout_sampler_settings(environ)
     if settings["early_route_temperature"] is not None and (
-            not options.get("public_scalar_features") or options.get("public_scalar_ablation")):
+        not options.get("public_scalar_features") or options.get("public_scalar_ablation")
+    ):
         raise ValueError("Early route schedule requires full public scalar turn observations")
-    source = initialization["sha256"]
+    from integrations.native_spatial_asset import load_asset
+
+    source_asset = load_asset(Path(initialization["asset"]), manifest_sha256=initialization["manifest_sha256"])
+    source = source_asset.metadata["policy_sha256"]
     games = report.get("games", 0)
-    if (report.get("gate_mode") != "same_sampler_source"
-            or report.get("source_sha256") != source or report.get("opponent_sha256") != source
-            or report.get("sampler") != settings or report.get("opponent_sampler") != settings
-            or not report.get("held_out") or report.get("smoke_cpu")
-            or report.get("coworld_classic_rules") is not True or report.get("episode_limit") != 2000
-            or isinstance(games, bool) or not isinstance(games, int) or games < 512 or games % 2
-            or report.get("unique_initial_maps", 0) < 256
-            or report.get("seat_counts") != {"0": games // 2, "1": games // 2}):
-        raise ValueError("Source gate must verify the exact policy and both actors' intended rollout sampler on balanced fresh maps")
+    if (
+        report.get("gate_mode") != "same_sampler_source"
+        or report.get("source_sha256") != source
+        or report.get("opponent_sha256") != source
+        or report.get("sampler") != settings
+        or report.get("opponent_sampler") != settings
+        or not report.get("held_out")
+        or report.get("smoke_cpu")
+        or report.get("coworld_classic_rules") is not True
+        or report.get("episode_limit") != 2000
+        or isinstance(games, bool)
+        or not isinstance(games, int)
+        or games < 512
+        or games % 2
+        or report.get("unique_initial_maps", 0) < 256
+        or report.get("seat_counts") != {"0": games // 2, "1": games // 2}
+    ):
+        raise ValueError(
+            "Source gate must verify the exact policy and both actors' intended rollout sampler on balanced fresh maps"
+        )
     wld = report.get("wld", [])
-    if (len(wld) != 3 or any(isinstance(n, bool) or not isinstance(n, int) or n < 0 for n in wld)
-            or sum(wld) != games or wld[0] < games / 4):
+    if (
+        len(wld) != 3
+        or any(isinstance(n, bool) or not isinstance(n, int) or n < 0 for n in wld)
+        or sum(wld) != games
+        or wld[0] < games / 4
+    ):
         raise ValueError("Rollout sampling wins too few source self-matches for useful PPO trajectories")
 
 
@@ -153,13 +219,16 @@ def configure_offline_puffer(module, environ=os.environ):
             raise ValueError("Portable Puffer source must be a local bare Git repository")
         module.PUFFER_REPOSITORY = str(repository)
         import shutil
+
         raylib = Path(environ["METTA_PUFFER_RAYLIB_DIRECTORY"]).resolve(strict=True)
         if not (raylib / "lib/libraylib.a").is_file() or not (raylib / "include/raylib.h").is_file():
             raise ValueError("Portable Puffer source requires its prepackaged raylib dependency")
         install_environment = module.install_environment
+
         def install_portable_environment(source, *args, **kwargs):
             shutil.copytree(raylib, source / "raylib-5.5_linux_amd64")
             return install_environment(source, *args, **kwargs)
+
         module.install_environment = install_portable_environment
 
 
@@ -169,16 +238,15 @@ def verify_runtime_bootstrap(environ=os.environ):
     if environ.get("METTA_SPATIAL_BOOTSTRAP_PID") != str(os.getpid()):
         raise RuntimeError("Spatial training requires the bootstrap in this interpreter, not only its environment flag")
     from integrations.activate_memoryless_optimization import AdapterFinder
-    if not any(isinstance(finder, AdapterFinder) and
-               finder.adapter_module == "integrations.direct_spatial_optimization"
-               for finder in sys.meta_path):
+
+    if not any(isinstance(finder, AdapterFinder) for finder in sys.meta_path):
         raise RuntimeError("Direct spatial adapter import hook is not active")
 
 
 # Reviewed trainer supports verified current-model transfer and learner resume.
 # Keep this identity explicit: updating trainer code requires reviewing its ABI
 # and updating this binding together; an archive manifest alone is insufficient.
-PINNED_TRAINER_SHA256 = "20c96a4f56367b13c47fdc25bbccfcbbd0044cd0f3d3963623969fdded7b13b9"
+PINNED_TRAINER_SHA256 = "84370db5eaa1b8aab194d9cab50e0e3a8e5051a555287b0ee9bd99ae268752ea"
 
 
 def verify_trainer_source(source=None):
@@ -200,6 +268,7 @@ def load_pinned_trainer():
     orientation = os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION", "storage")
     if orientation == "canonical":
         from integrations.spatial_muon_orientation import install_build_hook
+
         install_build_hook(module)
     elif orientation != "storage":
         raise ValueError("Spatial Muon orientation must be storage or canonical")
@@ -208,8 +277,10 @@ def load_pinned_trainer():
         raise ValueError("Convolution matrix mode must be 0 or 1 and requires canonical dense scaling")
     if context_mode == "1":
         from integrations.spatial_muon_context import install_build_hook as install_context_build_hook
+
         install_context_build_hook(module)
     from integrations.spatial_muon_orientation import install_runtime_guard
+
     install_runtime_guard(module, orientation, context_matrix=context_mode == "1")
     return module
 
@@ -230,14 +301,15 @@ def cpu_preflight(argv):
     run_config = json.loads(args.config.read_text())
     contract = validate_training_contract(json.loads((args.build / "build.json").read_text())["config"], run_config)
     module = load_pinned_trainer()
-    prepared = module.prepare_run(args.build, args.output,
-        module.RunConfig.model_validate(run_config))
-    receipt = dict(trainer_sha256=PINNED_TRAINER_SHA256,
-                   puffer_revision=module.PUFFER_REVISION,
-                   contract=contract,
-                   batch_steps=prepared.batch_steps,
-                   initialization_verified=prepared.initialization is not None,
-                   scope="CPU launcher, build and initialization; sampling and GPU execution require runtime qualification")
+    prepared = module.prepare_run(args.build, args.output, module.RunConfig.model_validate(run_config))
+    receipt = dict(
+        trainer_sha256=PINNED_TRAINER_SHA256,
+        puffer_revision=module.PUFFER_REVISION,
+        contract=contract,
+        batch_steps=prepared.batch_steps,
+        initialization_verified=prepared.initialization is not None,
+        scope="CPU launcher, build and initialization; sampling and GPU execution require runtime qualification",
+    )
     print("SPATIAL_LAUNCH_CPU_READY " + json.dumps(receipt), flush=True)
     return receipt
 
@@ -257,6 +329,7 @@ def main():
 
     if os.environ.get("METTA_AUDIT_DEVICE_REWARDS") == "1":
         from integrations.environment_reward_audit import activate
+
         activate()
     if jax.devices()[0].platform != "gpu" or not jax.devices("cpu"):
         raise RuntimeError("Spatial self-play requires GPU and CPU JAX backends")
