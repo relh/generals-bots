@@ -135,6 +135,7 @@ def test_population_evaluation_disables_training_start_pool(tmp_path):
 
     def construct(**options):
         assert options["coworld_position_probability"] == 0
+        assert options["balance_opponent_sides"] is True
         raise Captured
 
     argv = [

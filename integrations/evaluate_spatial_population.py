@@ -66,7 +66,7 @@ def main():
     actors = [policy] + [SpatialPlayerPolicy(Path(bundle)) for bundle in options["frozen_bundles"]]
     if any(args.seed in actor.asset.metadata["training_seeds"] for actor in actors):
         raise ValueError("Evaluation seed must be absent from all training lineages")
-    options.update(parallel_games=args.games, coworld_pool_size=args.pool_size,
+    options.update(parallel_games=args.games, coworld_pool_size=args.pool_size, balance_opponent_sides=True,
                    shaping_weight=0.0, reward_scale=1.0, terminal_reward_mode="signed",
                    coworld_position_probability=0.0)
     args.output.mkdir(parents=True, exist_ok=False)
