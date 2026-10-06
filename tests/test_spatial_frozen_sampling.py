@@ -191,3 +191,36 @@ def test_frozen_doomed_attack_route_penalty_matches_serving_distribution():
         jnp.broadcast_to(public, (count, public.size)),
     ))(keys))
     assert abs(np.mean(sampled == up) - expected[up]) < .02
+
+
+def test_frozen_match_main_constructs_actual_balanced_wrapper(tmp_path, monkeypatch):
+    """Exercise the evaluator entrypoint through the real frozen-seat guard."""
+    import sys
+    from types import SimpleNamespace
+    import pytest
+    pytest.importorskip('metta_training')
+    from integrations import evaluate_spatial_frozen_match as evaluator
+    from integrations import spatial_selfplay
+
+    class FakePolicy:
+        def __init__(self, path):
+            self.channels = 16
+            self.asset = SimpleNamespace(metadata={'training_seeds': []})
+
+    class Constructed(Exception):
+        pass
+
+    def base_initialize(self, **options):
+        assert options['balance_opponent_sides'] is True
+        assert options['parallel_games'] == 8
+        assert options['require_gpu'] is False
+        raise Constructed
+
+    monkeypatch.setattr(evaluator, 'SpatialPlayerPolicy', FakePolicy)
+    monkeypatch.setattr(spatial_selfplay, 'SpatialPlayerPolicy', FakePolicy)
+    monkeypatch.setattr(spatial_selfplay.BatchedGeneralsSelfPlayPufferEnvironment, '__init__', base_initialize)
+    monkeypatch.setattr(sys, 'argv', ['frozen-match', '--bundle', str(tmp_path/'policy'),
+        '--opponent-bundle', str(tmp_path/'policy'), '--output', str(tmp_path/'out'),
+        '--games', '8', '--pool-size', '8', '--smoke-cpu'])
+    with pytest.raises(Constructed):
+        evaluator.main()

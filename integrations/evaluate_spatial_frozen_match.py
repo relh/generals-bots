@@ -128,7 +128,7 @@ def main():
         raise ValueError("Match seed must be absent from both training lineages")
     if not args.smoke_cpu and jax.devices()[0].platform != "gpu":
         raise RuntimeError("Frozen match evaluation requires GPU execution")
-    options = dict(parallel_games=args.games, coworld_pool_size=args.pool_size,
+    options = dict(parallel_games=args.games, coworld_pool_size=args.pool_size, balance_opponent_sides=True,
                    coworld_position_probability=0.0, shaping_weight=0.0,
                    reward_scale=1.0, terminal_reward_mode="signed")
     if args.smoke_cpu:

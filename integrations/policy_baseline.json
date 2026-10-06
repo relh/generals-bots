@@ -1,6 +1,6 @@
 {
   "schema": "generals-policy-baseline-v1",
-  "audited_utc_date": "2026-10-05",
+  "audited_utc_date": "2026-10-06",
   "selection": "Latest completed hosted Classic baseline with intact policy and optimizer. Strongest policy is not established by the small hosted screens.",
   "ready_for_champion": false,
   "game": {
@@ -110,26 +110,43 @@
   },
   "latest_attempt": {
     "job": "35956",
-    "state": "PENDING",
+    "state": "FAILED",
     "source_revision": "4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7",
     "execution_backend": "direct_enroot",
     "scratch_parent": "/var/tmp",
-    "phase": "awaiting allocation; host GPU context and parity required before warm PPO",
-    "new_training_steps": null,
+    "phase": "warm_sampling_gate_environment_construction",
+    "new_training_steps": 0,
+    "workload_exit_code": 1,
+    "controller_terminal_available": false,
     "nice": 2147483645,
     "priority": 1,
     "time_limit": "01:40:00",
     "hardware_partition": "b300",
-    "evidence": {
-      "path": "/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2.public.json",
-      "sha256": "fc2049cef71ec1cd13d0969de1a361d1ecb55d6296fc20c18b4748aa31ba569a",
-      "bytes": 21116
+    "completed_phases": [
+      "smoke",
+      "control-parity",
+      "build"
+    ],
+    "fresh_ce_cpu_preflight_passed": true,
+    "sampling_games_started": false,
+    "gpu_control_parity": {
+      "checkpoint_sha256": "c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6",
+      "public_states": 46,
+      "matching_top_actions": 46,
+      "max_logit_difference": 1.430511474609375e-06,
+      "max_action_probability_difference": 1.8477439880371094e-06,
+      "max_rollout_transform_difference": 1.1920928955078125e-07,
+      "layout_backend": "cpu",
+      "inference_backend": "gpu",
+      "jax_backend": "gpu"
     },
-    "pending_reason": "B300 node MIXED+DRAIN+DYNAMIC_NORM; temporary drain for cleanup maintenance",
-    "credential_window": {
-      "latest_full_budget_start_before_utc": "2026-10-06T03:16:50Z",
-      "effective_expiry_utc": "2026-10-06T05:06:50Z",
-      "evidence": "/tmp/generals-policy-job-35956-credential-window.json"
+    "error": "ValueError: Spatial frozen opponents require balanced seats",
+    "owned_container_removed": true,
+    "evidence": {
+      "path": "/tmp/generals-policy-overhaul-results-35956/analysis.json",
+      "sha256": "d9d71dfe687f33d3d14b347065ce62e49adcb19c8497f68b112d78078d00db06",
+      "bytes": 3214,
+      "verified_locally": true
     }
   },
   "latest_training_throughput": {

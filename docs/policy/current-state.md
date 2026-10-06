@@ -1,6 +1,6 @@
 # Current policy state
 
-Updated **2026-10-05, 23:21 UTC**. The winning-policy objective remains unmet.
+Updated **2026-10-06, 00:53 UTC**. The winning-policy objective remains unmet.
 Use the [runbook](runbook.md) for supported operations and [roadmap](roadmap.md)
 for remaining work. Source history and full experiment artifacts preserve details.
 
@@ -37,48 +37,52 @@ balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservatio
 against the broad pool, verified parity and clean execution. No champion change
 is justified by the current evidence.
 
-## Active continuation: 35956
+## Latest execution: 35956
 
-**PENDING**, source `4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`, direct Enroot,
-one B300 / eight CPUs / 96 GiB memory, Nice **2147483645**, Priority **1**,
-finite **01:40:00** cap. At 23:20 UTC the B300 node was `MIXED+DRAIN`, reason
-`temporary drain for cleanup maintenance`. Keep the required lowest priority;
-node state and competing work are unchanged. No new GPU measurement, warm PPO,
-evaluation or strength result exists for this job.
+**FAILED, workload exit 1**, source
+`4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`. Terminal controller retention
+expired; the verified result archive and workload receipt establish the outcome.
+Submission/runtime receipts record one B300, eight CPUs, 96 GiB, Nice
+**2147483645**, Priority **1**, and a finite **01:40:00** cap. No job is active.
 
-Receipts and signed transport share prefix
-`/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2`.
-The 313-file sealed input SHA-256 is
+Direct Enroot **passed actual execution**: allocated host/container GPU ownership
+and UUID, idle-device smoke, then control CUDA parity on all **46 public states**
+(batch 8, CPU layout/GPU inference). All 46 top actions matched; maximum logit
+error was **1.43e-6**, probability error **1.85e-6**. Current native build and
+fresh-optimizer CE-weight CPU preflight also passed.
+
+The next phase failed before any sampling games:
+`ValueError: Spatial frozen opponents require balanced seats`.
+The frozen-match evaluator omitted its wrapper's required explicit balanced-seat
+option. The current evaluator now sets `balance_opponent_sides=True`;
+33 focused checks passed. **No warm PPO steps or broad evaluation panels ran.** Preserved control/CE work was not repeated.
+
+Retained evidence: `/tmp/generals-policy-overhaul-results-35956/`, including
+`analysis.json`, `out/control/serving-parity.json`, GPU-step receipts and warm
+preflight/sampling logs. The 1,090-member result archive and parts were SHA-verified; archive SHA:
+`a93a68b51af78c3070358aa2910e735d4d820a1d560626c28895708e4fd59695`.
+Input/source/transport receipts share prefix
+`/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2`; its 313-file input SHA:
 `f34d7e56ab893615ec14acc88092efdbe25309e39b4484db2e346bca52849c6d`.
-Phase maxima total 4,560s, with 840s startup and 600s finalization; core dumps
-are disabled in the host shell and driver. The signed transport permits a full
-run only if allocation starts **strictly before 2026-10-06 03:16:50 UTC**;
-effective expiry is 05:06:50 UTC. Proof:
-`/tmp/generals-policy-job-35956-credential-window.json`. It remained pending at
-23:21:36 UTC; monitor this start horizon without treating queue time as a result.
 
-Required order: allocated host GPU cgroup visibility/idle ownership → matching
-container UUID → preserved-control CUDA parity (46 hosted public states, batch 8,
-300s child cap, CPU layout/GPU inference) → current build → fresh-optimizer warm
-8,388,608-step arm and its sampler/≥30K SPS gates → source/control/CE/warm paired
-4,096-game panels. Completed control and supervised work are **not repeated**.
-Actual allocated host/container GPU scope and CUDA parity remain unverified;
-installed cgroup configuration and prior batch-shell receipts are supporting evidence.
-
-The backend uses fresh mode-0700 `/var/tmp` job storage with owned Enroot
-DATA/TEMP/CACHE/RUNTIME/CONFIG paths. Startup/unpack/workload free-capacity gates
-are respectively 32 GiB/60K, 15 GiB/40K and 8 GiB/20K inodes, with actual gauges
-recorded. It rejects site-storage, recovery-mount and retained-container flags.
-Installed source/hook audit and CPU lifecycle review passed, **not GPU execution**.
-Audit `/tmp/generals-installed-enroot-audit.json` SHA-256:
+The backend uses mode-0700 owned `/var/tmp` storage for Enroot
+DATA/TEMP/CACHE/RUNTIME/CONFIG. Startup/unpack/workload gates respectively require
+32 GiB/60K, 15 GiB/40K and 8 GiB/20K inodes; obsolete site/recovery/retained flags
+are rejected. Installed audit `/tmp/generals-installed-enroot-audit.json` SHA:
 `a7d831ac21b15eb8769ca1b95df5616781b825897c0bd80e3eb670b2ffc2b0cd`.
+
+B300 maintenance was cleared by 00:53 UTC. Current geometry uses ~205 GiB GPU
+memory and fits the measured B300 setup; an 80 GiB H100 requires smaller geometry
+and a new throughput qualification. B300 remains preferred after the source-gate
+fix. Givemeanode authentication and free H100 validation passed; no alternate
+job was submitted.
 
 ## Attempt ledger
 
 All listed B300 submissions record Nice **2147483645**, Priority **1**, one GPU,
 eight CPUs and 96 GiB; finite caps are retained below. Controller records are in
-result directories; 35936's terminal controller retention expired, so its failure
-comes from the workload receipt/logs and its cap from submission readback.
+result directories; 35936 and 35956 terminal controller retention expired, so
+their outcomes come from workload receipts/logs and caps from submission readback.
 H100 attempts all failed before optimizer updates; that path is retired.
 
 | Attempt | Outcome / error | Cap | Retained evidence |
@@ -95,7 +99,7 @@ H100 attempts all failed before optimizer updates; that path is retired.
 | 35935 | Failed 1:0, 15m39s: control 8M + CE completed; parity adapter installed twice | 120 min | `/tmp/generals-policy-overhaul-results-35935/` |
 | 35936 | Workload exit 1; control parity SIGSEGV −11, no child traceback; no warm/evaluation | 90 min | `/tmp/generals-policy-overhaul-results-35936/` |
 | 35949 | Failed 1:0, 1s: `/tmp` inode guard; no downloads/GPU query/parity/build/updates | 100 min | `/tmp/generals-policy-overhaul-results-35949/` |
-| 35956 | Pending; first allocated GPU scope/parity proof outstanding | 100 min | Active receipt prefix above |
+| 35956 | Workload exit 1: GPU scope/parity/build/preflight passed; balanced-seat guard failed before sampling games | 100 min | `/tmp/generals-policy-overhaul-results-35956/` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -159,5 +163,6 @@ proofs are packaged in the active capsule. Reused two-graph CPU execution is
 identified honestly alongside the reviewed non-model source delta and current
 sampling guard. Source cleanup added **zero RL steps**, preserving originals.
 
-Next: collect 35956's GPU-scope/parity gates, then its warm arm and paired panels.
+Next: seal the repaired balanced-seat evaluator and complete the preserved
+experiment's actual source gate, warm arm and paired panels.
 Retain the baseline until broad and fresh hosted evidence qualifies a candidate.

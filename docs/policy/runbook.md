@@ -81,11 +81,12 @@ Current capacity declarations are:
 | Each workload phase | 8 GiB | 20,000 |
 
 Verify real filesystem availability and installed Enroot hooks before submission.
-The runner records actual byte/inode gauges on failures. A read-only installed
-backend audit and CPU lifecycle tests passed for the current implementation;
-they do not prove an allocated GPU launch or native CUDA parity. Job 35949
-failed before downloads because `/tmp` had only 13,170 available inodes.
-The new `/var/tmp` backend still needs its first bounded GPU execution proof.
+The runner records actual byte/inode gauges on failures. Job 35949 failed
+before downloads because `/tmp` had only 13,170 available inodes. The corrected
+owned `/var/tmp` backend passed actual allocated host/container GPU ownership,
+UUID and 46-state native CUDA parity in 35956. That job then failed before
+sampling games on a missing explicit balanced-seat option; warm training and
+broad strength evaluation remain incomplete. See current-state for evidence.
 
 ## Current native asset boundary
 

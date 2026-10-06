@@ -13,22 +13,16 @@ infrastructure cleanup alone does not complete the goal.
 | 5. Learning | Controlled changes that address observed losses | Broad improvement with preservation against strong controls; qualified throughput |
 | 6. Hosted qualification | Frozen serving bundle and confirmed winning advantage | Fresh hosted acceptance panels and recorded champion promotion |
 
-Consolidation and the shared Classic contract are implemented. The repaired
-Puffer path completed a bounded B300 qualification at 76,357 end-to-end SPS;
-the selected baseline also passed native AMD64 hosted serving smoke. The
-same-sampler source gate passed in 35935. That trial completed control
-PPO and supervised warmstart, but parity failed; retry 35936 segfaulted in
-native GPU parity. Current source cleanup has exact CPU structural/numeric
-proof. Continuation 35949 failed in host scratch preparation after one second:
-13,170 available `/tmp` inodes were below the declared 60,000 requirement.
-No downloads, GPU query, parity or new training/evaluation occurred. Storage
-and Enroot paths were then audited. The direct Enroot replacement has installed
-source and CPU lifecycle proof. Current job 35956 is pending from source
-`4c7dfc2` with one B300, maximum Nice, Priority 1 and a 100-minute cap. Its
-actual allocated host/container GPU scope and CUDA parity remain unverified;
-no new GPU measurements, warm training or evaluation results are available.
-Baseline comparisons and loss diagnosis are available. Learning improvement
-and hosted winning qualification remain open; see [current-state.md](current-state.md).
+Consolidation and the shared Classic contract are implemented. Control training
+in 35935 sustained 84,486 SPS and passed its genuine same-sampler source gate.
+The source cleanup has exact structural/numeric proof. Job 35956 then passed
+actual direct Enroot GPU ownership/UUID, 46-state CUDA control parity, current
+build and CE fresh-optimizer CPU preflight. It failed before sampling games on
+an omitted explicit balanced-seat option; warm PPO and broad panels did not run.
+No job is active. B300 maintenance cleared; its measured geometry requires
+~205 GiB GPU memory, so H100 80 GiB would require smaller geometry and a new gate.
+Learning improvement and hosted winning qualification remain open; see
+[current-state.md](current-state.md).
 
 ## Experiment decisions
 
@@ -43,13 +37,11 @@ Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
 position curriculum, opponent pool and rewards. Compare source, distilled,
 control and warm bundles on the same broad development games before selecting
-a candidate for fresh confirmation and hosted qualification. Pending job
-35956 must first prove allocated host/container GPU scope and preserved-control
-CUDA parity using the direct Enroot backend and owned `/var/tmp` storage. Only
-then may it build the current
-runtime, executing the warm arm and evaluating broad panels. Retain completed
-control and supervised artifacts from 35935; those computations are not repeated.
-The failed retries provide no warm-arm result.
+a candidate for fresh confirmation and hosted qualification. The frozen-match
+balanced-seat call is repaired with 33 focused tests passing; verify its actual
+sampling path before retrying the warm arm and broad panels. Direct Enroot and CUDA parity already have actual 35956
+proof; retain completed control and supervised artifacts from 35935. Those
+computations are not repeated. The failed retries provide no warm-arm result.
 
 Preserve throughput, legality, train/serve parity, opponent-by-seat coverage and
 frozen artifact identities. Reject failed hypotheses using their paired evidence;
