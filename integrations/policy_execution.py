@@ -65,7 +65,8 @@ def runtime_environment(source, output, sampler):
     return env
 
 
-def execute(module, arguments, *, source, output, sampler, name, seconds, training_config=None):
+def execute(module, arguments, *, source, output, sampler, name, seconds, training_config=None,
+            startup_seconds=300):
     """Start one process group; preserve logs on every outcome."""
     output.mkdir(parents=True, exist_ok=True)
     env = runtime_environment(source, output, sampler)
@@ -121,8 +122,8 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         if "NonFiniteGradsError" in text or "FloatingPointError" in text:
                             raise FloatingPointError("Native training produced nonfinite values")
                         times = completed_epoch_times(text)
-                        if elapsed > 300 and not times:
-                            raise TimeoutError("No completed training epoch after 300s")
+                        if elapsed > startup_seconds and not times:
+                            raise TimeoutError(f"No completed training epoch after {startup_seconds}s")
                         sps = interval_sps(times, 2, steps_per_epoch)
                         if len(times) >= 4 and sps is not None and sps < 30_000:
                             raise RuntimeError(f"Sustained training throughput below 30,000 SPS: {sps}")
