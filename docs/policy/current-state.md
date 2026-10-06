@@ -85,13 +85,17 @@ fits H100, but qualification failed: `Complete finite reward audit is missing`.
 Neither profile qualifies; these are throughput measurements, not strength results.
 Evidence: `/tmp/generals-h100-probe-results-job-zfz7e/`.
 
-**Confirmation job `job-s79eq` is SUBMITTED**, 04:19:06 UTC, source
-`e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-da62e3ca`:
-one H100, 30-minute maximum/$1.485, **4,096/H128, eight epochs / 4,194,304 steps**,
-with an explicit final reward-audit target. Receipt:
-`/tmp/generals-h100-qualification-4096h128-submission.json`.
-**Qualification awaits its complete artifact**, including finite reward audit;
-matched warm work remains deferred and no new strength result exists.
+**Confirmation job `job-s79eq` SUCCEEDED and qualifies 4,096/H128 on H100.**
+Source `e649d73d28a5ccbe1995837010db50d8d35e7199`; minibatch 8,192, replay 0.5,
+**4,194,304 completed steps**, last two epochs **36,182.7467 end-to-end SPS**,
+sampled peak **68,517 MiB** on H100 80GB. Final reward audit covers all
+4,194,304 agent steps: **0 nonfinite rewards, 0 clipped rewards, 0 illegal
+actions**, with all 13 opponents sampled on both seats. One H100 billed
+**608s/$0.5016**. Verified collector:
+`/tmp/generals-h100-qualification-4096h128-results-job-s79eq/`.
+Archive SHA: `fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5`;
+profile result SHA: `c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98`.
+**Matched control/warm staging is underway; no new strength result exists.**
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -130,7 +134,7 @@ The sizing profiles compare 2,048/H256 (43.126 GiB known buffers) with
 4,096/H128 (44.904 GiB), each fresh from cold weights, minibatch 8,192/replay 0.5,
 **3,145,728 steps / six epochs**, two warmup epochs, then raw epoch and device
 memory measurements. Require **≥30K actual end-to-end SPS** before qualification;
-4,096/H128 fit and throughput are measured, but its final audit is incomplete. Selecting new
+4,096/H128 is now qualified by the completed eight-epoch confirmation. Selecting new
 geometry requires **both control and warm arms at that geometry**; the retained
 8,192-control is baseline evidence, not a matched control for 2,048/4,096.
 
@@ -161,7 +165,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-i8tp6` | Failed: sampler and both builds passed; both CPU preflights timed out at 120s before epochs | 30 min GPU | `/tmp/generals-h100-probe-results-job-i8tp6/` |
 | `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
 | `job-zfz7e` | Unqualified: 2048/H256 below30K; 4096/H128 36,643 SPS/68,241 MiB but final reward audit missing | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-zfz7e/` |
-| `job-s79eq` | Submitted: eight-epoch 4096/H128 confirmation with explicit final audit; not yet qualified | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-submission.json` |
+| `job-s79eq` | Succeeded: 4096/H128 qualified at 36,182.7467 SPS, full finite/legal audit; 608s/$0.5016 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -173,7 +177,7 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 The matched defense driver is integrated and pushed through `de5f915`: it uses
 the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
 training startup to 420s and refuses unqualified geometry. **This experiment
-has not run**; geometry qualification remains its prerequisite.
+has not run**; H100 geometry qualification passed and staging is underway.
 
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
@@ -232,5 +236,5 @@ identified honestly alongside the reviewed non-model source delta and current
 sampling guard. Source cleanup added **zero RL steps**, preserving originals.
 
 Next: collect the owned H100 probe's raw memory and steady epoch throughput,
-choose qualified geometry, then resume the deferred matched warm experiment.
+use qualified 4,096/H128 geometry for matched control and warm arms.
 Retain the baseline until broad and fresh hosted evidence qualifies a candidate.

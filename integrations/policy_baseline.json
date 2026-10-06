@@ -129,25 +129,28 @@
     "minibatch": 8192,
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
-    "matched_warm_experiment": "Deferred; new geometry requires fresh control and warm arms at that geometry.",
+    "matched_warm_experiment": "Staging matched control and warm arms at qualified4096/H128; no new strength results.",
     "startup_seconds": 420,
     "training_seconds_each": 600,
     "duplicate_cpu_preflight": false,
     "job": "job-s79eq",
-    "state": "SUBMITTED",
+    "state": "SUCCEEDED",
     "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199",
     "submitted_at_utc": "2026-10-06T04:19:06.003523+00:00",
-    "phase": "awaiting_gpu_execution",
+    "phase": "qualified_complete",
     "context_id": "ctx-da62e3ca",
     "input_sha256": "1328eb37650648856111fa999440a77c3e4f61de68c5974185a7ff95f2f3f29b",
     "max_cost_usd": 1.485,
-    "new_training_steps": null,
-    "measured_sps": null,
-    "measured_training_memory": null,
+    "new_training_steps": 4194304,
+    "measured_sps": 36182.746721877134,
+    "measured_training_memory": {
+      "sampled_peak_device_memory_mib": 68517,
+      "hardware": "NVIDIA H100 80GB HBM3"
+    },
     "evidence": {
-      "path": "/tmp/generals-h100-qualification-4096h128-submission.json",
-      "sha256": "6e3d93e6921a4cdc31d7b62bf3bb3e092275cafa99864f6cb930a5cc027fe219",
-      "bytes": 3183,
+      "path": "/tmp/generals-h100-qualification-4096h128-results-job-s79eq/terminal.json",
+      "sha256": "19ac0bfe140fbe13531f2b2f314f64b20dc619f73e93487d422f02f7827b1dae",
+      "bytes": 10212,
       "verified_locally": true
     },
     "cold_asset_manifest_sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9",
@@ -169,8 +172,87 @@
       "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61"
     },
     "source_gate_reused": true,
-    "qualified": false,
-    "explicit_final_reward_audit": true
+    "qualified": true,
+    "explicit_final_reward_audit": true,
+    "epochs_completed": 8,
+    "billed_seconds": 608,
+    "charged_usd": 0.5016,
+    "audit": {
+      "environment_steps": 4194304,
+      "environment_count": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "steady_sps": 36182.746721877134,
+      "illegal_actions": 0,
+      "opponent_counts_by_seat": {
+        "frozen_fff930fd304a": {
+          "0": 29,
+          "1": 29
+        },
+        "frozen_704b0949c9a5": {
+          "0": 58,
+          "1": 58
+        },
+        "frozen_4940d3db1222": {
+          "0": 29,
+          "1": 29
+        },
+        "frozen_a4591eb43f96": {
+          "0": 29,
+          "1": 29
+        },
+        "frozen_3eb2fe3f22af": {
+          "0": 29,
+          "1": 29
+        },
+        "frozen_201e147f536f": {
+          "0": 116,
+          "1": 116
+        },
+        "frozen_f8df1ccd67a1": {
+          "0": 145,
+          "1": 145
+        },
+        "frozen_f589aa8f2745": {
+          "0": 145,
+          "1": 145
+        },
+        "frozen_83dc8144eafc": {
+          "0": 319,
+          "1": 319
+        },
+        "frozen_d2c30ee48e80": {
+          "0": 493,
+          "1": 493
+        },
+        "expander_harvester": {
+          "0": 87,
+          "1": 87
+        },
+        "sentinel": {
+          "0": 116,
+          "1": 116
+        },
+        "classic_siege_padded": {
+          "0": 453,
+          "1": 453
+        }
+      },
+      "reward_audit": {
+        "agent_steps": 4194304,
+        "nonfinite_rewards": 0,
+        "native_clipped_rewards": 0,
+        "native_clipped_terminal_rewards": 0
+      }
+    },
+    "result_evidence": {
+      "path": "/tmp/generals-h100-qualification-4096h128-results-job-s79eq/extracted/generals/p4096h128/result.json",
+      "sha256": "c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98",
+      "bytes": 5630,
+      "verified_locally": true
+    },
+    "result_archive_sha256": "fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5"
   },
   "latest_training_throughput": {
     "job": "35935",

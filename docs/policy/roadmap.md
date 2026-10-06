@@ -32,9 +32,11 @@ Python sources unchanged; CPU proof preserves ABI, all 23 tensors bitwise and
 (stopped below30K) and 36,643 steady SPS at 4,096/H128, with 68,241 MiB sampled
 peak device memory. The latter completed six epochs but lacks its final finite
 reward audit, so neither geometry is qualified. Eight-epoch confirmation
-`job-s79eq` is submitted from `e649d73` at 4,096/H128 with an explicit final
-audit target, bounded one H100/30min/$1.485. Wait for the complete qualifying
-artifact before matched defense work. Known 8,192/H256 buffers account
+`job-s79eq` SUCCEEDED from `e649d73`: 4,096/H128, minibatch8,192/replay0.5,
+4,194,304 steps, last-two-epoch 36,182.7467 SPS, peak68,517 MiB. Its complete
+reward audit has zero nonfinite/clipped rewards and illegal actions, and all13
+opponents sampled both seats. H100 geometry is qualified; matched control/warm
+staging is underway. No new strength result exists. Known 8,192/H256 buffers account
 for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
 an intrinsic requirement of the 2.21 MiB policy.
 Learning improvement and hosted winning qualification remain open; see
@@ -47,8 +49,8 @@ candidate regressed against both its initialization and the unchanged baseline
 on matched development games and was rejected. The stale launcher binding is
 resolved; repeating that intervention or scaling its training is unjustified.
 
-The matched public-defense warmstart experiment is deferred until memory/throughput
-sizing selects geometry. The driver is integrated/pushed through `de5f915`,
+The matched public-defense warmstart experiment is staging at qualified
+4,096/H128 H100 geometry. The driver is integrated/pushed through `de5f915`,
 uses the provider-visible GPU, avoids duplicate CPU preflight and allows 420s
 bounded training startup. It refuses unqualified geometry; no matched experiment
 has run. Separate
@@ -65,7 +67,7 @@ computations are not repeated. The failed retries provide no warm-arm result.
 
 The intended sizing profiles compare 2,048/H256 (43.126 GiB known buffers) with
 4,096/H128 (44.904 GiB), using minibatch 8,192, replay 0.5 and 3,145,728 steps
-per probe (six epochs, two warmup). Require measured fit and ≥30K end-to-end SPS;
+per probe (six epochs, two warmup). The eight-epoch confirmation passes measured fit and ≥30K end-to-end SPS;
 33.081 GiB of the current device allocation is unattributed and cannot be assumed
 to scale proportionally. Selecting new geometry requires new control and warm
 arms at that geometry; the old 8,192 control remains baseline evidence. See
