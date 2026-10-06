@@ -25,6 +25,11 @@ full-game strength. The adverse reused training-pool diagnostic was consistent
 with the fresh development panel. Neither tactical metrics nor training outcomes
 replace independent confirmation or hosted qualification. No hosted promotion.
 
+The verified panel's omniscient post-action audit also correlates rejection
+with more late passing (warm2.733%, distilled2.424%, source0.0014%, control0.0017%).
+This is not causal evidence or a policy input; exact counts and archive binding
+are in current-state.
+
 1. Preserve frozen candidates and diagnose losing replays by opponent/seat.
 2. Design the next intervention from measured loss mechanisms, keeping the
    qualified 4,096/H128 H100 geometry and matched control comparisons.

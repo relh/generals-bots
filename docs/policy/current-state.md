@@ -125,6 +125,14 @@ holdout: **neither fresh confirmation nor full-game strength**. Completed broad
 `/tmp/generals-vezu3-heldout-defense-serving-cpu-v2/analysis.json`, SHA
 `0f2f74222314573464bbb265e4af9715d081f4ebcd4470c8acd58b9f20014cba`.
 
+Destination audit in the verified held-out panel shows more late passing:
+turn200+ source **34/2,436,517 (0.0014%)**, control **42/2,431,909 (0.0017%)**,
+warm **72,360/2,647,991 (2.733%)**, distilled **63,259/2,609,217 (2.424%)**.
+Early-phase pass rates are source4.889%, warm6.485%, distilled6.924%.
+This is **correlation, not a causal explanation**: the audit is omniscient and
+post-action only; hidden destination ownership was never fed to the policy.
+Counts are in each panel's `evaluation.json`, bound to archive `435242250…` above.
+
 ## Current artifact contract and proofs
 
 Supported native graph: 16 planes, F32/G32, five priors, flat actions, radius
