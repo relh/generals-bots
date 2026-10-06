@@ -114,14 +114,16 @@ Artifact: `/tmp/generals-matched-h100-results-job-mvtti/`, SHA
 `configure_positions` now preserves the verified absolute symlink spelling;
 fix `7c605046a74c94bb89577607c2576e5e66e73877` passed targeted tests.
 
-**Matched retry `job-uyssa` is SUBMITTED**, 05:30:01 UTC, source `7c605046…`,
-context `ctx-55da065a`; sealed source/input archive 199,599,635 B, SHA
-`6e5c73c0106c8530c346fc5b62f49ef3bbf2cb435687949b934dd3317ba1efe8`.
-Free validation passed; one H100, **90-minute/$4.455 maximum**, zero restarts.
-Two **8,388,608-step fresh PPO arms** compare cold control with CE warmstart,
-then a broad held-out population panel at qualified 4,096/H128 geometry.
-Receipt: `/tmp/generals-matched-h100-7c60504-submission.json`.
-**No matched training or strength result yet.**
+**Matched job `job-uyssa` FAILED after successful control training.**
+One H100 completed **8,388,608 control PPO steps**, 4,096 environments/H128,
+minibatch8,192/replay0.5, at **36,171.5 steady end-to-end SPS**. Its complete
+reward audit records **zero illegal actions, nonfinite rewards and clipped
+rewards**. Publishing then hit its **120s timeout after graph reconstruction**;
+this is a finalization failure, not a failed training throughput or integrity gate.
+Billed **990s/$0.8162**. Warm PPO and held-out panels **did not complete**;
+no matched strength result exists. Preserve completed control and learner outputs.
+Artifact: `/tmp/generals-matched-h100-results-job-uyssa/`, SHA
+`dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374`.
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -195,7 +197,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-int7f` | BUILD_FAILED before GPU, zero billed; Docker pip/version layer: missing numpy, recovered log tail | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-submission.json` |
 | `job-zvvcn` | BUILD_FAILED in19s: `/ctx/framework-source` permission denied, mode700 tar directory entries; no GPU | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-build-submission.json` |
 | `job-mvtti` | Failed: verified native identities matched, curriculum symlink spelling differed; no PPO;123s/$0.1012 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-mvtti/` |
-| `job-uyssa` | Submitted: verified curriculum spelling fix; matched results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-7c60504-submission.json` |
+| `job-uyssa` | Failed publishing120s after clean control8M at36,171.5SPS; no warm/panels;990s/$0.8162 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-uyssa/` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -206,7 +208,7 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 
 The matched defense driver is integrated and pushed through `de5f915`: it uses
 the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
-training startup to 420s and refuses unqualified geometry. The matched experiment is submitted as `job-uyssa`; results remain pending.
+training startup to 420s and refuses unqualified geometry. The control arm completed in `job-uyssa`; publishing failed and warm/panel results remain absent.
 
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
