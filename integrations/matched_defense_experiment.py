@@ -117,7 +117,6 @@ def main():
     trial.smoke()
     trial.build()
     verify_runtime(args.qualification / "build", args.output / "build")
-    trial.preflight()
     trial.distill()
     trial.train_arm("control")
     trial.train_arm("warm")

@@ -1,6 +1,8 @@
 import copy
 import hashlib
 import json
+import sys
+from types import SimpleNamespace
 
 import pytest
 
@@ -64,3 +66,24 @@ def test_qualification_rejects_wrong_batching_and_native_runtime(tmp_path):
     (tmp_path / "after/source/src/kernel.cu").write_text("different mask gather")
     with pytest.raises(ValueError, match="runtime source"):
         verify_runtime(tmp_path / "before", tmp_path / "after")
+
+
+def test_trial_runtime_gpu_guard_needs_no_slurm_assignment(monkeypatch, tmp_path):
+    from integrations import slurm_s3_job
+    from integrations.policy_trial import Trial
+
+    for key in ("SLURM_STEP_GPUS", "SLURM_JOB_GPUS", "GENERALS_ALLOCATED_GPU_UUID"):
+        monkeypatch.delenv(key, raising=False)
+    def query(*arguments):
+        if "--query-gpu=index,uuid" in arguments:
+            return "0, GPU-aabb-1234"
+        if "--query-compute-apps=pid" in arguments:
+            return ""
+        return "GPU-aabb-1234, 0, 0"
+    monkeypatch.setattr(slurm_s3_job, "gpu_query", query)
+    # A provider without Slurm must reach and enforce the JAX device-count guard.
+    monkeypatch.setitem(sys.modules, "jax", SimpleNamespace(devices=lambda platform: [object(), object()]))
+    trial = Trial.__new__(Trial)
+    trial.output = tmp_path
+    with pytest.raises(RuntimeError, match="exactly one allocated GPU"):
+        trial.smoke()

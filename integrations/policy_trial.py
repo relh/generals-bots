@@ -71,20 +71,20 @@ class Trial:
             name=name,
             seconds=seconds,
             training_config=out / "config.json" if training else None,
+            startup_seconds=120,
         )
 
     def smoke(self):
-        from integrations.slurm_s3_job import verify_allocated_gpu_idle
+        from integrations.slurm_s3_job import visible_gpu_identity, verify_gpu_idle
 
         # Check occupancy before any game import creates JAX device constants.
-        identity = verify_allocated_gpu_idle()
+        identity = verify_gpu_idle(visible_gpu_identity())
         import jax
-
-        from integrations.classic_contract import validate_training_contract
-        from integrations.classic_position_curriculum import configure_positions
 
         if len(jax.devices("gpu")) != 1:
             raise RuntimeError("Trial requires exactly one allocated GPU")
+        from integrations.classic_contract import validate_training_contract
+        from integrations.classic_position_curriculum import configure_positions
         (self.output / "gpu-preflight.json").write_text(json.dumps(identity, indent=2) + "\n")
         hashes = json.loads((self.inputs / "source-manifest.json").read_text())
         for name, digest in hashes.items():
@@ -130,23 +130,6 @@ class Trial:
             ["build", "--config", self.output / "build-config.json", "--output", self.output / "build"],
             name="build",
             seconds=540,
-        )
-
-    def preflight(self, arm="control"):
-        self.call(
-            "launch_spatial_selfplay_training",
-            [
-                "preflight",
-                "--build",
-                self.output / "build",
-                "--config",
-                self.output / arm / "config.json",
-                "--output",
-                self.output / arm / "cpu-prepared",
-            ],
-            name="preflight",
-            seconds=120,
-            arm=arm,
         )
 
     def distill(self):
@@ -228,8 +211,6 @@ class Trial:
         (self.output / arm / "sampling-gate.json").write_text(json.dumps(report, indent=2) + "\n")
 
     def train_arm(self, arm):
-        if arm == "warm":
-            self.preflight(arm)
         self.sampling_gate(arm)
         self.call(
             "launch_spatial_selfplay_training",
@@ -357,7 +338,7 @@ class Trial:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("phase", choices=("smoke", "build", "preflight", "distill", "control", "warm", "evaluate"))
+    parser.add_argument("phase", choices=("smoke", "build", "distill", "control", "warm", "evaluate"))
     parser.add_argument("--input", type=Path, default=Path("/work/input"))
     parser.add_argument("--output", type=Path, default=Path("/work/out"))
     args = parser.parse_args()
