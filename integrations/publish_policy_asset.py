@@ -58,7 +58,23 @@ def completed_checkpoint(run, record, checkpoint, expected_sha, parameter_count)
     return learner, snapshot, completed, identity_path
 
 
-def publish(build_path, training_path, checkpoint, expected_sha, sampler, factory_source, output):
+def curriculum_lineage(curriculum, options):
+    """Authenticate the exact source-only pool before adding its actual seeds."""
+    data = json.loads(curriculum.read_text())
+    pool = Path(options["coworld_position_pool"])
+    if (data.get("schema") != "classic-midgame-positions-v1"
+            or data.get("split") != "source" or data.get("teacher_labels_enabled") is not False
+            or pool.resolve() != curriculum.with_name("positions.npz").resolve()
+            or data["positions_sha256"] != options["coworld_position_pool_sha256"]
+            or hashlib.sha256(pool.read_bytes()).hexdigest() != data["positions_sha256"]):
+        raise ValueError("Published curriculum differs from the authentic source-only training pool")
+    actual_seeds = [data["root_training_seed"], *data["map_seeds"]]
+    if any(type(seed) is not int or seed < 0 for seed in actual_seeds):
+        raise ValueError("Curriculum requires actual nonnegative map and root seeds")
+    return set(actual_seeds), hashlib.sha256(curriculum.read_bytes()).hexdigest()
+
+
+def publish(build_path, training_path, checkpoint, expected_sha, sampler, factory_source, output, *, curriculum=None):
     from integrations.puffer_coworld_frozen_transfer import BuildManifest, InitializationRecord, TrainingRecord
 
     build = BuildManifest.model_validate_json(build_path.read_text())
@@ -82,6 +98,10 @@ def publish(build_path, training_path, checkpoint, expected_sha, sampler, factor
         completed_run=hashlib.sha256((run / "completed.json").read_bytes()).hexdigest(),
         checkpoint_identity=hashlib.sha256(identity_path.read_bytes()).hexdigest(),
     )
+    if curriculum is not None:
+        actual_seeds, manifest_digest = curriculum_lineage(curriculum, build.config.python_environment.options)
+        seeds.update(actual_seeds)
+        ancestors["training_curriculum"] = manifest_digest
     start = 0
     if record.config.initialize:
         initialization = record.config.initialize
