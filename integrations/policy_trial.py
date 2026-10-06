@@ -71,7 +71,7 @@ class Trial:
             name=name,
             seconds=seconds,
             training_config=out / "config.json" if training else None,
-            startup_seconds=120,
+            startup_seconds=420 if training else 300,
         )
 
     def smoke(self):

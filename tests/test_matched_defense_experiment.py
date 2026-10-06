@@ -87,3 +87,19 @@ def test_trial_runtime_gpu_guard_needs_no_slurm_assignment(monkeypatch, tmp_path
     trial.output = tmp_path
     with pytest.raises(RuntimeError, match="exactly one allocated GPU"):
         trial.smoke()
+
+
+def test_training_startup_fits_cold_h100_compilation_and_finite_outer_budget(monkeypatch, tmp_path):
+    from integrations import policy_trial
+
+    requests = []
+    monkeypatch.setattr(policy_trial, "execute", lambda *args, **kwargs: requests.append(kwargs))
+    trial = policy_trial.Trial.__new__(policy_trial.Trial)
+    trial.output, trial.source, trial.sampler = tmp_path, tmp_path / "source", {}
+    trial.call("launch_spatial_selfplay_training", [], name="train", seconds=660,
+               arm="control", training=True)
+    assert requests[0]["startup_seconds"] == 420 < requests[0]["seconds"] == 660
+    assert requests[0]["training_config"] == tmp_path / "control/config.json"
+    trial.call("evaluate_spatial_frozen_match", [], name="sampling", seconds=300)
+    assert requests[1]["training_config"] is None
+    assert requests[1]["seconds"] == 300
