@@ -101,23 +101,32 @@ Verified result archive SHA:
 `efecdd6b4cedfb01b24d81e6443cb858213f2318cd88c03249a713b68dda134c`.
 The H100 run billed 523 seconds/$0.4312.
 
-A bounded source-mirror PPO throughput probe is resubmitted as `job-w43vv` on
-`codex/source-mirror-ppo` at `7497168`. It replaces one weak historical frozen
-opponent with the exact source actor; other opponents, reward and sampler are
-fixed. One H100 will run 4,194,304 steps at 4,096 environments/H128/minibatch
-8,192/replay 0.5, requiring at least 30K steady end-to-end SPS and clean
-audits. Its 30-minute/$1.485 cap and success marker bound the job. Prior
+A bounded source-mirror PPO throughput probe `job-w43vv` on
+`codex/source-mirror-ppo` at `7497168` **qualified**. It replaced one weak
+historical frozen opponent with the exact source actor; other opponents,
+reward and sampler were fixed. One H100 completed 4,194,304 steps at 4,096
+environments/H128/minibatch 8,192/replay 0.5. After six warmup epochs, the
+final 1,048,576 steps took 27.521 seconds: **38,100.9 steady end-to-end SPS**.
+Peak sampled device memory was 69,080 MiB. All 13 opponents appeared on both
+seats; illegal actions, nonfinite rewards and clipped rewards were zero.
+Verified result archive SHA:
+`74d3d40f4ec2b3f2f170edf504b017cf96dace29d8a27fd712a37b5212e08722`;
+qualification marker SHA:
+`089291cef732a3b610a5f19840023e79284fd430eed17a4aaabd010c47154532`.
+The new training checkpoint SHA is
+`40e7662aac04d676649e3ba51e5e70e7e3de5ac0bdba663cf86456fbd3f0cf94`.
+The matched control and fresh evaluation are pending; this throughput result
+alone does not establish stronger play. Prior
 `job-dzu73` failed before PPO because the probe invoked a sampling gate that
 expected an absent distilled bundle ($0.1089). Its first retry `job-63iic`
 passed the 512-game source sampling gate but failed native preflight: the
 staged original cold asset's model fingerprint `d30f5fae…` differed from the
 qualified build's `cead5dce…` ($0.3333; verified output SHA
 `a22c9dd025220027824c376ae60cb774224c5d0771ae40797fd182ce20a988e2`).
-The new retry uses the already qualified, proof-bound metadata-rebound asset
-with exact source, ABI and policy bytes. Its sealed context is `ctx-f0e50843`,
-archive SHA `7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc`.
-It has no training result yet and cannot establish strength without a matched
-control and fresh evaluation.
+The successful retry used the already qualified, proof-bound metadata-rebound
+asset with exact source, ABI and policy bytes. Its sealed context was
+`ctx-f0e50843`, archive SHA
+`7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc`.
 
 A separate hard-opponent weighting throughput probe is resubmitted as H100
 `job-ju3rh` on `relh/hard-opponent-weighting` at `b3f12c0`. It starts from the

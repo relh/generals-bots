@@ -62,6 +62,27 @@
     "all_13_opponents_both_seats": true,
     "result_archive_sha256": "fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5"
   },
+  "qualified_source_mirror_probe": {
+    "job": "job-w43vv",
+    "hardware": "H100 80GB",
+    "environments": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_epochs": 6,
+    "steady_interval_steps": 1048576,
+    "steady_interval_seconds": 27.521,
+    "steady_end_to_end_sps": 38100.941,
+    "completed_steps": 4194304,
+    "peak_device_memory_mib": 69080,
+    "illegal_actions": 0,
+    "nonfinite_rewards": 0,
+    "clipped_rewards": 0,
+    "all_13_opponents_both_seats": true,
+    "checkpoint_sha256": "40e7662aac04d676649e3ba51e5e70e7e3de5ac0bdba663cf86456fbd3f0cf94",
+    "result_archive_sha256": "74d3d40f4ec2b3f2f170edf504b017cf96dace29d8a27fd712a37b5212e08722",
+    "qualification_sha256": "089291cef732a3b610a5f19840023e79284fd430eed17a4aaabd010c47154532"
+  },
   "penalty8_hosted_rejection": {
     "policy_id": "e1644605-50ea-495a-9631-a2ff4d25b85f",
     "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
@@ -79,22 +100,6 @@
     "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
   "active_experiments": [
-    {
-      "kind": "source_mirror_ppo_throughput_probe",
-      "branch": "codex/source-mirror-ppo",
-      "revision": "7497168",
-      "job": "job-w43vv",
-      "last_observed_state": "SUBMITTED",
-      "context_archive_sha256": "7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc",
-      "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-      "agent_steps": 4194304,
-      "environments": 4096,
-      "horizon": 128,
-      "minibatch": 8192,
-      "replay_ratio": 0.5,
-      "minimum_steady_sps": 30000,
-      "max_cost_usd": 1.485
-    },
     {
       "kind": "hard_opponent_weighting_throughput_probe",
       "branch": "relh/hard-opponent-weighting",
