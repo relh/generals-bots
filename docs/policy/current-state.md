@@ -168,16 +168,20 @@ permissions hid its Dockerfile from the rootless builder; it billed $0. The
 corrected archive passed tar-header and unprivileged extraction checks.
 The next `job-ju3rh` reached H100 but stopped at the GPU idle check before
 games/training (60 seconds/$0.0495); its log lacked process identities, so
-the exact cause is unproved. The current runner checks GPU idle before JAX
-imports and records process information on failure. A final bounded probe
-`job-izcgj` is submitted on `codex/hard-opponent-trial` at `cf98d7d`, using
-the qualified Trial build, source gate, preflight and train path. It requires
-both the proven 512-game source gate and a second complete 512-game gate on
-the failed seed before PPO. Its context is `ctx-5a1213c5`, archive SHA
+the exact cause is unproved. The repaired, bounded `job-izcgj` on
+`codex/hard-opponent-trial` at `cf98d7d` **qualified** the exact treatment:
+one H100 80GB, 4,096 environments/H128/minibatch 8,192/replay 0.5, and
+4,194,304 completed steps. Its last 1,048,576 steps after six warmup epochs
+took 30.398 seconds: **34,494.9 steady end-to-end SPS**. All 13 opponents
+appeared on both seats, with zero illegal actions, nonfinite or clipped rewards,
+and nonfinite gradients. Both 512-game source gates completed 256 games per
+seat, including the formerly crashing seeds 10441691/10441693. The verified
+artifact SHA is `523093a6ca6c9d1335f1f4b1c532d99c47d748f85bae53e6e9f87ed5ac5bd7bf`;
+qualification marker SHA `6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
+Its context `ctx-5a1213c5` had archive SHA
 `8ae62472eede2e1d543cc08b613c9c30382cff094ee54074bb62576910a64289`;
-nonroot extraction and all file hashes were verified. The 30-minute/$1.485
-job has zero restarts. No qualification or training result exists yet.
-The proposed 16,777,216-step matched treatment/control run remains held.
+the completed job billed 1,039 seconds/$0.8569. The proposed 16,777,216-step
+matched treatment/control run is being staged against this exact marker.
 
 An isolated public-view `classic_siege_padded` opponent upgrade is submitted
 as H100 `job-m9ina` on `codex/classic-siege-pressure` at `375d3c2`. It adds

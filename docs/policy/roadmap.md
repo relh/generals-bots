@@ -8,11 +8,11 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Resolve the hard-opponent weighting probe's source-gate native crash using
-   the qualified GPU execution path, then require a fresh ≥30K SPS treatment
-   probe before longer training. The source-mirror treatment and matched
-   control both qualified for throughput, but the mirror failed paired
-   development strength.
+1. Run the qualified hard-opponent weighting treatment against its exact
+   matched control, then assess the preregistered paired Classic development
+   gate. Its treatment-specific H100 probe reached 34,494.9 steady SPS.
+   The source-mirror treatment and matched control also qualified for
+   throughput, but the mirror failed paired development strength.
 2. Evaluate any qualified treatment against its matched control on fresh
    Classic first episodes. The safe owned split, capital-threat gather and
    general-garrison split sampler pilots did not clear this development gate.
