@@ -1,8 +1,8 @@
 # Current policy state
 
 Updated **2026-10-06**. **The winning-policy objective remains unmet.**
-Training and serving are qualified; the matched warm candidate's broad strength
-is unknown. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
+Training and serving are qualified; the matched warm and distilled candidates
+regressed on held-out games and are rejected. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
 for decisions and [machine manifest](../../integrations/policy_baseline.json)
 for current artifact identities. Git history preserves superseded attempt records.
 
@@ -39,19 +39,28 @@ balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservatio
 against the broad pool, verified parity and clean execution. No champion change
 is justified by the current evidence.
 
-## Active held-out evaluation
+## Held-out decision: retain source, reject defense warmstart
 
-**Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
-`512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
-Provider validation passed; one H100, **120-minute/$5.94 maximum**, zero restarts.
-Sealed archive 212,623,426 B, SHA
-`264e933205a15532ec7a39ce8cd3a4f0d88cb5f95436b00d24e7a589d973cc64`,
-consuming authenticated `job-vezu3` artifact `d57aafc8…`.
-Four **4,096-game Classic first-episode panels**, preregistered seeds 51213/17431,
-run source/warm/control/distilled, each capped 1,440s. Earlier 512 games took 145.39s;
-~1,163s/panel is a scaling estimate, not a measurement. **Paired analysis and
-`EVALUATED.json` remain pending; no strength claim yet.** Receipt:
-`/tmp/generals-heldout-4x4096-512af1f-submission.json`.
+**`job-9fkii` SUCCEEDED**, source `512af1f91ce83d43fab8e0864f204eb064340d01`.
+One H100 billed **729s/$0.6006**. All four **4,096-game first-episode Classic
+panels completed**, using preregistered seeds 51213/17431 and the same pool/seats.
+There are **2,577 distinct initial-state hashes** across 4,096 game entries;
+paired 95% intervals resample initial-state clusters, not independent game rows.
+
+| Frozen arm | W/L/D | Paired signed-score delta vs source | Clustered 95% CI |
+| --- | --- | --- | --- |
+| Source | 2773/1297/26 | Reference | — |
+| Control | 2763/1305/28 | −0.00439453 | [−0.03349,+0.02460] |
+| Warm | 1757/2156/183 | −0.45776367 | [−0.49303,−0.42337] |
+| Distilled | 1682/2246/168 | −0.498046875 | [−0.53374,−0.46251] |
+
+**Reject warm and distilled; control has no demonstrated advantage. Retain the
+source baseline.** Tactical retention did not translate into broad improvement.
+This is development population evidence, not fresh hosted qualification;
+**no hosted promotion occurred**. Collected `EVALUATED.json`, paired reports,
+frozen bundles and episode arrays:
+`/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/`.
+Archive SHA: `435242250cd9fe416da169e51ad8b2c8ae7f46b21a9d331a91a1717cfd483428`.
 
 ## Qualified H100 execution
 
@@ -92,8 +101,8 @@ states, max probability errors **4.38e-6 / 5.60e-6**.
 
 Distillation used 256 batches×128 labels; on 512 independent held-out maps,
 safe-defense action probability mass improved **0.19454→0.63000**, top1 accuracy **0.1914→0.6367**.
-These tactical metrics do not establish broad warm-policy strength. **Four
-4,096-game held-out panels remain; no matched strength result yet.**
+These tactical metrics did not translate into broad strength: the completed
+held-out panels reject warm and distilled.
 Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
 `d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456`.
 
@@ -103,7 +112,7 @@ Training-pool diagnostic is adverse: control **7,192/10,896 wins (66.0%)**
 versus warm **4,430/10,198 (43.4%)**, worse across all **13 opponents/26 seats**;
 the final-quarter gap persists. This is correlated, reused training-pool evidence
 and **cannot select a winner**. Post-PPO tactical retention is measured on reused teacher states below;
-frozen held-out `job-9fkii` results remain pending. SHA-bound diagnostic:
+the completed held-out panel confirms broad regression. SHA-bound diagnostic:
 `/tmp/generals-matched-training-pool-comparison-vezu3.json`, SHA
 `6cb6ace308a3820cb5b60e9cb911b86792d0a37c0bf4bd83f13b44cec26f9b06`.
 
@@ -111,8 +120,8 @@ Tactical retention diagnostic on ARM64 CPU uses the same **512 preexisting
 teacher held-out states**: public-serving safe probability source **19.45%**,
 control **19.93%**, distilled **63.00%**, warm **61.17%**, with zero illegal top1
 actions. Warm retained most CE gain after 8M PPO. This reuses the CE metric
-holdout: **neither fresh confirmation nor full-game strength**. `job-9fkii`
-remains pending. Analysis:
+holdout: **neither fresh confirmation nor full-game strength**. Completed broad
+`job-9fkii` panels reject warm despite this tactical retention. Analysis:
 `/tmp/generals-vezu3-heldout-defense-serving-cpu-v2/analysis.json`, SHA
 `0f2f74222314573464bbb265e4af9715d081f4ebcd4470c8acd58b9f20014cba`.
 
@@ -144,9 +153,9 @@ and the retained result directories, without changing scheduler state.
 
 ## Next decision
 
-Collect the four preregistered panels and validate complete seed/seat coverage,
-legal execution, frozen hashes and paired confidence intervals. Compare warm
-against matched control and source; retain the baseline unless evidence supports
-fresh independent confirmation, then balanced hosted qualification. The prior
-exploration intervention regressed and was rejected. Do not choose a winner
-from tactical metrics or reused training outcomes.
+Retain the source baseline and preserve rejected checkpoints/results. Diagnose
+losing held-out replays by opponent and seat before another intervention; the
+CE defense objective improved its tactical metric while harming full-game play.
+Keep qualified 4,096/H128 H100 execution and serving parity for controlled next
+experiments. A future broad winner still requires independent confirmation and
+balanced fresh hosted acceptance before promotion.

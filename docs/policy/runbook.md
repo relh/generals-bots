@@ -255,6 +255,11 @@ For recurrent runs, pass the known nonfinite-gradient region before extending.
 
 ## Strength evaluation and promotion
 
+The completed matched panel rejected the defense warmstart and distilled policy;
+control showed no advantage. Retain the source baseline. See current-state for
+verified counts/CIs and artifacts; this does not establish fresh hosted strength.
+
+
 Freeze the evaluation opponent versions, map distribution, seeds, seats, and
 sampler. Keep development and fresh confirmation maps separate. Paired baseline
 and candidate comparisons should share initial maps and report W/L/D by
