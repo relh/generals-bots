@@ -7,12 +7,69 @@
   "population_build_sha256": "bb81e9d3d0eaf38a51e2074ab4f5b7d1142e04ede89c0b581286aa7523c481e4",
   "serving_sampler": "frozen penalty-eight source bundle",
   "changed_sampler_field": "safe_owned_split_bias",
-  "biases": [0, 2, 4, 6],
+  "biases": [
+    0,
+    2,
+    4,
+    6
+  ],
   "games_per_arm": 4096,
   "pool_size": 4096,
   "expected_opponents": 13,
   "map_seed": 9674001,
   "sample_seed": 9674003,
   "compare_against": "bias0",
-  "decision_rule": "Inspect paired signed score and opponent by seat for all three candidate biases; retain frozen source unless gains are broad and a fresh independent confirmation supports one fixed choice"
+  "decision_rule": "Inspect paired signed score and opponent by seat for all three candidate biases; retain frozen source unless gains are broad and a fresh independent confirmation supports one fixed choice",
+  "result": {
+    "job_id": "job-mvdyr",
+    "status": "succeeded",
+    "artifact_sha256": "1b32f552ac52fbb1ccdf34f0cb5dc1079f4439e318c4ee642024a608b2121015",
+    "artifact_local_path": "/tmp/generals-safe-owned-split-v2-results-job-mvdyr",
+    "gpu": "h100",
+    "billed_seconds": 722,
+    "charged_usd": 0.5951,
+    "paired_games_per_candidate": 4096,
+    "unique_initial_states": 2568,
+    "baseline": {
+      "wins": 2869,
+      "losses": 1199,
+      "draws": 28
+    },
+    "arms": {
+      "bias2": {
+        "wins": 2874,
+        "losses": 1191,
+        "draws": 31,
+        "paired_signed_score_delta": 0.003173828125,
+        "initial_state_cluster_ci95": [
+          -0.0024461989162333723,
+          0.008870934017489372
+        ],
+        "comparison_sha256": "4b8b894ffba128ae0c0a7a35c217aa5a0e5b57415ba43748e942f5d7a3dbeffa"
+      },
+      "bias4": {
+        "wins": 2849,
+        "losses": 1222,
+        "draws": 25,
+        "paired_signed_score_delta": -0.010498046875,
+        "initial_state_cluster_ci95": [
+          -0.022007388225989216,
+          0.0004892517684657829
+        ],
+        "comparison_sha256": "1344e2aa03b17858781b62a3d9d0fc9c52710f21086d4ce208383508ebf903a1"
+      },
+      "bias6": {
+        "wins": 2819,
+        "losses": 1261,
+        "draws": 16,
+        "paired_signed_score_delta": -0.02734375,
+        "initial_state_cluster_ci95": [
+          -0.04639595412032745,
+          -0.00852816125595691
+        ],
+        "comparison_sha256": "737ed00bdb3c42a37d7d57bf93f4f9bf05eb7a1f7682d2f5d4bb65ef69fd14de"
+      }
+    },
+    "decision": "Retain bias0. No candidate showed a positive clustered lower bound or broad opponent-by-seat gain; do not confirm or promote."
+  }
 }
