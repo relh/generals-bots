@@ -156,10 +156,19 @@ Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
 Training-pool diagnostic is adverse: control **7,192/10,896 wins (66.0%)**
 versus warm **4,430/10,198 (43.4%)**, worse across all **13 opponents/26 seats**;
 the final-quarter gap persists. This is correlated, reused training-pool evidence
-and **cannot select a winner**. Post-PPO defense retention remains unknown;
+and **cannot select a winner**. Post-PPO tactical retention is measured on reused teacher states below;
 frozen held-out `job-9fkii` results remain pending. SHA-bound diagnostic:
 `/tmp/generals-matched-training-pool-comparison-vezu3.json`, SHA
 `6cb6ace308a3820cb5b60e9cb911b86792d0a37c0bf4bd83f13b44cec26f9b06`.
+
+Tactical retention diagnostic on ARM64 CPU uses the same **512 preexisting
+teacher held-out states**: public-serving safe probability source **19.45%**,
+control **19.93%**, distilled **63.00%**, warm **61.17%**, with zero illegal top1
+actions. Warm retained most CE gain after8M PPO. This reuses the CE metric
+holdout: **neither fresh confirmation nor full-game strength**. `job-9fkii`
+remains pending. Analysis:
+`/tmp/generals-vezu3-heldout-defense-serving-cpu-v2/analysis.json`, SHA
+`0f2f74222314573464bbb265e4af9715d081f4ebcd4470c8acd58b9f20014cba`.
 
 **Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
 `512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
