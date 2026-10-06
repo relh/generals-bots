@@ -104,7 +104,7 @@ no training or game-code change explains the failure.
 **Quiet-build retry `job-zvvcn` is SUBMITTED**, 05:00:00 UTC, same source
 `e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-368f034d`.
 Only Docker install verbosity changes (`apt -qq`, `pip -q`) to expose errors;
-all 680 other files are identical. Ready archive 199,714,298 B, SHA
+all 680 files are identical except Dockerfile. Ready archive 199,714,298 B, SHA
 `374b3e1371e43ed814095c6118c047bcc0353f0643d6d3da7cda116ad6b8ced1`.
 Free validation passed; one H100, **90-minute/$4.455 maximum**, zero restarts.
 Exact qualified result `c21491a7…` attached. Two **8,388,608-step fresh PPO arms**

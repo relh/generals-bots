@@ -39,7 +39,7 @@ opponents sampled both seats. H100 geometry is qualified; matched control/warm
 job `job-zvvcn` is submitted from `e649d73` on one H100, bounded90min/$4.455,
 zero restarts. Prior `job-int7f` BUILD_FAILED before allocation/zero billed at
 the pip/version Docker layer; its log truncated before error details. The retry
-changes only install verbosity, with 680 other files unchanged. Two8,388,608-step fresh PPO arms and a broad held-out population
+changes only install verbosity, with all 680 files identical except Dockerfile. Two8,388,608-step fresh PPO arms and a broad held-out population
 panel are pending; no new strength result exists. Known 8,192/H256 buffers account
 for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
 an intrinsic requirement of the 2.21 MiB policy.

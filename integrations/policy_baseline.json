@@ -142,7 +142,7 @@
       "verified_locally": true
     },
     "free_validation_passed": true,
-    "retry_delta": "Dockerfile install verbosity only;680 other files identical"
+    "retry_delta": "Dockerfile install verbosity only;680 files identical except Dockerfile"
   },
   "latest_training_throughput": {
     "job": "35935",
