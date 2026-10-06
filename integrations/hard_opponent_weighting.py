@@ -17,6 +17,9 @@ from integrations.classic_contract import validate_training_contract
 
 PLAN = Path(__file__).resolve().parents[1] / 'docs/policy/hard-opponent-weighting.json'
 ARMS = ('control', 'treatment')
+QUALIFIED_PROBE_JOB_ID = 'job-izcgj'
+QUALIFIED_PROBE_INPUT_SEAL_SHA256 = 'c922911720128b7a2d1f5c60dae88d2eae17a5c0643ba7ff45cdfc27cb6ed91b'
+QUALIFIED_PROBE_SHA256 = '6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44'
 
 
 def digest(path: Path) -> str:
@@ -173,7 +176,8 @@ def prepare(source_input: Path, repository: Path, output: Path, plan_path: Path 
     return proof
 
 
-def validate_probe_receipt(path: Path, inputs: Path, plan: dict) -> dict:
+def validate_probe_receipt(path: Path, inputs: Path, plan: dict,
+                           expected_input_seal_sha256: str | None = None) -> dict:
     receipt = json.loads(path.read_text())
     probe = plan['required_treatment_probe']
     audit = receipt.get('audit', {})
@@ -181,7 +185,8 @@ def validate_probe_receipt(path: Path, inputs: Path, plan: dict) -> dict:
     reward = audit.get('reward_audit', {})
     if (receipt.get('experiment') != plan['experiment']
             or receipt.get('source_policy_sha256') != plan['source_checkpoint_sha256']
-            or receipt.get('input_seal_sha256') != digest(inputs / 'seal.json')
+            or receipt.get('input_seal_sha256') != (
+                expected_input_seal_sha256 or digest(inputs / 'seal.json'))
             or receipt.get('opponent_weights') != plan['treatment_weights']
             or receipt.get('probe_seed') != probe['seed']
             or 'H100' not in receipt.get('gpu_model', '')
@@ -309,7 +314,8 @@ def run_probe(inputs: Path, output: Path) -> None:
     }, indent=2) + '\n')
 
 
-def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
+def run_pair(inputs: Path, output: Path, qualified_probe: Path,
+             qualified_probe_sha256: str, qualified_probe_job_id: str) -> None:
     """Train both arms on one GPU and evaluate on common fresh Classic maps."""
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     inputs = inputs.resolve(strict=True)
@@ -325,7 +331,13 @@ def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
             raise ValueError('Staged arm config differs from frozen comparison')
         if json.loads((inputs / name / 'config.json').read_text()) != run:
             raise ValueError('Staged PPO config differs from matched control')
-    probe_receipt = validate_probe_receipt(qualified_probe, inputs, plan)
+    if (qualified_probe_job_id != QUALIFIED_PROBE_JOB_ID
+            or QUALIFIED_PROBE_SHA256 is None
+            or qualified_probe_sha256 != QUALIFIED_PROBE_SHA256
+            or digest(qualified_probe) != qualified_probe_sha256):
+        raise ValueError('Long run requires the exact job-izcgj treatment probe marker')
+    probe_receipt = validate_probe_receipt(
+        qualified_probe, inputs, plan, QUALIFIED_PROBE_INPUT_SEAL_SHA256)
     from integrations.cuda_runtime_binding import configure
     configure()
     from integrations.slurm_s3_job import gpu_query, verify_gpu_idle, visible_gpu_identity
@@ -338,19 +350,12 @@ def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
     }, indent=2) + '\n')
     gpu = verify_gpu_idle(identity)
     from integrations.classic_position_curriculum import configure_positions
-    from integrations.policy_execution import execute, training_audit
+    from integrations.policy_execution import training_audit
+    from integrations.policy_trial import Trial
     os.environ['GENERALS_ALLOCATED_GPU_UUID'] = gpu['uuid']
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu['uuid']
     (output / 'gpu-preflight.json').write_text(json.dumps(gpu, indent=2) + '\n')
-    sampler = json.loads((inputs / 'assets/cold/asset.json').read_text())['sampler']
     source = inputs / 'source'
-
-    def call(module, args, *, name, seconds, directory, training_config=None):
-        execute(module, args, source=source, output=directory, sampler=sampler,
-                name=name, seconds=seconds, training_config=training_config,
-                startup_seconds=420)
-
-    sampling_gate = source_gate(inputs, output, sampler, call)
 
     for name in ARMS:
         staged = inputs / name
@@ -358,43 +363,49 @@ def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
         target.mkdir()
         probe = target / 'probe'
         probe.mkdir()
-        (probe / 'sampling-gate.json').write_text(json.dumps(sampling_gate, indent=2) + '\n')
         build = json.loads((staged / 'build-config.json').read_text())
         configure_positions(build['python_environment']['options'], inputs / 'curriculum/manifest.json')
         (target / 'build-config.json').write_text(json.dumps(build, indent=2) + '\n')
-        config = staged / 'config.json'
-        call('launch_spatial_selfplay_training', ['build', '--config', target / 'build-config.json',
-             '--output', target / 'build'], name='build', seconds=600, directory=probe)
-        call('launch_spatial_selfplay_training', ['preflight', '--build', target / 'build',
-             '--config', config, '--output', probe / 'run'],
-             name='preflight', seconds=300, directory=probe)
-        call('launch_spatial_selfplay_training', ['train', '--build', target / 'build',
+        config = probe / 'config.json'
+        shutil.copy2(staged / 'config.json', config)
+        trial = Trial(inputs, target)
+        trial.build()
+        trial.sampling_gate('control')
+        gate = target / 'control/sampling-gate.json'
+        verify_gate(json.loads(gate.read_text()), trial.sampler,
+                    plan['source_checkpoint_sha256'], 51231, 17441)
+        shutil.copy2(gate, probe / 'sampling-gate.json')
+        trial.call('launch_spatial_selfplay_training', ['preflight', '--build', target / 'build',
+             '--config', config, '--output', probe / 'run'], name='preflight', seconds=300,
+             arm='probe')
+        trial.call('launch_spatial_selfplay_training', ['train', '--build', target / 'build',
              '--config', config, '--output', probe / 'run'], name='train', seconds=1800,
-             directory=probe, training_config=config)
+             arm='probe', training=True)
         training_audit(probe, json.loads(config.read_text()))
         checkpoint = probe / f"run/checkpoints/metta_generals/run/{plan['training']['steps_per_arm']:016d}.bin"
         sampler_path = target / 'sampler.json'
-        sampler_path.write_text(json.dumps(sampler, indent=2) + '\n')
-        call('publish_policy_asset', ['--build', target / 'build/build.json', '--training',
+        sampler_path.write_text(json.dumps(trial.sampler, indent=2) + '\n')
+        trial.call('publish_policy_asset', ['--build', target / 'build/build.json', '--training',
              probe / 'run/training.json', '--checkpoint', checkpoint, '--sha256', digest(checkpoint),
              '--sampler', sampler_path, '--factory-source', source / 'integrations/generals_fabric.py',
-             '--output', target / 'asset'], name='publish', seconds=600, directory=probe)
+             '--output', target / 'asset'], name='publish', seconds=600, arm='probe')
         asset = target / 'asset/asset.json'
-        call('export_spatial_policy_bundle', ['--asset', asset, '--manifest-sha256', digest(asset),
+        trial.call('export_spatial_policy_bundle', ['--asset', asset, '--manifest-sha256', digest(asset),
              '--factory-source', source / 'integrations/generals_fabric.py', '--output', target / 'bundle'],
-             name='export', seconds=600, directory=probe)
+             name='export', seconds=600, arm='probe')
     dev = plan['development']
+    trial = Trial(inputs, output)
     for name in ARMS:
-        call('evaluate_spatial_population', ['--bundle', output / name / 'bundle',
+        trial.call('evaluate_spatial_population', ['--bundle', output / name / 'bundle',
              '--population-build', output / 'control/build/build.json', '--games', dev['games_per_arm'],
              '--pool-size', dev['pool_size'], '--seed', dev['map_seed'],
              '--sample-seed', dev['sample_seed'], '--output', output / ('eval-' + name)],
-             name='evaluate-' + name, seconds=1800, directory=output)
+             name='evaluate-' + name, seconds=1800)
     comparison = output / 'comparison.json'
-    call('analyze_spatial_population_pair', ['--baseline', output / 'eval-control',
+    trial.call('analyze_spatial_population_pair', ['--baseline', output / 'eval-control',
          '--candidate', output / 'eval-treatment', '--seed', dev['bootstrap_seed'],
          '--bootstrap-resamples', 10000, '--output', comparison],
-         name='compare', seconds=90, directory=output)
+         name='compare', seconds=90)
     report = json.loads(comparison.read_text())
     strata = report['by_opponent_and_seat']
     hard_names = (plan['opponent_order'][9], plan['opponent_order'][12])
@@ -408,6 +419,7 @@ def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
         'development_only': True, 'hard_opponent_paired_signed_score_delta': hard_gain,
         'treatment_selected_for_independent_confirmation': selected,
         'comparison_sha256': digest(comparison), 'qualified_probe_sha256': digest(qualified_probe),
+        'qualified_probe_job_id': qualified_probe_job_id,
         'qualified_probe_steady_sps': probe_receipt['audit']['steady_sps'],
         'gpu': gpu}, indent=2) + '\n')
 
@@ -426,13 +438,16 @@ def main() -> None:
     run.add_argument('--input', type=Path, required=True)
     run.add_argument('--output', type=Path, required=True)
     run.add_argument('--qualified-probe', type=Path, required=True)
+    run.add_argument('--qualified-probe-sha256', required=True)
+    run.add_argument('--qualified-probe-job-id', required=True)
     args = parser.parse_args()
     if args.command == 'prepare':
         print(json.dumps(prepare(args.source_input, args.repository, args.output), indent=2))
     elif args.command == 'probe':
         run_probe(args.input, args.output)
     else:
-        run_pair(args.input, args.output, args.qualified_probe)
+        run_pair(args.input, args.output, args.qualified_probe,
+                 args.qualified_probe_sha256, args.qualified_probe_job_id)
 
 
 if __name__ == '__main__':
