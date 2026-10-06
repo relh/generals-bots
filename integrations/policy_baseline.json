@@ -77,15 +77,28 @@
     "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
     "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
-  "active_experiment": {
-    "kind": "safe_owned_half_split_sampler_development",
-    "branch": "relh/safe-owned-half-split-pilot",
-    "revision": "8a2a58e",
-    "job": "job-53h6p",
-    "last_observed_state": "SUBMITTED",
-    "map_seed": 9674001,
-    "sample_seed": 9674003,
-    "games_per_arm": 4096,
-    "arms": 4
-  }
+  "active_experiments": [
+    {
+      "kind": "safe_owned_half_split_sampler_development",
+      "branch": "relh/safe-owned-half-split-pilot",
+      "revision": "8a2a58e",
+      "job": "job-53h6p",
+      "last_observed_state": "STARTING",
+      "map_seed": 9674001,
+      "sample_seed": 9674003,
+      "games_per_arm": 4096,
+      "arms": 4
+    },
+    {
+      "kind": "public_capital_threat_gather_sampler_development",
+      "branch": "relh/capital-threat-gather-pilot",
+      "revision": "3cf46a0",
+      "job": "job-t7ydi",
+      "last_observed_state": "SUBMITTED",
+      "map_seed": 9774001,
+      "sample_seed": 9774003,
+      "games_per_arm": 4096,
+      "arms": 3
+    }
+  ]
 }

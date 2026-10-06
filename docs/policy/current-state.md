@@ -73,6 +73,14 @@ compares four arms on 4,096 paired Classic development games per arm, seeds
 maps cannot establish hosted strength. Check live provider status before using
 this job state.
 
+A separate public capital-threat gathering diagnostic is submitted as
+`job-t7ydi` on `relh/capital-threat-gather-pilot` at `3cf46a0`. It compares
+bonuses 0/2/4 on 4,096 paired Classic development games per arm, seeds
+9774001/9774003. The trigger uses only visible enemy strength near our general
+and legal owned-to-owned moves toward it. Its context archive SHA is
+`29209f8603bccf124e0d5f1e8a6222c09d628b399224dfae4fbbf1440a7728f7`.
+No result or serving change exists yet.
+
 Hosted replay analysis points to general defense and army gathering: every
 recorded loss ended in general capture, often despite an economic lead at turn
 200. Against Daveey, the candidate used **241 half moves in 123,787 moves
