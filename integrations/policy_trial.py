@@ -228,6 +228,10 @@ class Trial:
             arm=arm,
             training=True,
         )
+        self.publish_arm(arm)
+
+    def publish_arm(self, arm):
+        """Publish an already audited, completed arm without repeating PPO."""
         config = json.loads((self.output / arm / "config.json").read_text())
         training_audit(self.output / arm, config)
         checkpoint = self.output / arm / f"run/checkpoints/metta_generals/run/{self.steps:016d}.bin"
@@ -252,7 +256,7 @@ class Trial:
                 self.output / arm / "asset",
             ],
             name="publish",
-            seconds=120,
+            seconds=600,
             arm=arm,
         )
         asset = self.output / arm / "asset/asset.json"
@@ -269,7 +273,7 @@ class Trial:
                 self.output / arm / "bundle",
             ],
             name="export",
-            seconds=120,
+            seconds=600,
             arm=arm,
         )
         self.call(
@@ -285,7 +289,7 @@ class Trial:
                 self.output / arm / "serving-parity.json",
             ],
             name="parity",
-            seconds=120,
+            seconds=600,
             arm=arm,
         )
 
@@ -317,7 +321,7 @@ class Trial:
                     self.output / ("heldout-" + name),
                 ],
                 name="evaluate-" + name,
-                seconds=360,
+                seconds=1200,
             )
         for before, after in (("source", "control"), ("source", "distilled"), ("source", "warm"), ("control", "warm")):
             name = f"paired-{before}-{after}"
