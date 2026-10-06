@@ -8,7 +8,7 @@ from pathlib import Path
 from integrations.native_spatial_asset import BRIDGE_SHA256 as BRIDGE_SHA256
 from integrations.native_spatial_asset import FACTORY, validate_fabric
 
-FACTORY_SOURCE_SHA256 = '48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a'
+FACTORY_SOURCE_SHA256 = 'b687f279d2518506743fb96059e13a85da2d4e5f782723f0bb0747eaef2f068e'
 
 
 def verify_configuration(configuration):

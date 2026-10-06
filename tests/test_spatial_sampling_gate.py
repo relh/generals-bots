@@ -35,7 +35,7 @@ def gate_fixture(tmp_path, restore=False):
     from integrations.spatial_native_contract import FACTORY
 
     weights = tmp_path / "source.bin"
-    weights.write_bytes(bytes(570668 * 4))
+    weights.write_bytes(bytes(571244 * 4))
     manifest = write_asset(
         tmp_path / "asset",
         fabric=dict(

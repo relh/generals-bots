@@ -8,7 +8,7 @@ import pytest
 from integrations.learner_checkpoint import LEARNER_HEADER
 from integrations.native_spatial_asset import FACTORY, load_asset, sha256, training_contract, write_asset
 
-COUNT = 570668
+COUNT = 571244
 
 
 def fabric():

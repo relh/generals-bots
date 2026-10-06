@@ -40,7 +40,7 @@ class DirectSpatial:
         buffers = policy.buffers
         fn = buffers.fn
         pops = {p.name: p for p in fn.spec.pooled.populations}
-        if set(pops) != {"input", "SiLU", "ContextSiLU", "GlobalSiLU", "Output"}:
+        if set(pops) != {"input", "SiLU", "ContextSiLU", "GlobalSiLU", "SourceGlobalProduct", "Output"}:
             raise ValueError("Unexpected spatial populations")
         cells = 441
         features = pops["SiLU"].n // cells
@@ -53,6 +53,9 @@ class DirectSpatial:
         if pops["input"].n != self.observation_size:
             raise ValueError("Direct spatial optimization requires the canonical sixteen public planes")
         self.global_features = global_features
+        self.product_rank = 8
+        if pops["SourceGlobalProduct"].n != cells * self.product_rank:
+            raise ValueError("Source-conditioned residual rank differs")
         leaves = jax.tree_util.tree_flatten_with_path(fn.params(buffers.template))[0]
         layout = {
             tuple(key.key for key in path): spec
@@ -84,7 +87,11 @@ class DirectSpatial:
         self.output_bias = atom("Output", "b")
 
         def edges(cls):
-            if cls.delay or cls.into != "drive" or cls.src.rate != 1 or cls.dst.rate != 1:
+            expected_slot = {
+                ("ContextSiLU", "SourceGlobalProduct"): "local",
+                ("GlobalSiLU", "SourceGlobalProduct"): "global_",
+            }.get((cls.src.name, cls.dst.name), "drive")
+            if cls.delay or cls.into != expected_slot or cls.src.rate != 1 or cls.dst.rate != 1:
                 raise ValueError("Direct evaluation requires current-tick scalar edges")
             occ = buffers.template["occupancy"].get(cls.name)
             if occ is None:
@@ -149,6 +156,22 @@ class DirectSpatial:
                 self.global_kernel = dense((cells * features, global_features), src, dst, weights)
             elif pair == ("GlobalSiLU", "Output"):
                 self.readout_kernel = dense((global_features, 3530), src, dst, weights)
+            elif pair == ("ContextSiLU", "SourceGlobalProduct"):
+                if not np.all(src // features == dst // self.product_rank):
+                    raise ValueError("Product local projection reaches another site")
+                self.product_local_kernel = shared(
+                    (features, self.product_rank), (src % features, dst % self.product_rank), weights,
+                )
+            elif pair == ("GlobalSiLU", "SourceGlobalProduct"):
+                self.product_global_kernel = shared(
+                    (global_features, self.product_rank), (src, dst % self.product_rank), weights,
+                )
+            elif pair == ("SourceGlobalProduct", "Output"):
+                if np.any(dst >= cells * 8) or not np.all(src // self.product_rank == dst % cells):
+                    raise ValueError("Product readout reaches another site or non-move output")
+                self.product_action_kernel = shared(
+                    (self.product_rank, 8), (src % self.product_rank, dst // cells), weights,
+                )
             elif pair == ("input", "Output"):
                 if len(np.unique(dst)) != len(dst):
                     raise ValueError("Public prior has multiple inputs per output")
@@ -164,9 +187,14 @@ class DirectSpatial:
                 raise ValueError("Spatial coupling contains repeated endpoint pairs")
         if seen != {("input", "SiLU"), ("SiLU", "ContextSiLU"),
                     ("ContextSiLU", "Output"), ("ContextSiLU", "GlobalSiLU"),
-                    ("GlobalSiLU", "Output"), ("input", "Output")}:
+                    ("GlobalSiLU", "Output"), ("input", "Output"),
+                    ("ContextSiLU", "SourceGlobalProduct"),
+                    ("GlobalSiLU", "SourceGlobalProduct"),
+                    ("SourceGlobalProduct", "Output")}:
             raise ValueError("Spatial topology is incomplete")
-        if any(np.any(x < 0) for x in (self.input_kernel, self.action_kernel)):
+        if any(np.any(x < 0) for x in (self.input_kernel, self.action_kernel,
+                                      self.product_local_kernel, self.product_global_kernel,
+                                      self.product_action_kernel)):
             raise ValueError("Shared projection is incomplete")
         self.forward = jax.jit(self.evaluate)
         self.gradient = jax.jit(jax.grad(lambda p, obs, cot: jnp.sum(self.evaluate(p, obs) * cot)))
@@ -191,6 +219,16 @@ class DirectSpatial:
         outputs = jnp.matmul(global_values, parameters[self.readout_kernel], precision=jax.lax.Precision.HIGHEST)
         action = jnp.matmul(context.reshape(-1, 441, self.features), parameters[self.action_kernel],
                             precision=jax.lax.Precision.HIGHEST)
+        product_local = jnp.matmul(
+            context.reshape(-1, 441, self.features), parameters[self.product_local_kernel],
+            precision=jax.lax.Precision.HIGHEST,
+        )
+        product_global = jnp.matmul(
+            global_values, parameters[self.product_global_kernel], precision=jax.lax.Precision.HIGHEST,
+        )
+        product = product_local * product_global[:, None, :]
+        action += jnp.matmul(product, parameters[self.product_action_kernel],
+                             precision=jax.lax.Precision.HIGHEST)
         outputs = outputs.at[:, :3528].add(action.transpose(0, 2, 1).reshape(-1, 3528))
         flat_obs = observations.reshape(-1, self.observation_size)
         for source, weights in self.priors:

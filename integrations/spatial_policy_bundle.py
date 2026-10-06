@@ -129,6 +129,8 @@ class SpatialPlayerPolicy:
                       local_weight=(f,), local_bias=(f,), context_weight=(f,), context_bias=(f,),
                       global_kernel=(441 * f, g), global_weight=(g,), global_bias=(g,),
                       readout_kernel=(g, 3530), action_kernel=(f, 8),
+                      product_local_kernel=(f, 8), product_global_kernel=(g, 8),
+                      product_action_kernel=(8, 8),
                       output_weight=(3530,), output_bias=(3530,))
         self.prior_count = 5
         for i in range(self.prior_count):
@@ -186,6 +188,9 @@ class SpatialPlayerPolicy:
                                   * w["global_weight"] + w["global_bias"], xp)
         output = global_values @ w["readout_kernel"]
         action = context.reshape(-1, 441, self.features) @ w["action_kernel"]
+        product_local = context.reshape(-1, 441, self.features) @ w["product_local_kernel"]
+        product_global = global_values @ w["product_global_kernel"]
+        action += (product_local * product_global[:, None, :]) @ w["product_action_kernel"]
         output = output + xp.concatenate((action.transpose(0, 2, 1).reshape(-1, 3528),
                                           xp.zeros((observations.shape[0], 2), dtype=observations.dtype)), axis=1)
         for i in range(self.prior_count):

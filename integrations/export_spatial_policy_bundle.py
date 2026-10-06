@@ -49,7 +49,8 @@ def export_bundle(asset_manifest, manifest_sha256, factory_source, output):
     if parameters.size != native.buffers.parameter_words:
         raise ValueError("Native asset parameter allocation differs")
     weights = {}
-    for name in ("input_kernel", "context_kernel", "action_kernel"):
+    for name in ("input_kernel", "context_kernel", "action_kernel",
+                 "product_local_kernel", "product_global_kernel", "product_action_kernel"):
         indices = getattr(model, name)
         weights[name] = np.where(indices >= 0, parameters[np.maximum(indices, 0)], 0).astype(np.float32)
     for name in ("local_weight", "local_bias", "context_weight", "context_bias"):

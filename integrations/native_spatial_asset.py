@@ -238,7 +238,7 @@ def load_asset(path: Path, *, manifest_sha256: str) -> NativeSpatialAsset:
     validate_fabric(metadata["fabric"])
     validate_sampler(metadata["sampler"])
     provenance = metadata["provenance"]
-    if provenance["operation"] not in ("source_cleanup", "supervised", "reinforcement_learning"):
+    if provenance["operation"] not in ("architecture_init", "source_cleanup", "supervised", "reinforcement_learning"):
         raise ValueError("Unknown native asset provenance operation")
     ancestors = provenance["ancestors"]
     if not isinstance(ancestors, dict) or not ancestors:
@@ -249,11 +249,11 @@ def load_asset(path: Path, *, manifest_sha256: str) -> NativeSpatialAsset:
         check_digest(value)
     steps = provenance["reinforcement_learning_steps_added"]
     if type(steps) is not int or steps < 0 or (provenance["operation"] != "reinforcement_learning" and steps != 0):
-        raise ValueError("Source cleanup and supervised changes add zero RL steps")
+        raise ValueError("Architecture initialization and non-RL changes add zero RL steps")
     if provenance["operation"] == "source_cleanup":
         check_digest(provenance["abi_proof_sha256"])
     count = metadata["parameter_count"]
-    expected_count = 570668 if metadata["fabric"]["options"]["context_radius"] == 1.01 else 578860
+    expected_count = 571244 if metadata["fabric"]["options"]["context_radius"] == 1.01 else 579436
     if type(count) is not int or count != expected_count:
         raise ValueError("Native asset parameter count differs from its current model layout")
     policy = path.with_name("policy.bin").read_bytes()
@@ -378,6 +378,9 @@ def abi_descriptor(policy):
         "input_kernel",
         "context_kernel",
         "action_kernel",
+        "product_local_kernel",
+        "product_global_kernel",
+        "product_action_kernel",
         "local_weight",
         "local_bias",
         "context_weight",

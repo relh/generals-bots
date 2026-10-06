@@ -19,7 +19,7 @@ def seal(path):
 
 def bundle(path):
     original = path.with_suffix('.bin')
-    original.write_bytes(bytes(570668 * 4))
+    original.write_bytes(bytes(571244 * 4))
     fabric = {'factory': FACTORY, 'compiler': 'standard', 'observation_size': 7056,
               'action_sizes': [3529], 'options': {
                   'channels': 16, 'height': 21, 'width': 21, 'features_per_site': 32,
@@ -36,7 +36,10 @@ def bundle(path):
                    context_kernel=np.zeros((3, 3, 32, 32), np.float32),
                    global_kernel=np.zeros((441 * 32, 32), np.float32),
                    readout_kernel=np.zeros((32, 3530), np.float32),
-                   action_kernel=np.zeros((32, 8), np.float32))
+                   action_kernel=np.zeros((32, 8), np.float32),
+                   product_local_kernel=np.zeros((32, 8), np.float32),
+                   product_global_kernel=np.zeros((32, 8), np.float32),
+                   product_action_kernel=np.zeros((8, 8), np.float32))
     for prefix, count in [('local', 32), ('context', 32), ('global', 32), ('output', 3530)]:
         weights[prefix + '_weight'] = np.ones(count, np.float32)
         weights[prefix + '_bias'] = np.zeros(count, np.float32)

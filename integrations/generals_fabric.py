@@ -15,6 +15,24 @@ def _silu_publish(self, state, parameters):
     return state.pub
 
 
+def _product_step(self, state, parameters, inbox, rho):
+    return state.replace(pub=inbox.local * inbox.global_)
+
+
+@fl.atom
+class SourceGlobalProduct:
+    """Multiply a site's projected context by the projected board context."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(
+        local=fl.slot(1, merge=fl.monoids.sum),
+        global_=fl.slot(1, merge=fl.monoids.sum),
+    )
+    step = _product_step
+    publish = _silu_publish
+
+
 @fl.atom
 class SiLU:
     """Current-tick nonlinearity with no recurrent read or credit path."""
@@ -101,6 +119,13 @@ def two_stage_tied_local_action_policy(
     local = site_layer("local", SiLU())
     context = site_layer("context", ContextSiLU())
     global_core = nn.cluster("global", GlobalSiLU(), n=global_features)
+    product = nn.cluster(
+        "product", SourceGlobalProduct(), n=cells * 8,
+        geometry=nn.geometry.fields(own={
+            (f"a_{i}",): {"coord": ((i // 8) % width, (i // 8) // width), "rank": i % 8}
+            for i in range(cells * 8)
+        }),
+    )
     out = nn.cluster(
         "out", nn.atoms.Output(), n=output_size,
         geometry=nn.geometry.fields(own={
@@ -115,7 +140,8 @@ def two_stage_tied_local_action_policy(
         }),
     )
     graph = nn.cluster("two_stage_tied_local_action", {
-        "sense": sense, "local": local, "context": context, "global": global_core, "out": out,
+        "sense": sense, "local": local, "context": context, "global": global_core,
+        "product": product, "out": out,
     })
     fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
 
@@ -136,6 +162,13 @@ def two_stage_tied_local_action_policy(
                     geometry.dst.attr(target, "split"))
         if (src_kind, dst_kind) == ("global", "out"):
             return ("global", source[1], geometry.dst.attr(target, "readout_group"))
+        if (src_kind, dst_kind) == ("context", "product"):
+            return ("product_local", geometry.src.attr(source, "feature"), geometry.dst.attr(target, "rank"))
+        if (src_kind, dst_kind) == ("global", "product"):
+            return ("product_global", source[1], geometry.dst.attr(target, "rank"))
+        if (src_kind, dst_kind) == ("product", "out"):
+            return ("product_out", geometry.src.attr(source, "rank"),
+                    geometry.dst.attr(target, "direction"), geometry.dst.attr(target, "split"))
         if (src_kind, dst_kind) == ("sense", "out"):
             channel = geometry.src.attr(source, "channel")
             if channel == 0 and source_army_prior_strength:
@@ -152,6 +185,11 @@ def two_stage_tied_local_action_policy(
         (context >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
         (context >> global_core).by(nn.rules.all_to_all()),
         (global_core >> out).by(nn.rules.all_to_all()),
+        (context >> product).by(nn.rules.stencil(radius=0.1)).semantics(fixed).into_("local"),
+        (global_core >> product).by(nn.rules.all_to_all()).semantics(fixed).into_("global_"),
+        (product >> out).by(nn.rules.stencil(radius=0.1)).semantics(
+            nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(0.0))
+        ),
         nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
         nn.tie(context).by(nn.sharing.field("feature")).on("weight", "bias"),
         nn.tie(graph).by(nn.sharing.edge_key(edge_key)),
