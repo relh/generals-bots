@@ -104,7 +104,7 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                     if elapsed > seconds:
                         raise TimeoutError(f"{name} exceeded {seconds}s; inspect retained log")
                     if training_config:
-                        from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
+                        from integrations.monitor_coworld_steady_interval import completed_epoch_times, steady_sps
                         from integrations.slurm_s3_job import visible_gpu_identity
 
                         if elapsed - sampled >= 5:
@@ -129,7 +129,7 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         times = completed_epoch_times(text)
                         if elapsed > startup_seconds and not times:
                             raise TimeoutError(f"No completed training epoch after {startup_seconds}s")
-                        sps = interval_sps(times, 2, steps_per_epoch)
+                        sps = steady_sps(times, steps_per_epoch)
                         if len(times) >= 4 and sps is not None and sps < 30_000:
                             raise RuntimeError(f"Sustained training throughput below 30,000 SPS: {sps}")
                     time.sleep(1)
@@ -154,7 +154,7 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
 
 
 def training_audit(output, config):
-    from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
+    from integrations.monitor_coworld_steady_interval import completed_epoch_times, steady_sps
 
     completed = json.loads((output / "run/completed.json").read_text())
     expected = config["total_timesteps"]
@@ -196,7 +196,7 @@ def training_audit(output, config):
     options = config["overrides"]
     batch = options["vec.total_agents"] * options["train.horizon"]
     epochs = completed_epoch_times(text)
-    sps = interval_sps(epochs, 2, batch)
+    sps = steady_sps(epochs, batch)
     if sps is None or sps < 30_000:
         raise ValueError("Completed run does not qualify 30,000 end-to-end SPS")
     report = {

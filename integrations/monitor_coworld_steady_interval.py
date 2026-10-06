@@ -33,3 +33,13 @@ def interval_sps(times: dict[int, float], span: int, steps_per_epoch: int = STEP
     if first not in times or times[last] <= times[first]:
         return None
     return span * steps_per_epoch / (times[last] - times[first])
+
+
+def steady_sps(times: dict[int, float], steps_per_epoch: int = STEPS_PER_EPOCH) -> float | None:
+    """Exclude startup and measure up to 32 recent completed epoch intervals."""
+    if len(times) < 3:
+        return None
+    epochs = sorted(times)[1:]
+    last = epochs[-1]
+    first = next(epoch for epoch in epochs if epoch >= last - 32)
+    return interval_sps(times, last - first, steps_per_epoch)
