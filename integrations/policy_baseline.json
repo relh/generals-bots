@@ -154,13 +154,27 @@
     "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
     "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
+  "classic_siege_pressure_rejection": {
+    "job": "job-m9ina",
+    "games_per_arm": 4096,
+    "siege_games_per_arm": 3640,
+    "old_bot_learner_wins": 2162,
+    "new_bot_learner_wins": 3615,
+    "new_minus_old_learner_win_rate_points": 39.92,
+    "cluster_ci95_points": [38.09, 41.72],
+    "illegal_moves": 0,
+    "selected_for_training": false,
+    "result_archive_sha256": "813be34c1185a42545b21e6d1187bd80c20737c5a28623f898fd016dedd5df36",
+    "complete_marker_sha256": "5390d476dbc080e3a50340900594fd19d0c6f35ecf900485a135bc2c34a05373",
+    "comparison_sha256": "2a6d166109e9f76d8bcb2df2efa643b212cbbe16ba4186898b064a36087e0354"
+  },
   "active_experiments": [
     {
       "kind": "hard_opponent_weighting_matched_development",
       "branch": "codex/hard-opponent-trial",
       "revision": "542de7f",
       "job": "job-6cwtq",
-      "last_observed_state": "SUBMITTED",
+      "last_observed_state": "RUNNING",
       "context_archive_sha256": "aa224646acd165e5d71d8239a62457d007c5025b4a370798a89e5fd4d254d6df",
       "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
       "agent_steps_per_arm": 16777216,
@@ -171,19 +185,6 @@
       "replay_ratio": 0.5,
       "minimum_steady_sps": 30000,
       "qualified_probe_marker_sha256": "6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44",
-      "max_cost_usd": 2.97
-    },
-    {
-      "kind": "classic_siege_pressure_opponent_development",
-      "branch": "codex/classic-siege-pressure",
-      "revision": "375d3c2",
-      "job": "job-m9ina",
-      "last_observed_state": "SUBMITTED",
-      "context_archive_sha256": "599f9f9e677c99f1058d960d05889a44290e06a4b25dda1de97361df15285be8",
-      "map_seed": 10941321,
-      "sample_seed": 10941323,
-      "games_per_arm": 4096,
-      "arms": 2,
       "max_cost_usd": 2.97
     }
   ]

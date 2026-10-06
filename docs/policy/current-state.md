@@ -69,17 +69,24 @@ clipped rewards were zero. Its qualification marker SHA-256 is
 `6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
 This is a throughput result, not a strength result.
 
-Two bounded H100 development jobs are submitted; the manifest records their
-sealed context hashes and last observed state:
+One bounded H100 matched development job is running; the manifest records its
+sealed context hash and last observed state:
 
 | Job | Isolated branch | Decision pending |
 | --- | --- | --- |
 | `job-6cwtq` | `codex/hard-opponent-trial` at `542de7f` | Matched 16,777,216-step source/control PPO arms, changing only the weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. Assess fresh paired Classic strength before any hosted panel. |
-| `job-m9ina` | `codex/classic-siege-pressure` at `375d3c2` | Old/new public-view siege opponent on 4,096 paired Classic first episodes per arm, including 3,640 siege rows and both learner seats. No training-population change yet. |
 
-Each job has zero restarts, a 60-minute limit and a $2.97 runtime cap. Treat
-their statuses as historical observations until provider readback and artifact
-verification. Neither is evidence for promotion. Hosted replays suggest that
+The job has zero restarts, a 60-minute limit and a $2.97 runtime cap. Treat
+its status as a historical observation until provider readback and artifact
+verification. The separate `job-m9ina` paired siege-opponent panel **rejected**
+the proposed pressure bot. In 3,640 paired siege games, the frozen learner won
+2,162 (59.40%) against the old bot and 3,615 (99.31%) against the new bot;
+the new bot was much weaker on both learner seats. Candidate-minus-control
+learner win-rate delta was +39.92 points, clustered 95% CI [+38.09,+41.72].
+All 4,096 episodes per arm were completed, paired by initial state, seat and
+opponent label, with zero illegal moves. The verified archive SHA-256 is
+`813be34c1185a42545b21e6d1187bd80c20737c5a28623f898fd016dedd5df36`.
+No training-population or serving change follows. Hosted replays suggest that
 general defense and army gathering are promising mechanisms; use fresh paired
 development and independent confirmation rather than those hosted losses as a
 tuning set.
