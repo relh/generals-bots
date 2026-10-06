@@ -145,6 +145,7 @@ class BuildManifest(BaseModel):
     revision: Literal["6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2"] = PUFFER_REVISION
     config: BuildConfig
     binary_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    capital_safety_sampler_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
     model_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
     model_state_words: int = Field(default=0, ge=0)
     environment_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
@@ -309,6 +310,7 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
     manifest = BuildManifest(
         config=config,
         binary_sha256=hashlib.sha256((output / "puffer").read_bytes()).hexdigest(),
+        capital_safety_sampler_sha256=hashlib.sha256((source / "src/pufferl.cu").read_bytes()).hexdigest(),
         model_sha256=model_digest,
         model_state_words=state_words,
         environment_sha256=environment_fingerprint(config.python_environment) if config.python_environment else "",
@@ -329,6 +331,9 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     binary = build / "puffer"
     if hashlib.sha256(binary.read_bytes()).hexdigest() != manifest.binary_sha256:
         raise ValueError("Puffer binary differs from its build manifest")
+    from integrations.capital_safety import require_native_sampler
+
+    require_native_sampler(build, manifest.capital_safety_sampler_sha256, os.environ)
     settings = ConfigParser(interpolation=None)
     for path in (build / "source/config/default.ini", build / f"source/config/{manifest.config.environment}.ini"):
         with path.open() as source_config:

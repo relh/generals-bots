@@ -117,3 +117,22 @@ def test_population_sampler_reports_true_and_false(tmp_path, monkeypatch):
             frozen_bundle=str(bundles[0]), context=None, parallel_games=6,
             scripted_opponents=("sentinel",))
     assert [record["capital_safety"] for record in captured[0]._population_action_selection] == [False, True]
+
+
+def test_guarded_ppo_requires_compiled_source_capability(tmp_path):
+    import hashlib
+    from integrations.capital_safety import require_native_sampler
+    require_native_sampler(tmp_path, "", {"METTA_SPATIAL_CAPITAL_SAFETY": "False"})
+    with pytest.raises(ValueError, match="freshly compiled"):
+        require_native_sampler(tmp_path, "", {"METTA_SPATIAL_CAPITAL_SAFETY": "True"})
+    original = source_tree(tmp_path)
+    source = tmp_path / "source/src"
+    source.mkdir(parents=True)
+    install_sampler(tmp_path)
+    compiled = source / "pufferl.cu"
+    compiled.write_bytes(original.read_bytes())
+    digest = hashlib.sha256(compiled.read_bytes()).hexdigest()
+    require_native_sampler(tmp_path, digest, {"METTA_SPATIAL_CAPITAL_SAFETY": "True"})
+    compiled.write_bytes(compiled.read_bytes() + b"// altered")
+    with pytest.raises(ValueError, match="source proof differs"):
+        require_native_sampler(tmp_path, digest, {"METTA_SPATIAL_CAPITAL_SAFETY": "True"})

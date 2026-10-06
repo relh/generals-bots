@@ -91,3 +91,19 @@ def install_sampler(source):
             raise ValueError(f"Capital sampler anchor changed: {old}")
         text = text.replace(old, new, 1)
     path.write_text(text)
+
+
+def require_native_sampler(build, source_sha256, environ):
+    """Reject pre-patch native binaries before preparing a guarded PPO run."""
+    if not enabled(environ):
+        return
+    import hashlib
+
+    source = build / 'source/src/pufferl.cu'
+    if not source_sha256 or not source.is_file():
+        raise ValueError('Capital safety requires a freshly compiled positive-support sampler')
+    data = source.read_bytes()
+    if (hashlib.sha256(data).hexdigest() != source_sha256
+            or b'(!capital_safety || expf(cache[a] - logsumexp) > 0.0f)' not in data
+            or b'mask_stride, hypers->capital_safety);' not in data):
+        raise ValueError('Capital safety compiled sampler source proof differs')
