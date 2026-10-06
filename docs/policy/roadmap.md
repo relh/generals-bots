@@ -13,7 +13,7 @@ in the [runbook](runbook.md). Git preserves superseded plans and attempt records
 - Matched 8,388,608-step control and CE-warm PPO arms with fresh optimizers,
   identical sampler/curriculum/rewards/opponent pool, clean audits and serving parity.
 
-## Current decision: source retained; penalty 8 in hosted acceptance
+## Current decision: source retained; penalty 8 rejected for strength
 
 The same-weight penalty-8 sampler won 752/1,024 development games versus
 707/1,024 for penalty 4. Independent confirmation `job-4spqj` completed on
@@ -21,12 +21,18 @@ The same-weight penalty-8 sampler won 752/1,024 development games versus
 2,754 for penalty 4, with paired signed-score delta +0.0439453125 and
 initial-state-cluster 95% CI [+0.018576786,+0.069750967]. All 13 opponent
 groups were flat or positive in aggregate. The selected source baseline stays
-unchanged until the frozen candidate qualifies in hosted matches.
+unchanged.
 
-The 512-game hosted acceptance intent has all eight requests accepted.
-Provider capacity briefly limited submission; preserved idempotency keys
-allowed safe resumption. Collect the complete balanced panel before any
-strength or promotion decision.
+The complete balanced 512-game hosted panel had zero failures and passed the
+identity/completeness evidence gate, but penalty 8 won only **149/256 versus
+the incumbent** and **98/256 versus Daveey**. Both rates missed the 65%
+target; Daveey's Wilson lower bound was below 50%. No promotion occurred.
+The full 512-game replay audit passed legality and execution checks. Local improvements did not establish a
+winning hosted policy.
+
+An isolated safe owned half-split sampler pilot (`job-53h6p`) is submitted on
+development seeds with four paired 4,096-game arms. It has no result yet; see
+current-state for identity and scope.
 
 The force-assembly curriculum completed 8,388,608 steps on H100 at 35,594
 end-to-end SPS with clean audits and 46-state serving parity. Its 4,096-game
@@ -51,12 +57,13 @@ with more late passing (warm2.733%, distilled2.424%, source0.0014%, control0.001
 This is not causal evidence or a policy input; exact counts and archive binding
 are in current-state.
 
-1. Complete the preserved balanced hosted panel against Daveey and the
-   incumbent; audit request identities, replays, opponent-seat counts and
-   confidence bounds before selecting penalty 8.
-2. Diagnose losing replays by opponent and seat before further curriculum or
-   reward changes; keep matched controls and qualified H100 geometry.
-3. Promote only with verified lineage, clean execution and winning evidence.
+1. Diagnose Daveey losses by turn, opponent and seat using the SHA-bound
+   replays; keep the completed penalty-8 panel frozen.
+2. Assess the preregistered safe owned half-split pilot on development maps,
+   then use independent maps for any candidate selected there.
+3. Base the next curriculum or reward change on a measured replay failure;
+   keep matched controls and qualified H100 geometry.
+4. Promote only with verified lineage, clean execution and winning evidence.
 
 ## Winning acceptance
 

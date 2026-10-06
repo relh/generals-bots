@@ -405,7 +405,7 @@
       0.03413483593693411,
       0.13064833005893908
     ],
-    "decision": "confirmed_on_independent_maps_hosted_acceptance_pending_source_retained",
+    "decision": "confirmed_on_independent_maps_hosted_strength_failed_source_retained",
     "comparison": {
       "path": "/tmp/generals-doomed-paired-results-job-4z8wx/extracted/generals/comparison.json",
       "sha256": "e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5"
@@ -443,7 +443,7 @@
       "sha256": "61429545978242061231894e3b9244e0eff63952a5a9d2c08ed41e4df6d2cb41"
     },
     "result_archive_sha256": "b26125169a5e88771eb15c40b071a1b80e6d447e3be244d61aad58c5178afb1d",
-    "decision": "positive_local_confirmation_hosted_acceptance_pending_source_retained"
+    "decision": "positive_local_confirmation_hosted_strength_failed_source_retained"
   },
   "hosted_candidate": {
     "policy_id": "e1644605-50ea-495a-9631-a2ff4d25b85f",
@@ -455,11 +455,60 @@
       "path": "/tmp/generals-penalty8-hosted-acceptance-chunked-20261006",
       "planned_games": 512,
       "requests": 8,
-      "state": "all_requests_accepted_running",
+      "state": "complete",
       "accepted_requests_at_audit": 8,
       "provider_undispatched_episode_limit": 300,
-      "decision": "await_complete_panel_no_promotion"
+      "completed": 512,
+      "failed": 0,
+      "cost_usd": 5.703422,
+      "by_opponent": {
+        "incumbent": {
+          "games": 256,
+          "wins": 149,
+          "win_rate": 0.58203125,
+          "wilson_lower_95": 0.520835577469923,
+          "seat0_wins": 68,
+          "seat1_wins": 81
+        },
+        "Daveey": {
+          "games": 256,
+          "wins": 98,
+          "win_rate": 0.3828125,
+          "wilson_lower_95": 0.3254185065983358,
+          "seat0_wins": 50,
+          "seat1_wins": 48
+        }
+      },
+      "summary_sha256": "de08014aca9995c500ffcbd9fcd0577f3ae194c468da76da10c272c9fb6a1a62",
+      "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
+      "evidence_gate_passes": true,
+      "strength_gate_passes": false,
+      "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af",
+      "replay_unique_seeds": 512,
+      "replay_turns": 277894,
+      "replay_timeouts": 0,
+      "replay_forfeits": 0,
+      "replay_unapplied_turns": 0,
+      "replay_illegal_actions": 0,
+      "decision": "strength_failed_no_promotion_source_retained"
     }
+  },
+  "safe_owned_half_split_pilot": {
+    "branch": "relh/safe-owned-half-split-pilot",
+    "source_revision": "8a2a58e",
+    "job": "job-53h6p",
+    "state": "SUBMITTED",
+    "context": "ctx-64a50389",
+    "context_archive_sha256": "746ecd61cdc7461b6e1c28ccb080a68f4480aeedc78d9da6352c8e19ea3de609",
+    "first_build_failed_job": "job-qy6hs",
+    "first_build_failure": "Staged input directories lacked world-readable permissions for BuildKit",
+    "hardware": "H100",
+    "scope": "four_arm_paired_classic_development",
+    "games_per_arm": 4096,
+    "match_seed": 9674001,
+    "sample_seed": 9674003,
+    "max_cost_usd": 2.97,
+    "decision": "await_result_no_hosted_claim"
   },
   "latest_attempt": {
     "job": "job-xbqmn",

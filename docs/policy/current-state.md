@@ -3,7 +3,8 @@
 Updated **2026-10-06**. **The winning-policy objective remains unmet.**
 Training and serving are qualified. Defense warmstart regressed, and the force
 assembly curriculum has no demonstrated gain. A penalty-8 sampler improved on
-independent paired Classic maps and is undergoing hosted acceptance. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
+independent paired Classic maps but failed the full hosted strength gate. Use
+the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
 for decisions and [machine manifest](../../integrations/policy_baseline.json)
 for current artifact identities. Git history preserves superseded attempt records.
 
@@ -97,15 +98,34 @@ Receipts: `/tmp/generals-penalty8-image-proof-fdb12d0/` and
 `/tmp/generals-penalty8-hosted-smoke-20261006/` and
 `/tmp/generals-penalty8-daveey-smoke-20261006/` (`replay-audit.json`).
 
-The frozen penalty-8 version is in a fresh balanced hosted acceptance panel:
-256 games against each of Daveey and the incumbent, 128 per seat (512 total).
-The intent at `/tmp/generals-penalty8-hosted-acceptance-chunked-20261006/`
-holds eight accepted requests of at most 100 episodes each. Submission paused
-on HTTP 429 at the provider's 300-undispatched-episode limit, then resumed
-with the preserved payloads and keys as capacity opened. The first collection
-had 151 completed, zero failed and 361 pending games. No complete panel result
-or promotion decision exists yet. Collect all eight requests before judging
-strength.
+**The penalty-8 hosted acceptance completed and failed the strength gate.**
+All **512** fresh games completed across eight requests with **zero failed**;
+cost was **$5.7034**. Against the incumbent it won **149/256** (58.20%, Wilson
+95% lower 52.08%): seat 0 **68/128**, seat 1 **81/128**. Against Daveey it won
+**98/256** (38.28%, Wilson lower 32.54%): seat 0 **50/128**, seat 1 **48/128**.
+The preserved panel and promotion report at
+`/tmp/generals-penalty8-hosted-acceptance-chunked-20261006/` passed the
+identity/completeness evidence gate but failed strength. Summary SHA
+`de08014aca9995c500ffcbd9fcd0577f3ae194c468da76da10c272c9fb6a1a62`;
+promotion SHA `712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964`.
+The full SHA-bound replay audit passed: **512 unique seeds**, 277,894 turns,
+zero candidate timeouts, forfeits, unapplied turns or illegal actions; every
+game ended by general capture. Audit SHA
+`fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af`.
+The source baseline remains selected; no champion change occurred.
+Observatory accepted at most 100 episodes per
+request and limited outstanding undispatched episodes to 300; preserved keys
+allowed capacity-limited submission to resume safely.
+
+**Safe owned half-split pilot `job-53h6p` submitted, no result yet.** Isolated
+branch `relh/safe-owned-half-split-pilot` at `8a2a58e` tests four fixed-sampler
+arms on 4,096 paired Classic development games each, seeds 9674001/9674003.
+One H100 context `ctx-64a50389` has a $2.97 cost cap. First attempt
+`job-qy6hs` failed during image build because staged input directories were
+unreadable to BuildKit; it allocated no GPU. The replacement context made all
+tar entries readable, retained the same 549 sealed file contents, and has
+archive SHA `746ecd61cdc7461b6e1c28ccb080a68f4480aeedc78d9da6352c8e19ea3de609`.
+This is a new mechanism probe; it cannot qualify from development maps alone.
 
 **Force-assembly curriculum `job-xbqmn` SUCCEEDED but did not improve the
 development population.** It changed the 25% training reset curriculum from
@@ -250,9 +270,9 @@ and the retained result directories, without changing scheduler state.
 
 ## Next decision
 
-Retain the source baseline while the complete hosted panel runs. Penalty 8
-passed the independent paired Classic confirmation; it remains a hosted
-candidate. The force curriculum did not improve broad play;
-defense CE warmstart harmed it. Keep qualified 4,096/H128 H100 execution and
-serving parity for controlled experiments. A broad winner still requires
-balanced fresh hosted acceptance before promotion.
+Retain the source baseline. Penalty 8 passed local confirmation but failed
+hosted strength, especially against Daveey. Await the safe owned half-split
+development pilot before choosing another mechanism. The
+force curriculum did not improve broad play; defense CE warmstart harmed it.
+Keep qualified 4,096/H128 H100 execution and serving parity for controlled
+experiments. A broad winner still requires fresh hosted acceptance.
