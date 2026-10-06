@@ -37,6 +37,8 @@ def load_plan(path: Path = PLAN) -> dict:
             or plan['training']['horizon'] != 128
             or plan['training']['minibatch'] != 8192
             or plan['training']['steps_per_arm'] != 16_777_216
+            or plan['required_treatment_probe']['steps'] != 4_194_304
+            or plan['required_treatment_probe']['minimum_steady_sps'] != 30_000
             or plan['development']['games_per_arm'] != 4096):
         raise ValueError('Hard-opponent preregistration differs from the frozen experiment')
     return plan
@@ -84,11 +86,27 @@ def derive_pair(build: dict, run: dict, plan: dict) -> tuple[dict, dict, dict]:
 def verify_source(input_root: Path, plan: dict) -> None:
     asset = input_root / 'assets/cold/asset.json'
     cold = json.loads(asset.read_text())
+    serving = json.loads((input_root / 'bundles/cold/asset.json').read_text())
+    migration = plan['migrated_source']
+    proof_path = input_root / 'source-migration-proof.json'
+    proof = json.loads(proof_path.read_text())
     if (digest(input_root / 'assets/cold/policy.bin') != plan['source_checkpoint_sha256']
             or digest(input_root / 'bundles/cold/policy.bin') != plan['source_checkpoint_sha256']
+            or digest(input_root / 'assets/cold/policy.bin.learner') != plan['source_learner_sha256']
+            or cold['learner_sha256'] != plan['source_learner_sha256']
+            or digest(asset) != migration['asset_manifest_sha256']
+            or cold['model_sha256'] != migration['model_sha256']
+            or serving['model_sha256'] != cold['model_sha256']
+            or serving['policy_sha256'] != cold['policy_sha256']
+            or serving['sampler'] != cold['sampler']
+            or cold['abi_sha256'] != proof['abi_sha256']
+            or digest(proof_path) != migration['proof_sha256']
+            or proof['new_model_sha256'] != migration['model_sha256']
+            or proof['policy_sha256'] != plan['source_checkpoint_sha256']
+            or proof['reinforcement_learning_steps_added'] != 0
             or digest(asset) != json.loads((input_root / 'config.json').read_text())['initialize']['manifest_sha256']
             or cold['factory_source_sha256'] != digest(input_root / 'source/integrations/generals_fabric.py')):
-        raise ValueError('Source initializer, serving bundle, or model factory differs')
+        raise ValueError('Migrated source initializer, model identity, bundle, or factory differs')
     build = json.loads((input_root / 'build-config.json').read_text())
     frozen = build['python_environment']['options']['frozen_bundles']
     checksums = [digest(input_root / Path(path).relative_to('/work/input') / 'policy.bin') for path in frozen]
@@ -111,6 +129,16 @@ def prepare(source_input: Path, repository: Path, output: Path, plan_path: Path 
                         ignore=shutil.ignore_patterns('._*', '.DS_Store'))
     for name in ('build-config.json', 'config.json'):
         shutil.copy2(source_input / name, output / name)
+    migration = Path(plan['migrated_source']['path']).resolve(strict=True)
+    if digest(migration / 'proof.json') != plan['migrated_source']['proof_sha256']:
+        raise ValueError('Qualified cold migration proof differs')
+    for destination, replacement in (('assets/cold', 'asset'), ('bundles/cold', 'bundle')):
+        shutil.rmtree(output / destination)
+        shutil.copytree(migration / replacement, output / destination)
+    shutil.copy2(migration / 'proof.json', output / 'source-migration-proof.json')
+    source_run = json.loads((output / 'config.json').read_text())
+    source_run['initialize']['manifest_sha256'] = plan['migrated_source']['asset_manifest_sha256']
+    (output / 'config.json').write_text(json.dumps(source_run, indent=2) + '\n')
     (output / 'source').mkdir()
     archive = subprocess.Popen(['git', '-C', str(repository), 'archive', 'HEAD'], stdout=subprocess.PIPE)
     try:
@@ -145,7 +173,118 @@ def prepare(source_input: Path, repository: Path, output: Path, plan_path: Path 
     return proof
 
 
-def run_pair(inputs: Path, output: Path) -> None:
+def validate_probe_receipt(path: Path, inputs: Path, plan: dict) -> dict:
+    receipt = json.loads(path.read_text())
+    probe = plan['required_treatment_probe']
+    audit = receipt.get('audit', {})
+    counts = audit.get('opponent_counts_by_seat', {})
+    reward = audit.get('reward_audit', {})
+    if (receipt.get('experiment') != plan['experiment']
+            or receipt.get('source_policy_sha256') != plan['source_checkpoint_sha256']
+            or receipt.get('input_seal_sha256') != digest(inputs / 'seal.json')
+            or receipt.get('opponent_weights') != plan['treatment_weights']
+            or receipt.get('probe_seed') != probe['seed']
+            or 'H100' not in receipt.get('gpu_model', '')
+            or audit.get('environment_steps') != probe['steps']
+            or audit.get('environment_count') != plan['training']['parallel_games']
+            or audit.get('horizon') != plan['training']['horizon']
+            or audit.get('minibatch') != plan['training']['minibatch']
+            or audit.get('replay_ratio') != plan['training']['replay_ratio']
+            or len(audit.get('epoch_uptime', [])) < 4
+            or audit.get('steady_sps', 0) < probe['minimum_steady_sps']
+            or audit.get('illegal_actions') != 0
+            or any(reward.get(key, 1) != 0 for key in (
+                'nonfinite_rewards', 'native_clipped_rewards', 'native_clipped_terminal_rewards'))
+            or len(counts) != probe['required_opponents_with_both_seats']
+            or any(row.get('0', 0) <= 0 or row.get('1', 0) <= 0 for row in counts.values())):
+        raise ValueError('Treatment-specific H100 throughput and opponent probe is not qualified')
+    return receipt
+
+
+def source_gate(inputs: Path, output: Path, sampler: dict, call) -> dict:
+    from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
+    source_match = output / 'source-sampling-match'
+    call('evaluate_spatial_frozen_match', ['--bundle', inputs / 'bundles/cold',
+         '--opponent-bundle', inputs / 'bundles/cold', '--games', 512, '--pool-size', 512,
+         '--seed', 10441691, '--sample-seed', 10441693,
+         '--sampling-temperature', sampler['move_temperature'],
+         '--split-sampling-temperature', sampler['split_temperature'],
+         '--early-route-temperature', sampler['early_route_temperature'],
+         '--early-route-turns', sampler['early_route_turns'],
+         '--neutral-route-bias', sampler['neutral_route_bias'],
+         '--weak-owned-route-penalty', sampler['weak_owned_route_penalty'],
+         '--doomed-attack-route-penalty', sampler['doomed_attack_route_penalty'],
+         '--output', source_match], name='source-sampling', seconds=600, directory=output)
+    return source_sampling_gate_report(source_match)
+
+
+def run_probe(inputs: Path, output: Path) -> None:
+    """Qualify the exact treatment pool before either long matched PPO arm."""
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+    inputs = inputs.resolve(strict=True)
+    if hashes(inputs) != json.loads((inputs / 'seal.json').read_text()):
+        raise ValueError('Staged probe input differs from its seal')
+    plan = load_plan(inputs / 'plan.json')
+    verify_source(inputs, plan)
+    original_build = json.loads((inputs / 'build-config.json').read_text())
+    original_run = json.loads((inputs / 'config.json').read_text())
+    _, treatment, run = derive_pair(original_build, original_run, plan)
+    if treatment != json.loads((inputs / 'treatment/build-config.json').read_text()):
+        raise ValueError('Treatment config differs from preregistration')
+    run['total_timesteps'] = plan['required_treatment_probe']['steps']
+    run['seed'] = plan['required_treatment_probe']['seed']
+    from integrations.cuda_runtime_binding import configure
+    configure()
+    from integrations.classic_position_curriculum import configure_positions
+    from integrations.policy_execution import execute, training_audit
+    from integrations.slurm_s3_job import verify_gpu_idle, visible_gpu_identity
+    gpu = verify_gpu_idle(visible_gpu_identity())
+    gpu_model = subprocess.check_output(['nvidia-smi', '--query-gpu=name', '--format=csv,noheader'],
+                                        text=True).strip()
+    if 'H100' not in gpu_model:
+        raise ValueError('Treatment probe requires the preregistered H100')
+    os.environ['GENERALS_ALLOCATED_GPU_UUID'] = gpu['uuid']
+    os.environ['CUDA_VISIBLE_DEVICES'] = gpu['uuid']
+    output.mkdir(parents=True, exist_ok=False)
+    probe = output / 'probe'
+    probe.mkdir()
+    (output / 'gpu-preflight.json').write_text(json.dumps(gpu, indent=2) + '\n')
+    configure_positions(treatment['python_environment']['options'], inputs / 'curriculum/manifest.json')
+    (output / 'build-config.json').write_text(json.dumps(treatment, indent=2) + '\n')
+    config = probe / 'config.json'
+    config.write_text(json.dumps(run, indent=2) + '\n')
+    sampler = json.loads((inputs / 'assets/cold/asset.json').read_text())['sampler']
+
+    def call(module, args, *, name, seconds, directory, training_config=None):
+        execute(module, args, source=inputs / 'source', output=directory, sampler=sampler,
+                name=name, seconds=seconds, training_config=training_config,
+                startup_seconds=420)
+
+    gate = source_gate(inputs, output, sampler, call)
+    (probe / 'sampling-gate.json').write_text(json.dumps(gate, indent=2) + '\n')
+    call('launch_spatial_selfplay_training', ['build', '--config', output / 'build-config.json',
+         '--output', output / 'build'], name='build', seconds=600, directory=probe)
+    # Native preflight must verify the actual source model fingerprint; source
+    # factory hashes and identical fabric dictionaries alone are insufficient.
+    call('launch_spatial_selfplay_training', ['preflight', '--build', output / 'build',
+         '--config', config, '--output', probe / 'run'],
+         name='preflight', seconds=300, directory=probe)
+    call('launch_spatial_selfplay_training', ['train', '--build', output / 'build',
+         '--config', config, '--output', probe / 'run'], name='train', seconds=900,
+         directory=probe, training_config=config)
+    audit = training_audit(probe, run)
+    if audit['steady_sps'] < plan['required_treatment_probe']['minimum_steady_sps']:
+        raise ValueError('Treatment throughput probe is below 30,000 steady SPS')
+    (output / 'QUALIFIED.json').write_text(json.dumps({
+        'experiment': plan['experiment'], 'source_policy_sha256': plan['source_checkpoint_sha256'],
+        'input_seal_sha256': digest(inputs / 'seal.json'),
+        'opponent_weights': plan['treatment_weights'], 'probe_seed': run['seed'],
+        'gpu_model': gpu_model,
+        'gpu': gpu, 'audit': audit,
+    }, indent=2) + '\n')
+
+
+def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
     """Train both arms on one GPU and evaluate on common fresh Classic maps."""
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     inputs = inputs.resolve(strict=True)
@@ -161,6 +300,7 @@ def run_pair(inputs: Path, output: Path) -> None:
             raise ValueError('Staged arm config differs from frozen comparison')
         if json.loads((inputs / name / 'config.json').read_text()) != run:
             raise ValueError('Staged PPO config differs from matched control')
+    probe_receipt = validate_probe_receipt(qualified_probe, inputs, plan)
     from integrations.cuda_runtime_binding import configure
     configure()
     from integrations.classic_position_curriculum import configure_positions
@@ -179,20 +319,7 @@ def run_pair(inputs: Path, output: Path) -> None:
                 name=name, seconds=seconds, training_config=training_config,
                 startup_seconds=420)
 
-    from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
-    source_match = output / 'source-sampling-match'
-    call('evaluate_spatial_frozen_match', ['--bundle', inputs / 'bundles/cold',
-         '--opponent-bundle', inputs / 'bundles/cold', '--games', 512, '--pool-size', 512,
-         '--seed', 10441691, '--sample-seed', 10441693,
-         '--sampling-temperature', sampler['move_temperature'],
-         '--split-sampling-temperature', sampler['split_temperature'],
-         '--early-route-temperature', sampler['early_route_temperature'],
-         '--early-route-turns', sampler['early_route_turns'],
-         '--neutral-route-bias', sampler['neutral_route_bias'],
-         '--weak-owned-route-penalty', sampler['weak_owned_route_penalty'],
-         '--doomed-attack-route-penalty', sampler['doomed_attack_route_penalty'],
-         '--output', source_match], name='source-sampling', seconds=600, directory=output)
-    sampling_gate = source_sampling_gate_report(source_match)
+    sampling_gate = source_gate(inputs, output, sampler, call)
 
     for name in ARMS:
         staged = inputs / name
@@ -249,7 +376,9 @@ def run_pair(inputs: Path, output: Path) -> None:
     (output / 'COMPLETED.json').write_text(json.dumps({'experiment': plan['experiment'],
         'development_only': True, 'hard_opponent_paired_signed_score_delta': hard_gain,
         'treatment_selected_for_independent_confirmation': selected,
-        'comparison_sha256': digest(comparison), 'gpu': gpu}, indent=2) + '\n')
+        'comparison_sha256': digest(comparison), 'qualified_probe_sha256': digest(qualified_probe),
+        'qualified_probe_steady_sps': probe_receipt['audit']['steady_sps'],
+        'gpu': gpu}, indent=2) + '\n')
 
 
 def main() -> None:
@@ -259,14 +388,20 @@ def main() -> None:
     stage.add_argument('--source-input', type=Path, required=True)
     stage.add_argument('--repository', type=Path, required=True)
     stage.add_argument('--output', type=Path, required=True)
+    probe = commands.add_parser('probe')
+    probe.add_argument('--input', type=Path, required=True)
+    probe.add_argument('--output', type=Path, required=True)
     run = commands.add_parser('run')
     run.add_argument('--input', type=Path, required=True)
     run.add_argument('--output', type=Path, required=True)
+    run.add_argument('--qualified-probe', type=Path, required=True)
     args = parser.parse_args()
     if args.command == 'prepare':
         print(json.dumps(prepare(args.source_input, args.repository, args.output), indent=2))
+    elif args.command == 'probe':
+        run_probe(args.input, args.output)
     else:
-        run_pair(args.input, args.output)
+        run_pair(args.input, args.output, args.qualified_probe)
 
 
 if __name__ == '__main__':

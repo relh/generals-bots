@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from integrations.hard_opponent_weighting import derive_pair, digest, load_plan
+from integrations.hard_opponent_weighting import derive_pair, digest, load_plan, validate_probe_receipt
 
 SOURCE = Path('/tmp/generals-current-policy-input-v2')
 
@@ -54,6 +54,22 @@ def test_source_mirror_contamination_is_rejected():
         derive_pair(build, run, load_plan())
 
 
+def test_qualified_migration_preserves_policy_and_learner_bytes():
+    plan = load_plan()
+    migrated = Path(plan['migrated_source']['path'])
+    if not migrated.exists() or not SOURCE.exists():
+        pytest.skip('Migrated source asset is not staged on this machine')
+    old = json.loads((SOURCE / 'assets/cold/asset.json').read_text())
+    new = json.loads((migrated / 'asset/asset.json').read_text())
+    assert digest(migrated / 'proof.json') == plan['migrated_source']['proof_sha256']
+    assert digest(migrated / 'asset/asset.json') == plan['migrated_source']['asset_manifest_sha256']
+    assert old['model_sha256'] != new['model_sha256'] == plan['migrated_source']['model_sha256']
+    assert old['abi_sha256'] == new['abi_sha256']
+    assert digest(migrated / 'asset/policy.bin') == digest(SOURCE / 'assets/cold/policy.bin')
+    assert digest(migrated / 'asset/policy.bin.learner') == digest(SOURCE / 'assets/cold/policy.bin.learner')
+    assert new['learner_sha256'] == plan['source_learner_sha256']
+
+
 def test_fresh_development_and_confirmation_seeds():
     plan = load_plan()
     dev = plan['development']
@@ -62,3 +78,40 @@ def test_fresh_development_and_confirmation_seeds():
                 dev['bootstrap_seed'], confirm['map_seed'], confirm['sample_seed']}) == 6
     assert (dev['map_seed'], dev['sample_seed']) == (10441701, 10441703)
     assert (confirm['map_seed'], confirm['sample_seed']) == (10442701, 10442703)
+    assert plan['required_treatment_probe']['seed'] not in {
+        plan['training']['seed'], dev['map_seed'], dev['sample_seed'], confirm['map_seed'], confirm['sample_seed']}
+
+
+def test_long_run_requires_exact_treatment_probe_receipt(tmp_path):
+    plan = load_plan()
+    inputs = tmp_path / 'input'
+    inputs.mkdir()
+    (inputs / 'seal.json').write_text('{}\n')
+    receipt = {
+        'experiment': plan['experiment'],
+        'source_policy_sha256': plan['source_checkpoint_sha256'],
+        'input_seal_sha256': digest(inputs / 'seal.json'),
+        'opponent_weights': plan['treatment_weights'],
+        'probe_seed': plan['required_treatment_probe']['seed'],
+        'gpu_model': 'NVIDIA H100 80GB HBM3',
+        'audit': {'environment_steps': 4194304, 'steady_sps': 36182,
+                  'environment_count': 4096, 'horizon': 128,
+                  'minibatch': 8192, 'replay_ratio': 0.5,
+                  'epoch_uptime': [1, 2, 3, 4], 'illegal_actions': 0,
+                  'reward_audit': {'nonfinite_rewards': 0, 'native_clipped_rewards': 0,
+                                   'native_clipped_terminal_rewards': 0},
+                  'opponent_counts_by_seat': {name: {'0': 1, '1': 1}
+                                              for name in plan['opponent_order']}},
+    }
+    path = tmp_path / 'QUALIFIED.json'
+    path.write_text(json.dumps(receipt))
+    assert validate_probe_receipt(path, inputs, plan) == receipt
+    for change in ({'opponent_weights': plan['control_weights']},
+                   {'gpu_model': 'NVIDIA B300'},
+                   {'audit': {**receipt['audit'], 'steady_sps': 29999}},
+                   {'audit': {**receipt['audit'], 'reward_audit': {'nonfinite_rewards': 1}}},
+                   {'audit': {**receipt['audit'], 'opponent_counts_by_seat': {}}}):
+        bad = {**receipt, **change}
+        path.write_text(json.dumps(bad))
+        with pytest.raises(ValueError, match='not qualified'):
+            validate_probe_receipt(path, inputs, plan)

@@ -2,7 +2,15 @@
   "experiment": "hard-opponent-weighting-v1",
   "scope": "Matched development training; no hosted replay input or promotion",
   "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "source_learner_sha256": "1c4832d6f5516ed85a97cf0b476b303ba8829467defeac4b5a7e6d1f6b11599b",
   "source_input": "/tmp/generals-current-policy-input-v2",
+  "migrated_source": {
+    "path": "/tmp/generals-appledouble-clean-cold-migration-v1",
+    "proof_sha256": "94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd",
+    "asset_manifest_sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9",
+    "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
+    "operation": "remove_appledouble_metadata; policy and learner bytes unchanged; zero PPO steps"
+  },
   "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
   "opponent_order": [
     "frozen_fff930fd304a", "frozen_704b0949c9a5", "frozen_4940d3db1222",
@@ -24,6 +32,14 @@
     "warmup_epochs": 2,
     "initializer": "selected cold source asset; fresh optimizer in both arms",
     "reward_and_sampler": "unchanged from original source training configuration"
+  },
+  "required_treatment_probe": {
+    "seed": 9107443,
+    "steps": 4194304,
+    "gpu": "h100",
+    "minimum_steady_sps": 30000,
+    "required_opponents_with_both_seats": 13,
+    "rule": "Finish on the exact treatment weights with two warmup epochs, zero invalid or nonfinite audits, and all 13 opponents on both seats before either 16.8M training arm"
   },
   "development": {
     "games_per_arm": 4096,
