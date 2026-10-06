@@ -165,7 +165,10 @@ def run_probe(inputs: Path, output: Path) -> None:
     (probe / "config.json").write_text(json.dumps(run, indent=2) + "\n")
     trial = Trial(inputs, output)
     trial.build()
-    trial.sampling_gate("probe")
+    # The selected source actor is the control bundle in Trial; the other
+    # arm denotes the separate distilled candidate and has no bundle here.
+    trial.sampling_gate("control")
+    shutil.copy2(output / "control/sampling-gate.json", probe / "sampling-gate.json")
     trial.call("launch_spatial_selfplay_training", [
         "preflight", "--build", output / "build", "--config", probe / "config.json",
         "--output", probe / "run",
