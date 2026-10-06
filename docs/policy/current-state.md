@@ -125,14 +125,14 @@ no matched strength result exists. Preserve completed control and learner output
 Artifact: `/tmp/generals-matched-h100-results-job-uyssa/`, SHA
 `dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374`.
 
-**Continuation `job-re2cn` is SUBMITTED**, 06:17:59 UTC, source
-`d29f7f790126ea5a04580ce94a40fd292c4f13cf`, one H100,
-**90-minute/$4.455 maximum**, zero restarts. It consumes the authenticated
-`job-uyssa` control artifact (`dc6bd7f4…`) to publish control, distill and train
-the warm arm; held-out panels follow later. These stages remain pending until
-collected artifacts prove completion. Receipt:
-`/tmp/generals-matched-continuation-d29f7f7-submission.json`.
-No matched strength result exists.
+**Continuation `job-re2cn` ended BUILD_FAILED before GPU allocation**, zero
+billed seconds. Docker pip installation hit a `files.pythonhosted.org` ReadTimeout.
+Independent review also found a latent source-revision seal mismatch in its v1
+context; that mismatch was not the observed build failure.
+The **v2 context is uploading**, with all **400 seals corrected** and increased
+pip timeout/retries. **No replacement job has been submitted.** Planned scope
+remains authenticated `job-uyssa` control publishing, distillation and warm PPO;
+held-out panels follow later. No matched strength result exists.
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -207,7 +207,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-zvvcn` | BUILD_FAILED in19s: `/ctx/framework-source` permission denied, mode700 tar directory entries; no GPU | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-build-submission.json` |
 | `job-mvtti` | Failed: verified native identities matched, curriculum symlink spelling differed; no PPO;123s/$0.1012 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-mvtti/` |
 | `job-uyssa` | Failed publishing120s after clean control8M at36,171.5SPS; no warm/panels;990s/$0.8162 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-uyssa/` |
-| `job-re2cn` | Submitted: authenticated control publish, distill and warm continuation; panels later | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-submission.json` |
+| `job-re2cn` | BUILD_FAILED beforeGPU/zero billed: pip ReadTimeout; latent v1 source seal mismatch also corrected | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is

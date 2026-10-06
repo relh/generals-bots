@@ -110,8 +110,8 @@
   },
   "latest_attempt": {
     "job": "job-re2cn",
-    "state": "SUBMITTED",
-    "phase": "continuation_pending",
+    "state": "BUILD_FAILED",
+    "phase": "docker_pip_install",
     "source_revision": "d29f7f790126ea5a04580ce94a40fd292c4f13cf",
     "submitted_at_utc": "2026-10-06T06:17:59.678861+00:00",
     "hardware": "H100",
@@ -127,13 +127,23 @@
       "train_warm"
     ],
     "heldout_panels": "later",
-    "new_training_steps": null,
+    "new_training_steps": 0,
     "strength_result": null,
     "evidence": {
       "path": "/tmp/generals-matched-continuation-d29f7f7-submission.json",
       "sha256": "0249cb751f8a455d2afc79bb2f7bebde2ac9fcd37a29f82cf977806f8c77f852",
       "bytes": 3183,
       "verified_locally": true
+    },
+    "gpu_allocated": false,
+    "billed_seconds": 0,
+    "error": "files.pythonhosted.org ReadTimeout during Docker pip installation",
+    "latent_v1_issue": "Source-revision seal mismatch discovered independently",
+    "next_context": {
+      "state": "UPLOADING",
+      "corrected_seals": 400,
+      "pip_timeout_retries_increased": true,
+      "replacement_job_submitted": false
     }
   },
   "latest_training_throughput": {
