@@ -41,4 +41,25 @@ The local source paths are
 `/tmp/generals-doomed-paired-fdb12d0-context/input/population-build.json`
 (population-build SHA
 `bb81e9d3d0eaf38a51e2074ab4f5b7d1142e04ede89c0b581286aa7523c481e4`).
-This plan has no submitted job or result.
+## Result
+
+H100 job `job-t7ydi` succeeded after a free provider build retry. Its sealed
+output is `/tmp/generals-capital-threat-results-job-t7ydi`, artifact SHA-256
+`ce68dfc4143e8f6f56046bbcb159c5ad87b17f69e583895a6adf1a62f30e76ca`.
+The running attempt used 535 billed seconds ($0.4411). All three arms completed
+4,096 paired Classic first episodes over 2,583 unique initial states.
+
+| Gather bonus | Wins / losses / draws | Paired signed-score delta | Initial-state-cluster 95% CI |
+| --- | ---: | ---: | ---: |
+| 0 | 2845 / 1228 / 23 | reference | — |
+| 2 | 2845 / 1223 / 28 | +0.00122 | [−0.00220, +0.00467] |
+| 4 | 2837 / 1233 / 26 | −0.00317 | [−0.00894, +0.00264] |
+
+Neither candidate passed the preregistered positive lower-bound gate. Bonus 2
+changed few outcomes across opponent/seat strata; bonus 4 had 11 negative and
+6 positive strata. Retain bonus 0 and skip independent confirmation. The
+prespecified decision file SHA-256 is
+`8acb14646c57b5454968b62c158ea6bfd1b7a60d240e963be2a1540eb821dd54`;
+comparison file SHA-256 values are `032336e631680ef3a5160f539fbe1c1cc77e0e0e68d6c2b9758556acbd2f95d8`
+for bonus 2 and `8e28ef453561fa1bda4ff05b5265b41f821d1c894d113e2f14c0d76808fe9bd5`
+for bonus 4. This development result does not establish hosted strength.
