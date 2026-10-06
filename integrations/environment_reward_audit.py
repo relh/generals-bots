@@ -75,6 +75,10 @@ def install(environment_class):
     original = environment_class.step_device
     audit_flat_splits = os.environ.get("METTA_AUDIT_SPATIAL_SPLITS") == "1"
     audit_population = os.environ.get("METTA_AUDIT_POPULATION_WINS") == "1"
+    target = os.environ.get("METTA_AUDIT_TARGET_AGENT_STEPS")
+    target_steps = int(target) if target else None
+    if target_steps is not None and target_steps <= 0:
+        raise ValueError("Reward audit target must be positive")
 
     @functools.wraps(original)
     def step(self, actions):
@@ -142,7 +146,8 @@ def install(environment_class):
                 self._population_win_threshold,
             )
         self._reward_audit_ticks += 1
-        if self._reward_audit_ticks % 512 == 0:
+        if (self._reward_audit_ticks % 512 == 0
+                or self._reward_audit_ticks * self.spec.agents == target_steps):
             self._reward_audit_report()
         return result
 

@@ -1,5 +1,6 @@
 """Exercise the exact audit wrapper that aborted scaled-reward job35851."""
 
+import json
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -71,3 +72,27 @@ def test_scaled_wrapper_counts_wins_without_changing_transitions(scale):
 def test_ambiguous_or_invalid_reward_contract_remains_rejected(change):
     with pytest.raises(ValueError, match="bounded win-only"):
         audit.population_win_threshold("win_only", WEIGHTS | change)
+
+
+def test_final_reward_audit_reports_nonperiodic_completed_budget(capsys):
+    class Environment:
+        spec = SimpleNamespace(agents=6)
+
+        def step_device(self, actions):
+            return None, None, jnp.ones(6), jnp.zeros(6), False
+
+    with (
+        patch.dict("os.environ", METTA_AUDIT_TARGET_AGENT_STEPS="18",
+                   METTA_AUDIT_SPATIAL_SPLITS="0", METTA_AUDIT_POPULATION_WINS="0"),
+        patch.object(audit.atexit, "register"),
+    ):
+        audit.install(Environment)
+        env = Environment()
+        for _ in range(3):
+            env.step_device(None)
+    reports = [json.loads(line.split("DEVICE_REWARD_AUDIT ", 1)[1])
+               for line in capsys.readouterr().out.splitlines()
+               if line.startswith("DEVICE_REWARD_AUDIT ")]
+    assert len(reports) == 1
+    assert reports[0]["agent_steps"] == 18
+    assert reports[0]["nonfinite_rewards"] == 0

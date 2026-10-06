@@ -70,14 +70,19 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
     """Start one process group; preserve logs on every outcome."""
     output.mkdir(parents=True, exist_ok=True)
     env = runtime_environment(source, output, sampler)
+    env.pop("METTA_AUDIT_TARGET_AGENT_STEPS", None)
     if name == "preflight":
         env.update(JAX_PLATFORMS="cpu", METTA_AUDIT_DEVICE_REWARDS="0")
     steps_per_epoch = None
     if training_config:
         env.update(METTA_AUDIT_DEVICE_REWARDS="1", METTA_AUDIT_SPATIAL_SPLITS="1",
                    METTA_AUDIT_POPULATION_WINS="1")
-        config = json.loads(Path(training_config).read_text())["overrides"]
+        training = json.loads(Path(training_config).read_text())
+        config = training["overrides"]
         steps_per_epoch = config["vec.total_agents"] * config["train.horizon"]
+        env["METTA_AUDIT_TARGET_AGENT_STEPS"] = str(
+            training["total_timesteps"] // steps_per_epoch * steps_per_epoch
+        )
 
     def interrupted(signum, frame):
         raise SystemExit(128 + signum)
