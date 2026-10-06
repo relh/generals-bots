@@ -46,11 +46,15 @@ def main():
     parser.add_argument("--pool-size", type=int, default=1024)
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--sample-seed", type=int, required=True)
+    parser.add_argument("--capital-threat-gather-bonus", type=float, default=0.0,
+                        help="Diagnostic public full-move bonus toward a threatened own general")
     parser.add_argument("--destination-audit", action="store_true",
                         help="Record first-episode destination types by game phase")
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
+    if not np.isfinite(args.capital_threat_gather_bonus) or args.capital_threat_gather_bonus < 0:
+        raise ValueError("Capital gather bonus must be finite and nonnegative")
     if jax.devices()[0].platform != "gpu":
         raise RuntimeError("Population strength evaluation requires GPU execution")
     policy = SpatialPlayerPolicy(args.bundle)
@@ -77,7 +81,8 @@ def main():
     def choose(values, masks, keys):
         with jax.default_matmul_precision("highest"):
             outputs = policy._forward(values[:, :policy.observation_size], jnp)
-        return frozen_action_indices(policy, outputs, masks, keys, values)
+        return frozen_action_indices(policy, outputs, masks, keys, values,
+                                     capital_threat_gather_bonus=args.capital_threat_gather_bonus)
 
     start = time.monotonic()
     finished = np.zeros(args.games, bool)
@@ -153,7 +158,8 @@ def main():
                                             log_gap_scale=policy.log_gap_scale,
                                             neutral_route_bias=policy.neutral_route_bias,
                                             weak_owned_route_penalty=policy.weak_owned_route_penalty,
-                                            doomed_attack_route_penalty=policy.doomed_attack_route_penalty),
+                                            doomed_attack_route_penalty=policy.doomed_attack_route_penalty,
+                                            capital_threat_gather_bonus=args.capital_threat_gather_bonus),
                       by_opponent_and_seat=summarize(labels, sides, outcomes, names),
                       wins=int((outcomes == 1).sum()), losses=int((outcomes == -1).sum()),
                       draws=int((outcomes == 0).sum()), turns=turn + 1,

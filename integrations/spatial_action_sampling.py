@@ -181,6 +181,51 @@ def public_doomed_attack_route_penalty(observations, strength, xp):
     return xp.concatenate((penalty, penalty, xp.zeros_like(penalty[..., :1])), axis=-1)
 
 
+def public_capital_threat_gather_bonus(observations, legal, strength, xp):
+    """Favor legal full moves of nearby owned surplus toward a threatened general.
+
+    Threats, armies, ownership, and the general are read from the acting
+    player's public planes. This diagnostic has no state across turns.
+    """
+    if observations.shape[-1] != 16 * 441 or legal.shape != observations.shape[:-1] + (PASS_INDEX + 1,):
+        raise ValueError("Capital gather requires public observations and matching legal masks")
+    if isinstance(strength, bool) or not isinstance(strength, (int, float)) or (
+            not math.isfinite(strength) or strength < 0):
+        raise ValueError("Capital gather strength must be finite and nonnegative")
+    planes = observations.reshape((*observations.shape[:-1], 16, 441))
+    cells = xp.arange(441)
+    own = planes[..., 4, :] > .5
+    general = (planes[..., 1, :] > .5) & own
+    general_index = xp.argmax(general.astype(xp.int32), axis=-1)
+    general_row, general_col = general_index // 21, general_index % 21
+    army = xp.floor(xp.expm1(planes[..., 0, :] * 8) + .5)
+    general_army = xp.take_along_axis(army, general_index[..., None], axis=-1)[..., 0]
+    enemy_distance = xp.abs(cells // 21 - general_row[..., None]) + xp.abs(cells % 21 - general_col[..., None])
+    threatening = (planes[..., 5, :] > .5) & (enemy_distance <= 3) & (army > general_army[..., None])
+    threat_army = xp.max(xp.where(threatening, army, 0), axis=-1)
+    active = xp.any(general, axis=-1) & xp.any(threatening, axis=-1)
+
+    routes = xp.arange(MOVE_COUNT)
+    source = routes % 441
+    direction = routes // 441
+    source_row, source_col = source // 21, source % 21
+    target_row = source_row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
+    target_col = source_col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
+    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
+    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
+    source_distance = xp.abs(source_row - general_row[..., None]) + xp.abs(source_col - general_col[..., None])
+    target_distance = xp.abs(target_row - general_row[..., None]) + xp.abs(target_col - general_col[..., None])
+    movable = xp.maximum(xp.take(army, source, axis=-1) - 1, 0)
+    deficit = xp.maximum(threat_army - general_army, 1)
+    useful_surplus = xp.minimum(xp.log1p(movable) / xp.log1p(deficit[..., None]), 1)
+    eligible = (active[..., None] & on_board & (source_distance <= 3) &
+                (target_distance < source_distance) & xp.take(own, source, axis=-1) &
+                xp.take(own, target, axis=-1) & (movable > 0) & legal[..., :MOVE_COUNT])
+    direct_merge = target_distance == 0
+    bonus = xp.where(eligible, strength * useful_surplus * xp.where(direct_merge, 2.0, 1.0), 0)
+    return xp.concatenate((bonus, xp.zeros_like(bonus), xp.zeros_like(bonus[..., :1])), axis=-1)
+
+
 def validate_full_action_temperature(temperature):
     """A static multiplier applied after every action-logit adjustment."""
     if (not isinstance(temperature, (int, float)) or isinstance(temperature, bool)

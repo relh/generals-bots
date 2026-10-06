@@ -6,6 +6,7 @@ import jax.numpy as jnp
 from integrations.spatial_action_sampling import (
     acting_logits,
     scale_action_logits,
+    public_capital_threat_gather_bonus,
     public_doomed_attack_route_penalty,
     public_early_route_temperature,
     public_neutral_route_bonus,
@@ -18,7 +19,7 @@ def sample_flat_logits(key, logits, legal):
     return jax.random.categorical(key, jnp.where(legal, logits, -jnp.inf), axis=-1)
 
 
-def frozen_action_indices(policy, outputs, masks, keys, observations=None):
+def frozen_action_indices(policy, outputs, masks, keys, observations=None, *, capital_threat_gather_bonus=0.0):
     """Select frozen opponent actions using the bundle's serving contract."""
     if policy.action_mode != "structured_sample":
         raise ValueError("Frozen opponents require the current structured sampler")
@@ -42,6 +43,11 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
         if observations is None:
             raise ValueError("Doomed attack route penalty requires frozen public observations")
         logits += public_doomed_attack_route_penalty(observations, policy.doomed_attack_route_penalty, jnp)
+    if capital_threat_gather_bonus:
+        if observations is None:
+            raise ValueError("Capital gather requires frozen public observations")
+        logits += public_capital_threat_gather_bonus(
+            observations, masks, capital_threat_gather_bonus, jnp)
     logits = scale_action_logits(logits, policy.full_action_temperature)
     if policy.log_gap_scale:
         from integrations.spatial_exploration import log_gap_logits, public_action_mask
