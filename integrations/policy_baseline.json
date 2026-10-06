@@ -168,6 +168,20 @@
     "complete_marker_sha256": "5390d476dbc080e3a50340900594fd19d0c6f35ecf900485a135bc2c34a05373",
     "comparison_sha256": "2a6d166109e9f76d8bcb2df2efa643b212cbbe16ba4186898b064a36087e0354"
   },
+  "classic_siege_early_border_rejection": {
+    "job": "job-wz2x8",
+    "games_per_arm": 1024,
+    "siege_games_per_arm": 904,
+    "old_bot_learner_wins": 537,
+    "new_bot_learner_wins": 684,
+    "new_minus_old_learner_win_rate_points": 16.26,
+    "cluster_ci95_points": [12.54, 20.18],
+    "illegal_moves": 0,
+    "selected_for_training": false,
+    "result_archive_sha256": "d5d340133d640691a66689f52c533c2b5f15538dc56b9fb33ab5221b2d8513b4",
+    "complete_marker_sha256": "377905ffbec161094c840abbccee2c1b051f8d15192b823275894e0c04a9cee4",
+    "comparison_sha256": "67975466e2b03f720a81da3f563883335f8eda8d07f43cc382f26df99d1507b7"
+  },
   "active_experiments": [
     {
       "kind": "hard_opponent_weighting_matched_development",
@@ -186,20 +200,6 @@
       "minimum_steady_sps": 30000,
       "qualified_probe_marker_sha256": "6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44",
       "max_cost_usd": 2.97
-    },
-    {
-      "kind": "classic_siege_early_border_pilot",
-      "branch": "codex/classic-siege-early-border",
-      "revision": "5fed4e213b4ba9e58dd2969595bccf5c891f40b3",
-      "job": "job-wz2x8",
-      "last_observed_state": "SUBMITTED",
-      "context_archive_sha256": "ceaf23b550bf65936db23cc4b871bfd3ae6e964239f2f60249a23ea81fff7de4",
-      "map_seed": 10941511,
-      "sample_seed": 10941513,
-      "games_per_arm": 1024,
-      "siege_games_per_arm": 904,
-      "arms": 2,
-      "max_cost_usd": 1.485
     }
   ]
 }

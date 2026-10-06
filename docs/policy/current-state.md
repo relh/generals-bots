@@ -69,17 +69,15 @@ clipped rewards were zero. Its qualification marker SHA-256 is
 `6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
 This is a throughput result, not a strength result.
 
-Two bounded H100 development jobs are active; the manifest records their
-sealed context hashes and last observed states:
+One bounded H100 matched development job remains active; the manifest records
+its sealed context hash and last observed state:
 
 | Job | Isolated branch | Decision pending |
 | --- | --- | --- |
 | `job-6cwtq` | `codex/hard-opponent-trial` at `542de7f` | Matched 16,777,216-step source/control PPO arms, changing only the weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. Assess fresh paired Classic strength before any hosted panel. |
-| `job-wz2x8` | `codex/classic-siege-early-border` at `5fed4e2` | Old siege bot versus the same bot with its turn-800 guard removed from full-army border reinforcement, on 1,024 paired fresh Classic first episodes per arm (904 siege rows, 452 per learner seat). No split-rule change. |
 
-Both jobs have zero restarts. The matched run has a 60-minute/$2.97 cap; the
-siege pilot has a 30-minute/$1.485 cap. Treat statuses as historical
-observations until provider readback and artifact
+The matched run has zero restarts and a 60-minute/$2.97 cap. Treat its status
+as a historical observation until provider readback and artifact
 verification. The separate `job-m9ina` paired siege-opponent panel **rejected**
 the proposed pressure bot. In 3,640 paired siege games, the frozen learner won
 2,162 (59.40%) against the old bot and 3,615 (99.31%) against the new bot;
@@ -91,6 +89,14 @@ opponent label, with zero illegal moves. The verified archive SHA-256 is
 The new bot made far more half moves, dispersed stacks into neutral cells and
 rarely reached its remembered-general target; the aggregate trace cannot
 isolate one cause of the loss.
+The narrower `job-wz2x8` early full-army border reinforcement pilot also
+**failed**. In 904 paired siege rows (452 per seat), the learner won 537
+(59.40%) against the old bot and 684 (75.66%) against the candidate;
+candidate-minus-control learner win-rate delta was +16.26 points, paired 95%
+CI [+12.54,+20.18]. Both seats worsened. The 1,024 episodes per arm matched
+on maps, seats and labels, with zero illegal actions. Verified archive SHA-256:
+`d5d340133d640691a66689f52c533c2b5f15538dc56b9fb33ab5221b2d8513b4`.
+Stop this siege-opponent line; neither variant qualifies for training.
 No training-population or serving change follows. Hosted replays suggest that
 general defense and army gathering are promising mechanisms; use fresh paired
 development and independent confirmation rather than those hosted losses as a
