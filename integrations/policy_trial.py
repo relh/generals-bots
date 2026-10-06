@@ -296,9 +296,9 @@ class Trial:
     def evaluate(self):
         arms = {
             "source": self.bundle,
-            "distilled": self.output / "distill/bundle",
-            "control": self.output / "control/bundle",
             "warm": self.output / "warm/bundle",
+            "control": self.output / "control/bundle",
+            "distilled": self.output / "distill/bundle",
         }
         for name, bundle in arms.items():
             self.call(
@@ -321,7 +321,7 @@ class Trial:
                     self.output / ("heldout-" + name),
                 ],
                 name="evaluate-" + name,
-                seconds=1200,
+                seconds=1440,
             )
         for before, after in (("source", "control"), ("source", "distilled"), ("source", "warm"), ("control", "warm")):
             name = f"paired-{before}-{after}"
