@@ -86,6 +86,9 @@ learner win-rate delta was +39.92 points, clustered 95% CI [+38.09,+41.72].
 All 4,096 episodes per arm were completed, paired by initial state, seat and
 opponent label, with zero illegal moves. The verified archive SHA-256 is
 `813be34c1185a42545b21e6d1187bd80c20737c5a28623f898fd016dedd5df36`.
+The new bot made far more half moves, dispersed stacks into neutral cells and
+rarely reached its remembered-general target; the aggregate trace cannot
+isolate one cause of the loss.
 No training-population or serving change follows. Hosted replays suggest that
 general defense and army gathering are promising mechanisms; use fresh paired
 development and independent confirmation rather than those hosted losses as a
