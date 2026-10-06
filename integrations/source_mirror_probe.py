@@ -25,6 +25,9 @@ HORIZON = 128
 MIRROR_WEIGHT = 12
 SEED = 9_107_331
 SOURCE_SHA256 = "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14"
+COLD_ASSET_SHA256 = "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9"
+TARGET_MODEL_SHA256 = "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61"
+TARGET_ABI_SHA256 = "0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851"
 
 
 def digest(path: Path) -> str:
@@ -76,6 +79,10 @@ def prepare(source_input: Path, repository: Path, output: Path) -> dict:
     asset = json.loads((output / "assets/cold/asset.json").read_text())
     if asset["factory_source_sha256"] != digest(output / "source/integrations/generals_fabric.py"):
         raise ValueError("Source model factory differs from cold asset")
+    if (digest(output / "assets/cold/asset.json") != COLD_ASSET_SHA256
+            or asset["model_sha256"] != TARGET_MODEL_SHA256
+            or asset["abi_sha256"] != TARGET_ABI_SHA256):
+        raise ValueError("Cold asset must use the proved clean H100 model identity")
     build_path, run_path = output / "build-config.json", output / "config.json"
     build, run = json.loads(build_path.read_text()), json.loads(run_path.read_text())
     original_build, original_run = json.loads(build_path.read_text()), json.loads(run_path.read_text())
@@ -142,6 +149,12 @@ def run_probe(inputs: Path, output: Path) -> None:
     proof = json.loads((inputs / "probe-intent.json").read_text())
     if proof["source_policy_sha256"] != SOURCE_SHA256:
         raise ValueError("Source policy lineage differs")
+    asset_path = inputs / "assets/cold/asset.json"
+    asset = json.loads(asset_path.read_text())
+    if (digest(asset_path) != COLD_ASSET_SHA256 or proof["cold_asset_sha256"] != COLD_ASSET_SHA256
+            or asset["model_sha256"] != TARGET_MODEL_SHA256
+            or asset["abi_sha256"] != TARGET_ABI_SHA256):
+        raise ValueError("Cold asset must match the proved clean H100 target")
     build, run = json.loads((inputs / "build-config.json").read_text()), json.loads((inputs / "config.json").read_text())
     if serializable_training_contract(build, run) != proof["contract"]:
         raise ValueError("Effective Classic training contract differs")
