@@ -1,0 +1,38 @@
+{
+  "experiment": "hard-opponent-weighting-v1",
+  "scope": "Matched development training; no hosted replay input or promotion",
+  "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "source_input": "/tmp/generals-current-policy-input-v2",
+  "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+  "opponent_order": [
+    "frozen_fff930fd304a", "frozen_704b0949c9a5", "frozen_4940d3db1222",
+    "frozen_a4591eb43f96", "frozen_3eb2fe3f22af", "frozen_201e147f536f",
+    "frozen_f8df1ccd67a1", "frozen_f589aa8f2745", "frozen_83dc8144eafc",
+    "frozen_d2c30ee48e80", "expander_harvester", "sentinel", "classic_siege_padded"
+  ],
+  "control_weights": [1, 2, 1, 1, 1, 4, 5, 5, 11, 17, 3, 4, 16],
+  "treatment_weights": [1, 2, 1, 1, 1, 4, 5, 5, 11, 34, 3, 4, 32],
+  "changed_weights_only": {"frozen_d2c30ee48e80": [17, 34], "classic_siege_padded": [16, 32]},
+  "training": {
+    "seed": 9107441,
+    "steps_per_arm": 16777216,
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "steady_sps_floor": 30000,
+    "warmup_epochs": 2,
+    "initializer": "selected cold source asset; fresh optimizer in both arms",
+    "reward_and_sampler": "unchanged from original source training configuration"
+  },
+  "development": {
+    "games_per_arm": 4096,
+    "pool_size": 4096,
+    "map_seed": 10441701,
+    "sample_seed": 10441703,
+    "bootstrap_seed": 10441711,
+    "rule": "Paired signed-score clustered 95% lower bound above zero, positive combined gain against the two reweighted opponents, and no opponent-seat stratum with >=100 games below -0.10; otherwise retain control"
+  },
+  "reserved_independent_confirmation": {"map_seed": 10442701, "sample_seed": 10442703},
+  "next_gate": "Only a selected treatment proceeds to independent confirmation, serving parity, and fresh hosted acceptance"
+}
