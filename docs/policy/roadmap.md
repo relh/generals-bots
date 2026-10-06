@@ -19,11 +19,14 @@ The source cleanup has exact structural/numeric proof. Job 35956 then passed
 actual direct Enroot GPU ownership/UUID, 46-state CUDA control parity, current
 build and CE fresh-optimizer CPU preflight. It failed before sampling games on
 an omitted explicit balanced-seat option; warm PPO and broad panels did not run.
-Corrected continuation 36081 remains queued at maximum Nice and Priority 1;
-maintenance is cleared. Its 205.584 GiB device-used measurement includes caches.
-Known 8,192/H256 buffers account for 172.503 GiB; the 2.21 MiB policy does not
-require B300. A bounded smaller-geometry H100 benchmark is being prepared,
-with no H100 submission or cancellation of 36081.
+B300 continuation 36081 was cancelled while pending, with no node/runtime/epochs
+and unchanged maximum Nice/Priority 1, to measure smaller geometry as requested.
+Givemeanode job `job-i8tp6` is building its native CUDA image on the way to one
+H100 from source `8e41477`, bounded
+30 min GPU / 60 min build, zero restarts/resume none and queue TTL 60 min.
+No new measurement or strength result exists. Known 8,192/H256 buffers account
+for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
+an intrinsic requirement of the 2.21 MiB policy.
 Learning improvement and hosted winning qualification remain open; see
 [current-state.md](current-state.md).
 
@@ -34,7 +37,8 @@ candidate regressed against both its initialization and the unchanged baseline
 on matched development games and was rejected. The stale launcher binding is
 resolved; repeating that intervention or scaling its training is unjustified.
 
-The active experiment is the matched public-defense warmstart trial. Separate
+The matched public-defense warmstart experiment is deferred until memory/throughput
+sizing selects geometry. Separate
 synthetic training and held-out maps supply legal Sentinel tactical labels.
 Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
@@ -46,11 +50,13 @@ sampling path before retrying the warm arm and broad panels. Direct Enroot and C
 proof; retain completed control and supervised artifacts from 35935. Those
 computations are not repeated. The failed retries provide no warm-arm result.
 
-The next resource decision compares 2,048/H256 (43.126 GiB known buffers) with
+The submitted H100 probe compares 2,048/H256 (43.126 GiB known buffers) with
 4,096/H128 (44.904 GiB), using minibatch 8,192, replay 0.5 and 3,145,728 steps
 per probe (six epochs, two warmup). Require measured fit and ≥30K end-to-end SPS;
 33.081 GiB of the current device allocation is unattributed and cannot be assumed
-to scale proportionally. See current-state for the source allocation accounting.
+to scale proportionally. Selecting new geometry requires new control and warm
+arms at that geometry; the old 8,192 control remains baseline evidence. See
+current-state for the source allocation accounting.
 
 Preserve throughput, legality, train/serve parity, opponent-by-seat coverage and
 frozen artifact identities. Reject failed hypotheses using their paired evidence;

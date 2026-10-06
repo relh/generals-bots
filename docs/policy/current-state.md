@@ -37,46 +37,40 @@ balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservatio
 against the broad pool, verified parity and clean execution. No champion change
 is justified by the current evidence.
 
-## Active continuation: 36081
+## Active memory/throughput probe: job-i8tp6
 
-**PENDING** on B300, from corrected source
-`d4f912e852e4b1c73b859f9363a1949cbf435b32`. Controller readback confirms Nice
-**2147483645**, Priority **1**, one GPU, eight CPUs, 96 GiB and **01:40:00**.
-It retains the completed control/CE weights and the matched 8M-step warm design.
-The balanced-seat fix passed 33 focused checks and an actual short CPU self-match
-with the retained CE policy. No new training or evaluation results exist yet.
-Receipts: `/tmp/relh-generals-balanced-b300-20261006t010500z`.
-Sealed input SHA-256:
-`945ae58e513bfb9ca1dd800da0ac99da0eb48b84238cb84461610f555e77d884`.
+**BUILDING at 01:28 UTC**, submitted 2026-10-06 01:25:53 UTC via Richard-authenticated Givemeanode,
+one H100, source `8e41477ee1224127ca2ce5cb684c42acf39c25d5`, context `ctx-ed1b264a`.
+Bounds: GPU duration 30 min, build timeout 60 min, queue TTL 60 min,
+zero restarts and resume `none`. Native CUDA image layers are downloading and
+extracting successfully and requirements installation has passed so far;
+current assets, no QEMU, no failure reported.
+The 198,423,745-byte context archive SHA-256 is
+`820dc8d81a0213aa780fa97aff6e7838085be05bf97d6bf928f7dbc8c3ef2892`.
+Receipts: `/tmp/generals-h100-probe-owned-job.json` and
+`/tmp/generals-h100-probe-package.json`. No new training, throughput, memory or
+strength result is available yet. The matched warm experiment is deferred until
+smaller geometry is measured and selected.
+
+B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
+for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
+unchanged. Proof: `/tmp/generals-job-36081-superseded-sizing.json`.
 
 ## Latest completed execution: 35956
 
-**FAILED, workload exit 1**, source
-`4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`. Terminal controller retention
-expired; the verified result archive and workload receipt establish the outcome.
-Submission/runtime receipts record one B300, eight CPUs, 96 GiB, Nice
-**2147483645**, Priority **1**, and a finite **01:40:00** cap.
+**FAILED, workload exit 1**, source `4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`;
+controller retention expired. Direct Enroot passed allocated host/container GPU
+ownership/UUID and idle smoke, then control CUDA parity: **46/46 top actions**,
+batch 8, CPU layout/GPU inference, max logit/probability errors **1.43e-6/1.85e-6**.
+Current native build and fresh-optimizer CE-weight CPU preflight passed.
+Sampling failed before games: `Spatial frozen opponents require balanced seats`.
+The evaluator now sets `balance_opponent_sides=True`; 33 focused checks and an
+actual retained-CE CPU self-match passed. **No warm PPO or broad panels ran**;
+completed control/CE work was not repeated.
 
-Direct Enroot **passed actual execution**: allocated host/container GPU ownership
-and UUID, idle-device smoke, then control CUDA parity on all **46 public states**
-(batch 8, CPU layout/GPU inference). All 46 top actions matched; maximum logit
-error was **1.43e-6**, probability error **1.85e-6**. Current native build and
-fresh-optimizer CE-weight CPU preflight also passed.
-
-The next phase failed before any sampling games:
-`ValueError: Spatial frozen opponents require balanced seats`.
-The frozen-match evaluator omitted its wrapper's required explicit balanced-seat
-option. The current evaluator now sets `balance_opponent_sides=True`;
-33 focused checks passed. **No warm PPO steps or broad evaluation panels ran.** Preserved control/CE work was not repeated.
-
-Retained evidence: `/tmp/generals-policy-overhaul-results-35956/`, including
-`analysis.json`, `out/control/serving-parity.json`, GPU-step receipts and warm
-preflight/sampling logs. The 1,090-member result archive and parts were SHA-verified; archive SHA:
-`a93a68b51af78c3070358aa2910e735d4d820a1d560626c28895708e4fd59695`.
-Input/source/transport receipts share prefix
-`/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2`; its 313-file input SHA:
-`f34d7e56ab893615ec14acc88092efdbe25309e39b4484db2e346bca52849c6d`.
-
+Verified result/evidence: `/tmp/generals-policy-overhaul-results-35956/`,
+`analysis.json`, GPU-step receipts, control parity and warm preflight/sampling logs.
+Archive SHA: `a93a68b51af78c3070358aa2910e735d4d820a1d560626c28895708e4fd59695`.
 Enroot uses private `/var/tmp` storage; capacity gates are in the runbook.
 Installed audit `/tmp/generals-installed-enroot-audit.json` SHA:
 `a7d831ac21b15eb8769ca1b95df5616781b825897c0bd80e3eb670b2ffc2b0cd`.
@@ -91,13 +85,13 @@ is device total-minus-free from `cudaMemGetInfo`, including allocator caches,
 not peak live tensors; **33.081 GiB remains unattributed**. Accounting:
 `/tmp/generals-native-memory-accounting-20261005.json`.
 
-36081 remains pending for scheduling priority; maintenance is cleared. The next
-bounded H100 probe will compare 2,048/H256 (43.126 GiB known buffers) with
-4,096/H128 (44.904 GiB), minibatch 8,192 and replay 0.5. Each proposed probe is
-3,145,728 steps / six epochs, measuring after two warmup epochs against **30K SPS**.
-Residual allocations and actual fit/throughput must be measured. Givemeanode
-authentication/free validation passed; **no H100 job is submitted and 36081 is
-not cancelled**. Smaller geometry is the next benchmark decision, not a result.
+The submitted H100 probe compares 2,048/H256 (43.126 GiB known buffers) with
+4,096/H128 (44.904 GiB), each fresh from cold weights, minibatch 8,192/replay 0.5,
+**3,145,728 steps / six epochs**, two warmup epochs, then raw epoch and device
+memory measurements. Require **≥30K actual end-to-end SPS** before qualification;
+residual allocation, fit and performance remain unmeasured. Selecting new
+geometry requires **both control and warm arms at that geometry**; the retained
+8,192-control is baseline evidence, not a matched control for 2,048/4,096.
 
 ## Attempt ledger
 
@@ -122,6 +116,8 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | 35936 | Workload exit 1; control parity SIGSEGV −11, no child traceback; no warm/evaluation | 90 min | `/tmp/generals-policy-overhaul-results-35936/` |
 | 35949 | Failed 1:0, 1s: `/tmp` inode guard; no downloads/GPU query/parity/build/updates | 100 min | `/tmp/generals-policy-overhaul-results-35949/` |
 | 35956 | Workload exit 1: GPU scope/parity/build/preflight passed; balanced-seat guard failed before sampling games | 100 min | `/tmp/generals-policy-overhaul-results-35956/` |
+| 36081 | Cancelled while pending: no node/runtime/epochs; smaller sizing requested | 100 min | `/tmp/generals-job-36081-superseded-sizing.json` |
+| `job-i8tp6` | Building native CUDA image for H100 sizing; no results yet | 30 min GPU | `/tmp/generals-h100-probe-owned-job.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -186,6 +182,6 @@ proofs are packaged in the active capsule. Reused two-graph CPU execution is
 identified honestly alongside the reviewed non-model source delta and current
 sampling guard. Source cleanup added **zero RL steps**, preserving originals.
 
-Next: retain queued 36081 and benchmark smaller H100 geometry before choosing
-a training allocation; complete the matched warm arm and paired panels.
+Next: collect the owned H100 probe's raw memory and steady epoch throughput,
+choose qualified geometry, then resume the deferred matched warm experiment.
 Retain the baseline until broad and fresh hosted evidence qualifies a candidate.
