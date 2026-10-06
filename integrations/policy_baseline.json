@@ -29,13 +29,14 @@
       "doomed_attack_route_penalty": 4.0
     },
     "native_asset": {
-      "path": "/tmp/generals-current-policy-input-v2/assets/cold/asset.json",
-      "sha256": "e1a4faf5d5888eba0dbce658c3a930085c49c81f14c9683439bcdb775f3162cd"
+      "path": "/tmp/generals-appledouble-clean-cold-migration-v1/asset/asset.json",
+      "sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9"
     },
     "portable_bundle_manifest": {
-      "path": "/tmp/generals-current-policy-input-v2/bundles/cold/spatial-policy.json",
-      "sha256": "a99e9fc0e77bb298b904d6e1a233371da6bcfbe511b464506e68e68b488cf7aa"
-    }
+      "path": "/tmp/generals-appledouble-clean-cold-migration-v1/bundle/spatial-policy.json",
+      "sha256": "5fc3be611f408eec3cd9d8332884b60e17a32647a2c242611b40e268384cec8f"
+    },
+    "byte_preserving_metadata_rebind_proof_sha256": "94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd"
   },
   "baseline_hosted_screen": {
     "games_per_opponent": 32,

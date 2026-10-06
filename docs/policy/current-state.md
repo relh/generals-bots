@@ -18,9 +18,14 @@ next decisions, and artifact identities. Git history retains earlier attempts.
 | Frozen sampler | structured; move/split temperatures 0.05/0.15; neutral bonus 6; weak owned and doomed attack penalties 4 |
 | Hosted screen | Daveey 9/32; incumbent 18/32; neither qualifies winning strength |
 
-The selected bundle and native asset are under
-`/tmp/generals-current-policy-input-v2/`; their SHA-256 values are in the
-manifest. The baseline hosted replay audit is
+The current build-compatible native asset and bundle are under
+`/tmp/generals-appledouble-clean-cold-migration-v1/`; their SHA-256 values
+are in the manifest. Its verified metadata rebind changed the model fingerprint
+from `d30f5fae…` to `cead5dce…` with identical policy and learner bytes, the
+same ABI, zero added RL steps and 18-state logit parity (proof SHA
+`94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd`).
+The qualified H100 build used this exact native asset manifest. The baseline
+hosted replay audit is
 `/tmp/relh-generals-serving-35892-final/hosted-replay-panel-audit.json`
 (SHA `ba1ed86cff62b777f77a8ddd8df5a288165538080675f7456fa21760425cebdb`).
 
