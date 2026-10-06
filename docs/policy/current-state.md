@@ -129,14 +129,29 @@ Artifact: `/tmp/generals-matched-h100-results-job-uyssa/`, SHA
 billed seconds. Docker pip installation hit a `files.pythonhosted.org` ReadTimeout.
 Independent review also found a latent source-revision seal mismatch in its v1
 context; that mismatch was not the observed build failure.
-**Replacement `job-vezu3` is SUBMITTED**, 06:24:58 UTC, context `ctx-00638733`,
-archive SHA `4de51bd555d04785b7b91e58e1588190d46d6db216b7a2a38043a6d9ff2058ed`.
-All **400 source seals are verified**; pip timeout120s/retries8. Provider validation
-passed: one H100, **90-minute/$4.455 maximum**, zero restarts.
-Receipt: `/tmp/generals-matched-continuation-d29f7f7-v2-submission.json`.
-**Execution stages remain pending until collected artifacts prove completion.** Scope
-remains authenticated `job-uyssa` control publishing, distillation and warm PPO;
-held-out panels follow later. No matched strength result exists.
+**Continuation `job-vezu3` SUCCEEDED**, 1,760 billed H100 seconds/**$1.452**.
+Control and warm each completed **8,388,608 PPO steps**, 4,096env/H128,
+minibatch8,192/replay0.5, at **36,171.513 / 36,265.339 steady SPS** respectively.
+Both final audits have **zero illegal actions, nonfinite and clipped rewards**;
+policy sampler, seats and 13-opponent pool match. Sampled H100 peaks were
+**69,078 MiB control / 68,517 MiB warm**, for this smaller geometry.
+Control is preserved from `job-uyssa`; the continuation published it and trained
+warm, without repeating control PPO. Native/serving parity passed on46 public
+states, max probability errors **4.38e-6 / 5.60e-6**.
+
+| Frozen result | SHA-256 |
+| --- | --- |
+| Control checkpoint | `8d5c65e0de7da8074aa353386cb22a2bf40f1a773ff88db47d692b807769c7bf` |
+| Warm checkpoint | `c44316f304f833332d0cb2804d3fdf3551aeaa49313217f4263c129f6f409c46` |
+| Control bundle manifest | `9dd95fb69258eb1bf666626985f5094a2d5e6cf5f2af1ad4570831220eac88d8` |
+| Warm bundle manifest | `4de62a328e7afe5cc5ed622c8d8a7bd8b293afab892bec543b0e38973addf503` |
+
+Distillation used256 batches×128 labels; on512 independent held-out maps,
+defense survival improved **0.19454→0.63000**, top1 accuracy **0.1914→0.6367**.
+These tactical metrics do not establish broad warm-policy strength. **Four
+4,096-game held-out panels remain; no matched strength result yet.**
+Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
+`d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456`.
 
 Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
 bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
@@ -219,7 +234,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-mvtti` | Failed: verified native identities matched, curriculum symlink spelling differed; no PPO;123s/$0.1012 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-mvtti/` |
 | `job-uyssa` | Failed publishing120s after clean control8M at36,171.5SPS; no warm/panels;990s/$0.8162 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-uyssa/` |
 | `job-re2cn` | BUILD_FAILED beforeGPU/zero billed: pip ReadTimeout; latent v1 source seal mismatch also corrected | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-submission.json` |
-| `job-vezu3` | Submitted: corrected400 seals/pip timeout120 retries8 continuation; results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-v2-submission.json` |
+| `job-vezu3` | Succeeded: control published, distill/warm8M and parity complete; panels pending;1760s/$1.452 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-results-job-vezu3/` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -230,7 +245,7 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 
 The matched defense driver is integrated and pushed through `de5f915`: it uses
 the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
-training startup to 420s and refuses unqualified geometry. The control arm completed in `job-uyssa`; publishing failed and warm/panel results remain absent.
+training startup to 420s and refuses unqualified geometry. The control arm completed in `job-uyssa`; publishing was completed in `job-vezu3` with warm training/parity; panels remain absent.
 
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.

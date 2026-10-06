@@ -54,11 +54,12 @@ Learning improvement and hosted winning qualification remain open; see
 
 Continuation `job-re2cn` BUILD_FAILED before GPU allocation/zero billed seconds:
 pip `files.pythonhosted.org` ReadTimeout. Independent review also caught a latent
-v1 source-revision seal mismatch. Replacement `job-vezu3` is submitted with all400 source seals verified and
-pip timeout120s/retries8, context `ctx-00638733`. Provider validation passed,
-bounded one H100/90min/$4.455, zero restarts; stages remain pending. Retain
-`job-uyssa` control for publishing/distillation/warm work, then held-out panels.
-No matched strength result exists.
+v1 source-revision seal mismatch. Continuation `job-vezu3` SUCCEEDED: preserved control published, distillation
+and warm8M completed with clean reward/legal audits and46-state serving parity.
+Both arms use4,096/H128/minibatch8,192/replay0.5; control/warm steady SPS are
+36,171.513/36,265.339, H100 peaks69,078/68,517 MiB. Billed1760s/$1.452.
+Held-out tactical survival/teacher accuracy improved, but broad warm strength
+remains unknown: four4,096-game panels and matched paired CIs are still required.
 
 ## Experiment decisions
 

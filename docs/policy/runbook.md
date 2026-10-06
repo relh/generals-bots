@@ -62,8 +62,8 @@ Latest matched execution `job-uyssa` completed its H100 control arm: 8,388,608
 steps, 4,096/H128, minibatch8,192/replay0.5, 36,171.5 steady SPS and clean
 finite/legal audit. Publishing timed out at120s after graph reconstruction.
 Preserve completed control/learner artifacts when repairing finalization;
-training passed, while the full experiment failed. Warm PPO and held-out panels
-remain incomplete. See current-state for its retained artifact/hash.
+training passed, while the full experiment failed. The continuation `job-vezu3` has since published control and completed warm PPO
+and serving parity; held-out panels remain incomplete. See current-state for its retained artifact/hash.
 
 Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
 bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
