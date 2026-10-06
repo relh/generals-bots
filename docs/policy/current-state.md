@@ -142,8 +142,11 @@ replay 0.5. GPU idle verification passed with no compute PID, but the
 source-sampling subprocess exited on SIGSEGV after native bootstrap and before
 any game. The verified terminal archive SHA is
 `f9f7a0f538f01422c1ce4715212d9601a07fa08e860a8e31f8723546c61045cd`;
-the attempt billed 60 seconds/$0.0495. The source gate is being compared with
-the qualified mirror gate; no further GPU retry is queued.
+the attempt billed 60 seconds/$0.0495. The successful mirror gate used the
+same evaluation code, policy and CUDA image; the hard-weight gate differed in
+seeds, two explicitly exported default sampler values and running before the
+native build. The evidence does not distinguish a transient native crash from
+a seed-specific reset failure. No further GPU retry is queued.
 The first `job-wrj6w` failed during image build because restrictive context
 permissions hid its Dockerfile from the rootless builder; it billed $0. The
 corrected archive passed tar-header and unprivileged extraction checks.
