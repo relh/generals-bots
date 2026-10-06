@@ -1,7 +1,6 @@
 {
   "schema": "generals-policy-baseline-v1",
   "audited_utc_date": "2026-10-06",
-  "selection": "Latest completed hosted Classic baseline with intact policy and optimizer. Strongest policy is not established by the small hosted screens.",
   "ready_for_champion": false,
   "game": {
     "contract": "coworld-classic-v1",
@@ -9,568 +8,84 @@
     "official_branch": "softmax",
     "official_commit": "0fcb5a00226387670624d2f326f6d5ad61914584",
     "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
-    "map_dimensions": [
-      18,
-      21
-    ],
-    "padding": [
-      21,
-      21
-    ],
+    "map_dimensions": [18, 21],
+    "padding": [21, 21],
     "turn_limit": 2000
   },
   "policy": {
     "source_job": "35892",
     "agent_steps": 2499805184,
     "sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-    "parameter_count": 578860,
-    "factory": "integrations.generals_fabric:two_stage_tied_local_action_policy",
-    "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
-    "model_sha256": "d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab",
-    "abi_sha256": "0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851",
-    "serving_action_selection": {
-      "doomed_attack_route_penalty": 4.0,
-      "early_route_temperature": 0.1,
-      "early_route_turns": 100,
+    "optimizer_sha256": "1c4832d6f5516ed85a97cf0b476b303ba8829467defeac4b5a7e6d1f6b11599b",
+    "hosted_policy_id": "64649097-765f-4706-8310-910e57067a34",
+    "sampler": {
       "mode": "structured_sample",
       "move_temperature": 0.05,
-      "neutral_route_bias": 6.0,
+      "early_route_temperature": 0.1,
+      "early_route_turns": 100,
       "split_temperature": 0.15,
-      "weak_owned_route_penalty": 4.0
+      "neutral_route_bias": 6.0,
+      "weak_owned_route_penalty": 4.0,
+      "doomed_attack_route_penalty": 4.0
     },
     "native_asset": {
       "path": "/tmp/generals-current-policy-input-v2/assets/cold/asset.json",
-      "sha256": "e1a4faf5d5888eba0dbce658c3a930085c49c81f14c9683439bcdb775f3162cd",
-      "bytes": 34442
+      "sha256": "e1a4faf5d5888eba0dbce658c3a930085c49c81f14c9683439bcdb775f3162cd"
     },
     "portable_bundle_manifest": {
       "path": "/tmp/generals-current-policy-input-v2/bundles/cold/spatial-policy.json",
-      "sha256": "a99e9fc0e77bb298b904d6e1a233371da6bcfbe511b464506e68e68b488cf7aa",
-      "bytes": 291
+      "sha256": "a99e9fc0e77bb298b904d6e1a233371da6bcfbe511b464506e68e68b488cf7aa"
     }
   },
-  "results": {
-    "hosted": {
-      "policy_id": "64649097-765f-4706-8310-910e57067a34",
-      "completed": 64,
-      "failed": 0,
-      "by_opponent_and_seat": {
-        "relh-seat0": {
-          "games": 16,
-          "losses": 7,
-          "wins": 9
-        },
-        "relh-seat1": {
-          "games": 16,
-          "losses": 7,
-          "wins": 9
-        },
-        "leader-seat1": {
-          "games": 16,
-          "losses": 10,
-          "wins": 6
-        },
-        "leader-seat0": {
-          "games": 16,
-          "losses": 13,
-          "wins": 3
-        }
-      }
-    },
-    "opponent_labels": {
-      "leader": "Daveey v7",
-      "relh": "incumbent relh"
-    },
-    "improvement_established": false
+  "baseline_hosted_screen": {
+    "games_per_opponent": 32,
+    "wins_vs_Daveey": 9,
+    "wins_vs_incumbent": 18,
+    "replay_audit_sha256": "ba1ed86cff62b777f77a8ddd8df5a288165538080675f7456fa21760425cebdb",
+    "path": "/tmp/relh-generals-serving-35892-final"
   },
-  "evidence": {
-    "hosted_summary": {
-      "path": "/tmp/relh-generals-serving-35892-final/hosted-results-summary.json",
-      "sha256": "9c0f336b5eac559db66f5df239ad6a5b346949381fd66d268b9aeb2f9a231780",
-      "bytes": 454,
-      "verified_locally": true
-    },
-    "hosted_replay_audit": {
-      "path": "/tmp/relh-generals-serving-35892-final/hosted-replay-panel-audit.json",
-      "sha256": "ba1ed86cff62b777f77a8ddd8df5a288165538080675f7456fa21760425cebdb",
-      "bytes": 138863,
-      "verified_locally": true
-    },
-    "training_receipt": {
-      "path": "/tmp/relh-generals-portable-result-35892/out/receipt.json",
-      "sha256": "6275a5b0137eede767c1714b57ce2941b8784bc1160f162fe590ade9bd77ccbd",
-      "bytes": 3171,
-      "verified_locally": true
-    },
-    "source_cleanup_abi_proof": {
-      "path": "/tmp/generals-native-proof/equivalence-proof.json",
-      "sha256": "c1125da1b820a46fecb0163e7dd6d5b264709eb3df3569b0bb587a9a722d7a87",
-      "bytes": 17072
-    }
-  },
-  "latest_training_throughput": {
-    "job": "35935",
-    "scope": "Completed control arm; entire experiment failed at serving parity.",
-    "hardware": "NVIDIA B300 SXM6 AC",
-    "environment_count": 8192,
-    "horizon": 256,
-    "minibatch": 8192,
-    "replay_ratio": 0.5,
-    "warmup_epochs": 2,
-    "steady_interval_steps": 4194304,
-    "steady_interval_seconds": 49.645,
-    "steady_end_to_end_sps": 84485.9301,
-    "additional_training_steps": 8388608,
-    "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35935/analysis.json",
-      "sha256": "e73d36bf2f780ea325a255f37f07af42336dd9519fd4f0d94de348cf252b54af",
-      "bytes": 2888
-    }
-  },
-  "previous_failure": {
-    "job": "job-re2cn",
-    "state": "BUILD_FAILED",
-    "phase": "docker_pip_install",
-    "source_revision": "d29f7f790126ea5a04580ce94a40fd292c4f13cf",
-    "submitted_at_utc": "2026-10-06T06:17:59.678861+00:00",
-    "hardware": "H100",
-    "gpus": 1,
-    "max_duration_minutes": 90,
-    "max_cost_usd": 4.455,
-    "max_restarts": 0,
-    "authenticated_control_job": "job-uyssa",
-    "authenticated_control_archive_sha256": "dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374",
-    "planned_stages": [
-      "publish_control",
-      "distill",
-      "train_warm"
-    ],
-    "heldout_panels": "later",
-    "new_training_steps": 0,
-    "strength_result": null,
-    "evidence": {
-      "path": "/tmp/generals-matched-continuation-d29f7f7-submission.json",
-      "sha256": "0249cb751f8a455d2afc79bb2f7bebde2ac9fcd37a29f82cf977806f8c77f852",
-      "bytes": 3183,
-      "verified_locally": true
-    },
-    "gpu_allocated": false,
-    "billed_seconds": 0,
-    "error": "files.pythonhosted.org ReadTimeout during Docker pip installation",
-    "latent_v1_issue": "Source-revision seal mismatch discovered independently"
-  },
-  "superseded_unstarted_attempt": {
-    "job": "36081",
-    "state": "CANCELLED",
-    "cancelled_at_utc": "2026-10-06T01:24:40Z",
-    "runtime_seconds": 0,
-    "node": null,
-    "new_training_steps": 0,
-    "nice": 2147483645,
-    "priority": 1,
-    "reason": "Replace unstarted large-geometry experiment with smaller H100 throughput measurements requested by user",
-    "evidence": {
-      "path": "/tmp/generals-job-36081-superseded-sizing.json",
-      "sha256": "9565c77b385ad0466b616e63efda5b11c704d7180bf9ade1654985a0296ac18c",
-      "bytes": 743,
-      "verified_locally": true
-    }
-  },
-  "qualified_geometry": {
-    "execution_backend": "givemeanode_native_docker",
-    "hardware": "H100",
-    "gpus": 1,
-    "max_duration_minutes": 30,
-    "build_timeout_minutes": 60,
-    "max_restarts": 0,
-    "resume": "none",
-    "queue_ttl_minutes": 60,
-    "profiles": [
-      {
-        "environment_count": 4096,
-        "horizon": 128
-      }
-    ],
-    "steps_each": 4194304,
-    "epochs_each": 8,
-    "warmup_epochs": 2,
-    "minibatch": 8192,
-    "replay_ratio": 0.5,
-    "minimum_qualified_sps": 30000,
-    "matched_warm_experiment": "Control8M passed inuyssa;publisher timed out;warm/panels incomplete.",
-    "startup_seconds": 420,
-    "training_seconds_each": 600,
-    "duplicate_cpu_preflight": false,
+  "qualified_training": {
     "job": "job-s79eq",
-    "state": "SUCCEEDED",
-    "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199",
-    "submitted_at_utc": "2026-10-06T04:19:06.003523+00:00",
-    "phase": "qualified_complete",
-    "context_id": "ctx-da62e3ca",
-    "input_sha256": "1328eb37650648856111fa999440a77c3e4f61de68c5974185a7ff95f2f3f29b",
-    "max_cost_usd": 1.485,
-    "new_training_steps": 4194304,
-    "measured_sps": 36182.746721877134,
-    "measured_training_memory": {
-      "sampled_peak_device_memory_mib": 68517,
-      "hardware": "NVIDIA H100 80GB HBM3"
-    },
-    "evidence": {
-      "path": "/tmp/generals-h100-qualification-4096h128-results-job-s79eq/terminal.json",
-      "sha256": "19ac0bfe140fbe13531f2b2f314f64b20dc619f73e93487d422f02f7827b1dae",
-      "bytes": 10212,
-      "verified_locally": true
-    },
-    "cold_asset_manifest_sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9",
-    "cold_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-    "metadata_rebind_proof": {
-      "path": "/tmp/generals-appledouble-clean-cold-migration-v1/proof.json",
-      "sha256": "94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd",
-      "bytes": 43806,
-      "verified_locally": true
-    },
-    "metadata_rebind": {
-      "removed_appledouble_sidecars": 179,
-      "identical_executable_python_sources": 243,
-      "abi_sha256": "0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851",
-      "bitwise_portable_tensors": 23,
-      "hosted_public_states": 18,
-      "max_logit_error": 1.1920928955078125e-06,
-      "rl_steps_added": 0,
-      "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61"
-    },
-    "source_gate_reused": true,
-    "qualified": true,
-    "explicit_final_reward_audit": true,
-    "epochs_completed": 8,
-    "billed_seconds": 608,
-    "charged_usd": 0.5016,
-    "audit": {
-      "environment_steps": 4194304,
-      "environment_count": 4096,
-      "horizon": 128,
-      "minibatch": 8192,
-      "replay_ratio": 0.5,
-      "steady_sps": 36182.746721877134,
-      "illegal_actions": 0,
-      "opponent_counts_by_seat": {
-        "frozen_fff930fd304a": {
-          "0": 29,
-          "1": 29
-        },
-        "frozen_704b0949c9a5": {
-          "0": 58,
-          "1": 58
-        },
-        "frozen_4940d3db1222": {
-          "0": 29,
-          "1": 29
-        },
-        "frozen_a4591eb43f96": {
-          "0": 29,
-          "1": 29
-        },
-        "frozen_3eb2fe3f22af": {
-          "0": 29,
-          "1": 29
-        },
-        "frozen_201e147f536f": {
-          "0": 116,
-          "1": 116
-        },
-        "frozen_f8df1ccd67a1": {
-          "0": 145,
-          "1": 145
-        },
-        "frozen_f589aa8f2745": {
-          "0": 145,
-          "1": 145
-        },
-        "frozen_83dc8144eafc": {
-          "0": 319,
-          "1": 319
-        },
-        "frozen_d2c30ee48e80": {
-          "0": 493,
-          "1": 493
-        },
-        "expander_harvester": {
-          "0": 87,
-          "1": 87
-        },
-        "sentinel": {
-          "0": 116,
-          "1": 116
-        },
-        "classic_siege_padded": {
-          "0": 453,
-          "1": 453
-        }
-      },
-      "reward_audit": {
-        "agent_steps": 4194304,
-        "nonfinite_rewards": 0,
-        "native_clipped_rewards": 0,
-        "native_clipped_terminal_rewards": 0
-      }
-    },
-    "result_evidence": {
-      "path": "/tmp/generals-h100-qualification-4096h128-results-job-s79eq/extracted/generals/p4096h128/result.json",
-      "sha256": "c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98",
-      "bytes": 5630,
-      "verified_locally": true
-    },
-    "result_archive_sha256": "fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5"
-  },
-  "matched_training_result": {
-    "job": "job-vezu3",
-    "state": "SUCCEEDED",
-    "phase": "continuation_complete_panels_pending",
-    "source_revision": "d29f7f790126ea5a04580ce94a40fd292c4f13cf",
-    "submitted_at_utc": "2026-10-06T06:24:58.159619+00:00",
-    "hardware": "H100",
-    "gpus": 1,
-    "max_duration_minutes": 90,
-    "max_cost_usd": 4.455,
-    "max_restarts": 0,
-    "authenticated_control_job": "job-uyssa",
-    "authenticated_control_archive_sha256": "dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374",
-    "planned_stages": [
-      "publish_control",
-      "distill",
-      "train_warm"
-    ],
-    "heldout_panels": "later",
-    "new_training_steps": 8388608,
-    "strength_result": null,
-    "evidence": {
-      "path": "/tmp/generals-matched-continuation-results-job-vezu3/terminal.json",
-      "sha256": "b39246a224884af35f7dbe6f97e1679ceb7a233fd4cb68a7f8aac7410a5898c6",
-      "bytes": 2195,
-      "verified_locally": true
-    },
-    "context_id": "ctx-00638733",
-    "input_sha256": "4de51bd555d04785b7b91e58e1588190d46d6db216b7a2a38043a6d9ff2058ed",
-    "source_seals_verified": 400,
-    "pip_timeout_seconds": 120,
-    "pip_retries": 8,
-    "provider_validation_passed": true,
-    "billed_seconds": 1760,
-    "charged_usd": 1.452,
-    "result_archive_sha256": "d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456",
-    "control_steps": 8388608,
-    "warm_steps": 8388608,
-    "control_ppo_repeated": false,
-    "control_steady_sps": 36171.513332643444,
-    "warm_steady_sps": 36265.33859030222,
-    "control_peak_device_memory_mib": 69078,
-    "warm_peak_device_memory_mib": 68517,
+    "hardware": "H100 80GB",
+    "environments": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_epochs": 2,
+    "steady_end_to_end_sps": 36182.7467,
+    "completed_steps": 4194304,
+    "peak_device_memory_mib": 68517,
     "illegal_actions": 0,
     "nonfinite_rewards": 0,
     "clipped_rewards": 0,
-    "sampler_seats_opponent_pool_matched": true,
-    "serving_parity_public_states": 46,
-    "control_max_probability_error": 4.380941390991211e-06,
-    "warm_max_probability_error": 5.602836608886719e-06,
-    "control_policy_sha256": "8d5c65e0de7da8074aa353386cb22a2bf40f1a773ff88db47d692b807769c7bf",
-    "warm_policy_sha256": "c44316f304f833332d0cb2804d3fdf3551aeaa49313217f4263c129f6f409c46",
-    "control_bundle_manifest_sha256": "9dd95fb69258eb1bf666626985f5094a2d5e6cf5f2af1ad4570831220eac88d8",
-    "warm_bundle_manifest_sha256": "4de62a328e7afe5cc5ed622c8d8a7bd8b293afab892bec543b0e38973addf503"
+    "all_13_opponents_both_seats": true,
+    "result_archive_sha256": "fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5"
   },
-  "sampler_pilot": {
-    "job": "job-4z8wx",
-    "state": "SUCCEEDED",
-    "source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
-    "scope": "development_paired_classic_first_episode",
-    "same_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-    "changed_field": "doomed_attack_route_penalty",
-    "baseline_value": 4.0,
-    "candidate_value": 8.0,
-    "games_per_arm": 1024,
-    "unique_initial_states": 643,
-    "match_seed": 8400101,
-    "sample_seed": 8400103,
-    "baseline_wld": [
-      707,
-      304,
-      13
-    ],
-    "candidate_wld": [
-      752,
-      265,
-      7
-    ],
-    "paired_signed_score_delta": 0.08203125,
-    "initial_state_cluster_ci95": [
-      0.03413483593693411,
-      0.13064833005893908
-    ],
-    "decision": "confirmed_on_independent_maps_hosted_strength_failed_source_retained",
-    "comparison": {
-      "path": "/tmp/generals-doomed-paired-results-job-4z8wx/extracted/generals/comparison.json",
-      "sha256": "e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5"
-    },
-    "result_archive_sha256": "51400ab91c1dca3860f97bcef517dc375ba4721e40cdcd8ebb383640a2aa92e4",
-    "paired_win_rate_delta": 0.0439453125,
-    "initial_state_cluster_win_rate_ci95": [
-      0.019474196689386564,
-      0.06882189432412286
-    ]
-  },
-  "sampler_confirmation": {
-    "job": "job-4spqj",
-    "state": "SUCCEEDED",
-    "scope": "independent_paired_classic_first_episode_confirmation",
-    "source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
-    "same_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-    "changed_field": "doomed_attack_route_penalty",
-    "baseline_value": 4.0,
-    "candidate_value": 8.0,
-    "games_per_arm": 4096,
-    "unique_initial_states": 2594,
-    "match_seed": 9462371,
-    "sample_seed": 9462373,
-    "baseline_wld": [2754, 1311, 31],
-    "candidate_wld": [2848, 1225, 23],
-    "paired_signed_score_delta": 0.0439453125,
-    "initial_state_cluster_ci95": [0.01857678624544622, 0.06975096734949056],
-    "opponent_groups_with_negative_aggregate_score_delta": 0,
-    "hardware": "H100",
-    "billed_seconds": 365,
-    "cost_usd": 0.3003,
-    "comparison": {
-      "path": "/tmp/generals-doomed-confirm-results-job-4spqj/extracted/generals/comparison.json",
-      "sha256": "61429545978242061231894e3b9244e0eff63952a5a9d2c08ed41e4df6d2cb41"
-    },
-    "result_archive_sha256": "b26125169a5e88771eb15c40b071a1b80e6d447e3be244d61aad58c5178afb1d",
-    "decision": "positive_local_confirmation_hosted_strength_failed_source_retained"
-  },
-  "hosted_candidate": {
+  "penalty8_hosted_rejection": {
     "policy_id": "e1644605-50ea-495a-9631-a2ff4d25b85f",
     "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-    "doomed_attack_route_penalty": 8.0,
     "image_digest": "sha256:a5a4c29e39367b6892dd65dc50775097c14463537a963b0b70e2a1c9146a518e",
-    "source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
-    "acceptance_panel": {
-      "path": "/tmp/generals-penalty8-hosted-acceptance-chunked-20261006",
-      "planned_games": 512,
-      "requests": 8,
-      "state": "complete",
-      "accepted_requests_at_audit": 8,
-      "provider_undispatched_episode_limit": 300,
-      "completed": 512,
-      "failed": 0,
-      "cost_usd": 5.703422,
-      "by_opponent": {
-        "incumbent": {
-          "games": 256,
-          "wins": 149,
-          "win_rate": 0.58203125,
-          "wilson_lower_95": 0.520835577469923,
-          "seat0_wins": 68,
-          "seat1_wins": 81
-        },
-        "Daveey": {
-          "games": 256,
-          "wins": 98,
-          "win_rate": 0.3828125,
-          "wilson_lower_95": 0.3254185065983358,
-          "seat0_wins": 50,
-          "seat1_wins": 48
-        }
-      },
-      "summary_sha256": "de08014aca9995c500ffcbd9fcd0577f3ae194c468da76da10c272c9fb6a1a62",
-      "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
-      "evidence_gate_passes": true,
-      "strength_gate_passes": false,
-      "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af",
-      "replay_unique_seeds": 512,
-      "replay_turns": 277894,
-      "replay_timeouts": 0,
-      "replay_forfeits": 0,
-      "replay_unapplied_turns": 0,
-      "replay_illegal_actions": 0,
-      "decision": "strength_failed_no_promotion_source_retained"
-    }
+    "panel_path": "/tmp/generals-penalty8-hosted-acceptance-chunked-20261006",
+    "completed": 512,
+    "failed": 0,
+    "wins_vs_Daveey": 98,
+    "wins_vs_incumbent": 149,
+    "games_per_opponent": 256,
+    "evidence_gate_passes": true,
+    "strength_gate_passes": false,
+    "summary_sha256": "de08014aca9995c500ffcbd9fcd0577f3ae194c468da76da10c272c9fb6a1a62",
+    "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
+    "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
-  "safe_owned_half_split_pilot": {
+  "active_experiment": {
+    "kind": "safe_owned_half_split_sampler_development",
     "branch": "relh/safe-owned-half-split-pilot",
-    "source_revision": "8a2a58e",
+    "revision": "8a2a58e",
     "job": "job-53h6p",
-    "state": "SUBMITTED",
-    "context": "ctx-64a50389",
-    "context_archive_sha256": "746ecd61cdc7461b6e1c28ccb080a68f4480aeedc78d9da6352c8e19ea3de609",
-    "first_build_failed_job": "job-qy6hs",
-    "first_build_failure": "Staged input directories lacked world-readable permissions for BuildKit",
-    "hardware": "H100",
-    "scope": "four_arm_paired_classic_development",
-    "games_per_arm": 4096,
-    "match_seed": 9674001,
+    "last_observed_state": "SUBMITTED",
+    "map_seed": 9674001,
     "sample_seed": 9674003,
-    "max_cost_usd": 2.97,
-    "decision": "await_result_no_hosted_claim"
-  },
-  "latest_attempt": {
-    "job": "job-xbqmn",
-    "state": "SUCCEEDED",
-    "source_revision": "68b013c4d69a19501cd95ce4dfb8eb37334a5066",
-    "scope": "force_assembly_curriculum_development",
-    "hardware": "H100",
-    "gpus": 1,
-    "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-    "control_checkpoint_sha256": "8d5c65e0de7da8074aa353386cb22a2bf40f1a773ff88db47d692b807769c7bf",
-    "candidate_checkpoint_sha256": "712b2f1b81ee40560b1f746991612a57769263678c7ea3d9ed4dc184fb639c98",
-    "candidate_bundle_manifest_sha256": "7789513f25ab19a56d0e9e4e6ec38837b83e41c49189b8e03a1f082525182176",
-    "changed_training_field": "25% curriculum reset archive 384 to 722 positions, no teacher labels",
-    "training": {
-      "steps": 8388608,
-      "environments": 4096,
-      "horizon": 128,
-      "minibatch": 8192,
-      "replay_ratio": 0.5,
-      "warmup_epochs": 2,
-      "steady_sps": 35594.41936250382,
-      "illegal_actions": 0,
-      "nonfinite_rewards": 0,
-      "clipped_rewards": 0,
-      "all_opponents_both_seats": true
-    },
-    "serving_parity": {
-      "public_states": 46,
-      "matching_top_actions": 46,
-      "max_action_probability_difference": 3.993511199951172e-06
-    },
-    "evaluation": {
-      "games_per_arm": 4096,
-      "unique_initial_states": 2609,
-      "match_seed": 9510017,
-      "sample_seed": 9510031,
-      "source_wld": [
-        2791,
-        1282,
-        23
-      ],
-      "control_wld": [
-        2787,
-        1286,
-        23
-      ],
-      "candidate_wld": [
-        2778,
-        1291,
-        27
-      ],
-      "candidate_paired_signed_score_delta_vs_source": -0.00537109375,
-      "initial_state_cluster_ci95_vs_source": [
-        -0.034459004702482414,
-        0.02389012761978197
-      ]
-    },
-    "decision": "no_established_gain_source_retained_no_hosted_promotion",
-    "analysis": {
-      "path": "/tmp/generals-force-assembly-results-job-xbqmn/analysis.json",
-      "sha256": "296ca98c22938baaf3a755ed0eb33edf24e78fe94e5fbd0db0bdc867554cc022"
-    },
-    "result_archive_sha256": "741d06e0e5203796f325ee9f6b459418b1de91dacd64ac406f82f85040de16b2"
+    "games_per_arm": 4096,
+    "arms": 4
   }
 }
