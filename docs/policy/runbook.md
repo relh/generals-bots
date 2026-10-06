@@ -47,7 +47,7 @@ private Metta dependencies.
 | `integrations.launch_spatial_selfplay_training` | Native launcher, transfer and sampler guards |
 | `integrations.native_spatial_asset` | Current native policy/learner identity and provenance |
 | `integrations.publish_policy_asset` | Publish actual completed PPO checkpoints as native assets |
-| `integrations.audit_spatial_hosted_replays` | Public-action legality and serving comparison against hosted replay panels |
+| `integrations.audit_hosted_panel_replays` | SHA-bound hosted replay legality and execution audit |
 
 ## Operational capsule checks
 
