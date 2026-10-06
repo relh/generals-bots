@@ -65,6 +65,13 @@ Preserve completed control/learner artifacts when repairing finalization;
 training passed, while the full experiment failed. Warm PPO and held-out panels
 remain incomplete. See current-state for its retained artifact/hash.
 
+Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
+bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
+source/warm/control/distilled priority order (`512af1f`). The earlier 512-game
+gate took **145.39s**; scaling suggests ~1,163s per 4,096 panel, **an estimate,
+not a measurement**. Matched paired confidence intervals remain required before
+selecting a candidate; no strength result is available.
+
 ## GPU container backend and storage
 
 The supported Slurm runner uses direct Enroot in a single allocated GPU step.

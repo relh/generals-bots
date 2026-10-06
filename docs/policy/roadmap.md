@@ -100,6 +100,13 @@ Use targeted tests for changed behavior and required execution gates. Broaden
 verification when a concrete failure needs resolution. Integrate working
 components promptly and debug the full operational path as it becomes usable.
 
+Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
+bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
+source/warm/control/distilled priority order (`512af1f`). The earlier 512-game
+gate took **145.39s**; scaling suggests ~1,163s per 4,096 panel, **an estimate,
+not a measurement**. Matched paired confidence intervals remain required before
+selecting a candidate; no strength result is available.
+
 ## Initial winning acceptance
 
 - At least 65% wins against both Daveey and the incumbent in balanced, fresh

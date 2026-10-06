@@ -138,6 +138,13 @@ Receipt: `/tmp/generals-matched-continuation-d29f7f7-v2-submission.json`.
 remains authenticated `job-uyssa` control publishing, distillation and warm PPO;
 held-out panels follow later. No matched strength result exists.
 
+Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
+bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
+source/warm/control/distilled priority order (`512af1f`). The earlier 512-game
+gate took **145.39s**; scaling suggests ~1,163s per 4,096 panel, **an estimate,
+not a measurement**. Matched paired confidence intervals remain required before
+selecting a candidate; no strength result is available.
+
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
 unchanged. Proof: `/tmp/generals-job-36081-superseded-sizing.json`.
