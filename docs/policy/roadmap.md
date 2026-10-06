@@ -13,12 +13,20 @@ in the [runbook](runbook.md). Git preserves superseded plans and attempt records
 - Matched 8,388,608-step control and CE-warm PPO arms with fresh optimizers,
   identical sampler/curriculum/rewards/opponent pool, clean audits and serving parity.
 
-## Current decision: source retained; penalty 8 needs confirmation
+## Current decision: source retained; penalty 8 in hosted acceptance
 
 The same-weight penalty-8 sampler won 752/1,024 development games versus
-707/1,024 for penalty 4. Its paired signed-score improvement has a positive
-initial-state-cluster interval. Confirm on independently seeded maps and
-opponents before selecting it. No hosted claim follows from this pilot.
+707/1,024 for penalty 4. Independent confirmation `job-4spqj` completed on
+4,096 paired Classic first episodes per arm: 2,848 wins for penalty 8 versus
+2,754 for penalty 4, with paired signed-score delta +0.0439453125 and
+initial-state-cluster 95% CI [+0.018576786,+0.069750967]. All 13 opponent
+groups were flat or positive in aggregate. The selected source baseline stays
+unchanged until the frozen candidate qualifies in hosted matches.
+
+The 512-game hosted acceptance intent has all eight requests accepted.
+Provider capacity briefly limited submission; preserved idempotency keys
+allowed safe resumption. Collect the complete balanced panel before any
+strength or promotion decision.
 
 The force-assembly curriculum completed 8,388,608 steps on H100 at 35,594
 end-to-end SPS with clean audits and 46-state serving parity. Its 4,096-game
@@ -43,14 +51,12 @@ with more late passing (warm2.733%, distilled2.424%, source0.0014%, control0.001
 This is not causal evidence or a policy input; exact counts and archive binding
 are in current-state.
 
-1. Confirm the penalty-8 sampler on independent paired Classic maps and
-   opponent seeds, with the same source weights and complete serving parity.
+1. Complete the preserved balanced hosted panel against Daveey and the
+   incumbent; audit request identities, replays, opponent-seat counts and
+   confidence bounds before selecting penalty 8.
 2. Diagnose losing replays by opponent and seat before further curriculum or
    reward changes; keep matched controls and qualified H100 geometry.
-3. Select from broad paired evidence, then evaluate independent confirmation
-   maps without tuning on that panel.
-4. Run balanced fresh hosted acceptance against Daveey and the incumbent;
-   promote only with verified lineage, clean execution and winning evidence.
+3. Promote only with verified lineage, clean execution and winning evidence.
 
 ## Winning acceptance
 

@@ -405,7 +405,7 @@
       0.03413483593693411,
       0.13064833005893908
     ],
-    "decision": "independent_confirmation_pending_source_retained",
+    "decision": "confirmed_on_independent_maps_hosted_acceptance_pending_source_retained",
     "comparison": {
       "path": "/tmp/generals-doomed-paired-results-job-4z8wx/extracted/generals/comparison.json",
       "sha256": "e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5"
@@ -416,6 +416,50 @@
       0.019474196689386564,
       0.06882189432412286
     ]
+  },
+  "sampler_confirmation": {
+    "job": "job-4spqj",
+    "state": "SUCCEEDED",
+    "scope": "independent_paired_classic_first_episode_confirmation",
+    "source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
+    "same_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "changed_field": "doomed_attack_route_penalty",
+    "baseline_value": 4.0,
+    "candidate_value": 8.0,
+    "games_per_arm": 4096,
+    "unique_initial_states": 2594,
+    "match_seed": 9462371,
+    "sample_seed": 9462373,
+    "baseline_wld": [2754, 1311, 31],
+    "candidate_wld": [2848, 1225, 23],
+    "paired_signed_score_delta": 0.0439453125,
+    "initial_state_cluster_ci95": [0.01857678624544622, 0.06975096734949056],
+    "opponent_groups_with_negative_aggregate_score_delta": 0,
+    "hardware": "H100",
+    "billed_seconds": 365,
+    "cost_usd": 0.3003,
+    "comparison": {
+      "path": "/tmp/generals-doomed-confirm-results-job-4spqj/extracted/generals/comparison.json",
+      "sha256": "61429545978242061231894e3b9244e0eff63952a5a9d2c08ed41e4df6d2cb41"
+    },
+    "result_archive_sha256": "b26125169a5e88771eb15c40b071a1b80e6d447e3be244d61aad58c5178afb1d",
+    "decision": "positive_local_confirmation_hosted_acceptance_pending_source_retained"
+  },
+  "hosted_candidate": {
+    "policy_id": "e1644605-50ea-495a-9631-a2ff4d25b85f",
+    "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "doomed_attack_route_penalty": 8.0,
+    "image_digest": "sha256:a5a4c29e39367b6892dd65dc50775097c14463537a963b0b70e2a1c9146a518e",
+    "source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
+    "acceptance_panel": {
+      "path": "/tmp/generals-penalty8-hosted-acceptance-chunked-20261006",
+      "planned_games": 512,
+      "requests": 8,
+      "state": "all_requests_accepted_running",
+      "accepted_requests_at_audit": 8,
+      "provider_undispatched_episode_limit": 300,
+      "decision": "await_complete_panel_no_promotion"
+    }
   },
   "latest_attempt": {
     "job": "job-xbqmn",

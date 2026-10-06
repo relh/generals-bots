@@ -2,8 +2,8 @@
 
 Updated **2026-10-06**. **The winning-policy objective remains unmet.**
 Training and serving are qualified. Defense warmstart regressed, and the force
-assembly curriculum has no demonstrated gain. A penalty-8 sampler has a
-positive development result awaiting independent confirmation. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
+assembly curriculum has no demonstrated gain. A penalty-8 sampler improved on
+independent paired Classic maps and is undergoing hosted acceptance. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
 for decisions and [machine manifest](../../integrations/policy_baseline.json)
 for current artifact identities. Git history preserves superseded attempt records.
 
@@ -49,21 +49,35 @@ first episodes on seed 8400101/sample seed 8400103, penalty 4 won **707**
 and penalty 8 won **752** (643 distinct initial states). Paired win-rate gain
 is **+0.04395**, with an initial-state-cluster 95% CI
 **[+0.01947,+0.06882]**; paired signed-score gain is **+0.08203** with CI
-**[+0.03413,+0.13065]**. These are development maps, so penalty 8 is a
-candidate for an independently seeded confirmation panel, not the selected
-baseline or a hosted winner. Verified comparison:
+**[+0.03413,+0.13065]**. These are development maps; the independent
+confirmation below, rather than this pilot, supports the hosted candidate.
+Verified comparison:
 `/tmp/generals-doomed-paired-results-job-4z8wx/extracted/generals/comparison.json`,
 SHA `e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5`;
 provider archive SHA `51400ab91c1dca3860f97bcef517dc375ba4721e40cdcd8ebb383640a2aa92e4`.
 
-The independent 4,096+4,096-game confirmation on seeds 9462371/9462373 is
-submitted as **`job-4spqj`** (one H100, 40-minute/$1.98 cap, zero restarts).
-Its source and weights match the pilot. Two preceding attempts failed before
+**Independent confirmation `job-4spqj` SUCCEEDED.** On 4,096 paired Classic
+first episodes per arm with 2,594 distinct initial states, the source penalty
+4 won **2754/4096** (1311 losses, 31 draws) and the same-weight penalty 8 won
+**2848/4096** (1225 losses, 23 draws). Paired signed-score delta was
+**+0.0439453125**, with initial-state-cluster 95% CI
+**[+0.018576786,+0.069750967]**. All 13 opponent groups were flat or positive
+in aggregate score. Seeds 9462371/9462373 were disjoint from the pilot and
+excluded training/earlier held-out seeds. Both arms used source revision
+`fdb12d035855f599b089ce72cf316fd31c45327f` and checkpoint
+`f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14`;
+only the doomed attack route penalty changed. One H100 billed 365s/$0.3003.
+Verified comparison:
+`/tmp/generals-doomed-confirm-results-job-4spqj/extracted/generals/comparison.json`,
+SHA `61429545978242061231894e3b9244e0eff63952a5a9d2c08ed41e4df6d2cb41`;
+provider archive SHA
+`b26125169a5e88771eb15c40b071a1b80e6d447e3be244d61aad58c5178afb1d`.
+The run retained its runner's `development_only` marker; this was a separately
+seeded sampler confirmation, not hosted acceptance. Two preceding attempts failed before
 any evaluation: `job-fbpr2` had unreadable staged directory permissions, and
 `job-7xpdr` included macOS AppleDouble entries omitted from its input seal.
 The replacement archive excludes those entries and has SHA
 `89c85c74d8cb05ee14147787ee7f14e3ef554e8ca398c3b71e2d20ac0a7ad4ba`.
-No confirmation result exists yet.
 
 An AMD64 serving image with the penalty-8 bundle passed immutable-image
 readback: config SHA `6264ea0325bc8d4ab7311abf87605081c671f896aedadecafe660eb5c098e5f4`,
@@ -75,9 +89,23 @@ requests, costing $0.017426. Both SHA-bound replays show zero timeouts,
 forfeits, unapplied turns and invalid source/destination moves across 188 and
 1,045 turns, with general captures in both games. This verifies hosted
 execution only; it is too
-small to establish strength. The source baseline remains selected.
+small to establish strength. A two-game balanced Daveey smoke also completed
+**2W/0L**, zero failed requests; its 317- and 584-turn SHA-bound replays had
+no invalid moves, timeouts, forfeits or unapplied turns. The source baseline
+remains selected.
 Receipts: `/tmp/generals-penalty8-image-proof-fdb12d0/` and
-`/tmp/generals-penalty8-hosted-smoke-20261006/` (`replay-audit.json`).
+`/tmp/generals-penalty8-hosted-smoke-20261006/` and
+`/tmp/generals-penalty8-daveey-smoke-20261006/` (`replay-audit.json`).
+
+The frozen penalty-8 version is in a fresh balanced hosted acceptance panel:
+256 games against each of Daveey and the incumbent, 128 per seat (512 total).
+The intent at `/tmp/generals-penalty8-hosted-acceptance-chunked-20261006/`
+holds eight accepted requests of at most 100 episodes each. Submission paused
+on HTTP 429 at the provider's 300-undispatched-episode limit, then resumed
+with the preserved payloads and keys as capacity opened. The first collection
+had 151 completed, zero failed and 361 pending games. No complete panel result
+or promotion decision exists yet. Collect all eight requests before judging
+strength.
 
 **Force-assembly curriculum `job-xbqmn` SUCCEEDED but did not improve the
 development population.** It changed the 25% training reset curriculum from
@@ -222,8 +250,9 @@ and the retained result directories, without changing scheduler state.
 
 ## Next decision
 
-Retain the source baseline. Confirm penalty 8 on independent paired maps and
-opponents before selecting it. The force curriculum did not improve broad play;
+Retain the source baseline while the complete hosted panel runs. Penalty 8
+passed the independent paired Classic confirmation; it remains a hosted
+candidate. The force curriculum did not improve broad play;
 defense CE warmstart harmed it. Keep qualified 4,096/H128 H100 execution and
 serving parity for controlled experiments. A broad winner still requires
 balanced fresh hosted acceptance before promotion.

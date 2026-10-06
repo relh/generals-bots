@@ -335,8 +335,14 @@ python -m integrations.hosted_policy collect --output NEW_PANEL_DIRECTORY
 
 Each opponent gets equal games in both seats; the explicit count includes both
 seats. Add repeated `--opponent NAME=VERSION_ID` arguments for a larger fixed
-pool. Dry run writes exact request bodies and hashes without authentication or
-external writes. Submission reads owned requests first, preserves receipts, and
+pool. Observatory accepts at most 100 episodes per request, so the command
+splits a larger seat panel into preserved batches; 256 games per opponent
+produces 100+28 episodes for each seat. The provider also limits outstanding
+undispatched episodes to 300 per account. If submission returns HTTP 429,
+wait for accepted batches to dispatch, then rerun the identical `submit`
+command to send only the remaining batches. Dry run writes exact request
+bodies and hashes without authentication or external writes. Submission reads
+owned requests first, preserves receipts, and
 uses stable idempotency keys; repeating the identical intent reuses requests.
 Collection verifies preserved payload hashes and frozen episode rosters, then
 writes `summary.json` for the promotion report, including incomplete/failing
