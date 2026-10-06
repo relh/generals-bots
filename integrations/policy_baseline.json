@@ -120,5 +120,20 @@
     "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
     "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
-  "active_experiments": []
+  "active_experiments": [
+    {
+      "kind": "source_mirror_matched_development_panel",
+      "branch": "codex/source-mirror-ppo",
+      "revision": "7497168",
+      "job": "job-7bm8b",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "a5b03c0e696f9a39317841fe0972c0fa08f249a47fc4c7808fcdf2cbf9d8f2aa",
+      "map_seed": 10432717,
+      "sample_seed": 10432719,
+      "games_per_arm": 4096,
+      "arms": 3,
+      "bootstrap_resamples": 10000,
+      "max_cost_usd": 2.97
+    }
+  ]
 }

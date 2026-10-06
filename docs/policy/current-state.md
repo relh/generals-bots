@@ -124,8 +124,13 @@ actions and nonfinite/clipped rewards were zero. Its final checkpoint SHA is
 `88de88396b2ef2213d39c3f16cafb97bf25bba7cedbc743c795a62a093e5085d`;
 verified result archive SHA:
 `71963b2f69b1a2b52d555582c6c3142160250d525db237123df63ef3a99b611f`.
-Fresh paired 4,096-game Classic development evaluation is planned on seeds
-10432717/10432719. Neither training run alone establishes stronger play. Prior
+Fresh paired Classic development evaluation is submitted as H100 `job-7bm8b`:
+4,096 first episodes each for selected source, matched control and mirror on
+identical maps/seats/opponent labels, seeds 10432717/10432719 and fixed 10,000
+map-cluster bootstrap resamples. The sealed context is `ctx-0149238a`, archive
+SHA `a5b03c0e696f9a39317841fe0972c0fa08f249a47fc4c7808fcdf2cbf9d8f2aa`;
+the job has a 60-minute/$2.97 cap and zero restarts. Neither training run
+alone establishes stronger play. Prior
 `job-dzu73` failed before PPO because the probe invoked a sampling gate that
 expected an absent distilled bundle ($0.1089). Its first retry `job-63iic`
 passed the 512-game source sampling gate but failed native preflight: the
