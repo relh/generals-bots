@@ -179,6 +179,17 @@ nonroot extraction and all file hashes were verified. The 30-minute/$1.485
 job has zero restarts. No qualification or training result exists yet.
 The proposed 16,777,216-step matched treatment/control run remains held.
 
+An isolated public-view `classic_siege_padded` opponent upgrade is submitted
+as H100 `job-m9ina` on `codex/classic-siege-pressure` at `375d3c2`. It adds
+early frontier gathering and legal half captures while keeping the batched
+callback and explicit memory ABI. The fixed development gate compares old
+versus new on 4,096 paired Classic first episodes per arm (3,640 siege rows,
+1,820 per learner seat), using fresh map/sample seeds 10941321/10941323.
+Its context is `ctx-4fb34c52`, archive SHA
+`599f9f9e677c99f1058d960d05889a44290e06a4b25dda1de97361df15285be8`.
+The 60-minute/$2.97 H100 job has zero restarts; no result or training-population
+change exists yet.
+
 Hosted replay analysis points to general defense and army gathering: every
 recorded loss ended in general capture, often despite an economic lead at turn
 200. Against Daveey, the candidate used **241 half moves in 123,787 moves

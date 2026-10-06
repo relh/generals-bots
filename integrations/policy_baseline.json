@@ -149,6 +149,19 @@
       "replay_ratio": 0.5,
       "minimum_steady_sps": 30000,
       "max_cost_usd": 1.485
+    },
+    {
+      "kind": "classic_siege_pressure_opponent_development",
+      "branch": "codex/classic-siege-pressure",
+      "revision": "375d3c2",
+      "job": "job-m9ina",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "599f9f9e677c99f1058d960d05889a44290e06a4b25dda1de97361df15285be8",
+      "map_seed": 10941321,
+      "sample_seed": 10941323,
+      "games_per_arm": 4096,
+      "arms": 2,
+      "max_cost_usd": 2.97
     }
   ]
 }
