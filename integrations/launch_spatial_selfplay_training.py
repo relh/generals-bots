@@ -34,9 +34,11 @@ def rollout_sampler_settings(environ=os.environ):
 
     from integrations.spatial_action_sampling import validate_full_action_temperature
     from integrations.spatial_exploration import validate_log_gap_scale
+    from integrations.capital_safety import enabled
 
     settings = dict(
         mode="structured_sample",
+        capital_safety=enabled(environ),
         move_temperature=float(environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1")),
         split_temperature=float(environ.get("METTA_SPATIAL_SPLIT_TEMPERATURE", "1")),
         full_action_temperature=validate_full_action_temperature(
@@ -116,6 +118,7 @@ def source_sampling_gate_report(match):
         "route_half_weight",
         "full_action_temperature",
         "log_gap_scale",
+        "capital_safety",
         "neutral_route_bias",
         "weak_owned_route_penalty",
         "doomed_attack_route_penalty",

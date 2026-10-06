@@ -107,6 +107,7 @@ def validate_sampler(sampler):
         "route_half_weight",
         "full_action_temperature",
         "log_gap_scale",
+        "capital_safety",
     }
     if (
         not isinstance(sampler, dict)
@@ -114,6 +115,8 @@ def validate_sampler(sampler):
         or not required <= sampler.keys() <= required | optional
     ):
         raise ValueError("Asset requires the current explicit structured sampler")
+    if "capital_safety" in sampler and type(sampler["capital_safety"]) is not bool:
+        raise ValueError("Capital safety must be an explicit boolean")
     for key in ("move_temperature", "split_temperature", "full_action_temperature", "early_route_temperature"):
         if key in sampler:
             value = sampler[key]

@@ -97,6 +97,10 @@ def serving_logits(policy, outputs, values, masks):
         from integrations.spatial_exploration import log_gap_logits
 
         logits = log_gap_logits(logits, masks, policy.log_gap_scale, jnp)
+    if policy.capital_safety:
+        from integrations.capital_safety import constrain_logits
+
+        logits = constrain_logits(logits, values, jnp)
     return jnp.where(masks, logits, -jnp.inf)
 
 

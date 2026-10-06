@@ -47,6 +47,10 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
         from integrations.spatial_exploration import log_gap_logits, public_action_mask
 
         logits = log_gap_logits(logits, public_action_mask(observations, jnp), policy.log_gap_scale, jnp)
+    if policy.capital_safety:
+        from integrations.capital_safety import constrain_logits
+
+        logits = constrain_logits(logits, observations, jnp)
     legal_logits = jnp.where(masks, logits, -jnp.inf)
     random_keys = jax.vmap(lambda key: jax.random.fold_in(key, 834))(keys)
     return jax.vmap(jax.random.categorical)(random_keys, legal_logits).astype(jnp.int32)

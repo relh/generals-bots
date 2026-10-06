@@ -46,6 +46,7 @@ def main():
                         help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
     parser.add_argument("--full-action-temperature", type=float, default=1.0)
     parser.add_argument("--log-gap-scale", type=float, default=0.0)
+    parser.add_argument("--capital-safety", action="store_true")
     parser.add_argument("--route-half-weight", type=float, default=0.0,
                         help="Fraction of the half head included in each route score")
     parser.add_argument("--half-logit-bias", type=float, default=0.0,
@@ -256,6 +257,10 @@ def main():
                     if not np.array_equal(np.asarray(public_mask), legal):
                         raise ValueError("Public exploration mask differs from environment")
                     logits = log_gap_logits(logits, public_mask, args.log_gap_scale, jnp)
+                if args.capital_safety:
+                    from integrations.capital_safety import constrain_logits
+
+                    logits = constrain_logits(logits, jnp.asarray(values), jnp)
                 chosen = np.asarray(sample_flat_logits(
                     key, logits, jnp.asarray(legal),
                 ))
@@ -312,7 +317,7 @@ def main():
                   split_sampling_temperature=args.split_sampling_temperature,
                   route_half_weight=args.route_half_weight,
                   full_action_temperature=args.full_action_temperature,
-                  log_gap_scale=args.log_gap_scale,
+                  log_gap_scale=args.log_gap_scale, capital_safety=args.capital_safety,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
                   owned_split_bias=args.owned_split_bias,
@@ -333,7 +338,7 @@ def main():
                            early_route_turns=env._frozen.early_route_turns,
                            route_half_weight=env._frozen.route_half_weight,
                            full_action_temperature=env._frozen.full_action_temperature,
-                           log_gap_scale=env._frozen.log_gap_scale,
+                           log_gap_scale=env._frozen.log_gap_scale, capital_safety=env._frozen.capital_safety,
                            neutral_route_bias=env._frozen.neutral_route_bias,
                            weak_owned_route_penalty=env._frozen.weak_owned_route_penalty,
                            doomed_attack_route_penalty=env._frozen.doomed_attack_route_penalty)

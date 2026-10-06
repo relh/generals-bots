@@ -26,6 +26,7 @@ def runtime_environment(source, output, sampler):
         "NEUTRAL_ROUTE_BIAS",
         "WEAK_OWNED_ROUTE_PENALTY",
         "DOOMED_ATTACK_ROUTE_PENALTY",
+        "CAPITAL_SAFETY",
     ):
         env.pop("METTA_SPATIAL_" + key, None)
     env.update(

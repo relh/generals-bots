@@ -200,6 +200,7 @@ class Trial:
                 self.sampler["weak_owned_route_penalty"],
                 "--doomed-attack-route-penalty",
                 self.sampler["doomed_attack_route_penalty"],
+                *(["--capital-safety"] if self.sampler.get("capital_safety", False) else []),
                 "--output",
                 directory,
             ],

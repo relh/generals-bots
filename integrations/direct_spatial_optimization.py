@@ -25,6 +25,7 @@ class DirectTape:
     observations: object
     predictions: object
     exploration_logits: object = None
+    capital_logits: object = None
 
     def __getitem__(self, index):
         # Plain PPO's auxiliary collector only needs the observation batch axis.
@@ -243,6 +244,9 @@ def install(native_module=None):
             float(os.environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1")))
         from integrations.spatial_exploration import validate_log_gap_scale
 
+        from integrations.capital_safety import enabled
+
+        self.spatial_capital_safety = enabled(os.environ)
         self.spatial_log_gap_scale = validate_log_gap_scale(
             float(os.environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0")))
         self.spatial_route_half_weight = float(os.environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
@@ -305,9 +309,15 @@ def install(native_module=None):
             exploration_logits = acting[..., :3529]
             acting = acting.at[..., :3529].set(log_gap_logits(
                 exploration_logits, public_action_mask(transported, jnp), self.spatial_log_gap_scale, jnp))
+        capital_logits = None
+        if self.spatial_capital_safety:
+            from integrations.capital_safety import constrain_logits
+
+            capital_logits = acting[..., :3529]
+            acting = acting.at[..., :3529].set(constrain_logits(capital_logits, transported, jnp))
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
-        return acting, state, DirectTape(parameters, transported, outputs, exploration_logits)
+        return acting, state, DirectTape(parameters, transported, outputs, exploration_logits, capital_logits)
 
     @functools.wraps(backward)
     def direct_backward(self, tape, logits, values):
@@ -319,6 +329,10 @@ def install(native_module=None):
         self.active_objectives.clear()
         coefficient = self.teacher_phase.ppo_coefficient
         # Chain rule for the final action-only transform; preserve value gradients.
+        if tape.capital_logits is not None:
+            from integrations.capital_safety import constrain_logits
+
+            logits = jax.vjp(lambda x: constrain_logits(x, tape.observations, jnp), tape.capital_logits)[1](logits)[0]
         if self.spatial_log_gap_scale:
             from integrations.spatial_exploration import log_gap_cotangents, public_action_mask
 

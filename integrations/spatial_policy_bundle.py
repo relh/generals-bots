@@ -18,7 +18,7 @@ from integrations.spatial_action_sampling import (
 def structured_action_probabilities(outputs, legal, move_temperature, split_temperature,
                                     *, observations=None, neutral_route_bias=0.0,
                                     weak_owned_route_penalty=0.0, doomed_attack_route_penalty=0.0,
-                                    route_half_weight=0.0, full_action_temperature=1.0, log_gap_scale=0.0):
+                                    route_half_weight=0.0, full_action_temperature=1.0, log_gap_scale=0.0, capital_safety=False):
     """Match the native rollout categorical on the legal flat action set."""
     outputs = np.asarray(outputs, dtype=np.float32)
     legal = np.asarray(legal, dtype=bool)
@@ -60,6 +60,10 @@ def structured_action_probabilities(outputs, legal, move_temperature, split_temp
         if not np.array_equal(public_mask, legal):
             raise ValueError("Public exploration mask differs from serving action mask")
         transformed = log_gap_logits(transformed, public_mask, log_gap_scale, np)
+    if capital_safety:
+        from integrations.capital_safety import constrain_logits
+
+        transformed = constrain_logits(transformed, np.asarray(observations), np)
     logits = np.where(legal, transformed, -np.inf)
     probabilities = np.exp(logits - logits.max())
     return probabilities / probabilities.sum()
@@ -86,7 +90,7 @@ class SpatialPlayerPolicy:
         required = {"mode", "move_temperature", "split_temperature"}
         optional = {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty",
                     "early_route_temperature", "early_route_turns", "route_half_weight",
-                    "full_action_temperature", "log_gap_scale"}
+                    "full_action_temperature", "log_gap_scale", "capital_safety"}
         if (not isinstance(acting, dict) or acting.get("mode") != "structured_sample"
                 or not required <= set(acting) <= required | optional):
             raise ValueError("Spatial serving requires explicit structured_sample metadata")
@@ -107,6 +111,7 @@ class SpatialPlayerPolicy:
 
         self.full_action_temperature = validate_full_action_temperature(acting.get("full_action_temperature", 1.0))
         self.log_gap_scale = validate_log_gap_scale(acting.get("log_gap_scale", 0.0))
+        self.capital_safety = acting.get("capital_safety", False)
         self.action_mode = "structured_sample"
         self.early_route_temperature = acting.get("early_route_temperature")
         self.early_route_turns = acting.get("early_route_turns")
@@ -214,6 +219,6 @@ class SpatialPlayerPolicy:
             weak_owned_route_penalty=self.weak_owned_route_penalty,
             doomed_attack_route_penalty=self.doomed_attack_route_penalty,
             route_half_weight=self.route_half_weight, full_action_temperature=self.full_action_temperature,
-            log_gap_scale=self.log_gap_scale,
+            log_gap_scale=self.log_gap_scale, capital_safety=self.capital_safety,
         )
         return SimpleNamespace(probabilities=probabilities.tolist())
