@@ -218,6 +218,18 @@ def source_gate(inputs: Path, output: Path, sampler: dict, call) -> dict:
     return source_sampling_gate_report(source_match)
 
 
+def verify_gate(report: dict, sampler: dict, source: str, seed: int, sample_seed: int) -> None:
+    expected_sampler = dict(sampler, log_gap_scale=sampler.get('log_gap_scale', 0.0))
+    if (report['gate_mode'] != 'same_sampler_source'
+            or report['source_sha256'] != source or report['opponent_sha256'] != source
+            or report['sampler'] != expected_sampler or report['opponent_sampler'] != expected_sampler
+            or report['games'] != 512 or report['seat_counts'] != {'0': 256, '1': 256}
+            or sum(report['wld']) != 512 or report['unique_initial_maps'] <= 0
+            or report['match_seed'] != seed or report['sample_seed'] != sample_seed
+            or report['held_out'] is not True or report['coworld_classic_rules'] is not True):
+        raise ValueError('Source gate lacks complete matched sampler and Classic evidence')
+
+
 def run_probe(inputs: Path, output: Path) -> None:
     """Qualify the exact treatment pool before either long matched PPO arm."""
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
@@ -245,7 +257,8 @@ def run_probe(inputs: Path, output: Path) -> None:
     }, indent=2) + '\n')
     gpu = verify_gpu_idle(identity)
     from integrations.classic_position_curriculum import configure_positions
-    from integrations.policy_execution import execute, training_audit
+    from integrations.policy_execution import training_audit
+    from integrations.policy_trial import Trial
     gpu_model = subprocess.check_output(['nvidia-smi', '--query-gpu=name', '--format=csv,noheader'],
                                         text=True).strip()
     if 'H100' not in gpu_model:
@@ -259,25 +272,29 @@ def run_probe(inputs: Path, output: Path) -> None:
     (output / 'build-config.json').write_text(json.dumps(treatment, indent=2) + '\n')
     config = probe / 'config.json'
     config.write_text(json.dumps(run, indent=2) + '\n')
-    sampler = json.loads((inputs / 'assets/cold/asset.json').read_text())['sampler']
+    trial = Trial(inputs, output)
+    trial.build()
+    os.environ['PYTHONFAULTHANDLER'] = '1'
+    os.environ['METTA_GATE_TRACE'] = '1'
+    trial.sampling_gate('control')
+    sampler = trial.sampler
+    proven_gate = output / 'control/sampling-gate.json'
+    verify_gate(json.loads(proven_gate.read_text()), sampler, plan['source_checkpoint_sha256'], 51231, 17441)
+    shutil.copy2(proven_gate, probe / 'sampling-gate.json')
 
-    def call(module, args, *, name, seconds, directory, training_config=None):
-        execute(module, args, source=inputs / 'source', output=directory, sampler=sampler,
-                name=name, seconds=seconds, training_config=training_config,
-                startup_seconds=420)
+    def stress_call(module, args, *, name, seconds, directory):
+        trial.call(module, args, name=name, seconds=seconds, arm='probe')
 
-    gate = source_gate(inputs, output, sampler, call)
-    (probe / 'sampling-gate.json').write_text(json.dumps(gate, indent=2) + '\n')
-    call('launch_spatial_selfplay_training', ['build', '--config', output / 'build-config.json',
-         '--output', output / 'build'], name='build', seconds=600, directory=probe)
-    # Native preflight must verify the actual source model fingerprint; source
-    # factory hashes and identical fabric dictionaries alone are insufficient.
-    call('launch_spatial_selfplay_training', ['preflight', '--build', output / 'build',
+    stress_gate = source_gate(inputs, output, sampler, stress_call)
+    verify_gate(stress_gate, sampler, plan['source_checkpoint_sha256'], 10441691, 10441693)
+    (probe / 'hard-seed-sampling-gate.json').write_text(json.dumps(stress_gate, indent=2) + '\n')
+    # Native preflight verifies the actual source model fingerprint.
+    trial.call('launch_spatial_selfplay_training', ['preflight', '--build', output / 'build',
          '--config', config, '--output', probe / 'run'],
-         name='preflight', seconds=300, directory=probe)
-    call('launch_spatial_selfplay_training', ['train', '--build', output / 'build',
+         name='preflight', seconds=300, arm='probe')
+    trial.call('launch_spatial_selfplay_training', ['train', '--build', output / 'build',
          '--config', config, '--output', probe / 'run'], name='train', seconds=900,
-         directory=probe, training_config=config)
+         arm='probe', training=True)
     audit = training_audit(probe, run)
     if audit['steady_sps'] < plan['required_treatment_probe']['minimum_steady_sps']:
         raise ValueError('Treatment throughput probe is below 30,000 steady SPS')
@@ -286,6 +303,8 @@ def run_probe(inputs: Path, output: Path) -> None:
         'input_seal_sha256': digest(inputs / 'seal.json'),
         'opponent_weights': plan['treatment_weights'], 'probe_seed': run['seed'],
         'gpu_model': gpu_model,
+        'proven_source_gate_sha256': digest(proven_gate),
+        'hard_seed_source_gate_sha256': digest(probe / 'hard-seed-sampling-gate.json'),
         'gpu': gpu, 'audit': audit,
     }, indent=2) + '\n')
 

@@ -6,7 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from integrations.hard_opponent_weighting import derive_pair, digest, load_plan, validate_probe_receipt
+from integrations.hard_opponent_weighting import (derive_pair, digest, load_plan,
+                                                  validate_probe_receipt, verify_gate)
 
 SOURCE = Path('/tmp/generals-current-policy-input-v2')
 
@@ -115,3 +116,27 @@ def test_long_run_requires_exact_treatment_probe_receipt(tmp_path):
         path.write_text(json.dumps(bad))
         with pytest.raises(ValueError, match='not qualified'):
             validate_probe_receipt(path, inputs, plan)
+
+
+def test_both_source_gates_require_complete_evidence():
+    plan = load_plan()
+    sampler = {'mode': 'structured_sample', 'move_temperature': 0.05,
+               'split_temperature': 0.15, 'early_route_temperature': 0.1,
+               'early_route_turns': 100, 'route_half_weight': 0.0,
+               'full_action_temperature': 1.0, 'neutral_route_bias': 6.0,
+               'weak_owned_route_penalty': 4.0, 'doomed_attack_route_penalty': 4.0}
+    observed = dict(sampler, log_gap_scale=0.0)
+    report = {'gate_mode': 'same_sampler_source',
+              'source_sha256': plan['source_checkpoint_sha256'],
+              'opponent_sha256': plan['source_checkpoint_sha256'],
+              'sampler': observed, 'opponent_sampler': observed,
+              'games': 512, 'seat_counts': {'0': 256, '1': 256},
+              'wld': [252, 254, 6], 'unique_initial_maps': 320,
+              'match_seed': 51231, 'sample_seed': 17441,
+              'held_out': True, 'coworld_classic_rules': True}
+    verify_gate(report, sampler, plan['source_checkpoint_sha256'], 51231, 17441)
+    with pytest.raises(ValueError, match='complete matched sampler'):
+        verify_gate(report, sampler, plan['source_checkpoint_sha256'], 10441691, 10441693)
+    with pytest.raises(ValueError, match='complete matched sampler'):
+        verify_gate({**report, 'seat_counts': {'0': 512, '1': 0}}, sampler,
+                    plan['source_checkpoint_sha256'], 51231, 17441)

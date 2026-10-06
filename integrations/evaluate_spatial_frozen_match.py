@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import time
 from pathlib import Path
 
@@ -134,8 +135,12 @@ def main():
     if args.smoke_cpu:
         options.update(require_gpu=False, horizon=4)
     args.output.mkdir(parents=True, exist_ok=False)
+    if os.environ.get("METTA_GATE_TRACE") == "1":
+        print("GATE_TRACE before-environment-construction", flush=True)
     context = EnvironmentContext(seed=args.seed, index=0, mode="train", output=args.output)
     env = SpatialFrozenOpponentPufferEnvironment(frozen_bundle=str(args.opponent_bundle), context=context, **options)
+    if os.environ.get("METTA_GATE_TRACE") == "1":
+        print("GATE_TRACE after-environment-construction", flush=True)
 
     @jax.jit
     def forward(values):
@@ -176,8 +181,14 @@ def main():
         return (land[rows, sides] - land[rows, 1 - sides],
                 army[rows, sides] - army[rows, 1 - sides])
     try:
+        if os.environ.get("METTA_GATE_TRACE") == "1":
+            print("GATE_TRACE before-reset-device", flush=True)
         values, masks = env.reset_device(f"{args.seed}:0:0")
+        if os.environ.get("METTA_GATE_TRACE") == "1":
+            print("GATE_TRACE after-reset-device", flush=True)
         sides = np.asarray(env.sides)
+        if os.environ.get("METTA_GATE_TRACE") == "1":
+            print("GATE_TRACE after-sides-transfer", flush=True)
         device_sides = jnp.asarray(sides)
         assert (sides == 0).sum() == (sides == 1).sum() == args.games // 2
         np.save(args.output / "initial_sides.npy", sides)
