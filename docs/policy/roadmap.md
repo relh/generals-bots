@@ -21,10 +21,12 @@ build and CE fresh-optimizer CPU preflight. It failed before sampling games on
 an omitted explicit balanced-seat option; warm PPO and broad panels did not run.
 B300 continuation 36081 was cancelled while pending, with no node/runtime/epochs
 and unchanged maximum Nice/Priority 1, to measure smaller geometry as requested.
-Givemeanode job `job-i8tp6` is building its native CUDA image on the way to one
-H100 from source `8e41477`, bounded
-30 min GPU / 60 min build, zero restarts/resume none and queue TTL 60 min.
-No new measurement or strength result exists. Known 8,192/H256 buffers account
+First H100 sizing job `job-i8tp6` failed: its source sampler and both native
+builds passed, but both 120s CPU preflights timed out before training epochs.
+Revised job `job-kcten` is submitted from source `ed34d68` on one H100, bounded
+30 min GPU / $1.485 maximum. It removes the duplicate standalone CPU preflight
+and allows 420s startup with 600s training per profile. No sizing measurement
+or new strength result exists. Known 8,192/H256 buffers account
 for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
 an intrinsic requirement of the 2.21 MiB policy.
 Learning improvement and hosted winning qualification remain open; see
