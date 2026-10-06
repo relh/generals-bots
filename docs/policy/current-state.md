@@ -56,6 +56,26 @@ baseline or a hosted winner. Verified comparison:
 SHA `e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5`;
 provider archive SHA `51400ab91c1dca3860f97bcef517dc375ba4721e40cdcd8ebb383640a2aa92e4`.
 
+The independent 4,096+4,096-game confirmation on seeds 9462371/9462373 is
+submitted as **`job-4spqj`** (one H100, 40-minute/$1.98 cap, zero restarts).
+Its source and weights match the pilot. Two preceding attempts failed before
+any evaluation: `job-fbpr2` had unreadable staged directory permissions, and
+`job-7xpdr` included macOS AppleDouble entries omitted from its input seal.
+The replacement archive excludes those entries and has SHA
+`89c85c74d8cb05ee14147787ee7f14e3ef554e8ca398c3b71e2d20ac0a7ad4ba`.
+No confirmation result exists yet.
+
+An AMD64 serving image with the penalty-8 bundle passed immutable-image
+readback: config SHA `6264ea0325bc8d4ab7311abf87605081c671f896aedadecafe660eb5c098e5f4`,
+bundle-manifest SHA `1781c1abdcb9f6266433c45b1e0a67423cde663e775055d570df5a799f2340d2`.
+Coworld registered policy version `e1644605-50ea-495a-9631-a2ff4d25b85f`
+from ready image digest `sha256:a5a4c29e39367b6892dd65dc50775097c14463537a963b0b70e2a1c9146a518e`.
+Its two-game balanced incumbent wire smoke completed **1W/1L**, zero failed
+requests, costing $0.017426. This verifies hosted execution only; it is too
+small to establish strength. The source baseline remains selected.
+Receipts: `/tmp/generals-penalty8-image-proof-fdb12d0/` and
+`/tmp/generals-penalty8-hosted-smoke-20261006/`.
+
 **Force-assembly curriculum `job-xbqmn` SUCCEEDED but did not improve the
 development population.** It changed the 25% training reset curriculum from
 384 to 722 positions, without teacher labels. One H100 trained **8,388,608
