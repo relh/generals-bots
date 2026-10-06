@@ -115,13 +115,17 @@ qualification marker SHA:
 `089291cef732a3b610a5f19840023e79284fd430eed17a4aaabd010c47154532`.
 The new training checkpoint SHA is
 `40e7662aac04d676649e3ba51e5e70e7e3de5ac0bdba663cf86456fbd3f0cf94`.
-The matched original-population PPO control is submitted as H100 `job-gjxu3`:
+The matched original-population PPO control `job-gjxu3` also **qualified**:
 same source checkpoint, clean asset, seed 9107331 and PPO geometry, restoring
-frozen slot 0 and its original weight. Its sealed context is `ctx-3ed02418`,
-archive SHA `bcd23b2761905c25e6052e3d136fa4bb61b7f6214537e4dc9e13b9d5b6177e8d`.
+frozen slot 0 and its original weight. It completed 4,194,304 steps on H100;
+the final 1,048,576 after six warmup epochs took 28.414 seconds, or **36,903.5
+steady end-to-end SPS**. All 13 opponents appeared on both seats; illegal
+actions and nonfinite/clipped rewards were zero. Its final checkpoint SHA is
+`88de88396b2ef2213d39c3f16cafb97bf25bba7cedbc743c795a62a093e5085d`;
+verified result archive SHA:
+`71963b2f69b1a2b52d555582c6c3142160250d525db237123df63ef3a99b611f`.
 Fresh paired 4,096-game Classic development evaluation is planned on seeds
-10432717/10432719 after control qualification. The mirror throughput result
-alone does not establish stronger play. Prior
+10432717/10432719. Neither training run alone establishes stronger play. Prior
 `job-dzu73` failed before PPO because the probe invoked a sampling gate that
 expected an absent distilled bundle ($0.1089). Its first retry `job-63iic`
 passed the 512-game source sampling gate but failed native preflight: the

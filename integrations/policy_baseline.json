@@ -83,6 +83,27 @@
     "result_archive_sha256": "74d3d40f4ec2b3f2f170edf504b017cf96dace29d8a27fd712a37b5212e08722",
     "qualification_sha256": "089291cef732a3b610a5f19840023e79284fd430eed17a4aaabd010c47154532"
   },
+  "qualified_source_mirror_control": {
+    "job": "job-gjxu3",
+    "hardware": "H100 80GB",
+    "environments": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_epochs": 6,
+    "steady_interval_steps": 1048576,
+    "steady_interval_seconds": 28.414,
+    "steady_end_to_end_sps": 36903.498,
+    "completed_steps": 4194304,
+    "peak_device_memory_mib": 69080,
+    "illegal_actions": 0,
+    "nonfinite_rewards": 0,
+    "clipped_rewards": 0,
+    "all_13_opponents_both_seats": true,
+    "checkpoint_sha256": "88de88396b2ef2213d39c3f16cafb97bf25bba7cedbc743c795a62a093e5085d",
+    "result_archive_sha256": "71963b2f69b1a2b52d555582c6c3142160250d525db237123df63ef3a99b611f",
+    "qualification_sha256": "7358439da39abd49376d1375a71854ac1f84546ea81757c5550ee7af06c0a2ed"
+  },
   "penalty8_hosted_rejection": {
     "policy_id": "e1644605-50ea-495a-9631-a2ff4d25b85f",
     "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
@@ -99,22 +120,5 @@
     "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
     "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
-  "active_experiments": [
-    {
-      "kind": "source_mirror_matched_original_population_control",
-      "branch": "codex/source-mirror-ppo",
-      "revision": "7497168",
-      "job": "job-gjxu3",
-      "last_observed_state": "SUBMITTED",
-      "context_archive_sha256": "bcd23b2761905c25e6052e3d136fa4bb61b7f6214537e4dc9e13b9d5b6177e8d",
-      "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-      "agent_steps": 4194304,
-      "environments": 4096,
-      "horizon": 128,
-      "minibatch": 8192,
-      "replay_ratio": 0.5,
-      "minimum_steady_sps": 30000,
-      "max_cost_usd": 1.485
-    }
-  ]
+  "active_experiments": []
 }
