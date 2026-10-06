@@ -163,6 +163,11 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 
 ## Preserved control, intervention and decision
 
+The matched defense driver is integrated and pushed through `de5f915`: it uses
+the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
+training startup to 420s and refuses unqualified geometry. **This experiment
+has not run**; geometry qualification remains its prerequisite.
+
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
 One NVIDIA B300 SXM6 AC, 8,192 games, horizon 256, minibatch 8,192, replay 0.5:

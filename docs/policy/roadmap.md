@@ -44,7 +44,10 @@ on matched development games and was rejected. The stale launcher binding is
 resolved; repeating that intervention or scaling its training is unjustified.
 
 The matched public-defense warmstart experiment is deferred until memory/throughput
-sizing selects geometry. Separate
+sizing selects geometry. The driver is integrated/pushed through `de5f915`,
+uses the provider-visible GPU, avoids duplicate CPU preflight and allows 420s
+bounded training startup. It refuses unqualified geometry; no matched experiment
+has run. Separate
 synthetic training and held-out maps supply legal Sentinel tactical labels.
 Distillation changes only policy weights; both control and warm PPO arms use
 fresh optimizers, equal 8,388,608-step budgets, and the unchanged sampler,
