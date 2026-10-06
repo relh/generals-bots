@@ -92,3 +92,19 @@ def test_healthy_lost_and_unbounded_states_leave_distribution_unchanged():
     encoded = np.log1p(integers) / 8
     np.testing.assert_array_equal(np.floor(np.expm1(encoded * 8) + .5), integers)
     np.testing.assert_array_equal(np.asarray(jnp.floor(jnp.expm1(jnp.asarray(encoded) * 8) + .5)), integers)
+
+
+def test_concentration_engine_counterfactual_preserves_army_and_land():
+    from integrations.concentration_potential import potential, shaping
+    state = position(capital_army=20, reserve_army=20, attacker_army=1, time=101)
+    wait = decode_action(3528, 21)
+    merge = decode_action(3 * 441 + 8 * 21 + 7, 21)
+    merged = engine.step(state, jnp.stack((merge, wait)), general_trade=False)[0]
+    passed = engine.step(state, jnp.stack((wait, wait)), general_trade=False)[0]
+    np.testing.assert_array_equal(merged.ownership.sum(axis=(1, 2)), passed.ownership.sum(axis=(1, 2)))
+    np.testing.assert_array_equal((merged.armies * merged.ownership).sum(axis=(1, 2)),
+                                  (passed.armies * passed.ownership).sum(axis=(1, 2)))
+    before = potential(state.armies, state.ownership, state.time, jnp)
+    difference = shaping(before, potential(merged.armies, merged.ownership, merged.time, jnp), False) - shaping(
+        before, potential(passed.armies, passed.ownership, passed.time, jnp), False)
+    assert difference[0] > 0.02 and difference[1] < -0.02

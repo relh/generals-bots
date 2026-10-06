@@ -1,0 +1,28 @@
+{
+  "name": "bounded-force-concentration-potential-v1",
+  "status": "isolated unwired prototype; requires current-contract integration and GPU qualification",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "proposed_environment_field": "concentration_shaping_weight",
+  "baseline_weight": 0.0,
+  "candidate_weight": 0.05,
+  "potential": "I(time>=100)*(C_ours-C_theirs), C=sum(owned_armies^2)/(sum(owned_armies)^2+1)",
+  "gamma": 0.999,
+  "outer_shaping_weight": 0.25,
+  "reward_scale": 0.5,
+  "terminal_potential": 0.0,
+  "action_codec_model_sampler_unchanged": true,
+  "evidence_sha256": "83ee3ea27e22deab0a639209abed648090131f64963536ebc04920577438eeaf",
+  "required_guards": [
+    "fresh optimizer matched control/candidate with identical initialization, geometry, seeds, pool, resets and RL budgets",
+    "same gamma for environment potential and learner; terminal and truncated potentials zero",
+    "at least 30000 steady end-to-end SPS including added reductions",
+    "paired wins, merges of both stacks>=10, largest-stack share, land/army at turn100 and200, attack frequency and capital survival",
+    "reject reduced expansion or passive concentration without broad strength improvement"
+  ],
+  "causal_limits": [
+    "Replay concentration correlates with wins; this does not establish reward causality.",
+    "Turn100 activation introduces boundary reward and can change earlier actions through credit assignment.",
+    "Concentration can penalize later expansion or encourage camping under approximate PPO.",
+    "Exact discounted shaping telescopes; approximate PPO, clipping and finite budgets do not guarantee the same learned policy."
+  ]
+}
