@@ -66,13 +66,15 @@ remains unchanged.
 
 ## Current experiment and next decision
 
-The safe owned half-split sampler pilot is resubmitted as `job-mvdyr` on branch
-`relh/safe-owned-half-split-pilot` at `eeda0f8`, with four paired 4,096-game
-arms on development seeds 9674001/9674003. The preceding `job-53h6p` failed
-before evaluation because its runner expected `input/bundle` but the sealed
-context used `input/bundles/penalty8`; its 60-second H100 attempt cost $0.0495.
-The new package checks the correct bundle path and manifest hash before games.
-No game result exists yet.
+The safe owned half-split sampler pilot `job-mvdyr` completed four paired
+4,096-game Classic arms on development seeds 9674001/9674003. Baseline bias 0
+won 2,869 games. Bias 2 won 2,874, paired signed-score gain +0.00317 with
+initial-state-cluster 95% CI [−0.00245,+0.00887]. Bias 4 won 2,849
+(delta −0.01050, CI [−0.02201,+0.00049]); bias 6 won 2,819
+(delta −0.02734, CI [−0.04640,−0.00853]). Retain bias 0: there is no broad
+positive result to confirm or promote. Verified result archive SHA:
+`1b32f552ac52fbb1ccdf34f0cb5dc1079f4439e318c4ee642024a608b2121015`.
+The completed H100 run billed 722 seconds/$0.5951.
 
 A separate public capital-threat gathering diagnostic is submitted as
 `job-t7ydi` on `relh/capital-threat-gather-pilot` at `3cf46a0`. It compares
@@ -93,17 +95,20 @@ sealed context is `ctx-644e8ce2`, archive SHA
 `2f336687e73adad3a212635ee6d43e55623f0b13092b3bef20ebe44889f548f4`;
 the bounded job has a 60-minute/$2.97 cap and zero restarts. No result exists yet.
 
-A bounded source-mirror PPO throughput probe is submitted as `job-dzu73` on
-`codex/source-mirror-ppo` at `0d6bd40`. It replaces one weak historical frozen
+A bounded source-mirror PPO throughput probe is resubmitted as `job-63iic` on
+`codex/source-mirror-ppo` at `be7e0e7`. It replaces one weak historical frozen
 opponent with the exact source actor; other opponents, reward and sampler are
 fixed. One H100 will run 4,194,304 steps at 4,096 environments/H128/minibatch
 8,192/replay 0.5, requiring at least 30K steady end-to-end SPS and clean
-audits. Its $1.485 cap and success marker bound the job. The first submission
-`job-jqgpa` was cancelled during image build with **zero charge** after a
-JSON tuple/list comparison bug was found in preflight. The corrected package
-has archive SHA `ed24d908952e0001c53ef5d376ce914c1b1edf91e3fef2dbcf9f3fd77e1571d3`.
-It has no result yet and cannot establish strength without
-a matched control and fresh evaluation.
+audits. Its 30-minute/$1.485 cap and success marker bound the job. Prior
+`job-dzu73` failed before PPO because the probe invoked a sampling gate that
+expected an absent distilled bundle; its verified output archive SHA is
+`7cc6e7d64761f57e858e8d084ad6505b0c34bf1777bfb18cb41241bcd4d9257e`
+and it billed 132 seconds/$0.1089. The retry calls the source gate and has
+sealed context `ctx-4f9e9390`, archive SHA
+`ae181aaaf406b26d971ce962c3e5965aa464a8365a67b83662de3321f1868bb0`.
+It has no training result yet and cannot establish strength without a matched
+control and fresh evaluation.
 
 Hosted replay analysis points to general defense and army gathering: every
 recorded loss ended in general capture, often despite an economic lead at turn
