@@ -115,7 +115,12 @@ qualification marker SHA:
 `089291cef732a3b610a5f19840023e79284fd430eed17a4aaabd010c47154532`.
 The new training checkpoint SHA is
 `40e7662aac04d676649e3ba51e5e70e7e3de5ac0bdba663cf86456fbd3f0cf94`.
-The matched control and fresh evaluation are pending; this throughput result
+The matched original-population PPO control is submitted as H100 `job-gjxu3`:
+same source checkpoint, clean asset, seed 9107331 and PPO geometry, restoring
+frozen slot 0 and its original weight. Its sealed context is `ctx-3ed02418`,
+archive SHA `bcd23b2761905c25e6052e3d136fa4bb61b7f6214537e4dc9e13b9d5b6177e8d`.
+Fresh paired 4,096-game Classic development evaluation is planned on seeds
+10432717/10432719 after control qualification. The mirror throughput result
 alone does not establish stronger play. Prior
 `job-dzu73` failed before PPO because the probe invoked a sampling gate that
 expected an absent distilled bundle ($0.1089). Its first retry `job-63iic`
@@ -129,17 +134,21 @@ asset with exact source, ABI and policy bytes. Its sealed context was
 `7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc`.
 
 A separate hard-opponent weighting throughput probe is resubmitted as H100
-`job-ju3rh` on `relh/hard-opponent-weighting` at `b3f12c0`. It starts from the
+`job-j4fpe` on `relh/hard-opponent-weighting` at `22e32c4`. It starts from the
 same qualified source asset and original 13-opponent pool, changing only the
 weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. The
 4,194,304-step probe uses 4,096 environments/H128/minibatch 8,192/replay 0.5,
 has a 30-minute/$1.485 cap and zero restarts, and must pass ≥30K steady SPS,
 all-opponent both-seat coverage and clean reward/action audits. Its sealed
-context is `ctx-9fef3793`, archive SHA
-`0c15c8503cc5e9139ffea7e39e37fecc3992af351c2512c788e90f24e7cc359f`.
+context is `ctx-565bd51c`, archive SHA
+`a0134d5ed3bf886a0b6006c4e3127ab3f84478ad4f057c5b3d221cfd6608729c`.
 The first `job-wrj6w` failed during image build because restrictive context
 permissions hid its Dockerfile from the rootless builder; it billed $0. The
 corrected archive passed tar-header and unprivileged extraction checks.
+The next `job-ju3rh` reached H100 but stopped at the GPU idle check before
+games/training (60 seconds/$0.0495); its log lacked process identities, so
+the exact cause is unproved. The current runner checks GPU idle before JAX
+imports and records process information on failure.
 The proposed 16,777,216-step matched treatment/control run remains held.
 
 Hosted replay analysis points to general defense and army gathering: every
