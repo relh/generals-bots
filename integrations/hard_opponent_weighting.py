@@ -102,7 +102,7 @@ def prepare(source_input: Path, repository: Path, output: Path, plan_path: Path 
         raise ValueError('Use a fresh staged-input directory')
     source_input, repository = source_input.resolve(strict=True), repository.resolve(strict=True)
     plan = load_plan(plan_path)
-    if str(source_input) != plan['source_input']:
+    if source_input != Path(plan['source_input']).resolve(strict=True):
         raise ValueError('Source input path differs from preregistration')
     output.mkdir(parents=True)
     for name in ('assets/cold', 'bundles/cold', 'bundles/frozen', 'curriculum',
