@@ -101,18 +101,21 @@ Verified result archive SHA:
 `efecdd6b4cedfb01b24d81e6443cb858213f2318cd88c03249a713b68dda134c`.
 The H100 run billed 523 seconds/$0.4312.
 
-A bounded source-mirror PPO throughput probe is resubmitted as `job-63iic` on
-`codex/source-mirror-ppo` at `be7e0e7`. It replaces one weak historical frozen
+A bounded source-mirror PPO throughput probe is resubmitted as `job-w43vv` on
+`codex/source-mirror-ppo` at `7497168`. It replaces one weak historical frozen
 opponent with the exact source actor; other opponents, reward and sampler are
 fixed. One H100 will run 4,194,304 steps at 4,096 environments/H128/minibatch
 8,192/replay 0.5, requiring at least 30K steady end-to-end SPS and clean
 audits. Its 30-minute/$1.485 cap and success marker bound the job. Prior
 `job-dzu73` failed before PPO because the probe invoked a sampling gate that
-expected an absent distilled bundle; its verified output archive SHA is
-`7cc6e7d64761f57e858e8d084ad6505b0c34bf1777bfb18cb41241bcd4d9257e`
-and it billed 132 seconds/$0.1089. The retry calls the source gate and has
-sealed context `ctx-4f9e9390`, archive SHA
-`ae181aaaf406b26d971ce962c3e5965aa464a8365a67b83662de3321f1868bb0`.
+expected an absent distilled bundle ($0.1089). Its first retry `job-63iic`
+passed the 512-game source sampling gate but failed native preflight: the
+staged original cold asset's model fingerprint `d30f5fae…` differed from the
+qualified build's `cead5dce…` ($0.3333; verified output SHA
+`a22c9dd025220027824c376ae60cb774224c5d0771ae40797fd182ce20a988e2`).
+The new retry uses the already qualified, proof-bound metadata-rebound asset
+with exact source, ABI and policy bytes. Its sealed context is `ctx-f0e50843`,
+archive SHA `7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc`.
 It has no training result yet and cannot establish strength without a matched
 control and fresh evaluation.
 
