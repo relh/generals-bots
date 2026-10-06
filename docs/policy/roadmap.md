@@ -12,9 +12,10 @@ artifact identities. Git history retains superseded attempts.
    steady end-to-end steps per second with clean rewards, legal actions and all
    13 opponents on both seats, run its matched control and paired development
    evaluation before longer training.
-2. Prepare the matched hard-opponent weighting trial using the original frozen
-   pool. The safe owned split, capital-threat gather and general-garrison split
-   sampler pilots did not clear the paired development gate.
+2. Resolve the hard-opponent weighting probe's source-gate native crash before
+   any longer training. The safe owned split, capital-threat gather and
+   general-garrison split sampler pilots did not clear the paired development
+   gate.
 3. Choose further training changes from measured full-game failure modes.
    Preserve the source checkpoint, change one mechanism at a time, and keep
    opponent, reward, map and seat controls matched.

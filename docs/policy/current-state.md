@@ -133,15 +133,17 @@ asset with exact source, ABI and policy bytes. Its sealed context was
 `ctx-f0e50843`, archive SHA
 `7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc`.
 
-A separate hard-opponent weighting throughput probe is resubmitted as H100
-`job-j4fpe` on `relh/hard-opponent-weighting` at `22e32c4`. It starts from the
+A separate hard-opponent weighting throughput probe `job-j4fpe` on
+`relh/hard-opponent-weighting` at `22e32c4` failed before training. It starts from the
 same qualified source asset and original 13-opponent pool, changing only the
 weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. The
-4,194,304-step probe uses 4,096 environments/H128/minibatch 8,192/replay 0.5,
-has a 30-minute/$1.485 cap and zero restarts, and must pass ≥30K steady SPS,
-all-opponent both-seat coverage and clean reward/action audits. Its sealed
-context is `ctx-565bd51c`, archive SHA
-`a0134d5ed3bf886a0b6006c4e3127ab3f84478ad4f057c5b3d221cfd6608729c`.
+planned 4,194,304-step probe used 4,096 environments/H128/minibatch 8,192/
+replay 0.5. GPU idle verification passed with no compute PID, but the
+source-sampling subprocess exited on SIGSEGV after native bootstrap and before
+any game. The verified terminal archive SHA is
+`f9f7a0f538f01422c1ce4715212d9601a07fa08e860a8e31f8723546c61045cd`;
+the attempt billed 60 seconds/$0.0495. The source gate is being compared with
+the qualified mirror gate; no further GPU retry is queued.
 The first `job-wrj6w` failed during image build because restrictive context
 permissions hid its Dockerfile from the rootless builder; it billed $0. The
 corrected archive passed tar-header and unprivileged extraction checks.
