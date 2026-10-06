@@ -153,12 +153,17 @@ These tactical metrics do not establish broad warm-policy strength. **Four
 Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
 `d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456`.
 
-Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
-bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
-source/warm/control/distilled priority order (`512af1f`). The earlier 512-game
-gate took **145.39s**; scaling suggests ~1,163s per 4,096 panel, **an estimate,
-not a measurement**. Matched paired confidence intervals remain required before
-selecting a candidate; no strength result is available.
+**Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
+`512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
+Provider validation passed; one H100, **120-minute/$5.94 maximum**, zero restarts.
+Sealed archive 212,623,426 B, SHA
+`264e933205a15532ec7a39ce8cd3a4f0d88cb5f95436b00d24e7a589d973cc64`,
+consuming authenticated `job-vezu3` artifact `d57aafc8…`.
+Four **4,096-game Classic first-episode panels**, preregistered seeds51213/17431,
+run source/warm/control/distilled, each capped1,440s. Earlier512 games took145.39s;
+~1,163s/panel is a scaling estimate, not a measurement. **Paired analysis and
+`EVALUATED.json` remain pending; no strength claim yet.** Receipt:
+`/tmp/generals-heldout-4x4096-512af1f-submission.json`.
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -235,6 +240,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-uyssa` | Failed publishing120s after clean control8M at36,171.5SPS; no warm/panels;990s/$0.8162 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-uyssa/` |
 | `job-re2cn` | BUILD_FAILED beforeGPU/zero billed: pip ReadTimeout; latent v1 source seal mismatch also corrected | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-submission.json` |
 | `job-vezu3` | Succeeded: control published, distill/warm8M and parity complete; panels pending;1760s/$1.452 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-results-job-vezu3/` |
+| `job-9fkii` | Submitted: four4096-game held-out panels; paired analysis pending | 120 min GPU / $5.94 maximum | `/tmp/generals-heldout-4x4096-512af1f-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is

@@ -101,12 +101,12 @@ Use targeted tests for changed behavior and required execution gates. Broaden
 verification when a concrete failure needs resolution. Integrate working
 components promptly and debug the full operational path as it becomes usable.
 
-Future evaluation-only H100 stage is **planned, not submitted**: 120-minute
-bound, four **4,096-game first-episode panels**, each capped at **1,440s**, in
-source/warm/control/distilled priority order (`512af1f`). The earlier 512-game
-gate took **145.39s**; scaling suggests ~1,163s per 4,096 panel, **an estimate,
-not a measurement**. Matched paired confidence intervals remain required before
-selecting a candidate; no strength result is available.
+Held-out evaluation `job-9fkii` is submitted from `512af1f`, validated one H100,
+120min/$5.94 maximum, zero restarts, context `ctx-95843f1b`. It consumes the
+verified `job-vezu3` artifact for four4,096-game Classic first-episode panels,
+ordered source/warm/control/distilled, seeds51213/17431 and cap1,440s each.
+The 145.39s512-game gate suggests~1,163s/panel, unmeasured. Paired analysis and
+`EVALUATED.json` remain pending; no strength claim yet.
 
 ## Initial winning acceptance
 
