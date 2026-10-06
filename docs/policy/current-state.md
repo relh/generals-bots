@@ -86,16 +86,15 @@ retains bonus 0 and makes no serving change. Verified result archive SHA:
 The H100 run billed 535 seconds/$0.4411; the provider retried its initial
 image build without charge after losing the first build worker.
 
-A third sampler diagnostic, general-garrison split, is submitted as H100
-`job-nqjyf` on `relh/general-garrison-split-pilot` at `182956f`. It compares
-half-move biases 0/2/4 when the public own general holds 5–19 armies, using
-4,096 paired development games per arm on seeds 9874001/9874003. It was
-motivated by observed full departures from the general in hosted replays; that
-panel is diagnostic only and is not used as training data. The isolated branch
-contains the frozen and serving sampler path and passed 17 focused tests. Its
-sealed context is `ctx-644e8ce2`, archive SHA
-`2f336687e73adad3a212635ee6d43e55623f0b13092b3bef20ebe44889f548f4`;
-the bounded job has a 60-minute/$2.97 cap and zero restarts. No result exists yet.
+The general-garrison split diagnostic `job-nqjyf` completed three paired
+4,096-game Classic arms on seeds 9874001/9874003. Baseline won 2,806;
+bias 2 won 2,813 (paired signed-score delta +0.00366, clustered 95% CI
+[−0.00121,+0.00855]); bias 4 won 2,806 (delta −0.00024, CI
+[−0.01066,+0.00985]) with opposite seat effects. Neither clears the
+development gate. The frozen sampler and serving version stay unchanged.
+Verified result archive SHA:
+`efecdd6b4cedfb01b24d81e6443cb858213f2318cd88c03249a713b68dda134c`.
+The H100 run billed 523 seconds/$0.4312.
 
 A bounded source-mirror PPO throughput probe is resubmitted as `job-63iic` on
 `codex/source-mirror-ppo` at `be7e0e7`. It replaces one weak historical frozen

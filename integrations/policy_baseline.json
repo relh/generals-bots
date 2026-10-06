@@ -79,18 +79,6 @@
   },
   "active_experiments": [
     {
-      "kind": "public_general_garrison_split_sampler_development",
-      "branch": "relh/general-garrison-split-pilot",
-      "revision": "182956f",
-      "job": "job-nqjyf",
-      "last_observed_state": "BUILDING",
-      "context_archive_sha256": "2f336687e73adad3a212635ee6d43e55623f0b13092b3bef20ebe44889f548f4",
-      "map_seed": 9874001,
-      "sample_seed": 9874003,
-      "games_per_arm": 4096,
-      "arms": 3
-    },
-    {
       "kind": "source_mirror_ppo_throughput_probe",
       "branch": "codex/source-mirror-ppo",
       "revision": "be7e0e7",
