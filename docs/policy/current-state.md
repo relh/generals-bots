@@ -76,13 +76,15 @@ positive result to confirm or promote. Verified result archive SHA:
 `1b32f552ac52fbb1ccdf34f0cb5dc1079f4439e318c4ee642024a608b2121015`.
 The completed H100 run billed 722 seconds/$0.5951.
 
-A separate public capital-threat gathering diagnostic is submitted as
-`job-t7ydi` on `relh/capital-threat-gather-pilot` at `3cf46a0`. It compares
-bonuses 0/2/4 on 4,096 paired Classic development games per arm, seeds
-9774001/9774003. The trigger uses only visible enemy strength near our general
-and legal owned-to-owned moves toward it. Its context archive SHA is
-`29209f8603bccf124e0d5f1e8a6222c09d628b399224dfae4fbbf1440a7728f7`.
-No result or serving change exists yet.
+The public capital-threat gathering diagnostic `job-t7ydi` completed three
+paired 4,096-game Classic arms on seeds 9774001/9774003. Baseline won 2,845;
+bonus 2 also won 2,845 (paired signed-score delta +0.00122, clustered 95% CI
+[−0.00220,+0.00467]); bonus 4 won 2,837 (delta −0.00317, CI
+[−0.00894,+0.00264]). Neither clears the development gate. The decision
+retains bonus 0 and makes no serving change. Verified result archive SHA:
+`ce68dfc4143e8f6f56046bbcb159c5ad87b17f69e583895a6adf1a62f30e76ca`.
+The H100 run billed 535 seconds/$0.4411; the provider retried its initial
+image build without charge after losing the first build worker.
 
 A third sampler diagnostic, general-garrison split, is submitted as H100
 `job-nqjyf` on `relh/general-garrison-split-pilot` at `182956f`. It compares

@@ -79,17 +79,6 @@
   },
   "active_experiments": [
     {
-      "kind": "public_capital_threat_gather_sampler_development",
-      "branch": "relh/capital-threat-gather-pilot",
-      "revision": "3cf46a0",
-      "job": "job-t7ydi",
-      "last_observed_state": "BUILDING",
-      "map_seed": 9774001,
-      "sample_seed": 9774003,
-      "games_per_arm": 4096,
-      "arms": 3
-    },
-    {
       "kind": "public_general_garrison_split_sampler_development",
       "branch": "relh/general-garrison-split-pilot",
       "revision": "182956f",
