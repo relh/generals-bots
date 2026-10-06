@@ -77,15 +77,21 @@ are retained, adding zero RL steps. Proof:
 The clean cold asset manifest SHA is
 `58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9`.
 
-**New H100 sizing job `job-zfz7e` is SUBMITTED**, 03:34:05 UTC, source `ed34d683…`,
-context `ctx-b4e75baf`, archive SHA-256
-`17013d1cfd5072256ff48bf50a66b82b25f8ee5c7adb6e834977f47e65f7382b`.
-It retains the same policy/sampler and source gate, both sizing profiles and
-420s startup/600s training bounds; one H100, 30-minute maximum **$1.485**.
-Receipt: `/tmp/generals-h100-probe-submission-cleanasset.json`.
-No sizing measurements yet.
-No new strength result exists; matched warm work remains deferred until geometry
-is measured and selected.
+**Third H100 sizing job `job-zfz7e` is terminal and unqualified.**
+2,048/H256 was stopped at **24,731.7 SPS**, below the 30K gate.
+4,096/H128 completed 3,145,728 steps, sustaining **36,643 SPS over its final
+1,048,576 steps**, with **68,241 MiB sampled peak device memory**. This geometry
+fits H100, but qualification failed: `Complete finite reward audit is missing`.
+Neither profile qualifies; these are throughput measurements, not strength results.
+Evidence: `/tmp/generals-h100-probe-results-job-zfz7e/`.
+
+**Confirmation job `job-s79eq` is SUBMITTED**, 04:19:06 UTC, source
+`e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-da62e3ca`:
+one H100, 30-minute maximum/$1.485, **4,096/H128, eight epochs / 4,194,304 steps**,
+with an explicit final reward-audit target. Receipt:
+`/tmp/generals-h100-qualification-4096h128-submission.json`.
+**Qualification awaits its complete artifact**, including finite reward audit;
+matched warm work remains deferred and no new strength result exists.
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -124,7 +130,7 @@ The sizing profiles compare 2,048/H256 (43.126 GiB known buffers) with
 4,096/H128 (44.904 GiB), each fresh from cold weights, minibatch 8,192/replay 0.5,
 **3,145,728 steps / six epochs**, two warmup epochs, then raw epoch and device
 memory measurements. Require **≥30K actual end-to-end SPS** before qualification;
-residual allocation, fit and performance remain unmeasured. Selecting new
+4,096/H128 fit and throughput are measured, but its final audit is incomplete. Selecting new
 geometry requires **both control and warm arms at that geometry**; the retained
 8,192-control is baseline evidence, not a matched control for 2,048/4,096.
 
@@ -154,7 +160,8 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | 36081 | Cancelled while pending: no node/runtime/epochs; smaller sizing requested | 100 min | `/tmp/generals-job-36081-superseded-sizing.json` |
 | `job-i8tp6` | Failed: sampler and both builds passed; both CPU preflights timed out at 120s before epochs | 30 min GPU | `/tmp/generals-h100-probe-results-job-i8tp6/` |
 | `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
-| `job-zfz7e` | Submitted: proven metadata-clean cold asset, same sizing profiles; no measurements yet | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-submission-cleanasset.json` |
+| `job-zfz7e` | Unqualified: 2048/H256 below30K; 4096/H128 36,643 SPS/68,241 MiB but final reward audit missing | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-zfz7e/` |
+| `job-s79eq` | Submitted: eight-epoch 4096/H128 confirmation with explicit final audit; not yet qualified | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is

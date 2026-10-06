@@ -119,16 +119,12 @@
     "queue_ttl_minutes": 60,
     "profiles": [
       {
-        "environment_count": 2048,
-        "horizon": 256
-      },
-      {
         "environment_count": 4096,
         "horizon": 128
       }
     ],
-    "steps_each": 3145728,
-    "epochs_each": 6,
+    "steps_each": 4194304,
+    "epochs_each": 8,
     "warmup_epochs": 2,
     "minibatch": 8192,
     "replay_ratio": 0.5,
@@ -137,21 +133,21 @@
     "startup_seconds": 420,
     "training_seconds_each": 600,
     "duplicate_cpu_preflight": false,
-    "job": "job-zfz7e",
+    "job": "job-s79eq",
     "state": "SUBMITTED",
-    "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
-    "submitted_at_utc": "2026-10-06T03:34:05.481582+00:00",
+    "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199",
+    "submitted_at_utc": "2026-10-06T04:19:06.003523+00:00",
     "phase": "awaiting_gpu_execution",
-    "context_id": "ctx-b4e75baf",
-    "input_sha256": "17013d1cfd5072256ff48bf50a66b82b25f8ee5c7adb6e834977f47e65f7382b",
+    "context_id": "ctx-da62e3ca",
+    "input_sha256": "1328eb37650648856111fa999440a77c3e4f61de68c5974185a7ff95f2f3f29b",
     "max_cost_usd": 1.485,
     "new_training_steps": null,
     "measured_sps": null,
     "measured_training_memory": null,
     "evidence": {
-      "path": "/tmp/generals-h100-probe-submission-cleanasset.json",
-      "sha256": "c072e53ffe4ab783c5353f3c3a8e8aa32d7c8544666a7e2097a7263145a06154",
-      "bytes": 3184,
+      "path": "/tmp/generals-h100-qualification-4096h128-submission.json",
+      "sha256": "6e3d93e6921a4cdc31d7b62bf3bb3e092275cafa99864f6cb930a5cc027fe219",
+      "bytes": 3183,
       "verified_locally": true
     },
     "cold_asset_manifest_sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9",
@@ -172,7 +168,9 @@
       "rl_steps_added": 0,
       "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61"
     },
-    "source_gate_reused": true
+    "source_gate_reused": true,
+    "qualified": false,
+    "explicit_final_reward_audit": true
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -194,36 +192,34 @@
     }
   },
   "previous_failure": {
-    "job": "job-kcten",
+    "job": "job-zfz7e",
     "state": "FAILED",
+    "qualified": false,
     "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
-    "new_training_steps": 0,
-    "training_epochs": 0,
-    "billed_seconds": 651,
-    "charged_usd": 0.5368,
-    "source_sampling_wld": [
-      254,
-      253,
-      5
+    "error": "Complete finite reward audit is missing",
+    "profiles": [
+      {
+        "environment_count": 2048,
+        "horizon": 256,
+        "qualified": false,
+        "steady_sps": 24731.732628897593,
+        "error": "Below30000SPS;stopped"
+      },
+      {
+        "environment_count": 4096,
+        "horizon": 128,
+        "qualified": false,
+        "completed_steps": 3145728,
+        "steady_sps": 36643,
+        "steady_interval_steps": 1048576,
+        "sampled_peak_device_memory_mib": 68241,
+        "error": "Final finite reward audit missing"
+      }
     ],
-    "source_sampling_games": 512,
-    "both_builds_passed": true,
-    "error": "Native asset target identity differs: model_sha256",
-    "asset_model_sha256": "d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab",
-    "built_model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
-    "gpu_utilization_percent": 0,
-    "gpu_preparation_peak_memory_mib": 555,
-    "result_archive_sha256": "dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e",
     "evidence": {
-      "path": "/tmp/generals-h100-probe-results-job-kcten/terminal.json",
-      "sha256": "7e2ef29a1ac9a3faddd9e2abc10748557f05d45f92fe1dccc3478529257809c1",
-      "bytes": 2850,
-      "verified_locally": true
-    },
-    "result_evidence": {
-      "path": "/tmp/generals-h100-probe-results-job-kcten/extracted/generals/probe-results.json",
-      "sha256": "5ac2a690296a6d1f6159b98d1c8267861eaac893d295666c088e631c8f5b0dac",
-      "bytes": 2179,
+      "path": "/tmp/generals-h100-probe-results-job-zfz7e/extracted/generals/probe-results.json",
+      "sha256": "666b2e66750893431256627580013175ddb31c5248fde830e297d52739ab66f8",
+      "bytes": 3577,
       "verified_locally": true
     }
   },
