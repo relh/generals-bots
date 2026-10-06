@@ -108,6 +108,14 @@ ordered source/warm/control/distilled, seeds51213/17431 and cap1,440s each.
 The 145.39s512-game gate suggests~1,163s/panel, unmeasured. Paired analysis and
 `EVALUATED.json` remain pending; no strength claim yet.
 
+Training-pool diagnostic is adverse: control **7,192/10,896 wins (66.0%)**
+versus warm **4,430/10,198 (43.4%)**, worse across all **13 opponents/26 seats**;
+the final-quarter gap persists. This is correlated, reused training-pool evidence
+and **cannot select a winner**. Post-PPO defense retention remains unknown;
+frozen held-out `job-9fkii` results remain pending. SHA-bound diagnostic:
+`/tmp/generals-matched-training-pool-comparison-vezu3.json`, SHA
+`6cb6ace308a3820cb5b60e9cb911b86792d0a37c0bf4bd83f13b44cec26f9b06`.
+
 ## Initial winning acceptance
 
 - At least 65% wins against both Daveey and the incumbent in balanced, fresh

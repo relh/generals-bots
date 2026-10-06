@@ -153,6 +153,14 @@ These tactical metrics do not establish broad warm-policy strength. **Four
 Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
 `d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456`.
 
+Training-pool diagnostic is adverse: control **7,192/10,896 wins (66.0%)**
+versus warm **4,430/10,198 (43.4%)**, worse across all **13 opponents/26 seats**;
+the final-quarter gap persists. This is correlated, reused training-pool evidence
+and **cannot select a winner**. Post-PPO defense retention remains unknown;
+frozen held-out `job-9fkii` results remain pending. SHA-bound diagnostic:
+`/tmp/generals-matched-training-pool-comparison-vezu3.json`, SHA
+`6cb6ace308a3820cb5b60e9cb911b86792d0a37c0bf4bd83f13b44cec26f9b06`.
+
 **Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
 `512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
 Provider validation passed; one H100, **120-minute/$5.94 maximum**, zero restarts.
