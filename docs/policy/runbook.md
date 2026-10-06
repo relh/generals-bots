@@ -45,18 +45,9 @@ private Metta dependencies.
 | `integrations.metta_puffer` | Batched device-resident Classic games |
 | `integrations.spatial_selfplay` | Frozen and population policy opponents |
 | `integrations.launch_spatial_selfplay_training` | Native launcher, transfer and sampler guards |
-| `integrations.policy_trial` | Matched control/warmstart phases with explicit inputs and audits |
 | `integrations.native_spatial_asset` | Current native policy/learner identity and provenance |
 | `integrations.publish_policy_asset` | Publish actual completed PPO checkpoints as native assets |
 | `integrations.audit_spatial_hosted_replays` | Public-action legality and serving comparison against hosted replay panels |
-
-The matched trial defaults to immutable inputs at `/work/input` and results at
-`/work/out`; `--input` and `--output` select explicit alternate directories.
-Inputs include `source/`, `source-manifest.json`, `build-config.json`,
-`config.json`, `assets/cold/asset.json`, `bundles/cold/`, frozen opponent bundles,
-`curriculum/manifest.json`, separate `defense/train/` and `defense/heldout/`
-manifests, and `leader-root/` replay fixtures. The supported CUDA container
-supplies Metta/Puffer. An editable checkout does not reconstruct these inputs.
 
 ## Operational capsule checks
 
@@ -72,11 +63,6 @@ Allow 420s bounded cold training startup; publishing/export can reconstruct the
 native graph, so budget finalization separately. Preserve completed checkpoints
 and learner bytes across finalization failures rather than repeating PPO.
 A complete final reward/legal audit is mandatory even when throughput exceeds 30K.
-
-Held-out evaluation uses four 4,096-game Classic first-episode panels, ordered
-source/warm/control/distilled, with preregistered seeds 51213/17431 and a 1,440s
-cap per panel. A complete result requires paired analysis and `EVALUATED.json`.
-See [current-state.md](current-state.md) for the active job and collected evidence.
 
 ## GPU container backend and storage
 
@@ -153,45 +139,6 @@ an existing native build directory and exercises the real CPU launcher using
 its run configuration, writing evidence to a new output directory. Native
 preflight requires the supported Metta/Puffer container runtime and dependencies.
 
-The prepared GPU container executes the matched qualification workflow:
-
-```bash
-python -m integrations.policy trial smoke
-python -m integrations.policy trial build
-python -m integrations.policy trial distill
-python -m integrations.policy trial control
-python -m integrations.policy trial warm
-python -m integrations.policy trial evaluate
-```
-
-The qualification-guarded matched driver is the supported full experiment path:
-
-```bash
-python -m integrations.matched_defense_experiment \
-  --input INPUT_DIRECTORY --output NEW_OUTPUT_DIRECTORY \
-  --qualification QUALIFIED_PROFILE_DIRECTORY \
-  --qualification-sha256 QUALIFIED_RESULT_SHA256
-```
-
-It binds the measured geometry, objective and native runtime before running
-control/distill/warm/evaluation. The individual trial phases above expose those
-steps for bounded diagnosis; they do not independently enforce this full
-qualification chain. For a continuation, preserve the authenticated completed
-control run and call `Trial.publish_arm("control")` rather than repeat control PPO;
-its audit must pass before publication. Use a sealed driver and explicit inputs.
-
-Run individual phases in order inside the prepared GPU allocation. Both PPO arms
-start fresh optimizers (`restore_learner=False`) and use the same sampler,
-opponents, position curriculum, reward settings, seed, and **8,388,608 RL steps
-per arm**. `distill` records 256 supervised updates on separate public-defense
-training/held-out data; the warm arm initializes from those recorded policy
-weights. Supervised updates add no RL environment steps. Each arm runs its own
-512-game sampler gate; each trainer validates its native asset initializer without
-a duplicate standalone CPU preflight.
-The intended final phase compares source, distilled, control, and warm bundles
-on the same 4,096-game evaluation seeds and writes paired comparisons. This is a
-policy-weight intervention with matched fresh optimizers, not learner resume.
-
 `train` and `resume` forward the complete native launcher arguments and perform
 its bootstrap. Use the supported container environment and explicit native
 asset initialization. `evaluate`, `export`, and `compare`
@@ -199,12 +146,10 @@ forward the existing module arguments; inspect each command's `--help` for
 required artifacts and outputs. `promotion --help` describes the evidence
 report used to assess hosted qualification.
 
-The cleaned production factory is pinned to SHA-256
-`48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a`.
-It supports the current sixteen-plane F32/G32 graph with five priors and radius
-1.01 or 2.01. See current-state for canonical model/ABI identities and the
-one-time byte-preserving source equivalence proof. GPU parity and training
-must still pass in the current CUDA runtime.
+The production factory supports the current sixteen-plane F32/G32 graph with
+five priors and radius 1.01 or 2.01. Verify its source hash and model/ABI
+identities against the sealed asset before running. GPU parity and training
+must pass in the current CUDA runtime.
 
 Publish an actual completed PPO run as a native asset, then export it:
 
@@ -254,11 +199,6 @@ JSON may show zero until exit. A bounded profiling run can diagnose sub-30K SPS.
 For recurrent runs, pass the known nonfinite-gradient region before extending.
 
 ## Strength evaluation and promotion
-
-The completed matched panel rejected the defense warmstart and distilled policy;
-control showed no advantage. Retain the source baseline. See current-state for
-verified counts/CIs and artifacts; this does not establish fresh hosted strength.
-
 
 Freeze the evaluation opponent versions, map distribution, seeds, seats, and
 sampler. Keep development and fresh confirmation maps separate. Paired baseline
