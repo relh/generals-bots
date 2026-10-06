@@ -109,17 +109,17 @@
     }
   },
   "latest_attempt": {
-    "job": "job-i8tp6",
+    "job": "job-kcten",
     "state": "BUILDING",
-    "source_revision": "8e41477ee1224127ca2ce5cb684c42acf39c25d5",
+    "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
     "execution_backend": "givemeanode_native_docker",
     "hardware": "H100",
     "gpus": 1,
-    "submitted_at_utc": "2026-10-06T01:25:53.684988+00:00",
-    "phase": "native_cuda_image_build",
+    "submitted_at_utc": "2026-10-06T02:51:46.354178+00:00",
+    "phase": "native_cuda_image_push",
     "new_training_steps": null,
-    "context_id": "ctx-ed1b264a",
-    "input_sha256": "820dc8d81a0213aa780fa97aff6e7838085be05bf97d6bf928f7dbc8c3ef2892",
+    "context_id": "ctx-b8121c41",
+    "input_sha256": "65db01718f6e20de39727cb25b7206154ce5802894b3d84eeaa06b1f087d79f6",
     "max_duration_minutes": 30,
     "build_timeout_minutes": 60,
     "max_restarts": 0,
@@ -142,19 +142,25 @@
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
     "evidence": {
-      "path": "/tmp/generals-h100-probe-owned-job.json",
-      "sha256": "f7454a81ce05fb80a4ee28b2ea9d568116844aa24e93d2a7ab2dcb52053c75e2",
-      "bytes": 332,
+      "path": "/tmp/generals-h100-probe-submission-ed34d68.json",
+      "sha256": "e63c334cda3723f61fdd6f2eb30e9de372f28f87623bf6d407eae4057b2960a6",
+      "bytes": 3174,
       "verified_locally": true
     },
     "package_evidence": {
-      "path": "/tmp/generals-h100-probe-package.json",
-      "sha256": "e7ca34f99a228cbaa91866bf4bac640a076c86215107a33143c25bacc6cb1da8",
-      "bytes": 491,
+      "path": "/tmp/generals-h100-probe-ed34d68-context.finalize.json",
+      "sha256": "ac71124c675b7a610bc28c6a795a4db03839e3b4325c3c2a2cc6e731db8608df",
+      "bytes": 50,
       "verified_locally": true
     },
-    "state_observed_utc": "2026-10-06 01:28 UTC",
-    "matched_warm_experiment": "Deferred; new geometry requires fresh control and warm arms at that geometry."
+    "matched_warm_experiment": "Deferred; new geometry requires fresh control and warm arms at that geometry.",
+    "startup_seconds": 420,
+    "training_seconds_each": 600,
+    "duplicate_cpu_preflight": false,
+    "max_cost_usd": 1.485,
+    "measured_sps": null,
+    "measured_training_memory": null,
+    "state_observed_utc": "2026-10-06T03:05:45.955414+00:00"
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -176,43 +182,24 @@
     }
   },
   "previous_failure": {
-    "job": "35956",
+    "job": "job-i8tp6",
     "state": "FAILED",
-    "source_revision": "4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7",
-    "execution_backend": "direct_enroot",
-    "scratch_parent": "/var/tmp",
-    "phase": "warm_sampling_gate_environment_construction",
+    "source_revision": "8e41477ee1224127ca2ce5cb684c42acf39c25d5",
+    "error": "Both profiles exceeded 120s CPU preflight before any training epoch",
     "new_training_steps": 0,
-    "workload_exit_code": 1,
-    "controller_terminal_available": false,
-    "nice": 2147483645,
-    "priority": 1,
-    "time_limit": "01:40:00",
-    "hardware_partition": "b300",
-    "completed_phases": [
-      "smoke",
-      "control-parity",
-      "build"
+    "source_sampling_wld": [
+      254,
+      253,
+      5
     ],
-    "fresh_ce_cpu_preflight_passed": true,
-    "sampling_games_started": false,
-    "gpu_control_parity": {
-      "checkpoint_sha256": "c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6",
-      "public_states": 46,
-      "matching_top_actions": 46,
-      "max_logit_difference": 1.430511474609375e-06,
-      "max_action_probability_difference": 1.8477439880371094e-06,
-      "max_rollout_transform_difference": 1.1920928955078125e-07,
-      "layout_backend": "cpu",
-      "inference_backend": "gpu",
-      "jax_backend": "gpu"
-    },
-    "error": "ValueError: Spatial frozen opponents require balanced seats",
-    "owned_container_removed": true,
+    "source_sampling_games": 512,
+    "both_builds_passed": true,
+    "measured_sps": null,
+    "measured_training_memory": null,
     "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35956/analysis.json",
-      "sha256": "d9d71dfe687f33d3d14b347065ce62e49adcb19c8497f68b112d78078d00db06",
-      "bytes": 3214,
+      "path": "/tmp/generals-h100-probe-results-job-i8tp6/extracted/generals/probe-results.json",
+      "sha256": "d0b0139884688f5f9c82f151145c14333a2194cf8e50b578dddd5d650bbe9303",
+      "bytes": 1501,
       "verified_locally": true
     }
   },
