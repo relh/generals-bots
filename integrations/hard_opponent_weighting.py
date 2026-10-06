@@ -235,17 +235,23 @@ def run_probe(inputs: Path, output: Path) -> None:
     run['seed'] = plan['required_treatment_probe']['seed']
     from integrations.cuda_runtime_binding import configure
     configure()
+    from integrations.slurm_s3_job import gpu_query, verify_gpu_idle, visible_gpu_identity
+    identity = visible_gpu_identity()
+    output.mkdir(parents=True, exist_ok=False)
+    (output / 'gpu-idle-attempt.json').write_text(json.dumps({
+        'uuid': identity['uuid'],
+        'compute_pid_rows_before_jax_import': gpu_query('--id=' + identity['uuid'],
+            '--query-compute-apps=pid', '--format=csv,noheader,nounits').splitlines(),
+    }, indent=2) + '\n')
+    gpu = verify_gpu_idle(identity)
     from integrations.classic_position_curriculum import configure_positions
     from integrations.policy_execution import execute, training_audit
-    from integrations.slurm_s3_job import verify_gpu_idle, visible_gpu_identity
-    gpu = verify_gpu_idle(visible_gpu_identity())
     gpu_model = subprocess.check_output(['nvidia-smi', '--query-gpu=name', '--format=csv,noheader'],
                                         text=True).strip()
     if 'H100' not in gpu_model:
         raise ValueError('Treatment probe requires the preregistered H100')
     os.environ['GENERALS_ALLOCATED_GPU_UUID'] = gpu['uuid']
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu['uuid']
-    output.mkdir(parents=True, exist_ok=False)
     probe = output / 'probe'
     probe.mkdir()
     (output / 'gpu-preflight.json').write_text(json.dumps(gpu, indent=2) + '\n')
@@ -303,13 +309,19 @@ def run_pair(inputs: Path, output: Path, qualified_probe: Path) -> None:
     probe_receipt = validate_probe_receipt(qualified_probe, inputs, plan)
     from integrations.cuda_runtime_binding import configure
     configure()
+    from integrations.slurm_s3_job import gpu_query, verify_gpu_idle, visible_gpu_identity
+    identity = visible_gpu_identity()
+    output.mkdir(parents=True, exist_ok=False)
+    (output / 'gpu-idle-attempt.json').write_text(json.dumps({
+        'uuid': identity['uuid'],
+        'compute_pid_rows_before_jax_import': gpu_query('--id=' + identity['uuid'],
+            '--query-compute-apps=pid', '--format=csv,noheader,nounits').splitlines(),
+    }, indent=2) + '\n')
+    gpu = verify_gpu_idle(identity)
     from integrations.classic_position_curriculum import configure_positions
     from integrations.policy_execution import execute, training_audit
-    from integrations.slurm_s3_job import verify_gpu_idle, visible_gpu_identity
-    gpu = verify_gpu_idle(visible_gpu_identity())
     os.environ['GENERALS_ALLOCATED_GPU_UUID'] = gpu['uuid']
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu['uuid']
-    output.mkdir(parents=True, exist_ok=False)
     (output / 'gpu-preflight.json').write_text(json.dumps(gpu, indent=2) + '\n')
     sampler = json.loads((inputs / 'assets/cold/asset.json').read_text())['sampler']
     source = inputs / 'source'
