@@ -71,10 +71,13 @@ bundle-manifest SHA `1781c1abdcb9f6266433c45b1e0a67423cde663e775055d570df5a799f2
 Coworld registered policy version `e1644605-50ea-495a-9631-a2ff4d25b85f`
 from ready image digest `sha256:a5a4c29e39367b6892dd65dc50775097c14463537a963b0b70e2a1c9146a518e`.
 Its two-game balanced incumbent wire smoke completed **1W/1L**, zero failed
-requests, costing $0.017426. This verifies hosted execution only; it is too
+requests, costing $0.017426. Both SHA-bound replays show zero timeouts,
+forfeits, unapplied turns and invalid source/destination moves across 188 and
+1,045 turns, with general captures in both games. This verifies hosted
+execution only; it is too
 small to establish strength. The source baseline remains selected.
 Receipts: `/tmp/generals-penalty8-image-proof-fdb12d0/` and
-`/tmp/generals-penalty8-hosted-smoke-20261006/`.
+`/tmp/generals-penalty8-hosted-smoke-20261006/` (`replay-audit.json`).
 
 **Force-assembly curriculum `job-xbqmn` SUCCEEDED but did not improve the
 development population.** It changed the 25% training reset curriculum from
