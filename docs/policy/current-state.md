@@ -67,7 +67,23 @@ The revised driver used 420s startup and bounded 600s training per profile,
 without duplicate standalone CPU preflight; its 30-minute cap was $1.485.
 Verified terminal archive: `/tmp/generals-h100-probe-results-job-kcten/`, SHA-256
 `dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e`.
-**No new GPU job until asset rebind equivalence and initializer proof pass.**
+The identity mismatch was traced to **179 AppleDouble metadata sidecars**
+in the old Fabric fingerprint; all **243 executable Python sources are unchanged**.
+CPU rebind proof preserves ABI `0c7a1fb0…`, all **23 portable tensors bitwise**,
+and logits on **18 hosted states** within **1.19e-6**; weights and learner bytes
+are retained, adding zero RL steps. Proof:
+`/tmp/generals-appledouble-clean-cold-migration-v1/proof.json`, SHA-256
+`94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd`.
+The clean cold asset manifest SHA is
+`58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9`.
+
+**New H100 sizing job `job-zfz7e` is SUBMITTED**, 03:34:05 UTC, source `ed34d683…`,
+context `ctx-b4e75baf`, archive SHA-256
+`17013d1cfd5072256ff48bf50a66b82b25f8ee5c7adb6e834977f47e65f7382b`.
+It retains the same policy/sampler and source gate, both sizing profiles and
+420s startup/600s training bounds; one H100, 30-minute maximum **$1.485**.
+Receipt: `/tmp/generals-h100-probe-submission-cleanasset.json`.
+No sizing measurements yet.
 No new strength result exists; matched warm work remains deferred until geometry
 is measured and selected.
 
@@ -138,6 +154,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | 36081 | Cancelled while pending: no node/runtime/epochs; smaller sizing requested | 100 min | `/tmp/generals-job-36081-superseded-sizing.json` |
 | `job-i8tp6` | Failed: sampler and both builds passed; both CPU preflights timed out at 120s before epochs | 30 min GPU | `/tmp/generals-h100-probe-results-job-i8tp6/` |
 | `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
+| `job-zfz7e` | Submitted: proven metadata-clean cold asset, same sizing profiles; no measurements yet | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-submission-cleanasset.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is

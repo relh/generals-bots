@@ -26,8 +26,11 @@ builds passed, but both 120s CPU preflights timed out before training epochs.
 Revised H100 job `job-kcten` also failed: sampler and both builds passed, but
 both train initializers rejected the cold asset's model identity (`d30f5fae…`
 versus built `cead5dce…`). It billed 651s/$0.5368 with no epochs or sizing
-measurements; GPU samples were 0% utilization, peak 555 MiB. No new GPU job
-until asset rebind equivalence and initializer proof pass. Known 8,192/H256 buffers account
+measurements; GPU samples were 0% utilization, peak 555 MiB. The mismatch was AppleDouble metadata in the old fingerprint: 243 executable
+Python sources unchanged; CPU proof preserves ABI, all 23 tensors bitwise and
+18 hosted-state logits within 1.19e-6. New H100 sizing job `job-zfz7e` is submitted
+with the proven clean cold asset, same policy/sampler/source gate, source
+`ed34d68`, bounded 30 min/$1.485. No sizing measurements yet. Known 8,192/H256 buffers account
 for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
 an intrinsic requirement of the 2.21 MiB policy.
 Learning improvement and hosted winning qualification remain open; see

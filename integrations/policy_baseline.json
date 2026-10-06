@@ -109,17 +109,9 @@
     }
   },
   "latest_attempt": {
-    "job": "job-kcten",
-    "state": "FAILED",
-    "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
     "execution_backend": "givemeanode_native_docker",
     "hardware": "H100",
     "gpus": 1,
-    "submitted_at_utc": "2026-10-06T02:51:46.354178+00:00",
-    "phase": "train_prepare_run_asset_identity",
-    "new_training_steps": 0,
-    "context_id": "ctx-b8121c41",
-    "input_sha256": "65db01718f6e20de39727cb25b7206154ce5802894b3d84eeaa06b1f087d79f6",
     "max_duration_minutes": 30,
     "build_timeout_minutes": 60,
     "max_restarts": 0,
@@ -141,49 +133,46 @@
     "minibatch": 8192,
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
-    "evidence": {
-      "path": "/tmp/generals-h100-probe-results-job-kcten/terminal.json",
-      "sha256": "7e2ef29a1ac9a3faddd9e2abc10748557f05d45f92fe1dccc3478529257809c1",
-      "bytes": 2850,
-      "verified_locally": true
-    },
-    "package_evidence": {
-      "path": "/tmp/generals-h100-probe-ed34d68-context.finalize.json",
-      "sha256": "ac71124c675b7a610bc28c6a795a4db03839e3b4325c3c2a2cc6e731db8608df",
-      "bytes": 50,
-      "verified_locally": true
-    },
     "matched_warm_experiment": "Deferred; new geometry requires fresh control and warm arms at that geometry.",
     "startup_seconds": 420,
     "training_seconds_each": 600,
     "duplicate_cpu_preflight": false,
+    "job": "job-zfz7e",
+    "state": "SUBMITTED",
+    "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
+    "submitted_at_utc": "2026-10-06T03:34:05.481582+00:00",
+    "phase": "awaiting_gpu_execution",
+    "context_id": "ctx-b4e75baf",
+    "input_sha256": "17013d1cfd5072256ff48bf50a66b82b25f8ee5c7adb6e834977f47e65f7382b",
     "max_cost_usd": 1.485,
+    "new_training_steps": null,
     "measured_sps": null,
     "measured_training_memory": null,
-    "state_observed_utc": "2026-10-06T03:05:45.955414+00:00",
-    "training_epochs": 0,
-    "billed_seconds": 651,
-    "charged_usd": 0.5368,
-    "source_sampling_wld": [
-      254,
-      253,
-      5
-    ],
-    "source_sampling_games": 512,
-    "both_builds_passed": true,
-    "error": "Native asset target identity differs: model_sha256",
-    "asset_model_sha256": "d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab",
-    "built_model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
-    "gpu_utilization_percent": 0,
-    "gpu_preparation_peak_memory_mib": 555,
-    "result_archive_sha256": "dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e",
-    "result_evidence": {
-      "path": "/tmp/generals-h100-probe-results-job-kcten/extracted/generals/probe-results.json",
-      "sha256": "5ac2a690296a6d1f6159b98d1c8267861eaac893d295666c088e631c8f5b0dac",
-      "bytes": 2179,
+    "evidence": {
+      "path": "/tmp/generals-h100-probe-submission-cleanasset.json",
+      "sha256": "c072e53ffe4ab783c5353f3c3a8e8aa32d7c8544666a7e2097a7263145a06154",
+      "bytes": 3184,
       "verified_locally": true
     },
-    "next_submission_gate": "Asset rebind equivalence and actual initializer proof must pass before any new GPU job."
+    "cold_asset_manifest_sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9",
+    "cold_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "metadata_rebind_proof": {
+      "path": "/tmp/generals-appledouble-clean-cold-migration-v1/proof.json",
+      "sha256": "94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd",
+      "bytes": 43806,
+      "verified_locally": true
+    },
+    "metadata_rebind": {
+      "removed_appledouble_sidecars": 179,
+      "identical_executable_python_sources": 243,
+      "abi_sha256": "0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851",
+      "bitwise_portable_tensors": 23,
+      "hosted_public_states": 18,
+      "max_logit_error": 1.1920928955078125e-06,
+      "rl_steps_added": 0,
+      "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61"
+    },
+    "source_gate_reused": true
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -205,11 +194,13 @@
     }
   },
   "previous_failure": {
-    "job": "job-i8tp6",
+    "job": "job-kcten",
     "state": "FAILED",
-    "source_revision": "8e41477ee1224127ca2ce5cb684c42acf39c25d5",
-    "error": "Both profiles exceeded 120s CPU preflight before any training epoch",
+    "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
     "new_training_steps": 0,
+    "training_epochs": 0,
+    "billed_seconds": 651,
+    "charged_usd": 0.5368,
     "source_sampling_wld": [
       254,
       253,
@@ -217,12 +208,22 @@
     ],
     "source_sampling_games": 512,
     "both_builds_passed": true,
-    "measured_sps": null,
-    "measured_training_memory": null,
+    "error": "Native asset target identity differs: model_sha256",
+    "asset_model_sha256": "d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab",
+    "built_model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
+    "gpu_utilization_percent": 0,
+    "gpu_preparation_peak_memory_mib": 555,
+    "result_archive_sha256": "dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e",
     "evidence": {
-      "path": "/tmp/generals-h100-probe-results-job-i8tp6/extracted/generals/probe-results.json",
-      "sha256": "d0b0139884688f5f9c82f151145c14333a2194cf8e50b578dddd5d650bbe9303",
-      "bytes": 1501,
+      "path": "/tmp/generals-h100-probe-results-job-kcten/terminal.json",
+      "sha256": "7e2ef29a1ac9a3faddd9e2abc10748557f05d45f92fe1dccc3478529257809c1",
+      "bytes": 2850,
+      "verified_locally": true
+    },
+    "result_evidence": {
+      "path": "/tmp/generals-h100-probe-results-job-kcten/extracted/generals/probe-results.json",
+      "sha256": "5ac2a690296a6d1f6159b98d1c8267861eaac893d295666c088e631c8f5b0dac",
+      "bytes": 2179,
       "verified_locally": true
     }
   },
