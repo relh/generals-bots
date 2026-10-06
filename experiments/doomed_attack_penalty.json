@@ -1,0 +1,30 @@
+{
+  "name": "cold-doomed-attack-penalty-4-vs-8",
+  "scope": "Paired development sampler ablation; no training or promotion claim",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "changed_sampler_field": "doomed_attack_route_penalty",
+  "baseline": 4.0,
+  "candidate": 8.0,
+  "capital_safety": false,
+  "preserve_all_other_sampler_fields": true,
+  "policy_weights_unchanged": true,
+  "reward_unchanged": true,
+  "model_abi_unchanged": true,
+  "map_seed": 8200101,
+  "sample_seed": 8200103,
+  "games_per_arm": 64,
+  "episode_limit": 2000,
+  "required_metrics": [
+    "paired_outcomes_by_opponent_and_seat",
+    "visible_understrength_attack_rate",
+    "largest_owned_stack_share",
+    "illegal_actions",
+    "unaffected_observation_action_drift"
+  ],
+  "evidence_sha256": "f98e3b04b99292b3a5c92644c974a8bb3a70f254d45caaeecb704a7497cf25ea",
+  "limitations": [
+    "A visible understrength attack may be useful chip damage; no action is forbidden.",
+    "A four-logit penalty change may be small relative to saturated cold route logits.",
+    "Concentration and strength must improve; fewer attacks alone is not success."
+  ]
+}
