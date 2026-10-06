@@ -109,18 +109,18 @@
     }
   },
   "latest_attempt": {
-    "job": "job-int7f",
+    "job": "job-zvvcn",
     "state": "SUBMITTED",
     "phase": "matched_defense_awaiting_gpu_execution",
-    "label": "relh-generals-matched-defense-4096h128-e649d73",
+    "label": "relh-generals-matched-defense-4096h128-e649d73-quietbuild",
     "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199",
-    "submitted_at_utc": "2026-10-06T04:52:50.855369+00:00",
+    "submitted_at_utc": "2026-10-06T05:00:00.233474+00:00",
     "execution_backend": "givemeanode_native_docker",
     "hardware": "H100",
     "gpus": 1,
-    "context_id": "ctx-b6c2f607",
-    "input_sha256": "0a48668610775ac0ef7e90911820dd6187fc8b2a3eb710605dfa29c812eec329",
-    "input_bytes": 199596573,
+    "context_id": "ctx-368f034d",
+    "input_sha256": "374b3e1371e43ed814095c6118c047bcc0353f0643d6d3da7cda116ad6b8ced1",
+    "input_bytes": 199714298,
     "max_duration_minutes": 90,
     "max_cost_usd": 4.455,
     "max_restarts": 0,
@@ -136,11 +136,13 @@
     "new_training_steps": null,
     "strength_result": null,
     "evidence": {
-      "path": "/tmp/generals-matched-h100-submission.json",
-      "sha256": "b735fef413aa82cacc449d2d191fd69e9400262114680e6934247728f7d9a7a9",
-      "bytes": 3186,
+      "path": "/tmp/generals-matched-h100-quiet-build-submission.json",
+      "sha256": "d7ef28dfd2d0d7c88cc4c1ed4fa5283ac30e5917d67933c389df51e8a10932d4",
+      "bytes": 3197,
       "verified_locally": true
-    }
+    },
+    "free_validation_passed": true,
+    "retry_delta": "Dockerfile install verbosity only;680 other files identical"
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -162,36 +164,14 @@
     }
   },
   "previous_failure": {
-    "job": "job-zfz7e",
-    "state": "FAILED",
-    "qualified": false,
-    "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
-    "error": "Complete finite reward audit is missing",
-    "profiles": [
-      {
-        "environment_count": 2048,
-        "horizon": 256,
-        "qualified": false,
-        "steady_sps": 24731.732628897593,
-        "error": "Below30000SPS;stopped"
-      },
-      {
-        "environment_count": 4096,
-        "horizon": 128,
-        "qualified": false,
-        "completed_steps": 3145728,
-        "steady_sps": 36643,
-        "steady_interval_steps": 1048576,
-        "sampled_peak_device_memory_mib": 68241,
-        "error": "Final finite reward audit missing"
-      }
-    ],
-    "evidence": {
-      "path": "/tmp/generals-h100-probe-results-job-zfz7e/extracted/generals/probe-results.json",
-      "sha256": "666b2e66750893431256627580013175ddb31c5248fde830e297d52739ab66f8",
-      "bytes": 3577,
-      "verified_locally": true
-    }
+    "job": "job-int7f",
+    "state": "BUILD_FAILED",
+    "gpu_allocated": false,
+    "billed_seconds": 0,
+    "new_training_steps": 0,
+    "error": "Docker pip/version layer failed;64KiB build log truncated before exact error",
+    "first_builder": "lost claim/requeued",
+    "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199"
   },
   "superseded_unstarted_attempt": {
     "job": "36081",
@@ -231,7 +211,7 @@
     "minibatch": 8192,
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
-    "matched_warm_experiment": "Submitted job-int7f; results pending.",
+    "matched_warm_experiment": "Submitted quietbuild retry job-zvvcn;matched results pending.",
     "startup_seconds": 420,
     "training_seconds_each": 600,
     "duplicate_cpu_preflight": false,
