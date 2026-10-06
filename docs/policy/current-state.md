@@ -95,7 +95,15 @@ actions**, with all 13 opponents sampled on both seats. One H100 billed
 `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/`.
 Archive SHA: `fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5`;
 profile result SHA: `c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98`.
-**Matched control/warm staging is underway; no new strength result exists.**
+**Matched defense job `job-int7f` is SUBMITTED**, 04:52:50 UTC, source
+`e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-b6c2f607`.
+Label `relh-generals-matched-defense-4096h128-e649d73`; sealed tar 199,596,573 B,
+SHA `0a48668610775ac0ef7e90911820dd6187fc8b2a3eb710605dfa29c812eec329`.
+One H100, **90-minute/$4.455 maximum**, zero restarts, exact qualified result
+`c21491a7…` attached. Two **8,388,608-step fresh-optimizer PPO arms** compare
+cold control with CE warmstart, then a broad held-out population panel.
+Request/submission: `/tmp/generals-matched-h100-{request,submission}.json`.
+**No matched training or strength result yet.**
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -166,6 +174,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
 | `job-zfz7e` | Unqualified: 2048/H256 below30K; 4096/H128 36,643 SPS/68,241 MiB but final reward audit missing | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-zfz7e/` |
 | `job-s79eq` | Succeeded: 4096/H128 qualified at 36,182.7467 SPS, full finite/legal audit; 608s/$0.5016 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/` |
+| `job-int7f` | Submitted: matched cold/CE-warm fresh PPO arms and held-out panel; no results yet | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -176,8 +185,7 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 
 The matched defense driver is integrated and pushed through `de5f915`: it uses
 the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
-training startup to 420s and refuses unqualified geometry. **This experiment
-has not run**; H100 geometry qualification passed and staging is underway.
+training startup to 420s and refuses unqualified geometry. The matched experiment is submitted as `job-int7f`; results remain pending.
 
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
