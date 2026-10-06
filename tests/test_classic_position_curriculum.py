@@ -10,7 +10,9 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from integrations.classic_position_curriculum import load_positions, mix_initial_positions
+from integrations.classic_position_curriculum import (
+    ENGINE_SHA256, configure_positions, load_positions, mix_initial_positions,
+)
 
 
 def archive(tmp_path, **changes):
@@ -53,6 +55,30 @@ def test_checksum_and_terminal_rejection(tmp_path):
         path, digest = archive(tmp_path, **changes)
         with pytest.raises(ValueError):
             load_positions(path, digest)
+
+
+def test_verified_position_path_keeps_qualified_symlink_spelling(tmp_path):
+    directory = tmp_path / "real"
+    directory.mkdir()
+    path, digest = archive(directory)
+    (directory / "manifest.json").write_text(json.dumps({
+        "schema": "classic-midgame-positions-v1",
+        "engine_sha256": ENGINE_SHA256,
+        "positions_sha256": digest,
+        "count": 2,
+        "provenance": [{}, {}],
+    }))
+    alias = tmp_path / "work-input"
+    alias.symlink_to(directory, target_is_directory=True)
+    configured = str(alias / "positions.npz")
+    options = {
+        "coworld_position_pool": configured,
+        "coworld_position_pool_sha256": digest,
+        "coworld_position_probability": 0.25,
+    }
+    configure_positions(options, alias / "manifest.json")
+    assert options["coworld_position_pool"] == configured
+    assert path.resolve() == (alias / "positions.npz").resolve()
 
 
 def test_mixed_reset_is_deterministic_and_keeps_fresh_maps(tmp_path):

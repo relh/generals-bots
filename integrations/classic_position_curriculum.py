@@ -31,8 +31,17 @@ def configure_positions(options, manifest_path):
     positions = load_positions(path, manifest["positions_sha256"])
     if len(positions.time) != manifest.get("count") or len(manifest.get("provenance", [])) != len(positions.time):
         raise ValueError("Position curriculum provenance count differs")
+    configured_path = options.get("coworld_position_pool")
+    if (
+        isinstance(configured_path, str)
+        and Path(configured_path).is_absolute()
+        and Path(configured_path).resolve() == path.resolve()
+    ):
+        pool_path = configured_path
+    else:
+        pool_path = str(path.resolve())
     options.update(
-        coworld_position_pool=str(path.resolve()),
+        coworld_position_pool=pool_path,
         coworld_position_pool_sha256=manifest["positions_sha256"],
         coworld_position_probability=0.25,
     )
