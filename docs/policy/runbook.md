@@ -73,12 +73,10 @@ native graph, so budget finalization separately. Preserve completed checkpoints
 and learner bytes across finalization failures rather than repeating PPO.
 A complete final reward/legal audit is mandatory even when throughput exceeds 30K.
 
-Held-out evaluation `job-9fkii` is submitted from `512af1f`, validated one H100,
-120min/$5.94 maximum, zero restarts, context `ctx-95843f1b`. It consumes the
-verified `job-vezu3` artifact for four4,096-game Classic first-episode panels,
-ordered source/warm/control/distilled, seeds 51213/17431 and cap1,440s each.
-The 145.39s512-game gate suggests~1,163s/panel, unmeasured. Paired analysis and
-`EVALUATED.json` remain pending; no strength claim yet.
+Held-out evaluation uses four 4,096-game Classic first-episode panels, ordered
+source/warm/control/distilled, with preregistered seeds 51213/17431 and a 1,440s
+cap per panel. A complete result requires paired analysis and `EVALUATED.json`.
+See [current-state.md](current-state.md) for the active job and collected evidence.
 
 ## GPU container backend and storage
 
@@ -103,12 +101,10 @@ Current capacity declarations are:
 | Each workload phase | 8 GiB | 20,000 |
 
 Verify real filesystem availability and installed Enroot hooks before submission.
-The runner records actual byte/inode gauges on failures. Job 35949 failed
-before downloads because `/tmp` had only 13,170 available inodes. The corrected
-owned `/var/tmp` backend passed actual allocated host/container GPU ownership,
-UUID and 46-state native CUDA parity in 35956. That job then failed before
-sampling games on a missing explicit balanced-seat option; warm training and
-broad strength evaluation remain incomplete. See current-state for evidence.
+The runner records actual byte/inode gauges on failures. Allocated host/container
+GPU ownership, UUID and native CUDA parity have real execution proof. Current
+matched H100 training and serving parity passed; broad strength is assessed
+separately. See current-state for artifacts and qualification.
 
 ## Current native asset boundary
 
@@ -162,20 +158,36 @@ The prepared GPU container executes the matched qualification workflow:
 ```bash
 python -m integrations.policy trial smoke
 python -m integrations.policy trial build
-python -m integrations.policy trial preflight
 python -m integrations.policy trial distill
 python -m integrations.policy trial control
 python -m integrations.policy trial warm
 python -m integrations.policy trial evaluate
 ```
 
-Run these phases in order inside the prepared GPU allocation. Both PPO arms
+The qualification-guarded matched driver is the supported full experiment path:
+
+```bash
+python -m integrations.matched_defense_experiment \
+  --input INPUT_DIRECTORY --output NEW_OUTPUT_DIRECTORY \
+  --qualification QUALIFIED_PROFILE_DIRECTORY \
+  --qualification-sha256 QUALIFIED_RESULT_SHA256
+```
+
+It binds the measured geometry, objective and native runtime before running
+control/distill/warm/evaluation. The individual trial phases above expose those
+steps for bounded diagnosis; they do not independently enforce this full
+qualification chain. For a continuation, preserve the authenticated completed
+control run and call `Trial.publish_arm("control")` rather than repeat control PPO;
+its audit must pass before publication. Use a sealed driver and explicit inputs.
+
+Run individual phases in order inside the prepared GPU allocation. Both PPO arms
 start fresh optimizers (`restore_learner=False`) and use the same sampler,
 opponents, position curriculum, reward settings, seed, and **8,388,608 RL steps
 per arm**. `distill` records 256 supervised updates on separate public-defense
 training/held-out data; the warm arm initializes from those recorded policy
 weights. Supervised updates add no RL environment steps. Each arm runs its own
-512-game sampler gate; warm training repeats CPU preflight after distillation.
+512-game sampler gate; each trainer validates its native asset initializer without
+a duplicate standalone CPU preflight.
 The intended final phase compares source, distilled, control, and warm bundles
 on the same 4,096-game evaluation seeds and writes paired comparisons. This is a
 policy-weight intervention with matched fresh optimizers, not learner resume.
@@ -218,14 +230,16 @@ Existing outputs must be preserved; these operations author new directories.
 1. Verify the baseline policy, optimizer, source, and build hashes. Preserve the
    originals and write the proposed effective configuration in a new run folder.
 2. Exercise the real launcher in CPU preflight, including its pinned-trainer,
-   transfer, sampling, geometry, and discount checks. A successful image build
-   alone did not catch the most recent launch failure.
+   transfer, sampling, geometry and discount checks when changing these boundaries.
+   Avoid duplicating this expensive setup in each GPU arm; each actual initializer
+   still validates its sealed asset. An image build alone does not prove launch readiness.
 3. Verify training and serving compute the same acting probabilities, legal
    masks, priors, half moves, and temperature schedules. Inference and PPO must
    agree on the sampler used to collect the rollout.
-4. Submit one finite B200/B300 Slurm qualification job using
-   `--nice=2147483645`. Record `scontrol show job -o JOB_ID` readback with
-   Nice, Priority, and finite TimeLimit. Follow all restrictions in `AGENTS.md`.
+4. Use one validated, bounded provider GPU job with explicit hardware, duration,
+   cost cap and zero restarts, or one finite B200/B300 Slurm job using
+   `--nice=2147483645`. For Slurm record controller readback with Nice, Priority
+   and finite TimeLimit. Follow current user authorization and `AGENTS.md`.
 5. Measure completed native Puffer steps over a steady interval after compilation
    and warmup, including rollout, transfer, inference, and optimizer updates.
    Require at least **30,000 SPS on the proposed GPU configuration** before

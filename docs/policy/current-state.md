@@ -71,7 +71,7 @@ allocator caches, not peak live tensors. Do not infer intrinsic model memory
 from that geometry. Accounting: `/tmp/generals-native-memory-accounting-20261005.json`.
 Keep both matched arms at the same qualified geometry.
 
-## Completed matched experiment
+## Completed matched training
 
 **Continuation `job-vezu3` SUCCEEDED**, 1,760 billed H100 seconds/**$1.452**.
 Control and warm each completed **8,388,608 PPO steps**, 4,096 env/H128,
@@ -91,7 +91,7 @@ states, max probability errors **4.38e-6 / 5.60e-6**.
 | Warm bundle manifest | `4de62a328e7afe5cc5ed622c8d8a7bd8b293afab892bec543b0e38973addf503` |
 
 Distillation used 256 batches×128 labels; on 512 independent held-out maps,
-defense survival improved **0.19454→0.63000**, top1 accuracy **0.1914→0.6367**.
+safe-defense action probability mass improved **0.19454→0.63000**, top1 accuracy **0.1914→0.6367**.
 These tactical metrics do not establish broad warm-policy strength. **Four
 4,096-game held-out panels remain; no matched strength result yet.**
 Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
@@ -132,7 +132,7 @@ The current clean radius-2 model SHA is
 | Exact source-cleanup graph/layout/VJP/sampler equivalence, both radii | `/tmp/generals-native-proof/equivalence-proof.json`; `c1125da1b820a46fecb0163e7dd6d5b264709eb3df3569b0bb587a9a722d7a87` |
 | AppleDouble metadata rebind: 243 executable sources unchanged, ABI preserved, all 23 tensors bitwise, 18 states max logit 1.19e-6 | `/tmp/generals-appledouble-clean-cold-migration-v1/proof.json`; `94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd` |
 | Clean cold native asset, unchanged baseline policy | `/tmp/generals-appledouble-clean-cold-migration-v1/asset/asset.json`; `58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9` |
-| Current 13-policy source inputs | `/tmp/generals-current-policy-input-v2/`; frozen into the authenticated active capsule |
+| Current 13-policy source inputs | `/tmp/generals-current-policy-input-v2/`, with the proven metadata-clean cold asset substituted in the authenticated capsule |
 | Fresh public curriculum: 2,048 training /512 independent confirmation views, legal labels | `/tmp/generals-fresh-public-curriculum-770-780-v1/`; `3c2d31a86863bbaa555adbfa1d78742f0fa8120cb56587b1b187b2c8f2923efb` |
 
 Source/metadata cleanup added zero RL steps and preserved original assets.
