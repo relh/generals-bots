@@ -39,6 +39,11 @@ def file_hashes(root: Path) -> dict[str, str]:
     }
 
 
+def serializable_training_contract(build: dict, run: dict) -> dict:
+    """Compare the effective Classic contract in its on-disk JSON form."""
+    return json.loads(json.dumps(validate_training_contract(build, run)))
+
+
 def prepare(source_input: Path, repository: Path, output: Path) -> dict:
     """Copy immutable launch inputs and record every changed configuration field."""
     if output.exists():
@@ -90,7 +95,7 @@ def prepare(source_input: Path, repository: Path, output: Path) -> dict:
     run["overrides"]["train.horizon"] = HORIZON
     run["total_timesteps"] = STEPS
     run["seed"] = SEED
-    contract = validate_training_contract(build, run)
+    contract = serializable_training_contract(build, run)
     if contract["shaping_gamma"] != contract["learner_gamma"] or contract["engine_sha256"] == "":
         raise ValueError("Classic engine or discount contract differs")
     build_path.write_text(json.dumps(build, indent=2) + "\n")
@@ -138,7 +143,7 @@ def run_probe(inputs: Path, output: Path) -> None:
     if proof["source_policy_sha256"] != SOURCE_SHA256:
         raise ValueError("Source policy lineage differs")
     build, run = json.loads((inputs / "build-config.json").read_text()), json.loads((inputs / "config.json").read_text())
-    if validate_training_contract(build, run) != proof["contract"]:
+    if serializable_training_contract(build, run) != proof["contract"]:
         raise ValueError("Effective Classic training contract differs")
     from integrations.slurm_s3_job import visible_gpu_identity, verify_gpu_idle
     from integrations.cuda_runtime_binding import configure
