@@ -30,9 +30,12 @@ target; Daveey's Wilson lower bound was below 50%. No promotion occurred.
 The full 512-game replay audit passed legality and execution checks. Local improvements did not establish a
 winning hosted policy.
 
-An isolated safe owned half-split sampler pilot (`job-53h6p`) is submitted on
-development seeds with four paired 4,096-game arms. It has no result yet; see
-current-state for identity and scope.
+Two isolated sampler pilots are queued on development seeds: safe owned
+half-split (`job-mvdyr`, four paired 4,096-game arms) and public capital-threat
+gathering (`job-t7ydi`, three paired 4,096-game arms). A source-mirror PPO
+throughput probe (`job-dzu73`) is also queued. None has a result yet; see
+current-state for identity and scope. The prior half-split submission
+`job-53h6p` failed during input staging and produced no games.
 
 The force-assembly curriculum completed 8,388,608 steps on H100 at 35,594
 end-to-end SPS with clean audits and 46-state serving parity. Its 4,096-game
@@ -57,12 +60,12 @@ with more late passing (warm2.733%, distilled2.424%, source0.0014%, control0.001
 This is not causal evidence or a policy input; exact counts and archive binding
 are in current-state.
 
-1. Diagnose Daveey losses by turn, opponent and seat using the SHA-bound
-   replays; keep the completed penalty-8 panel frozen.
-2. Assess the preregistered safe owned half-split pilot on development maps,
-   then use independent maps for any candidate selected there.
-3. Base the next curriculum or reward change on a measured replay failure;
-   keep matched controls and qualified H100 geometry.
+1. Assess the preregistered sampler pilots on development maps, then use
+   independent maps for any candidate selected there.
+2. If the source-mirror PPO probe passes the 30K SPS and clean-audit gates,
+   run its matched control and paired development evaluation.
+3. Base further curriculum or reward changes on measured replay failures;
+   keep matched controls and qualified GPU geometry.
 4. Promote only with verified lineage, clean execution and winning evidence.
 
 ## Winning acceptance
