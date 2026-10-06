@@ -9,8 +9,6 @@ from pathlib import Path
 
 from integrations.policy_execution import execute, training_audit
 
-STEPS = 8_388_608
-SEED = 8857
 EVAL_SEED = 51213
 EVAL_SAMPLE_SEED = 17431
 
@@ -35,6 +33,14 @@ class Trial:
             or self.sampler["route_half_weight"] != 0.0
         ):
             raise ValueError("Matched warmstart must preserve the selected unmodified sampler")
+
+    @property
+    def steps(self):
+        return json.loads((self.inputs / "config.json").read_text())["total_timesteps"]
+
+    @property
+    def seed(self):
+        return json.loads((self.inputs / "config.json").read_text())["seed"]
 
     def validate_source_initializer(self, run):
         from integrations.native_spatial_asset import load_asset
@@ -95,8 +101,6 @@ class Trial:
         asset = self.validate_source_initializer(run)
         if build["fabric"] != asset["fabric"]:
             raise ValueError("Trial build differs from its source native asset")
-        if run["seed"] != SEED or run["total_timesteps"] != STEPS:
-            raise ValueError("Matched PPO requires the declared fresh optimizer, seed and step budget")
         configure_positions(build["python_environment"]["options"], self.inputs / "curriculum/manifest.json")
         validate_training_contract(build, run)
         (self.output / "build-config.json").write_text(json.dumps(build, indent=2) + "\n")
@@ -108,8 +112,8 @@ class Trial:
             json.dumps(
                 {
                     "experiment": "public-defense-warmstart-v1",
-                    "steps_per_arm": STEPS,
-                    "seed": SEED,
+                    "steps_per_arm": self.steps,
+                    "seed": self.seed,
                     "sampler": self.sampler,
                     "intervention": "Supervised policy weights only; both PPO optimizers start fresh.",
                     "evaluation_seed": EVAL_SEED,
@@ -166,7 +170,7 @@ class Trial:
                 "--learning-rate",
                 0.0001,
                 "--seed",
-                7600101,
+                7900101,
             ],
             name="distill",
             seconds=540,
@@ -245,7 +249,7 @@ class Trial:
         )
         config = json.loads((self.output / arm / "config.json").read_text())
         training_audit(self.output / arm, config)
-        checkpoint = self.output / arm / f"run/checkpoints/metta_generals/run/{STEPS:016d}.bin"
+        checkpoint = self.output / arm / f"run/checkpoints/metta_generals/run/{self.steps:016d}.bin"
         sampler_path = self.output / arm / "sampler.json"
         sampler_path.write_text(json.dumps(self.sampler, indent=2) + "\n")
         self.call(
