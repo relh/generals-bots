@@ -180,8 +180,15 @@ artifact SHA is `523093a6ca6c9d1335f1f4b1c532d99c47d748f85bae53e6e9f87ed5ac5bd7b
 qualification marker SHA `6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
 Its context `ctx-5a1213c5` had archive SHA
 `8ae62472eede2e1d543cc08b613c9c30382cff094ee54074bb62576910a64289`;
-the completed job billed 1,039 seconds/$0.8569. The proposed 16,777,216-step
-matched treatment/control run is being staged against this exact marker.
+the completed job billed 1,039 seconds/$0.8569. The 16,777,216-step-per-arm
+matched treatment/control run is submitted as `job-6cwtq` on
+`codex/hard-opponent-trial` at `542de7f`, bound to the exact qualification
+marker. Both arms use the same source policy, fresh optimizer, seed, Classic
+maps, curriculum, reward and sampler; only opponent weights at indices 9 and
+12 differ. The sealed context `ctx-f0b342fa` has archive SHA
+`aa224646acd165e5d71d8239a62457d007c5025b4a370798a89e5fd4d254d6df`.
+The bounded 60-minute H100 job has zero restarts and a $2.97 runtime cap.
+No development result exists yet.
 
 An isolated public-view `classic_siege_padded` opponent upgrade is submitted
 as H100 `job-m9ina` on `codex/classic-siege-pressure` at `375d3c2`. It adds

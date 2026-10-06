@@ -156,20 +156,22 @@
   },
   "active_experiments": [
     {
-      "kind": "hard_opponent_weighting_qualified_path_probe",
+      "kind": "hard_opponent_weighting_matched_development",
       "branch": "codex/hard-opponent-trial",
-      "revision": "cf98d7d",
-      "job": "job-izcgj",
-      "last_observed_state": "SUCCEEDED",
-      "context_archive_sha256": "8ae62472eede2e1d543cc08b613c9c30382cff094ee54074bb62576910a64289",
+      "revision": "542de7f",
+      "job": "job-6cwtq",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "aa224646acd165e5d71d8239a62457d007c5025b4a370798a89e5fd4d254d6df",
       "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
-      "agent_steps": 4194304,
+      "agent_steps_per_arm": 16777216,
+      "arms": 2,
       "environments": 4096,
       "horizon": 128,
       "minibatch": 8192,
       "replay_ratio": 0.5,
       "minimum_steady_sps": 30000,
-      "max_cost_usd": 1.485
+      "qualified_probe_marker_sha256": "6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44",
+      "max_cost_usd": 2.97
     },
     {
       "kind": "classic_siege_pressure_opponent_development",
