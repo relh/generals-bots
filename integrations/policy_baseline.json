@@ -109,6 +109,43 @@
     }
   },
   "latest_attempt": {
+    "job": "36081",
+    "state": "PENDING",
+    "source_revision": "d4f912e852e4b1c73b859f9363a1949cbf435b32",
+    "execution_backend": "direct_enroot",
+    "scratch_parent": "/var/tmp",
+    "phase": "awaiting allocation; corrected balanced-seat sampling before warm PPO",
+    "new_training_steps": null,
+    "nice": 2147483645,
+    "priority": 1,
+    "time_limit": "01:40:00",
+    "hardware_partition": "b300",
+    "evidence": {
+      "path": "/tmp/relh-generals-balanced-b300-20261006t010500z.public.json",
+      "sha256": "36ce7022e9db3444c022894d1bb752738a78996de86cd743beb01368779e21b8",
+      "bytes": 20738
+    }
+  },
+  "latest_training_throughput": {
+    "job": "35935",
+    "scope": "Completed control arm; entire experiment failed at serving parity.",
+    "hardware": "NVIDIA B300 SXM6 AC",
+    "environment_count": 8192,
+    "horizon": 256,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_epochs": 2,
+    "steady_interval_steps": 4194304,
+    "steady_interval_seconds": 49.645,
+    "steady_end_to_end_sps": 84485.9301,
+    "additional_training_steps": 8388608,
+    "evidence": {
+      "path": "/tmp/generals-policy-overhaul-results-35935/analysis.json",
+      "sha256": "e73d36bf2f780ea325a255f37f07af42336dd9519fd4f0d94de348cf252b54af",
+      "bytes": 2888
+    }
+  },
+  "previous_failure": {
     "job": "35956",
     "state": "FAILED",
     "source_revision": "4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7",
@@ -148,41 +185,5 @@
       "bytes": 3214,
       "verified_locally": true
     }
-  },
-  "latest_training_throughput": {
-    "job": "35935",
-    "scope": "Completed control arm; entire experiment failed at serving parity.",
-    "hardware": "NVIDIA B300 SXM6 AC",
-    "environment_count": 8192,
-    "horizon": 256,
-    "minibatch": 8192,
-    "replay_ratio": 0.5,
-    "warmup_epochs": 2,
-    "steady_interval_steps": 4194304,
-    "steady_interval_seconds": 49.645,
-    "steady_end_to_end_sps": 84485.9301,
-    "additional_training_steps": 8388608,
-    "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35935/analysis.json",
-      "sha256": "e73d36bf2f780ea325a255f37f07af42336dd9519fd4f0d94de348cf252b54af",
-      "bytes": 2888
-    }
-  },
-  "previous_failure": {
-    "job": "35949",
-    "state": "FAILED",
-    "source_revision": "4ca2e9926858a8f53a0f7a7d2141916fbe00ff4c",
-    "phase": "host_prepare",
-    "new_training_steps": 0,
-    "nice": 2147483645,
-    "priority": 1,
-    "time_limit": "01:40:00",
-    "hardware_partition": "b300",
-    "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35949/analysis.json",
-      "sha256": "fc4ff2157398372c406bcca2aa32119875c8f21d2b58d61c84eb302810a29d27",
-      "bytes": 1021
-    },
-    "error": "Insufficient scratch filesystem bytes or inodes; stopped before download, GPU query or parity."
   }
 }

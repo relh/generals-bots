@@ -37,13 +37,25 @@ balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservatio
 against the broad pool, verified parity and clean execution. No champion change
 is justified by the current evidence.
 
-## Latest execution: 35956
+## Active continuation: 36081
+
+**PENDING** on B300, from corrected source
+`d4f912e852e4b1c73b859f9363a1949cbf435b32`. Controller readback confirms Nice
+**2147483645**, Priority **1**, one GPU, eight CPUs, 96 GiB and **01:40:00**.
+It retains the completed control/CE weights and the matched 8M-step warm design.
+The balanced-seat fix passed 33 focused checks and an actual short CPU self-match
+with the retained CE policy. No new training or evaluation results exist yet.
+Receipts: `/tmp/relh-generals-balanced-b300-20261006t010500z`.
+Sealed input SHA-256:
+`945ae58e513bfb9ca1dd800da0ac99da0eb48b84238cb84461610f555e77d884`.
+
+## Latest completed execution: 35956
 
 **FAILED, workload exit 1**, source
 `4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`. Terminal controller retention
 expired; the verified result archive and workload receipt establish the outcome.
 Submission/runtime receipts record one B300, eight CPUs, 96 GiB, Nice
-**2147483645**, Priority **1**, and a finite **01:40:00** cap. No job is active.
+**2147483645**, Priority **1**, and a finite **01:40:00** cap.
 
 Direct Enroot **passed actual execution**: allocated host/container GPU ownership
 and UUID, idle-device smoke, then control CUDA parity on all **46 public states**

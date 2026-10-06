@@ -19,7 +19,7 @@ The source cleanup has exact structural/numeric proof. Job 35956 then passed
 actual direct Enroot GPU ownership/UUID, 46-state CUDA control parity, current
 build and CE fresh-optimizer CPU preflight. It failed before sampling games on
 an omitted explicit balanced-seat option; warm PPO and broad panels did not run.
-No job is active. B300 maintenance cleared; its measured geometry requires
+Corrected continuation 36081 is queued at maximum Nice and Priority 1. B300 maintenance cleared; its measured geometry requires
 ~205 GiB GPU memory, so H100 80 GiB would require smaller geometry and a new gate.
 Learning improvement and hosted winning qualification remain open; see
 [current-state.md](current-state.md).
