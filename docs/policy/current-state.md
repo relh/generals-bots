@@ -1,8 +1,10 @@
 # Current policy state
 
-Updated **2026-10-06**. The winning-policy objective remains unmet.
-Use the [runbook](runbook.md) for supported operations and [roadmap](roadmap.md)
-for remaining work. Source history and full experiment artifacts preserve details.
+Updated **2026-10-06**. **The winning-policy objective remains unmet.**
+Training and serving are qualified; the matched warm candidate's broad strength
+is unknown. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
+for decisions and [machine manifest](../../integrations/policy_baseline.json)
+for current artifact identities. Git history preserves superseded attempt records.
 
 ## Selected baseline and qualification
 
@@ -37,53 +39,21 @@ balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservatio
 against the broad pool, verified parity and clean execution. No champion change
 is justified by the current evidence.
 
-## H100 sizing outcome and revised probe
+## Active held-out evaluation
 
-**First sizing job `job-i8tp6` FAILED**, submitted 2026-10-06 01:25:53 UTC via
-Richard-authenticated Givemeanode: one H100, source
-`8e41477ee1224127ca2ce5cb684c42acf39c25d5`, context `ctx-ed1b264a`.
-Its same-sampler source gate passed **254W/253L/5D in 512 games**, balanced
-256 games per seat. Both 2,048/H256 and 4,096/H128 native builds passed, but
-**both 120s CPU preflights timed out before any training epoch**. No training
-SPS or training memory measurement was obtained; neither geometry is qualified.
-Bounds were GPU duration 30 min, build timeout 60 min, queue TTL 60 min,
-zero restarts and resume `none`; native CUDA/current assets, no QEMU.
-Context archive SHA-256:
-`820dc8d81a0213aa780fa97aff6e7838085be05bf97d6bf928f7dbc8c3ef2892`.
-Terminal evidence: `/tmp/generals-h100-probe-results-job-i8tp6/`, including
-`extracted/generals/probe-results.json` and each profile's preflight log;
-submission/package receipts remain `/tmp/generals-h100-probe-owned-job.json`
-and `/tmp/generals-h100-probe-package.json`.
+**Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
+`512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
+Provider validation passed; one H100, **120-minute/$5.94 maximum**, zero restarts.
+Sealed archive 212,623,426 B, SHA
+`264e933205a15532ec7a39ce8cd3a4f0d88cb5f95436b00d24e7a589d973cc64`,
+consuming authenticated `job-vezu3` artifact `d57aafc8…`.
+Four **4,096-game Classic first-episode panels**, preregistered seeds 51213/17431,
+run source/warm/control/distilled, each capped 1,440s. Earlier 512 games took 145.39s;
+~1,163s/panel is a scaling estimate, not a measurement. **Paired analysis and
+`EVALUATED.json` remain pending; no strength claim yet.** Receipt:
+`/tmp/generals-heldout-4x4096-512af1f-submission.json`.
 
-**Revised probe `job-kcten` FAILED** on one H100: **651 billed seconds,
-$0.5368 charged**, source `ed34d683bbc7082ddfa7bd679d8629bd88d43a34`, context
-`ctx-b8121c41`. Its source sampler again passed 254W/253L/5D, balanced seats;
-both native builds passed. Both training attempts were rejected by `prepare_run`:
-`Native asset target identity differs: model_sha256`. The cold asset binds
-`d30f5fae…`, while both new builds report `cead5dce…`.
-**No epochs, training SPS or training memory measurement** resulted. GPU samples
-were 0% utilization with a 555 MiB peak, reflecting preparation only.
-The revised driver used 420s startup and bounded 600s training per profile,
-without duplicate standalone CPU preflight; its 30-minute cap was $1.485.
-Verified terminal archive: `/tmp/generals-h100-probe-results-job-kcten/`, SHA-256
-`dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e`.
-The identity mismatch was traced to **179 AppleDouble metadata sidecars**
-in the old Fabric fingerprint; all **243 executable Python sources are unchanged**.
-CPU rebind proof preserves ABI `0c7a1fb0…`, all **23 portable tensors bitwise**,
-and logits on **18 hosted states** within **1.19e-6**; weights and learner bytes
-are retained, adding zero RL steps. Proof:
-`/tmp/generals-appledouble-clean-cold-migration-v1/proof.json`, SHA-256
-`94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd`.
-The clean cold asset manifest SHA is
-`58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9`.
-
-**Third H100 sizing job `job-zfz7e` is terminal and unqualified.**
-2,048/H256 was stopped at **24,731.7 SPS**, below the 30K gate.
-4,096/H128 completed 3,145,728 steps, sustaining **36,643 SPS over its final
-1,048,576 steps**, with **68,241 MiB sampled peak device memory**. This geometry
-fits H100, but qualification failed: `Complete finite reward audit is missing`.
-Neither profile qualifies; these are throughput measurements, not strength results.
-Evidence: `/tmp/generals-h100-probe-results-job-zfz7e/`.
+## Qualified H100 execution
 
 **Confirmation job `job-s79eq` SUCCEEDED and qualifies 4,096/H128 on H100.**
 Source `e649d73d28a5ccbe1995837010db50d8d35e7199`; minibatch 8,192, replay 0.5,
@@ -95,48 +65,22 @@ actions**, with all 13 opponents sampled on both seats. One H100 billed
 `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/`.
 Archive SHA: `fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5`;
 profile result SHA: `c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98`.
-**Matched job `job-int7f` ended BUILD_FAILED before GPU allocation, zero billed.**
-The first builder lost its claim/requeued; the second failed at Docker
-`RUN pip check`/version checks. The initial 64 KiB build log truncated; its recovered tail reports missing numpy. Dockerfile/requirements through that layer match successful qualification;
-no training or game-code change explains the failure.
+The 2.21 MiB policy fits H100 at 4,096/H128. The previous 8,192/H256 setup
+retained 172.503 GiB of known buffers; its 205.584 GiB device-used reading includes
+allocator caches, not peak live tensors. Do not infer intrinsic model memory
+from that geometry. Accounting: `/tmp/generals-native-memory-accounting-20261005.json`.
+Keep both matched arms at the same qualified geometry.
 
-**Quiet-build retry `job-zvvcn` ended BUILD_FAILED in 19s, before GPU execution.**
-Its log exposed `open /ctx/framework-source: permission denied`: BSD tar had
-included mode-700 staging directory entries. Source/input bytes were unchanged.
+## Completed matched experiment
 
-**Matched attempt `job-mvtti` FAILED**, 123 billed seconds/**$0.1012**.
-GPU preflight and native build passed; `verify_runtime` rejected only curriculum
-path spelling: `/work/input/curriculum/positions.npz` versus its resolved
-`/opt/generals-input/…` symlink. All **14 native source hashes**, revision,
-model and environment identities matched. No PPO or strength result followed.
-Artifact: `/tmp/generals-matched-h100-results-job-mvtti/`, SHA
-`c00ab2c6f8a4a989011afc842890ef3efb60aaca5813fd32133b36fce2209cf9`.
-`configure_positions` now preserves the verified absolute symlink spelling;
-fix `7c605046a74c94bb89577607c2576e5e66e73877` passed targeted tests.
-
-**Matched job `job-uyssa` FAILED after successful control training.**
-One H100 completed **8,388,608 control PPO steps**, 4,096 environments/H128,
-minibatch8,192/replay0.5, at **36,171.5 steady end-to-end SPS**. Its complete
-reward audit records **zero illegal actions, nonfinite rewards and clipped
-rewards**. Publishing then hit its **120s timeout after graph reconstruction**;
-this is a finalization failure, not a failed training throughput or integrity gate.
-Billed **990s/$0.8162**. Warm PPO and held-out panels **did not complete**;
-no matched strength result exists. Preserve completed control and learner outputs.
-Artifact: `/tmp/generals-matched-h100-results-job-uyssa/`, SHA
-`dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374`.
-
-**Continuation `job-re2cn` ended BUILD_FAILED before GPU allocation**, zero
-billed seconds. Docker pip installation hit a `files.pythonhosted.org` ReadTimeout.
-Independent review also found a latent source-revision seal mismatch in its v1
-context; that mismatch was not the observed build failure.
 **Continuation `job-vezu3` SUCCEEDED**, 1,760 billed H100 seconds/**$1.452**.
-Control and warm each completed **8,388,608 PPO steps**, 4,096env/H128,
-minibatch8,192/replay0.5, at **36,171.513 / 36,265.339 steady SPS** respectively.
+Control and warm each completed **8,388,608 PPO steps**, 4,096 env/H128,
+minibatch 8,192/replay 0.5, at **36,171.513 / 36,265.339 steady SPS** respectively.
 Both final audits have **zero illegal actions, nonfinite and clipped rewards**;
 policy sampler, seats and 13-opponent pool match. Sampled H100 peaks were
 **69,078 MiB control / 68,517 MiB warm**, for this smaller geometry.
 Control is preserved from `job-uyssa`; the continuation published it and trained
-warm, without repeating control PPO. Native/serving parity passed on46 public
+warm, without repeating control PPO. Native/serving parity passed on 46 public
 states, max probability errors **4.38e-6 / 5.60e-6**.
 
 | Frozen result | SHA-256 |
@@ -146,12 +90,14 @@ states, max probability errors **4.38e-6 / 5.60e-6**.
 | Control bundle manifest | `9dd95fb69258eb1bf666626985f5094a2d5e6cf5f2af1ad4570831220eac88d8` |
 | Warm bundle manifest | `4de62a328e7afe5cc5ed622c8d8a7bd8b293afab892bec543b0e38973addf503` |
 
-Distillation used256 batches×128 labels; on512 independent held-out maps,
+Distillation used 256 batches×128 labels; on 512 independent held-out maps,
 defense survival improved **0.19454→0.63000**, top1 accuracy **0.1914→0.6367**.
 These tactical metrics do not establish broad warm-policy strength. **Four
 4,096-game held-out panels remain; no matched strength result yet.**
 Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
 `d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456`.
+
+## Diagnostics and interpretation
 
 Training-pool diagnostic is adverse: control **7,192/10,896 wins (66.0%)**
 versus warm **4,430/10,198 (43.4%)**, worse across all **13 opponents/26 seats**;
@@ -164,168 +110,43 @@ frozen held-out `job-9fkii` results remain pending. SHA-bound diagnostic:
 Tactical retention diagnostic on ARM64 CPU uses the same **512 preexisting
 teacher held-out states**: public-serving safe probability source **19.45%**,
 control **19.93%**, distilled **63.00%**, warm **61.17%**, with zero illegal top1
-actions. Warm retained most CE gain after8M PPO. This reuses the CE metric
+actions. Warm retained most CE gain after 8M PPO. This reuses the CE metric
 holdout: **neither fresh confirmation nor full-game strength**. `job-9fkii`
 remains pending. Analysis:
 `/tmp/generals-vezu3-heldout-defense-serving-cpu-v2/analysis.json`, SHA
 `0f2f74222314573464bbb265e4af9715d081f4ebcd4470c8acd58b9f20014cba`.
 
-**Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
-`512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
-Provider validation passed; one H100, **120-minute/$5.94 maximum**, zero restarts.
-Sealed archive 212,623,426 B, SHA
-`264e933205a15532ec7a39ce8cd3a4f0d88cb5f95436b00d24e7a589d973cc64`,
-consuming authenticated `job-vezu3` artifact `d57aafc8…`.
-Four **4,096-game Classic first-episode panels**, preregistered seeds51213/17431,
-run source/warm/control/distilled, each capped1,440s. Earlier512 games took145.39s;
-~1,163s/panel is a scaling estimate, not a measurement. **Paired analysis and
-`EVALUATED.json` remain pending; no strength claim yet.** Receipt:
-`/tmp/generals-heldout-4x4096-512af1f-submission.json`.
+## Current artifact contract and proofs
 
-B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
-for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
-unchanged. Proof: `/tmp/generals-job-36081-superseded-sizing.json`.
-
-## Latest completed execution: 35956
-
-**FAILED, workload exit 1**, source `4c7dfc26e850799dc07bc1a0ea7b78d166e18ea7`;
-controller retention expired. Direct Enroot passed allocated host/container GPU
-ownership/UUID and idle smoke, then control CUDA parity: **46/46 top actions**,
-batch 8, CPU layout/GPU inference, max logit/probability errors **1.43e-6/1.85e-6**.
-Current native build and fresh-optimizer CE-weight CPU preflight passed.
-Sampling failed before games: `Spatial frozen opponents require balanced seats`.
-The evaluator now sets `balance_opponent_sides=True`; 33 focused checks and an
-actual retained-CE CPU self-match passed. **No warm PPO or broad panels ran**;
-completed control/CE work was not repeated.
-
-Verified result/evidence: `/tmp/generals-policy-overhaul-results-35956/`,
-`analysis.json`, GPU-step receipts, control parity and warm preflight/sampling logs.
-Archive SHA: `a93a68b51af78c3070358aa2910e735d4d820a1d560626c28895708e4fd59695`.
-Enroot uses private `/var/tmp` storage; capacity gates are in the runbook.
-Installed audit `/tmp/generals-installed-enroot-audit.json` SHA:
-`a7d831ac21b15eb8769ca1b95df5616781b825897c0bd80e3eb670b2ffc2b0cd`.
-
-## Memory and smaller-batch decision
-
-The policy weights are **2.21 MiB**; B300 is not an intrinsic policy requirement.
-At 8,192 environments / horizon 256, native Puffer retains two float32 observation
-copies (110.25 GiB), two float32 action-mask copies (55.14 GiB), and three native
-state copies (7.11 GiB): **172.503 GiB known buffers**. The measured **205.584 GiB**
-is device total-minus-free from `cudaMemGetInfo`, including allocator caches,
-not peak live tensors; **33.081 GiB remains unattributed**. Accounting:
-`/tmp/generals-native-memory-accounting-20261005.json`.
-
-The sizing profiles compare 2,048/H256 (43.126 GiB known buffers) with
-4,096/H128 (44.904 GiB), each fresh from cold weights, minibatch 8,192/replay 0.5,
-**3,145,728 steps / six epochs**, two warmup epochs, then raw epoch and device
-memory measurements. Require **≥30K actual end-to-end SPS** before qualification;
-4,096/H128 is now qualified by the completed eight-epoch confirmation. Selecting new
-geometry requires **both control and warm arms at that geometry**; the retained
-8,192-control is baseline evidence, not a matched control for 2,048/4,096.
-
-## Attempt ledger
-
-All listed B300 submissions record Nice **2147483645**, Priority **1**, one GPU,
-eight CPUs and 96 GiB; finite caps are retained below. Controller records are in
-result directories; 35936 and 35956 terminal controller retention expired, so
-their outcomes come from workload receipts/logs and caps from submission readback.
-Prior H100 migration attempts failed before updates; that old launcher is retired.
-
-| Attempt | Outcome / error | Cap | Retained evidence |
-| --- | --- | --- | --- |
-| `job-xyrtm` | Failed: context compression unsupported; zstd tar required | Not recorded here | `/tmp/relh-generals-h100-terminal-job-xyrtm.json` |
-| `job-xwjya` | Failed: empty Dockerfile | Not recorded here | `/tmp/relh-generals-h100-terminal-job-xwjya.json` |
-| `job-vmn9x` | Failed: permission denied `/ctx/pilot` | Not recorded here | `/tmp/relh-generals-h100-terminal-job-vmn9x.json` |
-| `job-hhccv` | Failed: CPU preparation QEMU executable format | Not recorded here | `/tmp/relh-generals-h100-terminal-job-hhccv.json` |
-| `job-gsp6k` | Smoke/sampling passed; `Pinned Puffer trainer changed` before updates | Not recorded here | `/tmp/relh-generals-autoresearch-result-gsp6k/` |
-| 35892 | Completed selected baseline; hosted/local gains inconclusive | 70 min | `/tmp/relh-generals-portable-result-35892/` |
-| 35932 | Completed 8M steps; exploration regressed and was rejected | 80 min | `/tmp/generals-policy-overhaul-results-35932/` |
-| 35933 | Failed 1:0, 1m37s: nested `build.log` collision, `FileExistsError`; no updates | 120 min | `/tmp/generals-policy-overhaul-results-35933/` |
-| 35934 | Failed before PPO: training reward audits applied to signed self-match rewards | 120 min | `/tmp/generals-policy-overhaul-results-35934/` |
-| 35935 | Failed 1:0, 15m39s: control 8M + CE completed; parity adapter installed twice | 120 min | `/tmp/generals-policy-overhaul-results-35935/` |
-| 35936 | Workload exit 1; control parity SIGSEGV −11, no child traceback; no warm/evaluation | 90 min | `/tmp/generals-policy-overhaul-results-35936/` |
-| 35949 | Failed 1:0, 1s: `/tmp` inode guard; no downloads/GPU query/parity/build/updates | 100 min | `/tmp/generals-policy-overhaul-results-35949/` |
-| 35956 | Workload exit 1: GPU scope/parity/build/preflight passed; balanced-seat guard failed before sampling games | 100 min | `/tmp/generals-policy-overhaul-results-35956/` |
-| 36081 | Cancelled while pending: no node/runtime/epochs; smaller sizing requested | 100 min | `/tmp/generals-job-36081-superseded-sizing.json` |
-| `job-i8tp6` | Failed: sampler and both builds passed; both CPU preflights timed out at 120s before epochs | 30 min GPU | `/tmp/generals-h100-probe-results-job-i8tp6/` |
-| `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
-| `job-zfz7e` | Unqualified: 2048/H256 below30K; 4096/H128 36,643 SPS/68,241 MiB but final reward audit missing | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-zfz7e/` |
-| `job-s79eq` | Succeeded: 4096/H128 qualified at 36,182.7467 SPS, full finite/legal audit; 608s/$0.5016 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/` |
-| `job-int7f` | BUILD_FAILED before GPU, zero billed; Docker pip/version layer: missing numpy, recovered log tail | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-submission.json` |
-| `job-zvvcn` | BUILD_FAILED in19s: `/ctx/framework-source` permission denied, mode700 tar directory entries; no GPU | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-build-submission.json` |
-| `job-mvtti` | Failed: verified native identities matched, curriculum symlink spelling differed; no PPO;123s/$0.1012 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-mvtti/` |
-| `job-uyssa` | Failed publishing120s after clean control8M at36,171.5SPS; no warm/panels;990s/$0.8162 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-uyssa/` |
-| `job-re2cn` | BUILD_FAILED beforeGPU/zero billed: pip ReadTimeout; latent v1 source seal mismatch also corrected | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-submission.json` |
-| `job-vezu3` | Succeeded: control published, distill/warm8M and parity complete; panels pending;1760s/$1.452 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-results-job-vezu3/` |
-| `job-9fkii` | Submitted: four4096-game held-out panels; paired analysis pending | 120 min GPU / $5.94 maximum | `/tmp/generals-heldout-4x4096-512af1f-submission.json` |
-
-35949 required 60K available inodes; subsequent read-only inspection found
-13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
-removed in the current backend. Verified three-file terminal archive SHA-256:
-`7bca77aed10597e45c0bf817df11145ea86538a200a0c5b741906d72bd3c0c78`.
-
-## Preserved control, intervention and decision
-
-The matched defense driver is integrated and pushed through `de5f915`: it uses
-the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
-training startup to 420s and refuses unqualified geometry. The control arm completed in `job-uyssa`; publishing was completed in `job-vezu3` with warm training/parity; panels remain absent.
-
-35935's completed control checkpoint:
-`c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
-One NVIDIA B300 SXM6 AC, 8,192 games, horizon 256, minibatch 8,192, replay 0.5:
-two warmup epochs took 131.398s, then **4,194,304 steps / 49.645s = 84,486 SPS**.
-Mean last-60s GPU utilization was 44.17%; sampled device-used memory 210,518 MiB
-(including caches). No illegal actions,
-nonfinite rewards or clipped rewards; one terminal agent had zero reward. All 13
-opponents sampled both seats. This qualifies this control's throughput only.
-Its genuine same-sampler gate passed: 512 games, 254W/253L/5D, 314 unique maps,
-256 games per seat. Warm-arm throughput and strength remain unqualified.
-
-Preserved CE checkpoint:
-`97bc62c79f33c9124a7394f29ef5caa94e4bf02b87d5b21e41bd6c11d7645816`.
-256 supervised B300 updates took 7.085s, adding **zero RL steps**. On independent
-512 training / 128 held-out maps, held-out defense survival improved
-0.88% → 56.09% and teacher accuracy 0.78% → 57.81%; training accuracy was 100%.
-These tactical metrics do not establish broad gameplay improvement.
-
-Reject 35932 exploration: candidate score 64.66%, initialization 66.05%, cold
-baseline 68.29%; paired signed delta −0.07251, 95% CI [−0.10446, −0.04044].
-Its 76,357 SPS / legality / 46-state serving parity remain valid, but its source
-self-match used actor log-gap 4 versus opponent 0 and was not a same-sampler gate.
-Two minimal AMD64 hosted smokes lost both games but had no timeouts/illegal moves
-and maximum replies 5.1/13.4ms; proof is `/tmp/relh-generals-minimal-serving-57be9f9/`.
-
-Fresh public curriculum `/tmp/generals-fresh-public-curriculum-770-780-v1/` contains
-2,048 unique training and 512 independent confirmation views, balanced by seat,
-direction and all 16 shapes. All 2,560 labels were legal and survived their attack;
-24 already-lost controls passed. Healthy counterfactuals are retained. No policy
-optimization or confirmation evaluation occurred; proof SHA-256
-`3c2d31a86863bbaa555adbfa1d78742f0fa8120cb56587b1b187b2c8f2923efb`.
-
-## Current artifact contract
-
-Only the 16-plane F32/G32 flat spatial graph, radius 1.01 or 2.01, is supported.
-Factory SHA-256:
+Supported native graph: 16 planes, F32/G32, five priors, flat actions, radius
+1.01 or 2.01. Factory SHA:
 `48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a`.
-Native assets explicitly bind policy/learner hashes, architecture, sampler, seeds,
-learner configuration/objective and opaque ancestor hashes. Portable manifests
-bind only `asset.json`, `policy.bin`, `weights.npz`; serving has no learner.
-Current 13-policy inputs: `/tmp/generals-current-policy-input-v2/`.
+Native assets bind weights/learner, architecture, sampler, seeds and objective;
+portable manifests bind `asset.json`, `policy.bin`, `weights.npz` and have no learner.
+The current clean radius-2 model SHA is
+`cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61`, ABI
+`0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851`.
 
-| Radius | Canonical model SHA-256 | ABI SHA-256 |
-| --- | --- | --- |
-| 2.01 | `d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab` | `0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851` |
-| 1.01 | `81d9f696de1ef768c9af5f21d4def5cf27e19674081d4af6a3168e4996f639d1` | `fd02887c61dd313632e1d81e4b911e668d1668d505a185c5c116e7dc96216285` |
+| Proof / artifact | Pointer and SHA-256 |
+| --- | --- |
+| Exact source-cleanup graph/layout/VJP/sampler equivalence, both radii | `/tmp/generals-native-proof/equivalence-proof.json`; `c1125da1b820a46fecb0163e7dd6d5b264709eb3df3569b0bb587a9a722d7a87` |
+| AppleDouble metadata rebind: 243 executable sources unchanged, ABI preserved, all 23 tensors bitwise, 18 states max logit 1.19e-6 | `/tmp/generals-appledouble-clean-cold-migration-v1/proof.json`; `94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd` |
+| Clean cold native asset, unchanged baseline policy | `/tmp/generals-appledouble-clean-cold-migration-v1/asset/asset.json`; `58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9` |
+| Current 13-policy source inputs | `/tmp/generals-current-policy-input-v2/`; frozen into the authenticated active capsule |
+| Fresh public curriculum: 2,048 training /512 independent confirmation views, legal labels | `/tmp/generals-fresh-public-curriculum-770-780-v1/`; `3c2d31a86863bbaa555adbfa1d78742f0fa8120cb56587b1b187b2c8f2923efb` |
 
-One-time `/tmp/generals-native-proof/equivalence-proof.json` proved exact offsets,
-padding, graph/JAXPR/constants, priors/state/callbacks and forward/VJP/sampler
-for both radii; SHA-256
-`c1125da1b820a46fecb0163e7dd6d5b264709eb3df3569b0bb587a9a722d7a87`.
-All 299 portable tensors and a 151-array public-environment trace matched;
-proofs are packaged in the active capsule. Reused two-graph CPU execution is
-identified honestly alongside the reviewed non-model source delta and current
-sampling guard. Source cleanup added **zero RL steps**, preserving originals.
+Source/metadata cleanup added zero RL steps and preserved original assets.
+Proofs include all 299 portable tensors and a 151-array public-environment trace.
+Slurm work must retain maximum Nice 2147483645/Priority 1, controller readback and
+finite bounds. Prior scheduling receipts and failure outcomes remain in
+[Git history](https://github.com/relh/generals-bots/blob/eb54d60/docs/policy/current-state.md)
+and the retained result directories, without changing scheduler state.
 
-Next: collect the owned H100 probe's raw memory and steady epoch throughput,
-use qualified 4,096/H128 geometry for matched control and warm arms.
-Retain the baseline until broad and fresh hosted evidence qualifies a candidate.
+## Next decision
+
+Collect the four preregistered panels and validate complete seed/seat coverage,
+legal execution, frozen hashes and paired confidence intervals. Compare warm
+against matched control and source; retain the baseline unless evidence supports
+fresh independent confirmation, then balanced hosted qualification. The prior
+exploration intervention regressed and was rejected. Do not choose a winner
+from tactical metrics or reused training outcomes.

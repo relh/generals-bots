@@ -58,17 +58,25 @@ Inputs include `source/`, `source-manifest.json`, `build-config.json`,
 manifests, and `leader-root/` replay fixtures. The supported CUDA container
 supplies Metta/Puffer. An editable checkout does not reconstruct these inputs.
 
-Latest matched execution `job-uyssa` completed its H100 control arm: 8,388,608
-steps, 4,096/H128, minibatch8,192/replay0.5, 36,171.5 steady SPS and clean
-finite/legal audit. Publishing timed out at120s after graph reconstruction.
-Preserve completed control/learner artifacts when repairing finalization;
-training passed, while the full experiment failed. The continuation `job-vezu3` has since published control and completed warm PPO
-and serving parity; held-out panels remain incomplete. See current-state for its retained artifact/hash.
+## Operational capsule checks
+
+Seal the exact source revision and every input before uploading. Use files-only
+GNU tar with files mode 644; stage directory permissions must not leak into the
+provider context. Keep install output quiet enough to retain errors, with bounded
+pip timeout/retries. Treat AppleDouble sidecars as metadata: never bypass asset
+identity checks; rebind only with structural and numeric proof.
+
+Use the provider-visible GPU, validate balanced opponent seats, and avoid a
+duplicate standalone CPU preflight. Preserve verified curriculum path spelling.
+Allow 420s bounded cold training startup; publishing/export can reconstruct the
+native graph, so budget finalization separately. Preserve completed checkpoints
+and learner bytes across finalization failures rather than repeating PPO.
+A complete final reward/legal audit is mandatory even when throughput exceeds 30K.
 
 Held-out evaluation `job-9fkii` is submitted from `512af1f`, validated one H100,
 120min/$5.94 maximum, zero restarts, context `ctx-95843f1b`. It consumes the
 verified `job-vezu3` artifact for four4,096-game Classic first-episode panels,
-ordered source/warm/control/distilled, seeds51213/17431 and cap1,440s each.
+ordered source/warm/control/distilled, seeds 51213/17431 and cap1,440s each.
 The 145.39s512-game gate suggests~1,163s/panel, unmeasured. Paired analysis and
 `EVALUATED.json` remain pending; no strength claim yet.
 
