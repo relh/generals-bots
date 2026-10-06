@@ -117,8 +117,8 @@ def main():
     trial.smoke()
     trial.build()
     verify_runtime(args.qualification / "build", args.output / "build")
-    trial.distill()
     trial.train_arm("control")
+    trial.distill()
     trial.train_arm("warm")
     trial.evaluate()
     (args.output / "COMPLETED.json").write_text(json.dumps({
