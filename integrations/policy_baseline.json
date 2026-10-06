@@ -108,138 +108,6 @@
       "bytes": 17072
     }
   },
-  "latest_attempt": {
-    "job": "job-9fkii",
-    "state": "SUCCEEDED",
-    "phase": "heldout_evaluation_complete",
-    "source_revision": "512af1f91ce83d43fab8e0864f204eb064340d01",
-    "submitted_at_utc": "2026-10-06T07:22:36.747011+00:00",
-    "context_id": "ctx-95843f1b",
-    "input_sha256": "264e933205a15532ec7a39ce8cd3a4f0d88cb5f95436b00d24e7a589d973cc64",
-    "input_bytes": 212623426,
-    "authenticated_training_job": "job-vezu3",
-    "authenticated_training_artifact_sha256": "d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456",
-    "hardware": "H100",
-    "gpus": 1,
-    "max_duration_minutes": 120,
-    "max_cost_usd": 5.94,
-    "max_restarts": 0,
-    "provider_validation_passed": true,
-    "panel_order": [
-      "source",
-      "warm",
-      "control",
-      "distilled"
-    ],
-    "games_per_panel": 4096,
-    "classic_rules": true,
-    "match_seed": 51213,
-    "sample_seed": 17431,
-    "panel_cap_seconds": 1440,
-    "paired_analysis": {
-      "source_to_control": {
-        "signed_score_delta": -0.00439453125,
-        "initial_state_cluster_ci95": [
-          -0.03348820174053343,
-          0.02460207893025166
-        ],
-        "evidence": {
-          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-source-control.json",
-          "sha256": "9c907f064b84bd864ee8093d1e9b5575636466ccfee0444c841a85357eab71c7",
-          "bytes": 68699,
-          "verified_locally": true
-        }
-      },
-      "source_to_warm": {
-        "signed_score_delta": -0.457763671875,
-        "initial_state_cluster_ci95": [
-          -0.4930332775000264,
-          -0.4233747860989647
-        ],
-        "evidence": {
-          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-source-warm.json",
-          "sha256": "e6ab537db47e80b2acc1818b2e90cde9d942b9578c94ec791ef9b92e2beb4a9e",
-          "bytes": 69318,
-          "verified_locally": true
-        }
-      },
-      "source_to_distilled": {
-        "signed_score_delta": -0.498046875,
-        "initial_state_cluster_ci95": [
-          -0.5337425531411398,
-          -0.46250902640846986
-        ],
-        "evidence": {
-          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-source-distilled.json",
-          "sha256": "4315b43489d9931e4557f052342aef73a5c94af50b67e2047a53ed3006fcf600",
-          "bytes": 69341,
-          "verified_locally": true
-        }
-      },
-      "control_to_warm": {
-        "signed_score_delta": -0.453369140625,
-        "initial_state_cluster_ci95": [
-          -0.4887329275219765,
-          -0.4194324164829371
-        ],
-        "evidence": {
-          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-control-warm.json",
-          "sha256": "2c09f4b733632f8121de7556ad5639b90edc62d84b31dba7024313b44861464e",
-          "bytes": 69425,
-          "verified_locally": true
-        }
-      }
-    },
-    "success_receipt": {
-      "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/EVALUATED.json",
-      "sha256": "7915bb8117af329f46fc853516b039d291a09d51f1e89c32d93563b1e5a1436b",
-      "bytes": 370,
-      "verified_locally": true
-    },
-    "strength_result": {
-      "source": {
-        "wins": 2773,
-        "losses": 1297,
-        "draws": 26
-      },
-      "control": {
-        "wins": 2763,
-        "losses": 1305,
-        "draws": 28
-      },
-      "warm": {
-        "wins": 1757,
-        "losses": 2156,
-        "draws": 183
-      },
-      "distilled": {
-        "wins": 1682,
-        "losses": 2246,
-        "draws": 168
-      }
-    },
-    "evidence": {
-      "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/terminal.json",
-      "sha256": "a5bcfbf206170b9f7d30b3fe20899c8f72487466aa051a7c8c0c1e98de7046f0",
-      "bytes": 2181,
-      "verified_locally": true
-    },
-    "billed_seconds": 729,
-    "charged_usd": 0.6006,
-    "result_archive_sha256": "435242250cd9fe416da169e51ad8b2c8ae7f46b21a9d331a91a1717cfd483428",
-    "unique_initial_states": 2577,
-    "all_first_episodes_complete": true,
-    "decision": {
-      "selected_policy": "retained_source_baseline",
-      "rejected": [
-        "warm",
-        "distilled"
-      ],
-      "control_advantage_demonstrated": false,
-      "hosted_promotion": false,
-      "scope": "Held-out development population; independent confirmation and fresh hosted qualification remain required"
-    }
-  },
   "latest_training_throughput": {
     "job": "35935",
     "scope": "Completed control arm; entire experiment failed at serving parity.",
@@ -508,5 +376,108 @@
     "warm_policy_sha256": "c44316f304f833332d0cb2804d3fdf3551aeaa49313217f4263c129f6f409c46",
     "control_bundle_manifest_sha256": "9dd95fb69258eb1bf666626985f5094a2d5e6cf5f2af1ad4570831220eac88d8",
     "warm_bundle_manifest_sha256": "4de62a328e7afe5cc5ed622c8d8a7bd8b293afab892bec543b0e38973addf503"
+  },
+  "sampler_pilot": {
+    "job": "job-4z8wx",
+    "state": "SUCCEEDED",
+    "source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
+    "scope": "development_paired_classic_first_episode",
+    "same_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "changed_field": "doomed_attack_route_penalty",
+    "baseline_value": 4.0,
+    "candidate_value": 8.0,
+    "games_per_arm": 1024,
+    "unique_initial_states": 643,
+    "match_seed": 8400101,
+    "sample_seed": 8400103,
+    "baseline_wld": [
+      707,
+      304,
+      13
+    ],
+    "candidate_wld": [
+      752,
+      265,
+      7
+    ],
+    "paired_signed_score_delta": 0.08203125,
+    "initial_state_cluster_ci95": [
+      0.03413483593693411,
+      0.13064833005893908
+    ],
+    "decision": "independent_confirmation_pending_source_retained",
+    "comparison": {
+      "path": "/tmp/generals-doomed-paired-results-job-4z8wx/extracted/generals/comparison.json",
+      "sha256": "e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5"
+    },
+    "result_archive_sha256": "51400ab91c1dca3860f97bcef517dc375ba4721e40cdcd8ebb383640a2aa92e4",
+    "paired_win_rate_delta": 0.0439453125,
+    "initial_state_cluster_win_rate_ci95": [
+      0.019474196689386564,
+      0.06882189432412286
+    ]
+  },
+  "latest_attempt": {
+    "job": "job-xbqmn",
+    "state": "SUCCEEDED",
+    "source_revision": "68b013c4d69a19501cd95ce4dfb8eb37334a5066",
+    "scope": "force_assembly_curriculum_development",
+    "hardware": "H100",
+    "gpus": 1,
+    "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "control_checkpoint_sha256": "8d5c65e0de7da8074aa353386cb22a2bf40f1a773ff88db47d692b807769c7bf",
+    "candidate_checkpoint_sha256": "712b2f1b81ee40560b1f746991612a57769263678c7ea3d9ed4dc184fb639c98",
+    "candidate_bundle_manifest_sha256": "7789513f25ab19a56d0e9e4e6ec38837b83e41c49189b8e03a1f082525182176",
+    "changed_training_field": "25% curriculum reset archive 384 to 722 positions, no teacher labels",
+    "training": {
+      "steps": 8388608,
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "warmup_epochs": 2,
+      "steady_sps": 35594.41936250382,
+      "illegal_actions": 0,
+      "nonfinite_rewards": 0,
+      "clipped_rewards": 0,
+      "all_opponents_both_seats": true
+    },
+    "serving_parity": {
+      "public_states": 46,
+      "matching_top_actions": 46,
+      "max_action_probability_difference": 3.993511199951172e-06
+    },
+    "evaluation": {
+      "games_per_arm": 4096,
+      "unique_initial_states": 2609,
+      "match_seed": 9510017,
+      "sample_seed": 9510031,
+      "source_wld": [
+        2791,
+        1282,
+        23
+      ],
+      "control_wld": [
+        2787,
+        1286,
+        23
+      ],
+      "candidate_wld": [
+        2778,
+        1291,
+        27
+      ],
+      "candidate_paired_signed_score_delta_vs_source": -0.00537109375,
+      "initial_state_cluster_ci95_vs_source": [
+        -0.034459004702482414,
+        0.02389012761978197
+      ]
+    },
+    "decision": "no_established_gain_source_retained_no_hosted_promotion",
+    "analysis": {
+      "path": "/tmp/generals-force-assembly-results-job-xbqmn/analysis.json",
+      "sha256": "296ca98c22938baaf3a755ed0eb33edf24e78fe94e5fbd0db0bdc867554cc022"
+    },
+    "result_archive_sha256": "741d06e0e5203796f325ee9f6b459418b1de91dacd64ac406f82f85040de16b2"
   }
 }

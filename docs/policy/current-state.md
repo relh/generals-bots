@@ -1,8 +1,9 @@
 # Current policy state
 
 Updated **2026-10-06**. **The winning-policy objective remains unmet.**
-Training and serving are qualified; the matched warm and distilled candidates
-regressed on held-out games and are rejected. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
+Training and serving are qualified. Defense warmstart regressed, and the force
+assembly curriculum has no demonstrated gain. A penalty-8 sampler has a
+positive development result awaiting independent confirmation. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
 for decisions and [machine manifest](../../integrations/policy_baseline.json)
 for current artifact identities. Git history preserves superseded attempt records.
 
@@ -39,7 +40,44 @@ balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservatio
 against the broad pool, verified parity and clean execution. No champion change
 is justified by the current evidence.
 
-## Held-out decision: retain source, reject defense warmstart
+## Current development experiments
+
+**Penalty-8 sampler pilot `job-4z8wx` SUCCEEDED.** The source checkpoint is
+identical in both arms (`f4ef5616…`); only
+`doomed_attack_route_penalty` changed from 4 to 8. In 1,024 paired Classic
+first episodes on seed 8400101/sample seed 8400103, penalty 4 won **707**
+and penalty 8 won **752** (643 distinct initial states). Paired win-rate gain
+is **+0.04395**, with an initial-state-cluster 95% CI
+**[+0.01947,+0.06882]**; paired signed-score gain is **+0.08203** with CI
+**[+0.03413,+0.13065]**. These are development maps, so penalty 8 is a
+candidate for an independently seeded confirmation panel, not the selected
+baseline or a hosted winner. Verified comparison:
+`/tmp/generals-doomed-paired-results-job-4z8wx/extracted/generals/comparison.json`,
+SHA `e12a91e1937a98f77485d9b815aaf2d8f4103d05de468ee13bf6f66d3687a0f5`;
+provider archive SHA `51400ab91c1dca3860f97bcef517dc375ba4721e40cdcd8ebb383640a2aa92e4`.
+
+**Force-assembly curriculum `job-xbqmn` SUCCEEDED but did not improve the
+development population.** It changed the 25% training reset curriculum from
+384 to 722 positions, without teacher labels. One H100 trained **8,388,608
+steps** at **35,594.419 final-two-epoch end-to-end SPS** after two warmup
+epochs, using 4,096 environments/H128/minibatch 8,192/replay 0.5. Reward
+audit: zero illegal actions, nonfinite rewards or clipped rewards; all 13
+opponents sampled on both seats. The frozen checkpoint SHA is
+`712b2f1b81ee40560b1f746991612a57769263678c7ea3d9ed4dc184fb639c98`.
+Native/serving parity matched top actions on **46/46** public states, maximum
+action-probability difference **3.99e-6**.
+
+On 4,096 paired Classic first episodes (2,609 distinct initial states), source
+won **2,791**, audited old-pool control **2,787**, and curriculum candidate
+**2,778**. Candidate paired signed-score delta against source was **−0.00537**,
+clustered 95% CI **[−0.03446,+0.02389]**. One training seed and this panel
+do not establish a strength gain; retain source. The curriculum candidate was
+not hosted. Verified analysis and frozen bundle:
+`/tmp/generals-force-assembly-results-job-xbqmn/analysis.json`, SHA
+`296ca98c22938baaf3a755ed0eb33edf24e78fe94e5fbd0db0bdc867554cc022`;
+provider archive SHA `741d06e0e5203796f325ee9f6b459418b1de91dacd64ac406f82f85040de16b2`.
+
+## Prior held-out decision: reject defense warmstart
 
 **`job-9fkii` SUCCEEDED**, source `512af1f91ce83d43fab8e0864f204eb064340d01`.
 One H100 billed **729s/$0.6006**. All four **4,096-game first-episode Classic
@@ -161,9 +199,8 @@ and the retained result directories, without changing scheduler state.
 
 ## Next decision
 
-Retain the source baseline and preserve rejected checkpoints/results. Diagnose
-losing held-out replays by opponent and seat before another intervention; the
-CE defense objective improved its tactical metric while harming full-game play.
-Keep qualified 4,096/H128 H100 execution and serving parity for controlled next
-experiments. A future broad winner still requires independent confirmation and
+Retain the source baseline. Confirm penalty 8 on independent paired maps and
+opponents before selecting it. The force curriculum did not improve broad play;
+defense CE warmstart harmed it. Keep qualified 4,096/H128 H100 execution and
+serving parity for controlled experiments. A broad winner still requires
 balanced fresh hosted acceptance before promotion.
