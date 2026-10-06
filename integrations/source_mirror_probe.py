@@ -13,6 +13,7 @@ import json
 import os
 import resource
 import shutil
+import stat
 import subprocess
 from pathlib import Path
 
@@ -114,8 +115,16 @@ def prepare(source_input: Path, repository: Path, output: Path) -> dict:
         "scope": "One bounded GPU throughput and PPO probe; no hosted replay input or promotion",
     }
     (output / "probe-intent.json").write_text(json.dumps(proof, indent=2) + "\n")
+    # BuildKit may read the context as a different UID. Preserve executable
+    # bits while making every input and parent directory traversable.
+    for path in (output, *output.rglob("*")):
+        if path.is_symlink():
+            raise ValueError("Portable probe input must not contain symlinks")
+        mode = stat.S_IMODE(path.stat().st_mode)
+        path.chmod(mode | (0o555 if path.is_dir() else 0o444))
     seal = file_hashes(output)
     (output / "seal.json").write_text(json.dumps(seal, indent=2) + "\n")
+    (output / "seal.json").chmod(0o644)
     return proof
 
 
