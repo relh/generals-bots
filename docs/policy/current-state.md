@@ -82,13 +82,16 @@ and legal owned-to-owned moves toward it. Its context archive SHA is
 `29209f8603bccf124e0d5f1e8a6222c09d628b399224dfae4fbbf1440a7728f7`.
 No result or serving change exists yet.
 
-A third sampler diagnostic, general-garrison split, is prepared but not
-submitted on `relh/general-garrison-split-pilot` at `182956f`. It compares
+A third sampler diagnostic, general-garrison split, is submitted as H100
+`job-nqjyf` on `relh/general-garrison-split-pilot` at `182956f`. It compares
 half-move biases 0/2/4 when the public own general holds 5–19 armies, using
 4,096 paired development games per arm on seeds 9874001/9874003. It was
 motivated by observed full departures from the general in hosted replays; that
 panel is diagnostic only and is not used as training data. The isolated branch
-contains the frozen and serving sampler path and passed 17 focused tests.
+contains the frozen and serving sampler path and passed 17 focused tests. Its
+sealed context is `ctx-644e8ce2`, archive SHA
+`2f336687e73adad3a212635ee6d43e55623f0b13092b3bef20ebe44889f548f4`;
+the bounded job has a 60-minute/$2.97 cap and zero restarts. No result exists yet.
 
 A bounded source-mirror PPO throughput probe is submitted as `job-dzu73` on
 `codex/source-mirror-ppo` at `0d6bd40`. It replaces one weak historical frozen
