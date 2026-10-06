@@ -69,16 +69,20 @@ clipped rewards were zero. Its qualification marker SHA-256 is
 `6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
 This is a throughput result, not a strength result.
 
-One bounded H100 matched development job remains active; the manifest records
-its sealed context hash and last observed state:
+The full matched hard-opponent weighting run `job-6cwtq` **rejected** the
+treatment. Both arms completed 16,777,216 steps on H100 with fresh optimizers
+and exact matched settings except frozen `d2c30` and `classic_siege` weights
+17/16→34/32. Control and treatment reached 37,027.3 and 34,576.8 steady
+end-to-end SPS, all 13 opponents on both seats, and zero illegal, nonfinite or
+clipped rewards. On 4,096 paired fresh Classic games, control won 2,759 and
+treatment 2,700; treatment-minus-control signed-score delta was −0.027832,
+clustered 95% CI [−0.059182,+0.003395]. Its reweighted-opponent delta was
+also negative (−0.038055), and one broad seat stratum regressed. Verified
+artifact SHA-256:
+`87710e728221e5d9fd9b322a777e67d1a41bd15b195147f2204e3573a23a5b73`.
+No independent confirmation or hosted panel follows.
 
-| Job | Isolated branch | Decision pending |
-| --- | --- | --- |
-| `job-6cwtq` | `codex/hard-opponent-trial` at `542de7f` | Matched 16,777,216-step source/control PPO arms, changing only the weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. Assess fresh paired Classic strength before any hosted panel. |
-
-The matched run has zero restarts and a 60-minute/$2.97 cap. Treat its status
-as a historical observation until provider readback and artifact
-verification. The separate `job-m9ina` paired siege-opponent panel **rejected**
+The separate `job-m9ina` paired siege-opponent panel **rejected**
 the proposed pressure bot. In 3,640 paired siege games, the frozen learner won
 2,162 (59.40%) against the old bot and 3,615 (99.31%) against the new bot;
 the new bot was much weaker on both learner seats. Candidate-minus-control
@@ -101,6 +105,12 @@ No training-population or serving change follows. Hosted replays suggest that
 general defense and army gathering are promising mechanisms; use fresh paired
 development and independent confirmation rather than those hosted losses as a
 tuning set.
+
+An isolated rank-8 source-conditioned global residual is under local parity
+review on `codex/source-global-product` at `af110b8`. It preserves the public
+observation and action ABI, and its zero-head transplant reproduces selected
+source logits exactly before training. No GPU qualification, game-strength
+result, or policy selection exists yet.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new

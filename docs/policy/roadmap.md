@@ -8,18 +8,16 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Run the qualified hard-opponent weighting treatment against its exact
-   matched control, then assess the preregistered paired Classic development
-   gate. Its treatment-specific H100 probe reached 34,494.9 steady SPS.
-   The source-mirror treatment and matched control also qualified for
-   throughput, but the mirror failed paired development strength.
-2. Evaluate any qualified treatment against its matched control on fresh
-   Classic first episodes. The safe owned split, capital-threat gather and
-   general-garrison split sampler pilots did not clear this development gate.
-3. Choose further training changes from measured full-game failure modes.
-   Preserve the source checkpoint, change one mechanism at a time, and keep
-   opponent, reward, map and seat controls matched.
-4. Freeze an independently confirmed candidate and run fresh balanced hosted
+1. Finish one-time frozen-opponent migration and parity for the isolated
+   source-conditioned global residual, then qualify its exact 13-opponent
+   setup at ≥30,000 steady end-to-end H100 SPS. The hard-opponent weighting,
+   source-mirror and siege-opponent changes all failed paired development.
+2. If the new architecture qualifies, train a matched source-initialized
+   treatment and control, then compare on fresh paired Classic first episodes
+   and inspect army merging and general defense. Preserve opponent, reward,
+   map, sampler and seat controls.
+3. Confirm a positive result on independent maps. Freeze the candidate and run
+   fresh balanced hosted
    matches against the incumbent and Daveey. Promote only after all acceptance
    gates pass.
 
