@@ -1,6 +1,6 @@
 """Four-arm, same-weight Classic split diagnostic for a sealed GPU context.
 
-Expected inputs: /opt/generals-context/input/{source,bundle,population-build.json,plan.json}.
+Expected inputs: /opt/generals-context/input/{source,bundles,population-build.json,plan.json}.
 The context builder seals those files; this runner writes only to GMN_OUTPUT_DIR.
 """
 
@@ -35,7 +35,9 @@ def main():
             or plan['pool_size'] != 4096 or plan['map_seed'] != 9674001
             or plan['sample_seed'] != 9674003 or plan['expected_opponents'] != 13):
         raise ValueError('Split pilot differs from preregistered arms and seeds')
-    source, bundle = inputs / 'source', inputs / 'bundle'
+    source, bundle = inputs / 'source', inputs / 'bundles/penalty8'
+    if hashlib.sha256((bundle / 'spatial-policy.json').read_bytes()).hexdigest() != plan['bundle_manifest_sha256']:
+        raise ValueError('Pilot bundle manifest differs from preregistration')
     policy = SpatialPlayerPolicy(bundle)
     if policy.asset.metadata['policy_sha256'] != plan['checkpoint_sha256']:
         raise ValueError('Pilot bundle checkpoint differs from preregistration')
