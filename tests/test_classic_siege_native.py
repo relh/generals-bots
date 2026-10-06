@@ -1,9 +1,6 @@
-from types import SimpleNamespace
-
 import numpy as np
 import pytest
 
-from competition.agents.expander_python.agent import Agent
 from integrations.classic_siege_native import ClassicSiegeBatch, compile_library
 
 
@@ -23,49 +20,30 @@ def test_workers_are_explicit_and_bounded(workers):
         ClassicSiegeBatch("unused.so", workers=workers)
 
 
-def observation(grid, h, w, turn):
-    return SimpleNamespace(H=h, W=w, turn=turn, type_grid=grid[0, :h, :w].tolist(),
-                           owner_grid=grid[1, :h, :w].tolist(), army_grid=grid[2, :h, :w].tolist())
-
-
-def test_public_scenarios_match_python_and_do_not_mutate_inputs(native):
-    # Small visible battles test city staging, BFS ordering, siege memory,
-    # late reinforcement and both rectangular dimensions. No hidden state.
-    rng = np.random.default_rng(739)
-    grids = np.zeros((48, 3, 21, 21), np.int32)
-    dims = np.array([[18 + i % 4, 18 + (i // 4) % 4] for i in range(48)], np.int32)
-    turns = np.array([i * 39 for i in range(48)], np.int32)
-    memories = native.initial_memory(48)
-    expected = []
-    expected_memory = []
-    for i, (h, w) in enumerate(dims):
-        grid = grids[i]
-        grid[0].fill(2)
-        grid[0, :h, :w] = 1
-        grid[1, 2:9, 2:9] = 1
-        grid[2, 2:9, 2:9] = rng.integers(1, 40, size=(7, 7))
-        grid[0, 3, 3] = 4
-        grid[0, 7, 9] = 3
-        grid[2, 7, 9] = 45
-        if i % 3 == 0:
-            grid[0, 8, 10] = 4
-            grid[1, 8, 10] = 2
-            grid[2, 8, 10] = 50
-        if i % 3 == 1:
-            # Hidden remembered crown is an obstacle but remains the BFS root.
-            grid[0, 8, 10] = 5
-            memories[i, 1] = 8 * 21 + 10
-        agent = Agent(i % 2, int(h), int(w))
-        if memories[i, 1] >= 0:
-            agent.enemy_general = (8, 10)
-        expected.append(agent.act(observation(grid, int(h), int(w), int(turns[i]))))
-        expected_memory.append([-1 if p is None else p[0] * 21 + p[1]
-                                for p in (agent.city, agent.enemy_general, agent.spearhead)])
-    saved = [x.copy() for x in (dims, turns, grids, memories)]
-    actions, after = native(dims, turns, grids, memories)
-    np.testing.assert_array_equal(actions, expected)
-    np.testing.assert_array_equal(after, expected_memory)
-    for original, copy in zip((dims, turns, grids, memories), saved):
+def test_public_tactical_choices_and_immutable_inputs(native):
+    grids = np.zeros((3, 3, 21, 21), np.int32)
+    grids[:, 0] = 2  # padded cells are impassable
+    grids[:, 0, :18, :19] = 1
+    grids[:, 0, 3, 3] = 4
+    grids[:, 1, 3, 3] = 1
+    grids[:, 2, 3, 3] = [20, 20, 3]
+    grids[:, 1, 3, 4] = 2
+    grids[:, 2, 3, 4] = [2, 8, 10]
+    grids[1, 0, 3, 4] = 4  # a capital must receive the full winning stack
+    grids[2, 1, 3, 2] = 1
+    grids[2, 2, 3, 2] = 18  # gather toward stronger enemy contact before turn 800
+    for row, col in ((2, 2), (4, 2), (3, 1), (2, 3), (4, 3)):
+        grids[2, 0, row, col] = 2
+    dims = np.full((3, 2), [18, 19], np.int32)
+    turns = np.full(3, 100, np.int32)
+    memory = native.initial_memory(3)
+    saved = [x.copy() for x in (dims, turns, grids, memory)]
+    actions, after = native(dims, turns, grids, memory)
+    np.testing.assert_array_equal(actions, [[0, 3, 3, 3, 1],
+                                           [0, 3, 3, 3, 0],
+                                           [0, 3, 2, 3, 0]])
+    np.testing.assert_array_equal(after[1, 1], 3 * 21 + 4)
+    for original, copy in zip(saved, (dims, turns, grids, memory)):
         np.testing.assert_array_equal(original, copy)
 
 

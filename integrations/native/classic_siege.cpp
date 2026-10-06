@@ -1,6 +1,6 @@
-// Classic-only batched opponent derived from expander_python at cee053c.
+// Classic-only batched public-view siege opponent.
 // Public type/owner/army grids only. Memory is explicit and caller-owned.
-// Frontier ties use row-major order (Python source uses set iteration).
+// Frontier ties use row-major order.
 #include <algorithm>
 #include <array>
 #include <cstdint>
@@ -51,6 +51,14 @@ struct Agent {
                                          : 3;
     return {0, p / 21, p % 21, d, split};
   }
+  Action capture(int p, int q) const {
+    // Preserve a useful rear stack when half can still win. Concentrate full
+    // force for generals and for any target half cannot take.
+    bool visible = type[q] != 0 && type[q] != 5;
+    bool reserve_matters = owner[q] == 2 || type[p] == 3 || type[p] == 4;
+    bool half_wins = visible && reserve_matters && army[p] / 2 > army[q];
+    return move(p, q, type[q] != 4 && half_wins);
+  }
   Routes routes(const std::vector<int> &roots, int limit = N,
                 bool all = false) const {
     Routes out;
@@ -82,9 +90,7 @@ struct Agent {
             key > std::make_tuple(army[best], route.distance[best], -best))
           best = p;
       }
-    return best < 0 ? PASS
-                    : move(best, route.toward[best],
-                           turn >= 800 && (type[best] == 3 || type[best] == 4));
+    return best < 0 ? PASS : move(best, route.toward[best]);
   }
   bool siege(Action &action) {
     int target = memory[1];
@@ -100,7 +106,8 @@ struct Agent {
           1) {
         if (adjacent < 0 || army[p] > army[adjacent])
           adjacent = p;
-        if (army[p] > army[target] + 1 &&
+        if (type[target] == 4 && owner[target] == 2 &&
+            army[p] > army[target] + 1 &&
             (attacker < 0 || army[p] > army[attacker]))
           attacker = p;
       }
@@ -155,7 +162,7 @@ struct Agent {
     if ((owner[dest] == 1 && army[source] > 1) ||
         (owner[dest] != 1 && army[source] > army[dest] + 1)) {
       memory[2] = dest;
-      action = move(source, dest);
+      action = owner[dest] == 1 ? move(source, dest) : capture(source, dest);
     } else
       action = gather(source);
     return true;
@@ -226,7 +233,7 @@ struct Agent {
         int priority = type[q] == 3 ? 2 : owner[q] == 2 ? 1 : 0;
         int rank = turn >= 800 && owner[q] == 2 ? army[p] : -army[p];
         Key key{priority, rank,       -army[q], openings(q),
-                edge(q),  move(p, q), q,        owner[q]};
+                edge(q),  capture(p, q), q,     owner[q]};
         if (!captures || key > best) {
           best = key;
           captures = true;
@@ -282,7 +289,7 @@ struct Agent {
     for (int p = 0; p < N; ++p)
       if (frontier[p])
         front.push_back(p);
-    if (turn >= 800 && !front.empty()) {
+    if (!front.empty()) {
       int source = memory[2];
       if (source < 0 || owner[source] != 1) {
         source = front[0];
@@ -300,7 +307,7 @@ struct Agent {
         }
       if (dest >= 0) {
         memory[2] = dest;
-        return move(source, dest);
+        return capture(source, dest);
       }
       action = gather(source);
       if (action[0] == 0)

@@ -1,9 +1,7 @@
 """Explicit-memory, Classic-only native siege opponent.
 
-This is an opponent candidate, not enabled in the training population by default.
-It follows the cee053c Python siege strategy except that otherwise equal frontier
-choices use row-major order. Only public wire grids and public board dimensions
-are accepted. The caller must clear memory on every episode reset, including
+Only public wire grids and public board dimensions are accepted. Frontier ties
+use row-major order. The caller clears memory on every episode reset, including
 resets into nonzero-turn curriculum positions.
 """
 
