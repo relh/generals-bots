@@ -19,8 +19,11 @@ The source cleanup has exact structural/numeric proof. Job 35956 then passed
 actual direct Enroot GPU ownership/UUID, 46-state CUDA control parity, current
 build and CE fresh-optimizer CPU preflight. It failed before sampling games on
 an omitted explicit balanced-seat option; warm PPO and broad panels did not run.
-Corrected continuation 36081 is queued at maximum Nice and Priority 1. B300 maintenance cleared; its measured geometry requires
-~205 GiB GPU memory, so H100 80 GiB would require smaller geometry and a new gate.
+Corrected continuation 36081 remains queued at maximum Nice and Priority 1;
+maintenance is cleared. Its 205.584 GiB device-used measurement includes caches.
+Known 8,192/H256 buffers account for 172.503 GiB; the 2.21 MiB policy does not
+require B300. A bounded smaller-geometry H100 benchmark is being prepared,
+with no H100 submission or cancellation of 36081.
 Learning improvement and hosted winning qualification remain open; see
 [current-state.md](current-state.md).
 
@@ -42,6 +45,12 @@ balanced-seat call is repaired with 33 focused tests passing; verify its actual
 sampling path before retrying the warm arm and broad panels. Direct Enroot and CUDA parity already have actual 35956
 proof; retain completed control and supervised artifacts from 35935. Those
 computations are not repeated. The failed retries provide no warm-arm result.
+
+The next resource decision compares 2,048/H256 (43.126 GiB known buffers) with
+4,096/H128 (44.904 GiB), using minibatch 8,192, replay 0.5 and 3,145,728 steps
+per probe (six epochs, two warmup). Require measured fit and ≥30K end-to-end SPS;
+33.081 GiB of the current device allocation is unattributed and cannot be assumed
+to scale proportionally. See current-state for the source allocation accounting.
 
 Preserve throughput, legality, train/serve parity, opponent-by-seat coverage and
 frozen artifact identities. Reject failed hypotheses using their paired evidence;

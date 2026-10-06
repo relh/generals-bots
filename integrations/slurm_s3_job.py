@@ -33,33 +33,38 @@ def gpu_query(*arguments):
     return result.stdout.strip()
 
 
-def allocated_gpu_identity(environ=None):
-    """Resolve the single device visible inside Slurm's constrained device cgroup.
-
-    SLURM_JOB_GPUS/STEP_GPUS are global GRES identifiers, not NVML ordinals
-    inside that cgroup. Never pass those numeric identifiers to nvidia-smi -i.
-    """
+def visible_gpu_identity(environ=None):
+    """Identify the one GPU exposed by the runtime and verify its recorded UUID."""
     environ = os.environ if environ is None else environ
-    assigned = environ.get("SLURM_STEP_GPUS") or environ.get("SLURM_JOB_GPUS", "")
-    if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", assigned):
-        raise RuntimeError("Expected one controller-provided GPU assignment")
     rows = gpu_query("--query-gpu=index,uuid", "--format=csv,noheader,nounits").splitlines()
     if len(rows) != 1:
-        raise RuntimeError(f"Expected exactly one cgroup-visible GPU; observed {len(rows)}")
+        raise RuntimeError(f"Expected exactly one runtime-visible GPU; observed {len(rows)}")
     fields = [field.strip() for field in rows[0].split(",")]
     if (len(fields) != 2 or not fields[0].isdigit()
             or not re.fullmatch(r"GPU-[a-fA-F0-9-]+", fields[1])):
         raise RuntimeError("Unrecognized visible GPU identity")
     expected = environ.get("GENERALS_ALLOCATED_GPU_UUID")
     if expected is not None and expected != fields[1]:
-        raise RuntimeError("Container GPU UUID differs from its allocated host step")
-    if assigned.startswith("GPU-") and assigned != fields[1]:
+        raise RuntimeError("Container GPU UUID differs from its recorded assignment")
+    return dict(visible_index=fields[0], uuid=fields[1])
+
+
+def allocated_gpu_identity(environ=None):
+    """Validate Slurm's assignment against its constrained device cgroup.
+
+    Numeric global GRES identifiers are not NVML ordinals inside the cgroup.
+    """
+    environ = os.environ if environ is None else environ
+    assigned = environ.get("SLURM_STEP_GPUS") or environ.get("SLURM_JOB_GPUS", "")
+    if not re.fullmatch(r"(?:GPU-[a-fA-F0-9-]+|[0-9]+)", assigned):
+        raise RuntimeError("Expected one controller-provided GPU assignment")
+    identity = visible_gpu_identity(environ)
+    if assigned.startswith("GPU-") and assigned != identity["uuid"]:
         raise RuntimeError("Visible GPU UUID differs from controller assignment")
-    return dict(slurm_assignment=assigned, visible_index=fields[0], uuid=fields[1])
+    return dict(slurm_assignment=assigned, **identity)
 
 
-def verify_allocated_gpu_idle():
-    identity = allocated_gpu_identity()
+def verify_gpu_idle(identity):
     processes = gpu_query("--id=" + identity["uuid"], "--query-compute-apps=pid",
                           "--format=csv,noheader,nounits")
     if processes:
@@ -69,8 +74,11 @@ def verify_allocated_gpu_idle():
     fields = [field.strip() for field in row.split(",")]
     if len(fields) != 3 or fields[0] != identity["uuid"] or float(fields[1]) >= 2048 or float(fields[2]) >= 20:
         raise RuntimeError("Allocated physical GPU is not idle before workload startup")
-    identity.update(memory_mib=float(fields[1]), utilization_percent=float(fields[2]))
-    return identity
+    return dict(identity, memory_mib=float(fields[1]), utilization_percent=float(fields[2]))
+
+
+def verify_allocated_gpu_idle():
+    return verify_gpu_idle(allocated_gpu_identity())
 
 
 def enroot_step(specification):

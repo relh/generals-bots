@@ -1,6 +1,6 @@
 # Current policy state
 
-Updated **2026-10-06, 00:53 UTC**. The winning-policy objective remains unmet.
+Updated **2026-10-06**. The winning-policy objective remains unmet.
 Use the [runbook](runbook.md) for supported operations and [roadmap](roadmap.md)
 for remaining work. Source history and full experiment artifacts preserve details.
 
@@ -77,17 +77,27 @@ Input/source/transport receipts share prefix
 `/tmp/relh-generals-direct-enroot-b300-20261005t223500z-v2`; its 313-file input SHA:
 `f34d7e56ab893615ec14acc88092efdbe25309e39b4484db2e346bca52849c6d`.
 
-The backend uses mode-0700 owned `/var/tmp` storage for Enroot
-DATA/TEMP/CACHE/RUNTIME/CONFIG. Startup/unpack/workload gates respectively require
-32 GiB/60K, 15 GiB/40K and 8 GiB/20K inodes; obsolete site/recovery/retained flags
-are rejected. Installed audit `/tmp/generals-installed-enroot-audit.json` SHA:
+Enroot uses private `/var/tmp` storage; capacity gates are in the runbook.
+Installed audit `/tmp/generals-installed-enroot-audit.json` SHA:
 `a7d831ac21b15eb8769ca1b95df5616781b825897c0bd80e3eb670b2ffc2b0cd`.
 
-B300 maintenance was cleared by 00:53 UTC. Current geometry uses ~205 GiB GPU
-memory and fits the measured B300 setup; an 80 GiB H100 requires smaller geometry
-and a new throughput qualification. B300 remains preferred after the source-gate
-fix. Givemeanode authentication and free H100 validation passed; no alternate
-job was submitted.
+## Memory and smaller-batch decision
+
+The policy weights are **2.21 MiB**; B300 is not an intrinsic policy requirement.
+At 8,192 environments / horizon 256, native Puffer retains two float32 observation
+copies (110.25 GiB), two float32 action-mask copies (55.14 GiB), and three native
+state copies (7.11 GiB): **172.503 GiB known buffers**. The measured **205.584 GiB**
+is device total-minus-free from `cudaMemGetInfo`, including allocator caches,
+not peak live tensors; **33.081 GiB remains unattributed**. Accounting:
+`/tmp/generals-native-memory-accounting-20261005.json`.
+
+36081 remains pending for scheduling priority; maintenance is cleared. The next
+bounded H100 probe will compare 2,048/H256 (43.126 GiB known buffers) with
+4,096/H128 (44.904 GiB), minibatch 8,192 and replay 0.5. Each proposed probe is
+3,145,728 steps / six epochs, measuring after two warmup epochs against **30K SPS**.
+Residual allocations and actual fit/throughput must be measured. Givemeanode
+authentication/free validation passed; **no H100 job is submitted and 36081 is
+not cancelled**. Smaller geometry is the next benchmark decision, not a result.
 
 ## Attempt ledger
 
@@ -95,7 +105,7 @@ All listed B300 submissions record Nice **2147483645**, Priority **1**, one GPU,
 eight CPUs and 96 GiB; finite caps are retained below. Controller records are in
 result directories; 35936 and 35956 terminal controller retention expired, so
 their outcomes come from workload receipts/logs and caps from submission readback.
-H100 attempts all failed before optimizer updates; that path is retired.
+Prior H100 migration attempts failed before updates; that old launcher is retired.
 
 | Attempt | Outcome / error | Cap | Retained evidence |
 | --- | --- | --- | --- |
@@ -124,7 +134,8 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
 One NVIDIA B300 SXM6 AC, 8,192 games, horizon 256, minibatch 8,192, replay 0.5:
 two warmup epochs took 131.398s, then **4,194,304 steps / 49.645s = 84,486 SPS**.
-Mean last-60s GPU utilization was 44.17%; peak memory 210,518 MiB. No illegal actions,
+Mean last-60s GPU utilization was 44.17%; sampled device-used memory 210,518 MiB
+(including caches). No illegal actions,
 nonfinite rewards or clipped rewards; one terminal agent had zero reward. All 13
 opponents sampled both seats. This qualifies this control's throughput only.
 Its genuine same-sampler gate passed: 512 games, 254W/253L/5D, 314 unique maps,
@@ -175,6 +186,6 @@ proofs are packaged in the active capsule. Reused two-graph CPU execution is
 identified honestly alongside the reviewed non-model source delta and current
 sampling guard. Source cleanup added **zero RL steps**, preserving originals.
 
-Next: seal the repaired balanced-seat evaluator and complete the preserved
-experiment's actual source gate, warm arm and paired panels.
+Next: retain queued 36081 and benchmark smaller H100 geometry before choosing
+a training allocation; complete the matched warm arm and paired panels.
 Retain the baseline until broad and fresh hosted evidence qualifies a candidate.

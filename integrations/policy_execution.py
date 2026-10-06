@@ -99,14 +99,14 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         raise TimeoutError(f"{name} exceeded {seconds}s; inspect retained log")
                     if training_config:
                         from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
-                        from integrations.slurm_s3_job import allocated_gpu_identity
+                        from integrations.slurm_s3_job import visible_gpu_identity
 
                         if elapsed - sampled >= 5:
                             with (output / "gpu.csv").open("ab") as samples:
                                 subprocess.run(
                                     [
                                         "nvidia-smi",
-                                        "--id=" + allocated_gpu_identity()["uuid"],
+                                        "--id=" + visible_gpu_identity()["uuid"],
                                         "--query-gpu=timestamp,uuid,memory.used,utilization.gpu",
                                         "--format=csv,noheader",
                                     ],

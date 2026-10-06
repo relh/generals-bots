@@ -1,4 +1,4 @@
-"""CPU integration harness: mock only Slurm/Pyxis/S3, run real child processes."""
+"""CPU integration harness: mock only Slurm/Enroot/S3, run real child processes."""
 import hashlib
 import io
 import json
@@ -388,3 +388,18 @@ while True: time.sleep(.01)
         if process.poll() is None:
             os.killpg(process.pid,signal.SIGKILL)
             process.wait(timeout=3)
+
+
+def test_visible_gpu_identity_supports_provider_container_without_slurm():
+    import pytest
+    from integrations.slurm_s3_job import visible_gpu_identity, allocated_gpu_identity
+    with patch('integrations.slurm_s3_job.gpu_query', return_value='0, GPU-abcd'):
+        assert visible_gpu_identity({}) == {'visible_index': '0', 'uuid': 'GPU-abcd'}
+        assert allocated_gpu_identity({'SLURM_JOB_GPUS': '4'})['uuid'] == 'GPU-abcd'
+        with pytest.raises(RuntimeError, match='controller-provided'):
+            allocated_gpu_identity({})
+        with pytest.raises(RuntimeError, match='recorded assignment'):
+            visible_gpu_identity({'GENERALS_ALLOCATED_GPU_UUID': 'GPU-ffff'})
+    with patch('integrations.slurm_s3_job.gpu_query', return_value='0, GPU-abcd\n1, GPU-ffff'):
+        with pytest.raises(RuntimeError, match='exactly one'):
+            visible_gpu_identity({})
