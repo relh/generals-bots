@@ -82,15 +82,16 @@ and legal owned-to-owned moves toward it. Its context archive SHA is
 `29209f8603bccf124e0d5f1e8a6222c09d628b399224dfae4fbbf1440a7728f7`.
 No result or serving change exists yet.
 
-A bounded source-mirror PPO throughput probe was prepared on
-`codex/source-mirror-ppo` at `9ba44f4`. It replaces one weak historical frozen
+A bounded source-mirror PPO throughput probe is submitted as `job-dzu73` on
+`codex/source-mirror-ppo` at `0d6bd40`. It replaces one weak historical frozen
 opponent with the exact source actor; other opponents, reward and sampler are
 fixed. One H100 will run 4,194,304 steps at 4,096 environments/H128/minibatch
 8,192/replay 0.5, requiring at least 30K steady end-to-end SPS and clean
 audits. Its $1.485 cap and success marker bound the job. The first submission
 `job-jqgpa` was cancelled during image build with **zero charge** after a
-JSON tuple/list comparison bug was found in preflight; a corrected sealed
-package is pending. It has no result yet and cannot establish strength without
+JSON tuple/list comparison bug was found in preflight. The corrected package
+has archive SHA `ed24d908952e0001c53ef5d376ce914c1b1edf91e3fef2dbcf9f3fd77e1571d3`.
+It has no result yet and cannot establish strength without
 a matched control and fresh evaluation.
 
 Hosted replay analysis points to general defense and army gathering: every
