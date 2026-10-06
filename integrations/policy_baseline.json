@@ -110,8 +110,8 @@
   },
   "latest_attempt": {
     "job": "job-9fkii",
-    "state": "SUBMITTED",
-    "phase": "heldout_evaluation_pending",
+    "state": "SUCCEEDED",
+    "phase": "heldout_evaluation_complete",
     "source_revision": "512af1f91ce83d43fab8e0864f204eb064340d01",
     "submitted_at_utc": "2026-10-06T07:22:36.747011+00:00",
     "context_id": "ctx-95843f1b",
@@ -136,14 +136,108 @@
     "match_seed": 51213,
     "sample_seed": 17431,
     "panel_cap_seconds": 1440,
-    "paired_analysis": null,
-    "success_receipt": null,
-    "strength_result": null,
-    "evidence": {
-      "path": "/tmp/generals-heldout-4x4096-512af1f-submission.json",
-      "sha256": "98f92561d547fd13c8f23c072c14e3ce49185044ff43ce521d5d972759084e83",
-      "bytes": 3176,
+    "paired_analysis": {
+      "source_to_control": {
+        "signed_score_delta": -0.00439453125,
+        "initial_state_cluster_ci95": [
+          -0.03348820174053343,
+          0.02460207893025166
+        ],
+        "evidence": {
+          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-source-control.json",
+          "sha256": "9c907f064b84bd864ee8093d1e9b5575636466ccfee0444c841a85357eab71c7",
+          "bytes": 68699,
+          "verified_locally": true
+        }
+      },
+      "source_to_warm": {
+        "signed_score_delta": -0.457763671875,
+        "initial_state_cluster_ci95": [
+          -0.4930332775000264,
+          -0.4233747860989647
+        ],
+        "evidence": {
+          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-source-warm.json",
+          "sha256": "e6ab537db47e80b2acc1818b2e90cde9d942b9578c94ec791ef9b92e2beb4a9e",
+          "bytes": 69318,
+          "verified_locally": true
+        }
+      },
+      "source_to_distilled": {
+        "signed_score_delta": -0.498046875,
+        "initial_state_cluster_ci95": [
+          -0.5337425531411398,
+          -0.46250902640846986
+        ],
+        "evidence": {
+          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-source-distilled.json",
+          "sha256": "4315b43489d9931e4557f052342aef73a5c94af50b67e2047a53ed3006fcf600",
+          "bytes": 69341,
+          "verified_locally": true
+        }
+      },
+      "control_to_warm": {
+        "signed_score_delta": -0.453369140625,
+        "initial_state_cluster_ci95": [
+          -0.4887329275219765,
+          -0.4194324164829371
+        ],
+        "evidence": {
+          "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/paired-control-warm.json",
+          "sha256": "2c09f4b733632f8121de7556ad5639b90edc62d84b31dba7024313b44861464e",
+          "bytes": 69425,
+          "verified_locally": true
+        }
+      }
+    },
+    "success_receipt": {
+      "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/extracted/generals/EVALUATED.json",
+      "sha256": "7915bb8117af329f46fc853516b039d291a09d51f1e89c32d93563b1e5a1436b",
+      "bytes": 370,
       "verified_locally": true
+    },
+    "strength_result": {
+      "source": {
+        "wins": 2773,
+        "losses": 1297,
+        "draws": 26
+      },
+      "control": {
+        "wins": 2763,
+        "losses": 1305,
+        "draws": 28
+      },
+      "warm": {
+        "wins": 1757,
+        "losses": 2156,
+        "draws": 183
+      },
+      "distilled": {
+        "wins": 1682,
+        "losses": 2246,
+        "draws": 168
+      }
+    },
+    "evidence": {
+      "path": "/tmp/generals-heldout-4x4096-512af1f-results-job-9fkii/terminal.json",
+      "sha256": "a5bcfbf206170b9f7d30b3fe20899c8f72487466aa051a7c8c0c1e98de7046f0",
+      "bytes": 2181,
+      "verified_locally": true
+    },
+    "billed_seconds": 729,
+    "charged_usd": 0.6006,
+    "result_archive_sha256": "435242250cd9fe416da169e51ad8b2c8ae7f46b21a9d331a91a1717cfd483428",
+    "unique_initial_states": 2577,
+    "all_first_episodes_complete": true,
+    "decision": {
+      "selected_policy": "retained_source_baseline",
+      "rejected": [
+        "warm",
+        "distilled"
+      ],
+      "control_advantage_demonstrated": false,
+      "hosted_promotion": false,
+      "scope": "Held-out development population; independent confirmation and fresh hosted qualification remain required"
     }
   },
   "latest_training_throughput": {
