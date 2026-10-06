@@ -1,131 +1,37 @@
-# Policy runbook
+# Classic policy runbook
 
-Use [current-state.md](current-state.md) for the selected baseline and
-[roadmap.md](roadmap.md) for unfinished work. Repository `AGENTS.md` is the
-compute policy. Historical experiments remain in [Git history](https://github.com/relh/generals-bots/blob/106ac6af647d8a2148f9ebd1d43409b73edd4ddb/integrations/COWORLD_CLASSIC_STATUS.md); the commands below are the supported operational path.
+[Current state](current-state.md) names the selected policy and live decisions;
+[the manifest](../../integrations/policy_baseline.json) binds exact assets and
+receipts. Repository `AGENTS.md` governs compute. Keep full experiment output
+in verified artifact directories; Git history retains superseded procedures.
 
-## Game and policy contract
+## Game and asset contract
 
-The current Puffer wrapper always instantiates `GeneralsEnv` with
-`coworld_classic_rules=True` and pinned `CLASSIC_MAP_OPTIONS`. Dimensions are sampled
-independently in 18–21, padded to 21 for inference; games cap at 2,000 turns.
-The wrapper currently uses mountain density 0.24–0.26, minimum general distance
-17, castle range `(9, 11)`, and castle army range `(40, 51)`. Interpret range
-endpoints from the implementation. Position curricula are explicit training
-inputs; held-out evaluation starts from the official initial map distribution.
+Training and evaluation must instantiate `GeneralsEnv` with
+`coworld_classic_rules=True` and pinned `CLASSIC_MAP_OPTIONS`. The official
+Softmax Classic engine hash is recorded in the manifest. Map width and height
+are independently sampled from 18–21, inference pads to 21×21, and games cap
+at 2,000 turns. Position curricula are explicit training inputs; held-out
+first episodes start from the official map distribution. The default
+`GeneralsEnv()` and `mode="competition"` are different games.
 
-The local Softmax server uses this same pinned engine and shared
-`CLASSIC_MAP_OPTIONS`, including the 2,000-turn cap. Short local smoke matches
-may explicitly reduce the cap; those runs are execution checks.
+Verify the engine hash, source, model and ABI identities, observation channels,
+legal mask, action encoding, sampler and termination before comparing policies.
+For potential shaping, explicitly set environment `shaping_gamma` equal to the
+learner's effective `train.gamma`; record both and the reward configuration.
+Score evaluation by game outcome.
 
-The default `GeneralsEnv()` and `mode="competition"` configure different games.
-Check the instantiated environment, engine hash, observation channels, legal
-masks, action encoding, sampling settings, and termination behavior. Never
-infer checkpoint compatibility from board size alone.
+Native training uses the supported pinned Metta/Puffer CUDA image, Fabric build
+and verified current asset. `generals-native-spatial-asset-v1` binds `asset.json`,
+`policy.bin` and optional `policy.bin.learner` to source/model/ABI hashes,
+sampler, seed and provenance. Initialization with `restore_learner: false`
+starts a fresh optimizer from exact policy weights; `true` requires matching
+learner bytes and effective game/codec/reward settings. Actual completed PPO
+writes `training.json`. Publish only that authentic run; do not synthesize
+training records. Portable NumPy serving needs no private Metta runtime.
 
-For potential shaping, set `shaping_gamma` explicitly to the learner's effective
-`train.gamma`. Record reward scales, terminal objective, shaping weights, and
-any teacher inputs. Evaluation scores must use game outcomes.
-
-## Runtime and existing entry points
-
-An editable install supplies the simulator and optional local dependencies:
-
-```bash
-pip install -e '.[dev,train,softmax]'
-```
-
-Native training requires the supported Metta/Puffer CUDA container, pinned
-trainer and native bridge, compiled Fabric build and verified current assets.
-Local CPU inference and hosted serving use the portable NumPy policy without
-private Metta dependencies.
-
-| Entry point | Scope |
-| --- | --- |
-| `integrations.metta_puffer` | Batched device-resident Classic games |
-| `integrations.spatial_selfplay` | Frozen and population policy opponents |
-| `integrations.launch_spatial_selfplay_training` | Native launcher, transfer and sampler guards |
-| `integrations.native_spatial_asset` | Current native policy/learner identity and provenance |
-| `integrations.publish_policy_asset` | Publish actual completed PPO checkpoints as native assets |
-| `integrations.audit_hosted_panel_replays` | SHA-bound hosted replay legality and execution audit |
-
-## Operational capsule checks
-
-Seal the exact source revision and every input before uploading. Use files-only
-GNU tar with files mode 644; stage directory permissions must not leak into the
-provider context. Keep install output quiet enough to retain errors, with bounded
-pip timeout/retries. Treat AppleDouble sidecars as metadata: never bypass asset
-identity checks; rebind only with structural and numeric proof.
-
-Use the provider-visible GPU, validate balanced opponent seats, and avoid a
-duplicate standalone CPU preflight. Preserve verified curriculum path spelling.
-Allow 420s bounded cold training startup; publishing/export can reconstruct the
-native graph, so budget finalization separately. Preserve completed checkpoints
-and learner bytes across finalization failures rather than repeating PPO.
-A complete final reward/legal audit is mandatory even when throughput exceeds 30K.
-
-## GPU container backend and storage
-
-The supported Slurm runner uses direct Enroot in a single allocated GPU step.
-It creates one container from the verified immutable image, then executes the
-sealed `integrations/slurm_s3_job.py --enroot-step` within the Slurm GPU cgroup.
-The allocated-step runner SHA must match the input source receipt. Container
-GPU identity is checked against the host step's assigned UUID.
-
-Set `scratch_parent=/var/tmp`. A fresh job root with mode `0700` owns Enroot
-DATA, TEMP, CACHE, RUNTIME and CONFIG directories, together with workload caches
-and results. Storage paths are derived by the runner; personal Enroot config
-and shared site storage are not used. The launch schema rejects
-`enroot_storage_paths`, `mount_recovery` and `retained_container`.
-
-Current capacity declarations are:
-
-| Stage | Free bytes | Available inodes |
-| --- | --- | --- |
-| Startup | 32 GiB | 60,000 |
-| Image unpack | 15 GiB | 40,000 |
-| Each workload phase | 8 GiB | 20,000 |
-
-Verify real filesystem availability and installed Enroot hooks before submission.
-The runner records actual byte/inode gauges on failures. Allocated host/container
-GPU ownership, UUID and native CUDA parity have real execution proof. Current
-matched H100 training and serving parity passed; broad strength is assessed
-separately. See current-state for artifacts and qualification.
-
-## Current native asset boundary
-
-`generals-native-spatial-asset-v1` stores `asset.json`, `policy.bin` and optional
-`policy.bin.learner`. The manifest binds the current fabric, source/model/ABI
-hashes, complete parameter allocation, policy/learner hashes, explicit structured
-sampler, unique training seeds and provenance. Learner-bearing assets also
-require current `learner_configuration` and `training_contract`. Policy-only
-assets set both to null. Optimizer epoch, actual environment steps and learning
-rate come from the authentic `METTAL01` payload; opaque ancestor metadata is
-never used to reconstruct runtime settings.
-
-Initialization in a run JSON is exactly:
-
-```json
-{
-  "initialize": {
-    "asset": "/work/input/assets/cold/asset.json",
-    "manifest_sha256": "FULL_ASSET_MANIFEST_SHA256",
-    "restore_learner": false
-  }
-}
-```
-
-`restore_learner: false` copies policy weights into a fresh optimizer.
-`restore_learner: true` requires the asset's actual learner bytes, matching
-seed/overrides and effective game/codec/reward contract. Distribution changes
-are separate explicit settings; they cannot alter the restored objective.
-There are no historical run/checkpoint parser fallbacks. `training.json` is
-written by actual PPO execution, and used to publish completed runs; source
-cleanup and supervised updates do not manufacture PPO training records.
-
-## Operational commands
-
-Use the policy facade from the repository root:
+An editable local install is available with `pip install -e '.[dev,train,softmax]'`.
+Inspect entry-point help and configuration before launch:
 
 ```bash
 python -m integrations.policy status
@@ -133,25 +39,44 @@ python -m integrations.policy validate --build BUILD_CONFIG_JSON --run RUN_CONFI
 python -m integrations.policy preflight --build BUILD_DIRECTORY --config RUN_CONFIG_JSON --output NEW_DIRECTORY
 ```
 
-`status` reports the recorded baseline. `validate` checks the effective build/run
-contract; its `--build` argument is a JSON configuration file. `preflight` takes
-an existing native build directory and exercises the real CPU launcher using
-its run configuration, writing evidence to a new output directory. Native
-preflight requires the supported Metta/Puffer container runtime and dependencies.
+`preflight` exercises the real CPU launcher in a supported native container.
+Run it once per sealed configuration; actual GPU initialization still checks
+its asset. AppleDouble sidecars are metadata and never justify bypassing asset
+identity. Seal source revision and inputs; provider contexts use files-only GNU
+tar with mode 644 so rootless builders can read the Dockerfile. Verify tar
+contents before upload. A native image build alone does not prove launch.
 
-`train` and `resume` forward the complete native launcher arguments and perform
-its bootstrap. Use the supported container environment and explicit native
-asset initialization. `evaluate`, `export`, and `compare`
-forward the existing module arguments; inspect each command's `--help` for
-required artifacts and outputs. `promotion --help` describes the evidence
-report used to assess hosted qualification.
+## GPU qualification and training
 
-The production factory supports the current sixteen-plane F32/G32 graph with
-five priors and radius 1.01 or 2.01. Verify its source hash and model/ABI
-identities against the sealed asset before running. GPU parity and training
-must pass in the current CUDA runtime.
+Use a bounded provider GPU job with hardware, finite duration, cost cap and zero
+restarts, or one finite B200/B300 Slurm job. Every `sbatch`, `srun` or `salloc`
+must use `--nice=2147483645`; verify `scontrol show job -o JOB_ID` reports
+Nice `2147483645`, Priority 1 and finite TimeLimit. Do not raise scheduling
+priority or alter another user's job. For Slurm, the supported runner uses
+single-step Enroot under the allocated GPU cgroup with per-job directories in
+`/var/tmp`; verify available space, inodes, GPU UUID and native CUDA identity.
+Use current `AGENTS.md` for detailed Slurm constraints.
 
-Publish an actual completed PPO run as a native asset, then export it:
+Before **each new long training setup**, run a short GPU probe through the
+same rollout, transfer, inference and optimizer path. Measure completed Puffer
+agent steps divided by wall time over a steady interval **after compilation
+warmup**. Require ≥30,000 end-to-end SPS on the proposed configuration;
+GPU utilization alone does not qualify. Record hardware, interval and step
+count, utilization, environment count, horizon, minibatch, replay ratio,
+per-process and aggregate SPS, and opponent counts by seat. All opponent types
+must appear on both seats. Record illegal actions, nonfinite/clipped rewards
+and gradient failures; crashed steps do not qualify. For recurrent policies,
+probe through the prior ~2.6-million-step nonfinite-gradient region. Stop idle
+or failed probes promptly, preserving checkpoints and verified output.
+
+The subprocess JSON monitor can remain at zero until exit; read the native
+Puffer dashboard or metrics to assess live progress. Allow bounded cold-start
+and final publication time, but investigate sustained low SPS before long
+training. Change parallelism, batch or transfer only with measured end-to-end
+evidence. Keep dependent long jobs held until the exact treatment passes its
+throughput gate.
+
+Publish a completed run and export its exact sampler as a portable bundle:
 
 ```bash
 python -m integrations.policy publish --build BUILD_DIRECTORY/build.json \
@@ -163,134 +88,34 @@ python -m integrations.policy export --asset NEW_NATIVE_ASSET_DIRECTORY/asset.js
   --factory-source integrations/generals_fabric.py --output NEW_PORTABLE_BUNDLE_DIRECTORY
 ```
 
-Publication verifies the real completed run, checkpoint and authentic optimizer
-clock, and adds only actual new RL steps to provenance. Export verifies the
-realized model and ABI, preserves policy bytes/sampler/seeds and creates the
-portable `generals-spatial-policy-v1` manifest. Its file map is exactly
-`asset.json`, `policy.bin`, `weights.npz`; the serving asset has no learner.
-Existing outputs must be preserved; these operations author new directories.
+Publication verifies the completed PPO checkpoint and authentic optimizer
+clock. Export preserves policy bytes, model/ABI, sampler and training seeds.
+Preserve completed checkpoints and learner bytes if publication fails; rerun
+publication from the existing run.
 
-## Prepare and qualify a run
+## Development and hosted acceptance
 
-1. Verify the baseline policy, optimizer, source, and build hashes. Preserve the
-   originals and write the proposed effective configuration in a new run folder.
-2. Exercise the real launcher in CPU preflight, including its pinned-trainer,
-   transfer, sampling, geometry and discount checks when changing these boundaries.
-   Avoid duplicating this expensive setup in each GPU arm; each actual initializer
-   still validates its sealed asset. An image build alone does not prove launch readiness.
-3. Verify training and serving compute the same acting probabilities, legal
-   masks, priors, half moves, and temperature schedules. Inference and PPO must
-   agree on the sampler used to collect the rollout.
-4. Use one validated, bounded provider GPU job with explicit hardware, duration,
-   cost cap and zero restarts, or one finite B200/B300 Slurm job using
-   `--nice=2147483645`. For Slurm record controller readback with Nice, Priority
-   and finite TimeLimit. Follow current user authorization and `AGENTS.md`.
-5. Measure completed native Puffer steps over a steady interval after compilation
-   and warmup, including rollout, transfer, inference, and optimizer updates.
-   Require at least **30,000 SPS on the proposed GPU configuration** before
-   extending training. Keep any long dependent job held until that measurement.
-6. Retain hardware identity, GPU utilization, environments and agents per trainer,
-   horizon, minibatch, replay ratio, timing bounds, completed steps, per-trainer
-   and aggregate SPS, and opponent counts by seat. A crashed trainer's steps
-   cannot establish a sustained gate. Release failed or idle allocations promptly.
+Freeze opponent versions, map distribution, sampler, seeds and seats before each
+comparison. Pair source, exact matched control and treatment on initial Classic
+states. Report W/L/D by opponent and seat, paired signed-score delta, uncertainty
+and failures. Confirm a promising development result on independent maps before
+hosting. Select and freeze the checkpoint before held-out or hosted evaluation.
+For a sampler edit, compare both the changed initialization and unchanged
+qualified parent. Verify native/serving acting probabilities, masks, priors,
+half moves and temperature schedules, plus wire legality.
 
-Read native dashboards or metrics while a trainer runs; the subprocess summary
-JSON may show zero until exit. A bounded profiling run can diagnose sub-30K SPS.
-For recurrent runs, pass the known nonfinite-gradient region before extending.
+Serve the frozen bundle through `SpatialPlayerPolicy`. Build
+`integrations/softmax/Dockerfile.neural` with the exported bundle as its named
+`policy` context; see the [serving README](../../integrations/softmax/README.md#frozen-neural-policy).
+Before registering, read the immutable AMD64 Docker config ID and inspect the
+bundle inside that exact image. Match its manifest, asset, policy and weights
+hashes to the exported bundle. Require SDK image status `ready` and
+`client_hash` equal to that config ID; retain the registry digest and the
+policy-registration request/response linking image ID to returned immutable
+policy version. A promotion report's caller-supplied identity fields alone do
+not prove this link.
 
-## Strength evaluation and promotion
-
-Freeze the evaluation opponent versions, map distribution, seeds, seats, and
-sampler. Keep development and fresh confirmation maps separate. Paired baseline
-and candidate comparisons should share initial maps and report W/L/D by
-opponent and seat, paired deltas, uncertainty, and failures.
-
-For sampler changes, compare against the actual changed initialization and the
-unchanged qualified parent. A win over a weakened initialization alone does
-not establish stronger play. Checkpoint selection must precede final held-out
-and hosted panels.
-
-Export a frozen serving bundle with a content manifest and exact sampler.
-Verify native/serving parity and wire legality, then collect fresh balanced
-hosted matches against Daveey and the incumbent. Initial acceptance: at least
-65% wins against each, with a 95% confidence lower bound above 50%, preservation
-against the broad pool, and clean execution. Record the decision and exact
-bundle identity before promoting the selected policy on an eligible account.
-
-## Serving the frozen policy
-
-Export and serve the supported spatial bundle with its exact weights, model
-metadata, and sampling settings. The neural player exclusively uses
-`SpatialPlayerPolicy`; it needs no private Metta training runtime or factory
-source. Build `integrations/softmax/Dockerfile.neural` with the exported bundle
-as its named `policy` build context. See the
-[local serving commands](../../integrations/softmax/README.md#frozen-neural-policy).
-A local serving pass does not supply new training or hosted strength evidence.
-
-## Hosted panels
-
-Register the frozen AMD64 image using the installed Coworld SDK `upload-policy`
-command, then retain its immutable policy version and registry digest.
-Before scheduling the panel, verify the frozen identity chain:
-
-1. Record `docker image inspect --format '{{.Id}} {{.Os}}/{{.Architecture}}' IMAGE`.
-   Use that immutable config ID for readback, rather than the mutable tag:
-
-   ```bash
-   docker run --rm --platform linux/amd64 --read-only --network none \
-     --entrypoint python IMAGE_CONFIG_ID -c 'import hashlib,json; from pathlib import Path; from integrations.spatial_policy_bundle import SpatialPlayerPolicy; p=Path("/app/policy"); policy=SpatialPlayerPolicy(p); print(json.dumps({"bundle_manifest_sha256":hashlib.sha256((p/"spatial-policy.json").read_bytes()).hexdigest(),"files":{n:hashlib.sha256((p/n).read_bytes()).hexdigest() for n in ("asset.json","policy.bin","weights.npz")},"policy_sha256":policy.asset.metadata["policy_sha256"]}))' \
-     > image-bundle-readback.json
-   ```
-
-   Compare every reported hash with the selected exported bundle. Successful
-   loading validates the current `asset.json` bundle and sampler; it does not
-   establish wire parity or strength. Keep the build's frozen source revision.
-2. Read the server image's ready metadata through SDK `get_image(IMAGE_ID)`.
-   Require `status=ready`, `client_hash=IMAGE_CONFIG_ID`, and retain the returned
-   immutable `image_digest`. The SDK uses Docker's config ID as `client_hash`;
-   that ID covers the image's rootfs layers. The registry digest can differ.
-3. Retain the authenticated registration request with `container_image_id` and
-   its response containing the immutable policy version ID. Use that returned
-   version in the panel. Also verify a server policy-to-image association if
-   the API exposes it. The known baseline's current policy lookup returns
-   `container_image_id=null`; it does **not** independently prove this link.
-   The retained request/response records the original registration transaction.
-
-The promotion report checks panel identities and outcomes; its caller-supplied
-checkpoint/image/source fields do not prove this image-to-policy chain.
-Build and registration stay with Docker/SDK; the supported match workflow is
-`integrations.hosted_policy`. It uses the current Observatory HTTP contract,
-without the SDK's outdated typed pagination parser.
-
-```bash
-python -m integrations.hosted_policy submit --dry-run \
-  --policy POLICY_VERSION_ID --opponent incumbent=OPPONENT_VERSION_ID \
-  --games-per-opponent 2 --key UNIQUE_PANEL_KEY \
-  --checkpoint-sha256 CHECKPOINT_SHA256 --source-commit SOURCE_COMMIT \
-  --image-digest sha256:IMAGE_SHA256 --output NEW_PANEL_DIRECTORY
-# Repeat the same command without --dry-run to submit the preserved intent.
-python -m integrations.hosted_policy status --output NEW_PANEL_DIRECTORY
-python -m integrations.hosted_policy collect --output NEW_PANEL_DIRECTORY
-```
-
-Each opponent gets equal games in both seats; the explicit count includes both
-seats. Add repeated `--opponent NAME=VERSION_ID` arguments for a larger fixed
-pool. Observatory accepts at most 100 episodes per request, so the command
-splits a larger seat panel into preserved batches; 256 games per opponent
-produces 100+28 episodes for each seat. The provider also limits outstanding
-undispatched episodes to 300 per account. If submission returns HTTP 429,
-wait for accepted batches to dispatch, then rerun the identical `submit`
-command to send only the remaining batches. Dry run writes exact request
-bodies and hashes without authentication or external writes. Submission reads
-owned requests first, preserves receipts, and
-uses stable idempotency keys; repeating the identical intent reuses requests.
-Collection verifies preserved payload hashes and frozen episode rosters, then
-writes `summary.json` for the promotion report, including incomplete/failing
-requests and recorded episode costs. It performs no champion change.
-
-After the two-game runtime smoke passes, prepare fresh confirmation against
-both frozen opponent versions. This schedules 256 games per opponent, 128 in
-each seat (512 games total):
+The supported panel workflow is `integrations.hosted_policy`:
 
 ```bash
 python -m integrations.hosted_policy submit --dry-run \
@@ -299,40 +124,32 @@ python -m integrations.hosted_policy submit --dry-run \
   --opponent Daveey=76b0a083-f0a4-4ec7-9811-038349266633 \
   --games-per-opponent 256 --key UNIQUE_CONFIRMATION_KEY \
   --checkpoint-sha256 CHECKPOINT_SHA256 --source-commit SOURCE_COMMIT \
-  --image-digest sha256:IMAGE_SHA256 --output CONFIRMATION_PANEL_DIRECTORY
-# Submit the identical preserved intent without --dry-run, then status/collect.
-```
-
-These IDs are the recorded frozen opponents; confirm their identities before
-submission. Preserve the complete panel even when an early result looks strong.
-
-Operational promotion requires the current hosted summary and its complete
-preserved panel directory, plus explicit frozen identities:
-
-```bash
-python -m integrations.policy promotion --summary PANEL_DIRECTORY/summary.json \
-  --panel PANEL_DIRECTORY --opponents incumbent Daveey \
+  --image-digest sha256:IMAGE_SHA256 --output NEW_PANEL_DIRECTORY
+# Submit the identical preserved intent without --dry-run.
+python -m integrations.hosted_policy status --output NEW_PANEL_DIRECTORY
+python -m integrations.hosted_policy collect --output NEW_PANEL_DIRECTORY
+python -m integrations.policy promotion --summary NEW_PANEL_DIRECTORY/summary.json \
+  --panel NEW_PANEL_DIRECTORY --opponents incumbent Daveey \
   --checkpoint-sha256 CHECKPOINT_SHA256 --image-digest sha256:IMAGE_SHA256 \
-  --source-commit SOURCE_COMMIT --output PANEL_DIRECTORY/promotion.json
+  --source-commit SOURCE_COMMIT --output NEW_PANEL_DIRECTORY/promotion.json
 ```
 
-It recomputes the summary from hashed payloads and retained request receipts and
-states. Pending or incomplete panels cannot qualify, even when completed games
-already exceed statistical thresholds. The independent `strength_report`
-function evaluates counts alone and does not establish artifact readiness.
+Confirm the frozen opponent IDs before submitting. Run a small hosted runtime
+smoke first, then a fresh balanced panel of 256 games per opponent (128 per
+seat). The workflow splits requests at the provider's 100-episode limit and
+preserves exact request hashes and idempotency keys. If the 300-undispatched-
+episode account limit returns HTTP 429, wait for accepted batches and rerun the
+same intent. Do not create new games because a poll deadline elapsed. Collect
+the complete panel, audit SHA-bound replays, and require zero unexplained
+illegal actions, timeouts, forfeits or incomplete requests.
 
-Authentication uses `SOFTMAX_TOKEN` or the SDK's canonical saved **user** token;
-install the Coworld/Softmax SDK in the execution environment for saved-token
-loading. Tokens and signed asset URLs are never printed. Read existing request
-IDs until terminal; do not treat a polling deadline as permission for new games.
+Promotion needs ≥65% wins **against each** incumbent and Daveey, each Wilson
+95% lower bound above 50%, broad Classic pool preservation, full identity
+chain and clean execution. `promotion` recomputes the preserved panel and does
+not itself change the champion. Promote only the qualified frozen version on an
+eligible account. Authentication uses `SOFTMAX_TOKEN` or the SDK saved user
+token; never print tokens or signed asset URLs.
 
-## Evidence and documentation updates
-
-Keep a bounded current-state page: selected policy, latest qualified measurements,
-remaining failures, and next experiment. Put full run outputs and receipts in
-versioned artifact directories or durable storage; link them from the state page.
-Record paths as unverified until their existence and hashes have been checked.
-
-Preserve checkpoints, optimizer state, and raw experiment outcomes. Protected Codex session history and trajectory databases must never
-be removed or rewritten as cleanup. Current user authorization and repository instructions govern the active
-overhaul. Git history retains superseded documentation and experiment recipes.
+Keep selected state and latest verified decisions in [current state](current-state.md),
+exact hashes in the manifest, and raw evidence in artifact directories. Never
+delete or rewrite protected Codex session histories or trajectory databases.
