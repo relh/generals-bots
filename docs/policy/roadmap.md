@@ -52,6 +52,11 @@ an intrinsic requirement of the 2.21 MiB policy.
 Learning improvement and hosted winning qualification remain open; see
 [current-state.md](current-state.md).
 
+Continuation `job-re2cn` is submitted from `d29f7f7` on one H100, bounded
+90min/$4.455 with zero restarts. It uses authenticated `job-uyssa` control outputs
+to publish control, distill and train warm; held-out panels follow later. Stage
+completion awaits artifacts, and matched strength remains unmeasured.
+
 ## Experiment decisions
 
 Retain baseline `f4ef5616…` with log-gap scale 0. The latest 8M-step exploration

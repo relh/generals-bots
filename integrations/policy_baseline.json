@@ -109,6 +109,53 @@
     }
   },
   "latest_attempt": {
+    "job": "job-re2cn",
+    "state": "SUBMITTED",
+    "phase": "continuation_pending",
+    "source_revision": "d29f7f790126ea5a04580ce94a40fd292c4f13cf",
+    "submitted_at_utc": "2026-10-06T06:17:59.678861+00:00",
+    "hardware": "H100",
+    "gpus": 1,
+    "max_duration_minutes": 90,
+    "max_cost_usd": 4.455,
+    "max_restarts": 0,
+    "authenticated_control_job": "job-uyssa",
+    "authenticated_control_archive_sha256": "dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374",
+    "planned_stages": [
+      "publish_control",
+      "distill",
+      "train_warm"
+    ],
+    "heldout_panels": "later",
+    "new_training_steps": null,
+    "strength_result": null,
+    "evidence": {
+      "path": "/tmp/generals-matched-continuation-d29f7f7-submission.json",
+      "sha256": "0249cb751f8a455d2afc79bb2f7bebde2ac9fcd37a29f82cf977806f8c77f852",
+      "bytes": 3183,
+      "verified_locally": true
+    }
+  },
+  "latest_training_throughput": {
+    "job": "35935",
+    "scope": "Completed control arm; entire experiment failed at serving parity.",
+    "hardware": "NVIDIA B300 SXM6 AC",
+    "environment_count": 8192,
+    "horizon": 256,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_epochs": 2,
+    "steady_interval_steps": 4194304,
+    "steady_interval_seconds": 49.645,
+    "steady_end_to_end_sps": 84485.9301,
+    "additional_training_steps": 8388608,
+    "evidence": {
+      "path": "/tmp/generals-policy-overhaul-results-35935/analysis.json",
+      "sha256": "e73d36bf2f780ea325a255f37f07af42336dd9519fd4f0d94de348cf252b54af",
+      "bytes": 2888
+    }
+  },
+  "previous_failure": {
     "job": "job-uyssa",
     "state": "FAILED",
     "phase": "control_publish_timeout",
@@ -154,39 +201,6 @@
     "warm_training_complete": false,
     "heldout_panels_complete": false,
     "result_archive_sha256": "dc6bd7f48b3cd64b1935a3e213239daa51cb38308e81f99d3dcfe32649bf9374"
-  },
-  "latest_training_throughput": {
-    "job": "35935",
-    "scope": "Completed control arm; entire experiment failed at serving parity.",
-    "hardware": "NVIDIA B300 SXM6 AC",
-    "environment_count": 8192,
-    "horizon": 256,
-    "minibatch": 8192,
-    "replay_ratio": 0.5,
-    "warmup_epochs": 2,
-    "steady_interval_steps": 4194304,
-    "steady_interval_seconds": 49.645,
-    "steady_end_to_end_sps": 84485.9301,
-    "additional_training_steps": 8388608,
-    "evidence": {
-      "path": "/tmp/generals-policy-overhaul-results-35935/analysis.json",
-      "sha256": "e73d36bf2f780ea325a255f37f07af42336dd9519fd4f0d94de348cf252b54af",
-      "bytes": 2888
-    }
-  },
-  "previous_failure": {
-    "job": "job-mvtti",
-    "state": "FAILED",
-    "billed_seconds": 123,
-    "charged_usd": 0.1012,
-    "new_training_steps": 0,
-    "gpu_preflight_passed": true,
-    "native_build_passed": true,
-    "native_source_hashes_matched": 14,
-    "model_environment_revision_matched": true,
-    "error": "verify_runtime curriculum symlink spelling mismatch",
-    "artifact_sha256": "c00ab2c6f8a4a989011afc842890ef3efb60aaca5813fd32133b36fce2209cf9",
-    "evidence_path": "/tmp/generals-matched-h100-results-job-mvtti/"
   },
   "superseded_unstarted_attempt": {
     "job": "36081",
