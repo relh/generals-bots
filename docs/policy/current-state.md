@@ -107,10 +107,16 @@ development and independent confirmation rather than those hosted losses as a
 tuning set.
 
 An isolated rank-8 source-conditioned global residual is under local parity
-review on `codex/source-global-product` at `af110b8`. It preserves the public
+review on `codex/source-global-product` at `574154a`. It preserves the public
 observation and action ABI, and its zero-head transplant reproduces selected
-source logits exactly before training. No GPU qualification, game-strength
-result, or policy selection exists yet.
+source logits exactly before training. All ten frozen neural opponents were
+migrated once to this topology with old/new direct logit parity. A bounded
+H100 throughput probe `job-ffctd` is submitted on the exact original
+13-opponent Classic pool; it must pass a 512-game source/serving gate and
+native preflight before 4,194,304 PPO steps. The sealed context archive SHA is
+`a158783629a1e5d3011ae2c26e0f4c8933a03acfbb86bfc2384b956d871d9ef6`.
+The job has zero restarts, a 30-minute/$1.485 cap. No GPU qualification,
+game-strength result, or policy selection exists yet.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
