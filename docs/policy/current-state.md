@@ -162,14 +162,21 @@ the attempt billed 60 seconds/$0.0495. The successful mirror gate used the
 same evaluation code, policy and CUDA image; the hard-weight gate differed in
 seeds, two explicitly exported default sampler values and running before the
 native build. The evidence does not distinguish a transient native crash from
-a seed-specific reset failure. No further GPU retry is queued.
+a seed-specific reset failure.
 The first `job-wrj6w` failed during image build because restrictive context
 permissions hid its Dockerfile from the rootless builder; it billed $0. The
 corrected archive passed tar-header and unprivileged extraction checks.
 The next `job-ju3rh` reached H100 but stopped at the GPU idle check before
 games/training (60 seconds/$0.0495); its log lacked process identities, so
 the exact cause is unproved. The current runner checks GPU idle before JAX
-imports and records process information on failure.
+imports and records process information on failure. A final bounded probe
+`job-izcgj` is submitted on `codex/hard-opponent-trial` at `cf98d7d`, using
+the qualified Trial build, source gate, preflight and train path. It requires
+both the proven 512-game source gate and a second complete 512-game gate on
+the failed seed before PPO. Its context is `ctx-5a1213c5`, archive SHA
+`8ae62472eede2e1d543cc08b613c9c30382cff094ee54074bb62576910a64289`;
+nonroot extraction and all file hashes were verified. The 30-minute/$1.485
+job has zero restarts. No qualification or training result exists yet.
 The proposed 16,777,216-step matched treatment/control run remains held.
 
 Hosted replay analysis points to general defense and army gathering: every

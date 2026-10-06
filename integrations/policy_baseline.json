@@ -133,5 +133,22 @@
     "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
     "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
   },
-  "active_experiments": []
+  "active_experiments": [
+    {
+      "kind": "hard_opponent_weighting_qualified_path_probe",
+      "branch": "codex/hard-opponent-trial",
+      "revision": "cf98d7d",
+      "job": "job-izcgj",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "8ae62472eede2e1d543cc08b613c9c30382cff094ee54074bb62576910a64289",
+      "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "agent_steps": 4194304,
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "minimum_steady_sps": 30000,
+      "max_cost_usd": 1.485
+    }
+  ]
 }
