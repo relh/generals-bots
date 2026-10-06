@@ -300,6 +300,9 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         device_python_env=bool(config.python_environment and config.python_environment.device_resident),
     )
     install_advantage_normalization(source)
+    from integrations.capital_safety import install_sampler
+
+    install_sampler(source)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)

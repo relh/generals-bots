@@ -68,3 +68,26 @@ def constrain_logits(logits, observations, xp):
     reference = xp.take_along_axis(logits, index, axis=-1)
     guarded = xp.where(allowed, logits - reference, xp.asarray(-1e9, dtype=logits.dtype))
     return xp.where(active[..., None], guarded, logits)
+
+
+def install_sampler(source):
+    """Keep native CDF endpoint fallback inside positive probability support."""
+    path = source / "src/pufferl.cu"
+    text = path.read_text()
+    replacements = (
+        ("    bool norm_adv;\n", "    bool norm_adv;\n    bool capital_safety;\n"),
+        ('        .norm_adv = puf_ini_get(ini, "train", "norm_adv") != 0,',
+         '        .norm_adv = puf_ini_get(ini, "train", "norm_adv") != 0,\n'
+         '        .capital_safety = getenv("METTA_SPATIAL_CAPITAL_SAFETY") != NULL &&\n'
+         '            strcmp(getenv("METTA_SPATIAL_CAPITAL_SAFETY"), "True") == 0,'),
+        ("        int mask_stride) {", "        int mask_stride, bool capital_safety) {"),
+        ("            mask_b.data, mask_stride);", "            mask_b.data, mask_stride, hypers->capital_safety);"),
+        ('                    if (to_float(action_mask[mask_base + logits_offset + a]) != 0.0f) {',
+         '                    if (to_float(action_mask[mask_base + logits_offset + a]) != 0.0f &&\n'
+         '                        (!capital_safety || expf(cache[a] - logsumexp) > 0.0f)) {'),
+    )
+    for old, new in replacements:
+        if text.count(old) != 1:
+            raise ValueError(f"Capital sampler anchor changed: {old}")
+        text = text.replace(old, new, 1)
+    path.write_text(text)

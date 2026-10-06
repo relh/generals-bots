@@ -66,6 +66,8 @@ def main():
     parser.add_argument("--doomed-attack-route-penalty", type=float, default=0.0,
                         help="Diagnostic route penalty when full army cannot capture a visible enemy")
     args = parser.parse_args()
+    if args.capital_safety and args.sample_seed is None:
+        raise ValueError("Capital safety requires sampled learner actions")
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
     if not np.isfinite(args.sampling_temperature) or args.sampling_temperature <= 0:

@@ -134,6 +134,7 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
         self._population_action_selection = tuple(
             ({"mode": policy.action_mode, "move_temperature": policy.move_temperature,
               "split_temperature": policy.split_temperature,
+              "capital_safety": policy.capital_safety,
               **({"log_gap_scale": policy.log_gap_scale} if policy.log_gap_scale else {}),
               **({"full_action_temperature": policy.full_action_temperature}
                  if policy.full_action_temperature != 1 else {}),
