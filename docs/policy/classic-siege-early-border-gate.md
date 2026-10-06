@@ -1,0 +1,11 @@
+# Early border reinforcement: fixed development pilot
+
+Status: preregistered before GPU evaluation. This candidate changes only the old native siege opponent's turn-800 guard around its existing visible-enemy border gathering block. It keeps full moves, remembered-general siege priority, city logic, and the later spearhead block identical.
+
+- Control: source `dbdc6c5d0cc53680d3b2f9fbfbde4f7220b83726`, native source SHA-256 `1979e5357bccbfe925a0f439854f4c4e06840023528504dfc2dc75e9f357d367`.
+- Candidate: this branch, native source SHA-256 `91c862e07b17dc7b30b0f43383d6e43bea4f56e15ecf3c1275df8b74e51d0a10`. Use the final branch revision and package hashes in the receipt.
+- Learner: immutable source bundle, policy SHA-256 `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14`, with its exported structured sampler.
+- Fresh fixed map seed `10941511`, learner sample seed `10941513`, paired bootstrap seed `10941517`. They had no repository or earlier Generals package references when this gate was written. No hosted holdout or earlier siege comparison seed enters the pilot.
+- Run 1,024 first episodes per arm under official Coworld Classic rules, balanced learner seats, zero shaping, no position curriculum. Keep the ten frozen opponents and `expander_harvester` and `sentinel` identical. Evaluation-only weights are `[1] * 12 + [100]`, yielding exactly 904 paired siege games, 452 per learner seat. Require identical initial-state hashes, seats, and opponent labels row for row across arms; report all 13 opponents.
+
+The screen passes only if the frozen learner wins **at least five percentage points less** against the candidate on the siege rows, the paired 95% bootstrap confidence interval's upper bound is below zero, and the candidate is no easier for the learner on either seat by point estimate. Verify all native moves legal and all first episodes complete within the Classic cap. Report half-move share and moves onto a remembered general as diagnostics, without tuning this candidate to the results. If the screen passes, review it and use a separate fresh 4,096-game paired confirmation; then qualify a short H100 training run at at least 30,000 steady-state end-to-end SPS before any PPO. If the screen fails or is inconclusive, stop this siege intervention without another threshold search on these games.

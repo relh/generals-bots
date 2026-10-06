@@ -34,7 +34,7 @@ def test_public_scenarios_match_python_and_do_not_mutate_inputs(native):
     rng = np.random.default_rng(739)
     grids = np.zeros((48, 3, 21, 21), np.int32)
     dims = np.array([[18 + i % 4, 18 + (i // 4) % 4] for i in range(48)], np.int32)
-    turns = np.array([i * 39 for i in range(48)], np.int32)
+    turns = np.array([800 + i * 20 for i in range(48)], np.int32)
     memories = native.initial_memory(48)
     expected = []
     expected_memory = []
@@ -67,6 +67,19 @@ def test_public_scenarios_match_python_and_do_not_mutate_inputs(native):
     np.testing.assert_array_equal(after, expected_memory)
     for original, copy in zip((dims, turns, grids, memories), saved):
         np.testing.assert_array_equal(original, copy)
+
+
+def test_visible_enemy_border_gathers_before_turn_800(native):
+    grid = np.zeros((1, 3, 21, 21), np.int32)
+    grid[:, 0] = 1
+    grid[0, 0, 3, 3] = 4
+    grid[0, 1, 3, 2:4] = 1
+    grid[0, 2, 3, 2:4] = [18, 3]
+    grid[0, 1, 3, 4] = 2
+    grid[0, 2, 3, 4] = 10
+    actions, _ = native(np.array([[18, 19]], np.int32), np.array([100], np.int32),
+                        grid, native.initial_memory(1))
+    np.testing.assert_array_equal(actions, [[0, 3, 2, 3, 0]])
 
 
 def test_reset_clears_memory_even_at_nonzero_turn(native):

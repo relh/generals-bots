@@ -186,26 +186,24 @@ struct Agent {
     Action action;
     if (siege(action))
       return action;
-    if (turn >= 800) {
-      int strongest = -1;
-      for (int p : owned) {
-        bool border = false;
-        for (int q : neighbors[p])
-          border |= owner[q] == 2;
-        if (border && (strongest < 0 || army[p] > army[strongest]))
-          strongest = p;
-      }
-      if (strongest >= 0) {
-        bool advance = false;
-        for (int q : neighbors[strongest])
-          if (owner[q] == 2 && army[strongest] > army[q] + 1)
-            advance = true;
-        if (!advance) {
-          action = gather(strongest);
-          if (action[0] == 0) {
-            memory[2] = strongest;
-            return action;
-          }
+    int strongest = -1;
+    for (int p : owned) {
+      bool border = false;
+      for (int q : neighbors[p])
+        border |= owner[q] == 2;
+      if (border && (strongest < 0 || army[p] > army[strongest]))
+        strongest = p;
+    }
+    if (strongest >= 0) {
+      bool advance = false;
+      for (int q : neighbors[strongest])
+        if (owner[q] == 2 && army[strongest] > army[q] + 1)
+          advance = true;
+      if (!advance) {
+        action = gather(strongest);
+        if (action[0] == 0) {
+          memory[2] = strongest;
+          return action;
         }
       }
     }
