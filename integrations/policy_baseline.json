@@ -109,18 +109,18 @@
     }
   },
   "latest_attempt": {
-    "job": "job-zvvcn",
+    "job": "job-mvtti",
     "state": "SUBMITTED",
     "phase": "matched_defense_awaiting_gpu_execution",
-    "label": "relh-generals-matched-defense-4096h128-e649d73-quietbuild",
+    "label": "relh-generals-matched-defense-4096h128-e649d73-quiet-perms",
     "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199",
-    "submitted_at_utc": "2026-10-06T05:00:00.233474+00:00",
+    "submitted_at_utc": "2026-10-06T05:03:33.943360+00:00",
     "execution_backend": "givemeanode_native_docker",
     "hardware": "H100",
     "gpus": 1,
-    "context_id": "ctx-368f034d",
-    "input_sha256": "374b3e1371e43ed814095c6118c047bcc0353f0643d6d3da7cda116ad6b8ced1",
-    "input_bytes": 199714298,
+    "context_id": "ctx-cbe9e90f",
+    "input_sha256": "37db7386e256749e186ed849d0172b5019fb069cccd11fb495514b1fbdd5c9e6",
+    "input_bytes": 199596489,
     "max_duration_minutes": 90,
     "max_cost_usd": 4.455,
     "max_restarts": 0,
@@ -136,13 +136,13 @@
     "new_training_steps": null,
     "strength_result": null,
     "evidence": {
-      "path": "/tmp/generals-matched-h100-quiet-build-submission.json",
-      "sha256": "d7ef28dfd2d0d7c88cc4c1ed4fa5283ac30e5917d67933c389df51e8a10932d4",
-      "bytes": 3197,
+      "path": "/tmp/generals-matched-h100-quiet-perms-submission.json",
+      "sha256": "5087fde161dfb017baf74aa616c9f86b452200db8d38011cda1ac019d50c166c",
+      "bytes": 3198,
       "verified_locally": true
     },
     "free_validation_passed": true,
-    "retry_delta": "Dockerfile install verbosity only;680 files identical except Dockerfile"
+    "retry_delta": "Files-only GNU tar, all files644/no directory entries; source/input bytes unchanged, quiet installs retained"
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -164,13 +164,13 @@
     }
   },
   "previous_failure": {
-    "job": "job-int7f",
+    "job": "job-zvvcn",
     "state": "BUILD_FAILED",
+    "elapsed_seconds": 19,
     "gpu_allocated": false,
-    "billed_seconds": 0,
     "new_training_steps": 0,
-    "error": "Docker pip/version layer failed;64KiB build log truncated before exact error",
-    "first_builder": "lost claim/requeued",
+    "error": "open /ctx/framework-source: permission denied",
+    "cause": "BSD tar included mode700 staging directory entries",
     "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199"
   },
   "superseded_unstarted_attempt": {
@@ -211,7 +211,7 @@
     "minibatch": 8192,
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
-    "matched_warm_experiment": "Submitted quietbuild retry job-zvvcn;matched results pending.",
+    "matched_warm_experiment": "Submitted files-only retry job-mvtti;matched results pending.",
     "startup_seconds": 420,
     "training_seconds_each": 600,
     "duplicate_cpu_preflight": false,

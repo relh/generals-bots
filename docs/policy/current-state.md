@@ -101,15 +101,19 @@ The first builder lost its claim/requeued; the second failed at Docker
 detail. Dockerfile/requirements through that layer match successful qualification;
 no training or game-code change explains the failure.
 
-**Quiet-build retry `job-zvvcn` is SUBMITTED**, 05:00:00 UTC, same source
-`e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-368f034d`.
-Only Docker install verbosity changes (`apt -qq`, `pip -q`) to expose errors;
-all 680 files are identical except Dockerfile. Ready archive 199,714,298 B, SHA
-`374b3e1371e43ed814095c6118c047bcc0353f0643d6d3da7cda116ad6b8ced1`.
+**Quiet-build retry `job-zvvcn` ended BUILD_FAILED in 19s, before GPU execution.**
+Its log exposed `open /ctx/framework-source: permission denied`: BSD tar had
+included mode-700 staging directory entries. Source/input bytes were unchanged.
+
+**Third matched attempt `job-mvtti` is SUBMITTED**, 05:03:33 UTC, same source
+`e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-cbe9e90f`.
+The capsule is repacked using GNU tar: files only, mode644, no directory entries;
+Dockerfile retains only the quiet apt/pip change. Ready archive 199,596,489 B,
+SHA `37db7386e256749e186ed849d0172b5019fb069cccd11fb495514b1fbdd5c9e6`.
 Free validation passed; one H100, **90-minute/$4.455 maximum**, zero restarts.
 Exact qualified result `c21491a7…` attached. Two **8,388,608-step fresh PPO arms**
 compare cold control with CE warmstart, then a broad held-out population panel.
-Receipt: `/tmp/generals-matched-h100-quiet-build-submission.json`.
+Receipt: `/tmp/generals-matched-h100-quiet-perms-submission.json`.
 **No matched training or strength result yet.**
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
@@ -182,7 +186,8 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-zfz7e` | Unqualified: 2048/H256 below30K; 4096/H128 36,643 SPS/68,241 MiB but final reward audit missing | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-zfz7e/` |
 | `job-s79eq` | Succeeded: 4096/H128 qualified at 36,182.7467 SPS, full finite/legal audit; 608s/$0.5016 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/` |
 | `job-int7f` | BUILD_FAILED before GPU, zero billed; Docker pip/version layer, truncated error log | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-submission.json` |
-| `job-zvvcn` | Submitted: install verbosity only retry; matched results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-build-submission.json` |
+| `job-zvvcn` | BUILD_FAILED in19s: `/ctx/framework-source` permission denied, mode700 tar directory entries; no GPU | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-build-submission.json` |
+| `job-mvtti` | Submitted: files-only GNU tar/mode644 retry; matched results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-perms-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -193,7 +198,7 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 
 The matched defense driver is integrated and pushed through `de5f915`: it uses
 the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
-training startup to 420s and refuses unqualified geometry. The matched experiment is submitted as `job-zvvcn`; results remain pending.
+training startup to 420s and refuses unqualified geometry. The matched experiment is submitted as `job-mvtti`; results remain pending.
 
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.
