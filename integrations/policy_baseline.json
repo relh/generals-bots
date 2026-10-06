@@ -99,6 +99,21 @@
       "sample_seed": 9774003,
       "games_per_arm": 4096,
       "arms": 3
+    },
+    {
+      "kind": "source_mirror_ppo_throughput_probe",
+      "branch": "codex/source-mirror-ppo",
+      "revision": "9ba44f4",
+      "job": "job-jqgpa",
+      "last_observed_state": "SUBMITTED",
+      "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "agent_steps": 4194304,
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "minimum_steady_sps": 30000,
+      "max_cost_usd": 1.485
     }
   ]
 }

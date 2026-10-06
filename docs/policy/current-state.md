@@ -81,6 +81,14 @@ and legal owned-to-owned moves toward it. Its context archive SHA is
 `29209f8603bccf124e0d5f1e8a6222c09d628b399224dfae4fbbf1440a7728f7`.
 No result or serving change exists yet.
 
+A bounded source-mirror PPO throughput probe is submitted as `job-jqgpa` on
+`codex/source-mirror-ppo` at `9ba44f4`. It replaces one weak historical frozen
+opponent with the exact source actor; other opponents, reward and sampler are
+fixed. One H100 will run 4,194,304 steps at 4,096 environments/H128/minibatch
+8,192/replay 0.5, requiring at least 30K steady end-to-end SPS and clean
+audits. Its $1.485 cap and success marker bound the job. It has no result yet
+and cannot establish strength without a matched control and fresh evaluation.
+
 Hosted replay analysis points to general defense and army gathering: every
 recorded loss ended in general capture, often despite an economic lead at turn
 200. Against Daveey, the candidate used **241 half moves in 123,787 moves
