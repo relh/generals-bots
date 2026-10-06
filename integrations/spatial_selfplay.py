@@ -146,7 +146,9 @@ class SpatialPopulationOpponentPufferEnvironment(SpatialFrozenOpponentPufferEnvi
               **({"weak_owned_route_penalty": policy.weak_owned_route_penalty}
                  if policy.weak_owned_route_penalty else {}),
               **({"doomed_attack_route_penalty": policy.doomed_attack_route_penalty}
-                 if policy.doomed_attack_route_penalty else {})}
+                 if policy.doomed_attack_route_penalty else {}),
+              **({"general_garrison_split_bias": policy.general_garrison_split_bias}
+                 if policy.general_garrison_split_bias else {})}
              if policy.action_mode == "structured_sample" else {"mode": "argmax"})
             for policy in frozen
         )

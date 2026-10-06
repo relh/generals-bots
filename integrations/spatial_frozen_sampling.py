@@ -9,6 +9,7 @@ from integrations.spatial_action_sampling import (
     public_doomed_attack_route_penalty,
     public_early_route_temperature,
     public_neutral_route_bonus,
+    public_general_garrison_split_bias,
     public_weak_owned_route_penalty,
 )
 
@@ -18,7 +19,7 @@ def sample_flat_logits(key, logits, legal):
     return jax.random.categorical(key, jnp.where(legal, logits, -jnp.inf), axis=-1)
 
 
-def frozen_action_indices(policy, outputs, masks, keys, observations=None):
+def frozen_action_indices(policy, outputs, masks, keys, observations=None, general_garrison_split_bias=0.0):
     """Select frozen opponent actions using the bundle's serving contract."""
     if policy.action_mode != "structured_sample":
         raise ValueError("Frozen opponents require the current structured sampler")
@@ -28,7 +29,11 @@ def frozen_action_indices(policy, outputs, masks, keys, observations=None):
             raise ValueError("Early route schedule requires frozen public observations")
         move_temperature = public_early_route_temperature(
             observations, move_temperature, policy.early_route_temperature, policy.early_route_turns, jnp)
+    strength = general_garrison_split_bias or policy.general_garrison_split_bias
+    split_bias = (public_general_garrison_split_bias(observations, strength, jnp)
+                  if strength else None)
     logits = acting_logits(outputs, move_temperature, policy.split_temperature, jnp,
+                           split_bias=split_bias,
                            route_half_weight=policy.route_half_weight)[:, :3529]
     if policy.neutral_route_bias:
         if observations is None:

@@ -1,0 +1,19 @@
+{
+  "scope": "Development-only paired Classic sampler diagnostic; no training or promotion",
+  "checkpoint_source_revision": "fdb12d035855f599b089ce72cf316fd31c45327f",
+  "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "bundle_manifest_sha256": "1781c1abdcb9f6266433c45b1e0a67423cde663e775055d570df5a799f2340d2",
+  "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+  "population_build_sha256": "bb81e9d3d0eaf38a51e2074ab4f5b7d1142e04ede89c0b581286aa7523c481e4",
+  "serving_sampler": "frozen penalty-eight source bundle",
+  "changed_sampler_field": "general_garrison_split_bias",
+  "eligible_route": "legal move from public own general with 5 through 19 armies; adjust conditional half probability only",
+  "biases": [0, 2, 4],
+  "games_per_arm": 4096,
+  "pool_size": 4096,
+  "expected_opponents": 13,
+  "map_seed": 9874001,
+  "sample_seed": 9874003,
+  "compare_against": "bias0",
+  "decision_rule": "Inspect paired signed score and opponent by seat for both candidates; retain frozen source unless gains are broad and a fresh independent confirmation supports one fixed choice"
+}

@@ -24,6 +24,7 @@ from integrations.softmax.neural_codec import encode_wire_observation
 from integrations.spatial_action_sampling import (
     acting_logits,
     public_doomed_attack_route_penalty,
+    public_general_garrison_split_bias,
     public_early_route_temperature,
     public_neutral_route_bonus,
     public_weak_owned_route_penalty,
@@ -86,8 +87,11 @@ def rollout_probabilities(outputs, observations, legal, policy):
             policy.early_route_turns,
             jnp,
         )
+    split_bias = (public_general_garrison_split_bias(values, policy.general_garrison_split_bias, jnp)
+                  if policy.general_garrison_split_bias else None)
     acting = acting_logits(
-        predictions, temperature, policy.split_temperature, jnp, route_half_weight=policy.route_half_weight
+        predictions, temperature, policy.split_temperature, jnp, split_bias,
+        route_half_weight=policy.route_half_weight
     )[..., :3529]
     if policy.neutral_route_bias:
         acting += public_neutral_route_bonus(values, policy.neutral_route_bias, jnp)
@@ -231,6 +235,7 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
             neutral_route_bias=portable.neutral_route_bias,
             weak_owned_route_penalty=portable.weak_owned_route_penalty,
             doomed_attack_route_penalty=portable.doomed_attack_route_penalty,
+            general_garrison_split_bias=portable.general_garrison_split_bias,
             route_half_weight=portable.route_half_weight,
             full_action_temperature=portable.full_action_temperature,
             log_gap_scale=portable.log_gap_scale,

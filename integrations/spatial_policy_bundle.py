@@ -9,6 +9,7 @@ import numpy as np
 from integrations.spatial_action_sampling import (
     acting_logits,
     public_doomed_attack_route_penalty,
+    public_general_garrison_split_bias,
     public_early_route_temperature,
     public_neutral_route_bonus,
     public_weak_owned_route_penalty,
@@ -18,7 +19,8 @@ from integrations.spatial_action_sampling import (
 def structured_action_probabilities(outputs, legal, move_temperature, split_temperature,
                                     *, observations=None, neutral_route_bias=0.0,
                                     weak_owned_route_penalty=0.0, doomed_attack_route_penalty=0.0,
-                                    route_half_weight=0.0, full_action_temperature=1.0, log_gap_scale=0.0):
+                                    route_half_weight=0.0, full_action_temperature=1.0, log_gap_scale=0.0,
+                                    general_garrison_split_bias=0.0):
     """Match the native rollout categorical on the legal flat action set."""
     outputs = np.asarray(outputs, dtype=np.float32)
     legal = np.asarray(legal, dtype=bool)
@@ -37,12 +39,20 @@ def structured_action_probabilities(outputs, legal, move_temperature, split_temp
     if not np.isfinite(doomed_attack_route_penalty) or doomed_attack_route_penalty < 0 or (
             doomed_attack_route_penalty and observations is None):
         raise ValueError("Doomed attack route penalty requires public observations and a finite nonnegative weight")
-    transformed = acting_logits(outputs, move_temperature, split_temperature, np,
-                                route_half_weight=route_half_weight)[:3529]
-    if neutral_route_bias or weak_owned_route_penalty or doomed_attack_route_penalty:
+    if not np.isfinite(general_garrison_split_bias) or general_garrison_split_bias < 0 or (
+            general_garrison_split_bias and observations is None):
+        raise ValueError("General garrison bias requires public observations and a finite nonnegative weight")
+    public = None
+    if neutral_route_bias or weak_owned_route_penalty or doomed_attack_route_penalty or general_garrison_split_bias:
         public = np.asarray(observations, dtype=np.float32)
         if public.shape != (7056,) or not np.isfinite(public).all():
             raise ValueError("Route adjustment requires one finite public observation")
+    split_bias = (public_general_garrison_split_bias(
+        public, general_garrison_split_bias, np)
+        if general_garrison_split_bias else None)
+    transformed = acting_logits(outputs, move_temperature, split_temperature, np, split_bias,
+                                route_half_weight=route_half_weight)[:3529]
+    if neutral_route_bias or weak_owned_route_penalty or doomed_attack_route_penalty:
         if neutral_route_bias:
             transformed += public_neutral_route_bonus(public, neutral_route_bias, np)
         if weak_owned_route_penalty:
@@ -85,6 +95,7 @@ class SpatialPlayerPolicy:
         acting = self.asset.metadata["sampler"]
         required = {"mode", "move_temperature", "split_temperature"}
         optional = {"neutral_route_bias", "weak_owned_route_penalty", "doomed_attack_route_penalty",
+                    "general_garrison_split_bias",
                     "early_route_temperature", "early_route_turns", "route_half_weight",
                     "full_action_temperature", "log_gap_scale"}
         if (not isinstance(acting, dict) or acting.get("mode") != "structured_sample"
@@ -95,7 +106,7 @@ class SpatialPlayerPolicy:
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not np.isfinite(value) or value <= 0:
                 raise ValueError("Invalid spatial action temperature: " + key)
             setattr(self, key, float(value))
-        for key in ("route_half_weight", "neutral_route_bias",
+        for key in ("route_half_weight", "neutral_route_bias", "general_garrison_split_bias",
                     "weak_owned_route_penalty", "doomed_attack_route_penalty"):
             value = acting.get(key, 0.0)
             if (isinstance(value, bool) or not isinstance(value, (int, float)) or not np.isfinite(value)
@@ -213,6 +224,7 @@ class SpatialPlayerPolicy:
             observations=values[0], neutral_route_bias=self.neutral_route_bias,
             weak_owned_route_penalty=self.weak_owned_route_penalty,
             doomed_attack_route_penalty=self.doomed_attack_route_penalty,
+            general_garrison_split_bias=self.general_garrison_split_bias,
             route_half_weight=self.route_half_weight, full_action_temperature=self.full_action_temperature,
             log_gap_scale=self.log_gap_scale,
         )

@@ -109,6 +109,24 @@ def public_safe_owned_split_bias(observations, strength, xp):
     return eligible.astype(observations.dtype) * strength
 
 
+def public_general_garrison_split_bias(observations, strength, xp):
+    """Keep half of a modest general stack home when it makes a legal move.
+
+    This adjusts only full-versus-half choice on the selected route. It uses
+    the public own-general and army planes; legality stays with the action mask.
+    """
+    if observations.shape[-1] != 16 * 441:
+        raise ValueError("General garrison bias requires sixteen public planes")
+    planes = observations.reshape((*observations.shape[:-1], 16, 441))
+    source = xp.arange(MOVE_COUNT) % 441
+    source_army = xp.take(planes[..., 0, :], source, axis=-1)
+    own_general = ((xp.take(planes[..., 1, :], source, axis=-1) > .5) &
+                   (xp.take(planes[..., 4, :], source, axis=-1) > .5))
+    middle_stack = ((source_army >= math.log1p(5) / 8 - 1e-6) &
+                    (source_army < math.log1p(20) / 8 - 1e-6))
+    return (own_general & middle_stack).astype(observations.dtype) * strength
+
+
 def public_guided_owned_split_bias(observations, strength, xp):
     """Diagnostic split bias on a public route cue joining two owned stacks.
 

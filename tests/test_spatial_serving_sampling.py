@@ -3,6 +3,7 @@ import pytest
 
 from integrations.spatial_policy_bundle import structured_action_probabilities
 from integrations.spatial_action_sampling import (acting_logits, public_owned_split_bias,
+                                                  public_general_garrison_split_bias,
                                                   public_safe_owned_split_bias,
                                                   public_guided_owned_split_bias,
                                                   public_weak_owned_route_penalty,
@@ -122,6 +123,30 @@ def test_safe_owned_split_bias_requires_interior_middle_stack():
     assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
     public[source] = np.log1p(20) / 8
     assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
+
+
+def test_general_garrison_split_preserves_route_mass_and_requires_own_general():
+    source = 10 * 21 + 10
+    public = np.zeros(16 * 441, np.float32)
+    public[source] = np.log1p(10) / 8
+    public[441 + source] = 1
+    public[4 * 441 + source] = 1
+    bias = public_general_garrison_split_bias(public, 4, np)
+    assert bias[source] == bias[3 * 441 + source] == 4
+    assert bias[source + 1] == 0
+    outputs = np.zeros(3530, np.float32)
+    legal = np.zeros(3529, bool)
+    legal[[source, 1764 + source]] = True
+    before = structured_action_probabilities(outputs, legal, .05, .15)
+    after = structured_action_probabilities(
+        outputs, legal, .05, .15, observations=public, general_garrison_split_bias=4)
+    assert after[1764 + source] / after[source] == pytest.approx(
+        before[1764 + source] / before[source] * np.exp(4))
+    public[4 * 441 + source] = 0
+    assert public_general_garrison_split_bias(public, 4, np)[source] == 0
+    public[4 * 441 + source] = 1
+    public[source] = np.log1p(20) / 8
+    assert public_general_garrison_split_bias(public, 4, np)[source] == 0
 
 
 def test_guided_owned_split_bias_uses_public_route_and_two_stacks():

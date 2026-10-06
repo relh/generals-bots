@@ -102,6 +102,7 @@ def validate_sampler(sampler):
         "neutral_route_bias",
         "weak_owned_route_penalty",
         "doomed_attack_route_penalty",
+        "general_garrison_split_bias",
         "early_route_temperature",
         "early_route_turns",
         "route_half_weight",
@@ -123,6 +124,7 @@ def validate_sampler(sampler):
         "neutral_route_bias",
         "weak_owned_route_penalty",
         "doomed_attack_route_penalty",
+        "general_garrison_split_bias",
         "route_half_weight",
         "log_gap_scale",
     ):
