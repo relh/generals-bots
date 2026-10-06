@@ -94,6 +94,22 @@
       "replay_ratio": 0.5,
       "minimum_steady_sps": 30000,
       "max_cost_usd": 1.485
+    },
+    {
+      "kind": "hard_opponent_weighting_throughput_probe",
+      "branch": "relh/hard-opponent-weighting",
+      "revision": "b3f12c0",
+      "job": "job-wrj6w",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "34e062292792a729836a32a503d8ab2ef30eb14acac7829bfbc0a6b0c04caeed",
+      "source_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "agent_steps": 4194304,
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "minimum_steady_sps": 30000,
+      "max_cost_usd": 1.485
     }
   ]
 }

@@ -119,6 +119,17 @@ archive SHA `7f2c0aae1efe09dff3e1530f4c4fe16a6162787ed5377cc32b7ae8cd590744dc`.
 It has no training result yet and cannot establish strength without a matched
 control and fresh evaluation.
 
+A separate hard-opponent weighting throughput probe is submitted as H100
+`job-wrj6w` on `relh/hard-opponent-weighting` at `b3f12c0`. It starts from the
+same qualified source asset and original 13-opponent pool, changing only the
+weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. The
+4,194,304-step probe uses 4,096 environments/H128/minibatch 8,192/replay 0.5,
+has a 30-minute/$1.485 cap and zero restarts, and must pass ≥30K steady SPS,
+all-opponent both-seat coverage and clean reward/action audits. Its sealed
+context is `ctx-4529c00e`, archive SHA
+`34e062292792a729836a32a503d8ab2ef30eb14acac7829bfbc0a6b0c04caeed`.
+The proposed 16,777,216-step matched treatment/control run remains held.
+
 Hosted replay analysis points to general defense and army gathering: every
 recorded loss ended in general capture, often despite an economic lead at turn
 200. Against Daveey, the candidate used **241 half moves in 123,787 moves
