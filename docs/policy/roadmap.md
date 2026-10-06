@@ -8,9 +8,10 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Compare the isolated safe owned half-split and public capital-threat
-   gathering sampler pilots on paired Classic development maps. For a positive
-   candidate, verify the effect on independent seeds and train/serve parity.
+1. Compare the isolated safe owned half-split, public capital-threat gathering,
+   and general-garrison split sampler pilots on paired Classic development maps.
+   For a positive candidate, verify the effect on independent seeds and
+   train/serve parity.
 2. Audit the source-mirror PPO throughput probe. If it passes at least 30,000
    steady end-to-end steps per second with clean rewards, legal actions and all
    13 opponents on both seats, run its matched control and paired development
