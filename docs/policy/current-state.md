@@ -66,12 +66,13 @@ remains unchanged.
 
 ## Current experiment and next decision
 
-An isolated safe owned half-split sampler diagnostic is submitted as
-`job-53h6p` on branch `relh/safe-owned-half-split-pilot` at `8a2a58e`. It
-compares four arms on 4,096 paired Classic development games per arm, seeds
-9674001/9674003. **No result is recorded in this snapshot.** Its development
-maps cannot establish hosted strength. Check live provider status before using
-this job state.
+The safe owned half-split sampler pilot is resubmitted as `job-mvdyr` on branch
+`relh/safe-owned-half-split-pilot` at `eeda0f8`, with four paired 4,096-game
+arms on development seeds 9674001/9674003. The preceding `job-53h6p` failed
+before evaluation because its runner expected `input/bundle` but the sealed
+context used `input/bundles/penalty8`; its 60-second H100 attempt cost $0.0495.
+The new package checks the correct bundle path and manifest hash before games.
+No game result exists yet.
 
 A separate public capital-threat gathering diagnostic is submitted as
 `job-t7ydi` on `relh/capital-threat-gather-pilot` at `3cf46a0`. It compares
@@ -81,13 +82,16 @@ and legal owned-to-owned moves toward it. Its context archive SHA is
 `29209f8603bccf124e0d5f1e8a6222c09d628b399224dfae4fbbf1440a7728f7`.
 No result or serving change exists yet.
 
-A bounded source-mirror PPO throughput probe is submitted as `job-jqgpa` on
+A bounded source-mirror PPO throughput probe was prepared on
 `codex/source-mirror-ppo` at `9ba44f4`. It replaces one weak historical frozen
 opponent with the exact source actor; other opponents, reward and sampler are
 fixed. One H100 will run 4,194,304 steps at 4,096 environments/H128/minibatch
 8,192/replay 0.5, requiring at least 30K steady end-to-end SPS and clean
-audits. Its $1.485 cap and success marker bound the job. It has no result yet
-and cannot establish strength without a matched control and fresh evaluation.
+audits. Its $1.485 cap and success marker bound the job. The first submission
+`job-jqgpa` was cancelled during image build with **zero charge** after a
+JSON tuple/list comparison bug was found in preflight; a corrected sealed
+package is pending. It has no result yet and cannot establish strength without
+a matched control and fresh evaluation.
 
 Hosted replay analysis points to general defense and army gathering: every
 recorded loss ended in general capture, often despite an economic lead at turn
