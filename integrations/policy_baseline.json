@@ -110,14 +110,14 @@
   },
   "latest_attempt": {
     "job": "job-kcten",
-    "state": "BUILDING",
+    "state": "FAILED",
     "source_revision": "ed34d683bbc7082ddfa7bd679d8629bd88d43a34",
     "execution_backend": "givemeanode_native_docker",
     "hardware": "H100",
     "gpus": 1,
     "submitted_at_utc": "2026-10-06T02:51:46.354178+00:00",
-    "phase": "native_cuda_image_push",
-    "new_training_steps": null,
+    "phase": "train_prepare_run_asset_identity",
+    "new_training_steps": 0,
     "context_id": "ctx-b8121c41",
     "input_sha256": "65db01718f6e20de39727cb25b7206154ce5802894b3d84eeaa06b1f087d79f6",
     "max_duration_minutes": 30,
@@ -142,9 +142,9 @@
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
     "evidence": {
-      "path": "/tmp/generals-h100-probe-submission-ed34d68.json",
-      "sha256": "e63c334cda3723f61fdd6f2eb30e9de372f28f87623bf6d407eae4057b2960a6",
-      "bytes": 3174,
+      "path": "/tmp/generals-h100-probe-results-job-kcten/terminal.json",
+      "sha256": "7e2ef29a1ac9a3faddd9e2abc10748557f05d45f92fe1dccc3478529257809c1",
+      "bytes": 2850,
       "verified_locally": true
     },
     "package_evidence": {
@@ -160,7 +160,30 @@
     "max_cost_usd": 1.485,
     "measured_sps": null,
     "measured_training_memory": null,
-    "state_observed_utc": "2026-10-06T03:05:45.955414+00:00"
+    "state_observed_utc": "2026-10-06T03:05:45.955414+00:00",
+    "training_epochs": 0,
+    "billed_seconds": 651,
+    "charged_usd": 0.5368,
+    "source_sampling_wld": [
+      254,
+      253,
+      5
+    ],
+    "source_sampling_games": 512,
+    "both_builds_passed": true,
+    "error": "Native asset target identity differs: model_sha256",
+    "asset_model_sha256": "d30f5fae0f1d4e8805476791817a1998535d21e30f979c4746b366b31e5ab3ab",
+    "built_model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
+    "gpu_utilization_percent": 0,
+    "gpu_preparation_peak_memory_mib": 555,
+    "result_archive_sha256": "dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e",
+    "result_evidence": {
+      "path": "/tmp/generals-h100-probe-results-job-kcten/extracted/generals/probe-results.json",
+      "sha256": "5ac2a690296a6d1f6159b98d1c8267861eaac893d295666c088e631c8f5b0dac",
+      "bytes": 2179,
+      "verified_locally": true
+    },
+    "next_submission_gate": "Asset rebind equivalence and actual initializer proof must pass before any new GPU job."
   },
   "latest_training_throughput": {
     "job": "35935",

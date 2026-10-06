@@ -23,10 +23,11 @@ B300 continuation 36081 was cancelled while pending, with no node/runtime/epochs
 and unchanged maximum Nice/Priority 1, to measure smaller geometry as requested.
 First H100 sizing job `job-i8tp6` failed: its source sampler and both native
 builds passed, but both 120s CPU preflights timed out before training epochs.
-Revised job `job-kcten` is submitted from source `ed34d68` on one H100, bounded
-30 min GPU / $1.485 maximum. It removes the duplicate standalone CPU preflight
-and allows 420s startup with 600s training per profile. No sizing measurement
-or new strength result exists. Known 8,192/H256 buffers account
+Revised H100 job `job-kcten` also failed: sampler and both builds passed, but
+both train initializers rejected the cold asset's model identity (`d30f5fae…`
+versus built `cead5dce…`). It billed 651s/$0.5368 with no epochs or sizing
+measurements; GPU samples were 0% utilization, peak 555 MiB. No new GPU job
+until asset rebind equivalence and initializer proof pass. Known 8,192/H256 buffers account
 for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
 an intrinsic requirement of the 2.21 MiB policy.
 Learning improvement and hosted winning qualification remain open; see
@@ -52,7 +53,7 @@ sampling path before retrying the warm arm and broad panels. Direct Enroot and C
 proof; retain completed control and supervised artifacts from 35935. Those
 computations are not repeated. The failed retries provide no warm-arm result.
 
-The submitted H100 probe compares 2,048/H256 (43.126 GiB known buffers) with
+The intended sizing profiles compare 2,048/H256 (43.126 GiB known buffers) with
 4,096/H128 (44.904 GiB), using minibatch 8,192, replay 0.5 and 3,145,728 steps
 per probe (six epochs, two warmup). Require measured fit and ≥30K end-to-end SPS;
 33.081 GiB of the current device allocation is unattributed and cannot be assumed

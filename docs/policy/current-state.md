@@ -55,16 +55,21 @@ Terminal evidence: `/tmp/generals-h100-probe-results-job-i8tp6/`, including
 submission/package receipts remain `/tmp/generals-h100-probe-owned-job.json`
 and `/tmp/generals-h100-probe-package.json`.
 
-**Revised probe `job-kcten` is SUBMITTED**: one H100, source
-`ed34d683bbc7082ddfa7bd679d8629bd88d43a34`, sealed context `ctx-b8121c41`,
-archive SHA-256 `65db01718f6e20de39727cb25b7206154ce5802894b3d84eeaa06b1f087d79f6`.
-The validated 30-minute GPU bound costs at most **$1.485**. It preserves both
-geometries and uses **420s startup allowance and bounded 600s training per
-profile**, with the duplicate standalone CPU preflight removed; the trainer
-still validates its initializer. Submission receipt:
-`/tmp/generals-h100-probe-submission-ed34d68.json`. No new throughput, memory
-or strength result exists; the matched warm experiment remains deferred until
-smaller geometry is measured and selected.
+**Revised probe `job-kcten` FAILED** on one H100: **651 billed seconds,
+$0.5368 charged**, source `ed34d683bbc7082ddfa7bd679d8629bd88d43a34`, context
+`ctx-b8121c41`. Its source sampler again passed 254W/253L/5D, balanced seats;
+both native builds passed. Both training attempts were rejected by `prepare_run`:
+`Native asset target identity differs: model_sha256`. The cold asset binds
+`d30f5fae…`, while both new builds report `cead5dce…`.
+**No epochs, training SPS or training memory measurement** resulted. GPU samples
+were 0% utilization with a 555 MiB peak, reflecting preparation only.
+The revised driver used 420s startup and bounded 600s training per profile,
+without duplicate standalone CPU preflight; its 30-minute cap was $1.485.
+Verified terminal archive: `/tmp/generals-h100-probe-results-job-kcten/`, SHA-256
+`dbc67a8b0393b1844783f75517f1edcc0ce1bb83c447572ff23ecaa6bcd9825e`.
+**No new GPU job until asset rebind equivalence and initializer proof pass.**
+No new strength result exists; matched warm work remains deferred until geometry
+is measured and selected.
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
 for smaller measurements: runtime 0, no node, no epochs, Nice 2147483645/Priority 1
@@ -99,7 +104,7 @@ is device total-minus-free from `cudaMemGetInfo`, including allocator caches,
 not peak live tensors; **33.081 GiB remains unattributed**. Accounting:
 `/tmp/generals-native-memory-accounting-20261005.json`.
 
-The submitted revised H100 probe compares 2,048/H256 (43.126 GiB known buffers) with
+The sizing profiles compare 2,048/H256 (43.126 GiB known buffers) with
 4,096/H128 (44.904 GiB), each fresh from cold weights, minibatch 8,192/replay 0.5,
 **3,145,728 steps / six epochs**, two warmup epochs, then raw epoch and device
 memory measurements. Require **≥30K actual end-to-end SPS** before qualification;
@@ -132,7 +137,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | 35956 | Workload exit 1: GPU scope/parity/build/preflight passed; balanced-seat guard failed before sampling games | 100 min | `/tmp/generals-policy-overhaul-results-35956/` |
 | 36081 | Cancelled while pending: no node/runtime/epochs; smaller sizing requested | 100 min | `/tmp/generals-job-36081-superseded-sizing.json` |
 | `job-i8tp6` | Failed: sampler and both builds passed; both CPU preflights timed out at 120s before epochs | 30 min GPU | `/tmp/generals-h100-probe-results-job-i8tp6/` |
-| `job-kcten` | Submitted: revised H100 sizing, 420s startup and 600s training/profile; no measurements yet | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-submission-ed34d68.json` |
+| `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
