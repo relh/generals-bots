@@ -32,12 +32,14 @@ def save(path, value):
 
 
 def prepare(policy, opponents, games, key, checkpoint, source, image):
-    """One request per opponent and seat, with an explicit finite game budget."""
+    """Bounded requests per opponent and seat, with an explicit game budget."""
     UUID(policy)
     if not isinstance(games, int) or isinstance(games, bool) or games < 2 or games % 2:
         raise ValueError('games per opponent must be a positive even count of at least two')
     if not opponents or len(opponents) > 16 or games * len(opponents) > 4096:
         raise ValueError('Panel requires 1–16 opponents and at most 4096 total episodes')
+    if len(set(opponents.values())) != len(opponents):
+        raise ValueError('Opponent policy versions must be distinct')
     if not re.fullmatch(r'[a-zA-Z0-9_-]{1,120}', key):
         raise ValueError('Panel key must contain 1–120 letters, digits, underscores or hyphens')
     if not re.fullmatch(r'[0-9a-f]{64}', checkpoint) or not re.fullmatch(r'sha256:[0-9a-f]{64}', image):
@@ -52,17 +54,23 @@ def prepare(policy, opponents, games, key, checkpoint, source, image):
         if opponent == policy:
             raise ValueError('Candidate cannot be its own qualification opponent')
         for seat in (0, 1):
-            label = f'{name}-seat{seat}'
-            requests[label] = {
-                'idempotency_key': f'{key}-{label}', 'private': True,
-                'target': {'division_id': DIVISION, 'variant_id': 'competition'},
-                'roster': [
-                    {'player': {'policy_ref': policy}, 'slot': seat},
-                    {'player': {'policy_ref': opponent}, 'slot': 1 - seat},
-                ],
-                'num_episodes': games // 2, 'execution_backend': 'k8s',
-                'notes': f'Frozen Classic panel {key}; checkpoint {checkpoint}; source {source}; balanced seats.',
-            }
+            remaining = games // 2
+            batch = 0
+            while remaining:
+                count = min(remaining, 100)  # Observatory's per-request limit.
+                label = f'{name}-seat{seat}' if games <= 200 else f'{name}-seat{seat}-batch{batch}'
+                requests[label] = {
+                    'idempotency_key': f'{key}-{label}', 'private': True,
+                    'target': {'division_id': DIVISION, 'variant_id': 'competition'},
+                    'roster': [
+                        {'player': {'policy_ref': policy}, 'slot': seat},
+                        {'player': {'policy_ref': opponent}, 'slot': 1 - seat},
+                    ],
+                    'num_episodes': count, 'execution_backend': 'k8s',
+                    'notes': f'Frozen Classic panel {key}; checkpoint {checkpoint}; source {source}; balanced seats.',
+                }
+                remaining -= count
+                batch += 1
     return {'schema': 'generals-hosted-panel-v1', 'policy_id': policy,
             'checkpoint_sha256': checkpoint, 'source_commit': source, 'image_digest': image,
             'opponents': opponents, 'games_per_opponent': games,
@@ -165,8 +173,16 @@ def summarize(panel, states):
     for label, body in panel['requests'].items():
         state = states[label]
         summary['request_ids'].append(state['id'])
-        counts = {'games': 0, 'wins': 0, 'losses': 0, 'draws': 0}
-        summary['by_opponent_and_seat'][label] = counts
+        seat = body['roster'][0]['slot']
+        opponent_id = body['roster'][1]['player']['policy_ref']
+        opponent = next((name for name, version in panel['opponents'].items()
+                         if version == opponent_id), None)
+        if opponent is None or seat not in (0, 1):
+            raise ValueError('Request opponent or seat differs from frozen panel')
+        group = f'{opponent}-seat{seat}'
+        counts = summary['by_opponent_and_seat'].setdefault(
+            group, {'games': 0, 'wins': 0, 'losses': 0, 'draws': 0})
+        request_games = 0
         failures = state['failed_count']
         if state['status'] in ('failed', 'canceled', 'cancelled') and failures == 0:
             failures = 1
@@ -179,7 +195,6 @@ def summarize(panel, states):
             if eid in seen:
                 raise ValueError('Duplicate completed episode in panel')
             seen.add(eid)
-            seat = body['roster'][0]['slot']
             participants = episode['participants']
             if {p['position']: p['policy_version_id'] for p in participants} != {
                 seat: panel['policy_id'], 1 - seat: body['roster'][1]['player']['policy_ref'],
@@ -190,15 +205,16 @@ def summarize(panel, states):
                 raise ValueError('Expected one Classic candidate score')
             score = scores[0]
             counts['games'] += 1
+            request_games += 1
             counts['wins' if score > 0 else 'losses' if score < 0 else 'draws'] += 1
             summary['completed'] += 1
             cost = episode['cost_usd']
             if cost is not None:
                 summary['cost_usd'] += cost
             summary['episodes'].append({'episode_id': eid, 'episode_request_id': episode['id'],
-                                        'request_id': state['id'], 'opponent_seat': label,
+                                        'request_id': state['id'], 'opponent_seat': group,
                                         'score': score, 'cost_usd': cost})
-        if counts['games'] != state['completed_count']:
+        if request_games != state['completed_count']:
             raise ValueError('Current request episode list does not cover its completed count')
     return summary
 

@@ -86,3 +86,25 @@ def test_collection_rejects_changed_policy_identity():
     current['incumbent-seat0']['episodes'][0]['participants'][0]['policy_version_id'] = OPPONENT
     with pytest.raises(ValueError, match='Frozen episode roster'):
         summarize(intent, current)
+
+
+def test_large_panel_chunks_requests_and_aggregates_each_seat():
+    intent = panel(256)
+    assert len(intent['requests']) == 4
+    assert [body['num_episodes'] for body in intent['requests'].values()] == [100, 28, 100, 28]
+    current = states(intent)
+    for label, state in current.items():
+        body = intent['requests'][label]
+        first = state['episodes'][0]
+        state['episodes'] = [
+            {**first, 'id': f'ereq_{label}_{i}', 'episode_id': f'episode_{label}_{i}'}
+            for i in range(body['num_episodes'])
+        ]
+        state['completed_count'] = body['num_episodes']
+    result = summarize(intent, current)
+    assert result['completed'] == 256
+    assert result['by_opponent_and_seat'] == {
+        'incumbent-seat0': {'games': 128, 'wins': 128, 'losses': 0, 'draws': 0},
+        'incumbent-seat1': {'games': 128, 'wins': 128, 'losses': 0, 'draws': 0},
+    }
+    assert strength_report(result, ['incumbent'], min_games=256)['strength_gate_passes']
