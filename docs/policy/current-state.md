@@ -97,23 +97,30 @@ Archive SHA: `fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5`;
 profile result SHA: `c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98`.
 **Matched job `job-int7f` ended BUILD_FAILED before GPU allocation, zero billed.**
 The first builder lost its claim/requeued; the second failed at Docker
-`RUN pip check`/version checks. The 64 KiB build log truncated before the error
-detail. Dockerfile/requirements through that layer match successful qualification;
+`RUN pip check`/version checks. The initial 64 KiB build log truncated; its recovered tail reports missing numpy. Dockerfile/requirements through that layer match successful qualification;
 no training or game-code change explains the failure.
 
 **Quiet-build retry `job-zvvcn` ended BUILD_FAILED in 19s, before GPU execution.**
 Its log exposed `open /ctx/framework-source: permission denied`: BSD tar had
 included mode-700 staging directory entries. Source/input bytes were unchanged.
 
-**Third matched attempt `job-mvtti` is SUBMITTED**, 05:03:33 UTC, same source
-`e649d73d28a5ccbe1995837010db50d8d35e7199`, context `ctx-cbe9e90f`.
-The capsule is repacked using GNU tar: files only, mode644, no directory entries;
-Dockerfile retains only the quiet apt/pip change. Ready archive 199,596,489 B,
-SHA `37db7386e256749e186ed849d0172b5019fb069cccd11fb495514b1fbdd5c9e6`.
+**Matched attempt `job-mvtti` FAILED**, 123 billed seconds/**$0.1012**.
+GPU preflight and native build passed; `verify_runtime` rejected only curriculum
+path spelling: `/work/input/curriculum/positions.npz` versus its resolved
+`/opt/generals-input/…` symlink. All **14 native source hashes**, revision,
+model and environment identities matched. No PPO or strength result followed.
+Artifact: `/tmp/generals-matched-h100-results-job-mvtti/`, SHA
+`c00ab2c6f8a4a989011afc842890ef3efb60aaca5813fd32133b36fce2209cf9`.
+`configure_positions` now preserves the verified absolute symlink spelling;
+fix `7c605046a74c94bb89577607c2576e5e66e73877` passed targeted tests.
+
+**Matched retry `job-uyssa` is SUBMITTED**, 05:30:01 UTC, source `7c605046…`,
+context `ctx-55da065a`; sealed source/input archive 199,599,635 B, SHA
+`6e5c73c0106c8530c346fc5b62f49ef3bbf2cb435687949b934dd3317ba1efe8`.
 Free validation passed; one H100, **90-minute/$4.455 maximum**, zero restarts.
-Exact qualified result `c21491a7…` attached. Two **8,388,608-step fresh PPO arms**
-compare cold control with CE warmstart, then a broad held-out population panel.
-Receipt: `/tmp/generals-matched-h100-quiet-perms-submission.json`.
+Two **8,388,608-step fresh PPO arms** compare cold control with CE warmstart,
+then a broad held-out population panel at qualified 4,096/H128 geometry.
+Receipt: `/tmp/generals-matched-h100-7c60504-submission.json`.
 **No matched training or strength result yet.**
 
 B300 **36081 was CANCELLED while PENDING at 01:24:40 UTC** at the user's request
@@ -185,9 +192,10 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-kcten` | Failed: sampler/builds passed; both train initializers rejected model identity; no epochs; 651s/$0.5368 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-kcten/` |
 | `job-zfz7e` | Unqualified: 2048/H256 below30K; 4096/H128 36,643 SPS/68,241 MiB but final reward audit missing | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-probe-results-job-zfz7e/` |
 | `job-s79eq` | Succeeded: 4096/H128 qualified at 36,182.7467 SPS, full finite/legal audit; 608s/$0.5016 billed | 30 min GPU / $1.485 maximum | `/tmp/generals-h100-qualification-4096h128-results-job-s79eq/` |
-| `job-int7f` | BUILD_FAILED before GPU, zero billed; Docker pip/version layer, truncated error log | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-submission.json` |
+| `job-int7f` | BUILD_FAILED before GPU, zero billed; Docker pip/version layer: missing numpy, recovered log tail | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-submission.json` |
 | `job-zvvcn` | BUILD_FAILED in19s: `/ctx/framework-source` permission denied, mode700 tar directory entries; no GPU | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-build-submission.json` |
-| `job-mvtti` | Submitted: files-only GNU tar/mode644 retry; matched results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-quiet-perms-submission.json` |
+| `job-mvtti` | Failed: verified native identities matched, curriculum symlink spelling differed; no PPO;123s/$0.1012 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-mvtti/` |
+| `job-uyssa` | Submitted: verified curriculum spelling fix; matched results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-7c60504-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is
@@ -198,7 +206,7 @@ removed in the current backend. Verified three-file terminal archive SHA-256:
 
 The matched defense driver is integrated and pushed through `de5f915`: it uses
 the provider-visible GPU, avoids duplicate standalone CPU preflight, bounds
-training startup to 420s and refuses unqualified geometry. The matched experiment is submitted as `job-mvtti`; results remain pending.
+training startup to 420s and refuses unqualified geometry. The matched experiment is submitted as `job-uyssa`; results remain pending.
 
 35935's completed control checkpoint:
 `c2d6737be7b09bbc956643f72247c2ef4335b839fb3327f8b899bef4144fe8a6`.

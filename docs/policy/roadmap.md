@@ -36,12 +36,14 @@ reward audit, so neither geometry is qualified. Eight-epoch confirmation
 4,194,304 steps, last-two-epoch 36,182.7467 SPS, peak68,517 MiB. Its complete
 reward audit has zero nonfinite/clipped rewards and illegal actions, and all13
 opponents sampled both seats. H100 geometry is qualified; matched control/warm
-job `job-mvtti` is submitted from `e649d73` on one H100, bounded90min/$4.455,
+job `job-uyssa` is submitted from `7c60504` on one H100, bounded90min/$4.455,
 zero restarts. Prior `job-int7f` BUILD_FAILED before allocation/zero billed at
 the pip/version Docker layer; its log truncated before error details. The retry
 exposed `/ctx/framework-source` permission denied and also BUILD_FAILED before
 GPU execution: BSD tar included mode700 staging directories. The third attempt
-uses files-only GNU tar/mode644, preserving source/input bytes and quiet installs. Two8,388,608-step fresh PPO arms and a broad held-out population
+uses files-only GNU tar/mode644, preserving source/input bytes and quiet installs. The files-only attempt `job-mvtti` then failed only on resolved curriculum
+symlink spelling; 14 native sources and model/environment/revision matched.
+The verified-path spelling fix passed targeted tests. Two8,388,608-step fresh PPO arms and a broad held-out population
 panel are pending; no new strength result exists. Known 8,192/H256 buffers account
 for 172.503 GiB; the 205.584 GiB device-used reading includes caches and is not
 an intrinsic requirement of the 2.21 MiB policy.
@@ -55,7 +57,7 @@ candidate regressed against both its initialization and the unchanged baseline
 on matched development games and was rejected. The stale launcher binding is
 resolved; repeating that intervention or scaling its training is unjustified.
 
-The matched public-defense warmstart experiment is submitted as `job-mvtti`
+The matched public-defense warmstart experiment is submitted as `job-uyssa`
 at qualified 4,096/H128 H100 geometry. The driver is integrated/pushed through `de5f915`,
 uses the provider-visible GPU, avoids duplicate CPU preflight and allows 420s
 bounded training startup. It refuses unqualified geometry; matched experiment results remain pending. Separate

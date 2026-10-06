@@ -109,18 +109,18 @@
     }
   },
   "latest_attempt": {
-    "job": "job-mvtti",
+    "job": "job-uyssa",
     "state": "SUBMITTED",
     "phase": "matched_defense_awaiting_gpu_execution",
-    "label": "relh-generals-matched-defense-4096h128-e649d73-quiet-perms",
-    "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199",
-    "submitted_at_utc": "2026-10-06T05:03:33.943360+00:00",
+    "label": "relh-generals-matched-defense-4096h128-7c60504",
+    "source_revision": "7c605046a74c94bb89577607c2576e5e66e73877",
+    "submitted_at_utc": "2026-10-06T05:30:01.318603+00:00",
     "execution_backend": "givemeanode_native_docker",
     "hardware": "H100",
     "gpus": 1,
-    "context_id": "ctx-cbe9e90f",
-    "input_sha256": "37db7386e256749e186ed849d0172b5019fb069cccd11fb495514b1fbdd5c9e6",
-    "input_bytes": 199596489,
+    "context_id": "ctx-55da065a",
+    "input_sha256": "6e5c73c0106c8530c346fc5b62f49ef3bbf2cb435687949b934dd3317ba1efe8",
+    "input_bytes": 199599635,
     "max_duration_minutes": 90,
     "max_cost_usd": 4.455,
     "max_restarts": 0,
@@ -136,13 +136,13 @@
     "new_training_steps": null,
     "strength_result": null,
     "evidence": {
-      "path": "/tmp/generals-matched-h100-quiet-perms-submission.json",
-      "sha256": "5087fde161dfb017baf74aa616c9f86b452200db8d38011cda1ac019d50c166c",
-      "bytes": 3198,
+      "path": "/tmp/generals-matched-h100-7c60504-submission.json",
+      "sha256": "598f6f9711eaeac411301b3401904aa7d3c4e4f42953f723896c8c96dc4bf197",
+      "bytes": 3186,
       "verified_locally": true
     },
     "free_validation_passed": true,
-    "retry_delta": "Files-only GNU tar, all files644/no directory entries; source/input bytes unchanged, quiet installs retained"
+    "retry_delta": "Preserve verified absolute curriculum symlink spelling; targeted tests passed"
   },
   "latest_training_throughput": {
     "job": "35935",
@@ -164,14 +164,18 @@
     }
   },
   "previous_failure": {
-    "job": "job-zvvcn",
-    "state": "BUILD_FAILED",
-    "elapsed_seconds": 19,
-    "gpu_allocated": false,
+    "job": "job-mvtti",
+    "state": "FAILED",
+    "billed_seconds": 123,
+    "charged_usd": 0.1012,
     "new_training_steps": 0,
-    "error": "open /ctx/framework-source: permission denied",
-    "cause": "BSD tar included mode700 staging directory entries",
-    "source_revision": "e649d73d28a5ccbe1995837010db50d8d35e7199"
+    "gpu_preflight_passed": true,
+    "native_build_passed": true,
+    "native_source_hashes_matched": 14,
+    "model_environment_revision_matched": true,
+    "error": "verify_runtime curriculum symlink spelling mismatch",
+    "artifact_sha256": "c00ab2c6f8a4a989011afc842890ef3efb60aaca5813fd32133b36fce2209cf9",
+    "evidence_path": "/tmp/generals-matched-h100-results-job-mvtti/"
   },
   "superseded_unstarted_attempt": {
     "job": "36081",
@@ -211,7 +215,7 @@
     "minibatch": 8192,
     "replay_ratio": 0.5,
     "minimum_qualified_sps": 30000,
-    "matched_warm_experiment": "Submitted files-only retry job-mvtti;matched results pending.",
+    "matched_warm_experiment": "Submitted curriculum-path fix retry job-uyssa;matched results pending.",
     "startup_seconds": 420,
     "training_seconds_each": 600,
     "duplicate_cpu_preflight": false,
