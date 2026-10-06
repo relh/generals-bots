@@ -186,6 +186,20 @@
       "minimum_steady_sps": 30000,
       "qualified_probe_marker_sha256": "6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44",
       "max_cost_usd": 2.97
+    },
+    {
+      "kind": "classic_siege_early_border_pilot",
+      "branch": "codex/classic-siege-early-border",
+      "revision": "5fed4e213b4ba9e58dd2969595bccf5c891f40b3",
+      "job": "job-wz2x8",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "ceaf23b550bf65936db23cc4b871bfd3ae6e964239f2f60249a23ea81fff7de4",
+      "map_seed": 10941511,
+      "sample_seed": 10941513,
+      "games_per_arm": 1024,
+      "siege_games_per_arm": 904,
+      "arms": 2,
+      "max_cost_usd": 1.485
     }
   ]
 }

@@ -69,15 +69,17 @@ clipped rewards were zero. Its qualification marker SHA-256 is
 `6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
 This is a throughput result, not a strength result.
 
-One bounded H100 matched development job is running; the manifest records its
-sealed context hash and last observed state:
+Two bounded H100 development jobs are active; the manifest records their
+sealed context hashes and last observed states:
 
 | Job | Isolated branch | Decision pending |
 | --- | --- | --- |
 | `job-6cwtq` | `codex/hard-opponent-trial` at `542de7f` | Matched 16,777,216-step source/control PPO arms, changing only the weights of frozen `d2c30` and `classic_siege` from 17/16 to 34/32. Assess fresh paired Classic strength before any hosted panel. |
+| `job-wz2x8` | `codex/classic-siege-early-border` at `5fed4e2` | Old siege bot versus the same bot with its turn-800 guard removed from full-army border reinforcement, on 1,024 paired fresh Classic first episodes per arm (904 siege rows, 452 per learner seat). No split-rule change. |
 
-The job has zero restarts, a 60-minute limit and a $2.97 runtime cap. Treat
-its status as a historical observation until provider readback and artifact
+Both jobs have zero restarts. The matched run has a 60-minute/$2.97 cap; the
+siege pilot has a 30-minute/$1.485 cap. Treat statuses as historical
+observations until provider readback and artifact
 verification. The separate `job-m9ina` paired siege-opponent panel **rejected**
 the proposed pressure bot. In 3,640 paired siege games, the frozen learner won
 2,162 (59.40%) against the old bot and 3,615 (99.31%) against the new bot;
