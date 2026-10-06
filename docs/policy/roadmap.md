@@ -8,14 +8,14 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Audit the source-mirror PPO throughput probe. If it passes at least 30,000
-   steady end-to-end steps per second with clean rewards, legal actions and all
-   13 opponents on both seats, run its matched control and paired development
-   evaluation before longer training.
-2. Resolve the hard-opponent weighting probe's source-gate native crash before
-   any longer training. The safe owned split, capital-threat gather and
-   general-garrison split sampler pilots did not clear the paired development
-   gate.
+1. Resolve the hard-opponent weighting probe's source-gate native crash using
+   the qualified GPU execution path, then require a fresh ≥30K SPS treatment
+   probe before longer training. The source-mirror treatment and matched
+   control both qualified for throughput, but the mirror failed paired
+   development strength.
+2. Evaluate any qualified treatment against its matched control on fresh
+   Classic first episodes. The safe owned split, capital-threat gather and
+   general-garrison split sampler pilots did not clear this development gate.
 3. Choose further training changes from measured full-game failure modes.
    Preserve the source checkpoint, change one mechanism at a time, and keep
    opponent, reward, map and seat controls matched.

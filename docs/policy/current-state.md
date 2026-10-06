@@ -124,13 +124,20 @@ actions and nonfinite/clipped rewards were zero. Its final checkpoint SHA is
 `88de88396b2ef2213d39c3f16cafb97bf25bba7cedbc743c795a62a093e5085d`;
 verified result archive SHA:
 `71963b2f69b1a2b52d555582c6c3142160250d525db237123df63ef3a99b611f`.
-Fresh paired Classic development evaluation is submitted as H100 `job-7bm8b`:
-4,096 first episodes each for selected source, matched control and mirror on
-identical maps/seats/opponent labels, seeds 10432717/10432719 and fixed 10,000
-map-cluster bootstrap resamples. The sealed context is `ctx-0149238a`, archive
-SHA `a5b03c0e696f9a39317841fe0972c0fa08f249a47fc4c7808fcdf2cbf9d8f2aa`;
-the job has a 60-minute/$2.97 cap and zero restarts. Neither training run
-alone establishes stronger play. Prior
+Fresh paired Classic development evaluation `job-7bm8b` **rejected the mirror
+candidate**. Source, matched control and mirror each played 4,096 first
+episodes on exactly paired initial states, seats and opponent labels (2,628
+unique states, seeds 10432717/10432719). Source won 2,811; control won 2,792;
+mirror won 2,783. Mirror minus control paired signed-score delta was −0.00293
+with initial-state-cluster 95% CI [−0.03278,+0.02575]; mirror minus source
+was −0.01123, CI [−0.03985,+0.01804]. The full verified result archive SHA is
+`35951c69e384b7249c56ab13ff15c594e6aa0d3e5110a4426514737bbba4ea03`;
+COMPLETE marker SHA `6afff207db431d6be153344e7c155153d7a7ce66fff830a7946ebf02f8d754d5`.
+Published bundle bytes match the authenticated PPO checkpoints. There is no
+development evidence for advancement or hosted acceptance. All 26
+opponent-by-seat cells were represented, the map-cluster intervals were
+independently reproduced from retained arrays, and the H100 run billed 1,070
+seconds/$0.8822. Prior
 `job-dzu73` failed before PPO because the probe invoked a sampling gate that
 expected an absent distilled bundle ($0.1089). Its first retry `job-63iic`
 passed the 512-game source sampling gate but failed native preflight: the
