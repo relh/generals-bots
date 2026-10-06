@@ -129,8 +129,12 @@ Artifact: `/tmp/generals-matched-h100-results-job-uyssa/`, SHA
 billed seconds. Docker pip installation hit a `files.pythonhosted.org` ReadTimeout.
 Independent review also found a latent source-revision seal mismatch in its v1
 context; that mismatch was not the observed build failure.
-The **v2 context is uploading**, with all **400 seals corrected** and increased
-pip timeout/retries. **No replacement job has been submitted.** Planned scope
+**Replacement `job-vezu3` is SUBMITTED**, 06:24:58 UTC, context `ctx-00638733`,
+archive SHA `4de51bd555d04785b7b91e58e1588190d46d6db216b7a2a38043a6d9ff2058ed`.
+All **400 source seals are verified**; pip timeout120s/retries8. Provider validation
+passed: one H100, **90-minute/$4.455 maximum**, zero restarts.
+Receipt: `/tmp/generals-matched-continuation-d29f7f7-v2-submission.json`.
+**Execution stages remain pending until collected artifacts prove completion.** Scope
 remains authenticated `job-uyssa` control publishing, distillation and warm PPO;
 held-out panels follow later. No matched strength result exists.
 
@@ -208,6 +212,7 @@ Prior H100 migration attempts failed before updates; that old launcher is retire
 | `job-mvtti` | Failed: verified native identities matched, curriculum symlink spelling differed; no PPO;123s/$0.1012 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-mvtti/` |
 | `job-uyssa` | Failed publishing120s after clean control8M at36,171.5SPS; no warm/panels;990s/$0.8162 | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-h100-results-job-uyssa/` |
 | `job-re2cn` | BUILD_FAILED beforeGPU/zero billed: pip ReadTimeout; latent v1 source seal mismatch also corrected | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-submission.json` |
+| `job-vezu3` | Submitted: corrected400 seals/pip timeout120 retries8 continuation; results pending | 90 min GPU / $4.455 maximum | `/tmp/generals-matched-continuation-d29f7f7-v2-submission.json` |
 
 35949 required 60K available inodes; subsequent read-only inspection found
 13,170 despite ~1.45 TB free bytes. Its unreached recovery-mount mismatch is

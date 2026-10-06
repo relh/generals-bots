@@ -54,8 +54,9 @@ Learning improvement and hosted winning qualification remain open; see
 
 Continuation `job-re2cn` BUILD_FAILED before GPU allocation/zero billed seconds:
 pip `files.pythonhosted.org` ReadTimeout. Independent review also caught a latent
-v1 source-revision seal mismatch. Corrected v2 context is uploading, with all400
-seals fixed and increased pip timeout/retries; no new job is submitted. Retain
+v1 source-revision seal mismatch. Replacement `job-vezu3` is submitted with all400 source seals verified and
+pip timeout120s/retries8, context `ctx-00638733`. Provider validation passed,
+bounded one H100/90min/$4.455, zero restarts; stages remain pending. Retain
 `job-uyssa` control for publishing/distillation/warm work, then held-out panels.
 No matched strength result exists.
 
