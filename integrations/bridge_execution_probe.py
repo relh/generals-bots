@@ -66,17 +66,17 @@ def audit_profile(rows):
     import math
     expected = {'environment_input_fence':128, 'environment_output':128,
                 'pufferl_forward_step':128, 'learner_rollout_native_forward':128,
-                'optimization_epoch':1}
+                'optimization_epoch':1, 'learner_train_forward':32}
     totals = {}
     for row in rows:
         epoch, label = row['epoch'], row['label']
         assert epoch in (-1,0,1,2,3) and row['pending_events']==0
+        assert label in expected and (epoch!=-1 or label=='environment_output')
         assert isinstance(row['calls'],int) and row['calls']>0
         assert all(math.isfinite(row[k]) and row[k]>=0 for k in ('host_seconds','cuda_stream_span_ms'))
         totals[epoch,label]=totals.get((epoch,label),0)+row['calls']
     for epoch in range(4):
         for label,count in expected.items():assert totals.get((epoch,label))==count,(epoch,label,totals)
-        if (epoch,'learner_train_forward') in totals:assert totals[epoch,'learner_train_forward']==32
     return totals
 
 
