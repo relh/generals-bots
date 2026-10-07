@@ -284,7 +284,27 @@
     "trained_checkpoint_created": false,
     "activation_measured": false,
     "has_strength_result": false,
-    "result_archive_sha256": "9e6aa536be345d6433248ddef1291be613ba94c45d2fd906f2bf8be544a91afb"
+    "result_archive_sha256": "9e6aa536be345d6433248ddef1291be613ba94c45d2fd906f2bf8be544a91afb",
+    "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
+    "billed_usd": 1.0186
   },
-  "active_experiments": []
+  "active_experiments": [
+    {
+      "kind": "repaired_product_final_steady_h100_probe",
+      "branch": "codex/product-logical-migration",
+      "revision": "3a57c8770d85be91ee49decce9c08cce175fea8c",
+      "job": "job-g45tq",
+      "last_observed_state": "SUBMITTED",
+      "context": "ctx-4f12d8bf",
+      "context_archive_sha256": "e4baee4bb5ce6272b1f2dbdc7390dcb3f6a678f57621c6264ff2d40d66442892",
+      "input_seal_sha256": "623ab089a8337eb72077bb77e99b0185917cf515bd9c53de6a1a7b975545081c",
+      "warmup_epochs": 6,
+      "steady_interval_steps": 1048576,
+      "minimum_steady_sps": 30000,
+      "max_duration_minutes": 60,
+      "max_cost_usd": 2.97,
+      "max_restarts": 0,
+      "has_strength_result": false
+    }
+  ]
 }

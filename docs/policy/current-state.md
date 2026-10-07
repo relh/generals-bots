@@ -147,9 +147,15 @@ through the partial run. Verified result artifact SHA-256:
 The repair uses logical Product U/V/Q matrices and a 128× gain; zero Q matches
 the source exactly and 11 migrated policies have byte-identical weights under
 both topologies. The live guard fired before the preregistered final-two-epoch
-steady interval after six warmup epochs. Performance comparison is ongoing;
-the ≥30,000 steady end-to-end SPS requirement remains unchanged. The selected
-source and champion are unchanged.
+steady interval after six warmup epochs. Its verified audit receipt SHA-256 is
+`e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac`;
+it billed $1.0186. A corrected bounded H100 probe `job-g45tq` on
+`codex/product-logical-migration` at `3a57c87` moves only the live guard to
+after six warmup epochs. It still must achieve ≥30,000 steady end-to-end SPS
+over the final 1,048,576 steps, plus the existing parity and activation gates.
+The job has a 60-minute/$2.97 cap and zero restarts. No strength result exists;
+the selected source and champion are unchanged. Context and input hashes are
+in the manifest.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
