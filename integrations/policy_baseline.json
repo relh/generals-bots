@@ -1052,7 +1052,7 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Verified permanent optimizer row starvation; bounded correction trial job-zsz35 tests it. Await native coverage, throughput and fresh paired strength.",
+    "next_action": "Native row coverage verified; job-zsz35 failed throughput qualification at29811SPS. Profile hardware and CPUworkers before a bounded retry; no strength claim.",
     "opening_comparison": {
       "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
       "files_sha256": {
@@ -1277,7 +1277,7 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Implemented and CPU-admitted; GPU coverage/throughput/strength qualification is tracked by row_rotation_trial",
+    "status": "Native epoch blocks0,32,0,32 verified; first GPU qualification failed29,811SPS. Hardware/worker profiling pending; no strength gain established.",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
@@ -1287,7 +1287,7 @@
     "gpu_job_submitted": true
   },
   "row_rotation_trial": {
-    "status": "running",
+    "status": "failed",
     "job_id": "job-zsz35",
     "submitted_at": "2026-10-07T16:04:23.411330+00:00",
     "source_revision": "b068a18b55b75de86d659921a7807447fdb951be",
@@ -1309,14 +1309,16 @@
       "integrations/softmax/local-output/row-rotation-launch-20261007/submission.json": "633c7b2b12a0a5a7f1eff71d6999b954a96e33a50452b57686d848548264d4df",
       "integrations/softmax/local-output/row-rotation-launch-20261007/validation.json": "effa4078829a292814f0796df9fdb3b4dea36fc55879c18168d983a8f2e388ba",
       "integrations/softmax/local-output/row-rotation-launch-20261007/collect_and_audit.py": "ffe60501b650c38525582d2b6fcab58aa9616fb380f4973ffbac06198596d4f4",
-      "integrations/softmax/local-output/row-rotation-launch-20261007/guard-starting-admission.json": "d36087e80b8a150442796bfe9c5dc2edd0c0251102450d3e4776579cefb48a8e"
+      "integrations/softmax/local-output/row-rotation-launch-20261007/guard-starting-admission.json": "d36087e80b8a150442796bfe9c5dc2edd0c0251102450d3e4776579cefb48a8e",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/throughput-diagnosis.json": "ba08db0ee43e327da183e7e2ad9f0f0698790ba6ca1892ec8ce84703205c8b83",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/terminal-audit-job-zsz35.json": "d2e1c779ce4cbf6b1237ed317fa68588cb4457ce66450ef9255ceb81bc147096"
     },
     "attempt": 1,
     "aggregate_deadline_utc": "2026-10-07T17:35:08.728915+00:00",
     "guard_pid": 80704,
     "guard_sha256": "6307b1e7f05746911ccbbbece86d6f008a56c488226f3645957d571e8ebbb8f3",
-    "phase": "native_build",
-    "last_observed_at": "2026-10-07T16:30:17.904499+00:00",
+    "phase": "qualification_throughput_gate",
+    "last_observed_at": "2026-10-07T16:39:42.599846+00:00",
     "source_gpu_parity_top_actions": {
       "matching": 46,
       "checked": 46
@@ -1326,6 +1328,54 @@
       "path": "integrations/softmax/local-output/row-rotation-launch-20261007/job-zsz35-run-attempt1-20261007T163017904499Z-sanitized.log",
       "sha256": "96c754102ddf5beffabecb5e70378ee6af0bee8f80ea1ccd7c5b44ec5674edbd",
       "scope": "Live console evidence; terminal artifact audit pending"
+    },
+    "finished_at": "2026-10-07T16:38:29.684117+00:00",
+    "qualification_verified": false,
+    "technical_success": false,
+    "selected": false,
+    "billed_seconds": 761,
+    "charged_usd": 0.627,
+    "throughput_diagnosis": {
+      "schema": "generals-row-rotation-throughput-diagnosis-v1",
+      "job_id": "job-zsz35",
+      "interval_epochs": [
+        2,
+        4
+      ],
+      "steps": 1048576,
+      "current_seconds": 35.174,
+      "current_sps": 29811.110479331324,
+      "prior_control_seconds": 29.548,
+      "prior_control_sps": 35487.20725599025,
+      "component_seconds": {
+        "environment": {
+          "current": 19.901,
+          "prior": 16.729
+        },
+        "rollout_model": {
+          "current": 10.47,
+          "prior": 8.771
+        },
+        "optimization": {
+          "current": 4.796,
+          "prior": 4.045
+        }
+      },
+      "rotation_blocks_first_four_epochs": [
+        0,
+        32,
+        0,
+        32
+      ],
+      "qualification_passed": false,
+      "checkpoint": "Initial policy only; no trained checkpoint retained",
+      "reward_audit_scope": "2097152 agent steps; zero nonfinite/clipped rewards; final action-mask audit missing after forced stop",
+      "cause": "Broad ~19% slowdown; rotation-specific cause unproven. Different GPU UUID, no clocks/power/CPU-capacity telemetry retained.",
+      "next": "Instrument hardware and bounded native-worker timing; retain >=30000SPS gate and unchanged learning settings.",
+      "inputs": {
+        "integrations/softmax/local-output/row-rotation-launch-20261007/results-job-zsz35/inner/generals/candidate/qualification/run/console.log": "df9631476129e277e72ace48d8da99efb8ae69729339da2045845ed3e74f96c7",
+        "integrations/softmax/local-output/monotone-force-retry-20261007/results-job-wgtyc/inner/generals/control/qualification/run/console.log": "fad5f1f2d0901bc5ac38a13f9c0232f5783e6de4e9f7b630c45fbd77d0117e51"
+      }
     }
   },
   "opponent_coverage_audit": {

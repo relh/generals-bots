@@ -2,9 +2,9 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 16:30 UTC**, row-rotation trial `job-zsz35` is **building the
-native trainer** on attempt 1. Source GPU parity passed 46/46 top actions;
-training has not started.
+job `35892`. As of **2026-10-07 16:39 UTC**, row-rotation trial `job-zsz35` is **failed**:
+its throughput gate stopped qualification at 29,811 SPS. No GPU job remains
+active. Hardware telemetry and CPU-worker profiling are being prepared.
 The completed first-contact diagnostic did not pass its improvement gate.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -61,7 +61,7 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Learning-path repair awaiting GPU qualification
+## Learning-path repair: coverage verified, throughput failed
 
 At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches
 of 64 environment rows from a 4,096-row rollout. The minibatch index restarts
@@ -105,6 +105,26 @@ escape the aggregate limit. Its conservative deadline is **2026-10-07 17:35:08 U
 based on the last pre-allocation observation at 16:20:08. The guard was replaced
 as PID 80704; the provider job was not restarted. A focused starting/preemption
 fixture passed, and the new guard process and receipt were verified live.
+
+`job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
+gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
+2 and 4, after two warmup epochs. The matching prior-control interval was
+35,487.21 SPS. Native optimizer blocks were **0, 32, 0, 32** for epochs 0–3,
+so the coverage correction executed as intended. No long continuation or
+strength evaluation ran. Source GPU parity passed 46/46 states.
+
+Environment, rollout-model and optimization times all increased about 19%
+relative to the prior control. This does not isolate rotation as the cause.
+Clocks, power and CPU capacity were not recorded. Independent terminal collection
+verified 35 retained files; no trained checkpoint was saved. The last reward
+audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
+forced stop left no complete action-mask audit. Billing was **761 seconds,
+$0.627**. The guard observed termination and exited.
+
+The next bounded qualification will retain the 30K gate and learning settings,
+record hardware capacity and clocks, and measure native CPU-worker choices on
+fixed public inputs before selecting a worker count. Exact action/memory
+agreement is required; no learning or strength claim comes from that benchmark.
 
 ## Matched experiment: technically passed, strength rejected
 
