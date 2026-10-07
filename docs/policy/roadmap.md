@@ -22,14 +22,12 @@ artifact identities. Git history retains superseded attempts.
    completed both 32 Mi arms with independently verified training and parity,
    but its candidate was worse than the selected source and did not improve
    over control. Reject this fixed intervention; no confirmation or promotion.
-   Public opening comparisons show similar early army/concentration measures
-   but different first-contact timing and stack positions; these are confounded
-   correlations. Prepare a bounded, preregistered counterfactual diagnostic on
-   fresh simulated states to compare neglected public legal moves through
-   paired future-policy rollouts. Plan `e4341f1` is preregistered and reviewed:
-   256 unique maps, two frozen opponents, balanced seats, four action branches
-   and four replicas. Implement and package it on the isolated branch; no GPU
-   job is submitted. Its diagnostic gate does not qualify new RL or promotion.
+   The fresh first-contact counterfactual `job-k8yfq` also failed its primary
+   gate: forced merge delta −0.03125, clustered 95% CI [−0.08105, +0.01758]
+   over 256 maps and four replicas. Different-source and pass alternatives
+   had no established gain. Do not train a merge teacher from this evidence.
+   Audit actor sampling/PPO agreement and learning signals for a concrete
+   mismatch before preregistering another intervention.
 
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its

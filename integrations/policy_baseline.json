@@ -1052,7 +1052,7 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Implement and package reviewed isolated contact-counterfactual plan e4341f1; no GPU job submitted.",
+    "next_action": "Completed contact counterfactual failed its primary gate; audit learning path for a concrete mechanism before another intervention.",
     "opening_comparison": {
       "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
       "files_sha256": {
@@ -1084,12 +1084,12 @@
       "scope": "Public spatial information and scoreboard only; descriptive unequal small groups, later loss contact and sparse map dimensions confound comparisons. No causal holding-stack benefit or strength claim."
     }
   },
-  "contact_counterfactual_preparation": {
+  "contact_counterfactual": {
     "branch": "codex/contact-counterfactual",
     "plan_revision": "e4341f1",
     "plan_path": "integrations/contact_counterfactual_plan.json",
-    "plan_sha256": "c60b96175a4744e5d22913f3384a7960b2a3ac6829ec87a61f624692bd459cb6",
-    "status": "Preregistered and reviewed; isolated runner and packaging in progress; no new simulation or GPU job submitted.",
+    "plan_sha256": "d4d6720a0c3da350a470dc00fb8089b5937ced1a34ce4e463c1450dbce54d11f",
+    "status": "Completed; primary improvement gate failed. No training, teacher qualification or promotion.",
     "unique_maps": 256,
     "opponent_prefixes": [
       "d2c30",
@@ -1110,6 +1110,143 @@
     "internal_minutes": 28,
     "max_restarts": 0,
     "training_steps": 0,
-    "scope": "Other arms exploratory. Diagnostic only; no promotion, hosted strength or learned-teacher qualification."
+    "scope": "Other arms exploratory. Diagnostic only; no promotion, hosted strength or learned-teacher qualification.",
+    "source_revision": "bb2b02d0bc1b8378150f4c8b5ea519f7849a738e",
+    "job_id": "job-k8yfq",
+    "finished_at": "2026-10-07T12:24:17.606493+00:00",
+    "attempt": 1,
+    "context_id": "ctx-ad393652",
+    "elapsed_seconds": 200.28557223000098,
+    "billed_seconds": 203,
+    "charged_usd": 0.1672,
+    "independent_audit": {
+      "schema": "generals-contact-independent-audit-v1",
+      "job_id": "job-k8yfq",
+      "provider_status": "succeeded",
+      "artifact_sha256": "1802ebc798174095a8f192e2d266f8c3b18c9d34a4d56b072ffc30f4e92636f2",
+      "results_archive_sha256": "0be3465e26395f1deb0a8ba5567675ef15cdbdb273ce3119e61049afc7b12785",
+      "collection_sha256": "288474660bf83ba13a1689214d4cc66179f9ff7dd1121bb310359b733c51bb1c",
+      "terminal_sha256": "6b6d81d9b3030e0050bdbaa7701430fc72ebce1edd3efa5c784e428df507a22c",
+      "files_verified": 17,
+      "technical_success": true,
+      "positive_diagnostic": false,
+      "qualification": "Diagnostic only; no training or promotion",
+      "source_revision": "bb2b02d0bc1b8378150f4c8b5ea519f7849a738e",
+      "unique_maps": 256,
+      "replicas_per_action": 4,
+      "duplicate_action_pairs_verified": 125,
+      "contrasts": {
+        "highest_probability_different_source_route": {
+          "mean_signed_delta": -0.0087890625,
+          "cluster_ci95": [
+            -0.0546875,
+            0.0390625
+          ],
+          "strata": [
+            {
+              "opponent": 0,
+              "side": 0,
+              "maps": 64,
+              "mean_signed_delta": 0.0625
+            },
+            {
+              "opponent": 0,
+              "side": 1,
+              "maps": 64,
+              "mean_signed_delta": -0.01953125
+            },
+            {
+              "opponent": 1,
+              "side": 0,
+              "maps": 64,
+              "mean_signed_delta": -0.0390625
+            },
+            {
+              "opponent": 1,
+              "side": 1,
+              "maps": 64,
+              "mean_signed_delta": -0.0390625
+            }
+          ],
+          "available_maps": 246
+        },
+        "maximum_stack_growth_route_merge": {
+          "mean_signed_delta": -0.03125,
+          "cluster_ci95": [
+            -0.0810546875,
+            0.017578125
+          ],
+          "strata": [
+            {
+              "opponent": 0,
+              "side": 0,
+              "maps": 64,
+              "mean_signed_delta": 0.078125
+            },
+            {
+              "opponent": 0,
+              "side": 1,
+              "maps": 64,
+              "mean_signed_delta": -0.046875
+            },
+            {
+              "opponent": 1,
+              "side": 0,
+              "maps": 64,
+              "mean_signed_delta": -0.09375
+            },
+            {
+              "opponent": 1,
+              "side": 1,
+              "maps": 64,
+              "mean_signed_delta": -0.0625
+            }
+          ],
+          "available_maps": 201
+        },
+        "pass": {
+          "mean_signed_delta": -0.0400390625,
+          "cluster_ci95": [
+            -0.09572753906249998,
+            0.0146484375
+          ],
+          "strata": [
+            {
+              "opponent": 0,
+              "side": 0,
+              "maps": 64,
+              "mean_signed_delta": -0.0625
+            },
+            {
+              "opponent": 0,
+              "side": 1,
+              "maps": 64,
+              "mean_signed_delta": -0.02734375
+            },
+            {
+              "opponent": 1,
+              "side": 0,
+              "maps": 64,
+              "mean_signed_delta": -0.0859375
+            },
+            {
+              "opponent": 1,
+              "side": 1,
+              "maps": 64,
+              "mean_signed_delta": 0.015625
+            }
+          ],
+          "available_maps": 256
+        }
+      },
+      "provenance_scope": "Full snapshot and initial-map hashes, public observation/mask recomputed from retained Classic state, paired key seeds, duplicate terminal hashes/outcomes/turns. Terminal full states are not retained; terminal hash preimages cannot be independently recomputed."
+    },
+    "receipts": {
+      "integrations/softmax/local-output/contact-counterfactual-launch-20261007/terminal-audit-job-k8yfq.json": "a62ebfceb357d8ebb4a9ef7d80bda4efd32b72ecffc14ff6fdb4285be8d26de0",
+      "integrations/softmax/local-output/contact-counterfactual-launch-20261007/cpu-admission.json": "ca5fcdbfc5cd8cdbfb4a6f54643eba052b7a3a2bd33c64e08e436570389bab84",
+      "integrations/softmax/local-output/contact-counterfactual-launch-20261007/ready.json": "8aa21b7d3b722267708a24bbc0e4c26fe84a4db01da235acc864bfd91643c873",
+      "integrations/softmax/local-output/contact-counterfactual-launch-20261007/submission.json": "fbc41f1949f1e66cfd478858e2e30620c28ce3eda8d9dd22a8b226166529c84a",
+      "integrations/softmax/local-output/contact-counterfactual-launch-20261007/collect_and_audit.py": "212712b68eb764b27ee2735914abfa4045bb052bf2bf4b26754de3ec1c8edf52"
+    }
   }
 }

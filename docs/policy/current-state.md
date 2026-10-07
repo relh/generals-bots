@@ -2,7 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. No GPU experiment is active; a launch-path repair is being prepared.
+job `35892`. No GPU experiment is active. The completed first-contact diagnostic did not
+pass its improvement gate; the next step is an audit of the learning path.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -64,7 +65,7 @@ Observatory recovery reproduced both counts and audited 277,894 turns across
 provider preemptions, with zero runtime restarts. Independent terminal audit
 verified all **237 retained files**, native learner resume, both 512-game
 initializer sampling gates, legality/reward audits, and final serving parity
-(46/46 states for both arms). No task job remains active. The provider charged
+(46/46 states for both arms). That job has no remaining allocation. The provider charged
 **$5.0534 for 6,126 seconds**, one billed attempt; the earlier two were unbilled.
 Its predecessor `job-kzmub` failed before training due to the repaired stage
 gate path; its failure evidence remains in the manifest.
@@ -178,17 +179,28 @@ its median distance from the capital was 1/9 and from visible enemies 13/2
 This timing difference, small unequal groups and sparse map dimensions prevent
 a causal claim that holding a stack back helps.
 
-The counterfactual diagnostic is now preregistered and reviewed on isolated
-`codex/contact-counterfactual`, plan commit `e4341f1`. It samples 256 unique
-first-contact maps by turn 600 against two frozen opponents (`d2c30`, `83dc`),
-with balanced seats, four legal-action branches and four random replicas each.
-The primary merge-minus-sampled-source terminal contrast includes unavailable
-merge duplicates. It requires at least 128 available merge maps, mean signed
-delta ≥0.02, clustered 95% lower bound >0 and every opponent/seat delta ≥−0.10.
-Other branches are exploratory. The planned one-H100 bound is 30 minutes per
-provider attempt, 28 internal, with no training or runtime restarts. Runner and
-packaging are in progress; no new simulation or GPU submission has occurred.
-This diagnostic cannot qualify a promotion or learned teacher.
+The preregistered first-contact diagnostic `job-k8yfq` succeeded on its first
+attempt at **2026-10-07 12:24:17 UTC**. Source `bb2b02d` is integrated into
+this branch. It evaluated 256 unique fresh maps against two frozen opponents
+(`d2c30`, `83dc`), balanced by seat, with four action branches and four replicas.
+Independent audit verified all 17 retained files, snapshot/map identities,
+public observations, paired random seeds and 125 duplicate-action pairs.
+
+| Forced action versus sampled source | Mean signed delta | Map-cluster 95% CI |
+| --- | ---: | --- |
+| Largest-stack-growing route merge (primary) | −0.03125 | [−0.08105, +0.01758] |
+| Best-probability different-source route move | −0.00879 | [−0.05469, +0.03906] |
+| Pass | −0.04004 | [−0.09573, +0.01465] |
+
+The primary gate failed despite 201 available merge maps (minimum 128).
+None of these intervals establishes a benefit or a harm. This rules out
+promoting this fixed first-contact merge heuristic from this experiment; it
+does not establish that all merges or longer plans are ineffective. No teacher,
+training or promotion follows. Inspect the learning path before another change.
+The diagnostic took 200.29 seconds internally; the provider billed 203 seconds
+on one H100, **$0.1672**. It performed no training and makes no training SPS
+claim. Terminal full-state hash preimages were not retained; duplicate terminal
+hashes, outcomes and turns were checked, while snapshot preimages were verified.
 
 Rejected log-gap runtime code was removed (210 net lines). Selected source
 and ten frozen opponents retained bitwise logits/probabilities on 133 public
