@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, as of the 23:30 UTC corrected gather-probe submission.
+Updated 2026-10-07, as of the 23:39 UTC corrected gather-probe startup.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -93,8 +93,9 @@ loss and all 578,860 parameter gradients; an altered observation was rejected.
 Production finite checks are unchanged. The fix and downstream runner passed
 independent review.
 
-**`job-8tdud`**, submitted **23:30:12 UTC**, is building. Its corrected package
-contains 1,155 verified files; the live allocation guard is running. The prior
+**`job-8tdud`**, submitted **23:30:12 UTC**, entered first-attempt startup at
+23:39 UTC. Its corrected package contains 1,155 verified files; the allocation
+guard fixes the deadline at **2026-10-08 00:39:02 UTC**. The prior
 failed attempt cost $0.4752. The retry maximum quote is **$2.97**.
 
 The proposed storage change replaces duplicate full transposed observations/masks

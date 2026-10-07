@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-8tdud building; native gradient audit corrected and full CPU gradient admission passed; GPU gate and ABBA pending",
+    "status": "job-8tdud first attempt starting; GPU correctness and ABBA pending",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2617,6 +2617,18 @@
         "observed_at": "2026-10-07T23:30:11.756351+00:00",
         "jobs_checked": 105,
         "active_generals_jobs": []
+      },
+      "allocation_guard": {
+        "job_id": "job-8tdud",
+        "minutes": 60,
+        "pid": 23839,
+        "running": true,
+        "observed_at": "2026-10-07T23:39:43.023100+00:00",
+        "status": "starting",
+        "last_preallocation_observed_at": "2026-10-07T23:39:02.361274+00:00",
+        "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
+        "first_allocation_lower_bound_at": "2026-10-07T23:39:02.361274+00:00",
+        "deadline": "2026-10-08T00:39:02.361274+00:00"
       }
     },
     "fresh_start_readiness": {
