@@ -322,6 +322,14 @@
     "confirmation_branch": "codex/route-shortcut-confirmation",
     "confirmation_revision": "6a0854985a257295c9a43d242bd3a131a83d8610",
     "confirmation_submitted": false,
+    "image_contingency": {
+      "path": "integrations/softmax/local-output/eval-image-contingency-20261007",
+      "receipt_sha256": "ba63813ca407cdcc81dc6fff5838a9bf9f8a6c338cba5ebccb669bd0b3eeae2c",
+      "dockerfile_sha256": "08b89fcdba60f2ea045cf6e1553d10a004104170d769e7ed696de29bc2f3cc7b",
+      "compressed_base_layer_bytes": 139444203,
+      "original_compressed_base_layer_bytes": 3971526496,
+      "built_or_submitted": false
+    },
     "submitted_utc": "2026-10-07T06:33:54Z",
     "branch": "codex/route-shortcut-ablation",
     "revision": "601177976538bc8cd31ceea014496a35662e1f8d",

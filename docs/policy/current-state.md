@@ -239,6 +239,13 @@ reserved seeds and a check requiring this exact development job to finish
 successfully with a positive strength result. No confirmation job or training
 was submitted.
 
+A contingent evaluation image replaces the CUDA development base with a
+digest-pinned CUDA base and retains the exact Python lockfile and runtime
+inputs. Its compressed base layers are 139 MB versus 3.97 GB; this is not a
+measurement of the final image. The C++ siege compiler is retained. This image
+is prepared for repeated image-loading failure, but has not been built or
+submitted; the live job is unchanged. Its receipt is in the manifest.
+
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
 ≥30,000 steady end-to-end SPS gate for each long-training setup. Preserve the
