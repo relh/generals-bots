@@ -74,3 +74,25 @@ def test_entrypoint_publishes_success_after_collection(tmp_path):
     assert marker['selected'] is False
     assert marker['results_sha256'] == runner.digest(output / 'results.tar.gz')
     assert json.loads((output / 'collection.json').read_text())['complete'] is True
+
+
+def test_cleanup_wait_failure_does_not_skip_collection(tmp_path, monkeypatch):
+    import subprocess
+    from integrations import bounded_policy_entrypoint as entry
+    results, output = tmp_path / 'results', tmp_path / 'output'
+    results.mkdir(); (results / 'partial.bin').write_bytes(b'partial')
+    class Child:
+        pid = 12345
+        def wait(self, timeout):
+            raise subprocess.TimeoutExpired('fixture', timeout)
+    monkeypatch.setattr(entry.subprocess, 'Popen', lambda *a, **k: Child())
+    def gone(*_):
+        raise ProcessLookupError()
+    monkeypatch.setattr(entry.os, 'killpg', gone)
+    with pytest.raises(subprocess.TimeoutExpired) as error:
+        entry.run([(['fixture'], {})], results, output, 1, kind='fixture', completion=lambda _: {})
+    assert error.value.timeout <= 1  # Original deadline exception, not cleanup's ten-second wait.
+    failure = json.loads((output / 'FAILED.json').read_text())
+    assert 'cleanup_error' in failure
+    assert (output / 'results.tar.gz').is_file()
+    assert json.loads((output / 'collection.json').read_text())['complete'] is False
