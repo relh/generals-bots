@@ -36,6 +36,13 @@ artifact identities, paths, qualification receipts and rejected experiments.
 Use the [runbook](runbook.md) for operations and [roadmap](roadmap.md) for
 planned decisions. Older prose remains in Git history.
 
+The runner cleanup is integrated: one explicit-plan trial runner and shared
+training audits replace completed bridge, row-rotation and standalone stateless
+launch chains (**1,037 net lines removed**). Twelve focused checks passed;
+fixed training configs and asset identities were preserved. The live job still
+uses its sealed source package; its collector imports and archive digest remain
+unchanged. Reorganized source requires admission before a future GPU launch.
+
 ## Selected policy and game
 
 | Item | Selected value |

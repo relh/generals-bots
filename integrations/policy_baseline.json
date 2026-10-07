@@ -2223,14 +2223,16 @@
       "limits": "Training outcomes are not independent held-out checkpoint comparisons; 33.55M steps cannot rule out later learning; printed zero KL has only three decimal precision."
     }
   },
-  "pending_runner_cleanup": {
+  "runner_cleanup": {
     "commit": "3805db3",
     "branch": "codex/minimal-policy-trial",
-    "status": "reviewed in isolation; integrate after job-r4xkt terminal audit",
+    "status": "integrated as04ad0a9; live job and collector unaffected",
     "net_lines_removed": 1037,
     "focused_checks_passed": 12,
     "input_admission": "Refactored fresh-start prepare accepted authenticated sealed input manifest and 244 control files; configs byte-identical and asset list unchanged",
     "scope": "Shared explicit-plan trial runner and training audits; remove completed bridge/row-rotation/stateless standalone launch chains and unused worker selector",
-    "limitation": "No GPU qualification claim for reorganized source. Active job uses sealed c1cae5f."
+    "limitation": "No GPU qualification claim for reorganized source. Active job uses sealed c1cae5f.",
+    "integration_commit": "04ad0a9",
+    "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   }
 }
