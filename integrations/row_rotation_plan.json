@@ -66,5 +66,13 @@
     "Row rotation changes effective optimizer exposure, not number of updates or rollout steps.",
     "Native patch CPU schedule audit and exact source/config diff review required before packaging."
   ],
-  "source_gate_reuse": "Reuse verified historical source sampler gate only after matching source policy, exact sampler and gate seeds. Qualification initializer gate must be freshly executed."
+  "source_gate_reuse": "Reuse verified historical source sampler gate only after matching source policy, exact sampler and gate seeds. Qualification initializer gate must be freshly executed.",
+  "runtime_profile_amendment": {
+    "after_job": "job-zsz35",
+    "reason": "Epoch 2 to 4 measured 29811.110479331317 SPS; no continuation or evaluation executed.",
+    "worker_selection": "Before native build, SHA-verified fixed public replay batch906; eligible 1,2,4,8 bounded by CPU affinity/quota; exact action and memory equality against serial; 5 warmed interleaved samples of 10 calls; 30-second timing bound. Select fastest median; within 2 percent prefer4 then smaller.",
+    "scope": "Execution-only worker count shared by candidate qualification, continuation and all three evaluation actors. Historical control workers4 retained; per-row native computation unchanged, different hardware may change floating-point trajectories.",
+    "qualification": "Unchanged strict 30000 SPS gate and full4194304-step qualification before continuation; CPU callback speed is not training qualification.",
+    "telemetry": "CPU affinity/model/quota/stat plus GPU name/UUID/driver/pstate/clocks/power/temperature/throttle reasons; preserve existing gpu.csv."
+  }
 }

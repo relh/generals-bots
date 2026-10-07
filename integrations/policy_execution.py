@@ -52,7 +52,6 @@ def runtime_environment(source, output, sampler):
         METTA_AUDIT_SPATIAL_SPLITS="0",
         METTA_AUDIT_ACTION_MASK="1",
         METTA_AUDIT_POPULATION_WINS="0",
-        METTA_EPOCH_TIMING_DIR=str(output / "timing"),
         METTA_SPATIAL_SAMPLING_GATE_REPORT=str(output / "sampling-gate.json"),
     )
     for name, value in sampler.items():
@@ -142,19 +141,8 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         from integrations.slurm_s3_job import visible_gpu_identity
 
                         if elapsed - sampled >= 5:
-                            with (output / "gpu.csv").open("ab") as samples:
-                                subprocess.run(
-                                    [
-                                        "nvidia-smi",
-                                        "--id=" + visible_gpu_identity()["uuid"],
-                                        "--query-gpu=timestamp,uuid,memory.used,utilization.gpu",
-                                        "--format=csv,noheader",
-                                    ],
-                                    stdout=samples,
-                                    stderr=log,
-                                    check=True,
-                                    timeout=10,
-                                )
+                            from integrations.policy_runtime_profile import telemetry
+                            telemetry(output, visible_gpu_identity()["uuid"])
                             sampled = elapsed
                         console = output / "run/console.log"
                         if native_progress is None and console.exists():
