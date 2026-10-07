@@ -2214,5 +2214,15 @@
       },
       "ready_sha256": "399c351977824146a2acc3d26cbfb399cf84414c76787a2c6c8f82612d745d1d"
     }
+  },
+  "pending_runner_cleanup": {
+    "commit": "3805db3",
+    "branch": "codex/minimal-policy-trial",
+    "status": "reviewed in isolation; integrate after job-r4xkt terminal audit",
+    "net_lines_removed": 1037,
+    "focused_checks_passed": 12,
+    "input_admission": "Refactored fresh-start prepare accepted authenticated sealed input manifest and 244 control files; configs byte-identical and asset list unchanged",
+    "scope": "Shared explicit-plan trial runner and training audits; remove completed bridge/row-rotation/stateless standalone launch chains and unused worker selector",
+    "limitation": "No GPU qualification claim for reorganized source. Active job uses sealed c1cae5f."
   }
 }
