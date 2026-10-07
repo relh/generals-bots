@@ -34,8 +34,9 @@ artifact identities. Git history retains superseded attempts.
    the checkpoint and sampler, then run fresh balanced hosted matches against
    the incumbent and Daveey. Promote only after all acceptance gates pass.
    Conditional preparation is on `codex/monotone-force-confirmation` at
-   `20abb14`: it requires the independently audited successful development
-   result, pins its exact actors and uses fresh seeds 12002101/03/11.
+   `61f6a12`: it accepts only an independently audited positive `job-wgtyc`
+   result, pins its exact context and actors, and uses fresh seeds 12002101/03/11.
+   Six rejection tests include refusing the failed predecessor.
    No confirmation configuration, context or job exists yet.
 
 ## Winning acceptance

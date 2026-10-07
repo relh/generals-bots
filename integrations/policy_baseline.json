@@ -457,6 +457,19 @@
         "control": "e8fa3a68796661f6439e7ed7e3cd67db980b3adca0352015de7bc90e007ab97d",
         "candidate": "d522b9ec9a7ba33218eae12d0dab5595f8ee5d5bdaee74a6251e57ba2fe348fe"
       }
+    },
+    "conditional_confirmation": {
+      "branch": "codex/monotone-force-confirmation",
+      "revision": "61f6a122a022287fd8ca4ae9c4207d54138d4a9b",
+      "helper_sha256": "ca0e318d797ccd1e3a799cd2ad1ae21a637fdb9412d9e83644f2684f4efe23f1",
+      "plan_sha256": "8e84104a946a942757923775cb9b000b37cf87cd18a652dad0a4a69e1b529fad",
+      "required_development_job": "job-wgtyc",
+      "required_context": "ctx-66b75696",
+      "required_source_revision": "6b297dbb49d5073ee7732b4a24880f93e18e63f2",
+      "rejection_tests_passed": 6,
+      "configuration_generated": false,
+      "context_created": false,
+      "submitted": false
     }
   },
   "route_shortcut_development": {
