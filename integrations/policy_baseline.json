@@ -2618,6 +2618,19 @@
         "jobs_checked": 105,
         "active_generals_jobs": []
       }
+    },
+    "fresh_start_readiness": {
+      "commit": "d80303f",
+      "status": "Pending positive job-8tdud audit; no dependent allocation",
+      "requirements": [
+        "Successful independently audited compiled GPU gather and production gradient gate",
+        "Both gather diagnostic runs at least 30000 SPS",
+        "Positive measured GPU memory reduction",
+        "Matching execution sources and generated gather receipt",
+        "Separate full 4194304-step qualification before continuation"
+      ],
+      "staging_tools": "integrations/softmax/local-output/fresh-start-gather-launch-20261007",
+      "plan_evidence_bindings_pending": true
     }
   }
 }

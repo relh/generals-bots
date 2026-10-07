@@ -124,8 +124,11 @@ This comparison does not establish the cause of the prior reset-run slowdown.
 
 **Next:** inspect the GPU gate and same-allocation comparison from `job-8tdud`. Adopt
 only a demonstrated useful change; otherwise diagnose the measured bottleneck.
-A successful diagnostic must be followed by full 4Mi qualification before
-resuming the fresh-start 32Mi strength experiment. Positive development results
+The fresh-start runner now requires bound, independently audited probe success,
+both gather diagnostics ≥30K SPS, measured memory reduction and matching
+execution sources. Its plan remains pending that evidence. A successful
+diagnostic must be followed by full 4Mi qualification before resuming the
+fresh-start 32Mi strength experiment. Positive development results
 then require independent confirmation and fresh balanced hosted matches.
 
 ## Winning acceptance
