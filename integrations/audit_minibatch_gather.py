@@ -38,6 +38,11 @@ int main(int argc,char** argv){
   long long count=(long long)4096*128*C,mb=(long long)64*128*C;
   float *src,*ref,*scratch;OK(cudaMalloc(&src,count*4));OK(cudaMalloc(&ref,count*4));OK(cudaMalloc(&scratch,mb*4));
   fill<<<(count+255)/256,256,0,stream>>>(src,count,C==3529);
+  char fixture_name[4096];snprintf(fixture_name,sizeof(fixture_name),"%s/%d-fixture.bin",argv[1],C);
+  FILE* fixture=fopen(fixture_name,"rb");if(!fixture)return 6;
+  float* fixture_host=(float*)malloc(8*C*4);if(fread(fixture_host,4,8*C,fixture)!=8*C)return 7;fclose(fixture);
+  for(int sample=0;sample<8;sample++)OK(cudaMemcpyAsync(src+(long long)(sample*8*64)*C,fixture_host+sample*C,C*4,cudaMemcpyHostToDevice,stream));
+  OK(cudaStreamSynchronize(stream));free(fixture_host);
   baseline<<<(count+255)/256,256,0,stream>>>(ref,src,C);
   char name[4096];snprintf(name,sizeof(name),"%s/%d-reference.bin",argv[1],C);FILE* fref=fopen(name,"wb");
   snprintf(name,sizeof(name),"%s/%d-gather.bin",argv[1],C);FILE* fg=fopen(name,"wb");if(!fref||!fg)return 4;
@@ -66,7 +71,8 @@ def model_parity(directory, build):
     from integrations.policy_execution import runtime_environment
     inputs = Path('/work/input')
     metadata = json.loads((inputs/'assets/cold/asset.json').read_text())
-    os.environ.update(runtime_environment(inputs/'source', directory, metadata['sampler']))
+    source = Path(__file__).resolve().parents[1]
+    os.environ.update(runtime_environment(source, directory, metadata['sampler']))
     import jax
     import jax.numpy as jnp
     from integrations.direct_spatial_optimization import install
@@ -81,7 +87,7 @@ def model_parity(directory, build):
     from integrations.native_spatial_asset import abi_digest
     if abi_digest(policy) != metadata['abi_sha256'] or policy.buffers.parameter_words != metadata['parameter_count']:
         raise ValueError('Gather admission policy ABI differs')
-    if build['config']['fabric'] != metadata['fabric'] or digest(inputs/'source/integrations/generals_fabric.py') != metadata['factory_source_sha256']:
+    if build['config']['fabric'] != metadata['fabric'] or digest(source/'integrations/generals_fabric.py') != metadata['factory_source_sha256']:
         raise ValueError('Model or factory differs from selected source')
     parameters = jax.device_put(np.fromfile(inputs/'assets/cold/policy.bin', '<f4'), devices[0])
     if digest(inputs/'assets/cold/policy.bin') != metadata['policy_sha256']:
@@ -138,6 +144,16 @@ def main():
     header=args.build/'source/src/metta_rollout_memory.cuh'
     with tempfile.TemporaryDirectory(prefix='gather-gpu-') as name:
         directory=Path(name)
+        import jax
+        import numpy as np
+        from integrations.audit_spatial_checkpoint_serving_parity import verified_views
+        with jax.default_device(jax.devices('cpu')[0]):
+            observations,masks,labels=verified_views(Path('/work/input/leader-root'),[0,6,7,10],{0,25,99,100,150,200})
+        if len(observations)<8:
+            raise ValueError('Require eight authenticated public replay observations')
+        observations[:8].astype('<f4').tofile(directory/'7056-fixture.bin')
+        masks[:8].astype('<f4').tofile(directory/'3529-fixture.bin')
+        fixtures={str(c):digest(directory/f'{c}-fixture.bin') for c in (7056,3529)}
         (directory/'admission.cu').write_text('#include <initializer_list>\n'+CUDA)
         subprocess.run(['nvcc','-std=c++17','-O2','-I',str(header.parent),str(directory/'admission.cu'),'-o',str(directory/'admission')],check=True,timeout=120)
         subprocess.run([str(directory/'admission'),str(directory)],check=True,timeout=180)
@@ -147,7 +163,7 @@ def main():
                 header_sha256=digest(header),rollout_memory_receipt_sha256=digest(args.build/'rollout-memory.json'),
                 generated_pufferl_sha256=digest(args.build/'source/src/pufferl.cu'),audit_module_sha256=digest(__file__),
                 all_64_blocks_bitwise=True,scratch_reuse_passes=2,geometry=dict(agents=4096,horizon=128,minibatch_rows=64,features=[7056,3529]),
-                model=model,scope='Actual compiled gather header, exact full-size float32 observations/binary masks; spatial PPO parity on eight sampled synthetic states. No claim of end-to-end training equivalence.')
+                model=model,fixture_sha256=fixtures,fixture_labels=labels[:8],scope='Actual compiled gather header, exact full-size float32 observations/binary masks; spatial PPO parity on eight authenticated public replay states. No claim of end-to-end training equivalence.')
     args.output.write_text(json.dumps(report,indent=2)+'\n')
 
 
