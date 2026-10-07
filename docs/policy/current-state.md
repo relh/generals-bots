@@ -137,6 +137,17 @@ negative. No independent confirmation, hosted evaluation or promotion follows.
 The selected source and serving version remain unchanged; exact checkpoint,
 comparison and audit hashes are in the manifest.
 
+A repaired Product implementation is now under a **bounded throughput probe**:
+H100 `job-24kw9`, isolated `codex/product-logical-migration` revision `0fa8765`,
+sealed context `ctx-9bf8ff4e`. The correction treats Product U/V/Q as logical
+matrices and applies a 128× gain. Zero Q still reproduces the selected source
+exactly; all 11 migrated policy byte sets are identical under both topologies.
+The probe must demonstrate ≥30,000 steady end-to-end SPS, all 13 opponents on
+both seats, clean reward/action/gradient audits, and a >1e-3 Q effect with
+native/serving parity. It has a 60-minute/$2.97 cap and zero restarts. There
+is no game-strength result or promotion decision from this repair. The
+manifest binds its context archive and input seal.
+
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
 ≥30,000 steady end-to-end SPS gate for each long-training setup. Preserve the
