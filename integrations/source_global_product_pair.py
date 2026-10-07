@@ -116,6 +116,7 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
             or run["overrides"]["train.minibatch_size"] != train["minibatch"]
             or run["overrides"]["train.replay_ratio"] != train["replay_ratio"]):
         raise ValueError("Matched PPO geometry differs from qualified Product probe")
+    (output / "config.json").chmod(0o600)
     (output / "config.json").write_text(json.dumps(run, indent=2) + "\n")
     contract = json.loads(json.dumps(validate_training_contract(build, run)))
     if contract != intent["contract"]:
