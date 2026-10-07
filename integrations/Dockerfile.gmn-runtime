@@ -1,0 +1,64 @@
+FROM nvidia/cuda:13.0.2-runtime-ubuntu24.04@sha256:121b25126d81cddeae4c048aa46e94050514ca6b8609a124027b38073e7ef4b6
+
+RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
+    python3 python3-venv python3-dev git curl ca-certificates \
+    build-essential clang ccache libomp-dev libgl1 \
+    cuda-cudart-dev-13-0=13.0.88-1 \
+    cuda-nvml-dev-13-0=13.0.87-1 \
+    libcublas-dev-13-0=13.0.2.14-1 \
+    libcusolver-dev-13-0=12.0.4.66-1 \
+    libcurand-dev-13-0=10.4.0.35-1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -sf /usr/lib/x86_64-linux-gnu/libomp.so.5 /usr/lib/x86_64-linux-gnu/libomp5.so \
+    && ln -sf /usr/lib/x86_64-linux-gnu/libGL.so.1 /usr/lib/x86_64-linux-gnu/libGL.so
+COPY requirements.lock /tmp/requirements.lock
+RUN python3 -m venv /opt/generals && /opt/generals/bin/pip install -q --no-cache-dir --timeout 120 --retries 8 -r /tmp/requirements.lock
+
+# The pinned NVIDIA pip wheels contain nvcc, core headers, CCCL, and NVVM.
+# The pinned CUDA 13.0 dev library packages supply Puffer's BLAS, solver,
+# random-number, and NVML headers/linker stubs without the full devel image.
+ENV CUDA_HOME=/opt/generals/lib/python3.12/site-packages/nvidia/cu13
+ENV NVCC_EXTRA=-I/usr/local/cuda/include
+ENV LD_LIBRARY_PATH=/opt/generals/lib/python3.12/site-packages/nvidia/cu13/lib:/opt/generals/lib/python3.12/site-packages/nvidia/cudnn/lib:/opt/generals/lib/python3.12/site-packages/nvidia/nccl/lib:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64
+RUN set -eu; \
+    test -x "$CUDA_HOME/bin/nvcc"; \
+    test -f "$CUDA_HOME/include/cuda_runtime.h"; \
+    test -f "$CUDA_HOME/include/cccl/cuda/std/array"; \
+    test -f "$CUDA_HOME/nvvm/libdevice/libdevice.10.bc"; \
+    for header in cublas_v2.h cusolverDn.h curand_kernel.h nvml.h; do \
+      test -f "/usr/local/cuda/include/$header"; \
+    done; \
+    mkdir "$CUDA_HOME/lib64"; \
+    for lib in cudart cublas cusolver curand; do \
+      test -e "/usr/local/cuda/lib64/lib${lib}.so"; \
+      ln -s "/usr/local/cuda/lib64/lib${lib}.so" "$CUDA_HOME/lib64/lib${lib}.so"; \
+    done; \
+    nccl=/opt/generals/lib/python3.12/site-packages/nvidia/nccl; \
+    test -f "$nccl/include/nccl.h"; \
+    if ! test -e "$nccl/lib/libnccl.so"; then \
+      for path in "$nccl"/lib/libnccl.so.*; do \
+        if test -e "$path"; then ln -s "$path" "$nccl/lib/libnccl.so"; break; fi; \
+      done; \
+    fi; \
+    test -e "$nccl/lib/libnccl.so"; \
+    nvml=; \
+    for path in /usr/local/cuda/lib64/stubs/libnvidia-ml.so /usr/local/cuda/lib64/libnvidia-ml.so; do \
+      if test -e "$path"; then nvml="$path"; break; fi; \
+    done; \
+    test -n "$nvml"; \
+    ln -s "$nvml" "$CUDA_HOME/lib64/libnvidia-ml.so"; \
+    "$CUDA_HOME/bin/nvcc" --version
+
+# Pure source only: no copied virtualenv, bytecode, binary wheel or CUDA cache.
+COPY framework-source /opt/generals-source
+RUN chmod -R a+rX /opt/generals-source
+ENV PATH=/opt/generals/bin:${CUDA_HOME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PYTHONPATH=/opt/generals-source
+RUN /opt/generals/bin/python -m pip check && /opt/generals/bin/python -c \
+    'import numpy, pydantic, msgpack, importlib.metadata as m; assert m.version("jax") == "0.11.0"; print("IMAGE_DEPENDENCIES_OK")'
+COPY input /work/input
+ENV PYTHONPATH=/work/input/source:/opt/generals-source
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV JAX_PLATFORMS=cuda,cpu XLA_PYTHON_CLIENT_PREALLOCATE=false
+WORKDIR /opt
+CMD ["/opt/generals/bin/python", "-m", "integrations.source_global_product_probe", "run", "--input", "/work/input", "--output", "/output/generals"]
