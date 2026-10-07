@@ -68,16 +68,19 @@ for `control/qualification/sampling-gate.json`, while the authentic gate was
 saved at the shared experiment root. The artifact and all 34 retained file
 hashes were independently verified; exact hashes are in the manifest.
 
-`job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **running**
-as of 09:49:03 UTC, attempt 2, compiling the native trainers. The provider
-preempted attempt 1 at 09:42:45 UTC before training, then restarted the same
-job. It reports one preemption and zero runtime restarts; no replacement job
-was submitted. Preparation, GPU source parity (46/46 top actions; maximum
-probability difference 0.00000444), and the 512-game source sampling gate
-(267W/240L/5D) passed on the new attempt. These are startup checks, not
-training throughput or strength qualification. It uses repaired source `6b297db` and context
-`ctx-66b75696`: one H100 capped at **150 minutes/$7.425**, with zero runtime
-restarts. Qualification binds the authentic source gate at each stage; each
+`job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **running
+startup checks** as of 09:54:18 UTC, attempt 3. The provider preempted the
+first two attempts; it reports two preemptions and zero runtime restarts.
+Attempt 2 passed source parity and sampling checks before being severed;
+attempt 3 repeats them. No replacement job was submitted.
+
+Repaired source `6b297db`, context `ctx-66b75696`, runs on one H100. The
+provider's **150-minute limit and $7.425 quote apply per attempt**; preemptions
+do not consume its restart budget. The internal execution deadline is 148
+minutes per attempt. Aggregate billing is unverified. Our monitored external
+stop deadline is **2026-10-07 11:56:55 UTC** (150 minutes from submission),
+not an enforced provider-wide cap; no automatic watchdog is installed yet.
+Qualification binds the authentic source gate at each stage; each
 continuation requires fresh 512-game self-play of its exact trained initializer.
 No GPU throughput qualification or strength result is available yet. The
 selected policy and champion remain unchanged.

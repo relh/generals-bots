@@ -398,9 +398,9 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T09:49:03.792750+00:00",
-    "last_observed_phase": "native trainer build",
-    "attempt": 2,
+    "last_observed_utc": "2026-10-07T09:54:18Z",
+    "last_observed_phase": "attempt 3 startup smoke; repeated qualification pending",
+    "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
     "branch": "codex/monotone-force-potential",
@@ -415,7 +415,6 @@
     "path": "integrations/softmax/local-output/monotone-force-retry-20261007",
     "max_duration_minutes": 150,
     "execution_minutes": 148,
-    "max_cost_usd": 7.425,
     "max_restarts": 0,
     "gpu_qualification_passed": false,
     "has_strength_result": false,
@@ -471,7 +470,7 @@
       "context_created": false,
       "submitted": false
     },
-    "preempted_count": 1,
+    "preempted_count": 2,
     "attempt_history": [
       {
         "attempt": 1,
@@ -479,6 +478,13 @@
         "ended_at": "2026-10-07T09:42:45.717488+00:00",
         "outcome": "severed",
         "started_at": "2026-10-07T09:39:17.314550+00:00"
+      },
+      {
+        "attempt": 2,
+        "end_cause": "preempt",
+        "ended_at": "2026-10-07T09:51:50.761150+00:00",
+        "outcome": "severed",
+        "started_at": "2026-10-07T09:42:47.821898+00:00"
       }
     ],
     "startup_checks": {
@@ -494,7 +500,18 @@
       "sampling_wall_seconds": 170.3764118800027,
       "smoke_phase_elapsed_seconds": 367.30821641799776,
       "log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt2-20261007T094903792750Z-sanitized.log",
-      "scope": "Observed runtime console; final collected artifacts remain to be verified. Not training throughput or strength qualification."
+      "scope": "Attempt 2 only, subsequently preempted. Attempt 3 repeats startup checks. Console evidence is not training throughput or strength qualification."
+    },
+    "quoted_max_cost_usd_per_attempt": 7.425,
+    "duration_and_execution_scope": "Per attempt; provider preemptions do not consume max_restarts.",
+    "aggregate_billing_verified": false,
+    "monitored_external_stop_deadline_utc": "2026-10-07T11:56:55Z",
+    "automatic_external_watchdog_installed": false,
+    "provider_limits_evidence": {
+      "preemption-inspection.json": "5a2b10b122e516c9286fc1ef8cf1e2ad0edf6c842a831fb17e49231b4a19dbd1",
+      "provider-preemption-limits.txt": "23488f705b54467db0dee299dc567c42cf28609fa27b05e2e4deec5c652b2671",
+      "provider-preemption-docs.txt": "95d86312a1890c030e289f451f8bbeb09537db65f5e5f2d5dcf37412b83323b5",
+      "preemption-options.json": "ab96e22c7aa021116f409c9f2dd0dd809dec5d8146373fe1fe71ce23309bb15a"
     }
   },
   "route_shortcut_development": {
