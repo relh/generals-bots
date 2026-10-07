@@ -95,7 +95,9 @@ The fresh 4,096-game panels rejected the fixed monotone force potential:
 
 Candidate-minus-source signed-score delta was **−0.03491**, clustered 95% CI
 **[−0.06520, −0.00489]**; candidate-minus-control was **−0.00586**, CI
-**[−0.03666, +0.02466]**. Neither required improvement gate passed. **No independent
+**[−0.03666, +0.02466]**. Neither required improvement gate passed. A separate control-minus-source
+diagnostic was −0.02905, CI [−0.05969, +0.00293]; the interval includes zero,
+so a control decline is not statistically established. **No independent
 confirmation or promotion follows.** The selected policy and champion remain
 unchanged. Exact checkpoints, artifact hashes, audit and billing receipts are
 bound in the manifest.

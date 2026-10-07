@@ -794,6 +794,22 @@
           "mean_gpu_utilization_whole_training_subprocess_including_startup": 21.28708133971292
         }
       }
+    },
+    "diagnostics": {
+      "control_minus_source": {
+        "path": "integrations/softmax/local-output/monotone-force-retry-20261007/diagnostic-control-vs-source.json",
+        "sha256": "6c3838fcba05e46b8feb85be4ac959f8b60228659b64a2d4a6d4bece7ecda909",
+        "games": 4096,
+        "initial_state_clusters": 2575,
+        "bootstrap_seed": 12001111,
+        "bootstrap_resamples": 10000,
+        "signed_score_delta": -0.029052734375,
+        "cluster_ci95": [
+          -0.05969424896869692,
+          0.0029319065405047956
+        ],
+        "interpretation": "Negative point estimate; confidence interval includes zero, so no statistically established control decline."
+      }
     }
   },
   "route_shortcut_development": {
