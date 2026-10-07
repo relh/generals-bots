@@ -142,12 +142,12 @@ a cause; they provide no support for changing power limits or CPU quota.
 ### Bridge execution diagnostic retry: running
 
 **`job-zwt6d`** was submitted at **2026-10-07 18:32:06 UTC**, context
-`ctx-f76d9c6f`. At **19:11:42 UTC** attempt 1 had passed both native builds and CUDA lifetime
-checks. Baseline run 0 measured **39,795.67 instrumented SPS**, candidate run 1
-**43,390.55 SPS**, each over 1,048,576 steps after two warmup epochs. Candidate
-run 2 was initializing. The first pair is about 9% faster; the reverse-order
-pair and independent final artifact audit remain pending. These provisional
-results do not qualify sustained training or establish a strength gain. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
+`ctx-f76d9c6f`. At **19:19:14 UTC** attempt 1 had completed three runs: baseline run 0
+**39,795.67 instrumented SPS**, candidate run 1 **43,390.55 SPS**, candidate
+run 2 **43,016.74 SPS**, each over 1,048,576 steps after two warmup epochs.
+The final baseline was initializing. Both CUDA lifetime gates passed; the
+reverse-order comparison and final independent artifact audit remain pending.
+These provisional results do not qualify training or establish strength gains. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
 input files; only the diagnostic helper, report-writing template and input
 manifest changed. Strict report-file parsing and retained compiler/runtime
 stdout and stderr replace parsing embedded-Python stdout as JSON.
@@ -221,6 +221,14 @@ unexpected restored optimizer. It remains unsealed pending the bridge comparison
 Local staging now contains 371 verified files, including migrated policies and
 all 46 parity fixture states. Final source selection, sealing and submission
 remain pending; this staging creates no GPU allocation.
+
+Startup simplification **`f7cca32`** removes duplicate parent graph construction.
+The actual native actor now undergoes complete ABI admission before policy or
+optimizer bytes load; missing/mismatched receipts and stale build fingerprints
+are rejected. One actual CPU actor passed fresh/restored/new initialization
+and eight negative cases with further construction forbidden. Math and asset
+ABI remain unchanged. CUDA validation and startup-time measurement are pending;
+the running bridge comparison retains its sealed original startup code.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
