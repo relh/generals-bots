@@ -162,6 +162,14 @@ Detached guard **PID 77874** is verified live. These instrumented runs are
 bounded diagnostics; no continuation or strength evaluation follows, and full
 uninstrumented **≥30,000 SPS** qualification remains required.
 
+A separate active-path audit found that the direct actor ignores recurrent carry
+but copies its unchanged 77,684-word state into JAX and back during rollout:
+**1.185 GiB per buffer, 303.453 GiB of explicit copies per 128-step epoch** at
+4,096 environments. These are code-derived byte counts, not measured speedups.
+An isolated zero-external-state implementation is being prepared, with explicit
+asset ABI migration and unchanged weight/optimizer layout required. It does
+not alter this submitted bridge probe or qualify a new policy.
+
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
 

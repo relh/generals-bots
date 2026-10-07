@@ -1586,5 +1586,12 @@
       "integrations/softmax/local-output/bridge-profile-launch-20261007/aggregate-guard-process.json": "4fe932f024f6ad267f8c9b9d45213d9dfe489424b3da501a7815211ec3865bcd",
       "integrations/softmax/local-output/bridge-profile-launch-20261007/invalidated-ready.json": "6fc2d457c6092053d00d30680ba78e4a22b32b5018214986d6ad5e30787922d7"
     }
+  },
+  "stateless_execution_work": {
+    "status": "isolated implementation; no GPU experiment or asset migration completed",
+    "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
+    "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
+    "branch": "codex/stateless-spatial-abi",
+    "scope": "Remove external carry unused by direct forward/backward; preserve compiler mailbox scratch, parameter/optimizer layout and bytes; explicit ABI migration required. Active bridge probe unchanged."
   }
 }
