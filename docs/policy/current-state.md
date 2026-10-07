@@ -142,10 +142,11 @@ a cause; they provide no support for changing power limits or CPU quota.
 ### Bridge execution diagnostic retry: running
 
 **`job-zwt6d`** was submitted at **2026-10-07 18:32:06 UTC**, context
-`ctx-f76d9c6f`. At **19:02:12 UTC** attempt 1 had completed both native builds and mandatory
-CUDA lifetime checks. The first baseline training run was initializing, with
-no completed epochs yet. The corrected report protocol passed the previous
-failure point; final artifact verification and all four runs remain pending. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
+`ctx-f76d9c6f`. At **19:06:35 UTC** attempt 1 had passed both native builds and CUDA lifetime
+checks, and completed baseline run 0 at **39,795.67 instrumented SPS** over
+1,048,576 steps after two warmup epochs. Candidate run 1 was initializing.
+This provisional console result is not qualification; all four runs and
+independent final artifact verification remain required. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
 input files; only the diagnostic helper, report-writing template and input
 manifest changed. Strict report-file parsing and retained compiler/runtime
 stdout and stderr replace parsing embedded-Python stdout as JSON.
