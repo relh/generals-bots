@@ -1,0 +1,19 @@
+{
+  "schema": "generals-monotone-force-confirmation-v1",
+  "status": "conditional preparation; no qualifying development result exists yet",
+  "required_job_id": "job-kzmub",
+  "development_source_revision": "a3569ae796d983652a894c4d1b0effe21253a20c",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "required_terminal_audit_schema": "generals-monotone-force-independent-terminal-audit-v1",
+  "evaluation_seed": 12002101,
+  "evaluation_sample_seed": 12002103,
+  "bootstrap_seed": 12002111,
+  "games_per_arm": 4096,
+  "bootstrap_resamples": 10000,
+  "arms": ["source", "control", "candidate"],
+  "pool": "Exact ten frozen opponents and three scripts from development; balanced seats and unchanged weights",
+  "gate": "Verified technically succeeded terminal; original provider artifact/result/collection/completion hashes; both final trained parity/qualification receipts; recomputed positive development candidate-source and candidate-control clustered lower95 bounds with >=100-game strata delta>=-.10",
+  "confirmation": "Both independent candidate-source and candidate-control clustered lower95 bounds strictly positive; every >=100-game opponent-by-seat stratum delta>=-.10. Smaller strata reported.",
+  "forbidden": ["additional training", "parameter tuning", "sampler changes", "reusing development evaluation seeds", "producing runnable configuration after gate failure"],
+  "promotion": "Successful independent local confirmation still does not establish hosted winning strength"
+}
