@@ -1602,7 +1602,7 @@
     "retry_work": "Corrected diagnostic submitted as job-zwt6d; see bridge_execution_probe_retry."
   },
   "stateless_execution_work": {
-    "status": "integrated; CPU equivalence, asset migrations, GPU source parity and native compile verified; final Muon receipt fixed; native training/throughput retry pending",
+    "status": "qualified on H100: stateless native training, final GPU parity and independent artifact audit passed; strength continuation being prepared",
     "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
     "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
     "branch": "codex/stateless-spatial-abi",
@@ -1637,7 +1637,7 @@
     "qualification_plan": {
       "path": "integrations/stateless_qualification/plan.json",
       "sha256": "7c36fa67896a202b58bd9323b873dd29973d4d3ae9dd22acd765342061b75683",
-      "status": "corrected qualification submitted; image building; native training/throughput pending",
+      "status": "passed: 41,600.804 SPS over all six post-warmup epochs; authentic epoch-8 checkpoint and learner retained",
       "steps": 4194304,
       "steady_interval_steps": 3145728,
       "warmup_epochs": 2,
@@ -1709,8 +1709,8 @@
         "job_id": "job-tvqh9",
         "context_id": "ctx-44375895",
         "submitted_at": "2026-10-07T20:03:05.457650+00:00",
-        "status": "starting; image downloading",
-        "last_observed_at": "2026-10-07T20:19:06.828859+00:00",
+        "status": "succeeded",
+        "last_observed_at": "2026-10-07T20:39:18.528206+00:00",
         "source_revision": "392e36926d0fe7a1a807f92ea3b80c9c0ce3af8b",
         "archive_sha256": "7a01c95d1917239e7803f4556b6bdf7525f932a3c3b8e70f3a07987e66d31c77",
         "files_verified": 629,
@@ -1731,11 +1731,72 @@
           "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/validation.json": "c9e293be1cf936d10a6a2c21efddcb9c22c6e1efa55a37ec44446283babcad67",
           "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/pre-submit-active-check.json": "4a0dab1bbb57dc0022fa66a66bc91c10e9c4ff9366ba54832711d534fe24446c",
           "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/aggregate-guard-process.json": "47c4ddefb2343a1b0f499224b211f54ebcc30d59584518990433e7365aad22c2",
-          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/collect_and_audit.py": "6ba22ef7807b6cd0bda38f48bac67d3b7185fae0f48b0f2c80e74d91cec20e6a",
-          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/allocation-deadline.json": "0a0ec72acb8fc7848aea55f342b897b6335bf908aabcb136a42293f957fb0e44"
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/collect_and_audit.py": "5e3828582960d57ef2cbda31ec193144abfd1cafd933e985a5e60b659abe1067",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/allocation-deadline.json": "0a0ec72acb8fc7848aea55f342b897b6335bf908aabcb136a42293f957fb0e44",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/terminal-audit-job-tvqh9.json": "890cf9952f80b141d08cfa7adc88cc70a4916918108ce67be7f4bdb160142719",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/aggregate-guard.json": "1695ad3ce1d115391e848fcecbbcf3c3ec1f79ef46e3673c18f7bdd3031eb073"
         },
         "aggregate_deadline": "2026-10-07T20:53:30.141326+00:00",
-        "first_allocation_lower_bound_at": "2026-10-07T20:18:30.141326+00:00"
+        "first_allocation_lower_bound_at": "2026-10-07T20:18:30.141326+00:00",
+        "finished_at": "2026-10-07T20:38:59.586161+00:00",
+        "training_steps": 4194304,
+        "qualified": true,
+        "guard_running": false,
+        "billed_seconds": 1081,
+        "charged_usd": 0.891,
+        "terminal_artifact_files_verified": 155,
+        "independent_audit": {
+          "schema": "generals-stateless-qualification-independent-audit-v1",
+          "job_id": "job-tvqh9",
+          "status": "succeeded",
+          "qualified": true,
+          "continuation_authorized": false,
+          "files_verified": 155,
+          "artifact_sha256": "bff7b8091800ed136a361e721ecf1dce49a0c93228d52fe27d2f31dca7fbe6e1",
+          "collection_sha256": "313f094da598637013f698e82497b30af0ad27ca0f46bb6392184e018aab39b5",
+          "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/results-job-tvqh9/inner/generals",
+          "results_sha256": "cc82bf883a4e070ac198053894b653ec9dcf4f9210ea3f31935aba76295e0e3b",
+          "measured_steps": 3145728,
+          "measured_seconds": 75.61700000000002,
+          "steady_sps": 41600.80405199888,
+          "rolling_two_epoch_sps": {
+            "4": 41483.40388495468,
+            "5": 42128.40498192045,
+            "6": 41668.03099543018,
+            "7": 41128.691900372614,
+            "8": 41651.47964250246
+          },
+          "gpu_uuid": "GPU-2b8cd183-2fea-5f98-634e-22455f9c2e75",
+          "sampled_peak_gpu_memory_mib": 64873.0,
+          "telemetry_cadence_seconds": 5,
+          "decision": "Qualification only; no continuation or winning-strength claim."
+        },
+        "collector_schema_correction": "Serving export intentionally omits learner training_contract. Independent audit verifies exact sealed source serving identity and native parent manifest/contract, policy and optimizer identities for trained export.",
+        "qualification_summary": {
+          "qualified": true,
+          "continuation_authorized": false,
+          "measured_steps": 3145728,
+          "interval_seconds": 75.61700000000002,
+          "steady_sps": 41600.80405199888,
+          "sampled_peak_gpu_memory_mib": 64873.0,
+          "telemetry_cadence_seconds": 5,
+          "telemetry_scope": "whole training subprocess; samples are not aligned to the steady epoch interval",
+          "first_observed_memory_mib": 1447.0,
+          "first_observed_time_unix": 1791404765.1892726,
+          "whole_process_mean_gpu_utilization_percent": 9.303030303030303,
+          "gpu_uuid": "GPU-2b8cd183-2fea-5f98-634e-22455f9c2e75",
+          "evidence": {
+            "candidate/qualification/run/initial-policy.bin": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+            "candidate/qualification/run/native-admission.json": "ee7ce7ca575628d318c776f68a3e7febda7306382c9e3592ec26c1f2ac06f61d",
+            "candidate/qualification/run/checkpoints/metta_generals/run/0000000004194304.bin": "d690c3f122871f58fb9ccbb04ee11be95b55959260d0859829d5672e2e87b955",
+            "candidate/qualification/run/checkpoints/metta_generals/run/0000000004194304.bin.learner": "54b9363c35942a621a6b8832c313accc224ecbe5122e100580f4e44fc12ff5d3",
+            "candidate/qualification/rotation-audit.json": "98ca6e8cc5b5bd176a47effc4eb3fc861b3fb7a239c3b371e17a7906aa00ec30",
+            "candidate/qualification/training-audit.json": "6e84200abc2aeebc231b3f4f6e22951157ee8b9a922485adefc599e291030a88",
+            "candidate/qualification/serving-parity.json": "d7a976d281e17ba59f73a43cd0f397e82eff2d5402d8e3963ada6f9bd25245e1",
+            "source-serving-parity.json": "0b33fdace8086ca697f4b656a7dac77bd21002d362848d5164cd09990162835b",
+            "candidate/qualification/hardware.jsonl": "f5d10130ac86680454b6bdc7fe0e85770d085e63e5e1da12e6d2e135b7385892"
+          }
+        }
       }
     },
     "startup_admission": {
@@ -1746,7 +1807,7 @@
         "sha256": "1fcd6f20125a1fdbab9b90dc8870bcbb1924371884218d66d50b4501b72f5e36"
       },
       "scope": "Actual native actor ABI admission before policy/learner loads; parent duplicate graph removed; completion receipt and build admission-source fingerprint mandatory. Math and asset ABI unchanged.",
-      "gpu_executed": false
+      "gpu_executed": true
     },
     "remaining_memory_budget": {
       "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/memory-budget.json",
@@ -1785,7 +1846,7 @@
       }
     },
     "gpu_stateless_source_parity_passed": true,
-    "gpu_stateless_training_executed": false,
+    "gpu_stateless_training_executed": true,
     "post_muon_pretraining_admission": {
       "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/post-muon-pretraining-admission.json",
       "sha256": "0bda02cee153023b44117ef1b73833a45676728e9d4dddd1e5cb36953d7615c7",

@@ -2,13 +2,12 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. At **2026-10-07 20:19 UTC**, corrected stateless qualification
-**`job-tvqh9` is starting its H100 allocation**. The preceding attempt passed source
-GPU parity and native compilation but failed a pretraining Muon receipt guard;
-that receipt-ordering bug is fixed and the actual guard now passes. The bridge
-diagnostic completed and verified a small output-copy saving, without a
-repeatable overall speedup. The preceding row-rotation qualifications failed
-the throughput gate; no long continuation or fresh strength evaluation ran.
+job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
+2026-10-07 20:38:59 UTC**. Independent verification of all 155 retained files
+confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
+4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
+The continuation to 33,554,432 run steps and fresh strength panels is being
+prepared. No strength improvement or hosted acceptance is established.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -65,7 +64,7 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Learning-path repair: coverage verified, throughput failed
+## Learning-path repair: coverage and throughput verified, strength pending
 
 At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches
 of 64 environment rows from a 4,096-row rollout. The minibatch index restarts
@@ -233,9 +232,8 @@ All 14 asset manifests and 12 serving bundles were migrated, preserving policy,
 portable weight and both optimizer snapshots byte-for-byte. Root independently
 verified the comparisons and migrated bytes. The selected asset references now
 point to the migrated assets; historical experiment inputs remain hash-bound.
-**GPU source inference parity passed; native training and throughput qualification
-are still pending.** This does
-not change the sealed bridge comparison or establish any policy strength gain.
+**GPU source/final parity, native training and throughput qualification passed
+in `job-tvqh9`.** This establishes no policy strength gain.
 The current qualification is preregistered in
 `integrations/stateless_qualification/plan.json`: 4,194,304 uninstrumented steps,
 workers eight, two warmup epochs, then all six remaining epochs measured
@@ -257,29 +255,42 @@ chain produced byte-identical CUDA source, and the retained GPU binary passed
 the final runtime guard and wrapped preparation. Stale receipts and altered
 source/intermediate/final hashes were rejected. Policy math, ABI and asset
 bytes are unchanged. Earlier CPU source checks did not exercise this final
-runtime guard; the corrected admission does. A corrected qualification is being
-sealed with the same settings and limits.
+runtime guard; the corrected admission does. The corrected qualification passed with the same settings and limits.
 
-Corrected qualification **`job-tvqh9`** was submitted **20:03:05 UTC**, context
-`ctx-44375895`, source **`392e369`**. At 20:19:06 UTC the allocation was starting and downloading its image.
-Root verified all **629 sealed files**, including **256 exact Git source files**;
-all fixed assets, configs and the 4,194,304-step plan are unchanged. Limits are
-**35/33/35 minutes provider/internal/aggregate**, zero restarts, one H100,
-maximum quote **$1.7325**. Detached guard **PID 89166** is live, with a fixed
-aggregate deadline **20:53:30 UTC** from the conservative 20:18:30 anchor.
-No continuation has been submitted.
+Corrected qualification **`job-tvqh9`**, source **`392e369`**, context
+`ctx-44375895`, succeeded on its first attempt without restart or preemption.
+All **155 retained files** independently verified. One NVIDIA H100 80GB HBM3,
+4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5 and eight
+workers completed eight epochs. After two warmup epochs, **3,145,728 steps /
+75.617 seconds = 41,600.804 SPS**; every rolling two-epoch window also passed
+30K. This is one trainer, so per-process and aggregate SPS are equal.
+All 4,194,304 actions were legal; nonfinite/clipped rewards were zero; all 13
+opponents had equal positive counts in both seats. Source and final checkpoint
+passed all **46 GPU parity fixtures**. The authentic optimizer is at epoch 8.
+
+Five-second NVML samples peaked at **64,873 MiB (63.35 GiB)**, starting at
+1,447 MiB. Whole-training-subprocess mean GPU utilization was 9.30%, including
+startup; samples are not aligned to the steady epoch interval. GPU UUID,
+driver, telemetry and exact checkpoint identities are pinned in the manifest.
+The collector initially assumed a training contract inside serving assets;
+the exporter intentionally omits learner fields. The corrected audit verifies
+the serving asset's native-parent manifest and complete native training contract.
+No training or artifact bytes changed. Billing: **1,081 seconds, $0.8910**.
+The fixed 20:53:30 aggregate deadline was unused; its guard observed completion.
+No continuation has been submitted yet.
 
 The failed context `ctx-28e3bf5d`, source **`a82ac6f`**, all 624 sealed files and
 artifacts are preserved. Guard PID 38362 observed terminal failure and exited
 before its fixed 20:20:21 deadline. No continuation is queued. The selected
-policy weights remain unchanged, and throughput qualification is still required.
+policy weights remain unchanged; the corrected execution path now qualifies.
 
 Startup simplification **`f7cca32`** removes duplicate parent graph construction.
 The actual native actor now undergoes complete ABI admission before policy or
 optimizer bytes load; missing/mismatched receipts and stale build fingerprints
 are rejected. One actual CPU actor passed fresh/restored/new initialization
 and eight negative cases with further construction forbidden. Math and asset
-ABI remain unchanged. CUDA validation and startup-time measurement are pending;
+ABI remain unchanged. Actual GPU native admission passed in `job-tvqh9`;
+no controlled startup-time speedup is claimed;
 the completed bridge comparison used its sealed original startup code.
 
 The stateless source still allocates two complete rollout copies: each stores

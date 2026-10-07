@@ -1,28 +1,19 @@
 # Winning Classic policy roadmap
 
 The selected radius-2 source does not meet the hosted winning gate. Its weights
-are unchanged. The current state-free execution path still needs GPU
-qualification; historical throughput measurements do not qualify this refactor.
+are unchanged. The current state-free execution path qualified on H100 at 41,601 SPS,
+with final checkpoint parity and an independent artifact audit.
 See [current state](current-state.md) for live work and results,
 [runbook](runbook.md) for commands, and the
 [manifest](../../integrations/policy_baseline.json) for artifact identities.
 
 ## Next decisions
 
-1. Complete the
-   [state-free qualification](../../integrations/stateless_qualification/plan.json).
-   Job `job-wv4b3` passed parity/build but failed its pretraining Muon hash guard.
-   The corrected receipt passed the actual guard; replacement `job-tvqh9` is
-   starting the same bounded qualification with the fix.
-   The completed bridge comparison verified copies and owner lifetime. Retain
-   one output fence for its small measured local saving; overall speedup was
-   ambiguous across the two orders. Instrumented SPS does not qualify training.
-   Run 4,194,304 uninstrumented steps with the exact migrated source and opponent
-   assets. Require source/checkpoint parity, complete action/reward audits,
-   all 13 opponents on both seats, and ≥30K SPS across epochs 3–8 after two
-   warmup epochs. Retain the rolling throughput guard. If it fails, use the
-   measured bottleneck to choose the next performance change.
-2. Once the execution setup qualifies, complete the controlled row-rotation
+1. Completed the [state-free qualification](../../integrations/stateless_qualification/plan.json):
+   `job-tvqh9` passed 4,194,304 steps, source/checkpoint GPU parity, complete
+   action/reward audits, all 13 opponents on both seats and 41,601 SPS over
+   all six post-warmup epochs. All rolling windows passed 30K.
+2. Complete the controlled row-rotation
    learning experiment. Permanent row starvation at replay ratio 0.5 is fixed
    in code, but neither prior attempt qualified throughput or tested strength.
    Keep source, opponent pool, reward, maps, sampler and seats matched; compare
