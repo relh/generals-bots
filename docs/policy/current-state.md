@@ -137,16 +137,19 @@ negative. No independent confirmation, hosted evaluation or promotion follows.
 The selected source and serving version remain unchanged; exact checkpoint,
 comparison and audit hashes are in the manifest.
 
-A repaired Product implementation is now under a **bounded throughput probe**:
-H100 `job-24kw9`, isolated `codex/product-logical-migration` revision `0fa8765`,
-sealed context `ctx-9bf8ff4e`. The correction treats Product U/V/Q as logical
-matrices and applies a 128× gain. Zero Q still reproduces the selected source
-exactly; all 11 migrated policy byte sets are identical under both topologies.
-The probe must demonstrate ≥30,000 steady end-to-end SPS, all 13 opponents on
-both seats, clean reward/action/gradient audits, and a >1e-3 Q effect with
-native/serving parity. It has a 60-minute/$2.97 cap and zero restarts. There
-is no game-strength result or promotion decision from this repair. The
-manifest binds its context archive and input seal.
+The repaired logical-matrix Product probe `job-24kw9` **failed its live SPS
+guard** at epoch 4: 21,436.7 SPS over the interval ending after 2,097,152
+completed steps. It produced no trained checkpoint or activation measurement,
+and no game-strength result. Its source 512-game gate and native parity passed;
+all 13 opponents appeared on both seats, with zero nonfinite or clipped rewards
+through the partial run. Verified result artifact SHA-256:
+`9e6aa536be345d6433248ddef1291be613ba94c45d2fd906f2bf8be544a91afb`.
+The repair uses logical Product U/V/Q matrices and a 128× gain; zero Q matches
+the source exactly and 11 migrated policies have byte-identical weights under
+both topologies. The live guard fired before the preregistered final-two-epoch
+steady interval after six warmup epochs. Performance comparison is ongoing;
+the ≥30,000 steady end-to-end SPS requirement remains unchanged. The selected
+source and champion are unchanged.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new

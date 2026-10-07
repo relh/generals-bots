@@ -264,25 +264,27 @@
     "complete_marker_sha256": "73d32f8148525eb6bac46d9854ac76875e03bc9093c9291ae03dba681a8b1b25",
     "comparison_sha256": "37ce7f51a3dd0421aef557959aaa7ae7aab4c8f00296ea70d73f6f738993f4f1"
   },
-  "active_experiments": [
-    {
-      "kind": "repaired_source_global_product_h100_probe",
-      "branch": "codex/product-logical-migration",
-      "revision": "0fa8765",
-      "job": "job-24kw9",
-      "last_observed_state": "SUBMITTED",
-      "context": "ctx-9bf8ff4e",
-      "context_archive_sha256": "66577efc040e1a00b2b56286f34dbaa7ae8c3efe32aa56073c791c45d9701d18",
-      "input_seal_sha256": "c20dddaa49eac697ee8e3c825f29872712a3b220f55a1b0fbffbdc41d2c32844",
-      "minimum_steady_sps": 30000,
-      "minimum_q_effect": 0.001,
-      "require_all_13_opponents_both_seats": true,
-      "require_clean_action_reward_gradient_audits": true,
-      "require_native_serving_parity": true,
-      "max_duration_minutes": 60,
-      "max_cost_usd": 2.97,
-      "max_restarts": 0,
-      "has_strength_result": false
-    }
-  ]
+  "repaired_product_probe_failed_live_sps_guard": {
+    "job": "job-24kw9",
+    "branch": "codex/product-logical-migration",
+    "revision": "0fa8765",
+    "context": "ctx-9bf8ff4e",
+    "context_archive_sha256": "66577efc040e1a00b2b56286f34dbaa7ae8c3efe32aa56073c791c45d9701d18",
+    "input_seal_sha256": "c20dddaa49eac697ee8e3c825f29872712a3b220f55a1b0fbffbdc41d2c32844",
+    "failed_at_epoch": 4,
+    "completed_steps": 2097152,
+    "observed_live_interval_sps": 21436.7,
+    "preregistered_steady_metric": "final 2 epochs after 6 warmup epochs",
+    "minimum_steady_sps": 30000,
+    "source_gate_games": 512,
+    "native_parity_passed": true,
+    "all_13_opponents_both_seats": true,
+    "nonfinite_rewards": 0,
+    "clipped_rewards": 0,
+    "trained_checkpoint_created": false,
+    "activation_measured": false,
+    "has_strength_result": false,
+    "result_archive_sha256": "9e6aa536be345d6433248ddef1291be613ba94c45d2fd906f2bf8be544a91afb"
+  },
+  "active_experiments": []
 }
