@@ -1709,8 +1709,8 @@
         "job_id": "job-tvqh9",
         "context_id": "ctx-44375895",
         "submitted_at": "2026-10-07T20:03:05.457650+00:00",
-        "status": "building",
-        "last_observed_at": "2026-10-07T20:03:17.108556+00:00",
+        "status": "starting; image downloading",
+        "last_observed_at": "2026-10-07T20:19:06.828859+00:00",
         "source_revision": "392e36926d0fe7a1a807f92ea3b80c9c0ce3af8b",
         "archive_sha256": "7a01c95d1917239e7803f4556b6bdf7525f932a3c3b8e70f3a07987e66d31c77",
         "files_verified": 629,
@@ -1731,8 +1731,11 @@
           "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/validation.json": "c9e293be1cf936d10a6a2c21efddcb9c22c6e1efa55a37ec44446283babcad67",
           "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/pre-submit-active-check.json": "4a0dab1bbb57dc0022fa66a66bc91c10e9c4ff9366ba54832711d534fe24446c",
           "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/aggregate-guard-process.json": "47c4ddefb2343a1b0f499224b211f54ebcc30d59584518990433e7365aad22c2",
-          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/collect_and_audit.py": "6ba22ef7807b6cd0bda38f48bac67d3b7185fae0f48b0f2c80e74d91cec20e6a"
-        }
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/collect_and_audit.py": "6ba22ef7807b6cd0bda38f48bac67d3b7185fae0f48b0f2c80e74d91cec20e6a",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/allocation-deadline.json": "0a0ec72acb8fc7848aea55f342b897b6335bf908aabcb136a42293f957fb0e44"
+        },
+        "aggregate_deadline": "2026-10-07T20:53:30.141326+00:00",
+        "first_allocation_lower_bound_at": "2026-10-07T20:18:30.141326+00:00"
       }
     },
     "startup_admission": {

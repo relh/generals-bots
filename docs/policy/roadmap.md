@@ -13,7 +13,7 @@ See [current state](current-state.md) for live work and results,
    [state-free qualification](../../integrations/stateless_qualification/plan.json).
    Job `job-wv4b3` passed parity/build but failed its pretraining Muon hash guard.
    The corrected receipt passed the actual guard; replacement `job-tvqh9` is
-   building the same bounded qualification with the fix.
+   starting the same bounded qualification with the fix.
    The completed bridge comparison verified copies and owner lifetime. Retain
    one output fence for its small measured local saving; overall speedup was
    ambiguous across the two orders. Instrumented SPS does not qualify training.
