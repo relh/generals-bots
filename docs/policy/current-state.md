@@ -69,10 +69,13 @@ saved at the shared experiment root. The artifact and all 34 retained file
 hashes were independently verified; exact hashes are in the manifest.
 
 `job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **running**
-as of 09:43:51 UTC, attempt 2, checking source serving parity. The provider
+as of 09:49:03 UTC, attempt 2, compiling the native trainers. The provider
 preempted attempt 1 at 09:42:45 UTC before training, then restarted the same
 job. It reports one preemption and zero runtime restarts; no replacement job
-was submitted. Preparation passed on the new attempt. It uses repaired source `6b297db` and context
+was submitted. Preparation, GPU source parity (46/46 top actions; maximum
+probability difference 0.00000444), and the 512-game source sampling gate
+(267W/240L/5D) passed on the new attempt. These are startup checks, not
+training throughput or strength qualification. It uses repaired source `6b297db` and context
 `ctx-66b75696`: one H100 capped at **150 minutes/$7.425**, with zero runtime
 restarts. Qualification binds the authentic source gate at each stage; each
 continuation requires fresh 512-game self-play of its exact trained initializer.
