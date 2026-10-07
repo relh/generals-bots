@@ -96,6 +96,9 @@ class Trial:
         config['initialize'] = dict(asset=str(self.asset), manifest_sha256=digest(self.asset), restore_learner=False)
         self.output.mkdir()
         write(self.output/'plan.json', PLAN)
+        from integrations.policy_runtime_profile import select_siege_workers
+        workers = select_siege_workers(self.inputs/'leader-root', self.output/'worker-profile')
+        build['python_environment']['options']['classic_siege_workers'] = workers
         for arm in ARMS:
             target = copy.deepcopy(build)
             run = copy.deepcopy(config)
