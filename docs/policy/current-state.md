@@ -204,6 +204,12 @@ verified the comparisons and migrated bytes. The selected asset references now
 point to the migrated assets; historical experiment inputs remain hash-bound.
 **CUDA execution and throughput qualification are still pending.** This does
 not change the sealed bridge comparison or establish any policy strength gain.
+The next qualification is preregistered in
+`integrations/stateless_qualification/plan.json`: 4,194,304 uninstrumented steps,
+workers eight, two warmup epochs, then all six remaining epochs measured
+together, with the existing rolling 30K SPS guard retained. Both source and
+checkpoint parity, complete action/reward audits and all 13 opponents in both
+seats are required. It remains unsealed pending the bridge comparison.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
