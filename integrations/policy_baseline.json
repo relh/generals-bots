@@ -187,6 +187,33 @@
     "sha256": "50feb5781ef62f10da23fe9f24b1154a17e054c45a079519ddd02aae298828c9",
     "decision": "Completed global temperature2 and log-gap4 GPU trials did not improve the selected source; do not repeat unchanged. Nonroute-only exploration remains untested, not recommended by this review."
   },
+  "log_gap_runtime_removal": {
+    "commit": "12cbfc9",
+    "path": "integrations/softmax/local-output/log-gap-removal-20261007",
+    "active_bundle_audit_sha256": "9b3f3f79d90736bae19a0ffa2db88075ef2268343a57d4a7404c68b70c8c1de5",
+    "parity_sha256": "e64b626da74d606e40a747a6087704a61a6f2b7a37641c2d19441faf84787737",
+    "bundles": 11,
+    "views_per_bundle": 137,
+    "logits_and_probabilities_bitwise_equal": true,
+    "net_lines_removed": 210
+  },
+  "concentration_credit_audit": {
+    "path": "integrations/softmax/local-output/concentration-credit-audit-20261007/receipt.json",
+    "sha256": "163ebd951c0dd20fd28b2938e4e229bbd11f2877b83f30ca7ba6f3e4208d62ef",
+    "decision": "Reject normalized stack-share prototype c83ccb9: it can reward sacrificing own troops. Monotone sum-of-squares potential avoids this specific defect; isolated matched-training preparation only, no GPU submission or strength claim.",
+    "fixed_K": 100,
+    "proposed_weight": 0.05
+  },
+  "earlier_force_diagnosis": {
+    "path": "integrations/softmax/local-output/early-force-diagnosis-20261007/analysis.json",
+    "sha256": "c9de34ecf1f44700a3bb342bd2900e6a46f4ccaec81040b65551b355b3e4adfc",
+    "canonical_public_states": 4535,
+    "known_losses": 23,
+    "prethreat_visible_enemy_states": 3117,
+    "immediate_largest_stack_growth_available": 2596,
+    "actual_largest_stack_growth": 598,
+    "scope": "Correlated known-loss states; location-blind merge availability is not causal strength evidence or a rescue claim."
+  },
   "classic_siege_pressure_rejection": {
     "job": "job-m9ina",
     "games_per_arm": 4096,

@@ -203,6 +203,17 @@ only the Product residual can distinguish source sites was incorrect.
 The failed Product comparison remains valid, but does not establish that
 more global source discrimination is the next missing capability.
 
+## Retired exploration runtime
+
+The rejected log-gap experiment has been removed from training, serving and
+evaluation, including its standalone module. The selected source and all ten
+active frozen opponents use the remaining sampler: before/after logits and
+probabilities were bitwise identical on 133 recorded public views plus four
+opening-temperature boundary variants. Narrow checks passed (73 tests, four
+dependency skips; additional source-gate checks passed). Frozen-match reports
+now require schema v2; retired metadata and settings fail explicitly. This
+cleanup removes 210 net lines without claiming a strength improvement.
+
 ## Public loss diagnosis
 
 The final 50 public states of 23 verified Daveey losses do **not** support
@@ -245,6 +256,24 @@ The independent terminal audit and result archive hashes are in the manifest.
 No independent confirmation follows; the selected source and champion remain
 unchanged, and no experiment is active. The smaller evaluation image remains
 an unbuilt, unsubmitted artifact recorded in the manifest.
+
+The earlier-window audit checked 4,535 canonical public states across the
+same 23 losses. Before the first static threat, 3,117 states already had a
+visible enemy; 2,596 offered an immediate friendly merge that would grow the
+largest stack, while the actual action grew it in 598. The median largest
+stack held 10.48% of owned troops. This counts either direction of a merge,
+but neither position nor opportunity cost: correlated known-loss states
+without winning controls do not prove that consolidation improves play.
+
+The old, unwired normalized-concentration reward prototype is rejected:
+an official-engine counterexample rewards sacrificing nine troops because
+the surviving army becomes more concentrated. A monotone alternative,
+`F = sum(army²) / (10000 + sum(army²))`, cannot increase when own troops
+merely disappear. Eleven engine cases cover merging, transport, sacrifices,
+captures, growth and terminal treatment. It still rewards location-blind
+merging and can discourage expansion. An isolated matched training experiment
+is being prepared with weight 0.05; it has no GPU submission or strength
+result. All evidence identities are in the manifest.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new

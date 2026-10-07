@@ -17,9 +17,11 @@ artifact identities. Git history retains superseded attempts.
    only with a new mechanism and preregistered comparison. The existing dense
    global readout already distinguishes source sites.
    Global temperature2 and log-gap4 exploration also failed completed GPU
-   trials. Audit earlier force assembly and threat response before choosing
-   another intervention: the original six reinforcement examples included
-   double-counted defenders, and stricter static timing retains only one.
+   trials. Earlier public states show available merges but do not establish
+   their strategic value. Prepare one matched monotone stack-mass shaping
+   experiment; the old normalized-concentration formula rewards attrition
+   and is rejected. Keep the new formula's location blindness, expansion
+   penalty and saturation explicit in its preregistered evaluation.
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its
    exact GPU training setup before a long run.
