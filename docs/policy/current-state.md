@@ -2,8 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 17:11 UTC**, profiled row-rotation retry
-**`job-5cirw` is running source GPU parity**. Its predecessor stopped at the strict throughput
+job `35892`. As of **2026-10-07 17:15 UTC**, profiled row-rotation retry
+**`job-5cirw` is building the native trainer**. Its predecessor stopped at the strict throughput
 gate (29,811 SPS); no long continuation or strength evaluation ran.
 The completed first-contact diagnostic did not pass its improvement gate.
 
@@ -104,11 +104,12 @@ audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
 forced stop left no complete action-mask audit. Billing was **761 seconds,
 $0.627**. The guard observed termination and exited.
 
-### Profiled retry: source GPU parity
+### Profiled retry: native trainer build
 
 `job-5cirw` was submitted **2026-10-07 16:59:07 UTC**, source `ba8461e`,
 context `ctx-31be43a7`. Preparation and the bounded worker benchmark completed
-in 26.3 seconds; source GPU parity is executing. It retains the strict 30K gate and learning settings,
+in 26.3 seconds. Source GPU parity passed 46/46 top actions with maximum
+action-probability difference 0.00000445; native trainer compilation is active. It retains the strict 30K gate and learning settings,
 records CPU quota/affinity and GPU clocks/power, and selects native opponent
 workers from 1/2/4/8 on fixed public replay inputs. Exact action/memory agreement
 is required. The selected count applies to candidate training and all evaluation

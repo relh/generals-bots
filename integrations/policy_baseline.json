@@ -1277,7 +1277,7 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Native row coverage verified; first qualification failed at 29,811 SPS. Profiled retry job-5cirw executing source GPU parity; no strength gain established.",
+    "status": "Native row coverage verified; first qualification failed at 29,811 SPS. Profiled retry job-5cirw passed source GPU parity and is building native trainer; no strength gain established.",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
@@ -1475,18 +1475,54 @@
       "integrations/softmax/local-output/row-rotation-profile-launch-20261007/submission.json": "2ebded1e1bf615fc5354781215bbad8a383478e63af1299b441e4e6a7065861f",
       "integrations/softmax/local-output/row-rotation-profile-launch-20261007/validation.json": "3ddbeade356354f99eca218f31baa6678f54cefcfe589a66a66293ff74be95a8",
       "integrations/softmax/local-output/row-rotation-profile-launch-20261007/aggregate-guard-process.json": "fc437c2a8cefdb7c6873cfa1bf2e37f25f7215587fd7f43d451b3a8de71d4baf",
-      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/pre-submit-active-check.json": "468ca6c2f9c9d77b1da91048c426b97f1e8bd1009d548e3198aef66f44f1ebff"
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/pre-submit-active-check.json": "468ca6c2f9c9d77b1da91048c426b97f1e8bd1009d548e3198aef66f44f1ebff",
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/job-5cirw-run-attempt1-20261007T171507228629Z-sanitized.log": "9e0ee404e859895015cad7040253226ed471733a765843273fa26c6f8261f089"
     },
     "job_id": "job-5cirw",
     "submitted_at": "2026-10-07T16:59:07.118208+00:00",
     "context_id": "ctx-31be43a7",
     "request_sha256": "c8a62ba080fcacf14f667e6f153babb756453c4e74189d6dfcb1c6360b525a0c",
-    "last_observed_at": "2026-10-07T17:12:18.831985+00:00",
+    "last_observed_at": "2026-10-07T17:15:07.228629+00:00",
     "guard_pid": 84329,
     "quoted_runtime_max_usd": 3.7125,
     "aggregate_deadline_utc": "2026-10-07T18:22:54.009234+00:00",
     "first_allocation_lower_bound_at": "2026-10-07T17:07:54.009234+00:00",
-    "phase": "source_gpu_parity",
-    "prepare_elapsed_seconds": 26.31385959799809
+    "phase": "native_trainer_build",
+    "prepare_elapsed_seconds": 26.31385959799809,
+    "source_gpu_parity": {
+      "layout_backend": "cpu",
+      "inference_backend": "gpu",
+      "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+      "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+      "serving_action_selection": {
+        "doomed_attack_route_penalty": 4.0,
+        "early_route_temperature": 0.1,
+        "early_route_turns": 100,
+        "mode": "structured_sample",
+        "move_temperature": 0.05,
+        "neutral_route_bias": 6.0,
+        "split_temperature": 0.15,
+        "weak_owned_route_penalty": 4.0
+      },
+      "bundle_manifest_sha256": "5fc3be611f408eec3cd9d8332884b60e17a32647a2c242611b40e268384cec8f",
+      "hosted_games": 4,
+      "replay_turns": [
+        0,
+        25,
+        99,
+        100,
+        150,
+        200
+      ],
+      "public_states": 46,
+      "native_batch": 8,
+      "max_logit_difference": 2.86102294921875e-06,
+      "max_action_probability_difference": 4.4405460357666016e-06,
+      "max_rollout_transform_difference": 1.7881393432617188e-07,
+      "matching_top_actions": 46,
+      "jax_backend": "gpu",
+      "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
+    }
   }
 }
