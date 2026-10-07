@@ -3,22 +3,11 @@ import json
 import struct
 from pathlib import Path
 import pytest
-from integrations import stateless_continuation_run as runner
+from integrations import policy_training_audit as runner
 
 
-def test_pending_plan_cannot_prepare(tmp_path):
-    with pytest.raises(ValueError, match='pending'):
-        runner.prepare(tmp_path, tmp_path / 'output')
-    assert not (tmp_path / 'output').exists()
 
 
-def test_sealed_plan_requires_each_hash(tmp_path, monkeypatch):
-    plan = runner.read(runner.PLAN_PATH)
-    plan.update(status='sealed after qualifying terminal audit', qualification_job_id='job-test1')
-    path = tmp_path / 'plan.json'; path.write_text(json.dumps(plan))
-    monkeypatch.setattr(runner, 'PLAN_PATH', path)
-    with pytest.raises(ValueError, match='Unbound'):
-        runner.bound_plan(tmp_path)
 
 
 @pytest.mark.parametrize('steps,epoch', [(4194304, 8), (33554432, 64)])
@@ -32,13 +21,6 @@ def test_exact_learner_clock(tmp_path, steps, epoch):
         runner.clock(path, 1, steps, epoch + 1)
 
 
-def test_empty_bindings_rejected(tmp_path, monkeypatch):
-    plan = runner.read(runner.PLAN_PATH)
-    plan.update(status='sealed after qualifying terminal audit', qualification_job_id='job-test1', bindings={})
-    path = tmp_path / 'plan.json'; path.write_text(json.dumps(plan))
-    monkeypatch.setattr(runner, 'PLAN_PATH', path)
-    with pytest.raises(ValueError, match='required set'):
-        runner.bound_plan(tmp_path)
 
 
 @pytest.mark.parametrize('failure', ['exit', 'timeout'])

@@ -1,0 +1,86 @@
+[
+  {
+    "role": "selected-native",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/00-selected-native",
+    "destination": "/work/input/assets/cold",
+    "manifest_sha256": "1f2b3bbf25f597767a938e955aba0c5be8093726b8f07d0726feffa249fe8605",
+    "policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14"
+  },
+  {
+    "role": "selected-serving",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/01-selected-serving",
+    "destination": "/work/input/bundles/cold",
+    "manifest_sha256": "5a1fc088cc35810118bd0166d1007a4ae5428a80dcac9d6441faf50811e2ea42",
+    "policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14"
+  },
+  {
+    "role": "frozen-0",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/02-frozen-0",
+    "destination": "/work/input/bundles/frozen/0",
+    "manifest_sha256": "f3ce53bb51ce650a3bcb974a668b6985591e849201d12239399396efffcffbab",
+    "policy_sha256": "fff930fd304a43a6f3875d20dc71509e4a5c482bd10d10b9b7187a1755247938"
+  },
+  {
+    "role": "frozen-1",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/03-frozen-1",
+    "destination": "/work/input/bundles/frozen/1",
+    "manifest_sha256": "ffd2b6520d2012e336bf18ac591dd8f208ff734c25febaee19762ff212f9677b",
+    "policy_sha256": "704b0949c9a59d2af28b9cf2d9d84e85560e9b5325ebb5b9b15f2828cdbb23ba"
+  },
+  {
+    "role": "frozen-2",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/04-frozen-2",
+    "destination": "/work/input/bundles/frozen/2",
+    "manifest_sha256": "f41d4989f20d90d5457e71dda87ec23f6eaded245343594906ab517990b068bb",
+    "policy_sha256": "4940d3db12225c5ed2071395bb9c30b08b8001046c0f69524ecf7dfcd9cef780"
+  },
+  {
+    "role": "frozen-3",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/05-frozen-3",
+    "destination": "/work/input/bundles/frozen/3",
+    "manifest_sha256": "51070e5e44839f011c6906a6ad31de56d8fca7596b66adc07d8291a66704cae6",
+    "policy_sha256": "a4591eb43f96295237d6ba630bff72fa1501eeab5e2467e27f091edd2c2c8613"
+  },
+  {
+    "role": "frozen-4",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/06-frozen-4",
+    "destination": "/work/input/bundles/frozen/4",
+    "manifest_sha256": "64e10bcc0c2cfe12b008eb23300e7876a9234fb80a46f633e50b651709534a8e",
+    "policy_sha256": "3eb2fe3f22affcc4f7563c46c105a2d71e183b73447c3e6e617b1a4da7c0aeeb"
+  },
+  {
+    "role": "frozen-5",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/07-frozen-5",
+    "destination": "/work/input/bundles/frozen/5",
+    "manifest_sha256": "c0c9309e0246574acd0a780a6ec247ca9d8931f20ed12de83478fafc7b39983d",
+    "policy_sha256": "201e147f536fd1ca3eed949b27b7e081a2aae6084b67ce863823c8c01afce0e2"
+  },
+  {
+    "role": "frozen-6",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/08-frozen-6",
+    "destination": "/work/input/bundles/frozen/6",
+    "manifest_sha256": "c2296650766744b9c35a7bb745a8e9b0bc4b639bf3e1ea8eb7103f8c30c91673",
+    "policy_sha256": "f8df1ccd67a1a08ac65788343ed4b51af50068aebd7d028d8699f0e32966c78c"
+  },
+  {
+    "role": "frozen-7",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/09-frozen-7",
+    "destination": "/work/input/bundles/frozen/7",
+    "manifest_sha256": "29d49be50e0d94201c76b4e6d4045ad92f56869a60b4227b8f9480c0db8f772e",
+    "policy_sha256": "f589aa8f274583fb03188a9579050c5d33e5f786bc94e496f8c0f7b55b358b3a"
+  },
+  {
+    "role": "frozen-8",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/10-frozen-8",
+    "destination": "/work/input/bundles/frozen/8",
+    "manifest_sha256": "432140bcb80fb00995c9aaeb547a62288d57ef7667cf17595940cd9bc7d7eb89",
+    "policy_sha256": "83dc8144eafcaf9c9e0ccac4a59353ea18d2abd81cff261c56f037dd9243b5d2"
+  },
+  {
+    "role": "frozen-9",
+    "source": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/11-frozen-9",
+    "destination": "/work/input/bundles/frozen/9",
+    "manifest_sha256": "40f8c417915945825e9b72fa52ee08fc094e53a381d4d43474813ef935144af0",
+    "policy_sha256": "d2c30ee48e805306bc57bcb094dbd59e350bd66307736054625462b5889a3bc0"
+  }
+]

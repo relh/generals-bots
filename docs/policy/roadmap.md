@@ -9,7 +9,7 @@ See [current state](current-state.md) for live work and results,
 
 ## Next decisions
 
-1. Completed the [state-free qualification](../../integrations/stateless_qualification/plan.json):
+1. Completed the state-free qualification (retired plan retained in Git at `eed377b`):
    `job-tvqh9` passed 4,194,304 steps, source/checkpoint GPU parity, complete
    action/reward audits, all 13 opponents on both seats and 41,601 SPS over
    all six post-warmup epochs. All rolling windows passed 30K.

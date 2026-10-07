@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import sys
 from integrations.bounded_policy_entrypoint import run
-from integrations.row_rotation_trial import digest, read
+from integrations.policy_trial import digest, read
 
 
 def completion(results):

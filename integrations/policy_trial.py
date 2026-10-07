@@ -1,16 +1,11 @@
-"""One preregistered replay row rotation experiment; never submits compute."""
+"""Shared bounded training and comparison stages; every trial requires an explicit plan."""
 from __future__ import annotations
-import argparse
-import copy
 import hashlib
 import json
 from pathlib import Path
 
-SOURCE_POLICY = "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14"
 from integrations.policy_execution import execute, training_audit
 
-ARMS = ('candidate',)
-PLAN = json.loads(Path(__file__).with_name('row_rotation_plan.json').read_text())
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -42,8 +37,8 @@ def rotation_audit(out, first_epoch, epochs):
           each_two_epochs_cover_all_4096_rows=True))
 
 class Trial:
-    def __init__(self, inputs, output, *, plan=None):
-        self.plan = PLAN if plan is None else plan
+    def __init__(self, inputs, output, *, plan):
+        self.plan = plan
         self.inputs, self.output = inputs.resolve(), output.resolve()
         self.source = self.inputs/'source'
         self.asset = self.inputs/'assets/cold/asset.json'
@@ -54,62 +49,6 @@ class Trial:
                        name=name, seconds=seconds, training_config=config,
                        startup_seconds=420 if config else 300)
 
-    def prepare(self):
-        from integrations.native_spatial_asset import load_asset, training_contract, validate_sampler
-        from integrations.classic_contract import validate_training_contract
-        if self.output.exists():
-            raise ValueError('Preparation requires a new output directory')
-        asset = load_asset(self.asset, manifest_sha256=digest(self.asset))
-        reserved = [self.plan[key] for key in ('training_seed', 'sampling_gate_seed', 'sampling_gate_sample_seed',
-                                          'evaluation_seed', 'evaluation_sample_seed', 'bootstrap_seed',
-                                          'continuation_gate_seed', 'continuation_gate_sample_seed')]
-        if len(set(reserved)) != len(reserved) or set(reserved) & set(asset.metadata['training_seeds']):
-            raise ValueError('Experiment seeds collide with one another or source training history')
-        validate_sampler(self.sampler)
-        from integrations.spatial_policy_bundle import SpatialPlayerPolicy
-        if SpatialPlayerPolicy(self.inputs/'bundles/cold').asset.metadata['sampler'] != self.sampler:
-            raise ValueError('Source serving sampler differs from exact native initialization')
-        if asset.metadata['policy_sha256'] != SOURCE_POLICY or digest(self.inputs/'bundles/cold/policy.bin') != SOURCE_POLICY:
-            raise ValueError('Experiment requires the exact original source weights')
-        for name, sha in read(self.inputs/'source-manifest.json').items():
-            if digest(self.inputs/name) != sha:
-                raise ValueError('Staged input hash differs: '+name)
-        historical = SpatialPlayerPolicy(self.inputs/'bundles/control').asset
-        if (historical.metadata['policy_sha256'] != self.plan['historical_control_policy_sha256']
-                or historical.metadata['sampler'] != self.sampler):
-            raise ValueError('Historical control weights or sampler differs')
-        build, config = read(self.inputs/'build-config.json'), read(self.inputs/'config.json')
-        opts = build['python_environment']['options']
-        if (build['fabric'] != asset.metadata['fabric'] or opts.get('monotone_force_potential', False)
-                or len(opts['frozen_bundles']) != 10 or opts['scripted_opponents'] != self.plan['population']['scripts']
-                or opts['parallel_games'] != 4096 or build['python_environment']['spec']['agents'] != 4096
-                or config['overrides']['vec.total_agents'] != 4096
-                or config['overrides']['train.horizon'] != 128
-                or config['overrides']['train.minibatch_size'] != 8192
-                or config['overrides']['train.replay_ratio'] != .5
-                or config['overrides']['train.gamma'] != .999
-                or config['overrides']['train.anneal_lr'] != 0):
-            raise ValueError('Input differs from the fixed native model, pool or geometry')
-        if training_contract(opts, config['overrides']) != asset.metadata['training_contract']:
-            raise ValueError('Control objective differs from authentic source')
-        config['seed'] = self.plan['training_seed']
-        config['total_timesteps'] = self.plan['qualification_steps']
-        config['initialize'] = dict(asset=str(self.asset), manifest_sha256=digest(self.asset), restore_learner=False)
-        self.output.mkdir()
-        write(self.output/'plan.json', self.plan)
-        from integrations.policy_runtime_profile import select_siege_workers
-        workers = select_siege_workers(self.inputs/'leader-root', self.output/'worker-profile')
-        build['python_environment']['options']['classic_siege_workers'] = workers
-        for arm in ARMS:
-            target = copy.deepcopy(build)
-            run = copy.deepcopy(config)
-            contract = validate_training_contract(target, run)
-            write(self.output/arm/'classic-contract.json', contract)
-            write(self.output/arm/'build-config.json', target)
-            write(self.output/arm/'qualification/config.json', run)
-        write(self.output/'source-binding.json', dict(source_asset_sha256=digest(self.asset),
-              source_policy_sha256=SOURCE_POLICY, source_manifest_sha256=digest(self.inputs/'source-manifest.json'),
-              input_build_sha256=digest(self.inputs/'build-config.json'), input_config_sha256=digest(self.inputs/'config.json')))
 
     def smoke(self):
         from integrations.slurm_s3_job import visible_gpu_identity, verify_gpu_idle
@@ -123,7 +62,7 @@ class Trial:
         import shutil
         receipt = source_sampling_gate_report(self.inputs/'source-sampling')
         effective_sampler = dict(full_action_temperature=1.0, route_half_weight=0.0, **self.sampler)
-        if (receipt['source_sha256'] != SOURCE_POLICY or receipt['opponent_sha256'] != SOURCE_POLICY
+        if (receipt['source_sha256'] != self.plan['source_policy_sha256'] or receipt['opponent_sha256'] != self.plan['source_policy_sha256']
                 or receipt['sampler'] != effective_sampler or receipt['opponent_sampler'] != effective_sampler
                 or receipt['match_seed'] != self.plan['sampling_gate_seed']
                 or receipt['sample_seed'] != self.plan['sampling_gate_sample_seed']):
@@ -145,22 +84,20 @@ class Trial:
         write(out/'sampling-gate.json',source_sampling_gate_report(out/'sampling'))
 
     def build(self):
-        for arm in ARMS:
-            root=self.output/arm
-            self.call('launch_spatial_selfplay_training',['build','--config',root/'build-config.json','--output',root/'build'],root,'build',600)
+        root=self.output/'candidate'
+        self.call('launch_spatial_selfplay_training',['build','--config',root/'build-config.json','--output',root/'build'],root,'build',600)
 
     def parity(self,bundle,path,out,name):
         self.call('audit_spatial_checkpoint_serving_parity',['--bundle',bundle,'--replay-root',self.inputs/'leader-root',
                   '--factory-source',self.source/'integrations/generals_fabric.py','--output',path],out,name,600)
 
-    def train(self,arm,stage):
-        root=self.output/arm; out=root/stage; config=read(out/'config.json')
+    def train(self,stage):
+        root=self.output/'candidate'; out=root/stage; config=read(out/'config.json')
         if stage == 'continuation':
             marker=read(self.output/'qualified.json')
-            for name in ARMS:
-                q=self.output/name/'qualification'
-                if marker[name] != {p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}:
-                    raise ValueError('Qualification evidence changed')
+            q=root/'qualification'
+            if marker['candidate'] != {p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}:
+                raise ValueError('Qualification evidence changed')
             self.sampling_gate(root/'qualification/bundle', out,
                                self.plan['continuation_gate_seed'], self.plan['continuation_gate_sample_seed'])
         else:
@@ -189,21 +126,18 @@ class Trial:
     def qualify(self):
         from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
         source_sampling_gate_report(self.output/'sampling')
-        for arm in ARMS:
-            self.train(arm,'qualification')
+        self.train('qualification')
         marker={}
-        for arm in ARMS:
-            q=self.output/arm/'qualification'
-            marker[arm]={p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}
-            config=read(q/'config.json')
-            config['total_timesteps']=self.plan['total_steps_including_qualification']
-            config['initialize']=dict(asset=str(q/'asset/asset.json'),manifest_sha256=digest(q/'asset/asset.json'),restore_learner=True)
-            write(self.output/arm/'continuation/config.json',config)
+        q=self.output/'candidate'/'qualification'
+        marker['candidate']={p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}
+        config=read(q/'config.json')
+        config['total_timesteps']=self.plan['total_steps_including_qualification']
+        config['initialize']=dict(asset=str(q/'asset/asset.json'),manifest_sha256=digest(q/'asset/asset.json'),restore_learner=True)
+        write(self.output/'candidate'/'continuation/config.json',config)
         write(self.output/'qualified.json',marker)
 
     def continue_training(self):
-        for arm in ARMS:
-            self.train(arm,'continuation')
+        self.train('continuation')
 
     def evaluate(self):
         bundles={'source':self.inputs/'bundles/cold', 'control':self.inputs/'bundles/control',
@@ -224,16 +158,3 @@ class Trial:
             reports.append(read(path))
         write(self.output/'selection.json',dict(schema=self.plan['schema'],selected=selected(reports),
               comparisons=reports,requires_fresh_independent_confirmation=True))
-
-def main():
-    parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase',choices=('prepare','smoke','build','qualify','continue_training','evaluate'))
-    parser.add_argument('--input',type=Path,required=True);parser.add_argument('--output',type=Path,required=True)
-    args=parser.parse_args()
-    if args.phase != 'prepare':
-        from integrations.cuda_runtime_binding import configure
-        configure()
-    getattr(Trial(args.input,args.output),args.phase)()
-
-if __name__=='__main__':
-    main()

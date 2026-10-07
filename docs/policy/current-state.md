@@ -275,7 +275,7 @@ point to the migrated assets; historical experiment inputs remain hash-bound.
 **GPU source/final parity, native training and throughput qualification passed
 in `job-tvqh9`.** This establishes no policy strength gain.
 The current qualification is preregistered in
-`integrations/stateless_qualification/plan.json`: 4,194,304 uninstrumented steps,
+the retired `integrations/stateless_qualification/plan.json` at Git revision `eed377b`: 4,194,304 uninstrumented steps,
 workers eight, two warmup epochs, then all six remaining epochs measured
 together, with the existing rolling 30K SPS guard retained. Both source and
 checkpoint parity, complete action/reward audits and all 13 opponents in both

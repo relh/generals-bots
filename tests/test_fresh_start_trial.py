@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 from pathlib import Path
 from integrations import fresh_start_run as run
-from integrations.row_rotation_trial import Trial, PLAN, read, write
+from integrations.policy_trial import Trial, read, write
 
 
 class FreshStartAdmission(unittest.TestCase):
@@ -48,7 +48,10 @@ class FreshStartAdmission(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             write(root/'assets/cold/asset.json', dict(sampler={}))
-            custom = copy.deepcopy(PLAN)
+            custom = read(run.PLAN_PATH)
             custom['evaluation_seed'] = 17001101
             self.assertEqual(Trial(root, root/'a', plan=custom).plan['evaluation_seed'], 17001101)
-            self.assertEqual(Trial(root, root/'b').plan['evaluation_seed'], 14001101)
+            other = dict(custom, evaluation_seed=18001101)
+            self.assertEqual(Trial(root, root/'b', plan=other).plan['evaluation_seed'], 18001101)
+            with self.assertRaises(TypeError):
+                Trial(root, root/'missing-plan')

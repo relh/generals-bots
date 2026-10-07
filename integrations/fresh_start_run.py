@@ -4,8 +4,9 @@ import copy
 import json
 import re
 from pathlib import Path
-from integrations.row_rotation_trial import Trial, digest, read, write
-from integrations.stateless_qualification_run import CONFIG, PLAN as SOURCE_PLAN, audit
+from integrations.policy_trial import Trial, digest, read, write
+from integrations.training_inputs import CONFIG, ASSETS
+from integrations.policy_training_audit import qualification_audit
 
 PLAN_PATH = Path(__file__).with_name('fresh_start_plan.json')
 BINDINGS = {'control-audit.json', 'control-collection.json', 'control/candidate/build-config.json',
@@ -83,12 +84,12 @@ def prepare(inputs, output):
     for name, expected in collection['files'].items():
         if digest(inputs/'control'/name) != expected:
             raise ValueError('Retained control artifact changed: ' + name)
-    for item in SOURCE_PLAN['assets']:
+    for item in ASSETS:
         directory = inputs/Path(item['destination']).relative_to('/work/input')
         asset = load_asset(directory/'asset.json', manifest_sha256=item['manifest_sha256'])
         if asset.metadata['policy_sha256'] != item['policy_sha256']:
             raise ValueError('Fixed source or opponent identity changed')
-    source = load_asset(inputs/'assets/cold/asset.json', manifest_sha256=SOURCE_PLAN['assets'][0]['manifest_sha256'])
+    source = load_asset(inputs/'assets/cold/asset.json', manifest_sha256=ASSETS[0]['manifest_sha256'])
     control = load_asset(inputs/'bundles/control/asset.json', manifest_sha256=plan['bindings']['bundles/control/asset.json'])
     if (control.metadata['policy_sha256'] != plan['historical_control_policy_sha256']
             or control.metadata['sampler'] != source.metadata['sampler']
@@ -121,10 +122,10 @@ def main():
     trial.build()
     trial.qualify()
     # Full epoch2->8 gate supplements the live rolling gate before any long training.
-    audit(args.output, destination=args.output/'qualification-audit.json')
+    qualification_audit(args.output, destination=args.output/'qualification-audit.json')
     intervals(args.output/'candidate/qualification', 1, 8)
     trial.continue_training()
-    from integrations.stateless_continuation_run import finish
+    from integrations.policy_training_audit import finish
     finish(args.output)
     intervals(args.output/'candidate/continuation', 9, 64)
     trial.evaluate()
