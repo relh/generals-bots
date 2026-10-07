@@ -1602,7 +1602,7 @@
     "retry_work": "Corrected diagnostic submitted as job-zwt6d; see bridge_execution_probe_retry."
   },
   "stateless_execution_work": {
-    "status": "qualified on H100: stateless native training, final GPU parity and independent artifact audit passed; strength continuation being prepared",
+    "status": "qualified H100 stateless path; completed32Mi continuation technically passed but failed paired strength selection; source remains selected",
     "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
     "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
     "branch": "codex/stateless-spatial-abi",
@@ -1820,7 +1820,7 @@
     "continuation_plan": {
       "path": "integrations/stateless_continuation_plan.json",
       "sha256": "6259badd474e3a1691c17ce7a87e54bd5ea39a8966f8ab27f61020f516802be3",
-      "status": "job-mwvdb completed32Mi run clock at42,432.618SPS; checkpoint publication/finalparity/strengthpanels pending",
+      "status": "terminal technically successful; failed paired strength and sentinel seat1 regression gate; no confirmation or promotion",
       "integration_revision": "95d1dea",
       "coordinator_sha256": "182f8889340679290a470f3cd95aaa1be2ced0a729f175ca1d66df4a3f95b0d8",
       "entrypoint_sha256": "f90ad0c54e940042eac5d4ffb00a5de118056047b5a771762a7dabe1a4373532",
@@ -1847,7 +1847,7 @@
       "binding_integration_revision": "cc5c2a1",
       "launch": {
         "job_id": "job-mwvdb",
-        "status": "running; checkpoint publication",
+        "status": "succeeded",
         "submitted_at": "2026-10-07T20:43:44.788274+00:00",
         "attempt": 0,
         "max_cost_usd": 3.7125,
@@ -1860,7 +1860,7 @@
         "archive_sha256": "244a5c6e2000e320576f737bdf3af9e7eb338df6db87a711ea2ac810f266db07",
         "sealed_files_verified": 789,
         "guard_pid": 84888,
-        "guard_live_verified": true,
+        "guard_live_verified": false,
         "provider_minutes": 75,
         "internal_minutes": 73,
         "aggregate_minutes": 75,
@@ -1876,66 +1876,106 @@
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "5f4ece221fae297b203fa0f1a265d5b8413c844d7f0eb2fbfa7c7661c873ad93",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/allocation-deadline.json": "64e8377234564f1f72e73155e237c796d3e2feb12868dc686eeacf791f56e667",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/first-training-evidence.json": "15b6568496c3c144fbb4a4c907110a3df5d2c5eeeef903396da148774a01c70b",
-          "integrations/softmax/local-output/stateless-continuation-launch-20261007/completed-training-evidence.json": "284ad44113f1d43af04aadc2f9a68ff727b1200ace65256c82069d32b84bea4b"
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/completed-training-evidence.json": "284ad44113f1d43af04aadc2f9a68ff727b1200ace65256c82069d32b84bea4b",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/terminal-audit-job-mwvdb.json": "a3c59e6cd7ba0b26bec396633d39e32cead659f640d9cd4a787273eda046703b",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/aggregate-guard.json": "df6368700f9760010a34edb0dab93dd7fc07591c0988dc6f19b9e8fb2c90e7ca"
         },
-        "last_observed_at": "2026-10-07T21:29:19.927981+00:00",
+        "last_observed_at": "2026-10-07T21:43:53.889720+00:00",
         "aggregate_deadline": "2026-10-07T22:18:45.188150+00:00",
         "first_allocation_lower_bound_at": "2026-10-07T21:03:45.188150+00:00",
-        "first_training_evidence": {
+        "finished_at": "2026-10-07T21:43:53.889720+00:00",
+        "technical_success": true,
+        "selected": false,
+        "billed_seconds": 2275,
+        "charged_usd": 1.8766,
+        "independent_terminal_audit": {
+          "schema": "generals-stateless-continuation-independent-audit-v1",
           "job_id": "job-mwvdb",
-          "observed_at": "2026-10-07T21:18:46.794656+00:00",
-          "status": "running",
-          "completed_epoch": 13,
-          "restored_epoch": 8,
-          "warmup_epochs": 2,
-          "measured_steps": 1572864,
-          "measured_seconds": 38.29099999999998,
-          "postwarmup_sps": 41076.59763390877,
-          "last_two_epoch_sps": 40021.98473282444,
-          "log_sha256": "40f1ea4e853f5ad1fcef4a5b376c9f2411a2f205a684d507c7295ab64901491c",
-          "native_admission": {
-            "receipt_sha256": "c2c687b3ba01f709ebe17e94053c03c3d8033abb272bd456796056224fbe6ba8",
-            "schema": "generals-native-startup-admission-v1",
-            "run_sha256": "b40d316a47ab1bc91382407d966ac5631e19c2aa8b12f3b1964916191a96e16a",
-            "admission_source_sha256": "995ab98a9d228f532aee0ff5076b2d99a461c752a3ba463184eb07d867a95560",
-            "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
-            "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
-            "external_state_words": 0,
-            "initializer_manifest_sha256": "15ad4defe757324956bd9c98abd15d7a3d8157ff57f461270dd2e1a5070ddd55",
-            "initial_policy_sha256": "d690c3f122871f58fb9ccbb04ee11be95b55959260d0859829d5672e2e87b955",
-            "initial_learner_sha256": "54b9363c35942a621a6b8832c313accc224ecbe5122e100580f4e44fc12ff5d3",
-            "expected_abi_sha256": "1a4e74cf2df1a30b6e4ed068968e0b82877a8764e28c5fe400d67824df70f62c",
-            "expected_parameter_count": 578860,
-            "initialization": "restored",
-            "native_pid": 7051,
-            "actual_abi_sha256": "1a4e74cf2df1a30b6e4ed068968e0b82877a8764e28c5fe400d67824df70f62c",
-            "actual_parameter_count": 578860
-          },
-          "scope": "Live log evidence only; terminal checkpoint, full-interval audit and strength panels pending"
-        },
-        "completed_training_evidence": {
-          "job_id": "job-mwvdb",
-          "observed_at": "2026-10-07T21:29:19.927981+00:00",
-          "status": "running; checkpoint publication",
+          "status": "succeeded",
+          "technical_success": true,
+          "selected": false,
+          "requires_fresh_confirmation": true,
+          "files_verified": 244,
+          "artifact_sha256": "a07376e500af12d5ba26c35f8b3ffee6019e1981bc3c4397aac03b663af68bac",
+          "collection_sha256": "8e7e2bffd8717c684ef720c1d129557609b5e6dd99d106d09185fe336282e534",
+          "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/stateless-continuation-launch-20261007/results-job-mwvdb/inner/generals",
+          "results_sha256": "0ccf1e0b5f68dc0cd4cc23267c24919ce55f72c9ddf416da297184af97d2c9ae",
+          "incremental_steps": 29360128,
           "starting_epoch": 8,
           "ending_epoch": 64,
-          "incremental_steps": 29360128,
-          "ending_run_steps": 33554432,
           "warmup_epochs": 2,
-          "measured_steps": 28311552,
-          "measured_seconds": 667.212,
-          "steady_sps": 42432.61811837916,
+          "whole_postwarmup_steps": 28311552,
+          "whole_postwarmup_seconds": 667.212,
+          "whole_postwarmup_sps": 42432.61811837916,
+          "gpu_uuid": "GPU-2b8cd183-2fea-5f98-634e-22455f9c2e75",
+          "sampled_peak_gpu_memory_mib": 65426.0,
           "minimum_rolling_two_epoch_sps": 37330.48524333361,
-          "illegal_actions": 0,
-          "reward_audit": {
-            "agent_steps": 29360128,
-            "nonfinite_rewards": 0,
-            "native_clipped_rewards": 0,
-            "native_clipped_terminal_rewards": 0
+          "decision": "Reject candidate; no confirmation or hosted submission."
+        },
+        "comparisons": [
+          {
+            "games": 4096,
+            "unique_initial_states": 2607,
+            "baseline_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+            "candidate_checkpoint_sha256": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
+            "baseline": {
+              "wins": 2733,
+              "losses": 1335,
+              "draws": 28
+            },
+            "candidate": {
+              "wins": 2758,
+              "losses": 1303,
+              "draws": 35
+            },
+            "paired_signed_score_delta": 0.013916015625,
+            "initial_state_cluster_ci95": [
+              -0.016484976978263198,
+              0.044801432965559766
+            ],
+            "bootstrap_seed": 14001111,
+            "bootstrap_resamples": 10000
           },
-          "log_sha256": "949d84c341ddfd08cb02bef2d6716c397ba16fa58d8d631588a5372c247401e3",
-          "scope": "Live console evidence; final checkpoint and learner hashes, final parity, telemetry and all strength panels pending terminal artifact audit"
-        }
+          {
+            "games": 4096,
+            "unique_initial_states": 2607,
+            "baseline_checkpoint_sha256": "f4b185ef31755097aea0435266d68f8a1c8aa10330bb03d801cf1fcb0f43e65b",
+            "candidate_checkpoint_sha256": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
+            "baseline": {
+              "wins": 2759,
+              "losses": 1309,
+              "draws": 28
+            },
+            "candidate": {
+              "wins": 2758,
+              "losses": 1303,
+              "draws": 35
+            },
+            "paired_signed_score_delta": 0.001220703125,
+            "initial_state_cluster_ci95": [
+              -0.02896076353324988,
+              0.03245785662346903
+            ],
+            "bootstrap_seed": 14001111,
+            "bootstrap_resamples": 10000
+          }
+        ],
+        "stratum_guard_failures": [
+          {
+            "reference": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+            "opponent": "sentinel",
+            "seat": "1",
+            "games": 116,
+            "paired_signed_score_delta": -0.12931034482758622
+          },
+          {
+            "reference": "f4b185ef31755097aea0435266d68f8a1c8aa10330bb03d801cf1fcb0f43e65b",
+            "opponent": "sentinel",
+            "seat": "1",
+            "games": 116,
+            "paired_signed_score_delta": -0.13793103448275862
+          }
+        ]
       }
     },
     "gpu_stateless_source_parity_passed": true,
@@ -1953,9 +1993,8 @@
       "scope": "Seal intermediate optimizer and final stateless algo hashes; actual bootstrap/retained native binary runtime guard and wrapped prepare passed. Generated CUDA, math, ABI and assets unchanged."
     },
     "independent_confirmation": {
-      "status": "conditional runner integrated; development result and five evidence bindings plus candidate identity pending; no context or submission",
+      "status": "not activated: development failed; unused coordinator/plan/tests removed; history preserves implementation",
       "integration_revision": "10f930a",
-      "plan_path": "integrations/independent_confirmation_plan.json",
       "plan_sha256": "4fb76472568222a9f8de1ac73a80fb41193a41630c7a94ce854423f2e2b43396",
       "coordinator_sha256": "97223454dc54d3fab33ccb200ef927d85a80a7e952321d6bd36dd6cdee9c83ef",
       "seeds": {
@@ -1973,7 +2012,9 @@
       "internal_minutes": 48,
       "aggregate_minutes": 50,
       "max_restarts": 0,
-      "validation": "Four focused admission/selection checks passed; authentic positive development admission and GPU evaluation remain pending. Imported framework and repository evaluation code bind to development seal; CUDA audit enabled for subprocesses."
+      "validation": "Four focused admission/selection checks passed; authentic positive development admission and GPU evaluation remain pending. Imported framework and repository evaluation code bind to development seal; CUDA audit enabled for subprocesses.",
+      "retired_source_revision": "10f930a",
+      "plan_path_at_retirement": "integrations/independent_confirmation_plan.json"
     }
   },
   "bridge_execution_probe_retry": {

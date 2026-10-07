@@ -6,11 +6,12 @@ job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
 2026-10-07 20:38:59 UTC**. Independent verification of all 155 retained files
 confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
 4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
-Continuation **`job-mwvdb` was submitted at 20:43:44 UTC** and reached
-allocation startup at **21:04 UTC**. At **21:29 UTC**, all continuation training
-completed through epoch 64 / 33,554,432 run steps. The full post-warmup interval
-measured **42,433 SPS**. Checkpoint publication, final parity and strength panels
-are still pending. No strength improvement or hosted acceptance is established.
+Continuation **`job-mwvdb` succeeded technically at 21:43:53 UTC**, completing
+33,554,432 run steps at **42,433 post-warmup SPS**. Independent verification of
+244 files and all three strength panels found **no qualifying improvement**:
+both paired confidence intervals include zero, and sentinel seat 1 regressed
+beyond the allowed bound. The candidate is rejected; no confirmation or hosted
+promotion follows. The next intervention must address a new measured mechanism.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -96,27 +97,35 @@ have positive clustered lower bounds and satisfy the stratum guard before a
 fresh independent confirmation. A historical control on another allocation
 is not an identical floating-point training trajectory.
 
-The conditional continuation coordinator is integrated through **`95d1dea`**.
-It requires the independent successful qualification audit, complete artifact
-hashes, the exact epoch-8 policy and optimizer, and unchanged training execution
-sources. All seven evidence bindings are sealed against successful `job-tvqh9`
-in **`cc5c2a1`**. The continuation adds 29,360,128 steps to epoch 64 / 33,554,432
-run steps, then evaluate all three frozen arms. Shared bounded process cleanup
-retains partial artifacts on failure; nine focused checks passed. No continuation
-has passed its complete artifact/strength audit yet. **`job-mwvdb`** completed
-29,360,128 added steps from verified epoch-8 policy and optimizer bytes, from
-context `ctx-5f217fc4`,
-source **`d47ae09`** (same committed plan/runtime code as integrated main).
-Root verified all **789 sealed files**, including 256 exact Git source files,
-authentic qualification artifacts, historical control and 46 parity fixtures.
-Actual CPU preparation restored the exact epoch-8 policy and optimizer.
-Limits: **75/73/75 minutes provider/internal/aggregate**, zero restarts;
-maximum quote **$3.7125**. Detached aggregate guard **PID 84888** is live,
-with fixed deadline **22:18:45 UTC** from conservative anchor **21:03:45 UTC**.
-Live logs show **28,311,552 post-warmup steps / 667.212 seconds = 42,432.618 SPS**;
-minimum rolling two-epoch throughput was **37,330.485 SPS**. All 29,360,128 new
-actions were legal; nonfinite/clipped reward counts were zero. This is training
-completion evidence, pending terminal artifact verification and strength results.
+The repaired path completed its bounded continuation in **`job-mwvdb`**,
+context `ctx-5f217fc4`, source **`d47ae09`**. The exact qualified epoch-8 policy
+and optimizer were restored and advanced by **29,360,128 steps** to epoch 64.
+One H100 80GB, 4,096 environments, horizon 128, minibatch 8,192, replay ratio
+0.5 and eight workers measured **28,311,552 post-warmup steps / 667.212 seconds
+= 42,432.618 SPS** after two warmup epochs. Minimum rolling two-epoch SPS was
+**37,330.485**. All new actions were legal; nonfinite/clipped rewards were zero.
+Source and final checkpoint passed all 46 GPU parity fixtures. Sampled peak
+GPU memory was **65,426 MiB (63.89 GiB)** at five-second cadence.
+
+Independent collection verified **244 files**, authentic final policy/learner,
+execution bindings and the raw paired decision. GPU UUID and all identities
+are pinned in the manifest. The job succeeded on attempt 1 with zero restarts
+or preemptions. Billing: **2,275 seconds, $1.8766**. Guard PID 84888 observed
+completion and exited before its unused fixed **22:18:45 UTC** deadline.
+
+| Frozen actor | Wins | Losses | Draws |
+| --- | ---: | ---: | ---: |
+| Selected source | 2,733 | 1,335 | 28 |
+| Historical control | 2,759 | 1,309 | 28 |
+| Candidate `28a090d4…` | 2,758 | 1,303 | 35 |
+
+Each panel has 4,096 games / 2,607 unique initial maps. Candidate-minus-source
+signed-score delta is **+0.013916**, map-cluster 95% CI **[−0.016485, +0.044801]**;
+candidate-minus-control is **+0.001221**, CI **[−0.028961, +0.032458]**.
+Sentinel seat 1 (116 games) also fails the −0.10 stratum guard: **−0.12931**
+against source and **−0.13793** against control. **Candidate rejected.**
+The conditional confirmation was never activated; its unused coordinator,
+plan and tests are removed, with code and evidence preserved in Git history.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
