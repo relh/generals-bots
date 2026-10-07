@@ -60,6 +60,18 @@ def admit(inputs):
     if not selected(comparisons):
         raise ValueError('Raw development outcomes do not pass both comparisons')
     seal = read(inputs / 'development-context-seal.json')['files']
+    import importlib.util
+    framework = Path(importlib.util.find_spec('metta_training.native_build').origin).parents[1]
+    framework_files = {name: expected for name, expected in seal.items() if name.startswith('framework-source/')}
+    if 'framework-source/metta_training/native_build.py' not in framework_files:
+        raise ValueError('Development framework binding is missing')
+    for name, expected in framework_files.items():
+        relative = Path(name).relative_to('framework-source')
+        if '..' in relative.parts or digest(framework / relative) != expected:
+            raise ValueError('Imported development framework changed: ' + name)
+    if any('framework-source/' + str(path.relative_to(framework)) not in framework_files
+           for path in framework.rglob('*.py')):
+        raise ValueError('Unbound framework module added')
     for name, expected in seal.items():
         if name.startswith('input/bundles/') and digest(inputs.parent / name) != expected:
             raise ValueError('Frozen population or reference bundle changed: ' + name)
@@ -97,6 +109,8 @@ def admit(inputs):
 def evaluate(inputs, output):
     from integrations.policy_execution import execute
     plan, bundles, build = admit(inputs)
+    from integrations.cuda_runtime_binding import configure
+    configure()
     if output.exists():
         raise ValueError('Confirmation requires a fresh output directory')
     output.mkdir()
