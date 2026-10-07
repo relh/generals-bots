@@ -6,7 +6,8 @@ job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
 2026-10-07 20:38:59 UTC**. Independent verification of all 155 retained files
 confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
 4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
-Continuation **`job-mwvdb` was submitted at 20:43:44 UTC** and is building;
+Continuation **`job-mwvdb` was submitted at 20:43:44 UTC** and reached
+allocation startup at **21:04 UTC**;
 it targets 33,554,432 run steps and fresh strength panels. No strength improvement or hosted acceptance is established.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -100,13 +101,15 @@ sources. All seven evidence bindings are sealed against successful `job-tvqh9`
 in **`cc5c2a1`**. The continuation adds 29,360,128 steps to epoch 64 / 33,554,432
 run steps, then evaluate all three frozen arms. Shared bounded process cleanup
 retains partial artifacts on failure; nine focused checks passed. No continuation
-has completed yet. **`job-mwvdb`** is building from context `ctx-5f217fc4`,
+has completed yet. **`job-mwvdb`** is downloading its image on allocation
+from context `ctx-5f217fc4`,
 source **`d47ae09`** (same committed plan/runtime code as integrated main).
 Root verified all **789 sealed files**, including 256 exact Git source files,
 authentic qualification artifacts, historical control and 46 parity fixtures.
 Actual CPU preparation restored the exact epoch-8 policy and optimizer.
 Limits: **75/73/75 minutes provider/internal/aggregate**, zero restarts;
-maximum quote **$3.7125**. Detached aggregate guard **PID 84888** is live.
+maximum quote **$3.7125**. Detached aggregate guard **PID 84888** is live,
+with fixed deadline **22:18:45 UTC** from conservative anchor **21:03:45 UTC**.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs

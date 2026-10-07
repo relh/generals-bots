@@ -1820,7 +1820,7 @@
     "continuation_plan": {
       "path": "integrations/stateless_continuation_plan.json",
       "sha256": "6259badd474e3a1691c17ce7a87e54bd5ea39a8966f8ab27f61020f516802be3",
-      "status": "sealed and submitted: job-mwvdb building; training and strength results pending",
+      "status": "sealed and submitted: job-mwvdb allocation starting; training and strength results pending",
       "integration_revision": "95d1dea",
       "coordinator_sha256": "182f8889340679290a470f3cd95aaa1be2ced0a729f175ca1d66df4a3f95b0d8",
       "entrypoint_sha256": "f90ad0c54e940042eac5d4ffb00a5de118056047b5a771762a7dabe1a4373532",
@@ -1847,7 +1847,7 @@
       "binding_integration_revision": "cc5c2a1",
       "launch": {
         "job_id": "job-mwvdb",
-        "status": "building",
+        "status": "starting; image downloading",
         "submitted_at": "2026-10-07T20:43:44.788274+00:00",
         "attempt": 0,
         "max_cost_usd": 3.7125,
@@ -1873,8 +1873,12 @@
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/validation.json": "19bf197e24d47dba2541e0ac51141c71333e2ee6d028ea5a6b265b9083d8c0b7",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/pre-submit-active-check.json": "0a0361d1edaecd44676daa4fbb81644d6e5df10410794c2534069372cb2bbfab",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/aggregate-guard-process.json": "1c5d1e89ea5207a09f8574d0cdd26e0f8bff5283aab2a9b5a96338fac0473dc2",
-          "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "5f4ece221fae297b203fa0f1a265d5b8413c844d7f0eb2fbfa7c7661c873ad93"
-        }
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "5f4ece221fae297b203fa0f1a265d5b8413c844d7f0eb2fbfa7c7661c873ad93",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/allocation-deadline.json": "64e8377234564f1f72e73155e237c796d3e2feb12868dc686eeacf791f56e667"
+        },
+        "last_observed_at": "2026-10-07T21:04:03.078584+00:00",
+        "aggregate_deadline": "2026-10-07T22:18:45.188150+00:00",
+        "first_allocation_lower_bound_at": "2026-10-07T21:03:45.188150+00:00"
       }
     },
     "gpu_stateless_source_parity_passed": true,
