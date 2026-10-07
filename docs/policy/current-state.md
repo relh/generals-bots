@@ -90,7 +90,7 @@ difference 0.00000244), with the exact intended sampler. **Both runtime
 qualification gates passed** by 10:31:47 UTC. Control's trained-initializer
 self-match passed (276W/233L/3D in 512 games). By 10:39:44 UTC its continuation
 advanced from 4,194,304 to **6,291,456 total steps**. After excluding resumed
-warmup epochs 9–10, epochs 10–12 measured **39,218.17 SPS**: 1,048,576 steps
+warmup epochs 9–10, epochs 10–12 measured **39,218.16 SPS**: 1,048,576 steps
 in 26.737 seconds (uptime 49.007→75.744), with the same H100 and batch settings.
 The dashboard showed 66.6 GiB VRAM and 4.3 GiB RAM; reward counters remain
 clean across 2,097,152 resumed steps. Candidate continuation has not started.
