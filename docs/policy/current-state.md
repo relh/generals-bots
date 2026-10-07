@@ -105,8 +105,11 @@ Excluding resumed warmup epochs 9–10, epochs 10–64 measured **37,659.31 SPS*
 4,096 environments, horizon 128, minibatch 8,192 and replay ratio 0.5. All 13
 opponents had balanced seats. Final audits cover all 29,360,128 resumed steps:
 zero illegal actions, nonfinite or clipped rewards, and zero zero-reward terminal
-events. Candidate publishing has started; final export/parity and strength
-evaluation remain pending. These are runtime console results. Checkpoint artifacts, learner-byte checks,
+events. Candidate checkpoint `7fc1d194` was exported and passed final GPU/native versus
+NumPy parity on **46/46 states**, with maximum probability difference 0.00000203
+and the unchanged sampler. By 11:26:00 UTC, **both arms had completed training
+and runtime parity**, and the frozen 4,096-game source/control/candidate
+evaluation had started. No strength result or selection is available yet. These are runtime console results. Checkpoint artifacts, learner-byte checks,
 training audits and GPU CSV await terminal collection and independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
 recovered completely. The terminal collector now preserves sanitized billing

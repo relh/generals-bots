@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T11:18:59.922514Z",
-    "last_observed_phase": "candidate 32 Mi training complete; publishing; final parity and strength evaluation pending",
+    "last_observed_utc": "2026-10-07T11:26:00.885582Z",
+    "last_observed_phase": "both arms completed training and final runtime parity; frozen source/control/candidate evaluation underway",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -680,7 +680,15 @@
       "native_clipped_terminal_rewards": 0,
       "zero_reward_terminal_agents": 0,
       "collected_audit_verified": false,
-      "trained_final_serving_parity_verified": false
+      "trained_final_serving_parity_verified": true,
+      "trained_final_serving_parity_scope": "Runtime console only; independent terminal artifact verification pending.",
+      "trained_checkpoint_sha256": "7fc1d1949d5b495fa712da43e094bceae92da7bd8d3e73f2a4b00f620122166c",
+      "bundle_manifest_sha256": "a7a61011a2c44d2cfd9b746f26802febec27e8410b30a45c1495f221356eddfe",
+      "trained_parity_states": 46,
+      "trained_matching_top_actions": 46,
+      "max_action_probability_difference": 2.0265579223632812e-06,
+      "parity_receipt_path": "integrations/softmax/local-output/monotone-force-retry-20261007/candidate-final-parity-evaluation-start-console-attempt3.json",
+      "parity_receipt_sha256": "a299b2a3302f414767134383641d2514fc9c95ffb6234ffae3e1ed21083d5781"
     },
     "terminal_collector": {
       "sha256": "c119e5d682e59f0e3a31f01bba7b6ea47ce22d1a74a7d7bd05833eed6ed49272",
