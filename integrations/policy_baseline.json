@@ -1668,7 +1668,7 @@
     "job_id": "job-zwt6d",
     "context_id": "ctx-f76d9c6f",
     "submitted_at": "2026-10-07T18:32:06.964246+00:00",
-    "last_observed_at": "2026-10-07T19:06:35.488571+00:00",
+    "last_observed_at": "2026-10-07T19:11:42.874992+00:00",
     "archive_sha256": "6892addb01647dbd6b1397ac56f052f8bd3a58824387b8215d02f38a89a51942",
     "source_revisions": {
       "baseline": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1696,15 +1696,24 @@
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/allocation-deadline.json": "35a73199a8783a6a7005e96b07a903a62c919ad5204715b14c2586aae558b296",
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T185712762104Z-sanitized.log": "bd0b32f95a2e69c83c83d0e7d973323135bf91e1e3302074a3d390f47befcc4f",
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T190212848389Z-sanitized.log": "80b8b9f8629459ba189aec7f12884e0d5e1909cbb43133e3c4a3953ab191c9bf",
-      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T190635488571Z-sanitized.log": "ce0bd1023b365c073ac4cb144ad557e20aef23f212408ea450d92b8af15a3dc3"
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T190635488571Z-sanitized.log": "ce0bd1023b365c073ac4cb144ad557e20aef23f212408ea450d92b8af15a3dc3",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T191142874992Z-sanitized.log": "fb835222886de66a82856f2e6e5d6a1835ff379c08aac791c3221051c1537703"
     },
     "aggregate_deadline": "2026-10-07T19:37:27.628299+00:00",
-    "runtime_phase": "Run0 baseline completed; run1 candidate initializing",
+    "runtime_phase": "First baseline and candidate completed; second candidate initializing",
     "provisional_completed_runs": [
       {
         "index": 0,
         "variant": "baseline",
         "instrumented_sps": 39795.66586967247,
+        "measured_steps": 1048576,
+        "warmup_epochs": 2,
+        "qualified": false
+      },
+      {
+        "index": 1,
+        "variant": "candidate",
+        "instrumented_sps": 43390.548704791865,
         "measured_steps": 1048576,
         "warmup_epochs": 2,
         "qualified": false
