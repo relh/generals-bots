@@ -165,7 +165,7 @@ def main():
                 seconds=480, startup_seconds=300, training_config=stage/'config.json', diagnostic_profile=True)
         reports.append(dict(arm=arm, **audit(stage, config, identity['uuid'])))
     peaks = {arm: sum(r['sampled_peak_mib'] for r in reports if r['arm'] == arm)/2 for arm in ('baseline', 'gather')}
-    write(output/'COMPLETED.json', dict(plan_sha256=digest(PLAN), stages=reports,
+    write(output/'COMPLETED.json', dict(plan_sha256=digest(output/'plan.json'), stages=reports,
           mean_sampled_peak_mib=peaks, sampled_memory_saving_mib=peaks['baseline']-peaks['gather'],
           eligible_for_separate_qualification=all(r['steady_sps'] >= 30000 for r in reports if r['arm'] == 'gather'),
           qualified_for_long_training=False))
