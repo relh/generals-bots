@@ -519,20 +519,6 @@
       "provider-preemption-docs.txt": "95d86312a1890c030e289f451f8bbeb09537db65f5e5f2d5dcf37412b83323b5",
       "preemption-options.json": "ab96e22c7aa021116f409c9f2dd0dd809dec5d8146373fe1fe71ce23309bb15a"
     },
-    "startup_checks_attempt3": {
-      "source_serving_parity_matching_top_actions": 46,
-      "source_serving_parity_public_states": 46,
-      "sampling_games": 512,
-      "sampling_wins": 267,
-      "sampling_losses": 240,
-      "sampling_draws": 5,
-      "smoke_phase_elapsed_seconds": 339.13325640000403,
-      "both_native_builds_completed_elapsed_seconds": 577.2742622270016,
-      "qualification_launcher_started": true,
-      "training_steps_observed": false,
-      "log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T100318916518Z-sanitized.log",
-      "scope": "Runtime console observation; final artifact verification pending. Not throughput or strength qualification."
-    },
     "control_qualification_console": {
       "path": "integrations/softmax/local-output/monotone-force-retry-20261007/control-qualification-console-attempt3.json",
       "sha256": "975afb39266fcba3212e21e1e63d45fc879f75e07cf23602e82ee576a5f243f2",
@@ -1052,7 +1038,6 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Native row coverage verified; job-zsz35 failed throughput qualification at29811SPS. Profile hardware and CPUworkers before a bounded retry; no strength claim.",
     "opening_comparison": {
       "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
       "files_sha256": {
@@ -1326,7 +1311,7 @@
     "source_parity_console": {
       "path": "integrations/softmax/local-output/row-rotation-launch-20261007/job-zsz35-run-attempt1-20261007T163017904499Z-sanitized.log",
       "sha256": "96c754102ddf5beffabecb5e70378ee6af0bee8f80ea1ccd7c5b44ec5674edbd",
-      "scope": "Live console evidence; terminal artifact audit pending"
+      "scope": "Archived source-parity console; terminal collection and final decision are recorded in this trial."
     },
     "finished_at": "2026-10-07T16:38:29.684117+00:00",
     "qualification_verified": false,
@@ -1564,5 +1549,13 @@
       "sampled_gpu_clock_events": false,
       "next_action": "Bounded instrumented GPU profile, not unchanged retry: measure host and CUDA-event time separately around native learner forward/optimization and the five per-tick native/JAX stream fences; also elapsed native siege callback. Prioritize consolidating four output-copy fences to one while retaining all four DLPack owners until completion if fence/host time is material; preserve input readiness fence. Encoding scripted-only seats is a second measurable cost, not an explanation of the newly slower learner forward."
     }
+  },
+  "bridge_execution_probe": {
+    "status": "implementation in progress; no job submitted",
+    "plan_path": "integrations/bridge_profile_plan.json",
+    "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
+    "baseline_revision": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
+    "scope": "Bounded instrumented ABBA execution comparison, not training or strength qualification",
+    "production_gate_sps": 30000
   }
 }
