@@ -1,0 +1,39 @@
+{
+  "schema": "generals-product-logical-activation-probe-plan-v1",
+  "scope": "One bounded H100 probe only; no matched long PPO or policy promotion",
+  "source": "Exact zero-head Product transplant, resealed for the logical-matrix ABI; source and all ten frozen opponent policy bytes preserved by one-time migration receipt",
+  "training": {
+    "completed_steps": 4194304,
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch_size": 8192,
+    "replay_ratio": 0.5,
+    "opponents": "Original 13-opponent Classic pool, both seats",
+    "hardware": "H100",
+    "steady_end_to_end_sps_min": 30000
+  },
+  "integrity": {
+    "illegal_actions_max": 0,
+    "nonfinite_rewards_max": 0,
+    "nonfinite_gradients_max": 0,
+    "gradient_clipping_events_max": 0,
+    "require_all_13_opponents_in_both_seats": true,
+    "require_source_and_trained_native_to_serving_parity": true
+  },
+  "activation": {
+    "public_views_sha256": "f5d6cc004ae2d9f615585d8197b2b6a13b25d391c19a197c3c1b20b5b6c8d897",
+    "public_states": 80,
+    "expanded_states": 64,
+    "comparison": "The same trained checkpoint, with learned Q versus Q set exactly to zero; compare legal raw action logits only",
+    "legal_logit_max_abs_strictly_greater_than": 0.001,
+    "require_changed_product_u_v_q_words": true,
+    "audit_command": "python -m integrations.audit_product_activation gate"
+  },
+  "job_limits": {
+    "gpu_jobs": 1,
+    "restarts": 0,
+    "max_wall_minutes": 60,
+    "max_charge_usd": 3.0
+  },
+  "next_step": "Review the terminal throughput, integrity, parity, and activation receipts before any matched pair"
+}
