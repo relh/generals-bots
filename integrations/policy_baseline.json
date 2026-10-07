@@ -314,8 +314,10 @@
   "active_experiments": ["job-wwvk3"],
   "route_shortcut_development": {
     "job": "job-wwvk3",
-    "last_observed_state": "building",
-    "last_observed_utc": "2026-10-07T06:49:13Z",
+    "last_observed_state": "starting",
+    "last_observed_utc": "2026-10-07T07:07:53Z",
+    "gpu_attempt": 1,
+    "startup_started_utc": "2026-10-07T07:05:11Z",
     "free_build_retries": 1,
     "last_build_failure": "loading built image: container operation failed: loading image tar: Timeout error",
     "replacement_build_started_utc": "2026-10-07T06:47:27Z",
