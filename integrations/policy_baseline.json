@@ -2436,10 +2436,21 @@
       "failure_reason": "exit 1",
       "attempt": 1,
       "restarts_used": 0,
-      "billing": null,
-      "billed_seconds": null,
-      "cost_usd": null,
-      "total_cost_usd": null
+      "receipt": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "billed_seconds": 577,
+            "charged_usd_micros": 475200,
+            "gpu_count": 1,
+            "rate_usd_micros_per_gpu_minute": 49414
+          }
+        ],
+        "billed_attempts": 1,
+        "billed_seconds": 577,
+        "charged_usd_micros": 475200,
+        "image_digest": "sha256:b558a38fe803394d2ef593275498d6f4de9f0ce5fc51b5a06ca0745a17325a8f"
+      }
     },
     "failure_diagnosis": {
       "exception": "jax.errors.TracerBoolConversionError",
