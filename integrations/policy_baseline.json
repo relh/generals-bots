@@ -202,24 +202,30 @@
     "complete_marker_sha256": "d91a97f9496e3ab5e04bb9672a30486fd4047c405305e982d514e33ea27de1de",
     "comparison_sha256": "bd7504db1d90ec7702203204fd0a2a73a60ac4a8191c020ea6e418e4a8d82c7f"
   },
-  "active_experiments": [
-    {
-      "kind": "source_global_product_architecture_throughput_probe",
-      "branch": "codex/source-global-product",
-      "revision": "574154a35ef82f08e0495b6f8fe4fef7e9f248f3",
-      "job": "job-ffctd",
-      "last_observed_state": "SUBMITTED",
-      "context_archive_sha256": "a158783629a1e5d3011ae2c26e0f4c8933a03acfbb86bfc2384b956d871d9ef6",
-      "initialized_asset_sha256": "8a2a324c922bd76dcd4efa618ecceca2cdf88c2ea2600cf5551c891b1fee13a9",
-      "transplant_proof_sha256": "f9c698cad0a421d531e3be43df2be31534da39032a354e628a35a1a949c98b90",
-      "frozen_pool_migration_proof_sha256": "db925d1836ae1e4775ae4b4d7d0da93f397b7e1d4d2d25cf4ddaa837d563a1f4",
-      "agent_steps": 4194304,
-      "environments": 4096,
-      "horizon": 128,
-      "minibatch": 8192,
-      "replay_ratio": 0.5,
-      "minimum_steady_sps": 30000,
-      "max_cost_usd": 1.485
-    }
-  ]
+  "qualified_source_global_product_probe": {
+    "job": "job-ffctd",
+    "hardware": "H100 80GB",
+    "environments": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "warmup_epochs": 6,
+    "steady_interval_steps": 1048576,
+    "steady_end_to_end_sps": 37787.884,
+    "completed_steps": 4194304,
+    "all_13_opponents_balanced_both_seats": true,
+    "illegal_actions": 0,
+    "nonfinite_rewards": 0,
+    "clipped_rewards": 0,
+    "source_policy_sha256": "9c55dc3b167746f0153f5de50afaa6cba9cfb4a8858107d524c05d988c9147e9",
+    "trained_checkpoint_sha256": "2d7873c06c1a3b83d0fcda59152ff2535b157b1e0ff7f1f438ed2adf3a27091b",
+    "initialized_asset_sha256": "8a2a324c922bd76dcd4efa618ecceca2cdf88c2ea2600cf5551c891b1fee13a9",
+    "transplant_proof_sha256": "f9c698cad0a421d531e3be43df2be31534da39032a354e628a35a1a949c98b90",
+    "frozen_pool_migration_proof_sha256": "db925d1836ae1e4775ae4b4d7d0da93f397b7e1d4d2d25cf4ddaa837d563a1f4",
+    "source_gate_sha256": "75848d65815b1e1c38c2b0e5b1462b16663f1c0f1edea4cff5f538bd707be29c",
+    "qualification_receipt_sha256": "37bd60c99a28ec14a6eda37ebb0a4c9969c62951af07c7c93dfd710f46023cc5",
+    "result_archive_sha256": "46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23",
+    "qualification_marker_sha256": "0ebc6a156dd2cb982d17ed59697fdcc5128a8a6f3637e11ed56293faa196b5ea"
+  },
+  "active_experiments": []
 }

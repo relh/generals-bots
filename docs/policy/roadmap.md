@@ -8,12 +8,12 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Finish one-time frozen-opponent migration and parity for the isolated
-   source-conditioned global residual, then qualify its exact 13-opponent
-   setup at ≥30,000 steady end-to-end H100 SPS. The hard-opponent weighting,
-   source-mirror and siege-opponent changes all failed paired development.
-2. If the new architecture qualifies, train a matched source-initialized
-   treatment and control, then compare on fresh paired Classic first episodes
+1. Run the qualified source-conditioned global residual against a single-ABI
+   control that freezes only its new Q head. Its exact 13-opponent setup
+   reached 37,787.9 steady H100 SPS; the hard-opponent weighting,
+   source-mirror and siege-opponent changes failed paired development.
+2. Train matched source-initialized treatment and control, then compare on
+   fresh paired Classic first episodes
    and inspect army merging and general defense. Preserve opponent, reward,
    map, sampler and seat controls.
 3. Confirm a positive result on independent maps. Freeze the candidate and run

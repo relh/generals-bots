@@ -106,17 +106,20 @@ general defense and army gathering are promising mechanisms; use fresh paired
 development and independent confirmation rather than those hosted losses as a
 tuning set.
 
-An isolated rank-8 source-conditioned global residual is under local parity
-review on `codex/source-global-product` at `574154a`. It preserves the public
-observation and action ABI, and its zero-head transplant reproduces selected
-source logits exactly before training. All ten frozen neural opponents were
-migrated once to this topology with old/new direct logit parity. A bounded
-H100 throughput probe `job-ffctd` is submitted on the exact original
-13-opponent Classic pool; it must pass a 512-game source/serving gate and
-native preflight before 4,194,304 PPO steps. The sealed context archive SHA is
-`a158783629a1e5d3011ae2c26e0f4c8933a03acfbb86bfc2384b956d871d9ef6`.
-The job has zero restarts, a 30-minute/$1.485 cap. No GPU qualification,
-game-strength result, or policy selection exists yet.
+The isolated rank-8 source-conditioned global residual on
+`codex/source-global-product` at `817a258` preserves the public observation
+and action ABI. Its zero-head transplant reproduces selected source logits
+exactly before training; all ten frozen neural opponents were migrated once
+with old/new direct logit parity. Its bounded H100 `job-ffctd` **qualified**:
+4,194,304 steps at **37,787.9 steady end-to-end SPS** over the final
+1,048,576 steps after six warmup epochs, with 4,096 environments/H128/
+minibatch 8,192/replay 0.5, all 13 opponents balanced by seat, and zero
+illegal, nonfinite or clipped rewards. The 512-game source/serving gate and
+native CPU preflight passed before PPO. The job had zero restarts and billed
+$0.7293; verified result archive SHA-256:
+`46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23`.
+The Product architecture has no paired game-strength result or policy selection
+yet. A single-ABI matched ablation is staged but not submitted.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
