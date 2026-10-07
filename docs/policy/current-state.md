@@ -1,551 +1,132 @@
 # Current Classic policy state
 
-Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
-changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
-2026-10-07 20:38:59 UTC**. Independent verification of all 155 retained files
-confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
-4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
-Continuation **`job-mwvdb` succeeded technically at 21:43:53 UTC**, completing
-33,554,432 run steps at **42,433 post-warmup SPS**. Independent verification of
-244 files and all three strength panels found **no qualifying improvement**:
-both paired confidence intervals include zero, and sentinel seat 1 regressed
-beyond the allowed bound. The candidate is rejected; no confirmation or hosted
-promotion follows.
+Updated 2026-10-07, as of the 22:54 UTC gather-probe submission.
+**Winning acceptance has not passed; the selected policy and champion are unchanged.**
+Training execution is qualified for the previously measured setup. Playing
+strength remains the unmet goal.
 
-Fresh-start-only experiment **`job-r4xkt` failed its qualification throughput
-at 22:36:45 UTC**. All 138 retained files were independently verified. It
-completed 4,194,304 steps on one H100 with 4,096 environments, horizon 128,
-minibatch 8,192, replay ratio 0.5 and eight environment workers. After two
-warmup epochs, the full interval was 3,145,728 steps / 96.953 seconds =
-**32,446 SPS**, but the final rolling two-epoch interval fell to **28,091 SPS**.
-The strict guard stopped the coordinator; no continuation or strength panels ran.
-The checkpoint and optimizer were retained; illegal actions were zero.
+The [machine manifest](../../integrations/policy_baseline.json) owns exact
+artifact identities, retained evidence paths and experiment outcomes. Use the
+[roadmap](roadmap.md) for decisions and [runbook](runbook.md) for operations.
+Completed experiment narratives and retired source remain in Git history.
 
-This allocation recorded a constant 1,590 MHz SM clock versus 1,980 MHz on
-previous successful H100 runs. Both model and environment timing were slower;
-the clock difference alone does not establish cause. Sampled peak memory was
-65,420 MiB (63.89 GiB). The job used one attempt, zero restarts and cost $0.5577
-for 676 billed seconds. Its guard observed terminal state and exited. No task
-GPU job from that experiment remains active. The fresh-start strength
-hypothesis remains untested.
+## Selected policy and game contract
 
-The intervention changes midgame-reset probability from 0.25 to zero for
-startup and every episode recycle, keeping other training settings fixed.
-`INITIAL_POSITION_MIX` directly observes startup only; the shared reset
-function establishes the behavior of automatic episode recycling. Independent
-confirmation and hosted acceptance remain required.
-
-The targeted memory comparison **`job-tjqy8` was submitted at 22:54:13 UTC**
-and is building. Gather code replaces duplicate transposed rollout observations
-and masks with minibatch scratch, saving a calculated **20.3508 GiB** while
-preserving float32 storage and PPO row rotation. CPU indexing checks and an
-actual-framework API check passed; GPU correctness and speed remain unverified.
-The job first checks the compiled kernel, buffer reuse and policy gradients on
-verified replay observations, then runs baseline/gather/gather/baseline on the
-same H100: four fresh 2,097,152-step diagnostics, two warmup epochs each,
-4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5, eight workers.
-The provider/aggregate limit is 60 minutes, internal execution 58 minutes,
-zero restarts, maximum quote $2.97; its guard is live. Both gather runs must
-reach 30K SPS before considering a separate full qualification. This diagnostic
-does not authorize long training or establish playing strength.
-
-The [machine manifest](../../integrations/policy_baseline.json) records exact
-artifact identities, paths, qualification receipts and rejected experiments.
-Use the [runbook](runbook.md) for operations and [roadmap](roadmap.md) for
-planned decisions. Older prose remains in Git history.
-
-The runner cleanup is integrated: one explicit-plan trial runner and shared
-training audits replace completed bridge, row-rotation and standalone stateless
-launch chains (**1,037 net lines removed**). Twelve focused checks passed;
-fixed training configs and asset identities were preserved. The live job still
-uses its sealed source package; its collector imports and archive digest remain
-unchanged. Reorganized source requires admission before a future GPU launch.
-
-## Selected policy and game
-
-| Item | Selected value |
+| Item | Authoritative value |
 | --- | --- |
-| Checkpoint identity | `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14` |
+| Selected checkpoint | `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14` |
 | Lifetime agent steps | 2,499,805,184 |
-| Hosted policy ID | `64649097-765f-4706-8310-910e57067a34` |
-| Frozen sampler | Structured; move/split temperatures 0.05/0.15; opening move temperature 0.10 for 100 turns; neutral bonus 6; weak-owned and doomed-attack penalties 4 |
-| Baseline hosted screen | Daveey 9/32; incumbent 18/32 |
+| Hosted policy | `64649097-765f-4706-8310-910e57067a34` |
+| Architecture | Radius-2 spatial policy; 578,860 parameters |
+| Hosted source screen | Daveey 9/32; incumbent 18/32 |
+| Sampler | Structured; move 0.05, split 0.15, opening move 0.10 for 100 turns; neutral bonus 6; weak-owned and doomed-attack penalties 4 |
 
-Current native and serving assets use explicit stateless ABI v2 under
-`integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/`
-(`00-selected-native/` and `01-selected-serving/`). Migration preserved policy
-and optimizer bytes. Earlier recovery evidence and historical experiment input
-identities remain pinned in the manifest; those historical ABIs are not runtime
-compatibility paths.
+Use the pinned official Softmax Coworld **Classic** rules: independently sampled
+18–21 tile map dimensions, fog and a 2,000-turn limit. The generic engine's
+chasing/smaller-army priority is a different ruleset. Engine hashes and rule
+parity evidence are pinned in the manifest. Potential shaping uses the learner's
+exact discount, currently 0.999; all 13 training opponents must appear on both seats.
 
-Qualification uses the pinned official Softmax Coworld **Classic** engine,
-independently sampled 18–21 tile map dimensions, fog and a 2,000-turn limit.
-The generic chasing/smaller-army engine is not equivalent. Engine hashes and
-rule-parity evidence are in the manifest.
+Native and serving assets use stateless ABI v2. Migration preserved selected
+policy and optimizer bytes. Current assets are under
+`integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/`,
+with `00-selected-native/` and `01-selected-serving/` as the selected pair.
+Historical asset identities are evidence, not supported runtime formats.
 
-## Throughput and acceptance gates
+## Verified execution and latest strength result
 
-The selected source qualified on **one H100 80GB**: 4,096 environments,
-horizon 128, minibatch 8,192, replay ratio 0.5; **36,182.7 steady end-to-end
-SPS** after warmup in a 4,194,304-step probe. All 13 opponent types appeared
-on both seats; illegal actions, nonfinite rewards and clipped rewards were
-zero. This qualifies that setup, not every subsequent change.
+Common measured geometry: **one H100 80GB**, 4,096 environments, horizon 128,
+minibatch 8,192, replay ratio 0.5 and eight environment workers. Measurements
+exclude two warmup epochs and include rollout, transfers and optimization.
 
-Every changed long-training setup must independently pass **≥30,000 steady
-end-to-end SPS**, measured after compilation and warmup and including rollout,
-transfers and optimization. High GPU utilization alone does not qualify it.
-Potential shaping must use the learner's exact discount. Mixed-opponent
-training must sample every opponent on both seats.
-
-Hosted acceptance requires **at least 65% wins against each named opponent**,
-each Wilson 95% lower bound above 50%, broad-pool preservation and clean
-execution. The completed penalty-8 hosted panel failed:
-
-| Opponent | Seat 0 | Seat 1 | Total wins | Wilson 95% lower |
-| --- | --- | --- | --- | --- |
-| Daveey | 50/128 | 48/128 | 98/256 (38.28%) | 32.54% |
-| Incumbent | 68/128 | 81/128 | 149/256 (58.20%) | 52.08% |
-
-All 512 identities/outcomes were audited, without failed requests, illegal
-moves, candidate timeouts or forfeits. After local files disappeared, separate
-Observatory recovery reproduced both counts and audited 277,894 turns across
-512 unique seeds. Recovery hashes do not replace original evidence identities.
-
-## Learning-path repair: coverage and throughput verified, strength pending
-
-At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches
-of 64 environment rows from a 4,096-row rollout. The minibatch index restarts
-at zero each epoch and the transpose preserves row order: only rows 0–2,047
-receive gradient updates. Both seats and all 13 opponents remain represented,
-but the rollout population audit is not an optimizer-sample coverage audit.
-The measured end-to-end SPS remains valid as environment throughput.
-
-Correction `d945bae` is integrated after ten focused CPU checks and exact
-native patch-chain admission. It rotates the starting minibatch block across epochs,
-keeping the gradient budget unchanged. It addresses permanent row starvation;
-it still trains on half of each rollout at replay ratio 0.5. Native runtime
-coverage, ≥30K SPS and a fresh paired strength comparison are required before
-claiming the corrected training setup qualifies. No strength gain is established.
-
-The candidate repeats the retained `job-wgtyc` control's 4,194,304-step
-qualification and 29,360,128-step continuation with unchanged model, sampler,
-reward, optimizer settings and training seed. The intended learning change is optimizer row coverage. Stateless execution,
-startup admission and worker count also changed, so this tests the repaired
-training path rather than isolating rotation. The shared audit authenticates the starting learner
-and checks incremental continuation steps.
-
-Fresh 4,096-game panels compare candidate, source and historical control on
-seeds 14001101/14001103 (bootstrap 14001111). Both paired improvements must
-have positive clustered lower bounds and satisfy the stratum guard before a
-fresh independent confirmation. A historical control on another allocation
-is not an identical floating-point training trajectory.
-
-The repaired path completed its bounded continuation in **`job-mwvdb`**,
-context `ctx-5f217fc4`, source **`d47ae09`**. The exact qualified epoch-8 policy
-and optimizer were restored and advanced by **29,360,128 steps** to epoch 64.
-One H100 80GB, 4,096 environments, horizon 128, minibatch 8,192, replay ratio
-0.5 and eight workers measured **28,311,552 post-warmup steps / 667.212 seconds
-= 42,432.618 SPS** after two warmup epochs. Minimum rolling two-epoch SPS was
-**37,330.485**. All new actions were legal; nonfinite/clipped rewards were zero.
-Source and final checkpoint passed all 46 GPU parity fixtures. Sampled peak
-GPU memory was **65,426 MiB (63.89 GiB)** at five-second cadence.
-
-Independent collection verified **244 files**, authentic final policy/learner,
-execution bindings and the raw paired decision. GPU UUID and all identities
-are pinned in the manifest. The job succeeded on attempt 1 with zero restarts
-or preemptions. Billing: **2,275 seconds, $1.8766**. Guard PID 84888 observed
-completion and exited before its unused fixed **22:18:45 UTC** deadline.
-
-| Frozen actor | Wins | Losses | Draws |
-| --- | ---: | ---: | ---: |
-| Selected source | 2,733 | 1,335 | 28 |
-| Historical control | 2,759 | 1,309 | 28 |
-| Candidate `28a090d4…` | 2,758 | 1,303 | 35 |
-
-Each panel has 4,096 games / 2,607 unique initial maps. Candidate-minus-source
-signed-score delta is **+0.013916**, map-cluster 95% CI **[−0.016485, +0.044801]**;
-candidate-minus-control is **+0.001221**, CI **[−0.028961, +0.032458]**.
-Sentinel seat 1 (116 games) also fails the −0.10 stratum guard: **−0.12931**
-against source and **−0.13793** against control. **Candidate rejected.**
-The conditional confirmation was never activated; its unused coordinator,
-plan and tests are removed, with code and evidence preserved in Git history.
-
-`job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
-gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
-2 and 4, after two warmup epochs. The matching prior-control interval was
-35,487.21 SPS. Native optimizer blocks were **0, 32, 0, 32** for epochs 0–3,
-so the coverage correction executed as intended. No long continuation or
-strength evaluation ran. Source GPU parity passed 46/46 states.
-
-Environment, rollout-model and optimization times all increased about 19%
-relative to the prior control. This does not isolate rotation as the cause.
-Clocks, power and CPU capacity were not recorded. Independent terminal collection
-verified 35 retained files; no trained checkpoint was saved. The last reward
-audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
-forced stop left no complete action-mask audit. Billing was **761 seconds,
-$0.627**. The guard observed termination and exited.
-
-### Profiled retry: throughput failed
-
-`job-5cirw` was submitted **2026-10-07 16:59:07 UTC**, source `ba8461e`,
-context `ctx-31be43a7`. Preparation and the bounded worker benchmark completed
-in 26.3 seconds. Source GPU parity passed 46/46 top actions with maximum
-action-probability difference 0.00000445; native trainer compilation succeeded. It retained the strict 30K gate and learning settings,
-records CPU quota/affinity and GPU clocks/power, and selects native opponent
-workers from 1/2/4/8 on fixed public replay inputs. Exact action/memory agreement
-is required. The selected count applies to candidate training and all evaluation
-actors; the CPU benchmark makes no training-throughput or strength claim.
-
-One H100 runs 4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5.
-The provider/internal/aggregate limits are 75/73/75 minutes, with zero application
-restarts. The validated runtime quote is **$3.7125**, excluding separate build
-fees. Detached guard **PID 84329** observed termination and exited. Its aggregate bound froze
-on `starting` or `running` from the last pre-allocation observation and never
-advances after preemption. The bound is frozen at **2026-10-07 18:22:54 UTC**
-from the 17:07:54 pre-allocation observation. Source, admission, archive and request hashes are in
-the manifest and launch receipts. GPU throughput qualification failed; strength remains untested.
-
-The retry terminated at **17:23:19 UTC**, attempt 1, zero restarts/preemptions.
-It selected **8 workers** from 1/2/4/8 on a **28-CPU quota**. The fixed fixture
-median improved from 28.42 ms at 4 workers to 18.90 ms at 8, but training reached
-only **28,788.05 SPS** (1,048,576 steps / 36.424 seconds, epochs 2–4 after two
-warmup epochs). The last individual epoch reached 31.6K; it does not override
-the failed prescribed interval. No continuation or strength panel ran.
-Independent terminal collection verified **40 files**, including CPU/GPU telemetry
-and worker-profile inputs. Hardware was **H100 80GB HBM3**, peak console VRAM
-**66.9 GiB**, host RAM **7.1 GiB**. Billing was **776 seconds, $0.6402**.
-That qualification job has no remaining allocation. Relative to the prior run, the measured
-environment portion improved 2.946 seconds, while rollout inference and training
-slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
-1,980/2,619 MHz, no sampled clock events and no new cgroup throttling over the
-retained 61-second fully allocated interval. These observations do not isolate
-a cause; they provide no support for changing power limits or CPU quota.
-
-### Bridge execution diagnostic: completed, small local saving
-
-**`job-zwt6d` succeeded at 2026-10-07 19:23:17 UTC**, attempt 1 with no
-restarts or preemptions. Independent audit verified all **335 retained files**,
-both CUDA bitwise-copy/lifetime gates, full action/reward audits and all four
-runs on H100 UUID `GPU-7cac0f43-d9d0-d954-fed0-378b56297727`.
-Settings: 4,096 games, horizon 128, minibatch 8,192, replay ratio 0.5, eight
-workers; each run measured 1,048,576 steps after two warmup epochs.
-
-| Order | Baseline instrumented SPS | Candidate instrumented SPS | Candidate change |
-| --- | ---: | ---: | ---: |
-| A–B | 39,795.67 | 43,390.55 | +9.033% |
-| B–A | 43,204.61 | 43,016.74 | −0.435% |
-
-**No repeatable end-to-end speedup is established.** The output-copy host scope
-fell by 19.936 ms and 16.828 ms across the respective 256-tick windows, with
-three fewer waits per tick. Those savings are below 0.1% of each full window;
-they do not explain the first pair's 2.183-second improvement. Retain the
-single-fence implementation under the preregistered identified-cost criterion:
-exact copies and owner lifetime passed, and redundant waits were eliminated.
-Timing scopes overlap and must not be added. Full uninstrumented qualification
-remains required. No state-free changes were included in this diagnostic.
-
-Sampled memory peaked at 68,515 MiB in run 0 and 68,231 MiB in the other runs,
-at five-second cadence. These are observed device totals, not exact allocation
-maxima or stateless memory results. Hardware sampling includes startup and is
-not aligned to the measured epochs. Billing: **1,695 seconds, $1.3981**.
-Guard PID 52951 observed completion and exited at 19:23:19 UTC, before its
-fixed 19:37:27 deadline. Context `ctx-f76d9c6f`, original sources and ABBA plan
-were preserved; only the report protocol changed after the first failure.
-
-### Bridge execution diagnostic: report-protocol failure
-
-`job-6khn8` was submitted **2026-10-07 17:58:15 UTC**, context `ctx-12ac3324`,
-for one H100. The image and baseline native executable built successfully. Attempt 1
-failed at **18:22:38 UTC**, before training: the compiled CUDA lifetime
-executable exited zero, but its wrapper could not parse stdout as JSON. Raw
-stdout was not retained, so lifetime success and the precise output remain
-unproven. All **118 retained files** were verified; billing was **124 seconds,
-$0.1023**, with no restarts or preemptions. The completed retry wrote
-a dedicated report file and retained compile/run stdout and stderr. It compared the original bridge with four output-copy waits
-consolidated into one, in **A–B–B–A order**. Each fresh run has 2,097,152 steps,
-two warmup epochs and two measured epochs; workers stay fixed at eight.
-All DLPack owners remain alive through the final output wait; input readiness
-remains synchronized. Host timings and CUDA stream spans overlap and must not
-be summed; end-to-end speed uses completed-step wall time.
-
-The first sealed archive passed CPU source transformation and ownership checks,
-but later review found those checks omitted active runtime Muon hooks. The retry
-activated the production bootstrap and matched generated sources against
-the retained GPU build. Review rejected an earlier
-unsubmitted archive because its instrumentation expected the wrong build-stage
-loop. Actual CUDA compilation and lifetime probes passed before training in the retry.
-The production correction is `d1e9705`, runner `0bd5e1e`, baseline `0df0d24`;
-exact inputs and receipts are bound in the manifest.
-
-Limits are **45 minutes provider/aggregate**, 43 minutes internal, 480 seconds
-per run, zero application restarts. The validated runtime quote is **$2.2275**.
-Detached guard **PID 77874** observed terminal failure at **18:22:50 UTC**
-and exited; its unused aggregate deadline was **19:03:05 UTC**. These instrumented runs are
-bounded diagnostics; no continuation or strength evaluation follows, and full
-uninstrumented **≥30,000 SPS** qualification remains required.
-
-A separate active-path audit found that the direct actor ignores recurrent carry
-but copies its unchanged 77,684-word state into JAX and back during rollout:
-**1.185 GiB per buffer, 303.453 GiB of explicit copies per 128-step epoch** at
-4,096 environments. These are code-derived byte counts, not measured speedups.
-The zero-external-state implementation is integrated as **`ccf1895`**, with
-explicit ABI v2 and no compatibility path. It removes carry allocations, copies,
-resets and snapshots while preserving compiler scratch. All 12 policies match
-bitwise on fixed CPU rollout outputs, sampled actions and cotangent gradients;
-both layouts also match on multi-step training inputs with mixed terminals.
-All 14 asset manifests and 12 serving bundles were migrated, preserving policy,
-portable weight and both optimizer snapshots byte-for-byte. Root independently
-verified the comparisons and migrated bytes. The selected asset references now
-point to the migrated assets; historical experiment inputs remain hash-bound.
-**GPU source/final parity, native training and throughput qualification passed
-in `job-tvqh9`.** This establishes no policy strength gain.
-The current qualification is preregistered in
-the retired `integrations/stateless_qualification/plan.json` at Git revision `eed377b`: 4,194,304 uninstrumented steps,
-workers eight, two warmup epochs, then all six remaining epochs measured
-together, with the existing rolling 30K SPS guard retained. Both source and
-checkpoint parity, complete action/reward audits and all 13 opponents in both
-seats are required. Coordinator **`1181b57`** reuses the shared execution path;
-local preparation against actual migrated assets passed, and its audit rejected
-slow/incomplete runs, wrong checkpoint clocks or initial weights, and an
-unexpected restored optimizer. The bridge implementation is selected.
-Qualification **`job-wv4b3`** failed at **2026-10-07 19:52:42 UTC**, attempt 1,
-without restarts or preemptions. Source GPU parity passed **46/46 fixtures**
-(maximum action-probability difference 0.00000444), and native compilation
-passed. Before training, the strict Muon guard rejected a source/receipt hash
-mismatch: stateless specialization changes the generated learner call signature
-after the optimizer receipt is written. **Zero training steps completed.**
-Independent collection verified **122 files**. Billing: **309 seconds, $0.2541**.
-Receipt-chain fix **`392e369`** is integrated. The actual production transform
-chain produced byte-identical CUDA source, and the retained GPU binary passed
-the final runtime guard and wrapped preparation. Stale receipts and altered
-source/intermediate/final hashes were rejected. Policy math, ABI and asset
-bytes are unchanged. Earlier CPU source checks did not exercise this final
-runtime guard; the corrected admission does. The corrected qualification passed with the same settings and limits.
-
-Corrected qualification **`job-tvqh9`**, source **`392e369`**, context
-`ctx-44375895`, succeeded on its first attempt without restart or preemption.
-All **155 retained files** independently verified. One NVIDIA H100 80GB HBM3,
-4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5 and eight
-workers completed eight epochs. After two warmup epochs, **3,145,728 steps /
-75.617 seconds = 41,600.804 SPS**; every rolling two-epoch window also passed
-30K. This is one trainer, so per-process and aggregate SPS are equal.
-All 4,194,304 actions were legal; nonfinite/clipped rewards were zero; all 13
-opponents had equal positive counts in both seats. Source and final checkpoint
-passed all **46 GPU parity fixtures**. The authentic optimizer is at epoch 8.
-
-Five-second NVML samples peaked at **64,873 MiB (63.35 GiB)**, starting at
-1,447 MiB. Whole-training-subprocess mean GPU utilization was 9.30%, including
-startup; samples are not aligned to the steady epoch interval. GPU UUID,
-driver, telemetry and exact checkpoint identities are pinned in the manifest.
-The collector initially assumed a training contract inside serving assets;
-the exporter intentionally omits learner fields. The corrected audit verifies
-the serving asset's native-parent manifest and complete native training contract.
-No training or artifact bytes changed. Billing: **1,081 seconds, $0.8910**.
-The fixed 20:53:30 aggregate deadline was unused; its guard observed completion.
-The verified checkpoint is now bound into continuation `job-mwvdb`.
-
-The failed context `ctx-28e3bf5d`, source **`a82ac6f`**, all 624 sealed files and
-artifacts are preserved. Guard PID 38362 observed terminal failure and exited
-before its fixed 20:20:21 deadline. The selected
-policy weights remain unchanged; the corrected execution path now qualifies.
-
-Startup simplification **`f7cca32`** removes duplicate parent graph construction.
-The actual native actor now undergoes complete ABI admission before policy or
-optimizer bytes load; missing/mismatched receipts and stale build fingerprints
-are rejected. One actual CPU actor passed fresh/restored/new initialization
-and eight negative cases with further construction forbidden. Math and asset
-ABI remain unchanged. Actual GPU native admission passed in `job-tvqh9`;
-no controlled startup-time speedup is claimed;
-the completed bridge comparison used its sealed original startup code.
-
-The stateless source still allocates two complete rollout copies: each stores
-float32 observations and action masks for all 4,096×128 rows. These total
-**41.37 GiB**; listed explicit native arrays total **41.76 GiB**, excluding
-JAX allocations and small native buffers. Replacing only the full transposed
-observation/mask copy with one 8,192-row gather buffer could save **20.35 GiB**.
-The supported plain-PPO reward-baseline path does not read the full copy.
-This is a source-derived opportunity, not an implemented or measured saving.
-It will not delay strength work if the current execution path qualifies.
-
-Main and the sealed source branch are pushed to the fork; transient GitHub
-server errors cleared on retry.
-
-## Matched experiment: technically passed, strength rejected
-
-`job-wgtyc` succeeded at **2026-10-07 11:34:43 UTC** on attempt 3 after two
-provider preemptions, with zero runtime restarts. Independent terminal audit
-verified all **237 retained files**, native learner resume, both 512-game
-initializer sampling gates, legality/reward audits, and final serving parity
-(46/46 states for both arms). That job has no remaining allocation. The provider charged
-**$5.0534 for 6,126 seconds**, one billed attempt; the earlier two were unbilled.
-Its predecessor `job-kzmub` failed before training due to the repaired stage
-gate path; its failure evidence remains in the manifest.
-
-Both arms completed **33,554,432 steps** on one H100 with 4,096 environments,
-horizon 128, minibatch 8,192 and replay ratio 0.5. After two warmup epochs:
-
-| Arm | 4 Mi qualification SPS | Continuation SPS | Continuation interval |
-| --- | ---: | ---: | --- |
-| Control | 35,528.49 | 38,261.28 | 28,311,552 steps / 739.953 s |
-| Candidate | 37,570.35 | 37,659.31 | 28,311,552 steps / 751.781 s |
-
-These longer intervals retain their hash-bound console receipts. The independent
-audit separately checks the final two epochs: qualification 35,600.46/37,552.41
-SPS and continuation 38,339.16/37,702.29 SPS (control/candidate). Peak GPU memory
-was 66.9 GiB. GPU utilization averaged 21.18%/21.29% across the entire continuation
-subprocesses, including startup; these are not steady-interval means. All 13
-opponents had balanced training seats. Both continuations had zero illegal
-actions, nonfinite or clipped rewards; control had one zero-reward terminal event.
-
-The fresh 4,096-game panels rejected the fixed monotone force potential:
-
-| Actor | Wins | Losses | Draws |
-| --- | ---: | ---: | ---: |
-| Selected source | 2,786 | 1,275 | 35 |
-| Control | 2,727 | 1,335 | 34 |
-| Candidate | 2,721 | 1,353 | 22 |
-
-Candidate-minus-source signed-score delta was **−0.03491**, clustered 95% CI
-**[−0.06520, −0.00489]**; candidate-minus-control was **−0.00586**, CI
-**[−0.03666, +0.02466]**. Neither required improvement gate passed. A separate control-minus-source
-diagnostic was −0.02905, CI [−0.05969, +0.00293]; the interval includes zero,
-so a control decline is not statistically established. **No independent
-confirmation or promotion follows.** The selected policy and champion remain
-unchanged. Exact checkpoints, artifact hashes, audit and billing receipts are
-bound in the manifest.
-
-## Rejected experiments: retain these lessons
-
-Signed-score deltas below are candidate minus matched control unless noted.
-Exact settings, artifacts and audits are indexed by experiment in the manifest;
-these outcomes do not authorize promotion or repeat tuning on hosted losses.
-
-| Experiment | Result and lesson |
+| Run | Evidence and decision |
 | --- | --- |
-| Penalty-8 sampler | Local gain did not survive the hosted acceptance panel above. |
-| Safe-owned split, capital-threat gathering, garrison split | No reliable paired development gain. |
-| Force-assembly reset curriculum (`job-xbqmn`) | Candidate 2,778 wins versus source 2,791/4,096; no demonstrated gain. Frontier-join and early-border ideas are prior work, not unexplored fixes. |
-| Source-mirror PPO | Delta −0.00293, 95% CI [−0.03278,+0.02575]. |
-| Full-action temperature2 | 33.55M-step candidate 2,715 wins versus original 2,742/4,096; no established gain. |
-| Log-gap4 exploration | 8.39M-step candidate 2,633 wins versus original 2,780/4,096; delta −0.07251, CI [−0.10446,−0.04044]. |
-| Hard-opponent weights (`job-6cwtq`) | Both arms trained 16,777,216 steps at 37,027.3/34,576.8 SPS; delta −0.027832, CI [−0.059182,+0.003395]; one broad seat stratum regressed. |
-| Siege pressure bot (`job-m9ina`) | Learner wins rose 59.40%→99.31%: proposed opponent was much weaker on both seats. |
-| Early-border siege bot (`job-wz2x8`) | Learner wins rose 59.40%→75.66%; both seats worsened. Stop this opponent line. |
-| Original Product residual (`job-6y2gf`) | Delta +0.005859, CI [−0.022529,+0.034493]; tiny Q activation and sentinel-seat regression. |
-| Repaired Product early guard (`job-24kw9`) | Stopped at epoch 4, 21,436.7 SPS before planned warmup ended; no trained checkpoint or strength result. |
-| Repaired Product qualification (`job-g45tq`) | 36,117.94 SPS, 67.79 GiB peak; provider failed on omitted-versus-explicit sampler defaults. Separate CPU audit recovered activation on unchanged bytes; provider remains failed. |
-| Repaired Product pair (`job-9sump`) | Both arms trained 16,777,216 steps at 37,170.37/37,873.87 SPS; parity/activation passed, but delta −0.010010, CI [−0.040109,+0.019303]. |
-| Global route-shortcut removal (`job-wwvk3`) | Source 2,758 wins versus candidate 74/4,096; delta −1.300293, CI [−1.330346,−1.270591]. All 14 broad strata breached the guard. No confirmation. |
+| Stateless qualification `job-tvqh9` | 4,194,304 steps; 41,601 SPS over all six post-warmup epochs; all rolling windows ≥30K; 155 retained files independently verified |
+| Continuation `job-mwvdb` | Exact qualified policy/optimizer restored; 33,554,432 cumulative run steps; 28,311,552 measured steps / 667.212 s = 42,432.618 SPS; minimum rolling window 37,330.485 SPS; 244 files verified |
 
-The Product comparisons do **not** establish missing global source
-awareness: the existing global readout is already a dense **32×3,530 matrix**
-with distinct source-site columns. Its default-semantic edges are excluded
-from the pinned Fabric sharing rule, and native/direct/serving preserve those
-parameter rows. The earlier contrary architecture rationale was incorrect.
+Both passed source/final checkpoint GPU parity (46 fixtures), legal-action and
+finite/unclipped-reward audits, and opponent/seat coverage. Sampled GPU memory
+peaked at **63.35 GiB** for qualification and **63.89 GiB** for continuation.
+Telemetry covers the whole subprocess at five-second cadence; GPU utilization
+samples are not aligned to the measured steady interval.
 
-## Public diagnosis and cleanup
+The continuation candidate `28a090d4…` **failed strength selection**. Three
+fresh 4,096-game panels produced source/control/candidate wins of
+2,733 / 2,759 / 2,758. Candidate-minus-source signed-score CI95 was
+[−0.016485, +0.044801]; candidate-minus-control was [−0.028961, +0.032458].
+Sentinel seat 1 also regressed beyond the −0.10 guard. Do not extend, confirm
+or promote this candidate. The comparison tested the repaired training path;
+execution changes and separate allocations prevent attributing it solely to row rotation.
 
-In the final 50 states of 23 Daveey losses, 57 castle-goal states and 133
-visible nearby-threat states had **zero overlap**. Castle priority is not
-supported as the immediate cause. An initial reinforcement screen double-counted
-evacuated defenders: accounting correction reduced six candidates to four;
-strict earlier-arrival/intermediate-safety screening retained one of 133 states.
-These conservative screens omit helpful merges, growth and alternate paths.
-Rejected candidates are not proof of impossible defense; survivors are not
-proof of rescue against an opponent response.
+## Fresh-start experiment: strength still untested
 
-The learned route shortcut contributes roughly 12.73–14.44 logits at the
-selected temperature. Removing it improved a few static defense probabilities
-while preserving conditional splits, but the full paired ablation above
-collapsed. Static attribution is not evidence of improved playing strength.
+`job-r4xkt` changed midgame-reset probability from **0.25 to zero**, holding
+other settings fixed. The motivation was the trained policies' frozen-pool gains
+and scripted-opponent losses; the retained 384-position pool has median turn
+385.5. This supports a distribution hypothesis, not a causal conclusion.
 
-Earlier-window analysis verified 4,535 public states from the same losses.
-Before the first static threat, 3,117 states had visible enemies; 2,596 offered
-an immediate friendly merge increasing the largest stack, and selected actions
-increased it in 598. Median largest-stack share was 10.48%. Both merge
-directions are counted, but position and opportunity cost are not; correlated
-known-loss states without winning controls do not prove consolidation helps.
+The job completed 4,194,304 qualification steps but **failed the strict rolling
+throughput gate** at 22:36:45 UTC: full post-warmup interval 3,145,728 steps /
+96.953 seconds = **32,446 SPS**, final two-epoch interval **28,091 SPS**.
+All 138 retained files were verified. Checkpoint/optimizer were retained;
+no continuation or strength panels ran. Illegal actions were zero.
 
-The memory diagnosis covered all **32 retained source games** (23 losses,
-9 wins; 13,582 public pre-action states). A previously seen enemy capital was
-subsequently hidden in 3 losses/436 states and 6 wins/830 states. This opportunity
-is not loss-specific; it justifies neither promoting memory nor dismissing its
-potential value. Games and repeated states are not randomized controls.
+Its H100 reported constant **1,590 MHz** SM clocks versus **1,980 MHz** on the
+successful continuation allocation. Inference, environment and optimization
+all slowed; clock differences alone do not establish the cause. Peak sampled
+memory was 65,420 MiB (63.89 GiB). No unchanged retry is planned.
 
-The force-response diagnostic sampled 242 public states from 22 known-loss
-games. Of 206 states offering an immediate friendly transfer that grows the
-largest stack, candidate median probability on such actions was **4.28e−6**;
-95 were below 1e−6. In 22 states the potential-maximizing transfer did not grow
-the largest stack despite an available alternative. Median best scaled own-force
-increment over passing was **2.56e−5**. This static own-transfer calculation
-omits growth, combat and opponent response; largest-stack growth is not proven
-strategic value. It supports neither a causal strength claim nor a coefficient
-sweep.
+`INITIAL_POSITION_MIX` observes startup distribution. The shared reset function
+also applies zero midgame probability to automatic episode recycling.
 
-The completed opening comparison covered all 32 games. At turn 50, wins and
-losses had the same median army ratio (1.023) and largest-stack fraction (0.136).
-At first contact, largest-stack fractions were also similar (0.220/0.226), but
-its median distance from the capital was 1/9 and from visible enemies 13/2
-(wins/losses). Contact occurred earlier in wins: median turn **71 versus 85**.
-This timing difference, small unequal groups and sparse map dimensions prevent
-a causal claim that holding a stack back helps.
+## Live work: gather memory comparison
 
-The preregistered first-contact diagnostic `job-k8yfq` succeeded on its first
-attempt at **2026-10-07 12:24:17 UTC**. Source `bb2b02d` is integrated into
-this branch. It evaluated 256 unique fresh maps against two frozen opponents
-(`d2c30`, `83dc`), balanced by seat, with four action branches and four replicas.
-Independent audit verified all 17 retained files, snapshot/map identities,
-public observations, paired random seeds and 125 duplicate-action pairs.
+**`job-tjqy8`**, submitted **22:54:13 UTC**, was building at this snapshot.
+Its sealed package replaces duplicate full transposed observations/masks with
+float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
+row rotation and optimizer math are preserved. CPU indexing and actual-framework
+API checks passed; **GPU correctness, measured memory reduction and speed are pending**.
 
-| Forced action versus sampled source | Mean signed delta | Map-cluster 95% CI |
-| --- | ---: | --- |
-| Largest-stack-growing route merge (primary) | −0.03125 | [−0.08105, +0.01758] |
-| Best-probability different-source route move | −0.00879 | [−0.05469, +0.03906] |
-| Pass | −0.04004 | [−0.09573, +0.01465] |
+The job checks compiled gather contents, scratch reuse and policy gradients on
+verified replay observations, plus source serving parity. It then runs
+**baseline / gather / gather / baseline** on the same H100, each from the exact
+source with a fresh optimizer: four 2,097,152-step diagnostics, two warmup epochs,
+and the geometry above. Every arm uses fresh-game resets.
 
-The primary gate failed despite 201 available merge maps (minimum 128).
-None of these intervals establishes a benefit or a harm. This rules out
-promoting this fixed first-contact merge heuristic from this experiment; it
-does not establish that all merges or longer plans are ineffective. No teacher,
-training or promotion follows. Inspect the learning path before another change.
-The diagnostic took 200.29 seconds internally; the provider billed 203 seconds
-on one H100, **$0.1672**. It performed no training and makes no training SPS
-claim. Terminal full-state hash preimages were not retained; duplicate terminal
-hashes, outcomes and turns were checked, while snapshot preimages were verified.
+Limits: **60 provider/aggregate minutes, 58 execution minutes, zero restarts**,
+maximum quote **$2.97**; allocation guard is active. This comparison tests gather
+storage, not whether reset distribution caused the previous slowdown.
+Both gather runs must reach 30K SPS before considering a **separate full
+qualification**. Diagnostic completion does not authorize long training.
 
-An exploratory check of the retained contact results selected an action using
-three continuation replicas and scored it on the fourth. Mean signed delta
-was −0.04297, map-cluster 95% CI [−0.08398, +0.00195]. This post-hoc calculation
-uses simulated future outcomes unavailable to a public-only serving actor;
-it establishes no conditional teacher or policy benefit and does not change
-the preregistered negative decision. No new games or training were used.
+## Current implementation and next decision
 
+- Stateless execution removes unused external recurrent state. Native startup
+  admission binds the actual actor, initializer and compiled build.
+- PPO rotates its 32 updated minibatch blocks across all 64 blocks over two epochs,
+  fixing permanently skipped environment rows without increasing update budget.
+- One output-copy fence preserves DLPack ownership; its local saving is verified,
+  but the earlier ABBA did not establish repeatable end-to-end acceleration.
+- One explicit-plan trial runner and shared audits replaced completed experiment
+  launchers, removing 1,037 net lines. Fixed configs and assets were preserved.
+- Gather changes are awaiting GPU qualification. The calculated 20.35 GiB saving
+  is not yet an observed memory reduction or evidence of higher SPS.
 
-Rejected log-gap runtime code was removed (210 net lines). Selected source
-and ten frozen opponents retained bitwise logits/probabilities on 133 public
-views and four temperature-boundary variants. Frozen reports require schema
-v2; retired metadata fails explicitly. This cleanup claims no strength gain.
+**Next:** verify `job-tjqy8` artifacts and correctness/performance results. Adopt
+only a demonstrated useful change; otherwise diagnose the measured bottleneck.
+A successful diagnostic must be followed by full 4Mi qualification before
+resuming the fresh-start 32Mi strength experiment. Positive development results
+then require independent confirmation and fresh balanced hosted matches.
 
-For Slurm, `AGENTS.md` requires B200/B300, Nice `2147483645`, controller
-readback of Priority 1 and a finite limit. Preserve the champion until the full
-hosted acceptance gate passes.
+## Winning acceptance
 
-## Local opponent coverage
+Require **≥65% hosted wins against each Daveey and incumbent**, each Wilson
+95% lower bound above 50%, broad-pool preservation and no unexplained seat
+regression. Freeze checkpoint and sampler; verify serving parity and clean
+execution without unexplained illegal actions, timeouts or forfeits.
+Every changed long-training setup independently requires **≥30,000 end-to-end
+GPU SPS** after warmup. High utilization alone does not qualify it.
 
-The local pool contains ten historical Fabric checkpoints and three scripts;
-none is bound to the hosted Daveey actor `daveey-grl:v7`. No authorized published
-bundle was found in the inspected metadata/SDK; this does not prove none exists.
-The incumbent source declaration names `cee053c`, but an immutable deployed
-image/source receipt is missing. Its reference Python and local native bot
-matched 128/128 sampled incumbent actions from four retained games, with native
-memory supplied from reference history. This is bounded action agreement, not
-complete recurrent trajectory or image parity. A separate cold-memory check on
-128 source-side views found two differences caused by padding.
-
-Selected-source local wins were 548/906 against siege, 428/638 against `83dc`,
-and 554/986 against `d2`. Hosted source results remain 18/32 incumbent and 9/32
-Daveey. Different maps, counts and actors prevent causal comparisons. This
-supports keeping fresh named-opponent hosted acceptance mandatory; it does not
-support blaming padding or changing the active trial. Evidence is hash-bound
-in the manifest; no new matches or training were performed for this audit.
+Prior route-prior, exploration, shaping, teacher and opponent-mixture trials
+have not established a winning improvement. Consult the manifest before
+revisiting them; require new evidence and a preregistered comparison.

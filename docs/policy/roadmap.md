@@ -41,7 +41,7 @@ See [current state](current-state.md) for live work and results,
 
 Prior route-prior, exploration, shaping, teacher and opponent-mixture trials
 have not established a winning improvement. Their evidence is recorded in the
-manifest and current-state document. Revisit a rejected intervention only with
+manifest and Git history. Revisit a rejected intervention only with
 a new mechanism and a preregistered comparison; static examples alone do not
 establish a useful training target.
 
