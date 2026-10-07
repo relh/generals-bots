@@ -2113,7 +2113,7 @@
     ]
   },
   "fresh_start_experiment": {
-    "status": "job-r4xkt first attempt starting; image downloading; training not yet observed",
+    "status": "job-r4xkt failed qualification throughput; no continuation or strength evaluation",
     "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
     "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
     "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
@@ -2233,6 +2233,54 @@
       "final_relative_parameter_drift_from_qualification": 0.03128759686439537,
       "interpretation": "Weights update throughout; rounded losses and mixed training outcomes do not establish convergence or strength. Current data provides no upward late trend supporting automatic extension. Assess fresh-start results before another training decision.",
       "limits": "Training outcomes are not independent held-out checkpoint comparisons; 33.55M steps cannot rule out later learning; printed zero KL has only three decimal precision."
+    },
+    "terminal": {
+      "schema": "generals-fresh-start-independent-audit-v1",
+      "job_id": "job-r4xkt",
+      "status": "failed",
+      "technical_success": false,
+      "selected": false,
+      "requires_fresh_confirmation": true,
+      "files_verified": 138,
+      "artifact_sha256": "9310e75bc6d6cdf1719cc16791ce1dc66f4ee3689e26267834c4902e05eb9750",
+      "collection_sha256": "09825c9a4f2949fb40461f721ce5232d4f3027cbc2167bf56455c468fb8cacac",
+      "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/fresh-start-launch-20261007/results-job-r4xkt/inner/generals",
+      "results_sha256": "edbf804561f25e9fa7d8fe56376c82fad5725dbcc3f26ad8f5924510e5660b24",
+      "failure": {
+        "error": "Experiment failed, exit 1",
+        "elapsed": 674.7149709359946
+      },
+      "retained_telemetry": [
+        "candidate/qualification/hardware.jsonl"
+      ],
+      "audit_sha256": "bfa3b55f1c458ea4135fad5a7203f06a4d3c78ace9327d6df24a722a1a6a8105",
+      "finished_at": "2026-10-07T22:36:45.484789+00:00",
+      "billed_seconds": 676,
+      "charged_usd": 0.5577,
+      "completed_steps": 4194304,
+      "warmup_epochs": 2,
+      "whole_postwarmup_steps": 3145728,
+      "whole_postwarmup_seconds": 96.953,
+      "whole_postwarmup_sps": 32445.90677957361,
+      "minimum_rolling_two_epoch_sps": 28090.87012430347,
+      "gpu_uuid": "GPU-319d54ca-e104-facf-3e65-6eed55d7f032",
+      "sampled_sm_clock_mhz": 1590,
+      "sampled_peak_gpu_memory_mib": 65420,
+      "illegal_actions": 0,
+      "guard": {
+        "job_id": "job-r4xkt",
+        "minutes": 90,
+        "pid": 25390,
+        "running": false,
+        "observed_at": "2026-10-07T22:36:55.055887+00:00",
+        "status": "failed",
+        "last_preallocation_observed_at": "2026-10-07T22:23:00.215214+00:00",
+        "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
+        "first_allocation_lower_bound_at": "2026-10-07T22:23:00.215214+00:00",
+        "deadline": "2026-10-07T23:53:00.215214+00:00",
+        "terminal_observed_at": "2026-10-07T22:36:55.055887+00:00"
+      },
+      "next": "Diagnose lower-clock allocation and model/environment slowdown before any new GPU launch. No unchanged retry."
     }
   },
   "runner_cleanup": {

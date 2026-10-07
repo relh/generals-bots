@@ -24,8 +24,10 @@ See [current state](current-state.md) for live work and results,
    steps at ≥30K SPS before continuing to 33,554,432. Compare against source
    and the retained stateless control on fresh maps **17001101**, sampling
    **17001103**, bootstrap **17001111**. The implementation and sealed package
-   passed review; **job-r4xkt** was submitted at 2026-10-07 22:06:41 UTC.
-   Follow [current state](current-state.md) for its live status.
+   passed review; **job-r4xkt** completed qualification steps but failed its
+   final rolling throughput interval (28,091 SPS). No strength evaluation ran.
+   Diagnose the lower-clock allocation and timing regression before retrying;
+   see [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
    The unused confirmation seeds remain reserved: maps **16001101**, action

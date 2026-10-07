@@ -13,25 +13,28 @@ both paired confidence intervals include zero, and sentinel seat 1 regressed
 beyond the allowed bound. The candidate is rejected; no confirmation or hosted
 promotion follows.
 
-Fresh-start-only experiment **`job-r4xkt` was submitted at 22:06:41 UTC**
-and entered first-attempt startup at 22:23 UTC; the image is downloading and
-training has not yet been observed. The live aggregate guard fixes the deadline
-at **23:53:00 UTC**, anchored conservatively before allocation. It changes only the
-midgame-reset probability from 0.25 to 0.0, keeping source initialization,
-fresh optimizer, model, reward, sampler, opponents and batching fixed. A new
-4,194,304-step qualification must pass the full and rolling ≥30K SPS gates
-before continuation to 33,554,432 total steps. Three fresh 4,096-game panels
-compare the source, retained stateless control and new candidate. This tests
-a distribution hypothesis suggested by improved frozen-policy outcomes but
-regressed scripted-opponent outcomes; it is not established causation.
+Fresh-start-only experiment **`job-r4xkt` failed its qualification throughput
+at 22:36:45 UTC**. All 138 retained files were independently verified. It
+completed 4,194,304 steps on one H100 with 4,096 environments, horizon 128,
+minibatch 8,192, replay ratio 0.5 and eight environment workers. After two
+warmup epochs, the full interval was 3,145,728 steps / 96.953 seconds =
+**32,446 SPS**, but the final rolling two-epoch interval fell to **28,091 SPS**.
+The strict guard stopped the coordinator; no continuation or strength panels ran.
+The checkpoint and optimizer were retained; illegal actions were zero.
 
-The job uses one H100, 4,096 environments, horizon 128, minibatch 8,192,
-replay ratio 0.5 and eight environment workers. Provider/aggregate limits are
-90 minutes, internal execution 88 minutes, zero restarts, quote ceiling
-$4.455. An independently verified deadline guard is live. Source `c1cae5f`,
-all 884 packaged files, CPU preparation and the terminal collector were
-reviewed before submission. Independent confirmation and hosted acceptance
-remain required; no winning-policy claim follows from this local experiment.
+This allocation recorded a constant 1,590 MHz SM clock versus 1,980 MHz on
+previous successful H100 runs. Both model and environment timing were slower;
+the clock difference alone does not establish cause. Sampled peak memory was
+65,420 MiB (63.89 GiB). The job used one attempt, zero restarts and cost $0.5577
+for 676 billed seconds. Its guard observed terminal state and exited. No task
+GPU job remains active. Diagnose the slowdown before another launch; the
+fresh-start strength hypothesis remains untested.
+
+The intervention changes midgame-reset probability from 0.25 to zero for
+startup and every episode recycle, keeping other training settings fixed.
+`INITIAL_POSITION_MIX` directly observes startup only; the shared reset
+function establishes the behavior of automatic episode recycling. Independent
+confirmation and hosted acceptance remain required.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
