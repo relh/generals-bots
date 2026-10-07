@@ -230,9 +230,14 @@ probabilities within 2.98e−7. The original selected source was recovered
 byte-for-byte to durable local storage and remains selected.
 
 The job compares 4,096 fresh games per arm on one H100, capped at 50 minutes
-and $2.475 with zero restarts. At 06:34:12 UTC it was building after context
-download, with no failure reported; GPU execution and strength are unverified. A positive development result requires
-independent confirmation before hosted testing. No training is included.
+and $2.475 with zero restarts. The first image build failed while loading its
+tar (provider timeout); the provider started a **free automatic rebuild** of
+the same job at 06:47:27 UTC. At 06:49:13 it was installing dependencies,
+with GPU attempt 0 and zero runtime restarts. No strength result exists.
+Independent confirmation is prepared on a separate branch, with fresh
+reserved seeds and a check requiring this exact development job to finish
+successfully with a positive strength result. No confirmation job or training
+was submitted.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
