@@ -27,14 +27,28 @@ previous successful H100 runs. Both model and environment timing were slower;
 the clock difference alone does not establish cause. Sampled peak memory was
 65,420 MiB (63.89 GiB). The job used one attempt, zero restarts and cost $0.5577
 for 676 billed seconds. Its guard observed terminal state and exited. No task
-GPU job remains active. Diagnose the slowdown before another launch; the
-fresh-start strength hypothesis remains untested.
+GPU job from that experiment remains active. The fresh-start strength
+hypothesis remains untested.
 
 The intervention changes midgame-reset probability from 0.25 to zero for
 startup and every episode recycle, keeping other training settings fixed.
 `INITIAL_POSITION_MIX` directly observes startup only; the shared reset
 function establishes the behavior of automatic episode recycling. Independent
 confirmation and hosted acceptance remain required.
+
+The targeted memory comparison **`job-tjqy8` was submitted at 22:54:13 UTC**
+and is building. Gather code replaces duplicate transposed rollout observations
+and masks with minibatch scratch, saving a calculated **20.3508 GiB** while
+preserving float32 storage and PPO row rotation. CPU indexing checks and an
+actual-framework API check passed; GPU correctness and speed remain unverified.
+The job first checks the compiled kernel, buffer reuse and policy gradients on
+verified replay observations, then runs baseline/gather/gather/baseline on the
+same H100: four fresh 2,097,152-step diagnostics, two warmup epochs each,
+4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5, eight workers.
+The provider/aggregate limit is 60 minutes, internal execution 58 minutes,
+zero restarts, maximum quote $2.97; its guard is live. Both gather runs must
+reach 30K SPS before considering a separate full qualification. This diagnostic
+does not authorize long training or establish playing strength.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.

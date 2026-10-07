@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "implementation integrated; no GPU execution; gate and sealed packaging pending",
+    "status": "job-tjqy8 submitted building; GPU correctness and speed unverified",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2311,6 +2311,93 @@
     "probe_checks_passed": 3,
     "independent_review": "No supported-path correctness blocker; actual CUDA contents, lifetime, probabilities and PPO gradients still require GPU admission",
     "comparison": "Same-GPU ABBA, four fresh 2097152-step diagnostics; two warmup epochs;60provider58internalminutes0restarts; only separate4Miqualification can authorize longtraining",
-    "speed_improvement_proven": false
+    "speed_improvement_proven": false,
+    "gather_source": "0b23ae3636a3e63b461e9127fb69caa3f1750a18",
+    "coordinator_source": "6131c960d38c60d5f548b897abb82ca27b1449d0",
+    "launch": {
+      "submission": {
+        "job_id": "job-tjqy8",
+        "status": "submitted",
+        "submitted_at": "2026-10-07T22:54:13.565497+00:00",
+        "attempt": 0,
+        "max_cost_usd": 2.97,
+        "max_restarts": 0,
+        "restarts_used": 0,
+        "request_sha256": "4fe28e6efe2b9e6c515f10ecfc3f70254792f2b7122c41f339ee2dd861cf786a",
+        "context_id": "ctx-fe22e068",
+        "max_duration_minutes": 60
+      },
+      "guard": {
+        "pid": 18065,
+        "job_id": "job-tjqy8",
+        "minutes": 60,
+        "submission_sha256": "b818647f3ef35203878f986fc0fe13a8601787c24c96a164dd00b3509de4e40a",
+        "guard_sha256": "e4b618cbeb1b697bec9fefe25ee2a3f84ff97fde8eacd19f9c109a64a7ec22eb",
+        "live_verified": true,
+        "guard_state": {
+          "job_id": "job-tjqy8",
+          "minutes": 60,
+          "pid": 18065,
+          "running": true,
+          "observed_at": "2026-10-07T22:54:13.840431+00:00",
+          "status": "building",
+          "last_preallocation_observed_at": "2026-10-07T22:54:13.840431+00:00"
+        }
+      },
+      "ready": {
+        "source_revision": "6131c960d38c60d5f548b897abb82ca27b1449d0",
+        "archive": "/private/tmp/generals-gather-probe-stage/context.tar.zst",
+        "archive_sha256": "7a3842da064cb0d5d21ea7b682b516d66aeca971fccb72cf6021c3bb55be70dd",
+        "archive_bytes": 185864187,
+        "members_verified": 1155,
+        "provider_minutes": 60,
+        "execution_minutes": 58,
+        "aggregate_minutes": 60,
+        "max_restarts": 0,
+        "reviewed_quote_ceiling_usd": 2.97,
+        "ready": true,
+        "root_review_pending": false,
+        "collector_review_pending": false,
+        "uploaded": false,
+        "submitted": false,
+        "source_materialized_sha256": "95e9b63b862bd4802be2ee28f32583efb2243f3cda4333f7cc2ccfca9545e2ac",
+        "cpu_admission_sha256": "25d5306f1ad5b02fb6e3021d962f3d0073c6fc63915e80309b6bb6b435e7d8dd",
+        "context_seal_sha256": "452db3e386eb611bbf0c9fc9ef7aeb44ed9d31101a74fb9fcc1f1a21395cc75f",
+        "staging_sha256": "a62c957b2d90a73725935989930dfb3eb69966c42ea9c22694c6a029b458cfdb",
+        "guard_admission_sha256": "ee5cda6142111315dda872487ed639e6d85acdc6f005fadc69e82975ee59969f",
+        "collector_sha256": "27ee49ebe51674c212e274cfb89d0c90edf43afeb7b7f67b34a5d6faf48f09dc",
+        "transport_sha256": "3cfda7c7e528799940fd42b2f39d81b8a79ec6365d8af9e47be716544fd73e31",
+        "launch_sha256": "ad54825eed1cc5ac18d353bb7295dcdb1ccb00039dd853d6c982176b2ffe7ef2",
+        "request_template_sha256": "5657c4d47bf6244c5b918020a5f3caf079b0c68545bff175488852b16554c0c4"
+      },
+      "quote": {
+        "would_submit": true,
+        "max_cost_usd": 2.97,
+        "request_sha256": "838374cf3a66e51d0f4ff1c3a79a087367224592c3108269affbcd29838ad0ac",
+        "reviewed_cost_ceiling_usd": 2.97
+      },
+      "cpu_admission": {
+        "passed": true,
+        "scope": "Actual coordinator prepare; all input hashes, staged framework imports and reviewed variant closure; no GPU execution",
+        "source_revision": "6131c960d38c60d5f548b897abb82ca27b1449d0",
+        "plan_sha256": "bbb5bbf22dd843dc43bfef86f035c0e23139ae75a485bb38673bd10377c88e86",
+        "input_manifest_sha256": "a941e9cf8476372837b9b58f54119cc194a6755eae5b1e5fad016164e441d2f3",
+        "staging_sha256": "a62c957b2d90a73725935989930dfb3eb69966c42ea9c22694c6a029b458cfdb",
+        "source_diff_sha256": "dbe05dacf5b57b09d12711ee52be650fb3068c484597b88d0a50d0a283b90bd0",
+        "training_changes": [
+          "integrations/launch_spatial_selfplay_training.py",
+          "integrations/puffer_coworld_frozen_transfer.py",
+          "integrations/puffer_rollout_memory.cuh",
+          "integrations/puffer_rollout_memory.py",
+          "integrations/spatial_muon_orientation.py"
+        ],
+        "script_sha256": "75f71bc6be9a98569e252689ee487e93d649ab4a3b1788f198fd083b57cf3925"
+      },
+      "active_job_check": {
+        "observed_at": "2026-10-07T22:54:13.133237+00:00",
+        "jobs_checked": 104,
+        "active_generals_jobs": []
+      }
+    }
   }
 }
