@@ -1550,6 +1550,19 @@
       "path": "integrations/softmax/local-output/row-rotation-profile-launch-20261007/terminal-audit-job-5cirw.json"
     },
     "charged_usd": 0.6402,
-    "billed_seconds": 776
+    "billed_seconds": 776,
+    "performance_diagnosis": {
+      "path": "integrations/softmax/local-output/row-rotation-profile-launch-20261007/performance-diagnosis.json",
+      "sha256": "1ce7d1b778fb75f2ab346f049ed5ae662a63b694aca95325b7edc924bf75dcc6",
+      "component_delta_seconds": {
+        "env": -2.9460000000000015,
+        "model": 3.0860000000000003,
+        "train": 1.1110000000000007
+      },
+      "same_gpu_as_previous": true,
+      "postcompile_cpu_throttling": false,
+      "sampled_gpu_clock_events": false,
+      "next_action": "Bounded instrumented GPU profile, not unchanged retry: measure host and CUDA-event time separately around native learner forward/optimization and the five per-tick native/JAX stream fences; also elapsed native siege callback. Prioritize consolidating four output-copy fences to one while retaining all four DLPack owners until completion if fence/host time is material; preserve input readiness fence. Encoding scripted-only seats is a second measurable cost, not an explanation of the newly slower learner forward."
+    }
   }
 }

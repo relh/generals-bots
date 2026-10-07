@@ -133,8 +133,19 @@ the failed prescribed interval. No continuation or strength panel ran.
 Independent terminal collection verified **40 files**, including CPU/GPU telemetry
 and worker-profile inputs. Hardware was **H100 80GB HBM3**, peak console VRAM
 **66.9 GiB**, host RAM **7.1 GiB**. Billing was **776 seconds, $0.6402**.
-No task GPU job remains active. Diagnose retained telemetry and measured callback
-costs before another bounded qualification; retain the strict 30K gate.
+No task GPU job remains active. Relative to the prior failed run, the measured
+environment portion improved 2.946 seconds, while rollout inference and training
+slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
+1,980/2,619 MHz, no sampled clock events and no new cgroup throttling over the
+retained 61-second fully allocated interval. These observations do not isolate
+a cause; they provide no support for changing power limits or CPU quota.
+
+Next is a bounded execution profile comparing the existing device bridge with
+four output-copy waits consolidated into one. All DLPack owners must remain
+alive through the final wait, and input readiness must remain synchronized.
+Measure host and GPU time around the bridge, learner forward and optimization;
+retain the strict 30K gate for any subsequent sustained training. No new job
+is submitted while this implementation and measurement plan are prepared.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
