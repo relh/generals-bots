@@ -1,0 +1,118 @@
+{
+  "artifact_bytes": 241367040,
+  "artifact_id": "art-656as",
+  "artifact_sha256": "46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23",
+  "gate": {
+    "games": 512,
+    "identical_control_probe": true,
+    "seats": {
+      "0": 256,
+      "1": 256
+    },
+    "unique_initial_maps": 314,
+    "wld": [
+      254,
+      253,
+      5
+    ]
+  },
+  "initial_policy_sha256": "9c55dc3b167746f0153f5de50afaa6cba9cfb4a8858107d524c05d988c9147e9",
+  "input_archive_sha256": "a158783629a1e5d3011ae2c26e0f4c8933a03acfbb86bfc2384b956d871d9ef6",
+  "input_context_id": "ctx-4117c7d5",
+  "job_id": "job-ffctd",
+  "native_preflight": {
+    "initializer_verified": true,
+    "log_sha256": "7a17552d4980b953fd10af8f62a585893fe1e9c4645489f3b8725015cae21730",
+    "puffer_revision": "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2",
+    "trainer_sha256": "84370db5eaa1b8aab194d9cab50e0e3a8e5051a555287b0ee9bd99ae268752ea"
+  },
+  "probe_gate_sha256": "75848d65815b1e1c38c2b0e5b1462b16663f1c0f1edea4cff5f538bd707be29c",
+  "provider": {
+    "billed_seconds": 885,
+    "charged_usd_micros": 729300,
+    "image_digest": "sha256:69e6ed0eee4d2be12f4cd19d697e61aa2c1c6778e466df7d45fb5b3d3a96e21a",
+    "restarts_used": 0,
+    "status": "succeeded",
+    "success_verdict": "passed"
+  },
+  "qualified_marker_sha256": "0ebc6a156dd2cb982d17ed59697fdcc5128a8a6f3637e11ed56293faa196b5ea",
+  "schema": "generals-source-global-product-qualification-v1",
+  "source_gate_sha256": "75848d65815b1e1c38c2b0e5b1462b16663f1c0f1edea4cff5f538bd707be29c",
+  "source_revision": "574154a35ef82f08e0495b6f8fe4fef7e9f248f3",
+  "trained_policy_sha256": "2d7873c06c1a3b83d0fcda59152ff2535b157b1e0ff7f1f438ed2adf3a27091b",
+  "training": {
+    "completed_steps": 4194304,
+    "envs": 4096,
+    "horizon": 128,
+    "illegal_actions": 0,
+    "minibatch": 8192,
+    "native_clipped_rewards": 0,
+    "native_clipped_terminal_rewards": 0,
+    "nonfinite_rewards": 0,
+    "opponent_counts_by_seat": {
+      "classic_siege_padded": {
+        "0": 453,
+        "1": 453
+      },
+      "expander_harvester": {
+        "0": 87,
+        "1": 87
+      },
+      "frozen_356c2d953240": {
+        "0": 116,
+        "1": 116
+      },
+      "frozen_51b5c6b9df7f": {
+        "0": 29,
+        "1": 29
+      },
+      "frozen_66cb059fc683": {
+        "0": 319,
+        "1": 319
+      },
+      "frozen_7ee9bb286e4a": {
+        "0": 29,
+        "1": 29
+      },
+      "frozen_9c55dc3b1677": {
+        "0": 29,
+        "1": 29
+      },
+      "frozen_9fb98ec3b501": {
+        "0": 145,
+        "1": 145
+      },
+      "frozen_c269f575dec3": {
+        "0": 145,
+        "1": 145
+      },
+      "frozen_f086a19dcefa": {
+        "0": 29,
+        "1": 29
+      },
+      "frozen_f37e6f6262ae": {
+        "0": 58,
+        "1": 58
+      },
+      "frozen_f9c0c6a8ac31": {
+        "0": 493,
+        "1": 493
+      },
+      "sentinel": {
+        "0": 116,
+        "1": 116
+      }
+    },
+    "replay_ratio": 0.5,
+    "steady_interval_epochs": [
+      6,
+      8
+    ],
+    "steady_interval_uptime_seconds": [
+      155.429,
+      183.178
+    ],
+    "steady_sps": 37787.88424808102
+  },
+  "training_audit_sha256": "fabe8c23a7f31aabbf45f44a5b75807f8608e739e7965dfcfec2bb3d7557db8f"
+}
