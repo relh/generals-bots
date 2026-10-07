@@ -37,10 +37,20 @@ def main():
     before = (root / 'bundles/source/policy.bin').read_bytes()
     after = (root / 'bundles/candidate/policy.bin').read_bytes()
     assert len(before) == len(after) and len(before) % 4 == 0
-    differences = [(old, new) for old, new in zip(struct.iter_unpack('<I', before),
-                                                 struct.iter_unpack('<I', after)) if old != new]
-    assert len(differences) == plan['candidate_native_changed_words'] == 8
-    assert all(new == (0,) for _, new in differences)
+    changed_indices = [index for index, (old, new) in enumerate(zip(
+        struct.iter_unpack('<I', before), struct.iter_unpack('<I', after))) if old != new]
+    assert len(changed_indices) == plan['candidate_native_changed_words'] == 8
+    assert changed_indices == sorted(plan['candidate_native_changed_indices'])
+    operation = json.loads((root / 'evidence/operation.json').read_text())
+    assert changed_indices == sorted(operation['changed_native_scalar_indices'])
+    floats_before = [x[0] for x in struct.iter_unpack('<f', before)]
+    floats_after = [x[0] for x in struct.iter_unpack('<f', after)]
+    for row in operation['directions']:
+        full, half = row['full_prior_index'], row['half_prior_index']
+        of = floats_before[row['full_output_weight_index']]
+        oh = floats_before[row['half_output_weight_index']]
+        expected = struct.unpack('<f', struct.pack('<f', floats_before[half] - floats_before[full] * of / oh))[0]
+        assert floats_after[full] == 0 and floats_after[half] == expected
     from integrations.cuda_runtime_binding import configure
     from integrations.slurm_s3_job import visible_gpu_identity, verify_gpu_idle
     from integrations.policy_execution import execute
