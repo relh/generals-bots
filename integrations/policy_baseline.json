@@ -311,12 +311,12 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": ["job-wwvk3"],
+  "active_experiments": [],
   "route_shortcut_development": {
     "job": "job-wwvk3",
-    "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T07:14:52Z",
-    "current_stage": "evaluate-candidate",
+    "last_observed_state": "succeeded",
+    "last_observed_utc": "2026-10-07T07:17:18.245686+00:00",
+    "current_stage": "terminal_rejected",
     "gpu_attempt": 1,
     "startup_started_utc": "2026-10-07T07:05:11Z",
     "free_build_retries": 1,
@@ -353,7 +353,30 @@
     "max_duration_minutes": 50,
     "max_cost_usd": 2.475,
     "max_restarts": 0,
-    "has_strength_result": false
+    "has_strength_result": true,
+    "result_archive_sha256": "151822366936144e4e8f6115e9547871d12ea5ba73a6dbb5f399a16d21193b95",
+    "terminal_audit_sha256": "a655ce1097165cb881d83a31d3ad54f923aa7203f08affc28b1c13e58572bffd",
+    "complete_marker_sha256": "58f63e11cc97c3f1159004e1eb1ecb71bb12f623f5a32a8ea29fa03bd18af65b",
+    "comparison_sha256": "b506023226b3fb036e5b9b1184ecb217cab54e497f2651ccf56acf1d0094f8a4",
+    "selected_for_independent_confirmation": false,
+    "billed_seconds": 505,
+    "billed_usd": 0.4158,
+    "source_wins": 2758,
+    "source_losses": 1307,
+    "source_draws": 31,
+    "candidate_wins": 74,
+    "candidate_losses": 3949,
+    "candidate_draws": 73,
+    "unique_initial_states": 2577,
+    "paired_signed_score_delta": -1.30029296875,
+    "initial_state_cluster_ci95": [
+      -1.3303463850478412,
+      -1.2705907300560204
+    ],
+    "broad_strata": 14,
+    "broad_stratum_failures": 14,
+    "all_13_opponents_balanced_both_seats": true,
+    "training_throughput_claim": false
   },
   "logical_product_matched_development_rejected": {
     "kind": "logical_product_matched_control_h100",

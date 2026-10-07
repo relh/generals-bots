@@ -8,16 +8,14 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Test the direct route shortcut identified in public loss diagnostics:
-   subtract its full-route contribution equally from full/half heads while
-   preserving encoded observations, network weights and conditional splits.
-   Use an isolated checkpoint ablation and fresh paired maps; the static
-   missed-defense examples do not establish a strength gain. The source-mirror,
-   hard-opponent weighting, siege-opponent and Product Q-head changes failed
-   their development gates; avoid extending those branches without a new
-   mechanism and preregistered comparison. The existing dense global readout
-   already distinguishes source sites; do not reuse the rejected Product
-   rationale that it supplies this missing capability.
+1. Identify a new mechanism for improving defense while preserving effective
+   routing. Global removal of the direct route shortcut collapsed from 2,758
+   source wins to 74 candidate wins in 4,096 paired games; it is rejected and
+   receives no confirmation. Static missed-defense examples are diagnostic
+   evidence only. Source-mirror, hard-opponent weighting, siege-opponent and
+   Product changes also failed development gates. Revisit a rejected approach
+   only with a new mechanism and preregistered comparison. The existing dense
+   global readout already distinguishes source sites.
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its
    exact GPU training setup before a long run.

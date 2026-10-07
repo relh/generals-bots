@@ -222,33 +222,24 @@ Classic observation code. The manifest binds the retained replays, scripts
 and attribution; this diagnostic uses the original screen, not new holdout
 strength evidence.
 
-Evaluation-only `job-wwvk3` was submitted at 2026-10-07 06:33:54 UTC to
-isolate this shortcut. The candidate changes eight native scalar weights,
-keeping encoded hints, the rest of the network and the sampler intact;
-133-state native/direct/NumPy checks passed, with conditional split
-probabilities within 2.98e−7. The original selected source was recovered
-byte-for-byte to durable local storage and remains selected.
+Evaluation-only `job-wwvk3` **decisively rejected global shortcut removal**.
+The candidate changed eight native scalar weights while preserving encoded
+hints and conditional splits; native/direct/NumPy parity passed on 133 public
+states. On 4,096 paired fresh Classic games per arm (2,577 distinct initial
+states), source scored 2,758W/1,307L/31D and candidate 74W/3,949L/73D.
+Paired signed-score delta was −1.300293, clustered 95% CI
+[−1.330346,−1.270591]; all 14 broad opponent/seat strata breached the −0.10
+guard. All 13 opponents had balanced seats, and per-action legality checks
+passed. The isolated defensive probability improvements did not translate
+into playing strength: globally removing the shortcut destroys this policy.
 
-The job compares 4,096 fresh games per arm on one H100, capped at 50 minutes
-and $2.475 with zero restarts. The first image build failed while loading its
-tar (provider timeout); the provider started a **free automatic rebuild** of
-the same job at 06:47:27 UTC. That replacement build succeeded; attempt 1
-entered node startup at 07:05:11 UTC and was running by 07:08:56. At
-07:14:52 the source stage had completed and candidate evaluation was running,
-with zero runtime restarts. A device sample showed 5.93 GiB allocated; this
-is evaluation memory, not a training-throughput measurement. No strength
-comparison exists yet.
-Independent confirmation is prepared on a separate branch, with fresh
-reserved seeds and a check requiring this exact development job to finish
-successfully with a positive strength result. No confirmation job or training
-was submitted.
-
-A contingent evaluation image replaces the CUDA development base with a
-digest-pinned CUDA base and retains the exact Python lockfile and runtime
-inputs. Its compressed base layers are 139 MB versus 3.97 GB; this is not a
-measurement of the final image. The C++ siege compiler is retained. This image
-is prepared for repeated image-loading failure, but has not been built or
-submitted; the live job is unchanged. Its receipt is in the manifest.
+The H100 evaluation completed successfully at 2026-10-07 07:17:18 UTC on
+attempt 1, after one free image-loading retry, with zero runtime restarts.
+It billed 505 seconds/$0.4158 and added no training steps or throughput claim.
+The independent terminal audit and result archive hashes are in the manifest.
+No independent confirmation follows; the selected source and champion remain
+unchanged, and no experiment is active. The smaller evaluation image remains
+an unbuilt, unsubmitted artifact recorded in the manifest.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
