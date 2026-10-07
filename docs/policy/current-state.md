@@ -154,6 +154,23 @@ increased it in 598. Median largest-stack share was 10.48%. Both merge
 directions are counted, but position and opportunity cost are not; correlated
 known-loss states without winning controls do not prove consolidation helps.
 
+The memory diagnosis covered all **32 retained source games** (23 losses,
+9 wins; 13,582 public pre-action states). A previously seen enemy capital was
+subsequently hidden in 3 losses/436 states and 6 wins/830 states. This opportunity
+is not loss-specific; it justifies neither promoting memory nor dismissing its
+potential value. Games and repeated states are not randomized controls.
+
+The force-response diagnostic sampled 242 public states from 22 known-loss
+games. Of 206 states offering an immediate friendly transfer that grows the
+largest stack, candidate median probability on such actions was **4.28e−6**;
+95 were below 1e−6. In 22 states the potential-maximizing transfer did not grow
+the largest stack despite an available alternative. Median best scaled own-force
+increment over passing was **2.56e−5**. This static own-transfer calculation
+omits growth, combat and opponent response; largest-stack growth is not proven
+strategic value. It supports neither a causal strength claim nor a coefficient
+sweep. Next is an offline opening/force-composition comparison across all 32
+games, with no GPU job or confirmed new mechanism.
+
 Rejected log-gap runtime code was removed (210 net lines). Selected source
 and ten frozen opponents retained bitwise logits/probabilities on 133 public
 views and four temperature-boundary variants. Frozen reports require schema

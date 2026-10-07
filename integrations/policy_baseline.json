@@ -1020,5 +1020,38 @@
       },
       "scope": "Recovered activation audit on the unchanged terminal checkpoint and bundle; compares effective full_action_temperature=1.0 and route_half_weight=0.0 defaults. Provider failure and absence of original qualification marker are preserved."
     }
+  },
+  "offline_diagnostics": {
+    "public_memory": {
+      "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007/analysis.json",
+      "sha256": "9bc81589a2238f882edce70a52e88b02f22acf8926969d047fa8d66165c27554",
+      "games": 32,
+      "losses": 23,
+      "wins": 9,
+      "public_pre_action_states": 13582,
+      "remembered_enemy_capital_hidden": {
+        "loss_games": 3,
+        "loss_states": 436,
+        "win_games": 6,
+        "win_states": 830
+      },
+      "conclusion": "Observed memory opportunity is not loss-specific; this descriptive sample does not justify promoting a memory intervention or establish that memory has no value."
+    },
+    "monotone_force_response": {
+      "path": "integrations/softmax/local-output/monotone-force-response-diagnosis-20261007/analysis.json",
+      "sha256": "a09eaa8ad61d62a6ce4ecbce8c34290551f191930c98e4d80fedda535e58fc78",
+      "receipt_path": "integrations/softmax/local-output/monotone-force-response-diagnosis-20261007/receipt.json",
+      "receipt_sha256": "2584753a5e295b3ea10c2715beeacba6a9b1cf7528587cedf204f1d38c792cf7",
+      "known_loss_games": 22,
+      "sampled_public_states": 242,
+      "states_with_max_stack_growth_transfer": 206,
+      "candidate_median_growth_action_probability": 4.27752e-06,
+      "candidate_states_growth_probability_below_1e_6": 95,
+      "potential_best_move_no_max_stack_growth_despite_available": 22,
+      "median_best_scaled_own_force_increment_over_pass": 2.55965e-05,
+      "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
+      "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
+    },
+    "next_action": "Offline comparison of opening and force composition across all32 retained source games; no GPU job or confirmed new mechanism."
   }
 }
