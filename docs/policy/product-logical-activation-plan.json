@@ -16,7 +16,7 @@
     "illegal_actions_max": 0,
     "nonfinite_rewards_max": 0,
     "nonfinite_gradients_max": 0,
-    "gradient_clipping_events_max": 0,
+    "clipped_rewards_max": 0,
     "require_all_13_opponents_in_both_seats": true,
     "require_source_and_trained_native_to_serving_parity": true
   },
