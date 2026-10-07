@@ -1277,7 +1277,7 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Native epoch blocks0,32,0,32 verified; first GPU qualification failed29,811SPS. Hardware/worker profiling pending; no strength gain established.",
+    "status": "Native row coverage verified; first qualification failed at 29,811 SPS. Profiled retry job-5cirw building; no strength gain established.",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
@@ -1456,7 +1456,7 @@
     }
   },
   "row_rotation_profile_retry": {
-    "status": "sealed; submission authorized",
+    "status": "building",
     "source_revision": "ba8461ee66ec94315916d15643cfda5064f6d78f",
     "plan_path": "integrations/row_rotation_plan.json",
     "plan_sha256": "d0540f79771292f783fe17efae7973dc3682cf2a82247e29d1c3188108171c3a",
@@ -1471,7 +1471,18 @@
       "integrations/softmax/local-output/row-rotation-profile-launch-20261007/cpu-admission.json": "b72adf214be7ba7b43a43cf34b8ce6604e4602b016286c3574be5efba744e9f5",
       "integrations/softmax/local-output/row-rotation-profile-launch-20261007/guard-admission.json": "b8845e35d62724aacacac24da5c1ce1ecaf3f763f7bba1bd80b63fe54ce05d97",
       "integrations/softmax/local-output/row-rotation-profile-launch-20261007/runtime-profile-admission.json": "6f7a1aaf1c2d87a8c1cce09b4111de05179659cb2b3940ac23778f49d0cfe2e8",
-      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/collect_and_audit.py": "2eea60db8baaf849cdcd7cc70b84d51e828146af85335c9f81dd15b184c9676a"
-    }
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/collect_and_audit.py": "2eea60db8baaf849cdcd7cc70b84d51e828146af85335c9f81dd15b184c9676a",
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/submission.json": "2ebded1e1bf615fc5354781215bbad8a383478e63af1299b441e4e6a7065861f",
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/validation.json": "3ddbeade356354f99eca218f31baa6678f54cefcfe589a66a66293ff74be95a8",
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/aggregate-guard-process.json": "fc437c2a8cefdb7c6873cfa1bf2e37f25f7215587fd7f43d451b3a8de71d4baf",
+      "integrations/softmax/local-output/row-rotation-profile-launch-20261007/pre-submit-active-check.json": "468ca6c2f9c9d77b1da91048c426b97f1e8bd1009d548e3198aef66f44f1ebff"
+    },
+    "job_id": "job-5cirw",
+    "submitted_at": "2026-10-07T16:59:07.118208+00:00",
+    "context_id": "ctx-31be43a7",
+    "request_sha256": "c8a62ba080fcacf14f667e6f153babb756453c4e74189d6dfcb1c6360b525a0c",
+    "last_observed_at": "2026-10-07T17:01:07.117341+00:00",
+    "guard_pid": 84329,
+    "quoted_runtime_max_usd": 3.7125
   }
 }

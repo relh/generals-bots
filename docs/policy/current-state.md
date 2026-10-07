@@ -2,10 +2,9 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 16:39 UTC**, row-rotation trial `job-zsz35` is **failed**:
-its throughput gate stopped qualification at 29,811 SPS. No GPU job remains
-active. Hardware telemetry and CPU-worker profiling are implemented; the sealed retry
-is approved for submission after a fresh capacity and price check.
+job `35892`. As of **2026-10-07 17:00 UTC**, profiled row-rotation retry
+**`job-5cirw` is building**. Its predecessor stopped at the strict throughput
+gate (29,811 SPS); no long continuation or strength evaluation ran.
 The completed first-contact diagnostic did not pass its improvement gate.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -78,34 +77,17 @@ it still trains on half of each rollout at replay ratio 0.5. Native runtime
 coverage, ≥30K SPS and a fresh paired strength comparison are required before
 claiming the corrected training setup qualifies. No strength gain is established.
 
-Trial `job-zsz35` was submitted **2026-10-07 16:04:23 UTC** with source
-`b068a18` and context `ctx-739342ae`. The candidate repeats the retained
-`job-wgtyc` control's 4,194,304-step qualification and 29,360,128-step continuation
-with unchanged model, sampler, reward, optimizer settings and training seed.
-Only the optimizer row schedule changes learning behavior. The shared audit
-also now authenticates the starting learner and checks incremental steps, so
-continuation audits correctly expect 29,360,128 newly collected actions.
+The candidate repeats the retained `job-wgtyc` control's 4,194,304-step
+qualification and 29,360,128-step continuation with unchanged model, sampler,
+reward, optimizer settings and training seed. Only the optimizer row schedule
+changes learning behavior. The shared audit authenticates the starting learner
+and checks incremental continuation steps.
 
 Fresh 4,096-game panels compare candidate, source and historical control on
 seeds 14001101/14001103 (bootstrap 14001111). Both paired improvements must
 have positive clustered lower bounds and satisfy the stratum guard before a
 fresh independent confirmation. A historical control on another allocation
 is not an identical floating-point training trajectory.
-
-The job has one H100, a 75-minute provider limit, 73-minute internal limit and
-zero application restarts. A detached guard conservatively caps aggregate
-runtime across preemptions at 75 minutes from a pre-allocation observation
-(or submission when no such observation exists). Its PID and observed state
-are recorded in the launch receipts. The validated maximum runtime quote was
-**$3.7125**, excluding any separate build fees. This attempt subsequently failed the throughput gate described below; there
-was no promotion or new qualification claim.
-
-The image build completed and worker download began at 16:20:19 UTC. The external
-guard now freezes its bound on `starting` as well as `running`, so startup cannot
-escape the aggregate limit. Its conservative deadline is **2026-10-07 17:35:08 UTC**,
-based on the last pre-allocation observation at 16:20:08. The guard was replaced
-as PID 80704; the provider job was not restarted. A focused starting/preemption
-fixture passed, and the new guard process and receipt were verified live.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
@@ -122,10 +104,25 @@ audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
 forced stop left no complete action-mask audit. Billing was **761 seconds,
 $0.627**. The guard observed termination and exited.
 
-The sealed retry (`ba8461e`) retains the 30K gate and learning settings,
-records hardware capacity and clocks, and measures native CPU-worker choices on
-fixed public inputs before selecting a worker count. Exact action/memory
-agreement is required; no learning or strength claim comes from that benchmark.
+### Profiled retry: building
+
+`job-5cirw` was submitted **2026-10-07 16:59:07 UTC**, source `ba8461e`,
+context `ctx-31be43a7`. It retains the strict 30K gate and learning settings,
+records CPU quota/affinity and GPU clocks/power, and selects native opponent
+workers from 1/2/4/8 on fixed public replay inputs. Exact action/memory agreement
+is required. The selected count applies to candidate training and all evaluation
+actors; the CPU benchmark makes no training-throughput or strength claim.
+
+One H100 runs 4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5.
+The provider/internal/aggregate limits are 75/73/75 minutes, with zero application
+restarts. The validated runtime quote is **$3.7125**, excluding separate build
+fees. Detached guard **PID 84329** is verified live. Its aggregate bound freezes
+on `starting` or `running` from the last pre-allocation observation and never
+advances after preemption. Source, admission, archive and request hashes are in
+the manifest and launch receipts. GPU qualification and strength remain pending.
+
+GitHub rejected the latest main and source-branch pushes with server errors;
+local commits and the submitted sealed source are preserved.
 
 ## Matched experiment: technically passed, strength rejected
 
