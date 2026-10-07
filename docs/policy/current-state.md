@@ -58,7 +58,7 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Matched experiment: launch repair
+## Matched experiment: retry building
 
 `job-kzmub` **failed before training** at 2026-10-07 09:12:58 UTC, on
 attempt 1 with zero runtime restarts. Both native builds completed. Source
@@ -68,12 +68,13 @@ for `control/qualification/sampling-gate.json`, while the authentic gate was
 saved at the shared experiment root. The artifact and all 34 retained file
 hashes were independently verified; exact hashes are in the manifest.
 
-The stage gate path is being repaired for a bounded retry; **no retry is
-submitted**. No training steps, GPU throughput qualification, or strength
-result were produced. The selected policy and champion remain unchanged.
-
-The proposed retry retains one H100 capped at **120 minutes/$5.94**, with
-zero runtime restarts.
+`job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **building**
+as of 09:27:42 UTC, attempt 0. It uses repaired source `6b297db` and context
+`ctx-66b75696`: one H100 capped at **150 minutes/$7.425**, with zero runtime
+restarts. Qualification binds the authentic source gate at each stage; each
+continuation requires fresh 512-game self-play of its exact trained initializer.
+No GPU throughput qualification or strength result is available yet. The
+selected policy and champion remain unchanged.
 Control and candidate start the exact selected policy with fresh optimizers;
 each first trains 4,194,304 qualification steps. **Both** must pass ≥30,000
 steady SPS, native serving parity and legality/reward/population audits before

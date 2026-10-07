@@ -8,8 +8,14 @@
     "official_branch": "softmax",
     "official_commit": "0fcb5a00226387670624d2f326f6d5ad61914584",
     "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
-    "map_dimensions": [18, 21],
-    "padding": [21, 21],
+    "map_dimensions": [
+      18,
+      21
+    ],
+    "padding": [
+      21,
+      21
+    ],
     "turn_limit": 2000
   },
   "policy": {
@@ -111,9 +117,15 @@
     "control_wins": 2792,
     "mirror_wins": 2783,
     "mirror_minus_control_signed_score": -0.00293,
-    "mirror_minus_control_cluster_ci95": [-0.03278, 0.02575],
+    "mirror_minus_control_cluster_ci95": [
+      -0.03278,
+      0.02575
+    ],
     "mirror_minus_source_signed_score": -0.01123,
-    "mirror_minus_source_cluster_ci95": [-0.03985, 0.01804],
+    "mirror_minus_source_cluster_ci95": [
+      -0.03985,
+      0.01804
+    ],
     "result_archive_sha256": "35951c69e384b7249c56ab13ff15c594e6aa0d3e5110a4426514737bbba4ea03",
     "complete_marker_sha256": "6afff207db431d6be153344e7c155153d7a7ce66fff830a7946ebf02f8d754d5"
   },
@@ -221,7 +233,10 @@
     "old_bot_learner_wins": 2162,
     "new_bot_learner_wins": 3615,
     "new_minus_old_learner_win_rate_points": 39.92,
-    "cluster_ci95_points": [38.09, 41.72],
+    "cluster_ci95_points": [
+      38.09,
+      41.72
+    ],
     "illegal_moves": 0,
     "selected_for_training": false,
     "result_archive_sha256": "813be34c1185a42545b21e6d1187bd80c20737c5a28623f898fd016dedd5df36",
@@ -235,7 +250,10 @@
     "old_bot_learner_wins": 537,
     "new_bot_learner_wins": 684,
     "new_minus_old_learner_win_rate_points": 16.26,
-    "cluster_ci95_points": [12.54, 20.18],
+    "cluster_ci95_points": [
+      12.54,
+      20.18
+    ],
     "illegal_moves": 0,
     "selected_for_training": false,
     "result_archive_sha256": "d5d340133d640691a66689f52c533c2b5f15538dc56b9fb33ab5221b2d8513b4",
@@ -251,7 +269,10 @@
     "control_wins": 2759,
     "treatment_wins": 2700,
     "treatment_minus_control_signed_score": -0.027832,
-    "cluster_ci95": [-0.059182, 0.003395],
+    "cluster_ci95": [
+      -0.059182,
+      0.003395
+    ],
     "reweighted_opponent_signed_score_delta": -0.038055,
     "selected_for_confirmation": false,
     "billed_usd": 2.7148,
@@ -308,9 +329,12 @@
     "product_losses": 1320,
     "product_draws": 39,
     "product_minus_control_signed_score": 0.005859375,
-    "initial_state_cluster_ci95": [-0.0225289044313462, 0.03449288448256012],
+    "initial_state_cluster_ci95": [
+      -0.0225289044313462,
+      0.03449288448256012
+    ],
     "selected_for_independent_confirmation": false,
-    "product_q_head_l2_norm": 0.000016655463696224615,
+    "product_q_head_l2_norm": 1.6655463696224615e-05,
     "product_u_v_bitwise_identical_to_control": true,
     "sentinel_seat1_games": 116,
     "sentinel_seat1_paired_signed_score_delta": -0.12931034482758622,
@@ -348,46 +372,15 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [],
+  "active_experiments": [
+    "job-wgtyc"
+  ],
   "monotone_force_matched_training": {
-    "job": "job-kzmub",
-    "last_observed_state": "failed",
-    "last_observed_utc": "2026-10-07T09:12:58.259585+00:00",
-    "last_observed_phase": "qualification launcher failed before training: missing stage-local sampling gate",
-    "source_parity_top_actions_matched": 46,
-    "source_parity_max_probability_difference": 4.4405460357666016e-06,
-    "source_sampling_gate": {
-      "games": 512,
-      "wins": 267,
-      "losses": 240,
-      "draws": 5
-    },
-    "attempt": 1,
-    "build_retries": 0,
-    "runtime_restarts": 0,
-    "submitted_utc": "2026-10-07T08:43:52.434038+00:00",
-    "branch": "codex/monotone-force-potential",
-    "revision": "a3569ae796d983652a894c4d1b0effe21253a20c",
-    "context": "ctx-cac8804f",
-    "context_archive_sha256": "bc3bb4370ad6678467a69086a269826e062cec09fcddcdfcdaed05e76ef0b70a",
-    "context_seal_sha256": "b5b002448172246b09e9df64c241f26369f346196cc630007417078658622de2",
-    "plan_sha256": "fd153a2205df439f86b87f44790aff4dff4c7635dead54bab2384e5564c6fab9",
-    "request_sha256": "81bd3239255c97a434f6965190b2f8c0ca16f987231380a9a56bd807559941f0",
-    "cpu_launch_preflight_sha256": "5ae2eb7e50ed2f605f798746b9bbafc37fa88bb71e46a19920d1c3d3ad5c4bdb",
-    "timing_budget_sha256": "945e1df2a5a6162a562e3975eec8e9c6a5630704f1c07687a56c35bef01c2d6b",
-    "path": "integrations/softmax/local-output/monotone-force-launch-20261007",
     "hardware": "one H100",
-    "max_duration_minutes": 120,
-    "max_cost_usd": 5.94,
-    "max_restarts": 0,
     "qualification_steps_per_arm": 4194304,
     "total_steps_per_arm_including_qualification": 33554432,
     "minimum_steady_sps": 30000,
-    "qualification": "Both exact-source fresh-optimizer arms must pass native GPU training, steady SPS, legality/reward/population audits and serving parity before either authentic-learner continuation.",
     "cpu_preflight_scope": "CPU admission only using explicitly reconstructed retained-binary fixture receipts; no proof of a fresh CUDA build, GPU compatibility or training throughput.",
-    "gpu_qualification_passed": false,
-    "has_strength_result": false,
-    "selected_for_confirmation": false,
     "intervention": {
       "K": 100,
       "coefficient": 0.05,
@@ -403,20 +396,67 @@
     "bootstrap_seed": 12001111,
     "evaluation_games_per_arm": 4096,
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
-    "training_started": false,
-    "training_steps_completed": 0,
-    "native_builds_passed": true,
-    "retry_submitted": false,
-    "retry_status": "preparation",
-    "failure_reason": "Missing stage-local sampling-gate.json; execute default resolves stage output while smoke wrote shared root gate.",
-    "result_archive_sha256": "8264781cf3aab2c68887950bb346da6984a61d54ff2506413cc5004e4e374ecb",
-    "results_archive_sha256": "4d874f7e877c84502e9ee78dd49f1be7a9fbccb2c3d6d68dbf5fc6c196bfed4a",
-    "collection_sha256": "20739b52e02e0ffcb0e9e1a0653cfd0b0a5ff137d96f80f78b8c17dfe33b900e",
-    "terminal_audit_sha256": "e309a594b80510cc403d894c51795457eac738f7a9bdd23c314ef6c3bcc10a04",
-    "failure_log_sha256": "02f353ce735f6b6e51fcef75ebff097812acac22759323ed0d7188f7f3c07374",
-    "native_build_receipt_sha256": {
-      "control": "e8fa3a68796661f6439e7ed7e3cd67db980b3adca0352015de7bc90e007ab97d",
-      "candidate": "d522b9ec9a7ba33218eae12d0dab5595f8ee5d5bdaee74a6251e57ba2fe348fe"
+    "job": "job-wgtyc",
+    "last_observed_state": "building",
+    "last_observed_utc": "2026-10-07T09:27:42.213489+00:00",
+    "last_observed_phase": "provider image build; no GPU qualification yet",
+    "attempt": 0,
+    "runtime_restarts": 0,
+    "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
+    "branch": "codex/monotone-force-potential",
+    "revision": "6b297dbb49d5073ee7732b4a24880f93e18e63f2",
+    "context": "ctx-66b75696",
+    "context_archive_sha256": "98ea465c868ee317f0dde15aac8dd7f7f2a1cb4f40e4a297992d24cd26556390",
+    "context_seal_sha256": "23f0550536bd6cd246339b6286d8dfee345e83204e597b26a63d425bba46a776",
+    "plan_sha256": "11874422b6984e694c2bba77e09f68b49d83a4688c4574b1f7d10efc89dc3f94",
+    "request_sha256": "5ab30f04f2a112d76c38294cfb761a8e6df0c314c6e3278a92dec545e0978532",
+    "submission_sha256": "71f1cec6c714f3caf86bdd4c4588de2846b8481df357b22d7480229c16668c8b",
+    "preflight_sha256": "246cbc1ad01ef9090dc55873aa8cff2bbca3b1c7e379b90c7b379545fb7a5a18",
+    "path": "integrations/softmax/local-output/monotone-force-retry-20261007",
+    "max_duration_minutes": 150,
+    "execution_minutes": 148,
+    "max_cost_usd": 7.425,
+    "max_restarts": 0,
+    "gpu_qualification_passed": false,
+    "has_strength_result": false,
+    "selected_for_confirmation": false,
+    "qualification": "Both exact-source fresh-optimizer arms must pass 4 Mi native GPU training, steady SPS, legality/reward/population audits and serving parity before either authentic-learner continuation. Each continuation additionally verifies its trained initializer through fresh balanced 512-game self-play.",
+    "sampling_gate_seed": 11008101,
+    "sampling_gate_sample_seed": 11008103,
+    "continuation_gate_seed": 11008105,
+    "continuation_gate_sample_seed": 11008107,
+    "previous_failed_attempt": {
+      "job": "job-kzmub",
+      "last_observed_state": "failed",
+      "last_observed_utc": "2026-10-07T09:12:58.259585+00:00",
+      "last_observed_phase": "qualification launcher failed before training: missing stage-local sampling gate",
+      "attempt": 1,
+      "runtime_restarts": 0,
+      "revision": "a3569ae796d983652a894c4d1b0effe21253a20c",
+      "context": "ctx-cac8804f",
+      "context_archive_sha256": "bc3bb4370ad6678467a69086a269826e062cec09fcddcdfcdaed05e76ef0b70a",
+      "path": "integrations/softmax/local-output/monotone-force-launch-20261007",
+      "training_started": false,
+      "training_steps_completed": 0,
+      "native_builds_passed": true,
+      "source_parity_top_actions_matched": 46,
+      "source_parity_max_probability_difference": 4.4405460357666016e-06,
+      "source_sampling_gate": {
+        "games": 512,
+        "wins": 267,
+        "losses": 240,
+        "draws": 5
+      },
+      "failure_reason": "Missing stage-local sampling-gate.json; execute default resolves stage output while smoke wrote shared root gate.",
+      "result_archive_sha256": "8264781cf3aab2c68887950bb346da6984a61d54ff2506413cc5004e4e374ecb",
+      "results_archive_sha256": "4d874f7e877c84502e9ee78dd49f1be7a9fbccb2c3d6d68dbf5fc6c196bfed4a",
+      "collection_sha256": "20739b52e02e0ffcb0e9e1a0653cfd0b0a5ff137d96f80f78b8c17dfe33b900e",
+      "terminal_audit_sha256": "e309a594b80510cc403d894c51795457eac738f7a9bdd23c314ef6c3bcc10a04",
+      "failure_log_sha256": "02f353ce735f6b6e51fcef75ebff097812acac22759323ed0d7188f7f3c07374",
+      "native_build_receipt_sha256": {
+        "control": "e8fa3a68796661f6439e7ed7e3cd67db980b3adca0352015de7bc90e007ab97d",
+        "candidate": "d522b9ec9a7ba33218eae12d0dab5595f8ee5d5bdaee74a6251e57ba2fe348fe"
+      }
     }
   },
   "route_shortcut_development": {

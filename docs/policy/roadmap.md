@@ -18,10 +18,12 @@ artifact identities. Git history retains superseded attempts.
    global readout already distinguishes source sites.
    Global temperature2 and log-gap4 exploration also failed completed GPU
    trials. Earlier public states show available merges but do not establish
-   their strategic value. Repair the stage-local sampling-gate path that stopped
-   `job-kzmub` before training, then run a bounded matched monotone stack-mass
-   retry. Require both 4 Mi qualification arms to pass ≥30,000 SPS
-   and serving parity before continuation to 32 Mi total steps per arm.
+   their strategic value. The repaired monotone stack-mass retry
+   `job-wgtyc` is building on one H100, capped at 150 minutes/$7.425 with
+   zero runtime restarts. Its predecessor `job-kzmub` failed before training.
+   Require both 4 Mi qualification arms to pass ≥30,000 SPS and serving parity,
+   then verify each trained initializer with 512-game self-play before its
+   authentic learner continues to 32 Mi total steps.
    The old normalized-concentration formula rewards attrition
    and is rejected. Keep the new formula's location blindness, expansion
    penalty and saturation explicit in its preregistered evaluation.
