@@ -47,7 +47,8 @@ class Trial:
             raise ValueError('Preparation requires a new output directory')
         asset = load_asset(self.asset, manifest_sha256=digest(self.asset))
         reserved = [PLAN[key] for key in ('training_seed', 'sampling_gate_seed', 'sampling_gate_sample_seed',
-                                          'evaluation_seed', 'evaluation_sample_seed', 'bootstrap_seed')]
+                                          'evaluation_seed', 'evaluation_sample_seed', 'bootstrap_seed',
+                                          'continuation_gate_seed', 'continuation_gate_sample_seed')]
         if len(set(reserved)) != len(reserved) or set(reserved) & set(asset.metadata['training_seeds']):
             raise ValueError('Experiment seeds collide with one another or source training history')
         validate_sampler(self.sampler)
@@ -99,17 +100,21 @@ class Trial:
             raise ValueError('Exactly one GPU required')
         write(self.output/'gpu-preflight.json', identity)
         self.parity(self.inputs/'bundles/cold', self.output/'source-serving-parity.json', self.output, 'source-parity')
-        args = ['--bundle', self.inputs/'bundles/cold', '--opponent-bundle', self.inputs/'bundles/cold',
-                '--games',512,'--pool-size',512,'--seed',PLAN['sampling_gate_seed'],
-                '--sample-seed',PLAN['sampling_gate_sample_seed'],'--output',self.output/'sampling']
+        self.sampling_gate(self.inputs/'bundles/cold', self.output,
+                           PLAN['sampling_gate_seed'], PLAN['sampling_gate_sample_seed'])
+
+    def sampling_gate(self, bundle, out, seed, sample_seed):
+        args = ['--bundle',bundle,'--opponent-bundle',bundle,
+                '--games',512,'--pool-size',512,'--seed',seed,
+                '--sample-seed',sample_seed,'--output',out/'sampling']
         for key, flag in [('move_temperature','sampling-temperature'),('split_temperature','split-sampling-temperature'),
                           ('early_route_temperature','early-route-temperature'),('early_route_turns','early-route-turns'),
                           ('neutral_route_bias','neutral-route-bias'),('weak_owned_route_penalty','weak-owned-route-penalty'),
                           ('doomed_attack_route_penalty','doomed-attack-route-penalty')]:
             args += ['--'+flag,self.sampler[key]]
-        self.call('evaluate_spatial_frozen_match',args,self.output,'sampling',360)
+        self.call('evaluate_spatial_frozen_match',args,out,'sampling',360)
         from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
-        write(self.output/'sampling-gate.json',source_sampling_gate_report(self.output/'sampling'))
+        write(out/'sampling-gate.json',source_sampling_gate_report(out/'sampling'))
 
     def build(self):
         for arm in ARMS:
@@ -128,6 +133,17 @@ class Trial:
                 q=self.output/name/'qualification'
                 if marker[name] != {p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}:
                     raise ValueError('Qualification evidence changed')
+            self.sampling_gate(root/'qualification/bundle', out,
+                               PLAN['continuation_gate_seed'], PLAN['continuation_gate_sample_seed'])
+        else:
+            from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
+            write(out/'sampling-gate.json',source_sampling_gate_report(self.output/'sampling'))
+        # Exercise the same CLI gate before launching; exact initializer identity
+        # distinguishes original-source qualification from trained continuation.
+        from integrations.launch_spatial_selfplay_training import validate_sampling_gate
+        from integrations.policy_execution import runtime_environment
+        validate_sampling_gate(['launcher','train','--build',str(root/'build'),'--config',str(out/'config.json')],
+                               runtime_environment(self.source,out,self.sampler))
         self.call('launch_spatial_selfplay_training',['train','--build',root/'build','--config',out/'config.json',
                   '--output',out/'run'],out,'train',900 if stage=='qualification' else 1800,out/'config.json')
         training_audit(out,config,build_config=root/'build-config.json')

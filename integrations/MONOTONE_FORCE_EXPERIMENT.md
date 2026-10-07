@@ -33,7 +33,8 @@ with phases in this order:
 4. `qualify`: 4,194,304 steps each, fresh optimizers; finite rewards, legality,
    balanced exact population, >=30K steady SPS, authentic asset publication,
    export and trained native/serving parity. Writes hash-bound qualification.
-5. `continue_training`: restore each qualified learner to 33,554,432 total
+5. `continue_training`: run a fresh exact-checkpoint 512-game self-match for
+   each trained initializer, then restore each qualified learner to 33,554,432 total
    steps (qualification included), then repeat publication and parity.
 6. `evaluate`: source/control/candidate on identical fresh 4096-map panels;
    both candidate improvements need positive clustered lower95 bounds and
@@ -56,3 +57,12 @@ penalizes the added potential during expansion/castle investment. Existing
 land reward dominates that penalty in the recorded empty-expansion example.
 Global temperature/log-gap experiments already failed; this does not repeat
 those sampling changes or establish that exploration will reach useful merges.
+
+## First execution failure and follow-up
+
+Submitted source a3569ae/job-kzmub passed GPU source parity, 512-game sampling
+and both native builds, then failed before the first optimizer update: the
+launcher expected a stage-local sampling receipt but the runner had written it
+only at the experiment root. The follow-up binds the authentic original report
+locally for qualification and creates new trained-checkpoint self-match reports
+for continuation. Original sealed inputs and failed artifacts remain unchanged.
