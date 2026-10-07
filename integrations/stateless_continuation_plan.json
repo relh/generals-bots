@@ -1,0 +1,36 @@
+{
+  "schema": "generals-stateless-continuation-v1",
+  "status": "pending qualifying terminal audit; unsealable until all bindings are reviewed",
+  "qualification_job_id": null,
+  "bindings": {
+    "qualification-audit.json": null,
+    "qualification-collection.json": null,
+    "qualification/qualified.json": null,
+    "qualification/candidate/qualification/asset/asset.json": null,
+    "qualification/candidate/qualification/asset/policy.bin": null,
+    "qualification/candidate/qualification/asset/policy.bin.learner": null
+  },
+  "starting_run_steps": 4194304,
+  "starting_epoch": 8,
+  "ending_run_steps": 33554432,
+  "ending_epoch": 64,
+  "incremental_steps": 29360128,
+  "training_seed": 11007101,
+  "evaluation_seed": 14001101,
+  "evaluation_sample_seed": 14001103,
+  "bootstrap_seed": 14001111,
+  "evaluation_games_per_arm": 4096,
+  "bootstrap_resamples": 10000,
+  "selection": "Both map-cluster lower95 bounds >0 against fixed source and historical control; each opponent-seat stratum with >=100 games delta>=-.10; independent confirmation required before hosted qualification.",
+  "runtime_bound": {
+    "provider_minutes": 75,
+    "execution_minutes": 73,
+    "aggregate_minutes_from_first_allocation": 75,
+    "max_restarts": 0
+  },
+  "limits": "Historical control is a separate allocation and implementation; same seed is not paired optimizer trajectory proof. Candidate evaluates rotation plus repaired stateless execution. No checkpoint selection or repeated panel screening.",
+  "historical_control": {
+    "manifest_sha256": "808c65478f591fc65ad7850befe599c58293d699500d829ce81d1fad04d99b96",
+    "policy_sha256": "f4b185ef31755097aea0435266d68f8a1c8aa10330bb03d801cf1fcb0f43e65b"
+  }
+}
