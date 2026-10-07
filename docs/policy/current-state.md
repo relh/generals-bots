@@ -3,7 +3,7 @@
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
 job `35892`. As of **2026-10-07 17:59 UTC**, bounded bridge diagnostic
-**`job-zwt6d` is starting on an H100**, retrying the diagnostic after `job-6khn8` failed before training. The preceding row-rotation qualifications failed the
+**`job-zwt6d` is running on an H100**, retrying the diagnostic after `job-6khn8` failed before training. The preceding row-rotation qualifications failed the
 strict throughput gate; no long continuation or strength evaluation ran.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -139,11 +139,13 @@ slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
 retained 61-second fully allocated interval. These observations do not isolate
 a cause; they provide no support for changing power limits or CPU quota.
 
-### Bridge execution diagnostic retry: starting
+### Bridge execution diagnostic retry: running
 
 **`job-zwt6d`** was submitted at **2026-10-07 18:32:06 UTC**, context
-`ctx-f76d9c6f`. At **18:52:44 UTC** attempt 1 was starting on its worker; the image
-build and transfer completed. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
+`ctx-f76d9c6f`. At **18:57:12 UTC** attempt 1 had completed the baseline build and
+mandatory CUDA lifetime checks, and was building the candidate. The corrected
+report protocol passed the previous failure point; final artifact verification
+and all four training runs are still pending. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
 input files; only the diagnostic helper, report-writing template and input
 manifest changed. Strict report-file parsing and retained compiler/runtime
 stdout and stderr replace parsing embedded-Python stdout as JSON.
