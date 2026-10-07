@@ -1649,6 +1649,17 @@
       "coordinator_admission": {
         "path": "integrations/softmax/local-output/stateless-qualification-coordinator-admission-20261007/admission.json",
         "sha256": "768d9e81278eff0017ffb90d6a16df805fea01a43aa62d40840c39dd01c029f9"
+      },
+      "local_staging": {
+        "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/staging.json",
+        "sha256": "239b1a87dd36797d24eb8340166033cd4a1b73a16f1eb9ecfbc747e83c5091bd",
+        "files_verified": 371,
+        "sealed": false,
+        "source_selection_pending": true,
+        "root_verification": {
+          "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/root-stage-review.json",
+          "sha256": "9ab45870d94d52b60725a998dde3eacc120436bcfadd15fbc11b80dc2591a958"
+        }
       }
     }
   },

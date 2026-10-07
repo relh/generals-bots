@@ -213,6 +213,9 @@ seats are required. Coordinator **`1181b57`** reuses the shared execution path;
 local preparation against actual migrated assets passed, and its audit rejected
 slow/incomplete runs, wrong checkpoint clocks or initial weights, and an
 unexpected restored optimizer. It remains unsealed pending the bridge comparison.
+Local staging now contains 371 verified files, including migrated policies and
+all 46 parity fixture states. Final source selection, sealing and submission
+remain pending; this staging creates no GPU allocation.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
