@@ -352,6 +352,8 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         install_stateless_spatial(source)
         from integrations.native_startup_admission import install as install_startup_admission
         install_startup_admission(source)
+        from integrations.puffer_rollout_memory import install as install_rollout_memory
+        install_rollout_memory(source)
         from integrations.spatial_muon_orientation import finalize_build_receipt
         finalize_build_receipt(source, config.fabric)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
