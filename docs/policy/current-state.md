@@ -84,9 +84,12 @@ The candidate completed its **4,194,304 qualification steps** by 10:25:22 UTC,
 with the same hardware/batch settings and two warmup epochs: **37,570.35 SPS**
 from 3,145,728 steps over 83.729 seconds (native uptime 56.218→139.947).
 Its dashboard showed 66.6/79 GiB VRAM and 4.4 GiB RAM. Console audits report
-zero illegal actions, nonfinite or clipped rewards. It is publishing; trained
-candidate parity and pair qualification remain pending. Collected training
-audits and GPU CSV still await independent verification. The log monitor now
+zero illegal actions, nonfinite or clipped rewards. Candidate checkpoint
+`37e23e20` then passed GPU serving parity on 46/46 states (maximum probability
+difference 0.00000244), with the exact intended sampler. **Both runtime
+qualification gates passed** by 10:31:47 UTC. Control's 512-game trained-initializer
+self-match has started before continuation; no continuation steps are observed
+yet. Collected training audits and GPU CSV still await independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
 recovered completely.
 The provider preempted the first two attempts; no replacement job was submitted,
@@ -100,8 +103,9 @@ stop deadline is **2026-10-07 11:56:55 UTC** (150 minutes from submission),
 not an enforced provider-wide cap; no automatic watchdog is installed yet.
 Qualification binds the authentic source gate at each stage; each
 continuation requires fresh 512-game self-play of its exact trained initializer.
-No completed pair qualification or strength result is available yet. The
-selected policy and champion remain unchanged.
+Runtime qualification permits continuation after each initializer sampling gate;
+final independent verification and strength results remain pending. The selected
+policy and champion remain unchanged.
 Control and candidate start the exact selected policy with fresh optimizers;
 each first trains 4,194,304 qualification steps. **Both** must pass ≥30,000
 steady SPS, native serving parity and legality/reward/population audits before

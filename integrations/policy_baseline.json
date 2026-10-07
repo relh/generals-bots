@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T10:25:22.174163Z",
-    "last_observed_phase": "candidate 4 Mi training complete; publishing; candidate trained parity and pair qualification pending",
+    "last_observed_utc": "2026-10-07T10:31:47.845384Z",
+    "last_observed_phase": "runtime qualification passed for both arms; control trained-initializer self-play started before continuation",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -416,7 +416,7 @@
     "max_duration_minutes": 150,
     "execution_minutes": 148,
     "max_restarts": 0,
-    "gpu_qualification_passed": false,
+    "gpu_qualification_passed": true,
     "has_strength_result": false,
     "selected_for_confirmation": false,
     "qualification": "Both exact-source fresh-optimizer arms must pass 4 Mi native GPU training, steady SPS, legality/reward/population audits and serving parity before either authentic-learner continuation. Each continuation additionally verifies its trained initializer through fresh balanced 512-game self-play.",
@@ -623,8 +623,17 @@
       "steady_interval_seconds": 83.729,
       "warmup_epochs": 2,
       "collected_audit_verified": false,
-      "trained_serving_parity_verified": false
-    }
+      "trained_serving_parity_verified": true,
+      "trained_serving_parity_scope": "GPU console result; terminal artifact verification pending",
+      "trained_checkpoint_sha256": "37e23e203c2abffbd6a9347a23d840b09a61f33f54896c9f99a8d7e78f0aa085",
+      "trained_matching_top_actions": 46,
+      "trained_parity_states": 46,
+      "max_action_probability_difference": 2.4437904357910156e-06,
+      "parity_log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T103147845384Z-sanitized.log",
+      "parity_log_sha256": "cdcc2557d5e5559c4e0421eb708f5f85306dc0fae3ae08662309939556129195"
+    },
+    "gpu_qualification_scope": "Runtime console records both training audits and trained serving parity passing. Independent collected artifact audit remains pending.",
+    "terminal_qualification_verified": false
   },
   "route_shortcut_development": {
     "job": "job-wwvk3",
