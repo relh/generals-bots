@@ -1599,7 +1599,7 @@
     "charged_usd": 0.1023,
     "training_started": false,
     "failure": "Lifetime executable exited 0; JSONDecodeError parsing stdout. Raw stdout was not preserved; actual report content and lifetime success are unproven.",
-    "retry_work": "Dedicated strict JSON report file and retained compiler/run streams implemented in isolated diagnostic; production-bootstrap admission and exact input-diff checks pending before submission."
+    "retry_work": "Corrected diagnostic submitted as job-zwt6d; see bridge_execution_probe_retry."
   },
   "stateless_execution_work": {
     "status": "integrated; CPU equivalence and all asset migrations verified; CUDA execution and throughput qualification pending",
@@ -1634,6 +1634,38 @@
     "independent_verification": {
       "path": "integrations/softmax/local-output/stateless-abi-inventory-20261007/root-verification.json",
       "sha256": "5beae808f60247d7f232d77cbb64224603e98047a39ff17e6f9afeca6cea284a"
+    }
+  },
+  "bridge_execution_probe_retry": {
+    "status": "building",
+    "job_id": "job-zwt6d",
+    "context_id": "ctx-f76d9c6f",
+    "submitted_at": "2026-10-07T18:32:06.964246+00:00",
+    "last_observed_at": "2026-10-07T18:33:06.251252+00:00",
+    "archive_sha256": "6892addb01647dbd6b1397ac56f052f8bd3a58824387b8215d02f38a89a51942",
+    "source_revisions": {
+      "baseline": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
+      "candidate": "d1e9705ec54036e0b7879fe0f4243cc68ca5d48e",
+      "runner": "0bd5e1eb010ba586f6aac701d4632ed7c77cbbfd"
+    },
+    "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
+    "provider_minutes": 45,
+    "execution_minutes": 43,
+    "aggregate_minutes": 45,
+    "max_restarts": 0,
+    "quoted_runtime_max_usd": 2.2275,
+    "guard_pid": 52951,
+    "scope": "Identical original ABBA plan and 1063 unchanged files; only diagnostic report helper/template/manifest corrected. No stateless runtime included; no training or policy qualification.",
+    "receipts": {
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/ready.json": "5d16af1d92bc3378629317cb20ced4d0d96351440a28e73f5950d21309d5e895",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/submission.json": "9ebfc6f882618f4915ac2d0b10d58c8c6d47edb6ba4d928bc038a75bddb48e9d",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/validation.json": "169e385d4a9434b2209dee13a4418d55e8a2014059494d157fd295e6bcab7a01",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/root-launch-review.json": "364b6950bb4c8c44504d0e8609239fca4a00eeca73aa1926c775af33b4e8cb40",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/exact-context-diff.json": "8c14e9e7cb626977e098370f42374b99e9b02f53306e2587d938c05bfb9c3289",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/lifetime-cpu-admission.json": "8eab949256730664730b15a66106a186e2c651d2c094117ec25b35e36c1340b3",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/full-transform-admission.json": "c68558ef6ae8c83d0f6f90dafb5c0b6ee61c55619bc3f0b9651a76db453a9271",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/collect_and_audit.py": "3b833253e532148575ead855ae84d21c667299e49f0f76467920c97dd735f249",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/guard-admission.json": "2175f076f9b3f3aa8c09dda8a273bf01b5b24a33144a9ce622c505c97af8eda6"
     }
   }
 }

@@ -3,7 +3,7 @@
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
 job `35892`. As of **2026-10-07 17:59 UTC**, bounded bridge diagnostic
-**`job-6khn8` failed before training; no task GPU job remains active**. The preceding row-rotation qualifications failed the
+**`job-zwt6d` is building**, retrying the diagnostic after `job-6khn8` failed before training. The preceding row-rotation qualifications failed the
 strict throughput gate; no long continuation or strength evaluation ran.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -138,6 +138,24 @@ slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
 1,980/2,619 MHz, no sampled clock events and no new cgroup throttling over the
 retained 61-second fully allocated interval. These observations do not isolate
 a cause; they provide no support for changing power limits or CPU quota.
+
+### Bridge execution diagnostic retry: building
+
+**`job-zwt6d`** was submitted at **2026-10-07 18:32:06 UTC**, context
+`ctx-f76d9c6f`. At **18:33:06 UTC** its image was building, with no runtime
+attempt yet. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
+input files; only the diagnostic helper, report-writing template and input
+manifest changed. Strict report-file parsing and retained compiler/runtime
+stdout and stderr replace parsing embedded-Python stdout as JSON.
+
+Corrected local admission activated the production bootstrap and Muon hooks;
+baseline generated sources match the prior GPU build exactly. Both CPU
+ownership probes passed. Actual CUDA lifetime checks remain mandatory before
+training. Root verified all 1,066 staged hashes and the archive. The quote is
+**$2.2275**, with **45/43/45-minute provider/internal/aggregate limits**, zero
+restarts and live detached guard **PID 52951**. No state-free runtime changes
+are included in this diagnostic, and its results cannot qualify sustained
+training or policy strength.
 
 ### Bridge execution diagnostic: report-protocol failure
 
