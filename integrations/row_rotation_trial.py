@@ -42,7 +42,8 @@ def rotation_audit(out, first_epoch, epochs):
           each_two_epochs_cover_all_4096_rows=True))
 
 class Trial:
-    def __init__(self, inputs, output):
+    def __init__(self, inputs, output, *, plan=None):
+        self.plan = PLAN if plan is None else plan
         self.inputs, self.output = inputs.resolve(), output.resolve()
         self.source = self.inputs/'source'
         self.asset = self.inputs/'assets/cold/asset.json'
@@ -59,7 +60,7 @@ class Trial:
         if self.output.exists():
             raise ValueError('Preparation requires a new output directory')
         asset = load_asset(self.asset, manifest_sha256=digest(self.asset))
-        reserved = [PLAN[key] for key in ('training_seed', 'sampling_gate_seed', 'sampling_gate_sample_seed',
+        reserved = [self.plan[key] for key in ('training_seed', 'sampling_gate_seed', 'sampling_gate_sample_seed',
                                           'evaluation_seed', 'evaluation_sample_seed', 'bootstrap_seed',
                                           'continuation_gate_seed', 'continuation_gate_sample_seed')]
         if len(set(reserved)) != len(reserved) or set(reserved) & set(asset.metadata['training_seeds']):
@@ -74,13 +75,13 @@ class Trial:
             if digest(self.inputs/name) != sha:
                 raise ValueError('Staged input hash differs: '+name)
         historical = SpatialPlayerPolicy(self.inputs/'bundles/control').asset
-        if (historical.metadata['policy_sha256'] != PLAN['historical_control_policy_sha256']
+        if (historical.metadata['policy_sha256'] != self.plan['historical_control_policy_sha256']
                 or historical.metadata['sampler'] != self.sampler):
             raise ValueError('Historical control weights or sampler differs')
         build, config = read(self.inputs/'build-config.json'), read(self.inputs/'config.json')
         opts = build['python_environment']['options']
         if (build['fabric'] != asset.metadata['fabric'] or opts.get('monotone_force_potential', False)
-                or len(opts['frozen_bundles']) != 10 or opts['scripted_opponents'] != PLAN['population']['scripts']
+                or len(opts['frozen_bundles']) != 10 or opts['scripted_opponents'] != self.plan['population']['scripts']
                 or opts['parallel_games'] != 4096 or build['python_environment']['spec']['agents'] != 4096
                 or config['overrides']['vec.total_agents'] != 4096
                 or config['overrides']['train.horizon'] != 128
@@ -91,11 +92,11 @@ class Trial:
             raise ValueError('Input differs from the fixed native model, pool or geometry')
         if training_contract(opts, config['overrides']) != asset.metadata['training_contract']:
             raise ValueError('Control objective differs from authentic source')
-        config['seed'] = PLAN['training_seed']
-        config['total_timesteps'] = PLAN['qualification_steps']
+        config['seed'] = self.plan['training_seed']
+        config['total_timesteps'] = self.plan['qualification_steps']
         config['initialize'] = dict(asset=str(self.asset), manifest_sha256=digest(self.asset), restore_learner=False)
         self.output.mkdir()
-        write(self.output/'plan.json', PLAN)
+        write(self.output/'plan.json', self.plan)
         from integrations.policy_runtime_profile import select_siege_workers
         workers = select_siege_workers(self.inputs/'leader-root', self.output/'worker-profile')
         build['python_environment']['options']['classic_siege_workers'] = workers
@@ -124,8 +125,8 @@ class Trial:
         effective_sampler = dict(full_action_temperature=1.0, route_half_weight=0.0, **self.sampler)
         if (receipt['source_sha256'] != SOURCE_POLICY or receipt['opponent_sha256'] != SOURCE_POLICY
                 or receipt['sampler'] != effective_sampler or receipt['opponent_sampler'] != effective_sampler
-                or receipt['match_seed'] != PLAN['sampling_gate_seed']
-                or receipt['sample_seed'] != PLAN['sampling_gate_sample_seed']):
+                or receipt['match_seed'] != self.plan['sampling_gate_seed']
+                or receipt['sample_seed'] != self.plan['sampling_gate_sample_seed']):
             raise ValueError('Historical source sampling evidence identity differs')
         shutil.copytree(self.inputs/'source-sampling', self.output/'sampling')
         write(self.output/'sampling-gate.json', receipt)
@@ -161,7 +162,7 @@ class Trial:
                 if marker[name] != {p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}:
                     raise ValueError('Qualification evidence changed')
             self.sampling_gate(root/'qualification/bundle', out,
-                               PLAN['continuation_gate_seed'], PLAN['continuation_gate_sample_seed'])
+                               self.plan['continuation_gate_seed'], self.plan['continuation_gate_sample_seed'])
         else:
             from integrations.launch_spatial_selfplay_training import source_sampling_gate_report
             write(out/'sampling-gate.json',source_sampling_gate_report(self.output/'sampling'))
@@ -195,7 +196,7 @@ class Trial:
             q=self.output/arm/'qualification'
             marker[arm]={p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}
             config=read(q/'config.json')
-            config['total_timesteps']=PLAN['total_steps_including_qualification']
+            config['total_timesteps']=self.plan['total_steps_including_qualification']
             config['initialize']=dict(asset=str(q/'asset/asset.json'),manifest_sha256=digest(q/'asset/asset.json'),restore_learner=True)
             write(self.output/arm/'continuation/config.json',config)
         write(self.output/'qualified.json',marker)
@@ -212,16 +213,16 @@ class Trial:
                 read(self.output/name/'continuation/training-audit.json')
                 read(self.output/name/'continuation/serving-parity.json')
             self.call('evaluate_spatial_population',['--bundle',bundle,'--population-build',self.output/'candidate/build/build.json',
-                      '--games',4096,'--pool-size',4096,'--seed',PLAN['evaluation_seed'],
-                      '--sample-seed',PLAN['evaluation_sample_seed'],'--destination-audit','--output',self.output/('heldout-'+name)],
+                      '--games',4096,'--pool-size',4096,'--seed',self.plan['evaluation_seed'],
+                      '--sample-seed',self.plan['evaluation_sample_seed'],'--destination-audit','--output',self.output/('heldout-'+name)],
                       self.output,'evaluate-'+name,900)
         reports=[]
         for before in ('source','control'):
             path=self.output/('paired-'+before+'-candidate.json')
             self.call('analyze_spatial_population_pair',['--baseline',self.output/('heldout-'+before),'--candidate',self.output/'heldout-candidate',
-                      '--seed',PLAN['bootstrap_seed'],'--bootstrap-resamples',10000,'--output',path],self.output,'compare-'+before,90)
+                      '--seed',self.plan['bootstrap_seed'],'--bootstrap-resamples',10000,'--output',path],self.output,'compare-'+before,90)
             reports.append(read(path))
-        write(self.output/'selection.json',dict(schema=PLAN['schema'],selected=selected(reports),
+        write(self.output/'selection.json',dict(schema=self.plan['schema'],selected=selected(reports),
               comparisons=reports,requires_fresh_independent_confirmation=True))
 
 def main():

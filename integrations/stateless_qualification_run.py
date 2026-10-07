@@ -52,7 +52,7 @@ def prepare(inputs, output):
     )
 
 
-def audit(output):
+def audit(output, *, destination=None):
     from integrations.monitor_coworld_steady_interval import completed_epoch_times
 
     stage = output / "candidate/qualification"
@@ -91,7 +91,7 @@ def audit(output):
     if learner.agent_steps != 4_194_304 or learner.epoch != 8:
         raise ValueError("Final learner clock differs")
     write(
-        output / "qualified.json",
+        destination if destination is not None else output / "qualified.json",
         dict(
             qualified=True,
             continuation_authorized=False,

@@ -1,0 +1,74 @@
+{
+  "schema": "generals-fresh-start-trial-v1",
+  "status": "pending evidence bindings",
+  "intervention": "Only coworld_position_probability changes from 0.25 to 0.0; retain the identical position pool and all other environment, policy, sampler and learner settings.",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "historical_control_policy_sha256": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
+  "historical_control_job": "job-mwvdb",
+  "qualification_steps": 4194304,
+  "total_steps_including_qualification": 33554432,
+  "training_seed": 11007101,
+  "sampling_gate_seed": 11008101,
+  "sampling_gate_sample_seed": 11008103,
+  "continuation_gate_seed": 11008105,
+  "continuation_gate_sample_seed": 11008107,
+  "evaluation_seed": 17001101,
+  "evaluation_sample_seed": 17001103,
+  "bootstrap_seed": 17001111,
+  "evaluation_games_per_arm": 4096,
+  "bootstrap_resamples": 10000,
+  "geometry": {
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5
+  },
+  "population": {
+    "frozen_policies": 10,
+    "scripts": [
+      "expander_harvester",
+      "sentinel",
+      "classic_siege_padded"
+    ],
+    "weights": [
+      1,
+      2,
+      1,
+      1,
+      1,
+      4,
+      5,
+      5,
+      11,
+      17,
+      3,
+      4,
+      16
+    ],
+    "balanced_seats": true,
+    "curriculum_probability": 0.0
+  },
+  "objective": "Exact historical control reward and learner hyperparameters; no monotone force potential; original source sampler; fresh source optimizer followed by exact own learner continuation.",
+  "qualification": "After two warmup epochs, sustained completed Puffer steps divided by wall time >=30000 SPS; zero illegal actions and nonfinite/clipped rewards; 46/46 native-serving parity; every opponent both seats; official Classic engine hash and shaping_gamma=train.gamma=.999. New exact qualification initializer sampling gate before continuation.",
+  "selection": "Both candidate-minus-source and candidate-minus-historical-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games signed-score delta >=-.10. Smaller strata reported. Fresh independent confirmation required; no hosted claim.",
+  "runtime_bound": {
+    "provider_minutes": 90,
+    "execution_minutes": 88,
+    "aggregate_minutes_from_first_allocation": 90,
+    "max_restarts": 0
+  },
+  "limitations": [
+    "Historical control used a separate allocation; same seed is not an identical floating-point trajectory.",
+    "Local mixed-pool improvement does not establish hosted strength. Fresh confirmation and hosted gates remain mandatory."
+  ],
+  "source_gate_reuse": "Reuse verified historical source sampler gate only after matching source policy, exact sampler and gate seeds. Qualification initializer gate must be freshly executed.",
+  "hypothesis": "Removing 25 percent retained-midgame resets addresses fresh-game distribution mismatch; previous trained policies improved against frozen opponents but lost against scripts.",
+  "bindings": {
+    "control-audit.json": null,
+    "control-collection.json": null,
+    "control/candidate/build-config.json": null,
+    "bundles/control/asset.json": null,
+    "bundles/control/policy.bin": null,
+    "hypothesis.json": null
+  }
+}
