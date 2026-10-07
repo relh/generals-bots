@@ -1701,6 +1701,14 @@
       },
       "scope": "Actual native actor ABI admission before policy/learner loads; parent duplicate graph removed; completion receipt and build admission-source fingerprint mandatory. Math and asset ABI unchanged.",
       "gpu_executed": false
+    },
+    "remaining_memory_budget": {
+      "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/memory-budget.json",
+      "sha256": "dfcb31077cf6d898ee26ac0e65ef924a598289cfcba2ea3787ad71fed526a76f",
+      "listed_explicit_native_GiB": 41.75777053833008,
+      "duplicate_full_rollouts_GiB": 41.3671875,
+      "optional_minibatch_gather_saving_GiB": 20.350799560546875,
+      "status": "read-only source-derived estimate; no implementation or measured speedup; do not delay qualified strength run solely for this optional change"
     }
   },
   "bridge_execution_probe_retry": {

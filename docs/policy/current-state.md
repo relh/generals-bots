@@ -243,6 +243,15 @@ and eight negative cases with further construction forbidden. Math and asset
 ABI remain unchanged. CUDA validation and startup-time measurement are pending;
 the completed bridge comparison used its sealed original startup code.
 
+The stateless source still allocates two complete rollout copies: each stores
+float32 observations and action masks for all 4,096×128 rows. These total
+**41.37 GiB**; listed explicit native arrays total **41.76 GiB**, excluding
+JAX allocations and small native buffers. Replacing only the full transposed
+observation/mask copy with one 8,192-row gather buffer could save **20.35 GiB**.
+The supported plain-PPO reward-baseline path does not read the full copy.
+This is a source-derived opportunity, not an implemented or measured saving.
+It will not delay strength work if the current execution path qualifies.
+
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
 
