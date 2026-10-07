@@ -1668,7 +1668,7 @@
     "job_id": "job-zwt6d",
     "context_id": "ctx-f76d9c6f",
     "submitted_at": "2026-10-07T18:32:06.964246+00:00",
-    "last_observed_at": "2026-10-07T18:57:12.762104+00:00",
+    "last_observed_at": "2026-10-07T19:02:12.848389+00:00",
     "archive_sha256": "6892addb01647dbd6b1397ac56f052f8bd3a58824387b8215d02f38a89a51942",
     "source_revisions": {
       "baseline": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1694,9 +1694,10 @@
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/collect_and_audit.py": "3b833253e532148575ead855ae84d21c667299e49f0f76467920c97dd735f249",
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/guard-admission.json": "2175f076f9b3f3aa8c09dda8a273bf01b5b24a33144a9ce622c505c97af8eda6",
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/allocation-deadline.json": "35a73199a8783a6a7005e96b07a903a62c919ad5204715b14c2586aae558b296",
-      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T185712762104Z-sanitized.log": "bd0b32f95a2e69c83c83d0e7d973323135bf91e1e3302074a3d390f47befcc4f"
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T185712762104Z-sanitized.log": "bd0b32f95a2e69c83c83d0e7d973323135bf91e1e3302074a3d390f47befcc4f",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T190212848389Z-sanitized.log": "80b8b9f8629459ba189aec7f12884e0d5e1909cbb43133e3c4a3953ab191c9bf"
     },
     "aggregate_deadline": "2026-10-07T19:37:27.628299+00:00",
-    "runtime_phase": "candidate build; baseline build and mandatory CUDA lifetime checks completed per runner phase receipt"
+    "runtime_phase": "Both native builds and mandatory CUDA lifetime gates completed; first baseline training run initializing, no completed epochs yet"
   }
 }
