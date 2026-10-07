@@ -173,15 +173,23 @@ terminal and recovery audit hashes are in the manifest. The probe billed
 $1.2771. There is no policy-strength result; the selected source and champion remain
 unchanged.
 
-Matched H100 job `job-9sump` is submitted from `codex/product-logical-pair`
-at `7ce0fc0`, context `ctx-3bbefa89`, bounded to 103 minutes/$5.0985 with
-zero restarts. Each arm trains 16,777,216 steps from the same zero-Q source
-with a fresh optimizer. Control freezes the 64 Q gradient words before global
-clipping; treatment trains Q/U/V. Both require trained serving parity and
-the corresponding control-invariance or Product-activation check before
-4,096 paired fresh development games per arm (map/sample/bootstrap seeds
-10445701/10445703/10445711). The recovered probe qualification and sealed
-context hashes are recorded in the manifest. Strength remains unmeasured.
+The corrected matched Product experiment `job-9sump` **failed the development
+strength gate**. Both arms completed 16,777,216 steps on one H100 at
+37,170.37/37,873.87 steady SPS (control/Product), with 4,096 environments,
+H128, minibatch 8,192 and replay 0.5. Each measurement covered the final
+1,048,576 steps after epoch 30. Both included all 13 opponents on both seats
+with zero illegal actions or nonfinite rewards. Trained serving parity,
+control invariance and Product activation passed: Product U/V/Q all moved,
+with legal-logit change max 0.01582146 and RMS 0.00154340.
+
+Over 4,096 paired fresh games (2,616 distinct initial states), control scored
+2,801W/1,262L/33D versus Product 2,781W/1,283L/32D. Product-minus-control
+signed-score delta was −0.010010, clustered 95% CI [−0.040109,+0.019303].
+No broad stratum breached the −0.10 guard, but the overall improvement gate
+failed. No independent confirmation or promotion follows; the selected source
+and champion remain unchanged. The provider job succeeded on attempt 2 after
+one infrastructure start failure, with zero restarts and one billed attempt
+($2.728). Exact source, result and independent audit hashes are in the manifest.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
