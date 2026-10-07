@@ -75,8 +75,14 @@ as of 2026-10-07 10:10:59 UTC on attempt 3 and started publishing. One H100,
 between native uptimes 114.749 and 203.290 seconds (88.541 seconds). All 13
 opponents had balanced seats; console reports zero illegal actions. The final
 dashboard showed 66.9/79 GiB VRAM, 6.1 GiB RAM and 54% GPU utilization (a
-snapshot, not an interval mean). Collected training audits, GPU CSV and trained
-serving parity remain pending. Candidate and pair qualification are unproven.
+snapshot, not an interval mean). Trained control checkpoint `59f07adc` passed
+GPU serving parity on 46/46 states (maximum probability difference 0.00000447),
+with the source sampler unchanged. Its 4 Mi reward audit reports zero nonfinite
+or clipped rewards. Candidate training was initializing with no observed steps
+as of 10:21:42 UTC; pair qualification remains pending. Collected training
+audits and GPU CSV still await independent verification. The log monitor now
+reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
+recovered completely.
 The provider preempted the first two attempts; no replacement job was submitted,
 and runtime restarts remain zero.
 

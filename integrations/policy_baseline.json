@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T10:10:59.546480Z",
-    "last_observed_phase": "control 4 Mi training complete; publishing; trained parity and pair qualification pending",
+    "last_observed_utc": "2026-10-07T10:21:42.809597+00:00",
+    "last_observed_phase": "control trained serving parity passed; candidate initializing with no observed steps",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -537,7 +537,81 @@
       "steady_interval_seconds": 88.541,
       "warmup_epochs": 2,
       "collected_audit_verified": false,
-      "trained_serving_parity_verified": false
+      "trained_serving_parity_verified": true,
+      "trained_serving_parity_scope": "GPU console result; terminal artifact verification pending",
+      "trained_checkpoint_sha256": "59f07adce7b6d07141582bdfbae377f73fbdc74ac8bd83fbb3efe562b18e441c",
+      "trained_matching_top_actions": 46,
+      "trained_parity_states": 46,
+      "max_action_probability_difference": 4.470348358154297e-06,
+      "parity_log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T101804366539Z-sanitized.log",
+      "parity_log_sha256": "958c08f2177e0a1fcb0098aac9014ddf01ff90bda5972fcd0622fa21a98632b2",
+      "nonfinite_rewards": 0,
+      "native_clipped_rewards": 0,
+      "native_clipped_terminal_rewards": 0,
+      "serving_action_selection": {
+        "doomed_attack_route_penalty": 4.0,
+        "early_route_temperature": 0.1,
+        "early_route_turns": 100,
+        "mode": "structured_sample",
+        "move_temperature": 0.05,
+        "neutral_route_bias": 6.0,
+        "split_temperature": 0.15,
+        "weak_owned_route_penalty": 4.0
+      }
+    },
+    "log_monitoring": {
+      "pagination": "Explicit attempt and byte offsets recover all pages beyond 64 KiB; complete through observed end.",
+      "latest_observation": {
+        "observed_at": "2026-10-07T10:21:42.809597+00:00",
+        "stream": "run",
+        "attempt": 3,
+        "raw_bytes": 78033,
+        "raw_sha256": "b8a3ae2302cdf6ae46bae4725fd12907508403c9a97da85786ee39fde551498f",
+        "sanitized_log": "job-wgtyc-run-attempt3-20261007T102142809597Z-sanitized.log",
+        "sanitized_sha256": "fd07922958b2393178a0967e3fdf7b32c4857c4644fef2d031ff8a6670e9979f",
+        "pages": [
+          {
+            "attempt": 3,
+            "attempt_state": "live",
+            "eof": false,
+            "expired": false,
+            "truncated": true,
+            "next_offset": 65536,
+            "offset": 0,
+            "output_bytes": 65536
+          },
+          {
+            "attempt": 3,
+            "attempt_state": "live",
+            "eof": false,
+            "expired": false,
+            "truncated": false,
+            "next_offset": 78033,
+            "offset": 65536,
+            "output_bytes": 12497
+          }
+        ],
+        "complete_to_observed_end": true,
+        "tail_log": "job-wgtyc-run-attempt3-20261007T102142809597Z-tail-sanitized.log",
+        "tail_sha256": "3a93b0f2434c60dfda6749907f332ce66e06592f6fc7915b9cd0f2cd0bf4ffbe",
+        "tail_next_offset": 78033,
+        "tail_attempt_state": "live",
+        "tail_eof": false
+      },
+      "recovered_preempted_attempts": [
+        {
+          "attempt": 1,
+          "log": "job-wgtyc-run-attempt1-20261007T101814405165Z-sanitized.log",
+          "sha256": "d127b7afe1d0d53da39498b7df67161b6c53a47dff3da2d482fa8c5351f3c160",
+          "eof": true
+        },
+        {
+          "attempt": 2,
+          "log": "job-wgtyc-run-attempt2-20261007T101815557048Z-sanitized.log",
+          "sha256": "11511610a1097c58af296a0e44bcb45d1900424c65399a18467ceec51e909830",
+          "eof": true
+        }
+      ]
     }
   },
   "route_shortcut_development": {
