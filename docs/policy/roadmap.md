@@ -18,8 +18,10 @@ artifact identities. Git history retains superseded attempts.
    global readout already distinguishes source sites.
    Global temperature2 and log-gap4 exploration also failed completed GPU
    trials. Earlier public states show available merges but do not establish
-   their strategic value. Prepare one matched monotone stack-mass shaping
-   experiment; the old normalized-concentration formula rewards attrition
+   their strategic value. Complete bounded matched monotone stack-mass job
+   `job-kzmub`, requiring both 4 Mi qualification arms to pass ≥30,000 SPS
+   and serving parity before continuation to 32 Mi total steps per arm.
+   The old normalized-concentration formula rewards attrition
    and is rejected. Keep the new formula's location blindness, expansion
    penalty and saturation explicit in its preregistered evaluation.
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while

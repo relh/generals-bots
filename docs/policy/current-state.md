@@ -271,9 +271,25 @@ the surviving army becomes more concentrated. A monotone alternative,
 `F = sum(army²) / (10000 + sum(army²))`, cannot increase when own troops
 merely disappear. Eleven engine cases cover merging, transport, sacrifices,
 captures, growth and terminal treatment. It still rewards location-blind
-merging and can discourage expansion. An isolated matched training experiment
-is being prepared with weight 0.05; it has no GPU submission or strength
-result. All evidence identities are in the manifest.
+merging and can discourage expansion.
+
+Matched job `job-kzmub` was submitted at 2026-10-07 08:43:52 UTC from isolated
+source `a3569ae`, context `ctx-cac8804f`. It was building at 08:45:08 UTC;
+GPU qualification and strength remain unproven. One H100 is bounded to
+120 minutes/$5.94 with zero runtime restarts. Each arm starts the exact
+selected policy with a fresh optimizer and trains 4,194,304 qualification
+steps. **Both** must pass ≥30,000 steady end-to-end SPS, native serving parity
+and legality/reward/population audits before either continues its own authentic
+learner to 33,554,432 total steps. Candidate adds the fixed 0.05 monotone
+potential after turn 100; control retains the original reward.
+
+CPU admission passed using explicitly reconstructed receipts for a retained
+binary fixture. This does not qualify a fresh CUDA build or GPU training;
+both builds and training gates remain mandatory. The final 4,096-game paired
+panel must improve over both source and control with positive clustered lower
+confidence bounds and no negative opponent/seat point delta. A positive result
+still requires independent confirmation before hosted qualification. Exact
+input, context, CPU fixture and timing-budget hashes are in the manifest.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
