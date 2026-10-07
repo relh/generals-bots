@@ -1254,7 +1254,7 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Implemented and CPU-admitted; job-zsz35 building, GPU coverage/throughput/strength pending",
+    "status": "Implemented and CPU-admitted; job-zsz35 starting, GPU coverage/throughput/strength pending",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
@@ -1264,7 +1264,7 @@
     "gpu_job_submitted": true
   },
   "row_rotation_trial": {
-    "status": "building",
+    "status": "starting",
     "job_id": "job-zsz35",
     "submitted_at": "2026-10-07T16:04:23.411330+00:00",
     "source_revision": "b068a18b55b75de86d659921a7807447fdb951be",
@@ -1285,8 +1285,13 @@
       "integrations/softmax/local-output/row-rotation-launch-20261007/guard-admission.json": "64529355cb70c29edb5268389231e21cc8dbf85df1022b82a373d3be48bec520",
       "integrations/softmax/local-output/row-rotation-launch-20261007/submission.json": "633c7b2b12a0a5a7f1eff71d6999b954a96e33a50452b57686d848548264d4df",
       "integrations/softmax/local-output/row-rotation-launch-20261007/validation.json": "effa4078829a292814f0796df9fdb3b4dea36fc55879c18168d983a8f2e388ba",
-      "integrations/softmax/local-output/row-rotation-launch-20261007/collect_and_audit.py": "ffe60501b650c38525582d2b6fcab58aa9616fb380f4973ffbac06198596d4f4"
-    }
+      "integrations/softmax/local-output/row-rotation-launch-20261007/collect_and_audit.py": "ffe60501b650c38525582d2b6fcab58aa9616fb380f4973ffbac06198596d4f4",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/guard-starting-admission.json": "d36087e80b8a150442796bfe9c5dc2edd0c0251102450d3e4776579cefb48a8e"
+    },
+    "attempt": 1,
+    "aggregate_deadline_utc": "2026-10-07T17:35:08.728915+00:00",
+    "guard_pid": 80704,
+    "guard_sha256": "6307b1e7f05746911ccbbbece86d6f008a56c488226f3645957d571e8ebbb8f3"
   },
   "opponent_coverage_audit": {
     "receipt": "integrations/softmax/local-output/opponent-coverage-20261007/receipt.json",

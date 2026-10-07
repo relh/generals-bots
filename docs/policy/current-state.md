@@ -2,7 +2,7 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. Row-rotation trial `job-zsz35` is **building**; training has not started.
+job `35892`. Row-rotation trial `job-zsz35` is **starting** on attempt 1; training has not started.
 The completed first-contact diagnostic did not pass its improvement gate.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -267,3 +267,10 @@ runtime across preemptions at 75 minutes from a pre-allocation observation
 are recorded in the launch receipts. The validated maximum runtime quote was
 **$3.7125**, excluding any separate build fees. GPU coverage, throughput and
 strength are pending; there is no promotion or new qualification claim.
+
+The image build completed and worker download began at 16:20:19 UTC. The external
+guard now freezes its bound on `starting` as well as `running`, so startup cannot
+escape the aggregate limit. Its conservative deadline is **2026-10-07 17:35:08 UTC**,
+based on the last pre-allocation observation at 16:20:08. The guard was replaced
+as PID 80704; the provider job was not restarted. A focused starting/preemption
+fixture passed, and the new guard process and receipt were verified live.
