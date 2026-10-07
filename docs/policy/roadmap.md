@@ -16,8 +16,15 @@ See [current state](current-state.md) for live work and results,
 2. The controlled continuation completed technically, but `job-mwvdb` failed
    strength selection: both paired intervals include zero and sentinel seat 1
    regressed beyond the guard. Do not extend, confirm or promote this candidate.
-   Use retained training metrics, policy changes and opponent-seat outcomes to
-   choose one new bounded learning intervention; keep the qualified execution path.
+   Next test: set retained-midgame reset probability from **0.25 to 0.0**,
+   holding other training settings fixed. Both trained policies gained frozen-pool
+   wins but lost scripted-opponent wins. The retained pool has 384 positions
+   with median turn 385.5; this suggests a distribution hypothesis, not causation.
+   Start from selected source weights with a fresh optimizer; qualify 4,194,304
+   steps at ≥30K SPS before continuing to 33,554,432. Compare against source
+   and the retained stateless control on fresh maps **17001101**, sampling
+   **17001103**, bootstrap **17001111**. Implementation is in progress; no job
+   has been submitted.
 3. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
    The unused confirmation seeds remain reserved: maps **16001101**, action

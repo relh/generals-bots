@@ -2111,5 +2111,22 @@
         "measured_seconds": 24.270000000000003
       }
     ]
+  },
+  "fresh_start_experiment": {
+    "status": "implementation in progress; no GPU submission",
+    "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
+    "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
+    "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
+    "initializer": "selected source with fresh optimizer, not rejected candidate",
+    "control_policy_sha256": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
+    "qualification_steps": 4194304,
+    "conditional_total_run_steps": 33554432,
+    "evaluation_seeds": {
+      "maps": 17001101,
+      "actions": 17001103,
+      "bootstrap": 17001111
+    },
+    "acceptance": "Positive paired lower95 against source and retained stateless control, same stratum guard, then independent confirmation and hosted gates",
+    "limitation": "Grouped outcome association suggests a distribution mechanism but does not prove causation."
   }
 }
