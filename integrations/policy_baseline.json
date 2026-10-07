@@ -2281,6 +2281,12 @@
         "terminal_observed_at": "2026-10-07T22:36:55.055887+00:00"
       },
       "next": "Diagnose lower-clock allocation and model/environment slowdown before any new GPU launch. No unchanged retry."
+    },
+    "performance_diagnostic": {
+      "path": "integrations/softmax/local-output/fresh-start-launch-20261007/performance-diagnostic.json",
+      "sha256": "8a198a054c4f348b85d0647f36257d1fa2969caab13a2d043ab619f6876f7377",
+      "finding": "Lower1590MHz GPU than1980MHz successful control; optimizer and rollout model both slow; no last-minute CPU quota throttle or GPU throttle flags. Reset-distribution cause not established.",
+      "next": "Adapt single-minibatch gather scratch to remove duplicate full transposed observation/action-mask buffers; preserve precision, PPO row rotation and loss math; qualify correctness then bounded GPU profile before long training."
     }
   },
   "runner_cleanup": {
