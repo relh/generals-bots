@@ -26,8 +26,11 @@ artifact identities. Git history retains superseded attempts.
    gate: forced merge delta −0.03125, clustered 95% CI [−0.08105, +0.01758]
    over 256 maps and four replicas. Different-source and pass alternatives
    had no established gain. Do not train a merge teacher from this evidence.
-   Audit actor sampling/PPO agreement and learning signals for a concrete
-   mismatch before preregistering another intervention.
+   A native learner audit found permanent row starvation at replay ratio0.5.
+   Row rotation is implemented and CPU-admitted; bounded `job-zsz35` is building.
+   Verify native coverage and ≥30K SPS, then compare the corrected candidate
+   with the selected source and retained control on fresh maps. Actor sampling
+   and inspected PPO gradients showed no separate probability mismatch.
 
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its

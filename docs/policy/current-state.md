@@ -2,8 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. No GPU experiment is active. The completed first-contact diagnostic did not
-pass its improvement gate; an optimizer row-selection repair awaits GPU qualification.
+job `35892`. Row-rotation trial `job-zsz35` is **building**; training has not started.
+The completed first-contact diagnostic did not pass its improvement gate.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -226,3 +226,25 @@ keeping the gradient budget unchanged. It addresses permanent row starvation;
 it still trains on half of each rollout at replay ratio 0.5. Native runtime
 coverage, ≥30K SPS and a fresh paired strength comparison are required before
 claiming the corrected training setup qualifies. No strength gain is established.
+
+Trial `job-zsz35` was submitted **2026-10-07 16:04:23 UTC** with source
+`b068a18` and context `ctx-739342ae`. The candidate repeats the retained
+`job-wgtyc` control's 4,194,304-step qualification and 29,360,128-step continuation
+with unchanged model, sampler, reward, optimizer settings and training seed.
+Only the optimizer row schedule changes learning behavior. The shared audit
+also now authenticates the starting learner and checks incremental steps, so
+continuation audits correctly expect 29,360,128 newly collected actions.
+
+Fresh 4,096-game panels compare candidate, source and historical control on
+seeds 14001101/14001103 (bootstrap 14001111). Both paired improvements must
+have positive clustered lower bounds and satisfy the stratum guard before a
+fresh independent confirmation. A historical control on another allocation
+is not an identical floating-point training trajectory.
+
+The job has one H100, a 75-minute provider limit, 73-minute internal limit and
+zero application restarts. A detached guard conservatively caps aggregate
+runtime across preemptions at 75 minutes from a pre-allocation observation
+(or submission when no such observation exists). Its PID and observed state
+are recorded in the launch receipts. The validated maximum runtime quote was
+**$3.7125**, excluding any separate build fees. GPU coverage, throughput and
+strength are pending; there is no promotion or new qualification claim.

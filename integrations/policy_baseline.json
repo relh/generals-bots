@@ -1052,7 +1052,7 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Completed contact counterfactual failed its primary gate; audit learning path for a concrete mechanism before another intervention.",
+    "next_action": "Verified permanent optimizer row starvation; bounded correction trial job-zsz35 building. Await native coverage, throughput and fresh paired strength.",
     "opening_comparison": {
       "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
       "files_sha256": {
@@ -1254,13 +1254,38 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Implemented and CPU-admitted; GPU coverage, throughput and strength remain unqualified",
+    "status": "Implemented and CPU-admitted; job-zsz35 building, GPU coverage/throughput/strength pending",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
     "before": "Rows0..2047 always optimized; rows2048..4095 never optimized at replay_ratio=.5",
     "after": "Rotate contiguous minibatch blocks by epoch*updates modulo64; alternate halves at .5 with32 updates/epoch",
     "limitation": "Half of each fresh rollout is still unused; no strength gain established",
-    "gpu_job_submitted": false
+    "gpu_job_submitted": true
+  },
+  "row_rotation_trial": {
+    "status": "building",
+    "job_id": "job-zsz35",
+    "submitted_at": "2026-10-07T16:04:23.411330+00:00",
+    "source_revision": "b068a18b55b75de86d659921a7807447fdb951be",
+    "context_id": "ctx-739342ae",
+    "plan_path": "integrations/row_rotation_plan.json",
+    "plan_sha256": "436b69f15a2ddb320b6c658422d9792d413c9fc543a189971968fac395bf5d8c",
+    "runtime_minutes": 75,
+    "internal_minutes": 73,
+    "aggregate_minutes": 75,
+    "max_restarts": 0,
+    "quoted_runtime_max_usd": 3.7125,
+    "qualification": "Pending native row coverage, >=30000 SPS, legality/reward/serving parity and fresh paired strength",
+    "receipts": {
+      "integrations/softmax/local-output/row-rotation-launch-20261007/ready.json": "24d53b96c0a8f36fa517764187d8f0301bc4b7b4bc6695fee30917d3349f189f",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/cpu-admission.json": "0c6331b5f09d83285f4193fa1ee7cf7e62f824f37332e0b9e9741cdec3831ce3",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/reuse-audit.json": "7eabbe2dcfa9800d60498f2e4c8ff1d042cfa4eabf514f38fa107a38227702a6",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/source-sampling-reuse-audit.json": "c1af4153baf42f64ee88b2978bf6d14819a73c2f8cb2fbb1d7e2e92af64a3259",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/guard-admission.json": "64529355cb70c29edb5268389231e21cc8dbf85df1022b82a373d3be48bec520",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/submission.json": "633c7b2b12a0a5a7f1eff71d6999b954a96e33a50452b57686d848548264d4df",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/validation.json": "effa4078829a292814f0796df9fdb3b4dea36fc55879c18168d983a8f2e388ba",
+      "integrations/softmax/local-output/row-rotation-launch-20261007/collect_and_audit.py": "ffe60501b650c38525582d2b6fcab58aa9616fb380f4973ffbac06198596d4f4"
+    }
   }
 }
