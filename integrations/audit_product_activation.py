@@ -112,11 +112,14 @@ def audit(source_bundle, trained_bundle, checkpoint, parity_report, views):
         raise ValueError("Fixed public Classic view contents differ")
     source = SpatialPlayerPolicy(source_bundle)
     trained = SpatialPlayerPolicy(trained_bundle)
+    # Trial materializes these two serving defaults when publishing an asset.
+    samplers = [{"full_action_temperature": 1.0, "route_half_weight": 0.0,
+                 **policy.asset.metadata["sampler"]} for policy in (source, trained)]
     checkpoint_sha = sha(checkpoint)
     trained_manifest_sha = sha(trained_bundle / "spatial-policy.json")
     if (source.asset.metadata["abi_sha256"] != trained.asset.metadata["abi_sha256"]
             or source.asset.metadata["factory_source_sha256"] != trained.asset.metadata["factory_source_sha256"]
-            or source.asset.metadata["sampler"] != trained.asset.metadata["sampler"]
+            or samplers[0] != samplers[1]
             or sha(source_bundle / "policy.bin") != source.asset.metadata["policy_sha256"]
             or sha(trained_bundle / "policy.bin") != checkpoint_sha
             or checkpoint_sha != trained.asset.metadata["policy_sha256"]):
