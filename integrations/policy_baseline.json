@@ -1,6 +1,6 @@
 {
   "schema": "generals-policy-baseline-v1",
-  "audited_utc_date": "2026-10-06",
+  "audited_utc_date": "2026-10-07",
   "ready_for_champion": false,
   "game": {
     "contract": "coworld-classic-v1",
@@ -152,7 +152,30 @@
     "strength_gate_passes": false,
     "summary_sha256": "de08014aca9995c500ffcbd9fcd0577f3ae194c468da76da10c272c9fb6a1a62",
     "promotion_report_sha256": "712c46327c85dd74d6e8069b3b62221d6d6b96b553cf09a8d915cffa31a56964",
-    "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af"
+    "replay_audit_sha256": "fdbdd69c1fee6e7091068fece252d316c739e8cb294c6fb0b8ef6091b95b36af",
+    "recovery": {
+      "path": "integrations/softmax/local-output/penalty8-hosted-recovery-20261007",
+      "provenance": "New Observatory GET reconstruction; original three hash-pinned files unavailable locally",
+      "summary_sha256": "071dc4ba040b215b2e1924afd0bba6de190f17a0ef01af5b3aeccda6ac497c16",
+      "replay_audit_sha256": "e900c10ea3d9ec54a63ecbc887bd827d9eefff922387bc11a835f4fe29d264df",
+      "replays": 512,
+      "unique_seeds": 512,
+      "audited_turns": 277894
+    }
+  },
+  "public_route_diagnosis": {
+    "path": "integrations/softmax/local-output/public-route-diagnosis-20261007",
+    "receipt_sha256": "51b96d45f483df1f6e8a282b1fb5d40b1efb4ca2cf5c0f17e00610a50132ab92",
+    "attribution_sha256": "eb20bd7f7ad753c410a4004c48faea1a5673e4240f739e2240784f85e7ab0e63",
+    "population": "23 Daveey losses from original 32-game screen, final 50 public states each",
+    "states": 1150,
+    "castle_goal_states": 57,
+    "visible_threat_states": 133,
+    "castle_threat_overlap": 0,
+    "potential_reinforcement_states": 6,
+    "potential_reinforcement_games": 4,
+    "canonical_public_views_verified": 133,
+    "scope": "Static public defense feasibility and frozen logit attribution; not proved rescue or strength improvement"
   },
   "classic_siege_pressure_rejection": {
     "job": "job-m9ina",

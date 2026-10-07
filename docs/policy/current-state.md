@@ -49,8 +49,12 @@ requests, illegal actions, candidate timeouts or forfeits. Hosted acceptance
 requires **at least 65% wins against each** named opponent, each Wilson 95%
 lower bound above 50%, broad-pool preservation and clean execution. The
 penalty-8 candidate was rejected and the selected source remains unchanged.
-The panel path and summary, promotion-report and replay-audit hashes are in the
-manifest.
+The manifest retains the original evidence hashes. Those local files went
+missing; a separate 2026-10-07 recovery fetched all 512 outcomes and replays
+from Observatory, reproduced both win counts, and passed the existing replay
+audit over 277,894 turns and 512 unique seeds. The new recovery hashes and
+durable local path are recorded separately; they do not replace the original
+files' identities.
 
 ## Development status
 
@@ -198,6 +202,29 @@ and serving preserve their native parameter rows. The earlier rationale that
 only the Product residual can distinguish source sites was incorrect.
 The failed Product comparison remains valid, but does not establish that
 more global source discrimination is the next missing capability.
+
+## Public loss diagnosis
+
+The final 50 public states of 23 verified Daveey losses do **not** support
+castle priority as the immediate failure: 57 castle-goal states and 133
+visible nearby threat states had zero overlap. A static public path/army
+screen found six potentially timely capital reinforcements in four games;
+all six actual moves increased distance from the general. These are possible
+defenses, not proven rescues under simultaneous opponent actions.
+
+The route hint also has a direct learned action shortcut, worth roughly
+12.73–14.44 logits at the selected temperature. With network inputs fixed,
+removing its full-route contribution equally from full/half heads raises one
+defense probability from 4.31e−7 to 0.17749 and another from 2.03e−9 to
+0.003569. Most other defenses remain unlikely. Conditional split logits stay
+within 4.77e−7 of baseline. All 133 saved public views match the canonical
+Classic observation code. The manifest binds the retained replays, scripts
+and attribution; this diagnostic uses the original screen, not new holdout
+strength evidence.
+
+The next bounded comparison isolates this direct shortcut using a candidate
+checkpoint, keeping encoded hints and the learned network intact. Require
+fresh paired development and independent confirmation before hosted testing.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new

@@ -8,8 +8,11 @@ artifact identities. Git history retains superseded attempts.
 
 ## Next decisions
 
-1. Diagnose the recurring full-game losses against strong opponents using
-   public observations and paired Classic evidence. The source-mirror,
+1. Test the direct route shortcut identified in public loss diagnostics:
+   subtract its full-route contribution equally from full/half heads while
+   preserving encoded observations, network weights and conditional splits.
+   Use an isolated checkpoint ablation and fresh paired maps; the static
+   missed-defense examples do not establish a strength gain. The source-mirror,
    hard-opponent weighting, siege-opponent and Product Q-head changes failed
    their development gates; avoid extending those branches without a new
    mechanism and preregistered comparison. The existing dense global readout
