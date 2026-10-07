@@ -94,9 +94,12 @@ resumed warmup epochs 9–10, epochs 10–64 measured **38,261.28 SPS**: 28,311,
 steps in 739.953 seconds (uptime 49.007→788.960), with the same H100 and batch
 settings; dashboard VRAM was 66.6 GiB. Continuation reports zero illegal
 actions, nonfinite or clipped rewards, and one zero-reward terminal event.
-Control is publishing; final trained parity remains pending. Candidate
-continuation has not started. These are console observations; learner-byte
-checks, collected training audits and GPU CSV await independent verification. The log monitor now
+Control's final checkpoint `f4b185ef` was exported and passed GPU/native versus
+NumPy serving parity on **46/46 states**, with maximum probability difference
+0.00000268. By 10:58:56 UTC the candidate's 512-game initializer self-match
+had reached turn 201; candidate continuation training was not yet observed.
+These are runtime console results. Checkpoint artifacts, learner-byte checks,
+training audits and GPU CSV await terminal collection and independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
 recovered completely.
 The provider preempted the first two attempts; no replacement job was submitted,
