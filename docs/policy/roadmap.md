@@ -19,7 +19,7 @@ artifact identities. Git history retains superseded attempts.
    Global temperature2 and log-gap4 exploration also failed completed GPU
    trials. Earlier public states show available merges but do not establish
    their strategic value. The repaired monotone stack-mass retry
-   `job-wgtyc` is building on one H100, capped at 150 minutes/$7.425 with
+   `job-wgtyc` is starting on one H100, capped at 150 minutes/$7.425 with
    zero runtime restarts. Its predecessor `job-kzmub` failed before training.
    Require both 4 Mi qualification arms to pass ≥30,000 SPS and serving parity,
    then verify each trained initializer with 512-game self-play before its

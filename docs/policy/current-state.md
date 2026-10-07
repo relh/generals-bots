@@ -58,7 +58,7 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Matched experiment: retry building
+## Matched experiment: retry starting
 
 `job-kzmub` **failed before training** at 2026-10-07 09:12:58 UTC, on
 attempt 1 with zero runtime restarts. Both native builds completed. Source
@@ -68,8 +68,9 @@ for `control/qualification/sampling-gate.json`, while the authentic gate was
 saved at the shared experiment root. The artifact and all 34 retained file
 hashes were independently verified; exact hashes are in the manifest.
 
-`job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **building**
-as of 09:27:42 UTC, attempt 0. It uses repaired source `6b297db` and context
+`job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **starting**
+as of 09:38:11 UTC, attempt 1. The image build succeeded; the node is
+downloading the image, with no infrastructure failures or runtime restarts. It uses repaired source `6b297db` and context
 `ctx-66b75696`: one H100 capped at **150 minutes/$7.425**, with zero runtime
 restarts. Qualification binds the authentic source gate at each stage; each
 continuation requires fresh 512-game self-play of its exact trained initializer.
