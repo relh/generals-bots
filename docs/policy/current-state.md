@@ -191,6 +191,14 @@ and champion remain unchanged. The provider job succeeded on attempt 2 after
 one infrastructure start failure, with zero restarts and one billed attempt
 ($2.728). Exact source, result and independent audit hashes are in the manifest.
 
+Architecture correction: the actual global readout is a dense 32×3,530
+matrix, with distinct columns for different source sites. Its default-semantic
+edges are excluded from the pinned Fabric edge-sharing rule; DirectSpatial
+and serving preserve their native parameter rows. The earlier rationale that
+only the Product residual can distinguish source sites was incorrect.
+The failed Product comparison remains valid, but does not establish that
+more global source discrimination is the next missing capability.
+
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
 ≥30,000 steady end-to-end SPS gate for each long-training setup. Preserve the

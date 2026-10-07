@@ -12,7 +12,9 @@ artifact identities. Git history retains superseded attempts.
    public observations and paired Classic evidence. The source-mirror,
    hard-opponent weighting, siege-opponent and Product Q-head changes failed
    their development gates; avoid extending those branches without a new
-   mechanism and preregistered comparison.
+   mechanism and preregistered comparison. The existing dense global readout
+   already distinguishes source sites; do not reuse the rejected Product
+   rationale that it supplies this missing capability.
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its
    exact GPU training setup before a long run.
