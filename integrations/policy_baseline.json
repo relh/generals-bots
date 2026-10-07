@@ -227,5 +227,27 @@
     "result_archive_sha256": "46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23",
     "qualification_marker_sha256": "0ebc6a156dd2cb982d17ed59697fdcc5128a8a6f3637e11ed56293faa196b5ea"
   },
-  "active_experiments": []
+  "active_experiments": [
+    {
+      "kind": "source_global_product_single_abi_matched_development",
+      "branch": "codex/product-single-abi-pair",
+      "revision": "83f68b4a183e09422e0d8a02c2677048b9439043",
+      "job": "job-8tv8j",
+      "last_observed_state": "SUBMITTED",
+      "context_archive_sha256": "5b849153bada2c164152febb8116437876e5ffbf36bbe193be7a07063905a67c",
+      "input_seal_sha256": "fd83a270e3033143145990513db126fcb558a08df4ea03bf6913b976a2d96808",
+      "qualified_probe_marker_sha256": "0ebc6a156dd2cb982d17ed59697fdcc5128a8a6f3637e11ed56293faa196b5ea",
+      "agent_steps_per_arm": 16777216,
+      "arms": 2,
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "map_seed": 10443701,
+      "sample_seed": 10443703,
+      "games_per_arm": 4096,
+      "minimum_steady_sps": 30000,
+      "max_cost_usd": 3.96
+    }
+  ]
 }
