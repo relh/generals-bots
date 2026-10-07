@@ -372,9 +372,7 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [
-    "job-wgtyc"
-  ],
+  "active_experiments": [],
   "monotone_force_matched_training": {
     "hardware": "one H100",
     "qualification_steps_per_arm": 4194304,
@@ -397,9 +395,9 @@
     "evaluation_games_per_arm": 4096,
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
-    "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T11:26:00.885582Z",
-    "last_observed_phase": "both arms completed training and final runtime parity; frozen source/control/candidate evaluation underway",
+    "last_observed_state": "succeeded",
+    "last_observed_utc": "2026-10-07T11:34:43.118323+00:00",
+    "last_observed_phase": "terminal: technically verified; strength rejected",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -417,7 +415,7 @@
     "execution_minutes": 148,
     "max_restarts": 0,
     "gpu_qualification_passed": true,
-    "has_strength_result": false,
+    "has_strength_result": true,
     "selected_for_confirmation": false,
     "qualification": "Both exact-source fresh-optimizer arms must pass 4 Mi native GPU training, steady SPS, legality/reward/population audits and serving parity before either authentic-learner continuation. Each continuation additionally verifies its trained initializer through fresh balanced 512-game self-play.",
     "sampling_gate_seed": 11008101,
@@ -468,7 +466,8 @@
       "rejection_tests_passed": 6,
       "configuration_generated": false,
       "context_created": false,
-      "submitted": false
+      "submitted": false,
+      "status": "Blocked by rejected development result; no confirmation."
     },
     "preempted_count": 2,
     "attempt_history": [
@@ -485,6 +484,13 @@
         "ended_at": "2026-10-07T09:51:50.761150+00:00",
         "outcome": "severed",
         "started_at": "2026-10-07T09:42:47.821898+00:00"
+      },
+      {
+        "attempt": 3,
+        "end_cause": "process_exit",
+        "ended_at": "2026-10-07T11:34:43.118323+00:00",
+        "outcome": "completed",
+        "started_at": "2026-10-07T09:52:36.880086+00:00"
       }
     ],
     "startup_checks": {
@@ -504,7 +510,7 @@
     },
     "quoted_max_cost_usd_per_attempt": 7.425,
     "duration_and_execution_scope": "Per attempt; provider preemptions do not consume max_restarts.",
-    "aggregate_billing_verified": false,
+    "aggregate_billing_verified": true,
     "monitored_external_stop_deadline_utc": "2026-10-07T11:56:55Z",
     "automatic_external_watchdog_installed": false,
     "provider_limits_evidence": {
@@ -536,9 +542,9 @@
       "steady_interval_steps": 3145728,
       "steady_interval_seconds": 88.541,
       "warmup_epochs": 2,
-      "collected_audit_verified": false,
+      "collected_audit_verified": true,
       "trained_serving_parity_verified": true,
-      "trained_serving_parity_scope": "GPU console result; terminal artifact verification pending",
+      "trained_serving_parity_scope": "Independently verified from collected terminal artifacts.",
       "trained_checkpoint_sha256": "59f07adce7b6d07141582bdfbae377f73fbdc74ac8bd83fbb3efe562b18e441c",
       "trained_matching_top_actions": 46,
       "trained_parity_states": 46,
@@ -622,9 +628,9 @@
       "steady_interval_steps": 3145728,
       "steady_interval_seconds": 83.729,
       "warmup_epochs": 2,
-      "collected_audit_verified": false,
+      "collected_audit_verified": true,
       "trained_serving_parity_verified": true,
-      "trained_serving_parity_scope": "GPU console result; terminal artifact verification pending",
+      "trained_serving_parity_scope": "Independently verified from collected terminal artifacts.",
       "trained_checkpoint_sha256": "37e23e203c2abffbd6a9347a23d840b09a61f33f54896c9f99a8d7e78f0aa085",
       "trained_matching_top_actions": 46,
       "trained_parity_states": 46,
@@ -632,8 +638,8 @@
       "parity_log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T103147845384Z-sanitized.log",
       "parity_log_sha256": "cdcc2557d5e5559c4e0421eb708f5f85306dc0fae3ae08662309939556129195"
     },
-    "gpu_qualification_scope": "Runtime console records both training audits and trained serving parity passing. Independent collected artifact audit remains pending.",
-    "terminal_qualification_verified": false,
+    "gpu_qualification_scope": "Independent terminal audit verified both qualification and continuation stages, authentic learner resume, sampler gates and serving parity.",
+    "terminal_qualification_verified": true,
     "control_continuation_console": {
       "path": "integrations/softmax/local-output/monotone-force-retry-20261007/control-continuation-complete-console-attempt3.json",
       "sha256": "7fe3a8d32ddd6d8d0e1c71460876a03389957778556eb643a02a50b28da3ca9c",
@@ -649,9 +655,9 @@
         10
       ],
       "zero_reward_terminal_agents": 1,
-      "collected_audit_verified": false,
+      "collected_audit_verified": true,
       "trained_final_serving_parity_verified": true,
-      "trained_final_serving_parity_scope": "Runtime console only; exported checkpoint and bundle remain on provider; terminal collection and independent verification pending.",
+      "trained_final_serving_parity_scope": "Independently verified from collected terminal artifacts.",
       "trained_checkpoint_sha256": "f4b185ef31755097aea0435266d68f8a1c8aa10330bb03d801cf1fcb0f43e65b",
       "bundle_manifest_sha256": "84cf385713d30f0ac18b8841865a4a87073e596d57addc1c9e4fa2a8c49ce67f",
       "trained_parity_states": 46,
@@ -679,9 +685,9 @@
       "native_clipped_rewards": 0,
       "native_clipped_terminal_rewards": 0,
       "zero_reward_terminal_agents": 0,
-      "collected_audit_verified": false,
+      "collected_audit_verified": true,
       "trained_final_serving_parity_verified": true,
-      "trained_final_serving_parity_scope": "Runtime console only; independent terminal artifact verification pending.",
+      "trained_final_serving_parity_scope": "Independently verified from collected terminal artifacts.",
       "trained_checkpoint_sha256": "7fc1d1949d5b495fa712da43e094bceae92da7bd8d3e73f2a4b00f620122166c",
       "bundle_manifest_sha256": "a7a61011a2c44d2cfd9b746f26802febec27e8410b30a45c1495f221356eddfe",
       "trained_parity_states": 46,
@@ -695,6 +701,99 @@
       "change_receipt_path": "integrations/softmax/local-output/monotone-force-retry-20261007/collector-retention-change.json",
       "change_receipt_sha256": "a8046f991538205ecea48980b55a94d4da849ac748ba7d7f79c8ed866b5aa334",
       "scope": "Preserves sanitized provider billing receipt, attempt history and preemption count for terminal audit."
+    },
+    "technical_success": true,
+    "billing_receipt": {
+      "attempts": [
+        {
+          "attempt": 3,
+          "billed_seconds": 6126,
+          "charged_usd_micros": 5053400,
+          "gpu_count": 1,
+          "rate_usd_micros_per_gpu_minute": 49494
+        }
+      ],
+      "billed_attempts": 1,
+      "billed_seconds": 6126,
+      "charged_usd_micros": 5053400,
+      "image_digest": "sha256:22227f420aff8b06b34ce042c06ae8aff57da3d6d9bb4f1527cd2362d4d7885b"
+    },
+    "terminal_audit_path": "integrations/softmax/local-output/monotone-force-retry-20261007/terminal-audit-job-wgtyc.json",
+    "terminal_audit_sha256": "790e6e3a8f7d073753c929c106601646598e11e746ebee44e86ee8e7a17fe430",
+    "artifact_sha256": "2a0e158ffe2de77d31bae92e36ef7047d124297e3d47746fc08a9e105a344b8b",
+    "collection_sha256": "4039bd7bdf3ea22c6ab1bd34702c8fbb504b6fdeef0f926f7d0bdcd88dfe88b4",
+    "results_archive_sha256": "ea48a624a2da5b476a852680a9a91bba04e487fef183d27ece106635392c6071",
+    "terminal_sha256": "f184335197f9d21f35d19292d57d3dd940c40137da3a0b9c6c933e8977e19568",
+    "completed_sha256": "06b7e343c88a59c30c12ff9ceeb8bea44b448f2b67c58459628315ef413dccfa",
+    "files_verified": 237,
+    "decision": "Rejected fixed monotone force intervention; no confirmation or promotion. Selected policy unchanged.",
+    "evaluation_results": {
+      "games_per_arm": 4096,
+      "source_wld": [
+        2786,
+        1275,
+        35
+      ],
+      "control_wld": [
+        2727,
+        1335,
+        34
+      ],
+      "candidate_wld": [
+        2721,
+        1353,
+        22
+      ],
+      "candidate_minus_source": {
+        "signed_score_delta": -0.034912109375,
+        "cluster_ci95": [
+          -0.06520181920897096,
+          -0.004887585532746823
+        ]
+      },
+      "candidate_minus_control": {
+        "signed_score_delta": -0.005859375,
+        "cluster_ci95": [
+          -0.03666005133715124,
+          0.024664293936617565
+        ]
+      }
+    },
+    "audited_final_two_epoch_sps": {
+      "control": {
+        "qualification": 35600.46173694577,
+        "continuation": 38339.15904936012
+      },
+      "candidate": {
+        "qualification": 37552.411990115674,
+        "continuation": 37702.28678268372
+      }
+    },
+    "audited_gpu_metrics": {
+      "control": {
+        "qualification": {
+          "gpu_samples": 94,
+          "peak_memory_mib": 68517.0,
+          "mean_gpu_utilization_whole_training_subprocess_including_startup": 8.24468085106383
+        },
+        "continuation": {
+          "gpu_samples": 207,
+          "peak_memory_mib": 68231.0,
+          "mean_gpu_utilization_whole_training_subprocess_including_startup": 21.183574879227052
+        }
+      },
+      "candidate": {
+        "qualification": {
+          "gpu_samples": 81,
+          "peak_memory_mib": 68231.0,
+          "mean_gpu_utilization_whole_training_subprocess_including_startup": 8.345679012345679
+        },
+        "continuation": {
+          "gpu_samples": 209,
+          "peak_memory_mib": 68231.0,
+          "mean_gpu_utilization_whole_training_subprocess_including_startup": 21.28708133971292
+        }
+      }
     }
   },
   "route_shortcut_development": {

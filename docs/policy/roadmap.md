@@ -18,27 +18,20 @@ artifact identities. Git history retains superseded attempts.
    global readout already distinguishes source sites.
    Global temperature2 and log-gap4 exploration also failed completed GPU
    trials. Earlier public states show available merges but do not establish
-   their strategic value. The repaired monotone stack-mass retry
-   `job-wgtyc` is on its third startup attempt after two preemptions. Its
-   150-minute/$7.425 provider bound is per attempt; the monitored external stop
-   deadline is 2026-10-07 11:56:55 UTC, without an automatic watchdog. Its predecessor `job-kzmub` failed before training.
-   Require both 4 Mi qualification arms to pass ≥30,000 SPS and serving parity,
-   then verify each trained initializer with 512-game self-play before its
-   authentic learner continues to 32 Mi total steps.
-   The old normalized-concentration formula rewards attrition
-   and is rejected. Keep the new formula's location blindness, expansion
-   penalty and saturation explicit in its preregistered evaluation.
+   their strategic value. The matched monotone stack-mass trial `job-wgtyc`
+   completed both 32 Mi arms with independently verified training and parity,
+   but its candidate was worse than the selected source and did not improve
+   over control. Reject this fixed intervention; no confirmation or promotion.
+   Diagnose the completed evidence before choosing another mechanism.
+
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its
    exact GPU training setup before a long run.
 3. Confirm a positive paired development result on independent maps, freeze
    the checkpoint and sampler, then run fresh balanced hosted matches against
    the incumbent and Daveey. Promote only after all acceptance gates pass.
-   Conditional preparation is on `codex/monotone-force-confirmation` at
-   `61f6a12`: it accepts only an independently audited positive `job-wgtyc`
-   result, pins its exact context and actors, and uses fresh seeds 12002101/03/11.
-   Six rejection tests include refusing the failed predecessor.
-   No confirmation configuration, context or job exists yet.
+   The conditional `job-wgtyc` confirmation was not activated because its
+   development gate failed. No confirmation configuration, context or job exists.
 
 ## Winning acceptance
 

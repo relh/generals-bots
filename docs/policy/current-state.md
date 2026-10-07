@@ -58,94 +58,47 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Matched experiment: retry running
+## Matched experiment: technically passed, strength rejected
 
-`job-kzmub` **failed before training** at 2026-10-07 09:12:58 UTC, on
-attempt 1 with zero runtime restarts. Both native builds completed. Source
-serving parity passed on 46 public states, and the 512-game identical-source
-sampling gate completed 267W/240L/5D. The qualification launcher then looked
-for `control/qualification/sampling-gate.json`, while the authentic gate was
-saved at the shared experiment root. The artifact and all 34 retained file
-hashes were independently verified; exact hashes are in the manifest.
+`job-wgtyc` succeeded at **2026-10-07 11:34:43 UTC** on attempt 3 after two
+provider preemptions, with zero runtime restarts. Independent terminal audit
+verified all **237 retained files**, native learner resume, both 512-game
+initializer sampling gates, legality/reward audits, and final serving parity
+(46/46 states for both arms). No task job remains active. The provider charged
+**$5.0534 for 6,126 seconds**, one billed attempt; the earlier two were unbilled.
+Its predecessor `job-kzmub` failed before training due to the repaired stage
+gate path; its failure evidence remains in the manifest.
 
-`job-wgtyc` completed the control arm's **4,194,304 qualification steps**
-as of 2026-10-07 10:10:59 UTC on attempt 3 and started publishing. One H100,
-4,096 environments, horizon 128, minibatch 8,192 and replay ratio 0.5 achieved
-**35,528.49 steady end-to-end SPS** after two warmup epochs: 3,145,728 steps
-between native uptimes 114.749 and 203.290 seconds (88.541 seconds). All 13
-opponents had balanced seats; console reports zero illegal actions. The final
-dashboard showed 66.9/79 GiB VRAM, 6.1 GiB RAM and 54% GPU utilization (a
-snapshot, not an interval mean). Trained control checkpoint `59f07adc` passed
-GPU serving parity on 46/46 states (maximum probability difference 0.00000447),
-with the source sampler unchanged. Its 4 Mi reward audit reports zero nonfinite
-or clipped rewards.
+Both arms completed **33,554,432 steps** on one H100 with 4,096 environments,
+horizon 128, minibatch 8,192 and replay ratio 0.5. After two warmup epochs:
 
-The candidate completed its **4,194,304 qualification steps** by 10:25:22 UTC,
-with the same hardware/batch settings and two warmup epochs: **37,570.35 SPS**
-from 3,145,728 steps over 83.729 seconds (native uptime 56.218→139.947).
-Its dashboard showed 66.6/79 GiB VRAM and 4.4 GiB RAM. Console audits report
-zero illegal actions, nonfinite or clipped rewards. Candidate checkpoint
-`37e23e20` then passed GPU serving parity on 46/46 states (maximum probability
-difference 0.00000244), with the exact intended sampler. **Both runtime
-qualification gates passed** by 10:31:47 UTC. Control's trained-initializer
-self-match passed (276W/233L/3D in 512 games). By 10:51:40 UTC the control completed
-**33,554,432 total steps**, including 29,360,128 continuation steps. Excluding
-resumed warmup epochs 9–10, epochs 10–64 measured **38,261.28 SPS**: 28,311,552
-steps in 739.953 seconds (uptime 49.007→788.960), with the same H100 and batch
-settings; dashboard VRAM was 66.6 GiB. Continuation reports zero illegal
-actions, nonfinite or clipped rewards, and one zero-reward terminal event.
-Control's final checkpoint `f4b185ef` was exported and passed GPU/native versus
-NumPy serving parity on **46/46 states**, with maximum probability difference
-0.00000268. By 11:05:45 UTC the candidate's initializer
-self-match passed: **273W/233L/6D in 512 games**, across 328 unique initial
-states, with the exact `37e23e20` checkpoint and intended sampler for both
-actors. Candidate continuation completed **33,554,432 total steps** by 11:18:59 UTC.
-Excluding resumed warmup epochs 9–10, epochs 10–64 measured **37,659.31 SPS**:
-28,311,552 steps in 751.781 seconds (uptime 50.132→801.913), with the same H100,
-4,096 environments, horizon 128, minibatch 8,192 and replay ratio 0.5. All 13
-opponents had balanced seats. Final audits cover all 29,360,128 resumed steps:
-zero illegal actions, nonfinite or clipped rewards, and zero zero-reward terminal
-events. Candidate checkpoint `7fc1d194` was exported and passed final GPU/native versus
-NumPy parity on **46/46 states**, with maximum probability difference 0.00000203
-and the unchanged sampler. By 11:26:00 UTC, **both arms had completed training
-and runtime parity**, and the frozen 4,096-game source/control/candidate
-evaluation had started. No strength result or selection is available yet. These are runtime console results. Checkpoint artifacts, learner-byte checks,
-training audits and GPU CSV await terminal collection and independent verification. The log monitor now
-reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
-recovered completely. The terminal collector now preserves sanitized billing
-receipts, attempt history and preemption counts for the final audit.
-The provider preempted the first two attempts; no replacement job was submitted,
-and runtime restarts remain zero.
+| Arm | 4 Mi qualification SPS | Continuation SPS | Continuation interval |
+| --- | ---: | ---: | --- |
+| Control | 35,528.49 | 38,261.28 | 28,311,552 steps / 739.953 s |
+| Candidate | 37,570.35 | 37,659.31 | 28,311,552 steps / 751.781 s |
 
-Repaired source `6b297db`, context `ctx-66b75696`, runs on one H100. The
-provider's **150-minute limit and $7.425 quote apply per attempt**; preemptions
-do not consume its restart budget. The internal execution deadline is 148
-minutes per attempt. Aggregate billing is unverified. Our monitored external
-stop deadline is **2026-10-07 11:56:55 UTC** (150 minutes from submission),
-not an enforced provider-wide cap; no automatic watchdog is installed yet.
-Qualification binds the authentic source gate at each stage; each
-continuation requires fresh 512-game self-play of its exact trained initializer.
-Runtime qualification permits continuation after each initializer sampling gate;
-final independent verification and strength results remain pending. The selected
-policy and champion remain unchanged.
-Control and candidate start the exact selected policy with fresh optimizers;
-each first trains 4,194,304 qualification steps. **Both** must pass ≥30,000
-steady SPS, native serving parity and legality/reward/population audits before
-either continues its own authentic learner to **33,554,432 total steps**.
+These longer intervals retain their hash-bound console receipts. The independent
+audit separately checks the final two epochs: qualification 35,600.46/37,552.41
+SPS and continuation 38,339.16/37,702.29 SPS (control/candidate). Peak GPU memory
+was 66.9 GiB. GPU utilization averaged 21.18%/21.29% across the entire continuation
+subprocesses, including startup; these are not steady-interval means. All 13
+opponents had balanced training seats. Both continuations had zero illegal
+actions, nonfinite or clipped rewards; control had one zero-reward terminal event.
 
-Candidate adds a fixed 0.05 potential from turn 100 using own minus opponent
-`F = sum(army²) / (10000 + sum(army²))`. Control retains the original reward.
-Unlike the rejected normalized-concentration prototype, this potential cannot
-increase merely because own troops disappear. It still rewards location-blind
-merging and may discourage expansion; no strength benefit is established.
+The fresh 4,096-game panels rejected the fixed monotone force potential:
 
-CPU admission used explicitly reconstructed receipts for a retained binary
-fixture. It does not qualify a fresh CUDA build or GPU training. The final
-4,096-game paired panel must improve over **both source and control**, with
-positive clustered lower confidence bounds and signed-score delta at least
-−0.10 in each opponent/seat group with at least 100 games. Smaller groups are
-reported without automatic rejection. A positive result needs independent confirmation
-before hosted qualification. The manifest binds input seals and timing budget.
+| Actor | Wins | Losses | Draws |
+| --- | ---: | ---: | ---: |
+| Selected source | 2,786 | 1,275 | 35 |
+| Control | 2,727 | 1,335 | 34 |
+| Candidate | 2,721 | 1,353 | 22 |
+
+Candidate-minus-source signed-score delta was **−0.03491**, clustered 95% CI
+**[−0.06520, −0.00489]**; candidate-minus-control was **−0.00586**, CI
+**[−0.03666, +0.02466]**. Neither required improvement gate passed. **No independent
+confirmation or promotion follows.** The selected policy and champion remain
+unchanged. Exact checkpoints, artifact hashes, audit and billing receipts are
+bound in the manifest.
 
 ## Rejected experiments: retain these lessons
 
