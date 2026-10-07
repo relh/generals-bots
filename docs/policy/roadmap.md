@@ -27,7 +27,8 @@ artifact identities. Git history retains superseded attempts.
    over 256 maps and four replicas. Different-source and pass alternatives
    had no established gain. Do not train a merge teacher from this evidence.
    A native learner audit found permanent row starvation at replay ratio0.5.
-   Row rotation is implemented and CPU-admitted; bounded `job-zsz35` is building.
+   Row rotation is implemented and CPU-admitted; bounded `job-zsz35` tests it.
+   See current state for the live phase.
    Verify native coverage and ≥30K SPS, then compare the corrected candidate
    with the selected source and retained control on fresh maps. Actor sampling
    and inspected PPO gradients showed no separate probability mismatch.

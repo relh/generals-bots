@@ -1052,7 +1052,7 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Verified permanent optimizer row starvation; bounded correction trial job-zsz35 building. Await native coverage, throughput and fresh paired strength.",
+    "next_action": "Verified permanent optimizer row starvation; bounded correction trial job-zsz35 tests it. Await native coverage, throughput and fresh paired strength.",
     "opening_comparison": {
       "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
       "files_sha256": {
@@ -1254,7 +1254,7 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Implemented and CPU-admitted; job-zsz35 starting, GPU coverage/throughput/strength pending",
+    "status": "Implemented and CPU-admitted; GPU coverage/throughput/strength qualification is tracked by row_rotation_trial",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
