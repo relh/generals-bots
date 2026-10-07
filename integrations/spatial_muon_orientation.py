@@ -115,6 +115,8 @@ def validate_build_mode(build, mode, *, context_matrix=False):
     if context_matrix and mode != "canonical":
         raise ValueError("Convolution matrix mode requires canonical dense scaling")
     build = Path(build)
+    from integrations.puffer_rollout_memory import validate as validate_rollout_memory
+    validate_rollout_memory(build)
     from integrations.spatial_muon_context import config_radius, geometry, validate_context_build
     validate_context_build(build, context_matrix)
     marked = MARKER.encode() in (build / "puffer").read_bytes()
