@@ -1251,6 +1251,29 @@
       "integrations/softmax/local-output/contact-counterfactual-launch-20261007/ready.json": "8aa21b7d3b722267708a24bbc0e4c26fe84a4db01da235acc864bfd91643c873",
       "integrations/softmax/local-output/contact-counterfactual-launch-20261007/submission.json": "fbc41f1949f1e66cfd478858e2e30620c28ce3eda8d9dd22a8b226166529c84a",
       "integrations/softmax/local-output/contact-counterfactual-launch-20261007/collect_and_audit.py": "212712b68eb764b27ee2735914abfa4045bb052bf2bf4b26754de3ec1c8edf52"
+    },
+    "exploratory_replica_diagnostic": {
+      "path": "integrations/softmax/local-output/contact-counterfactual-launch-20261007/exploratory-replica-diagnostic.json",
+      "sha256": "eef9bb91adf639b66722c90e5c2e50c6b6475757fd6010a254a1e40cb8149257",
+      "report": {
+        "schema": "generals-exploratory-replica-diagnostic-v1",
+        "posthoc": true,
+        "maps": 256,
+        "preregistered_positive_diagnostic": false,
+        "maps_with_any_stable_alternative_better_all_four": 1,
+        "leave_one_replica_out_mean_signed_delta": -0.04296875,
+        "map_cluster_ci95": [
+          -0.083984375,
+          0.001953125
+        ],
+        "scope": "Selection uses simulated future outcomes unavailable to a serving public-only actor. Exploratory precision check only; no teacher qualification, training or new games.",
+        "decision": "No demonstrated benefit from outcome-selected alternatives on the held-out replica; do not infer a conditional teacher from these four replicas.",
+        "input_sha256": {
+          "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/contact-counterfactual-launch-20261007/results-job-k8yfq/inner/contact/diagnostic/opponent-0/branch-results.npz": "894cfc2194ca3f3195fd176780b15d3f039937883abf0167bf9dc4d08f7f2dd9",
+          "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/contact-counterfactual-launch-20261007/results-job-k8yfq/inner/contact/diagnostic/opponent-1/branch-results.npz": "eff69a22072fd1185b82c31fde2c62291b034ccf67753431f92a9725682ef493"
+        },
+        "script_sha256": "bc948ffe83dfa2107e5c5a68f3a295a010670a67e864795fe5f83344c2f3d35d"
+      }
     }
   },
   "minibatch_rotation_repair": {
@@ -1264,7 +1287,7 @@
     "gpu_job_submitted": true
   },
   "row_rotation_trial": {
-    "status": "starting",
+    "status": "running",
     "job_id": "job-zsz35",
     "submitted_at": "2026-10-07T16:04:23.411330+00:00",
     "source_revision": "b068a18b55b75de86d659921a7807447fdb951be",
@@ -1291,7 +1314,9 @@
     "attempt": 1,
     "aggregate_deadline_utc": "2026-10-07T17:35:08.728915+00:00",
     "guard_pid": 80704,
-    "guard_sha256": "6307b1e7f05746911ccbbbece86d6f008a56c488226f3645957d571e8ebbb8f3"
+    "guard_sha256": "6307b1e7f05746911ccbbbece86d6f008a56c488226f3645957d571e8ebbb8f3",
+    "phase": "source_gpu_serving_parity",
+    "last_observed_at": "2026-10-07T16:26:20.591603+00:00"
   },
   "opponent_coverage_audit": {
     "receipt": "integrations/softmax/local-output/opponent-coverage-20261007/receipt.json",

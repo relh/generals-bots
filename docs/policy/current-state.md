@@ -2,7 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. Row-rotation trial `job-zsz35` is **starting** on attempt 1; training has not started.
+job `35892`. Row-rotation trial `job-zsz35` is **running source GPU parity** on attempt 1;
+training has not started.
 The completed first-contact diagnostic did not pass its improvement gate.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -274,3 +275,10 @@ escape the aggregate limit. Its conservative deadline is **2026-10-07 17:35:08 U
 based on the last pre-allocation observation at 16:20:08. The guard was replaced
 as PID 80704; the provider job was not restarted. A focused starting/preemption
 fixture passed, and the new guard process and receipt were verified live.
+
+An exploratory check of the retained contact results selected an action using
+three continuation replicas and scored it on the fourth. Mean signed delta
+was −0.04297, map-cluster 95% CI [−0.08398, +0.00195]. This post-hoc calculation
+uses simulated future outcomes unavailable to a public-only serving actor;
+it establishes no conditional teacher or policy benefit and does not change
+the preregistered negative decision. No new games or training were used.
