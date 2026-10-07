@@ -98,8 +98,11 @@ def prepare(source_input: Path, repository: Path, target_asset: Path, target_bun
         raise ValueError("Staged Product initializer differs")
     for row in migrated["frozen_opponents"]:
         path = output / f"bundles/frozen/{row['slot']}"
-        if (digest(path / "asset.json") != row["new_asset_sha256"]
+        files = json.loads((path / "spatial-policy.json").read_text())["files"]
+        native_asset = pool / f"assets/frozen/{row['slot']}/asset.json"
+        if (digest(native_asset) != row["new_asset_sha256"]
                 or digest(path / "spatial-policy.json") != row["new_bundle_sha256"]
+                or digest(path / "asset.json") != files["asset.json"]
                 or digest(path / "policy.bin") != row["new_policy_sha256"]):
             raise ValueError("Staged frozen opponent differs")
     build_path, run_path = output / "build-config.json", output / "config.json"
