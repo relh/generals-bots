@@ -22,6 +22,10 @@ ARMS = ("control", "product")
 PLAN_FILE = "integrations/source_global_product_pair_plan.json"
 
 
+def phase(name: str, event: str, **details) -> None:
+    print("PAIR_PHASE " + json.dumps({"name": name, "event": event, **details}, sort_keys=True), flush=True)
+
+
 def digest(path: Path) -> str:
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
@@ -190,6 +194,7 @@ def verify_control(source_bundle: Path, control_bundle: Path) -> None:
 
 def run_pair(inputs: Path, output: Path) -> None:
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+    phase("qualification", "start")
     inputs = inputs.resolve(strict=True)
     if file_hashes(inputs) != json.loads((inputs / "seal.json").read_text()):
         raise ValueError("Matched Product input differs from its seal")
@@ -199,8 +204,9 @@ def run_pair(inputs: Path, output: Path) -> None:
     plan = json.loads((inputs / "plan.json").read_text())
     lineage = json.loads((inputs / "pair-lineage.json").read_text())
     intent = json.loads((inputs / "probe-intent.json").read_text())
-    qualified_probe(inputs / "qualified-probe-marker.json", inputs / "qualified-probe-terminal.json",
-                    inputs / "qualified-probe-activation.json", lineage["probe_marker_sha256"], plan, intent)
+    qualified = qualified_probe(inputs / "qualified-probe-marker.json", inputs / "qualified-probe-terminal.json",
+                                inputs / "qualified-probe-activation.json", lineage["probe_marker_sha256"], plan,
+                                intent)
     verify_source_proofs(inputs, plan, intent)
     if (lineage["source_product_policy_sha256"] != plan["source_product_policy_sha256"]
             or digest(inputs / "assets/cold/policy.bin") != plan["source_product_policy_sha256"]
@@ -236,12 +242,17 @@ def run_pair(inputs: Path, output: Path) -> None:
     source_tensors = product_tensors(inputs / "bundles/cold")
     if not np.array_equal(source_tensors["product_action_kernel"], np.zeros((8, 8), np.float32)):
         raise ValueError("Product source Q must start bitwise zero")
+    phase("qualification", "end", probe_sps=qualified["audit"]["steady_sps"])
     (output / "build-config.json").write_text(json.dumps(build, indent=2) + "\n")
     shared = Trial(inputs, output)
     if shared.validate_source_initializer(config)["fabric"] != build["fabric"]:
         raise ValueError("Matched Product model differs from its source initializer")
+    phase("native_build", "start")
     shared.build()
+    phase("native_build", "end")
+    phase("sampling_gate", "start")
     shared.sampling_gate("control")
+    phase("sampling_gate", "end")
     source_gate = output / "control/sampling-gate.json"
     for arm in ARMS:
         target = output / arm
@@ -252,9 +263,12 @@ def run_pair(inputs: Path, output: Path) -> None:
         (probe / "config.json").write_text(json.dumps(config, indent=2) + "\n")
         trial = Trial(inputs, target)
         shutil.copy2(source_gate, probe / "sampling-gate.json")
+        phase("preflight", "start", arm=arm)
         trial.call("launch_spatial_selfplay_training", ["preflight", "--build", output / "build",
              "--config", probe / "config.json", "--output", probe / "run"],
              name="preflight", seconds=300, arm="probe")
+        phase("preflight", "end", arm=arm)
+        phase("ppo", "start", arm=arm, steps=train["steps_per_arm"])
         trial.call("launch_spatial_selfplay_training", ["train", "--build", output / "build",
              "--config", probe / "config.json", "--output", probe / "run"],
              name="train", seconds=1800, arm="probe", training=True,
@@ -268,9 +282,11 @@ def run_pair(inputs: Path, output: Path) -> None:
             raise ValueError("Product Q gradient mask applied to the wrong arm")
         if digest(probe / "run/initial-policy.bin") != source_policy:
             raise ValueError("Pair arm did not start from the exact Product source policy")
+        phase("ppo", "end", arm=arm, steady_sps=audit["steady_sps"])
         checkpoint = probe / f"run/checkpoints/metta_generals/run/{train['steps_per_arm']:016d}.bin"
         sampler = target / "sampler.json"
         sampler.write_text(json.dumps(trial.sampler, indent=2) + "\n")
+        phase("export", "start", arm=arm)
         trial.call("publish_policy_asset", ["--build", output / "build/build.json", "--training",
              probe / "run/training.json", "--checkpoint", checkpoint, "--sha256", digest(checkpoint),
              "--sampler", sampler, "--factory-source", source / "integrations/generals_fabric.py",
@@ -283,18 +299,22 @@ def run_pair(inputs: Path, output: Path) -> None:
             raise ValueError("Exported Product bundle differs from trained checkpoint")
         if arm == "control":
             verify_control(inputs / "bundles/cold", target / "bundle")
+        phase("export", "end", arm=arm, checkpoint_sha256=digest(checkpoint))
     for arm in ARMS:
+        phase("evaluation", "start", arm=arm, games=dev["games_per_arm"])
         shared.call("evaluate_spatial_population", ["--bundle", output / arm / "bundle",
              "--population-build", output / "build/build.json", "--games", dev["games_per_arm"],
              "--pool-size", dev["pool_size"], "--seed", dev["map_seed"],
              "--sample-seed", dev["sample_seed"], "--output", output / ("eval-" + arm)],
              name="evaluate-" + arm, seconds=1800)
+        phase("evaluation", "end", arm=arm)
     for name in ("initial_sides", "initial_state_sha256", "opponent_labels"):
         left = np.load(output / f"eval-control/{name}.npy", allow_pickle=False)
         right = np.load(output / f"eval-product/{name}.npy", allow_pickle=False)
         if len(left) != dev["games_per_arm"] or not np.array_equal(left, right):
             raise ValueError("Product development evaluations are not exactly paired: " + name)
     comparison = output / "comparison.json"
+    phase("paired_analysis", "start")
     shared.call("analyze_spatial_population_pair", ["--baseline", output / "eval-control",
          "--candidate", output / "eval-product", "--seed", dev["bootstrap_seed"],
          "--bootstrap-resamples", 10000, "--output", comparison], name="compare", seconds=90)
@@ -309,6 +329,7 @@ def run_pair(inputs: Path, output: Path) -> None:
         "comparison_sha256": digest(comparison), "plan_sha256": digest(inputs / "plan.json"),
         "qualified_probe_sha256": lineage["probe_marker_sha256"], "gpu": gpu,
     }, indent=2) + "\n")
+    phase("paired_analysis", "end", selected=selected, comparison_sha256=digest(comparison))
 
 
 def main() -> None:
