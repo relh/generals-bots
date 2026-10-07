@@ -128,6 +128,7 @@ python -m integrations.hosted_policy submit --dry-run \
 # Submit the identical preserved intent without --dry-run.
 python -m integrations.hosted_policy status --output NEW_PANEL_DIRECTORY
 python -m integrations.hosted_policy collect --output NEW_PANEL_DIRECTORY
+python -m integrations.audit_hosted_panel_replays --panel NEW_PANEL_DIRECTORY
 python -m integrations.policy promotion --summary NEW_PANEL_DIRECTORY/summary.json \
   --panel NEW_PANEL_DIRECTORY --opponents incumbent Daveey \
   --checkpoint-sha256 CHECKPOINT_SHA256 --image-digest sha256:IMAGE_SHA256 \
@@ -139,7 +140,9 @@ smoke first, then a fresh balanced panel of 256 games per opponent (128 per
 seat). The workflow splits requests at the provider's 100-episode limit and
 preserves exact request hashes and idempotency keys. If the 300-undispatched-
 episode account limit returns HTTP 429, wait for accepted batches and rerun the
-same intent. Do not create new games because a poll deadline elapsed. Collect
+same intent. `status` polls only batches with preserved receipts; `collect`
+counts batches without receipts as pending and lists `unsubmitted_requests`.
+Neither invents provider receipts. Do not create new games because a poll deadline elapsed. Collect
 the complete panel, audit SHA-bound replays, and require zero unexplained
 illegal actions, timeouts, forfeits or incomplete requests.
 
@@ -149,6 +152,11 @@ chain and clean execution. `promotion` recomputes the preserved panel and does
 not itself change the champion. Promote only the qualified frozen version on an
 eligible account. Authentication uses `SOFTMAX_TOKEN` or the SDK saved user
 token; never print tokens or signed asset URLs.
+
+If league placement is needed before the complete acceptance review, explicitly
+use `coworld submit NAME:vN --league LEAGUE_ID --auto-champion never --no-open-browser`.
+The SDK defaults to `--auto-champion always`; uploading a policy or running the
+private panel does not require that preliminary league submission.
 
 Keep selected state and latest verified decisions in [current state](current-state.md),
 exact hashes in the manifest, and raw evidence in artifact directories. Never

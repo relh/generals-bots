@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from integrations.hosted_policy import load_panel, prepare, save, submit, summarize
+from integrations.hosted_policy import load_panel, prepare, save, status, submit, summarize
 from integrations.policy_promotion import strength_report
 
 POLICY = '5ef78e23-c02e-4d13-bc8e-2f9ab47fb0a1'
@@ -86,6 +86,45 @@ def test_collection_rejects_changed_policy_identity():
     current['incumbent-seat0']['episodes'][0]['participants'][0]['policy_version_id'] = OPPONENT
     with pytest.raises(ValueError, match='Frozen episode roster'):
         summarize(intent, current)
+
+
+@pytest.mark.parametrize('accepted_before_limit', [0, 1])
+def test_partial_submission_polls_only_receipts_and_resumes_same_intent(tmp_path, accepted_before_limit):
+    intent = panel()
+    completed = states(intent)
+
+    class LimitedClient(Client):
+        limit = accepted_before_limit
+
+        def request(self, path, body=None):
+            if body:
+                if len(self.created) >= self.limit:
+                    raise RuntimeError('Observatory HTTP 429')
+                self.created.append(body)
+                label = next(name for name, payload in intent['requests'].items() if payload == body)
+                return {'id': completed[label]['id']}
+            if '?' in path:
+                return {'entries': [], 'next_cursor': None}
+            return next(value for value in completed.values() if value['id'] == path.rsplit('/', 1)[1])
+
+    directory = tmp_path / 'partial'
+    client = LimitedClient()
+    with pytest.raises(RuntimeError, match='429'):
+        submit(directory, intent, client)
+    observed = status(directory, client)
+    summary = summarize(intent, observed)
+    assert summary['completed'] == accepted_before_limit
+    assert summary['pending'] == 2 - accepted_before_limit
+    assert len(summary['unsubmitted_requests']) == 2 - accepted_before_limit
+    assert len(list(directory.glob('*-receipt.json'))) == accepted_before_limit
+    assert len(list(directory.glob('*-state.json'))) == accepted_before_limit
+    assert not strength_report(summary, ['incumbent'], min_games=2)['strength_gate_passes']
+    client.limit = 2
+    submit(directory, intent, client)
+    assert client.created == list(intent['requests'].values())
+    final = summarize(intent, status(directory, client))
+    assert final['completed'] == 2 and final['pending'] == 0
+    assert final['unsubmitted_requests'] == {}
 
 
 def test_large_panel_chunks_requests_and_aggregates_each_seat():

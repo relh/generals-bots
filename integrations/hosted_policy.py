@@ -153,7 +153,10 @@ def status(directory, client):
     panel = load_panel(directory)
     states = {}
     for label in panel['requests']:
-        receipt = json.loads((directory / f'{label}-receipt.json').read_text())
+        receipt_path = directory / f'{label}-receipt.json'
+        if not receipt_path.exists():
+            continue  # Dry run or rate-limited partial submission; nothing to poll yet.
+        receipt = json.loads(receipt_path.read_text())
         state = client.request('/v2/experience-requests/' + receipt['id'])
         if state['id'] != receipt['id']:
             raise ValueError('Request identity changed')
@@ -168,11 +171,10 @@ def summarize(panel, states):
                'image_digest': panel['image_digest'], 'opponents': panel['opponents'],
                'request_payload_sha256': panel['payload_sha256'],
                'completed': 0, 'failed': 0, 'pending': 0, 'cost_usd': 0.0,
-               'request_ids': [], 'by_opponent_and_seat': {}, 'episodes': []}
+               'request_ids': [], 'by_opponent_and_seat': {}, 'episodes': [],
+               'unsubmitted_requests': {}}
     seen = set()
     for label, body in panel['requests'].items():
-        state = states[label]
-        summary['request_ids'].append(state['id'])
         seat = body['roster'][0]['slot']
         opponent_id = body['roster'][1]['player']['policy_ref']
         opponent = next((name for name, version in panel['opponents'].items()
@@ -182,6 +184,12 @@ def summarize(panel, states):
         group = f'{opponent}-seat{seat}'
         counts = summary['by_opponent_and_seat'].setdefault(
             group, {'games': 0, 'wins': 0, 'losses': 0, 'draws': 0})
+        if label not in states:
+            summary['unsubmitted_requests'][label] = body['num_episodes']
+            summary['pending'] += body['num_episodes']
+            continue
+        state = states[label]
+        summary['request_ids'].append(state['id'])
         request_games = 0
         failures = state['failed_count']
         if state['status'] in ('failed', 'canceled', 'cancelled') and failures == 0:
@@ -260,10 +268,16 @@ def main():
         if args.command == 'collect':
             result = summarize(load_panel(args.output), states)
             save(args.output / 'summary.json', result)
-            print(json.dumps({k: result[k] for k in ('completed', 'failed', 'pending', 'cost_usd')}))
+            print(json.dumps({k: result[k] for k in
+                              ('completed', 'failed', 'pending', 'unsubmitted_requests', 'cost_usd')}))
         else:
-            print(json.dumps([{k: s[k] for k in ('id', 'status', 'completed_count', 'failed_count')}
-                              for s in states.values()]))
+            panel = load_panel(args.output)
+            print(json.dumps([
+                {'label': label, **{k: states[label][k] for k in
+                                   ('id', 'status', 'completed_count', 'failed_count')}}
+                if label in states else
+                {'label': label, 'status': 'unsubmitted', 'pending_episodes': body['num_episodes']}
+                for label, body in panel['requests'].items()]))
 
 
 if __name__ == '__main__':
