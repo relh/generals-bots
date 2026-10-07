@@ -251,8 +251,13 @@ passed. Before training, the strict Muon guard rejected a source/receipt hash
 mismatch: stateless specialization changes the generated learner call signature
 after the optimizer receipt is written. **Zero training steps completed.**
 Independent collection verified **122 files**. Billing: **309 seconds, $0.2541**.
-The receipt chain is being corrected; validation will remain strict. Earlier
-CPU source checks did not exercise this final runtime guard.
+Receipt-chain fix **`392e369`** is integrated. The actual production transform
+chain produced byte-identical CUDA source, and the retained GPU binary passed
+the final runtime guard and wrapped preparation. Stale receipts and altered
+source/intermediate/final hashes were rejected. Policy math, ABI and asset
+bytes are unchanged. Earlier CPU source checks did not exercise this final
+runtime guard; the corrected admission does. A corrected qualification is being
+sealed with the same settings and limits.
 
 The failed context `ctx-28e3bf5d`, source **`a82ac6f`**, all 624 sealed files and
 artifacts are preserved. Guard PID 38362 observed terminal failure and exited

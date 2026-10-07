@@ -1602,7 +1602,7 @@
     "retry_work": "Corrected diagnostic submitted as job-zwt6d; see bridge_execution_probe_retry."
   },
   "stateless_execution_work": {
-    "status": "integrated; CPU equivalence, asset migrations, GPU source parity and native compile verified; native training/throughput blocked by pretraining receipt mismatch under repair",
+    "status": "integrated; CPU equivalence, asset migrations, GPU source parity and native compile verified; final Muon receipt fixed; native training/throughput retry pending",
     "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
     "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
     "branch": "codex/stateless-spatial-abi",
@@ -1757,6 +1757,13 @@
       "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/post-muon-pretraining-admission.json",
       "sha256": "0bda02cee153023b44117ef1b73833a45676728e9d4dddd1e5cb36953d7615c7",
       "scope": "Actual retained native build prepare/initialize/admission bindings; excludes Muon guard under repair and native GPU startup"
+    },
+    "muon_final_receipt_fix": {
+      "source_revision": "cec11d52ee27b95eb8e299739f70c278347c476e",
+      "integration_revision": "392e369",
+      "admission_path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/final-muon-receipt-admission/admission.json",
+      "admission_sha256": "56befead0f659f4d92b3bc61a363a309f4412447b20e6130a0ec333a05e117cb",
+      "scope": "Seal intermediate optimizer and final stateless algo hashes; actual bootstrap/retained native binary runtime guard and wrapped prepare passed. Generated CUDA, math, ABI and assets unchanged."
     }
   },
   "bridge_execution_probe_retry": {
