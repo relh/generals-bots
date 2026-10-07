@@ -78,8 +78,14 @@ dashboard showed 66.9/79 GiB VRAM, 6.1 GiB RAM and 54% GPU utilization (a
 snapshot, not an interval mean). Trained control checkpoint `59f07adc` passed
 GPU serving parity on 46/46 states (maximum probability difference 0.00000447),
 with the source sampler unchanged. Its 4 Mi reward audit reports zero nonfinite
-or clipped rewards. Candidate training was initializing with no observed steps
-as of 10:21:42 UTC; pair qualification remains pending. Collected training
+or clipped rewards.
+
+The candidate completed its **4,194,304 qualification steps** by 10:25:22 UTC,
+with the same hardware/batch settings and two warmup epochs: **37,570.35 SPS**
+from 3,145,728 steps over 83.729 seconds (native uptime 56.218→139.947).
+Its dashboard showed 66.6/79 GiB VRAM and 4.4 GiB RAM. Console audits report
+zero illegal actions, nonfinite or clipped rewards. It is publishing; trained
+candidate parity and pair qualification remain pending. Collected training
 audits and GPU CSV still await independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
 recovered completely.
