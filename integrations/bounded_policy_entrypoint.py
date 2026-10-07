@@ -46,7 +46,7 @@ def run(commands, results, output, seconds, *, kind, completion):
     complete = False
     child = None
     def stop(signum, frame):
-        raise InterruptedError(f'Continuation interrupted by signal {signum}')
+        raise InterruptedError(f'Experiment interrupted by signal {signum}')
     old = {sig: signal.signal(sig, stop) for sig in (signal.SIGTERM, signal.SIGINT)}
     try:
         for command, env in commands:
@@ -64,17 +64,32 @@ def run(commands, results, output, seconds, *, kind, completion):
         (output / 'FAILED.json').write_text(json.dumps(dict(error=str(exc), elapsed=time.monotonic()-start)) + '\n')
         raise
     finally:
-        if child is not None:
-            try:
-                os.killpg(child.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            try:
-                child.wait(timeout=30)
-            except subprocess.TimeoutExpired:
-                os.killpg(child.pid, signal.SIGKILL)
-                child.wait(timeout=10)
-        for sig, handler in old.items():
-            signal.signal(sig, handler)
-        collect(results, output, complete, time.monotonic()-start, kind, completion)
-
+        original_failure = sys.exc_info()[0] is not None
+        cleanup_error = None
+        try:
+            if child is not None:
+                try:
+                    os.killpg(child.pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+                try:
+                    child.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    try:
+                        os.killpg(child.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    child.wait(timeout=10)
+        except BaseException as exc:
+            cleanup_error = exc
+            complete = False
+            failure_path = output / 'FAILED.json'
+            failure = json.loads(failure_path.read_text()) if failure_path.exists() else dict(error='Process cleanup failed')
+            failure['cleanup_error'] = str(exc)
+            failure_path.write_text(json.dumps(failure) + '\n')
+        finally:
+            for sig, handler in old.items():
+                signal.signal(sig, handler)
+            collect(results, output, complete, time.monotonic()-start, kind, completion)
+        if cleanup_error is not None and not original_failure:
+            raise RuntimeError('Experiment process cleanup failed') from cleanup_error
