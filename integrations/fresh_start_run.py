@@ -10,7 +10,8 @@ from integrations.policy_training_audit import qualification_audit
 
 PLAN_PATH = Path(__file__).with_name('fresh_start_plan.json')
 BINDINGS = {'control-audit.json', 'control-collection.json', 'control/candidate/build-config.json',
-            'bundles/control/asset.json', 'bundles/control/policy.bin', 'hypothesis.json'}
+            'bundles/control/asset.json', 'bundles/control/policy.bin', 'hypothesis.json',
+            'probe-audit.json', 'probe-collection.json', 'probe-context-seal.json'}
 
 
 def bound_plan(inputs):
@@ -30,6 +31,67 @@ def bound_plan(inputs):
                                     aggregate_minutes_from_first_allocation=90, max_restarts=0):
         raise ValueError('Fixed allocation bound changed')
     return plan
+
+
+def gather_admission(inputs, plan):
+    """Bind the successful diagnostic and exact execution modules before qualification."""
+    import importlib.util
+    audit = read(inputs/'probe-audit.json')
+    collection = read(inputs/'probe-collection.json')
+    if (audit['schema'] != 'generals-gather-probe-independent-audit-v1'
+            or audit['job_id'] != plan['gather_probe_job_id'] or audit['status'] != 'succeeded'
+            or audit['technical_success'] is not True
+            or audit['eligible_for_separate_qualification'] is not True
+            or audit['sampled_memory_saving_mib'] <= 0
+            or audit['collection_sha256'] != digest(inputs/'probe-collection.json')
+            or collection['complete'] is not True):
+        raise ValueError('Gather diagnostic does not permit separate qualification')
+    stages = audit['stages']
+    if ([r['arm'] for r in stages] != ['baseline', 'gather', 'gather', 'baseline']
+            or any(r['steady_sps'] < 30000 for r in stages if r['arm'] == 'gather')):
+        raise ValueError('Both gather diagnostics must pass 30K')
+    for name, expected in collection['files'].items():
+        if digest(inputs/'probe'/name) != expected:
+            raise ValueError('Retained probe artifact changed: ' + name)
+    gate = read(inputs/'probe/gather-parity.json')
+    if (gate['passed'] is not True or gate['backend'] != 'gpu'
+            or gate['model']['gradient_api'] != 'NativeFabricPolicy.backward_device_arrays'
+            or any(gate['model'][key] is not True for key in
+                   ('probabilities_bitwise', 'ppo_loss_bitwise', 'parameter_gradient_bitwise'))):
+        raise ValueError('Successful production GPU gradient gate required')
+    seal = read(inputs/'probe-context-seal.json')
+    framework = Path(importlib.util.find_spec('metta_training.native_build').origin).parents[1]
+    source = inputs/'source'
+    checked = {}
+    for name, expected in seal['files'].items():
+        if name.startswith('framework-source/'):
+            actual = framework/Path(name).relative_to('framework-source')
+        elif name.startswith(('input/sources/gather/integrations/', 'input/sources/gather/generals/')):
+            relative = Path(name).relative_to('input/sources/gather')
+            if relative.suffix not in ('.py', '.cu', '.cuh', '.h', '.cpp'):
+                continue
+            # This coordinator adds evidence admission; native execution is unchanged.
+            if str(relative) == 'integrations/fresh_start_run.py':
+                continue
+            actual = source/relative
+        else:
+            continue
+        if digest(actual) != expected:
+            raise ValueError('Audited gather execution changed: ' + name)
+        checked[name] = expected
+    native_files = ('puffer_rollout_memory.py', 'puffer_rollout_memory.cuh',
+                    'puffer_coworld_frozen_transfer.py', 'spatial_muon_orientation.py')
+    if not all('input/sources/gather/integrations/'+name in checked for name in native_files):
+        raise ValueError('Probe seal omits native execution inputs')
+    receipt = read(inputs/'probe/gather/build/rollout-memory.json')
+    if (receipt['installer_sha256'] != digest(source/'integrations/puffer_rollout_memory.py')
+            or receipt['gather_header_sha256'] != digest(source/'integrations/puffer_rollout_memory.cuh')
+            or receipt['patched_pufferl_sha256'] != digest(inputs/'probe/gather/build/source/src/pufferl.cu')
+            or gate['rollout_memory_receipt_sha256'] != digest(inputs/'probe/gather/build/rollout-memory.json')):
+        raise ValueError('Gather implementation or compiled receipt differs')
+    return dict(probe_job_id=audit['job_id'], audit_sha256=digest(inputs/'probe-audit.json'),
+                context_seal_sha256=digest(inputs/'probe-context-seal.json'), execution_files=checked,
+                qualification=False)
 
 
 def intervals(stage, first, last):
@@ -70,6 +132,7 @@ def prepare(inputs, output):
     from integrations.native_spatial_asset import load_asset, training_contract
     from integrations.classic_contract import validate_training_contract
     plan = bound_plan(inputs)
+    admission = gather_admission(inputs, plan)
     if output.exists():
         raise ValueError('Fresh output directory required')
     for name, expected in read(inputs/'source-manifest.json').items():
@@ -100,6 +163,7 @@ def prepare(inputs, output):
         raise ValueError('Source objective changed')
     output.mkdir(parents=True)
     write(output/'plan.json', plan)
+    write(output/'gather-admission.json', admission)
     write(output/'candidate/classic-contract.json', validate_training_contract(build, config))
     write(output/'candidate/build-config.json', build)
     write(output/'candidate/qualification/config.json', config)
