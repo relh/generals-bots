@@ -69,10 +69,11 @@ saved at the shared experiment root. The artifact and all 34 retained file
 hashes were independently verified; exact hashes are in the manifest.
 
 `job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **running
-startup checks** as of 09:54:18 UTC, attempt 3. The provider preempted the
-first two attempts; it reports two preemptions and zero runtime restarts.
-Attempt 2 passed source parity and sampling checks before being severed;
-attempt 3 repeats them. No replacement job was submitted.
+startup checks** as of 10:03:18 UTC, attempt 3. Source GPU parity and sampling checks passed,
+both native builds completed, and the control qualification launcher passed
+the repaired gate handoff. Training is initializing; no completed steps are
+observed yet. The provider preempted the first two attempts; it reports two
+preemptions and zero runtime restarts. No replacement job was submitted.
 
 Repaired source `6b297db`, context `ctx-66b75696`, runs on one H100. The
 provider's **150-minute limit and $7.425 quote apply per attempt**; preemptions

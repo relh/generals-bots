@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T09:54:18Z",
-    "last_observed_phase": "attempt 3 startup smoke; repeated qualification pending",
+    "last_observed_utc": "2026-10-07T10:03:18.916518+00:00",
+    "last_observed_phase": "control qualification launcher initialization",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -512,6 +512,20 @@
       "provider-preemption-limits.txt": "23488f705b54467db0dee299dc567c42cf28609fa27b05e2e4deec5c652b2671",
       "provider-preemption-docs.txt": "95d86312a1890c030e289f451f8bbeb09537db65f5e5f2d5dcf37412b83323b5",
       "preemption-options.json": "ab96e22c7aa021116f409c9f2dd0dd809dec5d8146373fe1fe71ce23309bb15a"
+    },
+    "startup_checks_attempt3": {
+      "source_serving_parity_matching_top_actions": 46,
+      "source_serving_parity_public_states": 46,
+      "sampling_games": 512,
+      "sampling_wins": 267,
+      "sampling_losses": 240,
+      "sampling_draws": 5,
+      "smoke_phase_elapsed_seconds": 339.13325640000403,
+      "both_native_builds_completed_elapsed_seconds": 577.2742622270016,
+      "qualification_launcher_started": true,
+      "training_steps_observed": false,
+      "log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T100318916518Z-sanitized.log",
+      "scope": "Runtime console observation; final artifact verification pending. Not throughput or strength qualification."
     }
   },
   "route_shortcut_development": {
