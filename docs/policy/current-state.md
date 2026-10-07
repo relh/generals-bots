@@ -2,7 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. Row-rotation trial `job-zsz35` is **running source GPU parity** on attempt 1;
+job `35892`. As of **2026-10-07 16:30 UTC**, row-rotation trial `job-zsz35` is **building the
+native trainer** on attempt 1. Source GPU parity passed 46/46 top actions;
 training has not started.
 The completed first-contact diagnostic did not pass its improvement gate.
 

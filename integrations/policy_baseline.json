@@ -1315,8 +1315,18 @@
     "aggregate_deadline_utc": "2026-10-07T17:35:08.728915+00:00",
     "guard_pid": 80704,
     "guard_sha256": "6307b1e7f05746911ccbbbece86d6f008a56c488226f3645957d571e8ebbb8f3",
-    "phase": "source_gpu_serving_parity",
-    "last_observed_at": "2026-10-07T16:26:20.591603+00:00"
+    "phase": "native_build",
+    "last_observed_at": "2026-10-07T16:30:17.904499+00:00",
+    "source_gpu_parity_top_actions": {
+      "matching": 46,
+      "checked": 46
+    },
+    "initial_checks_elapsed_seconds": 200.14305545899697,
+    "source_parity_console": {
+      "path": "integrations/softmax/local-output/row-rotation-launch-20261007/job-zsz35-run-attempt1-20261007T163017904499Z-sanitized.log",
+      "sha256": "96c754102ddf5beffabecb5e70378ee6af0bee8f80ea1ccd7c5b44ec5674edbd",
+      "scope": "Live console evidence; terminal artifact audit pending"
+    }
   },
   "opponent_coverage_audit": {
     "receipt": "integrations/softmax/local-output/opponent-coverage-20261007/receipt.json",
