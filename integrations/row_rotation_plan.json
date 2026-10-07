@@ -1,0 +1,70 @@
+{
+  "schema": "generals-row-rotation-trial-v1",
+  "status": "proposed before packaging or simulation",
+  "intervention": "Rotate replay rows across learner epochs at fixed replay_ratio=0.5, replacing repeated selection of rows 0..2047. Exact implementation revision and schedule admission required before sealing.",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "historical_control_policy_sha256": "f4b185ef31755097aea0435266d68f8a1c8aa10330bb03d801cf1fcb0f43e65b",
+  "historical_control_job": "job-wgtyc",
+  "qualification_steps": 4194304,
+  "total_steps_including_qualification": 33554432,
+  "training_seed": 11007101,
+  "sampling_gate_seed": 11008101,
+  "sampling_gate_sample_seed": 11008103,
+  "continuation_gate_seed": 11008105,
+  "continuation_gate_sample_seed": 11008107,
+  "evaluation_seed": 14001101,
+  "evaluation_sample_seed": 14001103,
+  "bootstrap_seed": 14001111,
+  "evaluation_games_per_arm": 4096,
+  "bootstrap_resamples": 10000,
+  "geometry": {
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5
+  },
+  "population": {
+    "frozen_policies": 10,
+    "scripts": [
+      "expander_harvester",
+      "sentinel",
+      "classic_siege_padded"
+    ],
+    "weights": [
+      1,
+      2,
+      1,
+      1,
+      1,
+      4,
+      5,
+      5,
+      11,
+      17,
+      3,
+      4,
+      16
+    ],
+    "balanced_seats": true,
+    "curriculum_probability": 0.25
+  },
+  "objective": "Exact historical control reward and learner hyperparameters; no monotone force potential; original source sampler; fresh source optimizer followed by exact own learner continuation.",
+  "qualification": "After two warmup epochs, sustained completed Puffer steps divided by wall time >=30000 SPS; zero illegal actions and nonfinite/clipped rewards; 46/46 native-serving parity; every opponent both seats; official Classic engine hash and shaping_gamma=train.gamma=.999. New exact qualification initializer sampling gate before continuation.",
+  "selection": "Both candidate-minus-source and candidate-minus-historical-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games signed-score delta >=-.10. Smaller strata reported. Fresh independent confirmation required; no hosted claim.",
+  "runtime_bound": {
+    "provider_minutes": 75,
+    "execution_minutes": 73,
+    "aggregate_minutes_from_first_allocation": 75,
+    "max_restarts": 0,
+    "estimate_seconds": 3483.8514750665054,
+    "price_quote_required": true,
+    "stop_on_aggregate_deadline_even_if_provider_preempts": true
+  },
+  "reuse_audit_sha256": "7eabbe2dcfa9800d60498f2e4c8ff1d042cfa4eabf514f38fa107a38227702a6",
+  "limitations": [
+    "Historical control trained on separate allocation; same config/seed does not establish identical floating-point trajectory.",
+    "Row rotation changes effective optimizer exposure, not number of updates or rollout steps.",
+    "Native patch CPU schedule audit and exact source/config diff review required before packaging."
+  ],
+  "source_gate_reuse": "Reuse verified historical source sampler gate only after matching source policy, exact sampler and gate seeds. Qualification initializer gate must be freshly executed."
+}
