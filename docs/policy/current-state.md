@@ -14,7 +14,9 @@ beyond the allowed bound. The candidate is rejected; no confirmation or hosted
 promotion follows.
 
 Fresh-start-only experiment **`job-r4xkt` was submitted at 22:06:41 UTC**
-and is building; training has not yet been observed. It changes only the
+and entered first-attempt startup at 22:23 UTC; the image is downloading and
+training has not yet been observed. The live aggregate guard fixes the deadline
+at **23:53:00 UTC**, anchored conservatively before allocation. It changes only the
 midgame-reset probability from 0.25 to 0.0, keeping source initialization,
 fresh optimizer, model, reward, sampler, opponents and batching fixed. A new
 4,194,304-step qualification must pass the full and rolling ≥30K SPS gates

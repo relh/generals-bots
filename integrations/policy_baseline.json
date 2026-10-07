@@ -2113,7 +2113,7 @@
     ]
   },
   "fresh_start_experiment": {
-    "status": "job-r4xkt submitted; building; training not yet observed",
+    "status": "job-r4xkt first attempt starting; image downloading; training not yet observed",
     "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
     "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
     "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
@@ -2212,7 +2212,19 @@
         "jobs_checked": 103,
         "active_generals_jobs": []
       },
-      "ready_sha256": "399c351977824146a2acc3d26cbfb399cf84414c76787a2c6c8f82612d745d1d"
+      "ready_sha256": "399c351977824146a2acc3d26cbfb399cf84414c76787a2c6c8f82612d745d1d",
+      "allocation_guard": {
+        "job_id": "job-r4xkt",
+        "minutes": 90,
+        "pid": 25390,
+        "running": true,
+        "observed_at": "2026-10-07T22:25:02.316081+00:00",
+        "status": "starting",
+        "last_preallocation_observed_at": "2026-10-07T22:23:00.215214+00:00",
+        "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
+        "first_allocation_lower_bound_at": "2026-10-07T22:23:00.215214+00:00",
+        "deadline": "2026-10-07T23:53:00.215214+00:00"
+      }
     },
     "prior_control_learning_diagnostic": {
       "path": "integrations/softmax/local-output/stateless-continuation-launch-20261007/learning-trend-diagnostic.json",
