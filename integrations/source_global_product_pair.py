@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import resource
 import shutil
@@ -26,17 +27,46 @@ def digest(path: Path) -> str:
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
-def qualified_probe(marker: Path, terminal: Path, marker_sha256: str, plan: dict,
-                    probe_intent: dict) -> dict:
-    if digest(marker) != marker_sha256:
+def qualified_probe(marker: Path, terminal: Path, activation_report: Path,
+                    marker_sha256: str, plan: dict, probe_intent: dict) -> dict:
+    pinned = ("required_probe_job_id", "required_probe_marker_sha256", "required_probe_activation_sha256",
+              "source_product_asset_sha256", "pool_migration_receipt_sha256", "abi_proof_sha256",
+              "source_parity_proof_sha256", "required_probe_native_source_parity_sha256")
+    if any(not isinstance(plan.get(key), str) or not plan[key] for key in pinned):
+        raise ValueError("Repaired Product probe identities remain unpinned")
+    if digest(marker) != marker_sha256 or marker_sha256 != plan["required_probe_marker_sha256"]:
         raise ValueError("Product probe marker hash differs")
     result = json.loads(marker.read_text())
     receipt = json.loads(terminal.read_text())
+    activation = json.loads(activation_report.read_text())
     audit = result["audit"]
-    if (receipt.get("job_id") != plan["required_probe_job_id"]
+    movement = activation["q_u_v_movement"]
+    effect = activation.get("legal_logit_delta_max_abs")
+    if type(effect) not in (int, float) or not math.isfinite(effect):
+        raise ValueError("Product activation effect is not finite")
+    if (result.get("schema") != "generals-product-logical-muon-probe-qualified-v1"
+            or receipt.get("job_id") != plan["required_probe_job_id"]
             or receipt.get("status") != "succeeded"
             or receipt.get("restarts_used") != 0
             or result["intent"] != probe_intent
+            or probe_intent.get("schema") != "generals-product-logical-muon-probe-intent-v1"
+            or result.get("source_parity_sha256") != plan["required_probe_native_source_parity_sha256"]
+            or result.get("abi_proof_sha256") != plan["abi_proof_sha256"]
+            or result.get("migration_receipt_sha256") != plan["pool_migration_receipt_sha256"]
+            or result.get("initial_policy_sha256") != plan["source_product_policy_sha256"]
+            or result.get("activation_gate_sha256") != plan["required_probe_activation_sha256"]
+            or digest(activation_report) != plan["required_probe_activation_sha256"]
+            or result.get("activation_gate") != activation
+            or activation.get("passed") is not True
+            or activation.get("source_policy_sha256") != plan["source_product_policy_sha256"]
+            or activation.get("trained_checkpoint_sha256") != result.get("checkpoint_sha256")
+            or activation.get("trained_bundle_manifest_sha256") != result.get("bundle_manifest_sha256")
+            or activation.get("native_serving_parity_sha256") != result.get("trained_parity_sha256")
+            or activation.get("views_sha256") != probe_intent.get("activation_views_sha256")
+            or effect <= 1e-3
+            or activation.get("min_legal_logit_delta_max_abs") != 1e-3
+            or set(movement) != {"product_local_kernel", "product_global_kernel", "product_action_kernel"}
+            or any(item.get("changed_words", 0) <= 0 for item in movement.values())
             or audit["environment_steps"] != plan["required_probe_steps"]
             or audit["steady_sps"] < plan["training"]["steady_sps_floor"]
             or audit["illegal_actions"] != 0
@@ -65,7 +95,7 @@ def verify_source_proofs(inputs: Path, plan: dict, intent: dict) -> None:
 
 
 def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
-            marker_sha256: str, output: Path) -> None:
+            activation_report: Path, marker_sha256: str, output: Path) -> None:
     """Stage after reviewing the terminal Product probe; never alter its input."""
     if output.exists():
         raise FileExistsError(output)
@@ -74,10 +104,12 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
         raise ValueError("Product probe input differs from its seal")
     plan = json.loads((repository / PLAN_FILE).read_text())
     intent = json.loads((probe_input / "probe-intent.json").read_text())
-    qualified_probe(marker, terminal, marker_sha256, plan, intent)
+    qualified_probe(marker, terminal, activation_report, marker_sha256, plan, intent)
     if (intent["source_policy_sha256"] != plan["source_product_policy_sha256"]
             or intent["source_asset_sha256"] != plan["source_product_asset_sha256"]
             or intent["pool_migration_receipt_sha256"] != plan["pool_migration_receipt_sha256"]
+            or intent["abi_proof_sha256"] != plan["abi_proof_sha256"]
+            or intent["parity_proof_sha256"] != plan["source_parity_proof_sha256"]
             or intent["opponent_weights"] != plan["opponent_weights"]):
         raise ValueError("Product probe source or migrated population differs from preregistration")
     verify_source_proofs(probe_input, plan, intent)
@@ -85,7 +117,7 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
     for name in ("assets", "bundles", "curriculum", "puffer.git", "raylib-5.5_linux_amd64"):
         shutil.copytree(probe_input / name, output / name, ignore=shutil.ignore_patterns("._*", ".DS_Store"))
     for name in ("build-config.json", "config.json", "probe-intent.json",
-                 "pool-migration-receipt.json", "transplant-proof.json", "parity-proof.json"):
+                 "pool-migration-receipt.json", "transplant-proof.json", "parity-proof.json", "abi-proof.json"):
         shutil.copy2(probe_input / name, output / name)
     (output / "source").mkdir()
     archive = subprocess.Popen(["git", "-C", str(repository), "archive", "HEAD"], stdout=subprocess.PIPE)
@@ -102,6 +134,7 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
     shutil.copy2(repository / PLAN_FILE, output / "plan.json")
     shutil.copy2(marker, output / "qualified-probe-marker.json")
     shutil.copy2(terminal, output / "qualified-probe-terminal.json")
+    shutil.copy2(activation_report, output / "qualified-probe-activation.json")
     build = json.loads((output / "build-config.json").read_text())
     run = json.loads((output / "config.json").read_text())
     train = plan["training"]
@@ -126,6 +159,7 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
         "source_revision": revision,
         "probe_marker_sha256": marker_sha256,
         "probe_terminal_sha256": digest(terminal),
+        "probe_activation_sha256": digest(activation_report),
         "probe_input_seal_sha256": digest(probe_input / "seal.json"),
         "plan_sha256": digest(output / "plan.json"),
         "source_product_policy_sha256": plan["source_product_policy_sha256"],
@@ -166,12 +200,14 @@ def run_pair(inputs: Path, output: Path) -> None:
     lineage = json.loads((inputs / "pair-lineage.json").read_text())
     intent = json.loads((inputs / "probe-intent.json").read_text())
     qualified_probe(inputs / "qualified-probe-marker.json", inputs / "qualified-probe-terminal.json",
-                    lineage["probe_marker_sha256"], plan, intent)
+                    inputs / "qualified-probe-activation.json", lineage["probe_marker_sha256"], plan, intent)
     verify_source_proofs(inputs, plan, intent)
     if (lineage["source_product_policy_sha256"] != plan["source_product_policy_sha256"]
             or digest(inputs / "assets/cold/policy.bin") != plan["source_product_policy_sha256"]
             or digest(inputs / "assets/cold/asset.json") != plan["source_product_asset_sha256"]
-            or digest(inputs / "pool-migration-receipt.json") != plan["pool_migration_receipt_sha256"]):
+            or digest(inputs / "pool-migration-receipt.json") != plan["pool_migration_receipt_sha256"]
+            or digest(inputs / "abi-proof.json") != plan["abi_proof_sha256"]
+            or lineage["probe_activation_sha256"] != plan["required_probe_activation_sha256"]):
         raise ValueError("Product source or frozen opponent migration differs")
     build = json.loads((inputs / "build-config.json").read_text())
     config = json.loads((inputs / "config.json").read_text())
@@ -279,7 +315,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     stage = commands.add_parser("prepare")
-    for name in ("probe-input", "repository", "marker", "terminal", "output"):
+    for name in ("probe-input", "repository", "marker", "terminal", "activation-report", "output"):
         stage.add_argument("--" + name, type=Path, required=True)
     stage.add_argument("--marker-sha256", required=True)
     run = commands.add_parser("run")
@@ -288,7 +324,7 @@ def main() -> None:
     args = parser.parse_args()
     if args.command == "prepare":
         prepare(args.probe_input, args.repository, args.marker, args.terminal,
-                args.marker_sha256, args.output)
+                args.activation_report, args.marker_sha256, args.output)
     else:
         run_pair(args.input, args.output)
 
