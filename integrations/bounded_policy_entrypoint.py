@@ -49,15 +49,19 @@ def run(commands, results, output, seconds, *, kind, completion):
         raise InterruptedError(f'Experiment interrupted by signal {signum}')
     old = {sig: signal.signal(sig, stop) for sig in (signal.SIGTERM, signal.SIGINT)}
     try:
-        for command, env in commands:
+        for index, (command, env) in enumerate(commands):
             remaining = seconds - (time.monotonic() - start)
             if remaining <= 0:
                 raise TimeoutError('Experiment execution budget exhausted')
+            phase = f'{kind}:{index}'
+            print('EXPERIMENT_PHASE ' + json.dumps(dict(phase=phase, event='start')), flush=True)
             child = subprocess.Popen(command, env=env, start_new_session=True)
             code = child.wait(timeout=remaining)
             if code:
                 raise RuntimeError(f'Experiment failed, exit {code}')
             child = None
+            print('EXPERIMENT_PHASE ' + json.dumps(dict(phase=phase, event='complete',
+                  elapsed=time.monotonic()-start)), flush=True)
         completion(results)  # Validate all success markers before marking collection complete.
         complete = True
     except BaseException as exc:
