@@ -10,7 +10,7 @@ def completion(results):
     report = read(results/'COMPLETED.json')
     if report['plan_sha256'] != digest(results/'plan.json') or report['qualified_for_long_training'] is not False:
         raise ValueError('Diagnostic completion binding differs')
-    return report
+    return {key: value for key, value in report.items() if key != 'plan_sha256'}
 
 
 def main():

@@ -29,3 +29,11 @@ class GatherProbeTest(unittest.TestCase):
                                                    qualified_for_long_training=True))
             with self.assertRaisesRegex(ValueError, 'binding'):
                 completion(root)
+
+    def test_completion_does_not_duplicate_archive_plan_binding(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            probe.write(root/'plan.json', {})
+            probe.write(root/'COMPLETED.json', dict(plan_sha256=probe.digest(root/'plan.json'),
+                                                   qualified_for_long_training=False))
+            self.assertEqual(completion(root), {'qualified_for_long_training': False})
