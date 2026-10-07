@@ -22,6 +22,9 @@ def logical_optimizer_shapes(model, buffers, *, context_matrix=False):
 
     register("input", model.input_kernel.T, model.input_kernel.T.shape)
     register("action", model.action_kernel.T, model.action_kernel.T.shape)
+    register("product_local", model.product_local_kernel.T, model.product_local_kernel.T.shape)
+    register("product_global", model.product_global_kernel, model.product_global_kernel.shape)
+    register("product_action", model.product_action_kernel.T, model.product_action_kernel.T.shape)
     register("global", model.global_kernel, model.global_kernel.shape)
     register("readout", model.readout_kernel, model.readout_kernel.shape)
     if context_matrix:

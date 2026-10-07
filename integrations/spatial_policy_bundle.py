@@ -190,7 +190,7 @@ class SpatialPlayerPolicy:
         action = context.reshape(-1, 441, self.features) @ w["action_kernel"]
         product_local = context.reshape(-1, 441, self.features) @ w["product_local_kernel"]
         product_global = global_values @ w["product_global_kernel"]
-        action += (product_local * product_global[:, None, :]) @ w["product_action_kernel"]
+        action += (128.0 * product_local * product_global[:, None, :]) @ w["product_action_kernel"]
         output = output + xp.concatenate((action.transpose(0, 2, 1).reshape(-1, 3528),
                                           xp.zeros((observations.shape[0], 2), dtype=observations.dtype)), axis=1)
         for i in range(self.prior_count):

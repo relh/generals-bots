@@ -226,7 +226,7 @@ class DirectSpatial:
         product_global = jnp.matmul(
             global_values, parameters[self.product_global_kernel], precision=jax.lax.Precision.HIGHEST,
         )
-        product = product_local * product_global[:, None, :]
+        product = 128.0 * product_local * product_global[:, None, :]
         action += jnp.matmul(product, parameters[self.product_action_kernel],
                              precision=jax.lax.Precision.HIGHEST)
         outputs = outputs.at[:, :3528].add(action.transpose(0, 2, 1).reshape(-1, 3528))

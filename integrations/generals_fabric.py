@@ -16,7 +16,7 @@ def _silu_publish(self, state, parameters):
 
 
 def _product_step(self, state, parameters, inbox, rho):
-    return state.replace(pub=inbox.local * inbox.global_)
+    return state.replace(pub=128.0 * inbox.local * inbox.global_)
 
 
 @fl.atom
