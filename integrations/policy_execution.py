@@ -14,6 +14,11 @@ from pathlib import Path
 
 
 def runtime_environment(source, output, sampler):
+    from integrations.native_spatial_asset import validate_sampler
+
+    validate_sampler(sampler)
+    if "METTA_SPATIAL_LOG_GAP_SCALE" in os.environ:
+        raise ValueError("Unsupported retired sampler environment: METTA_SPATIAL_LOG_GAP_SCALE")
     env = dict(os.environ)
     # Optional sampler fields must never inherit a previous experiment's settings.
     for key in (
@@ -22,7 +27,6 @@ def runtime_environment(source, output, sampler):
         "EARLY_ROUTE_TEMPERATURE",
         "EARLY_ROUTE_TURNS",
         "FULL_ACTION_TEMPERATURE",
-        "LOG_GAP_SCALE",
         "ROUTE_HALF_WEIGHT",
         "NEUTRAL_ROUTE_BIAS",
         "WEAK_OWNED_ROUTE_PENALTY",

@@ -108,3 +108,12 @@ def test_restore_objective_excludes_distributions_but_binds_discounts():
     assert source == target
     with pytest.raises(ValueError, match='discounts must agree'):
         training_contract(reward, {'train.gamma': .99})
+
+
+@pytest.mark.parametrize("scale", [0, 4])
+def test_sampler_rejects_retired_log_gap_field(scale):
+    from integrations.native_spatial_asset import validate_sampler
+
+    with pytest.raises(ValueError, match="current explicit structured sampler"):
+        validate_sampler(dict(mode="structured_sample", move_temperature=.05,
+                              split_temperature=.15, log_gap_scale=scale))

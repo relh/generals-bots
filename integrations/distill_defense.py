@@ -93,10 +93,6 @@ def serving_logits(policy, outputs, values, masks):
         if coefficient:
             logits += transform(values, coefficient, jnp)
     logits /= policy.full_action_temperature
-    if policy.log_gap_scale:
-        from integrations.spatial_exploration import log_gap_logits
-
-        logits = log_gap_logits(logits, masks, policy.log_gap_scale, jnp)
     return jnp.where(masks, logits, -jnp.inf)
 
 

@@ -24,7 +24,6 @@ class DirectTape:
     parameters: object
     observations: object
     predictions: object
-    exploration_logits: object = None
 
     def __getitem__(self, index):
         # Plain PPO's auxiliary collector only needs the observation batch axis.
@@ -241,10 +240,9 @@ def install(native_module=None):
 
         self.spatial_full_action_temperature = validate_full_action_temperature(
             float(os.environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1")))
-        from integrations.spatial_exploration import validate_log_gap_scale
 
-        self.spatial_log_gap_scale = validate_log_gap_scale(
-            float(os.environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0")))
+        if "METTA_SPATIAL_LOG_GAP_SCALE" in os.environ:
+            raise ValueError("Unsupported retired sampler environment: METTA_SPATIAL_LOG_GAP_SCALE")
         self.spatial_route_half_weight = float(os.environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
         if (not np.isfinite(self.spatial_route_half_weight) or
                 not 0 <= self.spatial_route_half_weight <= 1):
@@ -298,16 +296,9 @@ def install(native_module=None):
             acting = acting.at[..., :3529].add(penalty)
         if self.spatial_full_action_temperature != 1:
             acting = acting.at[..., :3529].divide(self.spatial_full_action_temperature)
-        exploration_logits = None
-        if self.spatial_log_gap_scale:
-            from integrations.spatial_exploration import log_gap_logits, public_action_mask
-
-            exploration_logits = acting[..., :3529]
-            acting = acting.at[..., :3529].set(log_gap_logits(
-                exploration_logits, public_action_mask(transported, jnp), self.spatial_log_gap_scale, jnp))
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
-        return acting, state, DirectTape(parameters, transported, outputs, exploration_logits)
+        return acting, state, DirectTape(parameters, transported, outputs)
 
     @functools.wraps(backward)
     def direct_backward(self, tape, logits, values):
@@ -319,11 +310,6 @@ def install(native_module=None):
         self.active_objectives.clear()
         coefficient = self.teacher_phase.ppo_coefficient
         # Chain rule for the final action-only transform; preserve value gradients.
-        if self.spatial_log_gap_scale:
-            from integrations.spatial_exploration import log_gap_cotangents, public_action_mask
-
-            logits = log_gap_cotangents(tape.exploration_logits, public_action_mask(tape.observations, jnp),
-                                       logits, self.spatial_log_gap_scale, jnp)
         logits = logits / self.spatial_full_action_temperature
         from integrations.spatial_action_sampling import raw_cotangents
 

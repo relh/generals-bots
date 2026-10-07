@@ -106,7 +106,6 @@ def validate_sampler(sampler):
         "early_route_turns",
         "route_half_weight",
         "full_action_temperature",
-        "log_gap_scale",
     }
     if (
         not isinstance(sampler, dict)
@@ -124,7 +123,6 @@ def validate_sampler(sampler):
         "weak_owned_route_penalty",
         "doomed_attack_route_penalty",
         "route_half_weight",
-        "log_gap_scale",
     ):
         if key in sampler:
             value = sampler[key]

@@ -25,11 +25,13 @@ class Trial:
             full_action_temperature=self.sampler.get("full_action_temperature", 1.0),
             route_half_weight=self.sampler.get("route_half_weight", 0.0),
         )
+        from integrations.native_spatial_asset import validate_sampler
+
+        validate_sampler(self.sampler)
         if self.sampler["mode"] != "structured_sample":
             raise ValueError("Trial requires the selected structured sampler")
         if (
             self.sampler["full_action_temperature"] != 1.0
-            or self.sampler.get("log_gap_scale", 0.0) != 0.0
             or self.sampler["route_half_weight"] != 0.0
         ):
             raise ValueError("Matched warmstart must preserve the selected unmodified sampler")

@@ -150,7 +150,6 @@ def main():
                                             split_temperature=policy.split_temperature,
                                             route_half_weight=policy.route_half_weight,
                                             full_action_temperature=policy.full_action_temperature,
-                                            log_gap_scale=policy.log_gap_scale,
                                             neutral_route_bias=policy.neutral_route_bias,
                                             weak_owned_route_penalty=policy.weak_owned_route_penalty,
                                             doomed_attack_route_penalty=policy.doomed_attack_route_penalty),

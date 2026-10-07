@@ -12,7 +12,6 @@ from integrations.spatial_policy_bundle import structured_action_probabilities
 
 
 def test_sampler_environment_roundtrip_clears_inherited_experiment_settings(tmp_path, monkeypatch):
-    monkeypatch.setenv("METTA_SPATIAL_LOG_GAP_SCALE", "8")
     monkeypatch.setenv("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "1")
     monkeypatch.setenv("METTA_SPATIAL_EARLY_ROUTE_TEMPERATURE", "9")
     monkeypatch.setenv("METTA_SPATIAL_EARLY_ROUTE_TURNS", "999")
@@ -182,3 +181,15 @@ def test_native_training_console_is_live_and_drained_when_monitor_fails(tmp_path
     assert visible.getvalue().count("NATIVE epoch progress") == 1
     assert visible.getvalue().endswith("native shutdown tail\n")
     assert (logs / "train-process.log").read_bytes() == b""
+
+
+@pytest.mark.parametrize("scale", ["0", "4"])
+def test_retired_sampler_environment_is_rejected(tmp_path, monkeypatch, scale):
+    from integrations.launch_spatial_selfplay_training import rollout_sampler_settings
+
+    monkeypatch.setenv("METTA_SPATIAL_LOG_GAP_SCALE", scale)
+    sampler = dict(mode="structured_sample", move_temperature=.05, split_temperature=.15)
+    with pytest.raises(ValueError, match="retired sampler"):
+        runtime_environment(tmp_path, tmp_path, sampler)
+    with pytest.raises(ValueError, match="retired sampler"):
+        rollout_sampler_settings({"METTA_SPATIAL_LOG_GAP_SCALE": scale})

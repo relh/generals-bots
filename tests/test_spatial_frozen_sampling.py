@@ -17,7 +17,7 @@ def sampler(**settings):
     fields = dict(action_mode="structured_sample", move_temperature=.05,
                   split_temperature=.15, early_route_temperature=None, early_route_turns=None,
                   route_half_weight=0., neutral_route_bias=0., weak_owned_route_penalty=0.,
-                  doomed_attack_route_penalty=0., full_action_temperature=1., log_gap_scale=0.)
+                  doomed_attack_route_penalty=0., full_action_temperature=1.)
     return SimpleNamespace(**(fields | settings))
 
 

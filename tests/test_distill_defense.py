@@ -41,7 +41,6 @@ def test_supervised_sampler_matches_serving_and_ce_gradient_reduces_loss():
         weak_owned_route_penalty=0.0,
         doomed_attack_route_penalty=0.0,
         full_action_temperature=1.0,
-        log_gap_scale=0.0,
     )
     values = jnp.zeros((1, 7056), jnp.float32)
     masks = jnp.zeros((1, 3529), bool).at[0, 0].set(True).at[0, 1764].set(True)

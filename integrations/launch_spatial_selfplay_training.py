@@ -33,8 +33,9 @@ def rollout_sampler_settings(environ=os.environ):
     import math
 
     from integrations.spatial_action_sampling import validate_full_action_temperature
-    from integrations.spatial_exploration import validate_log_gap_scale
 
+    if "METTA_SPATIAL_LOG_GAP_SCALE" in environ:
+        raise ValueError("Unsupported retired sampler environment: METTA_SPATIAL_LOG_GAP_SCALE")
     settings = dict(
         mode="structured_sample",
         move_temperature=float(environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1")),
@@ -42,7 +43,6 @@ def rollout_sampler_settings(environ=os.environ):
         full_action_temperature=validate_full_action_temperature(
             float(environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1"))
         ),
-        log_gap_scale=validate_log_gap_scale(float(environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0"))),
         route_half_weight=float(environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0")),
         neutral_route_bias=float(environ.get("METTA_SPATIAL_NEUTRAL_ROUTE_BIAS", "0")),
         weak_owned_route_penalty=float(environ.get("METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY", "0")),
@@ -76,8 +76,10 @@ def source_sampling_gate_report(match):
 
     match = Path(match)
     record = json.loads((match / "evaluation.json").read_text())
-    if record.get("schema") != "generals-frozen-match-v1":
+    if record.get("schema") != "generals-frozen-match-v2":
         raise ValueError("Source gate requires the current frozen-match report schema")
+    if "log_gap_scale" in record or "log_gap_scale" in record.get("opponent_action_parameters", {}):
+        raise ValueError("Source report contains retired sampler settings")
     if (
         not record["held_out"]
         or record["smoke_cpu"]
@@ -114,7 +116,6 @@ def source_sampling_gate_report(match):
         "early_route_turns",
         "route_half_weight",
         "full_action_temperature",
-        "log_gap_scale",
         "neutral_route_bias",
         "weak_owned_route_penalty",
         "doomed_attack_route_penalty",

@@ -164,7 +164,7 @@ def test_report_uses_real_saved_seats_and_outcomes(tmp_path):
     match.mkdir()
     sampler = rollout_sampler_settings({})
     record = dict(
-        schema="generals-frozen-match-v1",
+        schema="generals-frozen-match-v2",
         held_out=True,
         smoke_cpu=False,
         coworld_classic_rules=True,
@@ -211,3 +211,31 @@ def test_source_gate_rejects_retired_unversioned_split_pilot(tmp_path, schema):
     path.write_text(json.dumps(record))
     with pytest.raises(ValueError, match="current frozen-match report schema"):
         source_sampling_gate_report(match)
+
+
+def test_legacy_frozen_match_report_is_rejected(tmp_path):
+    path = tmp_path / "evaluation.json"
+    path.write_text(json.dumps({"schema": "generals-frozen-match-v1"}))
+    with pytest.raises(ValueError, match="current frozen-match report schema"):
+        source_sampling_gate_report(tmp_path)
+
+
+@pytest.mark.parametrize("scale", [0, 4])
+def test_population_report_rejects_retired_sampler_before_loading_arrays(tmp_path, scale):
+    from integrations.analyze_spatial_population_pair import load_arm
+
+    (tmp_path / "evaluation.json").write_text(json.dumps({"action_selection": {"log_gap_scale": scale}}))
+    with pytest.raises(ValueError, match="retired sampler"):
+        load_arm(tmp_path)
+
+
+@pytest.mark.parametrize("location", ["actor", "opponent"])
+def test_current_report_cannot_smuggle_retired_sampler_field(tmp_path, location):
+    record = {"schema": "generals-frozen-match-v2"}
+    if location == "actor":
+        record["log_gap_scale"] = 0
+    else:
+        record["opponent_action_parameters"] = {"log_gap_scale": 4}
+    (tmp_path / "evaluation.json").write_text(json.dumps(record))
+    with pytest.raises(ValueError, match="retired sampler"):
+        source_sampling_gate_report(tmp_path)
