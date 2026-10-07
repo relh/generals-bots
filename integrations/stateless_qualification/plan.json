@@ -1,9 +1,7 @@
 {
   "schema": "generals-stateless-qualification-v1",
-  "status": "pending terminal ABBA evidence review and final source/input seal",
+  "status": "bridge evidence reviewed; selected implementation ready for final source/input seal",
   "purpose": "Qualify the stateless ABI execution path without performance instrumentation or continuation",
-  "required_before_sealing": "Review terminal bridge ABBA evidence; explicitly select bridge source implementation; bind final source revision and all input hashes",
-  "source_revision_pending_final_seal": true,
   "migration_sha256": "03f0619ab349401971c6bd858c229e72ef2e7805182e566f83de94bd4e325ab9",
   "assets": [
     {
@@ -160,5 +158,13 @@
     14001103,
     14001111
   ],
-  "limitations": "CPU ABI proof establishes identical fixed-input outputs/gradients, not GPU performance or winning strength; no strength evaluation in this qualification."
+  "limitations": "CPU ABI proof establishes identical fixed-input outputs/gradients, not GPU performance or winning strength; no strength evaluation in this qualification.",
+  "source_binding": "Final source revision and every input hash are bound by external context seal; source revision includes this plan.",
+  "bridge_selection": {
+    "implementation": "single output-copy fence with retained DLPack owners",
+    "source_revision": "d1e9705ec54036e0b7879fe0f4243cc68ca5d48e",
+    "terminal_audit_sha256": "caa79d2db07f45c0ed09e5dcdc15aee6a1e8905d80d851dd750c7f02b3f0f48f",
+    "abba_analysis_sha256": "58ceba421247488ab98eccf35083d947c4f1bde932cb7c80367025819f347371",
+    "reason": "Both CUDA bitwise-copy/lifetime gates passed. Three output waits eliminated per tick; output host scope reduced in both pairs by 19.936ms and 16.828ms over 256 ticks. End-to-end speedup not established: AB +9.033%, BA -0.435%; retain under preregistered identified eliminated cost criterion. Full uninstrumented qualification required."
+  }
 }

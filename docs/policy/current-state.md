@@ -139,28 +139,36 @@ slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
 retained 61-second fully allocated interval. These observations do not isolate
 a cause; they provide no support for changing power limits or CPU quota.
 
-### Bridge execution diagnostic retry: running
+### Bridge execution diagnostic: completed, small local saving
 
-**`job-zwt6d`** was submitted at **2026-10-07 18:32:06 UTC**, context
-`ctx-f76d9c6f`. At **19:19:14 UTC** attempt 1 had completed three runs: baseline run 0
-**39,795.67 instrumented SPS**, candidate run 1 **43,390.55 SPS**, candidate
-run 2 **43,016.74 SPS**, each over 1,048,576 steps after two warmup epochs.
-The final baseline was initializing. Both CUDA lifetime gates passed; the
-reverse-order comparison and final independent artifact audit remain pending.
-These provisional results do not qualify training or establish strength gains. Same one-H100 A–B–B–A plan, source revisions and 1,063 unchanged
-input files; only the diagnostic helper, report-writing template and input
-manifest changed. Strict report-file parsing and retained compiler/runtime
-stdout and stderr replace parsing embedded-Python stdout as JSON.
+**`job-zwt6d` succeeded at 2026-10-07 19:23:17 UTC**, attempt 1 with no
+restarts or preemptions. Independent audit verified all **335 retained files**,
+both CUDA bitwise-copy/lifetime gates, full action/reward audits and all four
+runs on H100 UUID `GPU-7cac0f43-d9d0-d954-fed0-378b56297727`.
+Settings: 4,096 games, horizon 128, minibatch 8,192, replay ratio 0.5, eight
+workers; each run measured 1,048,576 steps after two warmup epochs.
 
-Corrected local admission activated the production bootstrap and Muon hooks;
-baseline generated sources match the prior GPU build exactly. Both CPU
-ownership probes passed. Actual CUDA lifetime checks remain mandatory before
-training. Root verified all 1,066 staged hashes and the archive. The quote is
-**$2.2275**, with **45/43/45-minute provider/internal/aggregate limits**, zero
-restarts and live detached guard **PID 52951**, with aggregate deadline fixed
-at **19:37:27 UTC** from the conservative preallocation observation. No state-free runtime changes
-are included in this diagnostic, and its results cannot qualify sustained
-training or policy strength.
+| Order | Baseline instrumented SPS | Candidate instrumented SPS | Candidate change |
+| --- | ---: | ---: | ---: |
+| A–B | 39,795.67 | 43,390.55 | +9.033% |
+| B–A | 43,204.61 | 43,016.74 | −0.435% |
+
+**No repeatable end-to-end speedup is established.** The output-copy host scope
+fell by 19.936 ms and 16.828 ms across the respective 256-tick windows, with
+three fewer waits per tick. Those savings are below 0.1% of each full window;
+they do not explain the first pair's 2.183-second improvement. Retain the
+single-fence implementation under the preregistered identified-cost criterion:
+exact copies and owner lifetime passed, and redundant waits were eliminated.
+Timing scopes overlap and must not be added. Full uninstrumented qualification
+remains required. No state-free changes were included in this diagnostic.
+
+Sampled memory peaked at 68,515 MiB in run 0 and 68,231 MiB in the other runs,
+at five-second cadence. These are observed device totals, not exact allocation
+maxima or stateless memory results. Hardware sampling includes startup and is
+not aligned to the measured epochs. Billing: **1,695 seconds, $1.3981**.
+Guard PID 52951 observed completion and exited at 19:23:19 UTC, before its
+fixed 19:37:27 deadline. Context `ctx-f76d9c6f`, original sources and ABBA plan
+were preserved; only the report protocol changed after the first failure.
 
 ### Bridge execution diagnostic: report-protocol failure
 
@@ -217,9 +225,9 @@ checkpoint parity, complete action/reward audits and all 13 opponents in both
 seats are required. Coordinator **`1181b57`** reuses the shared execution path;
 local preparation against actual migrated assets passed, and its audit rejected
 slow/incomplete runs, wrong checkpoint clocks or initial weights, and an
-unexpected restored optimizer. It remains unsealed pending the bridge comparison.
+unexpected restored optimizer. The bridge implementation is selected; final source/input sealing is next.
 Local staging now contains 371 verified files, including migrated policies and
-all 46 parity fixture states. Final source selection, sealing and submission
+all 46 parity fixture states. Final source/input sealing and submission
 remain pending; this staging creates no GPU allocation.
 
 Startup simplification **`f7cca32`** removes duplicate parent graph construction.
@@ -228,7 +236,7 @@ optimizer bytes load; missing/mismatched receipts and stale build fingerprints
 are rejected. One actual CPU actor passed fresh/restored/new initialization
 and eight negative cases with further construction forbidden. Math and asset
 ABI remain unchanged. CUDA validation and startup-time measurement are pending;
-the running bridge comparison retains its sealed original startup code.
+the completed bridge comparison used its sealed original startup code.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.

@@ -1637,8 +1637,8 @@
     },
     "qualification_plan": {
       "path": "integrations/stateless_qualification/plan.json",
-      "sha256": "b80d9f689541e1567627b8253b375ec437ec41713b236bb712283c34222ee995",
-      "status": "unsealed pending terminal bridge comparison and final source selection",
+      "sha256": "7c36fa67896a202b58bd9323b873dd29973d4d3ae9dd22acd765342061b75683",
+      "status": "bridge source selected; final context seal pending",
       "steps": 4194304,
       "steady_interval_steps": 3145728,
       "warmup_epochs": 2,
@@ -1660,7 +1660,9 @@
           "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/root-stage-review.json",
           "sha256": "9ab45870d94d52b60725a998dde3eacc120436bcfadd15fbc11b80dc2591a958"
         }
-      }
+      },
+      "startup_evidence_integration_revision": "1b05d1b",
+      "collector_sha256": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d"
     },
     "startup_admission": {
       "source_revision": "878ea2414da18505530ccbb3bd7ed99bce5401e9",
@@ -1674,11 +1676,11 @@
     }
   },
   "bridge_execution_probe_retry": {
-    "status": "running",
+    "status": "succeeded; independently audited; no throughput or strength qualification",
     "job_id": "job-zwt6d",
     "context_id": "ctx-f76d9c6f",
     "submitted_at": "2026-10-07T18:32:06.964246+00:00",
-    "last_observed_at": "2026-10-07T19:19:14.648442+00:00",
+    "last_observed_at": "2026-10-07T19:26:23.858479+00:00",
     "archive_sha256": "6892addb01647dbd6b1397ac56f052f8bd3a58824387b8215d02f38a89a51942",
     "source_revisions": {
       "baseline": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1707,34 +1709,64 @@
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T185712762104Z-sanitized.log": "bd0b32f95a2e69c83c83d0e7d973323135bf91e1e3302074a3d390f47befcc4f",
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T190212848389Z-sanitized.log": "80b8b9f8629459ba189aec7f12884e0d5e1909cbb43133e3c4a3953ab191c9bf",
       "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T190635488571Z-sanitized.log": "ce0bd1023b365c073ac4cb144ad557e20aef23f212408ea450d92b8af15a3dc3",
-      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T191142874992Z-sanitized.log": "fb835222886de66a82856f2e6e5d6a1835ff379c08aac791c3221051c1537703"
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/job-zwt6d-run-attempt1-20261007T191142874992Z-sanitized.log": "fb835222886de66a82856f2e6e5d6a1835ff379c08aac791c3221051c1537703",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/terminal-audit-job-zwt6d.json": "caa79d2db07f45c0ed09e5dcdc15aee6a1e8905d80d851dd750c7f02b3f0f48f",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/abba-analysis.json": "58ceba421247488ab98eccf35083d947c4f1bde932cb7c80367025819f347371",
+      "integrations/softmax/local-output/bridge-profile-retry-launch-20261007/aggregate-guard.json": "b94e34d3906fd6713f5f804a256f1e76e33ebcf721a8373e5a4e9ff54a2e42ed"
     },
     "aggregate_deadline": "2026-10-07T19:37:27.628299+00:00",
-    "runtime_phase": "Three runs completed; final baseline initializing",
-    "provisional_completed_runs": [
+    "runtime_phase": "All four runs complete; artifacts verified",
+    "finished_at": "2026-10-07T19:23:17.448118+00:00",
+    "files_verified": 335,
+    "gpu_uuid": "GPU-7cac0f43-d9d0-d954-fed0-378b56297727",
+    "billed_seconds": 1695,
+    "charged_usd": 1.3981,
+    "restarts_used": 0,
+    "preempted_count": 0,
+    "guard_running": false,
+    "paired_order": [
+      {
+        "order": "AB",
+        "baseline_index": 0,
+        "candidate_index": 1,
+        "baseline_seconds": 26.349000000000004,
+        "candidate_seconds": 24.165999999999997,
+        "candidate_speedup": 1.090333526442109
+      },
+      {
+        "order": "BA",
+        "baseline_index": 3,
+        "candidate_index": 2,
+        "baseline_seconds": 24.270000000000003,
+        "candidate_seconds": 24.376000000000005,
+        "candidate_speedup": 0.9956514604529044
+      }
+    ],
+    "decision": "Retain single output fence for verified copy/lifetime behavior and identified eliminated waits. Output scope improves in both pairs; end-to-end speedup ambiguous. Proceed to stateless uninstrumented qualification.",
+    "completed_runs": [
       {
         "index": 0,
         "variant": "baseline",
-        "instrumented_sps": 39795.66586967247,
-        "measured_steps": 1048576,
-        "warmup_epochs": 2,
-        "qualified": false
+        "measured_sps": 39795.66586967247,
+        "measured_seconds": 26.349000000000004
       },
       {
         "index": 1,
         "variant": "candidate",
-        "instrumented_sps": 43390.548704791865,
-        "measured_steps": 1048576,
-        "warmup_epochs": 2,
-        "qualified": false
+        "measured_sps": 43390.548704791865,
+        "measured_seconds": 24.165999999999997
       },
       {
         "index": 2,
         "variant": "candidate",
-        "instrumented_sps": 43016.73777486051,
-        "measured_steps": 1048576,
-        "warmup_epochs": 2,
-        "qualified": false
+        "measured_sps": 43016.73777486051,
+        "measured_seconds": 24.376000000000005
+      },
+      {
+        "index": 3,
+        "variant": "baseline",
+        "measured_sps": 43204.61475072105,
+        "measured_seconds": 24.270000000000003
       }
     ]
   }
