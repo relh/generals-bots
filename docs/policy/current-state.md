@@ -2,9 +2,11 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 17:59 UTC**, bounded bridge diagnostic
-**`job-zwt6d` is running on an H100**, retrying the diagnostic after `job-6khn8` failed before training. The preceding row-rotation qualifications failed the
-strict throughput gate; no long continuation or strength evaluation ran.
+job `35892`. At **2026-10-07 19:37 UTC**, stateless qualification
+**`job-wv4b3` is building its H100 image**; training has not started. The bridge
+diagnostic completed and verified a small output-copy saving, without a
+repeatable overall speedup. The preceding row-rotation qualifications failed
+the throughput gate; no long continuation or fresh strength evaluation ran.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -21,11 +23,12 @@ planned decisions. Older prose remains in Git history.
 | Frozen sampler | Structured; move/split temperatures 0.05/0.15; opening move temperature 0.10 for 100 turns; neutral bonus 6; weak-owned and doomed-attack penalties 4 |
 | Baseline hosted screen | Daveey 9/32; incumbent 18/32 |
 
-The restored, build-compatible native asset and portable bundle live under
-`integrations/softmax/local-output/route-shortcut-diagnosis-20261007/` in
-`source-asset/` and `source-bundle/`. Recovery and metadata rebind preserved
-checkpoint and optimizer bytes, ABI and acting logits; they added no RL steps.
-The manifest pins the original identities and separate recovery evidence.
+Current native and serving assets use explicit stateless ABI v2 under
+`integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/`
+(`00-selected-native/` and `01-selected-serving/`). Migration preserved policy
+and optimizer bytes. Earlier recovery evidence and historical experiment input
+identities remain pinned in the manifest; those historical ABIs are not runtime
+compatibility paths.
 
 Qualification uses the pinned official Softmax Coworld **Classic** engine,
 independently sampled 18–21 tile map dimensions, fog and a 2,000-turn limit.
@@ -78,8 +81,9 @@ claiming the corrected training setup qualifies. No strength gain is established
 
 The candidate repeats the retained `job-wgtyc` control's 4,194,304-step
 qualification and 29,360,128-step continuation with unchanged model, sampler,
-reward, optimizer settings and training seed. Only the optimizer row schedule
-changes learning behavior. The shared audit authenticates the starting learner
+reward, optimizer settings and training seed. The intended learning change is optimizer row coverage. Stateless execution,
+startup admission and worker count also changed, so this tests the repaired
+training path rather than isolating rotation. The shared audit authenticates the starting learner
 and checks incremental continuation steps.
 
 Fresh 4,096-game panels compare candidate, source and historical control on
@@ -178,8 +182,8 @@ failed at **18:22:38 UTC**, before training: the compiled CUDA lifetime
 executable exited zero, but its wrapper could not parse stdout as JSON. Raw
 stdout was not retained, so lifetime success and the precise output remain
 unproven. All **118 retained files** were verified; billing was **124 seconds,
-$0.1023**, with no restarts or preemptions. A corrected diagnostic will write
-a dedicated report file and retain compile/run stdout and stderr. It compares the original bridge with four output-copy waits
+$0.1023**, with no restarts or preemptions. The completed retry wrote
+a dedicated report file and retained compile/run stdout and stderr. It compared the original bridge with four output-copy waits
 consolidated into one, in **A–B–B–A order**. Each fresh run has 2,097,152 steps,
 two warmup epochs and two measured epochs; workers stay fixed at eight.
 All DLPack owners remain alive through the final output wait; input readiness
@@ -188,10 +192,10 @@ be summed; end-to-end speed uses completed-step wall time.
 
 The first sealed archive passed CPU source transformation and ownership checks,
 but later review found those checks omitted active runtime Muon hooks. The retry
-will activate the production bootstrap and compare generated sources against
+activated the production bootstrap and matched generated sources against
 the retained GPU build. Review rejected an earlier
 unsubmitted archive because its instrumentation expected the wrong build-stage
-loop. Actual CUDA compilation and lifetime probes must pass before training.
+loop. Actual CUDA compilation and lifetime probes passed before training in the retry.
 The production correction is `d1e9705`, runner `0bd5e1e`, baseline `0df0d24`;
 exact inputs and receipts are bound in the manifest.
 
@@ -217,7 +221,7 @@ verified the comparisons and migrated bytes. The selected asset references now
 point to the migrated assets; historical experiment inputs remain hash-bound.
 **CUDA execution and throughput qualification are still pending.** This does
 not change the sealed bridge comparison or establish any policy strength gain.
-The next qualification is preregistered in
+The current qualification is preregistered in
 `integrations/stateless_qualification/plan.json`: 4,194,304 uninstrumented steps,
 workers eight, two warmup epochs, then all six remaining epochs measured
 together, with the existing rolling 30K SPS guard retained. Both source and
