@@ -118,19 +118,24 @@ illegal, nonfinite or clipped rewards. The 512-game source/serving gate and
 native CPU preflight passed before PPO. The job had zero restarts and billed
 $0.7293; verified result archive SHA-256:
 `46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23`.
-The Product architecture has no paired game-strength result or policy selection
-yet. A single-ABI matched ablation is submitted as bounded H100 `job-6y2gf`
-on `codex/product-single-abi-pair` at `83f68b4`. Both 16,777,216-step arms
-use the same Product source, opponent pool, Classic contract, seed, sampler and
-build; control masks only the 64 new Q-head gradients. The fresh 4,096-game
-paired development maps use seeds 10443701/10443703. Its sealed context
-archive SHA-256 is
-`45408ff8c1c80afbd55afc6e3b968e9ba968bd07c044246a7fa1d9bb8ef6a5a2`.
-The job has zero restarts and an 80-minute/$3.96 cap. No strength decision
-exists until both arms and the paired panel complete.
-The first context `job-8tv8j` was canceled during build at $0 after tar
-inspection found macOS AppleDouble entries; the corrected archive passed full
-unprivileged readback with no such entries.
+The bounded matched Product ablation `job-6y2gf` **did not clear the paired
+Classic development gate**. Both Product-ABI arms completed 16,777,216 PPO
+steps from the same source, optimizer seed and opponent pool; the control
+masked only the new Q-head gradients. On one H100, control and Product reached
+36,544.66 and 36,788.27 steady end-to-end SPS with 4,096 environments/H128/
+minibatch 8,192/replay 0.5. On 4,096 paired fresh first episodes (2,588 unique
+initial states), control went 2,729W/1,336L/31D and Product went
+2,737W/1,320L/39D. Product-minus-control paired signed-score delta was
++0.005859, initial-state-clustered 95% CI [−0.022529,+0.034493]. The
+verified terminal artifact SHA-256 is
+`678fe6903e6782be772e033f37fc1612a20b80f2615dee51c6fb3f6c82257b49`.
+The trained Product Q-head norm was only 1.6655e-5; Product U/V stayed
+bitwise identical to the control. Sentinel seat 1 also regressed by 0.12931
+signed-score over 116 games, breaching the preregistered broad-stratum guard.
+The independent lineage and execution audit passed; the strength decision is
+negative. No independent confirmation, hosted evaluation or promotion follows.
+The selected source and serving version remain unchanged; exact checkpoint,
+comparison and audit hashes are in the manifest.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
