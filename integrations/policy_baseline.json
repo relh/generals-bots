@@ -1602,7 +1602,7 @@
     "retry_work": "Corrected diagnostic submitted as job-zwt6d; see bridge_execution_probe_retry."
   },
   "stateless_execution_work": {
-    "status": "integrated; CPU equivalence and all asset migrations verified; CUDA execution and throughput qualification pending",
+    "status": "integrated; CPU equivalence, asset migrations, GPU source parity and native compile verified; native training/throughput blocked by pretraining receipt mismatch under repair",
     "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
     "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
     "branch": "codex/stateless-spatial-abi",
@@ -1630,7 +1630,6 @@
       "sha256": "03f0619ab349401971c6bd858c229e72ef2e7805182e566f83de94bd4e325ab9"
     },
     "external_state_words": 0,
-    "gpu_stateless_executed": false,
     "independent_verification": {
       "path": "integrations/softmax/local-output/stateless-abi-inventory-20261007/root-verification.json",
       "sha256": "5beae808f60247d7f232d77cbb64224603e98047a39ff17e6f9afeca6cea284a"
@@ -1751,6 +1750,13 @@
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/guard-admission.json": "131eee942216eac9b55d6e41340e70bd97488028ac8d1a293e0300941f78b8eb"
         }
       }
+    },
+    "gpu_stateless_source_parity_passed": true,
+    "gpu_stateless_training_executed": false,
+    "post_muon_pretraining_admission": {
+      "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/post-muon-pretraining-admission.json",
+      "sha256": "0bda02cee153023b44117ef1b73833a45676728e9d4dddd1e5cb36953d7615c7",
+      "scope": "Actual retained native build prepare/initialize/admission bindings; excludes Muon guard under repair and native GPU startup"
     }
   },
   "bridge_execution_probe_retry": {

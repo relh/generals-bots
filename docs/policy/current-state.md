@@ -232,7 +232,8 @@ All 14 asset manifests and 12 serving bundles were migrated, preserving policy,
 portable weight and both optimizer snapshots byte-for-byte. Root independently
 verified the comparisons and migrated bytes. The selected asset references now
 point to the migrated assets; historical experiment inputs remain hash-bound.
-**CUDA execution and throughput qualification are still pending.** This does
+**GPU source inference parity passed; native training and throughput qualification
+are still pending.** This does
 not change the sealed bridge comparison or establish any policy strength gain.
 The current qualification is preregistered in
 `integrations/stateless_qualification/plan.json`: 4,194,304 uninstrumented steps,
