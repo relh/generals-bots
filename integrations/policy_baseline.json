@@ -2127,6 +2127,14 @@
       "bootstrap": 17001111
     },
     "acceptance": "Positive paired lower95 against source and retained stateless control, same stratum guard, then independent confirmation and hosted gates",
-    "limitation": "Grouped outcome association suggests a distribution mechanism but does not prove causation."
+    "limitation": "Grouped outcome association suggests a distribution mechanism but does not prove causation.",
+    "inert_staging": {
+      "path": "integrations/softmax/local-output/fresh-start-launch-20261007/staging.json",
+      "sha256": "c6c6a4e14aa96c096dad125353114f701ab4d8f1f8d6744583fa66348badc6e4",
+      "files_verified": 620,
+      "root_review": "integrations/softmax/local-output/fresh-start-launch-20261007/root-stage-review.json",
+      "root_review_sha256": "962bb32969e133d88e9179c2d3f3c0b3d260ffe88102378bb32d32a127ef4720",
+      "sealed": false
+    }
   }
 }
