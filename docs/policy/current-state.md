@@ -60,6 +60,51 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
+## Learning-path repair awaiting GPU qualification
+
+At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches
+of 64 environment rows from a 4,096-row rollout. The minibatch index restarts
+at zero each epoch and the transpose preserves row order: only rows 0–2,047
+receive gradient updates. Both seats and all 13 opponents remain represented,
+but the rollout population audit is not an optimizer-sample coverage audit.
+The measured end-to-end SPS remains valid as environment throughput.
+
+Correction `d945bae` is integrated after ten focused CPU checks and exact
+native patch-chain admission. It rotates the starting minibatch block across epochs,
+keeping the gradient budget unchanged. It addresses permanent row starvation;
+it still trains on half of each rollout at replay ratio 0.5. Native runtime
+coverage, ≥30K SPS and a fresh paired strength comparison are required before
+claiming the corrected training setup qualifies. No strength gain is established.
+
+Trial `job-zsz35` was submitted **2026-10-07 16:04:23 UTC** with source
+`b068a18` and context `ctx-739342ae`. The candidate repeats the retained
+`job-wgtyc` control's 4,194,304-step qualification and 29,360,128-step continuation
+with unchanged model, sampler, reward, optimizer settings and training seed.
+Only the optimizer row schedule changes learning behavior. The shared audit
+also now authenticates the starting learner and checks incremental steps, so
+continuation audits correctly expect 29,360,128 newly collected actions.
+
+Fresh 4,096-game panels compare candidate, source and historical control on
+seeds 14001101/14001103 (bootstrap 14001111). Both paired improvements must
+have positive clustered lower bounds and satisfy the stratum guard before a
+fresh independent confirmation. A historical control on another allocation
+is not an identical floating-point training trajectory.
+
+The job has one H100, a 75-minute provider limit, 73-minute internal limit and
+zero application restarts. A detached guard conservatively caps aggregate
+runtime across preemptions at 75 minutes from a pre-allocation observation
+(or submission when no such observation exists). Its PID and observed state
+are recorded in the launch receipts. The validated maximum runtime quote was
+**$3.7125**, excluding any separate build fees. GPU coverage, throughput and
+strength are pending; there is no promotion or new qualification claim.
+
+The image build completed and worker download began at 16:20:19 UTC. The external
+guard now freezes its bound on `starting` as well as `running`, so startup cannot
+escape the aggregate limit. Its conservative deadline is **2026-10-07 17:35:08 UTC**,
+based on the last pre-allocation observation at 16:20:08. The guard was replaced
+as PID 80704; the provider job was not restarted. A focused starting/preemption
+fixture passed, and the new guard process and receipt were verified live.
+
 ## Matched experiment: technically passed, strength rejected
 
 `job-wgtyc` succeeded at **2026-10-07 11:34:43 UTC** on attempt 3 after two
@@ -203,6 +248,14 @@ on one H100, **$0.1672**. It performed no training and makes no training SPS
 claim. Terminal full-state hash preimages were not retained; duplicate terminal
 hashes, outcomes and turns were checked, while snapshot preimages were verified.
 
+An exploratory check of the retained contact results selected an action using
+three continuation replicas and scored it on the fourth. Mean signed delta
+was −0.04297, map-cluster 95% CI [−0.08398, +0.00195]. This post-hoc calculation
+uses simulated future outcomes unavailable to a public-only serving actor;
+it establishes no conditional teacher or policy benefit and does not change
+the preregistered negative decision. No new games or training were used.
+
+
 Rejected log-gap runtime code was removed (210 net lines). Selected source
 and ten frozen opponents retained bitwise logits/probabilities on 133 public
 views and four temperature-boundary variants. Frozen reports require schema
@@ -230,55 +283,3 @@ Daveey. Different maps, counts and actors prevent causal comparisons. This
 supports keeping fresh named-opponent hosted acceptance mandatory; it does not
 support blaming padding or changing the active trial. Evidence is hash-bound
 in the manifest; no new matches or training were performed for this audit.
-
-## Learning-path repair awaiting GPU qualification
-
-At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches
-of 64 environment rows from a 4,096-row rollout. The minibatch index restarts
-at zero each epoch and the transpose preserves row order: only rows 0–2,047
-receive gradient updates. Both seats and all 13 opponents remain represented,
-but the rollout population audit is not an optimizer-sample coverage audit.
-The measured end-to-end SPS remains valid as environment throughput.
-
-Correction `d945bae` is integrated after ten focused CPU checks and exact
-native patch-chain admission. It rotates the starting minibatch block across epochs,
-keeping the gradient budget unchanged. It addresses permanent row starvation;
-it still trains on half of each rollout at replay ratio 0.5. Native runtime
-coverage, ≥30K SPS and a fresh paired strength comparison are required before
-claiming the corrected training setup qualifies. No strength gain is established.
-
-Trial `job-zsz35` was submitted **2026-10-07 16:04:23 UTC** with source
-`b068a18` and context `ctx-739342ae`. The candidate repeats the retained
-`job-wgtyc` control's 4,194,304-step qualification and 29,360,128-step continuation
-with unchanged model, sampler, reward, optimizer settings and training seed.
-Only the optimizer row schedule changes learning behavior. The shared audit
-also now authenticates the starting learner and checks incremental steps, so
-continuation audits correctly expect 29,360,128 newly collected actions.
-
-Fresh 4,096-game panels compare candidate, source and historical control on
-seeds 14001101/14001103 (bootstrap 14001111). Both paired improvements must
-have positive clustered lower bounds and satisfy the stratum guard before a
-fresh independent confirmation. A historical control on another allocation
-is not an identical floating-point training trajectory.
-
-The job has one H100, a 75-minute provider limit, 73-minute internal limit and
-zero application restarts. A detached guard conservatively caps aggregate
-runtime across preemptions at 75 minutes from a pre-allocation observation
-(or submission when no such observation exists). Its PID and observed state
-are recorded in the launch receipts. The validated maximum runtime quote was
-**$3.7125**, excluding any separate build fees. GPU coverage, throughput and
-strength are pending; there is no promotion or new qualification claim.
-
-The image build completed and worker download began at 16:20:19 UTC. The external
-guard now freezes its bound on `starting` as well as `running`, so startup cannot
-escape the aggregate limit. Its conservative deadline is **2026-10-07 17:35:08 UTC**,
-based on the last pre-allocation observation at 16:20:08. The guard was replaced
-as PID 80704; the provider job was not restarted. A focused starting/preemption
-fixture passed, and the new guard process and receipt were verified live.
-
-An exploratory check of the retained contact results selected an action using
-three continuation replicas and scored it on the fourth. Mean signed delta
-was −0.04297, map-cluster 95% CI [−0.08398, +0.00195]. This post-hoc calculation
-uses simulated future outcomes unavailable to a public-only serving actor;
-it establishes no conditional teacher or policy benefit and does not change
-the preregistered negative decision. No new games or training were used.
