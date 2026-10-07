@@ -1,0 +1,46 @@
+{
+  "schema": "generals-bridge-profile-v1",
+  "status": "Preregistered before GPU packaging or execution; diagnostic only",
+  "question": "Does consolidating four output-copy stream waits into one reduce end-to-end execution time, and where is remaining host/GPU time spent?",
+  "baseline_revision": "0df0d24",
+  "candidate": "Exact corrected-source revision and SHA-checked generated headers bound at sealing; no runtime legacy switch",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "input_context_seal_sha256": "f744c09904fb2e8ac58e46bf9520ad3570679bdd39ee91501cb2b2cac86919d2",
+  "worker_profile_sha256": "32b98160b78e49dd9929bcd07b6515a5bb8bc507ff6207f0022a700d0b0d7610",
+  "sequence": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "training_seed": 11007101,
+  "geometry": {
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "classic_siege_workers": 8
+  },
+  "steps_per_run": 2097152,
+  "warmup_epochs": 2,
+  "measured_epochs": [
+    3,
+    4
+  ],
+  "initialize": "Each run loads exact original source weights with fresh optimizer; no learner restore, no continuation",
+  "controls": "Same frozen/scripted opponent pool, balanced seats, Classic18\u201321 maps,2000turn limit,curriculum,reward,gamma,model,sampler,row rotation and learner hyperparameters as job-5cirw. Only generated bridge synchronization differs; identical instrumentation in both builds.",
+  "correctness": "Before training, fixed exported CUDA arrays copy bit-exactly and all4 DLPack owners remain alive until final output fence. Retain input readiness fence. Validate every completed run has exact step budget and complete action-mask/reward audits; nonfinite or illegal values fail probe.",
+  "measurement": "Record per-epoch completed-step wall time, bridge input/output host waits, learner forward and optimizer host time and CUDA-event stream spans. Events resolved at existing synchronization boundaries. Stream span includes dependencies and is not pure kernel time. Report each arm and paired order separately; do not select favorable epochs.",
+  "decision": "Profile only: no performance or policy promotion from instrumented results. Retain correctness fix only with exact-copy/lifetime evidence and measured benefit or identified eliminated cost; require separate uninstrumented full qualification >=30000SPS before sustained training. Negative/ambiguous results drive a concrete profile diagnosis, not an unchanged retry.",
+  "runtime_bound": {
+    "provider_minutes": 45,
+    "execution_minutes": 43,
+    "aggregate_minutes_from_first_allocation": 45,
+    "per_run_seconds": 480,
+    "max_restarts": 0,
+    "one_h100": true,
+    "price_quote_required": true
+  },
+  "below_gate_exception": "Only this bounded diagnostic permits <=2097152 incremental steps and <=480 seconds per run below30KSPS. Production execution default and all sustained-training gates unchanged.",
+  "outputs": "Preserve exact generated headers/native sources, per-run console/telemetry/instrumentation, configs, initial policy identities, complete audits, fixed-array lifetime evidence, source and input hashes; no strength games or hosted deployment."
+}
