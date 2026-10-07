@@ -60,7 +60,8 @@ class Trial:
             raise ValueError("Matched source serving bundle differs from the exact cold initializer")
         return asset.metadata
 
-    def call(self, module, args, *, name, seconds, arm=None, training=False):
+    def call(self, module, args, *, name, seconds, arm=None, training=False,
+             product_head_frozen=False):
         out = self.output / arm if arm else self.output
         return execute(
             module,
@@ -72,6 +73,7 @@ class Trial:
             seconds=seconds,
             training_config=out / "config.json" if training else None,
             startup_seconds=420 if training else 300,
+            product_head_frozen=product_head_frozen,
         )
 
     def smoke(self):

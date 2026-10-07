@@ -12,8 +12,9 @@ import time
 from pathlib import Path
 
 
-def runtime_environment(source, output, sampler):
+def runtime_environment(source, output, sampler, *, product_head_frozen=False):
     env = dict(os.environ)
+    env.pop("METTA_SPATIAL_PRODUCT_HEAD_FROZEN", None)
     # Optional sampler fields must never inherit a previous experiment's settings.
     for key in (
         "POLICY_TEMPERATURE",
@@ -43,6 +44,7 @@ def runtime_environment(source, output, sampler):
         METTA_SPATIAL_MUON_DENSE_ORIENTATION="canonical",
         METTA_SPATIAL_MUON_CONTEXT_MATRIX="1",
         METTA_SPATIAL_OPTIMIZER_LAYOUT="logical",
+        METTA_SPATIAL_PRODUCT_HEAD_FROZEN="1" if product_head_frozen else "0",
         METTA_AUDIT_DEVICE_REWARDS="0",
         METTA_AUDIT_SPATIAL_SPLITS="0",
         METTA_AUDIT_ACTION_MASK="1",
@@ -66,10 +68,10 @@ def runtime_environment(source, output, sampler):
 
 
 def execute(module, arguments, *, source, output, sampler, name, seconds, training_config=None,
-            startup_seconds=300):
+            startup_seconds=300, product_head_frozen=False):
     """Start one process group; preserve logs on every outcome."""
     output.mkdir(parents=True, exist_ok=True)
-    env = runtime_environment(source, output, sampler)
+    env = runtime_environment(source, output, sampler, product_head_frozen=product_head_frozen)
     env.pop("METTA_AUDIT_TARGET_AGENT_STEPS", None)
     if name == "preflight":
         env.update(JAX_PLATFORMS="cpu", METTA_AUDIT_DEVICE_REWARDS="0")

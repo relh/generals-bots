@@ -1,0 +1,35 @@
+{
+  "schema": "generals-product-single-abi-pair-v1",
+  "scope": "Matched development PPO and paired Classic evaluation; no hosted holdout or promotion",
+  "required_probe_job_id": "job-ffctd",
+  "required_probe_steps": 4194304,
+  "source_product_policy_sha256": "9c55dc3b167746f0153f5de50afaa6cba9cfb4a8858107d524c05d988c9147e9",
+  "source_old_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "source_product_asset_sha256": "8a2a324c922bd76dcd4efa618ecceca2cdf88c2ea2600cf5551c891b1fee13a9",
+  "pool_migration_receipt_sha256": "db925d1836ae1e4775ae4b4d7d0da93f397b7e1d4d2d25cf4ddaa837d563a1f4",
+  "opponent_weights": [1, 2, 1, 1, 1, 4, 5, 5, 11, 17, 3, 4, 16],
+  "training": {
+    "seed": 10943319,
+    "steps_per_arm": 16777216,
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "steady_sps_floor": 30000,
+    "warmup_epochs": 2,
+    "initializer": "Same transplanted Product source policy and fresh optimizer in both arms",
+    "single_factor": "Control zeros the 64 Q gradient words before native global clipping; treatment trains Q"
+  },
+  "development": {
+    "games_per_arm": 4096,
+    "pool_size": 4096,
+    "map_seed": 10443701,
+    "sample_seed": 10443703,
+    "bootstrap_seed": 10443711,
+    "rule": "Product-control paired signed-score clustered 95% lower bound above zero and no opponent-seat stratum with at least 100 games below -0.10"
+  },
+  "reserved_independent_confirmation": {
+    "map_seed": 10444701,
+    "sample_seed": 10444703
+  }
+}

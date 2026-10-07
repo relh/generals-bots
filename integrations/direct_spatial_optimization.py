@@ -263,6 +263,15 @@ def install(native_module=None):
         self.shapes, self.spatial_optimizer_layout_report = logical_optimizer_shapes(
             self.direct_spatial, self.buffers, context_matrix=True,
         )
+        frozen = os.environ.get("METTA_SPATIAL_PRODUCT_HEAD_FROZEN", "0")
+        if frozen not in ("0", "1"):
+            raise ValueError("Product head ablation must be 0 or 1")
+        self.product_head_frozen = frozen == "1"
+        if self.product_head_frozen:
+            indices = np.asarray(self.direct_spatial.product_action_kernel)
+            if indices.shape != (8, 8) or len(np.unique(indices)) != 64:
+                raise ValueError("Product head ablation requires exactly 64 unique Q words")
+            print("PRODUCT_HEAD_GRADIENT_MASK words=64 before_global_clip=1", flush=True)
         self.spatial_policy_temperature = float(os.environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1"))
         if not np.isfinite(self.spatial_policy_temperature) or self.spatial_policy_temperature <= 0:
             raise ValueError("Spatial policy temperature must be finite and positive")
@@ -376,6 +385,8 @@ def install(native_module=None):
                                    self.spatial_split_temperature, jnp,
                                    route_half_weight=self.spatial_route_half_weight) * coefficient
         gradient = self.direct_spatial.gradient(tape.parameters, tape.observations, cotangents)
+        if self.product_head_frozen:
+            gradient = gradient.at[self.direct_spatial.product_action_kernel].set(0)
         if not bool(jnp.isfinite(gradient).all()):
             raise FloatingPointError("Direct spatial gradients became nonfinite")
         return gradient
