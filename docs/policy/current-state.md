@@ -6,8 +6,8 @@ job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
 2026-10-07 20:38:59 UTC**. Independent verification of all 155 retained files
 confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
 4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
-The continuation to 33,554,432 run steps and fresh strength panels is being
-prepared. No strength improvement or hosted acceptance is established.
+Continuation **`job-mwvdb` was submitted at 20:43:44 UTC** and is building;
+it targets 33,554,432 run steps and fresh strength panels. No strength improvement or hosted acceptance is established.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -96,14 +96,17 @@ is not an identical floating-point training trajectory.
 The conditional continuation coordinator is integrated through **`95d1dea`**.
 It requires the independent successful qualification audit, complete artifact
 hashes, the exact epoch-8 policy and optimizer, and unchanged training execution
-sources. Seven evidence bindings remain deliberately unset until qualification
-finishes. One continuation would add 29,360,128 steps to epoch 64 / 33,554,432
+sources. All seven evidence bindings are sealed against successful `job-tvqh9`
+in **`cc5c2a1`**. The continuation adds 29,360,128 steps to epoch 64 / 33,554,432
 run steps, then evaluate all three frozen arms. Shared bounded process cleanup
 retains partial artifacts on failure; nine focused checks passed. No continuation
-has been submitted. Its separate limits are 75/73/75 minutes, zero restarts.
-Inert local staging contains 373 independently verified files, including the
-historical control and 46 parity fixtures. Qualification artifacts and the
-final source seal remain pending.
+has completed yet. **`job-mwvdb`** is building from context `ctx-5f217fc4`,
+source **`d47ae09`** (same committed plan/runtime code as integrated main).
+Root verified all **789 sealed files**, including 256 exact Git source files,
+authentic qualification artifacts, historical control and 46 parity fixtures.
+Actual CPU preparation restored the exact epoch-8 policy and optimizer.
+Limits: **75/73/75 minutes provider/internal/aggregate**, zero restarts;
+maximum quote **$3.7125**. Detached aggregate guard **PID 84888** is live.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
@@ -277,11 +280,11 @@ the exporter intentionally omits learner fields. The corrected audit verifies
 the serving asset's native-parent manifest and complete native training contract.
 No training or artifact bytes changed. Billing: **1,081 seconds, $0.8910**.
 The fixed 20:53:30 aggregate deadline was unused; its guard observed completion.
-No continuation has been submitted yet.
+The verified checkpoint is now bound into continuation `job-mwvdb`.
 
 The failed context `ctx-28e3bf5d`, source **`a82ac6f`**, all 624 sealed files and
 artifacts are preserved. Guard PID 38362 observed terminal failure and exited
-before its fixed 20:20:21 deadline. No continuation is queued. The selected
+before its fixed 20:20:21 deadline. The selected
 policy weights remain unchanged; the corrected execution path now qualifies.
 
 Startup simplification **`f7cca32`** removes duplicate parent graph construction.
