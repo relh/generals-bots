@@ -132,7 +132,9 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         if elapsed > startup_seconds and not times:
                             raise TimeoutError(f"No completed training epoch after {startup_seconds}s")
                         sps = interval_sps(times, 2, steps_per_epoch)
-                        if len(times) >= 4 and sps is not None and sps < 30_000:
+                        # The short probe qualifies on epochs 7-8 after six warmup epochs.
+                        # Earlier epochs can still include native/JAX startup and clock ramp-up.
+                        if len(times) >= 8 and sps is not None and sps < 30_000:
                             raise RuntimeError(f"Sustained training throughput below 30,000 SPS: {sps}")
                     time.sleep(1)
                 if process.returncode:
