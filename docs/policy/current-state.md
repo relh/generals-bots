@@ -145,7 +145,10 @@ four output-copy waits consolidated into one. All DLPack owners must remain
 alive through the final wait, and input readiness must remain synchronized.
 Measure host and GPU time around the bridge, learner forward and optimization;
 retain the strict 30K gate for any subsequent sustained training. No new job
-is submitted while this implementation and measurement plan are prepared.
+is submitted while staging and final admission are prepared. The bridge change
+is integrated with an updated trainer source pin. Both variants passed local
+C++/Python capsule checks using a deferred-copy CPU CUDA stub; this is not GPU
+admission. The actual CUDA lifetime probe must pass before any ABBA training.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.

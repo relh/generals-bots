@@ -1551,11 +1551,14 @@
     }
   },
   "bridge_execution_probe": {
-    "status": "implementation in progress; no job submitted",
+    "status": "implementation integrated; staging/admission in progress; no job submitted",
     "plan_path": "integrations/bridge_profile_plan.json",
     "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
     "baseline_revision": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
     "scope": "Bounded instrumented ABBA execution comparison, not training or strength qualification",
-    "production_gate_sps": 30000
+    "production_gate_sps": 30000,
+    "implementation_revision": "d1e9705ec54036e0b7879fe0f4243cc68ca5d48e",
+    "candidate_trainer_sha256": "cc707ef917798076aa550d1140a185e2653eaf48557bc705471a3233e1271bcd",
+    "local_admission": "Generated C++ and real Python capsule ownership with deferred-copy CPU CUDA stub: both variants64x4 bitwise/lifetime checks passed. Actual CUDA compile/lifetime check remains mandatory before profile training."
   }
 }
