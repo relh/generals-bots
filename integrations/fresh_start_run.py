@@ -57,8 +57,13 @@ def gather_admission(inputs, plan):
     if (gate['passed'] is not True or gate['backend'] != 'gpu'
             or gate['model']['gradient_api'] != 'NativeFabricPolicy.backward_device_arrays'
             or any(gate['model'][key] is not True for key in
-                   ('probabilities_bitwise', 'ppo_loss_bitwise', 'parameter_gradient_bitwise'))):
+                   ('probabilities_bitwise', 'ppo_loss_bitwise', 'backward_inputs_bitwise', 'gradients_finite'))
+            or gate['model']['gradient_parameter_words'] != 578860):
         raise ValueError('Successful production GPU gradient gate required')
+    if gate['direct_spatial_source_sha256'] != digest(inputs/'source/integrations/direct_spatial_optimization.py'):
+        raise ValueError('Production backward implementation changed')
+    if gate['model']['teacher_ppo_coefficient'] != 1.0:
+        raise ValueError('Production PPO coefficient changed')
     seal = read(inputs/'probe-context-seal.json')
     framework = Path(importlib.util.find_spec('metta_training.native_build').origin).parents[1]
     source = inputs/'source'
