@@ -154,6 +154,18 @@ def main():
     parity = read(output/'gather-parity.json')
     if parity.get('passed') is not True or parity.get('backend') != 'gpu':
         raise ValueError('CUDA gather parity failed')
+    built = output/'gather/build'
+    bindings = dict(build_sha256=built/'build.json', binary_sha256=built/'puffer',
+                    header_sha256=built/'source/src/metta_rollout_memory.cuh',
+                    rollout_memory_receipt_sha256=built/'rollout-memory.json',
+                    generated_pufferl_sha256=built/'source/src/pufferl.cu',
+                    audit_module_sha256=inputs/'sources/gather/integrations/audit_minibatch_gather.py')
+    if any(parity.get(key) != digest(path) for key, path in bindings.items()):
+        raise ValueError('GPU parity actual build bindings differ')
+    if (parity.get('all_64_blocks_bitwise') is not True or parity.get('scratch_reuse_passes') != 2
+            or any(parity.get('model', {}).get(key) is not True
+                   for key in ('probabilities_bitwise', 'ppo_loss_bitwise', 'parameter_gradient_bitwise'))):
+        raise ValueError('Incomplete GPU contents or gradient parity')
     reports = []
     for index, arm in enumerate(ORDER):
         stage = output/f'{index+1}-{arm}'
