@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, as of the 23:11 UTC gather-probe startup.
+Updated 2026-10-07, after the 23:22 UTC gather-probe failure.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -79,27 +79,29 @@ memory was 65,420 MiB (63.89 GiB). No unchanged retry is planned.
 `INITIAL_POSITION_MIX` observes startup distribution. The shared reset function
 also applies zero midgame probability to automatic episode recycling.
 
-## Live work: gather memory comparison
+## Gather memory comparison: audit repair
 
-**`job-tjqy8`**, submitted **22:54:13 UTC**, entered first-attempt startup
-at 23:10 UTC and is downloading its image at this snapshot.
-Its sealed package replaces duplicate full transposed observations/masks with
-float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
-row rotation and optimizer math are preserved. CPU indexing and actual-framework
-API checks passed; **GPU correctness, measured memory reduction and speed are pending**.
+**`job-tjqy8` failed at 23:22 UTC before training.** Both native builds and
+46-fixture source GPU parity passed. The new gradient audit incorrectly wrapped
+a Python-checked forward interface inside JAX tracing, causing
+`TracerBoolConversionError`. All **224 retained files** were independently
+verified; the allocation guard observed termination. No ABBA arm ran.
 
-The job checks compiled gather contents, scratch reuse and policy gradients on
-verified replay observations, plus source serving parity. It then runs
-**baseline / gather / gather / baseline** on the same H100, each from the exact
-source with a fresh optimizer: four 2,097,152-step diagnostics, two warmup epochs,
-and the geometry above. Every arm uses fresh-game resets.
+The repair will exercise the production forward/backward interface separately,
+with the full loss/gradient path checked locally before another GPU submission.
+Production finite-value checks remain required.
 
-Limits: **60 provider/aggregate minutes, 58 execution minutes, zero restarts**,
-maximum quote **$2.97**; the live allocation guard fixes the deadline at
-**2026-10-08 00:10:10 UTC**. This comparison tests gather
-storage, not whether reset distribution caused the previous slowdown.
-Both gather runs must reach 30K SPS before considering a **separate full
-qualification**. Diagnostic completion does not authorize long training.
+The proposed storage change replaces duplicate full transposed observations/masks
+with float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
+row rotation and optimizer math are preserved. **Completed GPU correctness,
+measured memory reduction and speed remain unverified.**
+
+The planned comparison remains **baseline / gather / gather / baseline** on one
+H100, each from the exact source with a fresh optimizer: four 2,097,152-step
+diagnostics, two warmup epochs, the geometry above and fresh-game resets.
+Limits are **60 provider/aggregate minutes, 58 execution minutes, zero restarts**.
+Both gather runs must reach 30K SPS before a separate full qualification.
+This comparison does not establish the cause of the prior reset-run slowdown.
 
 ## Current implementation and next decision
 
@@ -114,7 +116,7 @@ qualification**. Diagnostic completion does not authorize long training.
 - Gather changes are awaiting GPU qualification. The calculated 20.35 GiB saving
   is not yet an observed memory reduction or evidence of higher SPS.
 
-**Next:** verify `job-tjqy8` artifacts and correctness/performance results. Adopt
+**Next:** fix and locally verify the gradient audit, then run the bounded comparison. Adopt
 only a demonstrated useful change; otherwise diagnose the measured bottleneck.
 A successful diagnostic must be followed by full 4Mi qualification before
 resuming the fresh-start 32Mi strength experiment. Positive development results

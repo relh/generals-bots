@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-tjqy8 first attempt starting; GPU correctness and speed unverified",
+    "status": "job-tjqy8 failed in audit JAX tracing before ABBA; correcting audit production-interface usage",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2402,14 +2402,53 @@
         "job_id": "job-tjqy8",
         "minutes": 60,
         "pid": 18065,
-        "running": true,
-        "observed_at": "2026-10-07T23:11:32.726657+00:00",
-        "status": "starting",
+        "running": false,
+        "observed_at": "2026-10-07T23:22:25.478641+00:00",
+        "status": "failed",
         "last_preallocation_observed_at": "2026-10-07T23:10:10.923918+00:00",
         "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
         "first_allocation_lower_bound_at": "2026-10-07T23:10:10.923918+00:00",
-        "deadline": "2026-10-08T00:10:10.923918+00:00"
+        "deadline": "2026-10-08T00:10:10.923918+00:00",
+        "terminal_observed_at": "2026-10-07T23:22:25.478641+00:00"
       }
+    },
+    "terminal_audit": {
+      "schema": "generals-gather-probe-independent-audit-v1",
+      "job_id": "job-tjqy8",
+      "status": "failed",
+      "technical_success": false,
+      "qualified_for_long_training": false,
+      "files_verified": 224,
+      "artifact_sha256": "fd33ee3da2c41199f105fd52bd16d16b5b8199ad9d63e1d51e6de6812b5b9638",
+      "collection_sha256": "a80ad65f8539bac8bdaa8f7668c038ce73f066a1e69dfac2cb4a44d8a351d301",
+      "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/gather-probe-launch-20261007/results-job-tjqy8/inner/generals",
+      "results_sha256": "a1f526cdb65427da698892c4bfab3f3e2b3269f5bda4da67208eea9697a4d722",
+      "failure": {
+        "error": "Experiment failed, exit 1",
+        "elapsed": 575.5934792589978
+      },
+      "retained_telemetry": []
+    },
+    "terminal_provider": {
+      "job_id": "job-tjqy8",
+      "status": "failed",
+      "finished_at": "2026-10-07T23:22:18.147398+00:00",
+      "failure_reason": "exit 1",
+      "attempt": 1,
+      "restarts_used": 0,
+      "billing": null,
+      "billed_seconds": null,
+      "cost_usd": null,
+      "total_cost_usd": null
+    },
+    "failure_diagnosis": {
+      "exception": "jax.errors.TracerBoolConversionError",
+      "location": "audit_minibatch_gather.model_parity -> direct_spatial_optimization.direct_forward finite-value Python guard",
+      "cause": "Audit wrapped the host-checked production forward interface in jax.jit(value_and_grad). Production invokes checked forward and backward separately.",
+      "training_steps": 0,
+      "both_native_builds_passed": true,
+      "source_46_gpu_parity_passed": true,
+      "next": "Use production forward/backward interface; validate full loss/gradient locally before a newly sealed GPU probe; retain production finite checks."
     }
   }
 }
