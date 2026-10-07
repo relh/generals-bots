@@ -11,7 +11,25 @@ Continuation **`job-mwvdb` succeeded technically at 21:43:53 UTC**, completing
 244 files and all three strength panels found **no qualifying improvement**:
 both paired confidence intervals include zero, and sentinel seat 1 regressed
 beyond the allowed bound. The candidate is rejected; no confirmation or hosted
-promotion follows. The next intervention must address a new measured mechanism.
+promotion follows.
+
+Fresh-start-only experiment **`job-r4xkt` was submitted at 22:06:41 UTC**
+and is building; training has not yet been observed. It changes only the
+midgame-reset probability from 0.25 to 0.0, keeping source initialization,
+fresh optimizer, model, reward, sampler, opponents and batching fixed. A new
+4,194,304-step qualification must pass the full and rolling ≥30K SPS gates
+before continuation to 33,554,432 total steps. Three fresh 4,096-game panels
+compare the source, retained stateless control and new candidate. This tests
+a distribution hypothesis suggested by improved frozen-policy outcomes but
+regressed scripted-opponent outcomes; it is not established causation.
+
+The job uses one H100, 4,096 environments, horizon 128, minibatch 8,192,
+replay ratio 0.5 and eight environment workers. Provider/aggregate limits are
+90 minutes, internal execution 88 minutes, zero restarts, quote ceiling
+$4.455. An independently verified deadline guard is live. Source `c1cae5f`,
+all 884 packaged files, CPU preparation and the terminal collector were
+reviewed before submission. Independent confirmation and hosted acceptance
+remain required; no winning-policy claim follows from this local experiment.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.

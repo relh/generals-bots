@@ -2113,7 +2113,7 @@
     ]
   },
   "fresh_start_experiment": {
-    "status": "implementation in progress; no GPU submission",
+    "status": "job-r4xkt submitted; building; training not yet observed",
     "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
     "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
     "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
@@ -2134,7 +2134,85 @@
       "files_verified": 620,
       "root_review": "integrations/softmax/local-output/fresh-start-launch-20261007/root-stage-review.json",
       "root_review_sha256": "962bb32969e133d88e9179c2d3f3c0b3d260ffe88102378bb32d32a127ef4720",
-      "sealed": false
+      "sealed": true
+    },
+    "package": {
+      "schema": "generals-fresh-start-ready-v1",
+      "source_revision": "c1cae5f10d3f1e15abcfc0cd2d3910cd74f06d27",
+      "archive": "/private/tmp/generals-fresh-start-stage/context.tar.zst",
+      "archive_sha256": "669087c4427688ee3f1896281faea7069223ae3776502c8bc89926a2c21aa098",
+      "archive_bytes": 225090453,
+      "members_verified": 884,
+      "source_materialized_sha256": "67941a9e8ebac494e87968e6070d901cc8cc3cf7d07596112578d36e000c8ed9",
+      "context_seal_sha256": "89d0dd28598ba5a3ad7fe28fbeb9fd0b2a85781b465f071cbcb6cc3cb7b22341",
+      "cpu_admission_sha256": "7c34c0c9709efe910b167289239739fb9ffece71b4d9494a86d9e96fbbe6b5c8",
+      "staging_sha256": "c6c6a4e14aa96c096dad125353114f701ab4d8f1f8d6744583fa66348badc6e4",
+      "guard_admission_sha256": "04b35b3c45894d7e56d098b46ebf81285e916ea78e9d21712e0fb9e1e854e6a6",
+      "collector_sha256": "fd0bb8941a34d780a86c1cbed2a0e19f796077109121e6a7ab6f223992b15c0f",
+      "transport_sha256": "5c0fdac267be24c1c384f406c157dd2c0821bb25bb1cb905c48e971e55aa7d0a",
+      "request_template_sha256": "27f063834b21a3f87b966f03c530c03edafa7c95cd4a1b1559ed23338f4f6abb",
+      "plan_sha256": "7ad93a6cad530e4ee4aa2045a90ea033318a13286fa957faa20fe859a559ca29",
+      "provider_minutes": 90,
+      "execution_minutes": 88,
+      "aggregate_minutes": 90,
+      "max_restarts": 0,
+      "starting_run_steps": 0,
+      "ending_run_steps": 33554432,
+      "incremental_steps": 33554432,
+      "requires_fresh_confirmation": true,
+      "price_quote_required": true,
+      "reviewed_quote_ceiling_usd": 4.455,
+      "uploaded": false,
+      "submitted": false,
+      "ready": true,
+      "limitation": "CPU input admission only; fresh starts require new qualification, strict30K training,3fresh4096panels and paired decision; independent confirmation remains required",
+      "collector_review_pending": false,
+      "launch_sha256": "939681e3d0f43113279984e79e5b92b63f7d9b371d34bab5f6c2675caf41ca1c",
+      "transport_admission_sha256": "da55b52ccbd989a805734379d1044d82889bda60ed686638540323d9a4677157",
+      "root_review_sha256": "09d6a500d5478d3210ded31fdcdb61e1d509782f9d2dacb9ab2172d0334b6373"
+    },
+    "launch": {
+      "submission": {
+        "job_id": "job-r4xkt",
+        "status": "submitted",
+        "submitted_at": "2026-10-07T22:06:41.165670+00:00",
+        "attempt": 0,
+        "max_cost_usd": 4.455,
+        "max_restarts": 0,
+        "restarts_used": 0,
+        "request_sha256": "f503661ee1c0aed48aee2d6d198748c743c709f847d511a9a793f7988b08f976",
+        "context_id": "ctx-0b4236ad",
+        "max_duration_minutes": 90
+      },
+      "quote": {
+        "would_submit": true,
+        "max_cost_usd": 4.455,
+        "request_sha256": "b54b35539abecac16402265140d3251f58485c041e1ede3c31ba4352bca4b0ff",
+        "reviewed_cost_ceiling_usd": 4.455
+      },
+      "guard": {
+        "pid": 25390,
+        "job_id": "job-r4xkt",
+        "minutes": 90,
+        "submission_sha256": "171abe4ff6f6534cbeb0bd100f939602cb9fd3fe3898f8911d9626fec3990958",
+        "guard_sha256": "216ba7b352590b539d5799a16da76d28ead29b69ca86cca800c4daa098d46247",
+        "live_verified": true,
+        "guard_state": {
+          "job_id": "job-r4xkt",
+          "minutes": 90,
+          "pid": 25390,
+          "running": true,
+          "observed_at": "2026-10-07T22:06:41.419476+00:00",
+          "status": "building",
+          "last_preallocation_observed_at": "2026-10-07T22:06:41.419476+00:00"
+        }
+      },
+      "active_job_check": {
+        "observed_at": "2026-10-07T22:06:40.659737+00:00",
+        "jobs_checked": 103,
+        "active_generals_jobs": []
+      },
+      "ready_sha256": "399c351977824146a2acc3d26cbfb399cf84414c76787a2c6c8f82612d745d1d"
     }
   }
 }
