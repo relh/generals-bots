@@ -1,6 +1,7 @@
 import copy
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from integrations import fresh_start_run as run
 from integrations.row_rotation_trial import Trial, PLAN, read, write
@@ -8,8 +9,11 @@ from integrations.row_rotation_trial import Trial, PLAN, read, write
 
 class FreshStartAdmission(unittest.TestCase):
     def test_pending_plan_rejected(self):
-        with self.assertRaisesRegex(ValueError, 'pending evidence'):
-            run.bound_plan(Path('/nonexistent'))
+        pending = read(run.PLAN_PATH)
+        pending['status'] = 'pending evidence bindings'
+        with patch.object(run, 'read', return_value=pending):
+            with self.assertRaisesRegex(ValueError, 'pending evidence'):
+                run.bound_plan(Path('/nonexistent'))
 
     def test_only_distribution_scalar_changes(self):
         with tempfile.TemporaryDirectory() as directory:
