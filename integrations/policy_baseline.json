@@ -1559,7 +1559,7 @@
     "production_gate_sps": 30000,
     "implementation_revision": "d1e9705ec54036e0b7879fe0f4243cc68ca5d48e",
     "candidate_trainer_sha256": "cc707ef917798076aa550d1140a185e2653eaf48557bc705471a3233e1271bcd",
-    "local_admission": "Both complete real source transformation chains and regenerated CPU capsule/lifetime checks passed; actual CUDA compile/lifetime checks mandatory before ABBA.",
+    "local_admission": "Original CPU source transformation and capsule checks passed but did not activate runtime Muon hooks; review identified pre-Muon algo hash. Corrected retry admission must activate the production bootstrap and compare against retained GPU-generated source. Actual CUDA lifetime result remains unproven.",
     "job_id": "job-6khn8",
     "context_id": "ctx-12ac3324",
     "submitted_at": "2026-10-07T17:58:15.367097+00:00",
@@ -1598,7 +1598,8 @@
     "billed_seconds": 124,
     "charged_usd": 0.1023,
     "training_started": false,
-    "failure": "Lifetime executable exited 0; JSONDecodeError parsing stdout. Raw stdout was not preserved; actual report content and lifetime success are unproven."
+    "failure": "Lifetime executable exited 0; JSONDecodeError parsing stdout. Raw stdout was not preserved; actual report content and lifetime success are unproven.",
+    "retry_work": "Dedicated strict JSON report file and retained compiler/run streams implemented in isolated diagnostic; production-bootstrap admission and exact input-diff checks pending before submission."
   },
   "stateless_execution_work": {
     "status": "isolated implementation; no GPU experiment or asset migration completed",

@@ -155,8 +155,10 @@ All DLPack owners remain alive through the final output wait; input readiness
 remains synchronized. Host timings and CUDA stream spans overlap and must not
 be summed; end-to-end speed uses completed-step wall time.
 
-The corrected sealed archive passed both actual source transformation chains
-and regenerated local C++/Python ownership checks. Review rejected an earlier
+The first sealed archive passed CPU source transformation and ownership checks,
+but later review found those checks omitted active runtime Muon hooks. The retry
+will activate the production bootstrap and compare generated sources against
+the retained GPU build. Review rejected an earlier
 unsubmitted archive because its instrumentation expected the wrong build-stage
 loop. Actual CUDA compilation and lifetime probes must pass before training.
 The production correction is `d1e9705`, runner `0bd5e1e`, baseline `0df0d24`;
