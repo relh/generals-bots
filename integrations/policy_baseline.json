@@ -1248,5 +1248,15 @@
       "integrations/softmax/local-output/contact-counterfactual-launch-20261007/submission.json": "fbc41f1949f1e66cfd478858e2e30620c28ce3eda8d9dd22a8b226166529c84a",
       "integrations/softmax/local-output/contact-counterfactual-launch-20261007/collect_and_audit.py": "212712b68eb764b27ee2735914abfa4045bb052bf2bf4b26754de3ec1c8edf52"
     }
+  },
+  "minibatch_rotation_repair": {
+    "status": "Implemented and CPU-admitted; GPU coverage, throughput and strength remain unqualified",
+    "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
+    "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
+    "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
+    "before": "Rows0..2047 always optimized; rows2048..4095 never optimized at replay_ratio=.5",
+    "after": "Rotate contiguous minibatch blocks by epoch*updates modulo64; alternate halves at .5 with32 updates/epoch",
+    "limitation": "Half of each fresh rollout is still unused; no strength gain established",
+    "gpu_job_submitted": false
   }
 }

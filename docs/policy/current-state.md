@@ -3,7 +3,7 @@
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
 job `35892`. No GPU experiment is active. The completed first-contact diagnostic did not
-pass its improvement gate; the next step is an audit of the learning path.
+pass its improvement gate; an optimizer row-selection repair awaits GPU qualification.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -210,3 +210,19 @@ v2; retired metadata fails explicitly. This cleanup claims no strength gain.
 For Slurm, `AGENTS.md` requires B200/B300, Nice `2147483645`, controller
 readback of Priority 1 and a finite limit. Preserve the champion until the full
 hosted acceptance gate passes.
+
+## Learning-path repair awaiting GPU qualification
+
+At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches
+of 64 environment rows from a 4,096-row rollout. The minibatch index restarts
+at zero each epoch and the transpose preserves row order: only rows 0–2,047
+receive gradient updates. Both seats and all 13 opponents remain represented,
+but the rollout population audit is not an optimizer-sample coverage audit.
+The measured end-to-end SPS remains valid as environment throughput.
+
+Correction `d945bae` is integrated after ten focused CPU checks and exact
+native patch-chain admission. It rotates the starting minibatch block across epochs,
+keeping the gradient budget unchanged. It addresses permanent row starvation;
+it still trains on half of each rollout at replay ratio 0.5. Native runtime
+coverage, ≥30K SPS and a fresh paired strength comparison are required before
+claiming the corrected training setup qualifies. No strength gain is established.
