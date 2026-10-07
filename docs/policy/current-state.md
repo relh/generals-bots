@@ -222,9 +222,17 @@ Classic observation code. The manifest binds the retained replays, scripts
 and attribution; this diagnostic uses the original screen, not new holdout
 strength evidence.
 
-The next bounded comparison isolates this direct shortcut using a candidate
-checkpoint, keeping encoded hints and the learned network intact. Require
-fresh paired development and independent confirmation before hosted testing.
+Evaluation-only `job-wwvk3` was submitted at 2026-10-07 06:33:54 UTC to
+isolate this shortcut. The candidate changes eight native scalar weights,
+keeping encoded hints, the rest of the network and the sampler intact;
+133-state native/direct/NumPy checks passed, with conditional split
+probabilities within 2.98e−7. The original selected source was recovered
+byte-for-byte to durable local storage and remains selected.
+
+The job compares 4,096 fresh games per arm on one H100, capped at 50 minutes
+and $2.475 with zero restarts. This is submission, not evidence of GPU
+execution or a strength result. A positive development result requires
+independent confirmation before hosted testing. No training is included.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
