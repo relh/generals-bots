@@ -233,9 +233,11 @@ The job compares 4,096 fresh games per arm on one H100, capped at 50 minutes
 and $2.475 with zero restarts. The first image build failed while loading its
 tar (provider timeout); the provider started a **free automatic rebuild** of
 the same job at 06:47:27 UTC. That replacement build succeeded; attempt 1
-entered node startup at 07:05:11 UTC. At 07:07:53 it had downloaded 2.76 GB
-of the reported 2.95 GB, with zero runtime restarts and no evaluation log yet.
-No strength result exists.
+entered node startup at 07:05:11 UTC and was running by 07:08:56. At
+07:14:52 the source stage had completed and candidate evaluation was running,
+with zero runtime restarts. A device sample showed 5.93 GiB allocated; this
+is evaluation memory, not a training-throughput measurement. No strength
+comparison exists yet.
 Independent confirmation is prepared on a separate branch, with fresh
 reserved seeds and a check requiring this exact development job to finish
 successfully with a positive strength result. No confirmation job or training
