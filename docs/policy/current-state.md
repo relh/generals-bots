@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, after the 23:22 UTC gather-probe failure.
+Updated 2026-10-07, as of the 23:30 UTC corrected gather-probe submission.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -79,7 +79,7 @@ memory was 65,420 MiB (63.89 GiB). No unchanged retry is planned.
 `INITIAL_POSITION_MIX` observes startup distribution. The shared reset function
 also applies zero midgame probability to automatic episode recycling.
 
-## Gather memory comparison: audit repair
+## Live work: corrected gather memory comparison
 
 **`job-tjqy8` failed at 23:22 UTC before training.** Both native builds and
 46-fixture source GPU parity passed. The new gradient audit incorrectly wrapped
@@ -87,9 +87,15 @@ a Python-checked forward interface inside JAX tracing, causing
 `TracerBoolConversionError`. All **224 retained files** were independently
 verified; the allocation guard observed termination. No ABBA arm ran.
 
-The repair will exercise the production forward/backward interface separately,
-with the full loss/gradient path checked locally before another GPU submission.
-Production finite-value checks remain required.
+The repaired audit exercises production forward tapes and backward separately.
+Its full CPU check passed on eight authentic replay states: bitwise probabilities,
+loss and all 578,860 parameter gradients; an altered observation was rejected.
+Production finite checks are unchanged. The fix and downstream runner passed
+independent review.
+
+**`job-8tdud`**, submitted **23:30:12 UTC**, is building. Its corrected package
+contains 1,155 verified files; the live allocation guard is running. The prior
+failed attempt cost $0.4752. The retry maximum quote is **$2.97**.
 
 The proposed storage change replaces duplicate full transposed observations/masks
 with float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
@@ -116,7 +122,7 @@ This comparison does not establish the cause of the prior reset-run slowdown.
 - Gather changes are awaiting GPU qualification. The calculated 20.35 GiB saving
   is not yet an observed memory reduction or evidence of higher SPS.
 
-**Next:** fix and locally verify the gradient audit, then run the bounded comparison. Adopt
+**Next:** inspect the GPU gate and same-allocation comparison from `job-8tdud`. Adopt
 only a demonstrated useful change; otherwise diagnose the measured bottleneck.
 A successful diagnostic must be followed by full 4Mi qualification before
 resuming the fresh-start 32Mi strength experiment. Positive development results

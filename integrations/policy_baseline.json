@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-tjqy8 failed in audit JAX tracing before ABBA; correcting audit production-interface usage",
+    "status": "job-8tdud building; native gradient audit corrected and full CPU gradient admission passed; GPU gate and ABBA pending",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2312,8 +2312,8 @@
     "independent_review": "No supported-path correctness blocker; actual CUDA contents, lifetime, probabilities and PPO gradients still require GPU admission",
     "comparison": "Same-GPU ABBA, four fresh 2097152-step diagnostics; two warmup epochs;60provider58internalminutes0restarts; only separate4Miqualification can authorize longtraining",
     "speed_improvement_proven": false,
-    "gather_source": "0b23ae3636a3e63b461e9127fb69caa3f1750a18",
-    "coordinator_source": "6131c960d38c60d5f548b897abb82ca27b1449d0",
+    "gather_source": "f69435bcc60f236aed68e2ed8d21803076a5a060",
+    "coordinator_source": "7cdace71b9ddef65ae2df405cb088d4dcf8d69d4",
     "launch": {
       "submission": {
         "job_id": "job-tjqy8",
@@ -2460,6 +2460,164 @@
       "both_native_builds_passed": true,
       "source_46_gpu_parity_passed": true,
       "next": "Use production forward/backward interface; validate full loss/gradient locally before a newly sealed GPU probe; retain production finite checks."
+    },
+    "audit_fix": {
+      "commit": "f69435b",
+      "production_checks_preserved": true,
+      "cpu_admission": {
+        "passed": true,
+        "backend": "cpu",
+        "scope": "Authentic public replay fixtures, actual jitted PPO loss cotangents and production native backward; no CUDA gather qualification",
+        "result": {
+          "states": 8,
+          "parameter_words": 578860,
+          "mixed_terminals": true,
+          "probabilities_bitwise": true,
+          "ppo_loss_bitwise": true,
+          "parameter_gradient_bitwise": true,
+          "gradient_api": "NativeFabricPolicy.backward_device_arrays"
+        },
+        "negative_control": "Gather changed spatial PPO loss",
+        "fixture_labels": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            25,
+            0
+          ],
+          [
+            0,
+            25,
+            1
+          ],
+          [
+            0,
+            99,
+            0
+          ],
+          [
+            0,
+            99,
+            1
+          ],
+          [
+            0,
+            100,
+            0
+          ],
+          [
+            0,
+            100,
+            1
+          ]
+        ],
+        "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+        "observation_sha256": "8584210b3af415d715a3788e3b6058f078b9da7c3a121d98c82da981f4bb8518",
+        "mask_sha256": "bf7a6a06e96119de277b6c6e9dc2b178b5df8efc7746bdc30e97ca116644a267",
+        "audit_module_sha256": "7be0c7bf22732a4476839be45b453beb95c294afaaf33775ba87a4adbc91f58f",
+        "script_sha256": "a941998fbc7a0f909f6c20d731f81eee5e664f5f76ea349d2b648fd68fd351ce"
+      },
+      "cpu_admission_sha256": "2fed11c7b5f3e7f016f37dbfb55f2aba3407461b8e3cb64c86ef732bb22afaad",
+      "independent_review": "Native forward tapes and production backward avoid tracing host finite checks and preserve sampler chain rule"
+    },
+    "retry_launch": {
+      "submission": {
+        "job_id": "job-8tdud",
+        "status": "submitted",
+        "submitted_at": "2026-10-07T23:30:12.242338+00:00",
+        "attempt": 0,
+        "max_cost_usd": 2.97,
+        "max_restarts": 0,
+        "restarts_used": 0,
+        "request_sha256": "44dd0af0280990e7d10e2b61331e212c387df56850f26569ffab28a6ecb97251",
+        "context_id": "ctx-0e4758e5",
+        "max_duration_minutes": 60
+      },
+      "guard": {
+        "pid": 23839,
+        "job_id": "job-8tdud",
+        "minutes": 60,
+        "submission_sha256": "6d31ad19524ff7c4592491a8dc31dbbdbae1a1b0610e409a458d5361315c92f0",
+        "guard_sha256": "e4b618cbeb1b697bec9fefe25ee2a3f84ff97fde8eacd19f9c109a64a7ec22eb",
+        "live_verified": true,
+        "guard_state": {
+          "job_id": "job-8tdud",
+          "minutes": 60,
+          "pid": 23839,
+          "running": true,
+          "observed_at": "2026-10-07T23:30:12.534718+00:00",
+          "status": "building",
+          "last_preallocation_observed_at": "2026-10-07T23:30:12.534718+00:00"
+        }
+      },
+      "ready": {
+        "source_revision": "7cdace71b9ddef65ae2df405cb088d4dcf8d69d4",
+        "archive": "/private/tmp/generals-gather-probe-retry-stage/context.tar.zst",
+        "archive_sha256": "a74724cd0933de0325e9acbc3f8c6b1010a29bfb833d92be0b2ec4e483365cb7",
+        "archive_bytes": 185845584,
+        "members_verified": 1155,
+        "provider_minutes": 60,
+        "execution_minutes": 58,
+        "aggregate_minutes": 60,
+        "max_restarts": 0,
+        "reviewed_quote_ceiling_usd": 2.97,
+        "ready": true,
+        "root_review_pending": false,
+        "collector_review_pending": false,
+        "uploaded": false,
+        "submitted": false,
+        "source_materialized_sha256": "f8afc83740fa560e5c31890f4f40c529ed51937c4625badf083ce71267a729b6",
+        "cpu_admission_sha256": "68d0294db62b8b6fcde94e2367425329ad7005d5923383230817822ae338b3e9",
+        "context_seal_sha256": "da85e8cacce01a3eaac0593baebaddfe16f0505e17da84476b4f6aa1a7044e7d",
+        "staging_sha256": "5974d2ce5bbf1a1884941f6674d1cad6c2837912846075763c2ae7ad40778afd",
+        "guard_admission_sha256": "ee5cda6142111315dda872487ed639e6d85acdc6f005fadc69e82975ee59969f",
+        "collector_sha256": "d431246834d09fb9ad35722acf891cec5c631f399a88ac8edc7826e2df761ea6",
+        "transport_sha256": "3cfda7c7e528799940fd42b2f39d81b8a79ec6365d8af9e47be716544fd73e31",
+        "launch_sha256": "ad54825eed1cc5ac18d353bb7295dcdb1ccb00039dd853d6c982176b2ffe7ef2",
+        "request_template_sha256": "ecf1a087ba5d61bad8bb30948c2c5bd22ff6eddb1eea112c464936a57096226f",
+        "cpu_gradient_admission_sha256": "2fed11c7b5f3e7f016f37dbfb55f2aba3407461b8e3cb64c86ef732bb22afaad",
+        "seal_script_sha256": "789a3f249569a003f48233b7e6a556fd4bcd794e9dc10bdc2e25ee55d7cd9bd8",
+        "cpu_admission_script_sha256": "39155b9d44c9fde046486dd0f9ef7321018a50ccbfa6e87c13b6e00387674416",
+        "guard_sha256": "e4b618cbeb1b697bec9fefe25ee2a3f84ff97fde8eacd19f9c109a64a7ec22eb",
+        "root_review_sha256": "15ac50a3cb7269e016753c4f78f74181d908ef0f2d958d33e2a086bf8a89b69f"
+      },
+      "quote": {
+        "would_submit": true,
+        "max_cost_usd": 2.97,
+        "request_sha256": "df58feb572babe6b32a6834e4aeb961af6e9a3060eebdbff85f9fc243ce3cd8b",
+        "reviewed_cost_ceiling_usd": 2.97
+      },
+      "cpu_admission": {
+        "passed": true,
+        "scope": "Actual coordinator prepare; all input hashes, staged framework imports and reviewed variant closure; no GPU execution",
+        "source_revision": "7cdace71b9ddef65ae2df405cb088d4dcf8d69d4",
+        "plan_sha256": "34eca81c12a9a8db9e9f6b6d43ad4ffcdbc4198009a0273823e20c7efa475701",
+        "input_manifest_sha256": "8e1b1a7ccf2f0b0057331c2cd73578e990d71d781d0d70856436b5cf2b1511a0",
+        "staging_sha256": "5974d2ce5bbf1a1884941f6674d1cad6c2837912846075763c2ae7ad40778afd",
+        "source_diff_sha256": "5d863cf9b1950a60b7c84509d54e6e5f88aec4ed4e23a44e61cd8c62734d703e",
+        "training_changes": [
+          "integrations/launch_spatial_selfplay_training.py",
+          "integrations/puffer_coworld_frozen_transfer.py",
+          "integrations/puffer_rollout_memory.cuh",
+          "integrations/puffer_rollout_memory.py",
+          "integrations/spatial_muon_orientation.py"
+        ],
+        "script_sha256": "39155b9d44c9fde046486dd0f9ef7321018a50ccbfa6e87c13b6e00387674416"
+      },
+      "active_job_check": {
+        "observed_at": "2026-10-07T23:30:11.756351+00:00",
+        "jobs_checked": 105,
+        "active_generals_jobs": []
+      }
     }
   }
 }

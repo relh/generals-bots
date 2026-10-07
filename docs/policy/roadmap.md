@@ -27,8 +27,9 @@ See [current state](current-state.md) for live work and results,
    passed review; **job-r4xkt** completed qualification steps but failed its
    final rolling throughput interval (28,091 SPS). No strength evaluation ran.
    The memory-gather comparison **job-tjqy8** failed in its new gradient audit
-   before training. Repair its JAX interface usage and verify the complete local
-   gradient path before a new same-GPU ABBA of four bounded 2Mi diagnostics. Require
+   before training. The repaired production-interface audit passed the complete
+   local gradient path; **job-8tdud** is building for the same-GPU ABBA of four
+   bounded 2Mi diagnostics. Require
    separate full qualification before returning to fresh-start strength work;
    see [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler
