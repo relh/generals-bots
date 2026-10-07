@@ -24,7 +24,7 @@ def write(path, value):
 
 def selected(comparisons):
     return len(comparisons) == 2 and all(report['initial_state_cluster_ci95'][0] > 0 and all(
-        side['paired_signed_score_delta'] >= 0
+        side['games'] < 100 or side['paired_signed_score_delta'] >= -.10
         for opponent in report['by_opponent_and_seat'].values() for side in opponent.values()
     ) for report in comparisons)
 

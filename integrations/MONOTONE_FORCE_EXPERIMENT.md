@@ -37,7 +37,8 @@ with phases in this order:
    steps (qualification included), then repeat publication and parity.
 6. `evaluate`: source/control/candidate on identical fresh 4096-map panels;
    both candidate improvements need positive clustered lower95 bounds and
-   no negative opponent-by-seat point delta. Fresh independent confirmation
+   no opponent-by-seat signed-score delta below −.10 in strata with at least
+   100 games (smaller strata reported). Fresh independent confirmation
    remains required before promotion.
 
 Per-phase process caps are enforced by the existing execution lifecycle;

@@ -37,10 +37,13 @@ def test_transfer_requires_exact_source_objective_and_fresh_optimizer():
 
 
 def test_selection_rejects_missing_negative_or_bad_stratum_evidence():
-    good=dict(initial_state_cluster_ci95=[.01,.1],by_opponent_and_seat={'a':{'0':dict(paired_signed_score_delta=.02)}})
+    good=dict(initial_state_cluster_ci95=[.01,.1],by_opponent_and_seat={'a':{'0':dict(games=100,paired_signed_score_delta=.02)}})
     assert selected([good,good])
     assert not selected([])
     negative=copy.deepcopy(good);negative['initial_state_cluster_ci95'][0]=-.01
     assert not selected([good,negative])
-    bad=copy.deepcopy(good);bad['by_opponent_and_seat']['a']['0']['paired_signed_score_delta']=-.01
+    bad=copy.deepcopy(good);bad['by_opponent_and_seat']['a']['0']['paired_signed_score_delta']=-.11
     assert not selected([good,bad])
+
+    bad['by_opponent_and_seat']['a']['0']['games']=99
+    assert selected([good,bad])

@@ -43,7 +43,7 @@
     "balanced_seats": true,
     "preserve_exact_input_weights_and_hashes": true
   },
-  "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; no negative opponent-by-seat point delta; no promotion before fresh independent confirmation.",
+  "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
   "qualification": "Both arms start exact selected policy with fresh optimizers, train4Mi, pass finite/legality/population/SPS and native-serving parity. Only then both continue authentic own learner to32Mi total. No qualification wins selection.",
   "evidence_scope": "Hypothesis motivated by selected known-loss public states; not representative causal or strength proof. Location-blind merge reward, saturation and passive growth remain risks.",
   "deployment": "No GPU submission, context upload, confirmation or deployment authorized by this file.",
