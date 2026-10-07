@@ -51,5 +51,18 @@
     "public_early_force_receipt_sha256": "c9de34ecf1f44700a3bb342bd2900e6a46f4ccaec81040b65551b355b3e4adfc",
     "official_engine_counterexample_receipt_sha256": "163ebd951c0dd20fd28b2938e4e229bbd11f2877b83f30ca7ba6f3e4208d62ef",
     "exploration_history_receipt_sha256": "50feb5781ef62f10da23fe9f24b1154a17e054c45a079519ddd02aae298828c9"
+  },
+  "runtime_bound": {
+    "provider_minutes": 120,
+    "expected_minutes_from_previous_measured_phases": [
+      100,
+      108
+    ],
+    "qualification_train_seconds_per_arm": 900,
+    "continuation_train_seconds_per_arm": 1800,
+    "evaluation_seconds_per_arm": 900,
+    "build_publish_export_parity_seconds_each": 600,
+    "minimum_steady_sps": 30000,
+    "max_restarts": 0
   }
 }

@@ -42,8 +42,9 @@ with phases in this order:
    remains required before promotion.
 
 Per-phase process caps are enforced by the existing execution lifecycle;
-provider total cap must be reviewed against staged CPU/GPU timings before
-launch. No upload or submission command is included.
+provider total cap is 120 minutes, based on previous measured phases
+projecting 100–108 minutes including four training starts and four trained
+publication/export/parity sequences. No upload or submission command is included.
 
 ## Evidence limits
 

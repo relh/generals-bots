@@ -129,7 +129,7 @@ class Trial:
                 if marker[name] != {p:digest(q/p) for p in ('training-audit.json','asset/asset.json','serving-parity.json')}:
                     raise ValueError('Qualification evidence changed')
         self.call('launch_spatial_selfplay_training',['train','--build',root/'build','--config',out/'config.json',
-                  '--output',out/'run'],out,'train',420 if stage=='qualification' else 1200,out/'config.json')
+                  '--output',out/'run'],out,'train',900 if stage=='qualification' else 1800,out/'config.json')
         training_audit(out,config,build_config=root/'build-config.json')
         checkpoint=out/f"run/checkpoints/metta_generals/run/{config['total_timesteps']:016d}.bin"
         write(out/'sampler.json',self.sampler)
@@ -168,7 +168,7 @@ class Trial:
             self.call('evaluate_spatial_population',['--bundle',bundle,'--population-build',self.output/'control/build/build.json',
                       '--games',4096,'--pool-size',4096,'--seed',PLAN['evaluation_seed'],
                       '--sample-seed',PLAN['evaluation_sample_seed'],'--destination-audit','--output',self.output/('heldout-'+name)],
-                      self.output,'evaluate-'+name,1440)
+                      self.output,'evaluate-'+name,900)
         reports=[]
         for before in ('source','control'):
             path=self.output/('paired-'+before+'-candidate.json')
