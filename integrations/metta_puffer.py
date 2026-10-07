@@ -24,10 +24,12 @@ class BatchedGeneralsSelfPlayPufferEnvironment:
         coworld_pool_size=8192, horizon=2000, require_gpu=True,
         balance_opponent_sides=True, shaping_weight=0.25, shaping_gamma=0.999,
         reward_scale=0.5, army_shaping_weight=0.5, land_shaping_weight=0.3,
-        terminal_reward_mode="win_only", coworld_position_pool=None,
+        terminal_reward_mode="win_only", monotone_force_potential=False, coworld_position_pool=None,
         coworld_position_pool_sha256=None, coworld_position_probability=0.0,
     ):
         verify_engine()
+        if type(monotone_force_potential) is not bool:
+            raise ValueError("Monotone force intervention must be explicitly boolean")
         if context.mode != "train":
             raise ValueError("Classic device environments require an explicit train context")
         if isinstance(parallel_games, bool) or parallel_games < 2 or parallel_games % 2:
@@ -75,7 +77,8 @@ class BatchedGeneralsSelfPlayPufferEnvironment:
         )(self._self_sides)))
         self._reward_options = dict(shaping_weight=shaping_weight, shaping_gamma=shaping_gamma,
                                    reward_scale=reward_scale, army_shaping_weight=army_shaping_weight,
-                                   land_shaping_weight=land_shaping_weight)
+                                   land_shaping_weight=land_shaping_weight,
+                                   monotone_force_potential=monotone_force_potential)
         self._terminal_reward_mode = terminal_reward_mode
 
         def margin(ours, theirs):
@@ -89,8 +92,13 @@ class BatchedGeneralsSelfPlayPufferEnvironment:
             next_key, reset_key = jax.random.split(key)
             actions = jax.vmap(lambda index: decode_action(index, 21))(indices)
             previous_info = game.get_info(state)
+            if monotone_force_potential:
+                from integrations.monotone_force import potential as force_potential
+                force_before = force_potential(state.armies, state.ownership, state.time, jnp)
             timestep, next_state = env.step(state, actions, pool)
             done = timestep.terminated | timestep.truncated
+            if monotone_force_potential:
+                force_after = force_potential(timestep.last_state.armies, timestep.last_state.ownership, timestep.last_state.time, jnp)
 
             def side_reward(side):
                 outcome = jnp.where(timestep.terminated, timestep.reward[side], 0.0)
@@ -98,6 +106,8 @@ class BatchedGeneralsSelfPlayPufferEnvironment:
                             if terminal_reward_mode == "win_only" else outcome)
                 shaped = shaping_weight * (shaping_gamma * potential(timestep.info, side) * ~done
                                            - potential(previous_info, side))
+                if monotone_force_potential:
+                    shaped += shaping_weight * .05 * (shaping_gamma * force_after[side] * ~done - force_before[side])
                 return (terminal + shaped) * reward_scale
 
             rewards = jax.vmap(side_reward)(self._self_sides)

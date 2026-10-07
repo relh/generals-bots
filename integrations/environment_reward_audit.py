@@ -60,6 +60,8 @@ def population_win_threshold(mode, weights):
             "castle_shaping_weight", "frontier_shaping_weight",
         )
     )
+    if weights.get("monotone_force_potential", False):
+        bound += abs(weights["shaping_weight"]) * .05
     if (mode != "win_only" or weights.get("land_gain_reward_weight", 0.0) != 0
             or not math.isfinite(scale) or scale <= 0
             or not math.isfinite(bound) or bound >= .5):

@@ -1,0 +1,55 @@
+{
+  "schema": "generals-monotone-force-pair-v1",
+  "status": "isolated preparation; GPU qualification and strength unproven",
+  "base_revision": "12cbfc9",
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "intervention": {
+    "K": 100,
+    "coefficient": 0.05,
+    "start_turn": 100,
+    "outer_shaping": 0.25,
+    "reward_scale": 0.5,
+    "gamma": 0.999,
+    "terminal_and_truncated_potential": 0
+  },
+  "arms": [
+    "control",
+    "candidate"
+  ],
+  "qualification_steps_per_arm": 4194304,
+  "total_steps_per_arm_including_qualification": 33554432,
+  "minimum_steady_sps_after_two_warmup_epochs": 30000,
+  "training_seed": 11007101,
+  "sampling_gate_seed": 11008101,
+  "sampling_gate_sample_seed": 11008103,
+  "evaluation_seed": 12001101,
+  "evaluation_sample_seed": 12001103,
+  "bootstrap_seed": 12001111,
+  "evaluation_games_per_arm": 4096,
+  "bootstrap_resamples": 10000,
+  "geometry": {
+    "parallel_games": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5
+  },
+  "population": {
+    "frozen_policies": 10,
+    "scripts": [
+      "expander_harvester",
+      "sentinel",
+      "classic_siege_padded"
+    ],
+    "balanced_seats": true,
+    "preserve_exact_input_weights_and_hashes": true
+  },
+  "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; no negative opponent-by-seat point delta; no promotion before fresh independent confirmation.",
+  "qualification": "Both arms start exact selected policy with fresh optimizers, train4Mi, pass finite/legality/population/SPS and native-serving parity. Only then both continue authentic own learner to32Mi total. No qualification wins selection.",
+  "evidence_scope": "Hypothesis motivated by selected known-loss public states; not representative causal or strength proof. Location-blind merge reward, saturation and passive growth remain risks.",
+  "deployment": "No GPU submission, context upload, confirmation or deployment authorized by this file.",
+  "hypothesis_evidence": {
+    "public_early_force_receipt_sha256": "c9de34ecf1f44700a3bb342bd2900e6a46f4ccaec81040b65551b355b3e4adfc",
+    "official_engine_counterexample_receipt_sha256": "163ebd951c0dd20fd28b2938e4e229bbd11f2877b83f30ca7ba6f3e4208d62ef",
+    "exploration_history_receipt_sha256": "50feb5781ef62f10da23fe9f24b1154a17e054c45a079519ddd02aae298828c9"
+  }
+}

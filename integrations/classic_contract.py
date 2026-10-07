@@ -42,6 +42,7 @@ CURRENT_ENVIRONMENT_FIELDS = {
     "army_shaping_weight",
     "land_shaping_weight",
     "terminal_reward_mode",
+    "monotone_force_potential",
     "balance_opponent_sides",
     "coworld_position_pool",
     "coworld_position_pool_sha256",

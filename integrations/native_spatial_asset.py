@@ -161,6 +161,10 @@ def training_contract(options, overrides):
         "reward": reward,
         "learner_gamma": overrides["train.gamma"],
     }
+    if type(options.get("monotone_force_potential", False)) is not bool:
+        raise ValueError("Monotone force intervention must be explicitly boolean")
+    if options.get("monotone_force_potential", False):
+        contract["schema"] = "generals-classic-monotone-force-v1"
     validate_objective(contract)
     return contract
 
@@ -178,7 +182,7 @@ def validate_objective(contract):
             "reward",
             "learner_gamma",
         }
-        or contract["schema"] != "generals-classic-training-contract-v1"
+        or contract["schema"] not in {"generals-classic-training-contract-v1", "generals-classic-monotone-force-v1"}
         or contract["engine_sha256"] != ENGINE_SHA256
         or contract["episode_horizon"] != 2000
         or contract["observation_size"] != 7056

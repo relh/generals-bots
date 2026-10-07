@@ -167,6 +167,7 @@ class CheckpointInitialization(Configuration):
     asset: Path
     manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     restore_learner: bool
+    reward_transfer: Literal["monotone-force-k100-v1"] | None = None
 
 
 class RunConfig(Configuration):
@@ -419,6 +420,11 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
                 or policy.buffers.parameter_words != asset.metadata["parameter_count"]
                 or FabricConfig.model_validate(asset.metadata["fabric"]) != fabric):
             raise ValueError("Native asset differs from the actual target model and complete checkpoint layout")
+        objective = training_contract(manifest.config.python_environment.options, config.overrides)
+        if reference.reward_transfer is not None or (
+                objective["schema"] == "generals-classic-monotone-force-v1" and not reference.restore_learner):
+            from integrations.monotone_force import validate_transfer
+            validate_transfer(asset.metadata, objective, reference.reward_transfer, reference.restore_learner)
         initial_parameters = asset.policy
         initialization = InitializationRecord(
             asset=reference.asset.resolve(), manifest_sha256=reference.manifest_sha256,
