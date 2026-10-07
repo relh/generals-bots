@@ -1,6 +1,6 @@
 {
   "schema": "generals-fresh-start-trial-v1",
-  "status": "pending evidence bindings",
+  "status": "sealed before launch",
   "intervention": "Only coworld_position_probability changes from 0.25 to 0.0; retain the identical position pool and all other environment, policy, sampler and learner settings.",
   "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
   "historical_control_policy_sha256": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
@@ -64,11 +64,11 @@
   "source_gate_reuse": "Reuse verified historical source sampler gate only after matching source policy, exact sampler and gate seeds. Qualification initializer gate must be freshly executed.",
   "hypothesis": "Removing 25 percent retained-midgame resets addresses fresh-game distribution mismatch; previous trained policies improved against frozen opponents but lost against scripts.",
   "bindings": {
-    "control-audit.json": null,
-    "control-collection.json": null,
-    "control/candidate/build-config.json": null,
-    "bundles/control/asset.json": null,
-    "bundles/control/policy.bin": null,
-    "hypothesis.json": null
+    "control-audit.json": "a3c59e6cd7ba0b26bec396633d39e32cead659f640d9cd4a787273eda046703b",
+    "control-collection.json": "8e7e2bffd8717c684ef720c1d129557609b5e6dd99d106d09185fe336282e534",
+    "control/candidate/build-config.json": "9e8ceed3abb9a1f0f63efda5eec29d13d158478435cbd90fa6970a4e497c8af6",
+    "bundles/control/asset.json": "0658b4ff2a1ba1f9fced98a35b45b2e20bb1d414730e5c92c86245c223ee4f53",
+    "bundles/control/policy.bin": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
+    "hypothesis.json": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448"
   }
 }
