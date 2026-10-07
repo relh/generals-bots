@@ -99,14 +99,14 @@ NumPy serving parity on **46/46 states**, with maximum probability difference
 0.00000268. By 11:05:45 UTC the candidate's initializer
 self-match passed: **273W/233L/6D in 512 games**, across 328 unique initial
 states, with the exact `37e23e20` checkpoint and intended sampler for both
-actors. Candidate continuation reached **17,825,792 total steps** by 11:11:41 UTC.
-Excluding resumed warmup epochs 9–10, epochs 10–34 measured **37,655.58 SPS**:
-12,582,912 steps in 334.158 seconds (uptime 50.132→384.290), with the same H100
-and batch settings; dashboard VRAM/RAM were 66.6/4.3 GiB. All 13 opponents
-remain balanced by seat. The latest reward audit covers 12,582,912 resumed
-steps with no nonfinite or clipped rewards; its final action-mask audit is
-still pending. Continuation is bounded at 1,800 seconds.
-These are runtime console results. Checkpoint artifacts, learner-byte checks,
+actors. Candidate continuation completed **33,554,432 total steps** by 11:18:59 UTC.
+Excluding resumed warmup epochs 9–10, epochs 10–64 measured **37,659.31 SPS**:
+28,311,552 steps in 751.781 seconds (uptime 50.132→801.913), with the same H100,
+4,096 environments, horizon 128, minibatch 8,192 and replay ratio 0.5. All 13
+opponents had balanced seats. Final audits cover all 29,360,128 resumed steps:
+zero illegal actions, nonfinite or clipped rewards, and zero zero-reward terminal
+events. Candidate publishing has started; final export/parity and strength
+evaluation remain pending. These are runtime console results. Checkpoint artifacts, learner-byte checks,
 training audits and GPU CSV await terminal collection and independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
 recovered completely. The terminal collector now preserves sanitized billing
