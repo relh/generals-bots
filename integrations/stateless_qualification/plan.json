@@ -1,6 +1,6 @@
 {
   "schema": "generals-stateless-qualification-v1",
-  "status": "proposal; unsealed; no submission authorized",
+  "status": "pending terminal ABBA evidence review and final source/input seal",
   "purpose": "Qualify the stateless ABI execution path without performance instrumentation or continuation",
   "required_before_sealing": "Review terminal bridge ABBA evidence; explicitly select bridge source implementation; bind final source revision and all input hashes",
   "source_revision_pending_final_seal": true,
