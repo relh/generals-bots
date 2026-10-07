@@ -1551,7 +1551,7 @@
     }
   },
   "bridge_execution_probe": {
-    "status": "queued",
+    "status": "starting",
     "plan_path": "integrations/bridge_profile_plan.json",
     "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
     "baseline_revision": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1563,7 +1563,7 @@
     "job_id": "job-6khn8",
     "context_id": "ctx-12ac3324",
     "submitted_at": "2026-10-07T17:58:15.367097+00:00",
-    "last_observed_at": "2026-10-07T18:18:10.703415+00:00",
+    "last_observed_at": "2026-10-07T18:19:07.775505+00:00",
     "guard_pid": 77874,
     "quoted_runtime_max_usd": 2.2275,
     "source_revisions": {
@@ -1584,8 +1584,10 @@
       "integrations/softmax/local-output/bridge-profile-launch-20261007/submission.json": "0e40a5146e97de7abe88dcbe17c16cde121d27ff04047e874d3aebb77ee71500",
       "integrations/softmax/local-output/bridge-profile-launch-20261007/validation.json": "386a9bde7c6b6441bfccec4ce4600707d928134e6c790d22f4e62e00307e1ac7",
       "integrations/softmax/local-output/bridge-profile-launch-20261007/aggregate-guard-process.json": "4fe932f024f6ad267f8c9b9d45213d9dfe489424b3da501a7815211ec3865bcd",
-      "integrations/softmax/local-output/bridge-profile-launch-20261007/invalidated-ready.json": "6fc2d457c6092053d00d30680ba78e4a22b32b5018214986d6ad5e30787922d7"
-    }
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/invalidated-ready.json": "6fc2d457c6092053d00d30680ba78e4a22b32b5018214986d6ad5e30787922d7",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/allocation-deadline.json": "291db59809f835adac4ebe82febaeb6cf6e42600667d70f0338a58ee9a6dfa8a"
+    },
+    "aggregate_deadline": "2026-10-07T19:03:05.588716+00:00"
   },
   "stateless_execution_work": {
     "status": "isolated implementation; no GPU experiment or asset migration completed",
