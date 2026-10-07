@@ -2300,5 +2300,17 @@
     "limitation": "No GPU qualification claim for reorganized source. Active job uses sealed c1cae5f.",
     "integration_commit": "04ad0a9",
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
+  },
+  "minibatch_gather_work": {
+    "status": "implementation integrated; no GPU execution; gate and sealed packaging pending",
+    "implementation_commit": "0f38fdd",
+    "probe_commit": "585deac",
+    "memory_saving_bytes": 21851504640,
+    "scope": "Float32 time-major rollout retained; replace duplicate transposed observations/masks with minibatch scratch; preserve rotated rows and optimizer math",
+    "cpu_checks_passed": 2,
+    "probe_checks_passed": 3,
+    "independent_review": "No supported-path correctness blocker; actual CUDA contents, lifetime, probabilities and PPO gradients still require GPU admission",
+    "comparison": "Same-GPU ABBA, four fresh 2097152-step diagnostics; two warmup epochs;60provider58internalminutes0restarts; only separate4Miqualification can authorize longtraining",
+    "speed_improvement_proven": false
   }
 }
