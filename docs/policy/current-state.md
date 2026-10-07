@@ -149,13 +149,30 @@ the source exactly and 11 migrated policies have byte-identical weights under
 both topologies. The live guard fired before the preregistered final-two-epoch
 steady interval after six warmup epochs. Its verified audit receipt SHA-256 is
 `e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac`;
-it billed $1.0186. A corrected bounded H100 probe `job-g45tq` on
-`codex/product-logical-migration` at `3a57c87` moves only the live guard to
-after six warmup epochs. It still must achieve ≥30,000 steady end-to-end SPS
-over the final 1,048,576 steps, plus the existing parity and activation gates.
-The job has a 60-minute/$2.97 cap and zero restarts. No strength result exists;
-the selected source and champion are unchanged. Context and input hashes are
-in the manifest.
+it billed $1.0186.
+
+The corrected bounded H100 probe `job-g45tq` at `3a57c87` completed
+4,194,304 training steps and achieved **36,117.94 steady end-to-end SPS**:
+1,048,576 steps / 29.032 seconds after six warmup epochs. Settings were
+4,096 environments/H128/minibatch 8,192/replay 0.5; peak GPU memory was
+67.79 GiB. All 13 opponents had balanced assignments on both seats, with
+zero illegal actions, nonfinite rewards or clipped rewards. Source and trained
+native-to-serving parity passed, including 46/46 matching top actions.
+
+The provider job nevertheless **failed** (exit 1) because its final activation
+audit compared raw sampler dictionaries: the source omitted
+`full_action_temperature=1.0` and `route_half_weight=0.0`, while the trained
+export included those same defaults. No original qualification marker exists.
+Audit correction `bd1dacf` compares their effective values. A separate CPU
+recovery on the unchanged checkpoint and bundle passed: Product legal-logit
+change max 0.01004052, RMS 0.00086386, with all U/V/Q matrices moving.
+This recovers the activation evidence without changing the provider outcome.
+The terminal artifact SHA-256 is
+`ee3b3caec3943ad630421b5e471f4cbc3e86fbe8eb044b986e4513c232b218af`;
+terminal and recovery audit hashes are in the manifest. The probe billed
+$1.2771. There is no policy-strength result or active probe; the selected source
+and champion remain unchanged. The next experiment is the matched control
+versus activated Product training comparison.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new

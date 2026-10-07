@@ -288,23 +288,74 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [
-    {
-      "kind": "repaired_product_final_steady_h100_probe",
-      "branch": "codex/product-logical-migration",
-      "revision": "3a57c8770d85be91ee49decce9c08cce175fea8c",
-      "job": "job-g45tq",
-      "last_observed_state": "SUBMITTED",
-      "context": "ctx-4f12d8bf",
-      "context_archive_sha256": "e4baee4bb5ce6272b1f2dbdc7390dcb3f6a678f57621c6264ff2d40d66442892",
-      "input_seal_sha256": "623ab089a8337eb72077bb77e99b0185917cf515bd9c53de6a1a7b975545081c",
-      "warmup_epochs": 6,
-      "steady_interval_steps": 1048576,
-      "minimum_steady_sps": 30000,
-      "max_duration_minutes": 60,
-      "max_cost_usd": 2.97,
-      "max_restarts": 0,
-      "has_strength_result": false
+  "active_experiments": [],
+  "repaired_product_probe_recovered_activation": {
+    "kind": "repaired_product_final_steady_h100_probe",
+    "branch": "codex/product-logical-migration",
+    "revision": "3a57c8770d85be91ee49decce9c08cce175fea8c",
+    "job": "job-g45tq",
+    "last_observed_state": "failed",
+    "context": "ctx-4f12d8bf",
+    "context_archive_sha256": "e4baee4bb5ce6272b1f2dbdc7390dcb3f6a678f57621c6264ff2d40d66442892",
+    "input_seal_sha256": "623ab089a8337eb72077bb77e99b0185917cf515bd9c53de6a1a7b975545081c",
+    "warmup_epochs": 6,
+    "steady_interval_steps": 1048576,
+    "minimum_steady_sps": 30000,
+    "max_duration_minutes": 60,
+    "max_cost_usd": 2.97,
+    "max_restarts": 0,
+    "has_strength_result": false,
+    "exit_code": 1,
+    "finished_at": "2026-10-07T04:00:55.334852+00:00",
+    "result_archive_sha256": "ee3b3caec3943ad630421b5e471f4cbc3e86fbe8eb044b986e4513c232b218af",
+    "audit_receipt_sha256": "479ecc6c726bdb34510ab090a0ac798ac755e0555bbcb160741569cc048b032a",
+    "billed_usd": 1.2771,
+    "completed_steps": 4194304,
+    "steady_sps": 36117.93882612289,
+    "steady_interval_seconds": 29.03200000000001,
+    "hardware": "H100 80 GB",
+    "environment_count": 4096,
+    "horizon": 128,
+    "minibatch": 8192,
+    "replay_ratio": 0.5,
+    "peak_gpu_memory_gib": 67.78515625,
+    "all_13_opponents_both_seats": true,
+    "balanced_opponent_seat_assignments": true,
+    "illegal_actions": 0,
+    "nonfinite_rewards": 0,
+    "clipped_rewards": 0,
+    "checkpoint_sha256": "314a4fd6d2836d7b542e2dae7a47b787e2aabd2f65a6de125aeae5cb0ca86cab",
+    "bundle_manifest_sha256": "caf23a7fdfc1d856daaabf6ba5ec0902b1d779110fb81283143687b41e0ed9dd",
+    "native_serving_parity_passed": true,
+    "serving_top_actions_matched": 46,
+    "serving_public_states": 46,
+    "qualified_marker_present": false,
+    "failure_reason": "Activation audit compared raw sampler dictionaries; source omitted two defaults present in trained export.",
+    "activation_recovery": {
+      "audit_revision": "bd1dacf",
+      "backend": "cpu",
+      "passed": true,
+      "receipt_sha256": "c294b096339d9c18d53f38cf42d885b6d9ee150f036ed62d0e18749a41c79216",
+      "legal_logit_delta_max_abs": 0.010040521621704102,
+      "legal_logit_delta_rms": 0.0008638605520567225,
+      "q_u_v_movement": {
+        "product_local_kernel": {
+          "l2": 0.04126991593326069,
+          "max_abs": 0.0074797095730900764,
+          "changed_words": 256
+        },
+        "product_global_kernel": {
+          "l2": 0.0903482482659006,
+          "max_abs": 0.015806708484888077,
+          "changed_words": 256
+        },
+        "product_action_kernel": {
+          "l2": 0.04618849511111531,
+          "max_abs": 0.014623121358454227,
+          "changed_words": 64
+        }
+      },
+      "scope": "Recovered activation audit on the unchanged terminal checkpoint and bundle; compares effective full_action_temperature=1.0 and route_half_weight=0.0 defaults. Provider failure and absence of original qualification marker are preserved."
     }
-  ]
+  }
 }
