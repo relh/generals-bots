@@ -118,10 +118,11 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
         raise ValueError("Product probe source or migrated population differs from preregistration")
     verify_source_proofs(probe_input, plan, intent)
     output.mkdir(parents=True)
-    for name in ("assets", "bundles", "curriculum", "puffer.git", "raylib-5.5_linux_amd64"):
+    for name in ("assets", "bundles", "curriculum", "puffer.git", "raylib-5.5_linux_amd64", "leader-root"):
         shutil.copytree(probe_input / name, output / name, ignore=shutil.ignore_patterns("._*", ".DS_Store"))
     for name in ("build-config.json", "config.json", "probe-intent.json",
-                 "pool-migration-receipt.json", "transplant-proof.json", "parity-proof.json", "abi-proof.json"):
+                 "pool-migration-receipt.json", "transplant-proof.json", "parity-proof.json", "abi-proof.json",
+                 "activation-views.npz", "activation-views.json"):
         shutil.copy2(probe_input / name, output / name)
     (output / "source").mkdir()
     archive = subprocess.Popen(["git", "-C", str(repository), "archive", "HEAD"], stdout=subprocess.PIPE)
@@ -192,6 +193,22 @@ def verify_control(source_bundle: Path, control_bundle: Path) -> None:
         raise ValueError("Control Q is not bitwise zero after native PPO")
 
 
+def verify_serving_parity(report: Path, checkpoint: Path, bundle: Path, source: Path,
+                          intent: dict) -> None:
+    parity = json.loads(report.read_text())
+    tolerances = {"max_logit_difference": 2e-5, "max_action_probability_difference": 1e-5,
+                  "max_rollout_transform_difference": 1e-5}
+    if (parity.get("checkpoint_sha256") != digest(checkpoint)
+            or parity.get("bundle_manifest_sha256") != digest(bundle / "spatial-policy.json")
+            or parity.get("factory_source_sha256") != digest(source / "integrations/generals_fabric.py")
+            or parity.get("engine_sha256") != intent["contract"]["engine_sha256"]
+            or parity.get("public_states", 0) < 16
+            or parity.get("matching_top_actions") != parity.get("public_states")
+            or any(type(parity.get(key)) not in (int, float) or not math.isfinite(parity[key])
+                   or parity[key] > limit for key, limit in tolerances.items())):
+        raise ValueError("Matched checkpoint native-to-serving parity differs")
+
+
 def run_pair(inputs: Path, output: Path) -> None:
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     phase("qualification", "start")
@@ -213,6 +230,7 @@ def run_pair(inputs: Path, output: Path) -> None:
             or digest(inputs / "assets/cold/asset.json") != plan["source_product_asset_sha256"]
             or digest(inputs / "pool-migration-receipt.json") != plan["pool_migration_receipt_sha256"]
             or digest(inputs / "abi-proof.json") != plan["abi_proof_sha256"]
+            or digest(inputs / "activation-views.npz") != intent["activation_views_sha256"]
             or lineage["probe_activation_sha256"] != plan["required_probe_activation_sha256"]):
         raise ValueError("Product source or frozen opponent migration differs")
     build = json.loads((inputs / "build-config.json").read_text())
@@ -254,6 +272,7 @@ def run_pair(inputs: Path, output: Path) -> None:
     shared.sampling_gate("control")
     phase("sampling_gate", "end")
     source_gate = output / "control/sampling-gate.json"
+    arm_receipts = {}
     for arm in ARMS:
         target = output / arm
         target.mkdir(exist_ok=arm == "control")
@@ -300,6 +319,30 @@ def run_pair(inputs: Path, output: Path) -> None:
         if arm == "control":
             verify_control(inputs / "bundles/cold", target / "bundle")
         phase("export", "end", arm=arm, checkpoint_sha256=digest(checkpoint))
+        phase("serving_parity", "start", arm=arm)
+        parity = probe / "trained-parity.json"
+        trial.call("audit_spatial_checkpoint_serving_parity", [
+             "--bundle", target / "bundle", "--replay-root", inputs / "leader-root",
+             "--factory-source", source / "integrations/generals_fabric.py",
+             "--output", parity], name="trained-parity", seconds=600, arm="probe")
+        verify_serving_parity(parity, checkpoint, target / "bundle", source, intent)
+        arm_receipts[arm] = {
+            "checkpoint_sha256": digest(checkpoint),
+            "bundle_manifest_sha256": digest(target / "bundle/spatial-policy.json"),
+            "native_serving_parity_sha256": digest(parity),
+            "training_audit_sha256": digest(probe / "training-audit.json"),
+        }
+        if arm == "product":
+            activation = probe / "activation-gate.json"
+            trial.call("audit_product_activation", [
+                 "gate", "--source-bundle", inputs / "bundles/cold",
+                 "--trained-bundle", target / "bundle", "--checkpoint", checkpoint,
+                 "--parity-report", parity, "--views", inputs / "activation-views.npz",
+                 "--output", activation], name="activation-gate", seconds=180, arm="probe")
+            if json.loads(activation.read_text())["passed"] is not True:
+                raise ValueError("Matched Product head did not activate")
+            arm_receipts[arm]["activation_gate_sha256"] = digest(activation)
+        phase("serving_parity", "end", arm=arm)
     for arm in ARMS:
         phase("evaluation", "start", arm=arm, games=dev["games_per_arm"])
         shared.call("evaluate_spatial_population", ["--bundle", output / arm / "bundle",
@@ -328,6 +371,7 @@ def run_pair(inputs: Path, output: Path) -> None:
         "product_selected_for_independent_confirmation": selected,
         "comparison_sha256": digest(comparison), "plan_sha256": digest(inputs / "plan.json"),
         "qualified_probe_sha256": lineage["probe_marker_sha256"], "gpu": gpu,
+        "arms": arm_receipts,
     }, indent=2) + "\n")
     phase("paired_analysis", "end", selected=selected, comparison_sha256=digest(comparison))
 
