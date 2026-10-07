@@ -317,6 +317,9 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         raise RuntimeError(f"Puffer source mismatch: {revision}")
     if config.python_environment:
         install_environment(source, config.environment, config.python_environment)
+        if config.python_environment.device_resident:
+            from integrations.puffer_device_output import install_output_fence
+            install_output_fence(source)
     suffix = "cu" if config.environment_backend == "cuda" else "h"
     if not (source / "ocean" / config.environment / f"{config.environment}.{suffix}").is_file():
         raise ValueError(f"Upstream has no {config.environment_backend} environment for {config.environment}")
