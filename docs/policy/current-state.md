@@ -2,7 +2,7 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. One bounded experiment, `job-kzmub`, is running its startup checks.
+job `35892`. One bounded experiment, `job-kzmub`, is building its native trainers.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -61,9 +61,11 @@ Observatory recovery reproduced both counts and audited 277,894 turns across
 ## Active bounded experiment
 
 `job-kzmub` was submitted **2026-10-07 08:43:52 UTC**, isolated source
-`a3569ae`, context `ctx-cac8804f`. At **09:02:51 UTC** it was running on
-attempt 1, without failures or retries. The image built successfully, input
-preparation completed, and source serving-parity checks were underway.
+`a3569ae`, context `ctx-cac8804f`. At **09:09:41 UTC** it was running on
+attempt 1, without failures or retries. Source serving parity passed on all
+46 public states (maximum probability difference 4.44e−6). The source sampling
+gate completed 512 games, 267W/240L/5D, against the identical source policy.
+Both startup checks passed; native trainer builds are underway.
 **GPU qualification and playing strength remain unproven.**
 
 One H100 is capped at **120 minutes/$5.94**, with zero runtime restarts.

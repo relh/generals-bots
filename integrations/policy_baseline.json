@@ -352,8 +352,11 @@
   "monotone_force_matched_training": {
     "job": "job-kzmub",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T09:02:51.231067+00:00",
-    "last_observed_phase": "source serving parity; input preparation completed",
+    "last_observed_utc": "2026-10-07T09:09:41.681668+00:00",
+    "last_observed_phase": "native builds; source parity and sampling gate passed",
+    "source_parity_top_actions_matched": 46,
+    "source_parity_max_probability_difference": 0.0000044405460357666016,
+    "source_sampling_gate": {"games": 512, "wins": 267, "losses": 240, "draws": 5},
     "attempt": 1,
     "build_retries": 0,
     "runtime_restarts": 0,
