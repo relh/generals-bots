@@ -209,7 +209,10 @@ The next qualification is preregistered in
 workers eight, two warmup epochs, then all six remaining epochs measured
 together, with the existing rolling 30K SPS guard retained. Both source and
 checkpoint parity, complete action/reward audits and all 13 opponents in both
-seats are required. It remains unsealed pending the bridge comparison.
+seats are required. Coordinator **`1181b57`** reuses the shared execution path;
+local preparation against actual migrated assets passed, and its audit rejected
+slow/incomplete runs, wrong checkpoint clocks or initial weights, and an
+unexpected restored optimizer. It remains unsealed pending the bridge comparison.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.

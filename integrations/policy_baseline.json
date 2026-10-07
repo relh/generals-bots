@@ -1637,13 +1637,19 @@
     },
     "qualification_plan": {
       "path": "integrations/stateless_qualification/plan.json",
-      "sha256": "639b92596363fb1782a18c4ea2265d74cb6953e0e7d2d3ed02c407e41fc3d66f",
+      "sha256": "b80d9f689541e1567627b8253b375ec437ec41713b236bb712283c34222ee995",
       "status": "unsealed pending terminal bridge comparison and final source selection",
       "steps": 4194304,
       "steady_interval_steps": 3145728,
       "warmup_epochs": 2,
       "full_interval_gate_sps": 30000,
-      "rolling_two_epoch_gate_sps": 30000
+      "rolling_two_epoch_gate_sps": 30000,
+      "runner_revision": "84c262145b5314b672e185cc9262ab755c97f85e",
+      "integration_revision": "1181b57",
+      "coordinator_admission": {
+        "path": "integrations/softmax/local-output/stateless-qualification-coordinator-admission-20261007/admission.json",
+        "sha256": "768d9e81278eff0017ffb90d6a16df805fea01a43aa62d40840c39dd01c029f9"
+      }
     }
   },
   "bridge_execution_probe_retry": {
