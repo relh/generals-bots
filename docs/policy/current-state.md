@@ -121,8 +121,8 @@ on `starting` or `running` from the last pre-allocation observation and never
 advances after preemption. Source, admission, archive and request hashes are in
 the manifest and launch receipts. GPU qualification and strength remain pending.
 
-GitHub rejected the latest main and source-branch pushes with server errors;
-local commits and the submitted sealed source are preserved.
+Main and the sealed source branch are pushed to the fork; transient GitHub
+server errors cleared on retry.
 
 ## Matched experiment: technically passed, strength rejected
 
