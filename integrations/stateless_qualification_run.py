@@ -113,6 +113,7 @@ def audit(output):
                 str(path.relative_to(output)): digest(path)
                 for path in (
                     initial,
+                    stage / "run/native-admission.json",
                     checkpoint,
                     learner_path,
                     stage / "rotation-audit.json",
