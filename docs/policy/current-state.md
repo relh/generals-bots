@@ -2,9 +2,10 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. At **2026-10-07 19:52 UTC**, stateless qualification
-**`job-wv4b3` failed before training**: the final generated Muon source hash
-no longer matched its pre-stateless build receipt. The bridge
+job `35892`. At **2026-10-07 20:03 UTC**, corrected stateless qualification
+**`job-tvqh9` is building its H100 image**. The preceding attempt passed source
+GPU parity and native compilation but failed a pretraining Muon receipt guard;
+that receipt-ordering bug is fixed and the actual guard now passes. The bridge
 diagnostic completed and verified a small output-copy saving, without a
 repeatable overall speedup. The preceding row-rotation qualifications failed
 the throughput gate; no long continuation or fresh strength evaluation ran.
@@ -258,6 +259,14 @@ source/intermediate/final hashes were rejected. Policy math, ABI and asset
 bytes are unchanged. Earlier CPU source checks did not exercise this final
 runtime guard; the corrected admission does. A corrected qualification is being
 sealed with the same settings and limits.
+
+Corrected qualification **`job-tvqh9`** was submitted **20:03:05 UTC**, context
+`ctx-44375895`, source **`392e369`**. At 20:03:17 UTC its image was building.
+Root verified all **629 sealed files**, including **256 exact Git source files**;
+all fixed assets, configs and the 4,194,304-step plan are unchanged. Limits are
+**35/33/35 minutes provider/internal/aggregate**, zero restarts, one H100,
+maximum quote **$1.7325**. Detached guard **PID 89166** is verified live.
+No continuation has been submitted.
 
 The failed context `ctx-28e3bf5d`, source **`a82ac6f`**, all 624 sealed files and
 artifacts are preserved. Guard PID 38362 observed terminal failure and exited

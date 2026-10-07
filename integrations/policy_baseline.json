@@ -1637,7 +1637,7 @@
     "qualification_plan": {
       "path": "integrations/stateless_qualification/plan.json",
       "sha256": "7c36fa67896a202b58bd9323b873dd29973d4d3ae9dd22acd765342061b75683",
-      "status": "failed before training: final stateless algo source differs from pre-transform Muon receipt; sourceGPUparity/nativecompile passed",
+      "status": "corrected qualification submitted; image building; native training/throughput pending",
       "steps": 4194304,
       "steady_interval_steps": 3145728,
       "warmup_epochs": 2,
@@ -1703,6 +1703,35 @@
           "matching_top_actions": 46,
           "max_action_probability_difference": 4.4405460357666016e-06,
           "native_compile_passed": true
+        }
+      },
+      "retry_launch": {
+        "job_id": "job-tvqh9",
+        "context_id": "ctx-44375895",
+        "submitted_at": "2026-10-07T20:03:05.457650+00:00",
+        "status": "building",
+        "last_observed_at": "2026-10-07T20:03:17.108556+00:00",
+        "source_revision": "392e36926d0fe7a1a807f92ea3b80c9c0ce3af8b",
+        "archive_sha256": "7a01c95d1917239e7803f4556b6bdf7525f932a3c3b8e70f3a07987e66d31c77",
+        "files_verified": 629,
+        "git_source_files_verified": 256,
+        "provider_minutes": 35,
+        "internal_minutes": 33,
+        "aggregate_minutes": 35,
+        "max_restarts": 0,
+        "quoted_runtime_max_usd": 1.7325,
+        "guard_pid": 89166,
+        "receipts": {
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/ready.json": "230f8fb224d8c9d43e5cfed8730c488dcc10ca6c4cd3106995fd9767800e7e98",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/context-seal.json": "4f0dc764f65afa3707b2e13536094e67beb348016cfd783ff7b88e076e5b391a",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/cpu-admission.json": "eef58000846f61ebccaf31ca4cb78979ee40ba7ebf71ca5811850e76e0474928",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/runtime-guard-admission.json": "0310a0e9ce7d3bdbb55969a7810a1b1f17f7aeb2d7a1e8113030daf518542485",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/root-launch-review.json": "5fffe02273cc0cc2785da902848c65f7defad3989b2857c1863e9a3fa998a7ea",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/submission.json": "e9a3b8b383a7deb30269959e6bcfbea8ada6a267531e8829316dff1874a3da3d",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/validation.json": "c9e293be1cf936d10a6a2c21efddcb9c22c6e1efa55a37ec44446283babcad67",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/pre-submit-active-check.json": "4a0dab1bbb57dc0022fa66a66bc91c10e9c4ff9366ba54832711d534fe24446c",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/aggregate-guard-process.json": "47c4ddefb2343a1b0f499224b211f54ebcc30d59584518990433e7365aad22c2",
+          "integrations/softmax/local-output/stateless-qualification-retry-launch-20261007/collect_and_audit.py": "6ba22ef7807b6cd0bda38f48bac67d3b7185fae0f48b0f2c80e74d91cec20e6a"
         }
       }
     },
