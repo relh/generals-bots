@@ -50,5 +50,26 @@
     "max_restarts": 0,
     "training_steps": 0,
     "throughput_gate": "Not training; no training SPS claim"
-  }
+  },
+  "bundle_files_sha256": [
+    {
+      "asset.json": "fa865d729991da25d20b9a20ef9265af2d79a4d650965ea9fd93a3eefb25c02b",
+      "policy.bin": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "weights.npz": "06bcb464572260514be5ae2b6f36a747972274e3ed589c8c855d06c788aa1e86",
+      "spatial-policy.json": "5fc3be611f408eec3cd9d8332884b60e17a32647a2c242611b40e268384cec8f"
+    },
+    {
+      "asset.json": "bdaa1e77b72b0327aa5c2b8c20ebdfef35dec7d4900f38c5337313aa7d4445be",
+      "policy.bin": "d2c30ee48e805306bc57bcb094dbd59e350bd66307736054625462b5889a3bc0",
+      "weights.npz": "c8422ccb43c4240ba7ebcfb5b95e6083a6c2247e2396aeeab00400c205eb9ce4",
+      "spatial-policy.json": "b26c24d4f1e2b5596046630eb36b288ff0116f245feeb029935e7102ff7d0ef1"
+    },
+    {
+      "asset.json": "960849a864d10a88ed0a4662e6734e9c56d4ff344461f478bd3334614694e523",
+      "policy.bin": "83dc8144eafcaf9c9e0ccac4a59353ea18d2abd81cff261c56f037dd9243b5d2",
+      "weights.npz": "e06d90a9469c33d5ba8d3a991885086b24f16162a71e50431501e50c7ef06249",
+      "spatial-policy.json": "59bd25a74fdce0e4230c9621c03de05595f738a2543cbccbea65b669f9f58e27"
+    }
+  ],
+  "map_identity": "SHA256 typed immutable initial armies, ownership, neutral ownership, generals, castles, mountains, passable, initial general positions and teams. Excludes time/winner/eliminated/pool_idx bookkeeping."
 }
