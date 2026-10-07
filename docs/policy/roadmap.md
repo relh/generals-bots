@@ -38,8 +38,12 @@ both above zero. Each opponent-seat stratum with at least 100 games must have
 delta at least −0.10; report smaller strata. No retraining, sampler adjustment,
 checkpoint selection or repeated screening within confirmation. Successful
 development evidence and final candidate hashes must be bound before launch.
-Reuse the existing execution and bounded collection helpers; the retired
-experiment-specific confirmation runner is not a supported path.
+The [conditional coordinator](../../integrations/independent_confirmation.py)
+reuses existing execution and bounded collection helpers. Five evidence hashes
+and the candidate identity remain unset until development passes. Its planned
+provider/internal/aggregate bounds are 50/48/50 minutes, with zero restarts.
+Four admission/selection checks passed; actual positive admission and GPU
+confirmation remain pending.
 
 A positive local confirmation advances to fresh, balanced hosted matches.
 Acceptance remains at least 65% wins against **each Daveey and incumbent**, with

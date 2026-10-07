@@ -1890,6 +1890,29 @@
       "admission_path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/final-muon-receipt-admission/admission.json",
       "admission_sha256": "56befead0f659f4d92b3bc61a363a309f4412447b20e6130a0ec333a05e117cb",
       "scope": "Seal intermediate optimizer and final stateless algo hashes; actual bootstrap/retained native binary runtime guard and wrapped prepare passed. Generated CUDA, math, ABI and assets unchanged."
+    },
+    "independent_confirmation": {
+      "status": "conditional runner integrated; development result and five evidence bindings plus candidate identity pending; no context or submission",
+      "integration_revision": "10f930a",
+      "plan_path": "integrations/independent_confirmation_plan.json",
+      "plan_sha256": "4fb76472568222a9f8de1ac73a80fb41193a41630c7a94ce854423f2e2b43396",
+      "coordinator_sha256": "97223454dc54d3fab33ccb200ef927d85a80a7e952321d6bd36dd6cdee9c83ef",
+      "seeds": {
+        "maps": 16001101,
+        "actions": 16001103,
+        "bootstrap": 16001111
+      },
+      "games_per_arm": 4096,
+      "arms": [
+        "source",
+        "control",
+        "candidate"
+      ],
+      "provider_minutes": 50,
+      "internal_minutes": 48,
+      "aggregate_minutes": 50,
+      "max_restarts": 0,
+      "validation": "Four focused admission/selection checks passed; authentic positive development admission and GPU evaluation remain pending. Imported framework and repository evaluation code bind to development seal; CUDA audit enabled for subprocesses."
     }
   },
   "bridge_execution_probe_retry": {
