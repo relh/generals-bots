@@ -2,10 +2,9 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 17:24 UTC**, profiled row-rotation retry
-**`job-5cirw` failed the throughput gate at 28,788 SPS**. Its predecessor stopped at the strict throughput
-gate (29,811 SPS); no long continuation or strength evaluation ran.
-The completed first-contact diagnostic did not pass its improvement gate.
+job `35892`. As of **2026-10-07 17:59 UTC**, bounded bridge diagnostic
+**`job-6khn8` is building**. The preceding row-rotation qualifications failed the
+strict throughput gate; no long continuation or strength evaluation ran.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -140,15 +139,28 @@ slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
 retained 61-second fully allocated interval. These observations do not isolate
 a cause; they provide no support for changing power limits or CPU quota.
 
-Next is a bounded execution profile comparing the existing device bridge with
-four output-copy waits consolidated into one. All DLPack owners must remain
-alive through the final wait, and input readiness must remain synchronized.
-Measure host and GPU time around the bridge, learner forward and optimization;
-retain the strict 30K gate for any subsequent sustained training. No new job
-is submitted while staging and final admission are prepared. The bridge change
-is integrated with an updated trainer source pin. Both variants passed local
-C++/Python capsule checks using a deferred-copy CPU CUDA stub; this is not GPU
-admission. The actual CUDA lifetime probe must pass before any ABBA training.
+### Bridge execution diagnostic: building
+
+`job-6khn8` was submitted **2026-10-07 17:58:15 UTC**, context `ctx-12ac3324`,
+for one H100. It compares the original bridge with four output-copy waits
+consolidated into one, in **A–B–B–A order**. Each fresh run has 2,097,152 steps,
+two warmup epochs and two measured epochs; workers stay fixed at eight.
+All DLPack owners remain alive through the final output wait; input readiness
+remains synchronized. Host timings and CUDA stream spans overlap and must not
+be summed; end-to-end speed uses completed-step wall time.
+
+The corrected sealed archive passed both actual source transformation chains
+and regenerated local C++/Python ownership checks. Review rejected an earlier
+unsubmitted archive because its instrumentation expected the wrong build-stage
+loop. Actual CUDA compilation and lifetime probes must pass before training.
+The production correction is `d1e9705`, runner `0bd5e1e`, baseline `0df0d24`;
+exact inputs and receipts are bound in the manifest.
+
+Limits are **45 minutes provider/aggregate**, 43 minutes internal, 480 seconds
+per run, zero application restarts. The validated runtime quote is **$2.2275**.
+Detached guard **PID 77874** is verified live. These instrumented runs are
+bounded diagnostics; no continuation or strength evaluation follows, and full
+uninstrumented **≥30,000 SPS** qualification remains required.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.

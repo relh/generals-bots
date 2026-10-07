@@ -1551,7 +1551,7 @@
     }
   },
   "bridge_execution_probe": {
-    "status": "implementation integrated; staging/admission in progress; no job submitted",
+    "status": "building",
     "plan_path": "integrations/bridge_profile_plan.json",
     "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
     "baseline_revision": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1559,6 +1559,32 @@
     "production_gate_sps": 30000,
     "implementation_revision": "d1e9705ec54036e0b7879fe0f4243cc68ca5d48e",
     "candidate_trainer_sha256": "cc707ef917798076aa550d1140a185e2653eaf48557bc705471a3233e1271bcd",
-    "local_admission": "Generated C++ and real Python capsule ownership with deferred-copy CPU CUDA stub: both variants64x4 bitwise/lifetime checks passed. Actual CUDA compile/lifetime check remains mandatory before profile training."
+    "local_admission": "Both complete real source transformation chains and regenerated CPU capsule/lifetime checks passed; actual CUDA compile/lifetime checks mandatory before ABBA.",
+    "job_id": "job-6khn8",
+    "context_id": "ctx-12ac3324",
+    "submitted_at": "2026-10-07T17:58:15.367097+00:00",
+    "last_observed_at": "2026-10-07T17:59:24.971588+00:00",
+    "guard_pid": 77874,
+    "quoted_runtime_max_usd": 2.2275,
+    "source_revisions": {
+      "baseline": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
+      "candidate": "d1e9705ec54036e0b7879fe0f4243cc68ca5d48e",
+      "runner": "0bd5e1eb010ba586f6aac701d4632ed7c77cbbfd"
+    },
+    "archive_sha256": "53d8518125e9ef73060a7dd34e264634f6d74c54570dd1c93d093769c21ba5d6",
+    "provider_minutes": 45,
+    "execution_minutes": 43,
+    "aggregate_minutes": 45,
+    "max_restarts": 0,
+    "receipts": {
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/ready.json": "d17379fd3a3a424edb9ef3fa30e17d154e57e1984c891e9b92610855ad032963",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/cpu-admission.json": "58ce242334bde6636af54040dbe068b794dc5a6944c7388bc6743ad05c9c38a7",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/guard-admission.json": "00a5e40d94b94cb4af9a5becb5d0a385438a29006100551b2970bdc3327f0b46",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/collect_and_audit.py": "459217f240451f7861915dc13445a437a063a8d4810ee5780874df51c3fb44f5",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/submission.json": "0e40a5146e97de7abe88dcbe17c16cde121d27ff04047e874d3aebb77ee71500",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/validation.json": "386a9bde7c6b6441bfccec4ce4600707d928134e6c790d22f4e62e00307e1ac7",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/aggregate-guard-process.json": "4fe932f024f6ad267f8c9b9d45213d9dfe489424b3da501a7815211ec3865bcd",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/invalidated-ready.json": "6fc2d457c6092053d00d30680ba78e4a22b32b5018214986d6ad5e30787922d7"
+    }
   }
 }
