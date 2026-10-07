@@ -11,7 +11,8 @@ See [current state](current-state.md) for live work and results,
 
 1. Complete the
    [state-free qualification](../../integrations/stateless_qualification/plan.json).
-   Job `job-wv4b3` is building its sealed image.
+   Job `job-wv4b3` passed parity/build but failed its pretraining Muon hash guard.
+   Correct the final source receipt and exercise that guard before resubmission.
    The completed bridge comparison verified copies and owner lifetime. Retain
    one output fence for its small measured local saving; overall speedup was
    ambiguous across the two orders. Instrumented SPS does not qualify training.

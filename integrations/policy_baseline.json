@@ -1638,7 +1638,7 @@
     "qualification_plan": {
       "path": "integrations/stateless_qualification/plan.json",
       "sha256": "7c36fa67896a202b58bd9323b873dd29973d4d3ae9dd22acd765342061b75683",
-      "status": "sealed and submitted; building image, GPU qualification pending",
+      "status": "failed before training: final stateless algo source differs from pre-transform Muon receipt; sourceGPUparity/nativecompile passed",
       "steps": 4194304,
       "steady_interval_steps": 3145728,
       "warmup_epochs": 2,
@@ -1668,10 +1668,10 @@
         "job_id": "job-wv4b3",
         "context_id": "ctx-28e3bf5d",
         "submitted_at": "2026-10-07T19:33:29.524859+00:00",
-        "status": "starting; image downloading",
-        "last_observed_at": "2026-10-07T19:46:53.650435+00:00",
+        "status": "failed",
+        "last_observed_at": "2026-10-07T19:52:51.539900+00:00",
         "archive_sha256": "8f75aac9f0679acda23bfcf5c8125ebae3dc5b8605a9ea9574b818ff3140eeda",
-        "files_verified": 624,
+        "files_verified": 122,
         "git_source_files_verified": 251,
         "provider_minutes": 35,
         "internal_minutes": 33,
@@ -1688,10 +1688,23 @@
           "integrations/softmax/local-output/stateless-qualification-launch-20261007/validation.json": "e21debdc3f0f479e09a9c66ae74b11dc1231260208fecfdb54ae0917645b31ac",
           "integrations/softmax/local-output/stateless-qualification-launch-20261007/pre-submit-active-check.json": "21cc24690b10d4a173ef7a939f110d08c2d22ea66d3da0ca5af0b648cf105893",
           "integrations/softmax/local-output/stateless-qualification-launch-20261007/aggregate-guard-process.json": "8b3f0a6f7cbad5184efd5120dadf31ff4a92a521de59c0407ee53b6eb91b8c88",
-          "integrations/softmax/local-output/stateless-qualification-launch-20261007/collect_and_audit.py": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d"
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/collect_and_audit.py": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/terminal-audit-job-wv4b3.json": "1f2d55d91d73b2a7445a674327e09e213427a4a6c3a305e6a566e97284a19e01"
         },
         "aggregate_deadline": "2026-10-07T20:20:21.741497+00:00",
-        "first_allocation_lower_bound_at": "2026-10-07T19:45:21.741497+00:00"
+        "first_allocation_lower_bound_at": "2026-10-07T19:45:21.741497+00:00",
+        "finished_at": "2026-10-07T19:52:42.987863+00:00",
+        "failure_reason": "Canonical Muon source and build receipt differ",
+        "billed_seconds": 309,
+        "charged_usd": 0.2541,
+        "training_steps": 0,
+        "guard_running": false,
+        "source_gpu_parity": {
+          "public_states": 46,
+          "matching_top_actions": 46,
+          "max_action_probability_difference": 4.4405460357666016e-06,
+          "native_compile_passed": true
+        }
       }
     },
     "startup_admission": {
