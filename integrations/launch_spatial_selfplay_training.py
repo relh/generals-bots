@@ -76,6 +76,8 @@ def source_sampling_gate_report(match):
 
     match = Path(match)
     record = json.loads((match / "evaluation.json").read_text())
+    if record.get("schema") != "generals-frozen-match-v1":
+        raise ValueError("Source gate requires the current frozen-match report schema")
     if (
         not record["held_out"]
         or record["smoke_cpu"]
@@ -85,10 +87,7 @@ def source_sampling_gate_report(match):
         or record["opponent_action_selection"] != "structured_sample"
     ):
         raise ValueError("Source gate requires held-out official GPU Classic sampled self-play")
-    if any(
-        record[k] != 0
-        for k in ("half_logit_bias", "owned_split_bias", "safe_owned_split_bias", "guided_owned_split_bias")
-    ):
+    if record["half_logit_bias"] != 0:
         raise ValueError("Source gate requires the actual PPO sampler without evaluation-only biases")
     hashes = np.load(match / "initial_state_sha256.npy", allow_pickle=False)
     sides = np.load(match / "initial_sides.npy", allow_pickle=False)

@@ -14,10 +14,7 @@ from metta_training.environment import EnvironmentContext
 from integrations.spatial_action_sampling import (
     acting_logits,
     public_doomed_attack_route_penalty,
-    public_guided_owned_split_bias,
     public_neutral_route_bonus,
-    public_owned_split_bias,
-    public_safe_owned_split_bias,
     public_weak_owned_route_penalty,
 )
 from integrations.spatial_frozen_sampling import sample_flat_logits
@@ -54,12 +51,6 @@ def main():
                         help="Count first-episode move destinations and territory/army margins at fixed turns")
     parser.add_argument("--neutral-route-bias", type=float, default=0.0,
                         help="Diagnostic sampled-logit bonus for moves into visible empty neutral cells")
-    parser.add_argument("--owned-split-bias", type=float, default=0.0,
-                        help="Diagnostic conditional half-move bonus on owned routes from stacks >=5")
-    parser.add_argument("--safe-owned-split-bias", type=float, default=0.0,
-                        help="Diagnostic half-move bonus on interior owned routes from stacks of 5–19")
-    parser.add_argument("--guided-owned-split-bias", type=float, default=0.0,
-                        help="Diagnostic half-move bonus on public-cued owned routes joining stacks of at least five")
     parser.add_argument("--weak-owned-route-penalty", type=float, default=0.0,
                         help="Diagnostic route penalty for small-stack owned moves before 15 owned tiles")
     parser.add_argument("--doomed-attack-route-penalty", type=float, default=0.0,
@@ -104,18 +95,6 @@ def main():
     if not np.isfinite(args.neutral_route_bias) or args.neutral_route_bias < 0 or (
             args.neutral_route_bias and args.sample_seed is None and not args.acting_greedy):
         raise ValueError("Neutral route bias requires sampled or acting-greedy actions and a finite nonnegative value")
-    if not np.isfinite(args.owned_split_bias) or args.owned_split_bias < 0 or (
-            args.owned_split_bias and args.split_sampling_temperature is None):
-        raise ValueError("Owned split bias requires structured actions and a finite nonnegative value")
-    if not np.isfinite(args.safe_owned_split_bias) or args.safe_owned_split_bias < 0 or (
-            args.safe_owned_split_bias and args.split_sampling_temperature is None):
-        raise ValueError("Safe owned split bias requires structured actions and a finite nonnegative value")
-    if not np.isfinite(args.guided_owned_split_bias) or args.guided_owned_split_bias < 0 or (
-            args.guided_owned_split_bias and args.split_sampling_temperature is None):
-        raise ValueError("Guided owned split bias requires structured actions and a finite nonnegative value")
-    if sum(bool(value) for value in (args.owned_split_bias, args.safe_owned_split_bias,
-                                     args.guided_owned_split_bias)) > 1:
-        raise ValueError("Use only one owned split diagnostic at a time")
     if not np.isfinite(args.weak_owned_route_penalty) or args.weak_owned_route_penalty < 0 or (
             args.weak_owned_route_penalty and args.split_sampling_temperature is None):
         raise ValueError("Weak owned route penalty requires structured actions and a finite nonnegative value")
@@ -204,15 +183,8 @@ def main():
             biased_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
             if args.sample_seed is None:
                 if args.acting_greedy:
-                    split_bias = (public_guided_owned_split_bias(values, args.guided_owned_split_bias, np)
-                                  if args.guided_owned_split_bias else
-                                  public_safe_owned_split_bias(values, args.safe_owned_split_bias, np)
-                                  if args.safe_owned_split_bias else
-                                  public_owned_split_bias(values, args.owned_split_bias, np)
-                                  if args.owned_split_bias else None)
                     logits = np.asarray(acting_logits(outputs, route_temperature,
                                                       args.split_sampling_temperature, np,
-                                                      split_bias,
                                                       route_half_weight=args.route_half_weight)[:, :3529])
                     if args.neutral_route_bias:
                         logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
@@ -226,16 +198,8 @@ def main():
                     chosen = biased_greedy
             else:
                 key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
-                split_bias = (jnp.asarray(public_guided_owned_split_bias(
-                                  np.asarray(values), args.guided_owned_split_bias, np))
-                              if args.guided_owned_split_bias else
-                              jnp.asarray(public_safe_owned_split_bias(
-                                  np.asarray(values), args.safe_owned_split_bias, np))
-                              if args.safe_owned_split_bias else
-                              jnp.asarray(public_owned_split_bias(np.asarray(values), args.owned_split_bias, np))
-                              if args.owned_split_bias else None)
                 logits = (acting_logits(jnp.asarray(outputs), route_temperature,
-                                       args.split_sampling_temperature, jnp, split_bias,
+                                       args.split_sampling_temperature, jnp,
                                        route_half_weight=args.route_half_weight)[:, :3529]
                           if args.split_sampling_temperature is not None
                           else jnp.asarray(outputs[:, :3529]) / route_temperature)
@@ -297,7 +261,8 @@ def main():
         assert finished.all(), "Every first episode must reach capture or truncation"
     finally:
         env.close()
-    result = dict(scope="First held-out episodes between frozen public-view actors; CPU smoke is not strength evidence",
+    result = dict(schema="generals-frozen-match-v1",
+                  scope="First held-out episodes between frozen public-view actors; CPU smoke is not strength evidence",
                   smoke_cpu=args.smoke_cpu, games=args.games, seed=args.seed, pool_size=args.pool_size,
                   held_out=True, unique_initial_states=len(set(hashes)),
                   training_seeds=policy.asset.metadata["training_seeds"],
@@ -315,9 +280,6 @@ def main():
                   log_gap_scale=args.log_gap_scale,
                   half_logit_bias=args.half_logit_bias,
                   neutral_route_bias=args.neutral_route_bias,
-                  owned_split_bias=args.owned_split_bias,
-                  safe_owned_split_bias=args.safe_owned_split_bias,
-                  guided_owned_split_bias=args.guided_owned_split_bias,
                   weak_owned_route_penalty=args.weak_owned_route_penalty,
                   doomed_attack_route_penalty=args.doomed_attack_route_penalty,
                   first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),

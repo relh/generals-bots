@@ -164,6 +164,7 @@ def test_report_uses_real_saved_seats_and_outcomes(tmp_path):
     match.mkdir()
     sampler = rollout_sampler_settings({})
     record = dict(
+        schema="generals-frozen-match-v1",
         held_out=True,
         smoke_cpu=False,
         coworld_classic_rules=True,
@@ -182,9 +183,6 @@ def test_report_uses_real_saved_seats_and_outcomes(tmp_path):
         sampling_temperature=1.0,
         split_sampling_temperature=1.0,
         half_logit_bias=0.0,
-        owned_split_bias=0.0,
-        safe_owned_split_bias=0.0,
-        guided_owned_split_bias=0.0,
         **{k: v for k, v in sampler.items() if k not in ("mode", "move_temperature", "split_temperature")},
     )
     (match / "evaluation.json").write_text(json.dumps(record))
@@ -197,3 +195,19 @@ def test_report_uses_real_saved_seats_and_outcomes(tmp_path):
     assert report["seat_counts"] == {"0": 256, "1": 256}
     assert report["sampler"] == report["opponent_sampler"] == sampler
     assert "baseline_sha256" not in report and "candidate_sha256" not in report
+
+
+@pytest.mark.parametrize("schema", [None, "generals-frozen-match-v0"])
+def test_source_gate_rejects_retired_unversioned_split_pilot(tmp_path, schema):
+    test_report_uses_real_saved_seats_and_outcomes(tmp_path)
+    match = tmp_path / "match"
+    path = match / "evaluation.json"
+    record = json.loads(path.read_text())
+    if schema is None:
+        del record["schema"]
+    else:
+        record["schema"] = schema
+    record["safe_owned_split_bias"] = 4.0
+    path.write_text(json.dumps(record))
+    with pytest.raises(ValueError, match="current frozen-match report schema"):
+        source_sampling_gate_report(match)
