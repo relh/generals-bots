@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import codecs
 import hashlib
 import json
 import os
@@ -89,9 +90,22 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
 
     previous_sigterm = signal.signal(signal.SIGTERM, interrupted)
     try:
-        with (output / f"{name}-process.log").open("xb") as log:
+        log_path = output / f"{name}-process.log"
+        with log_path.open("xb") as log, log_path.open("rb") as progress:
+            decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+
+            native_progress = None
+            native_decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+
+            def tee_progress(stream=progress, text_decoder=decoder):
+                chunk = stream.read(64 * 1024)
+                if chunk:
+                    sys.stdout.write(text_decoder.decode(chunk))
+                    sys.stdout.flush()
+                return bool(chunk)
+
             process = subprocess.Popen(
-                [sys.executable, "-m", "integrations." + module, *map(str, arguments)],
+                [sys.executable, "-u", "-m", "integrations." + module, *map(str, arguments)],
                 env=env,
                 stdout=log,
                 stderr=subprocess.STDOUT,
@@ -100,6 +114,7 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
             started, sampled = time.monotonic(), 0.0
             try:
                 while process.poll() is None:
+                    tee_progress()
                     elapsed = time.monotonic() - started
                     if elapsed > seconds:
                         raise TimeoutError(f"{name} exceeded {seconds}s; inspect retained log")
@@ -123,6 +138,10 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                                 )
                             sampled = elapsed
                         console = output / "run/console.log"
+                        if native_progress is None and console.exists():
+                            native_progress = console.open("rb")
+                        if native_progress is not None:
+                            tee_progress(native_progress, native_decoder)
                         text = console.read_text(errors="replace") if console.exists() else ""
                         if "NonFiniteGradsError" in text or "FloatingPointError" in text:
                             raise FloatingPointError("Native training produced nonfinite values")
@@ -149,6 +168,21 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                     os.killpg(process.pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
+                while tee_progress():
+                    pass
+                sys.stdout.write(decoder.decode(b"", final=True))
+                if training_config:
+                    console = output / "run/console.log"
+                    if native_progress is None and console.exists():
+                        native_progress = console.open("rb")
+                    if native_progress is not None:
+                        try:
+                            while tee_progress(native_progress, native_decoder):
+                                pass
+                            sys.stdout.write(native_decoder.decode(b"", final=True))
+                        finally:
+                            native_progress.close()
+                sys.stdout.flush()
     finally:
         signal.signal(signal.SIGTERM, previous_sigterm)
 
