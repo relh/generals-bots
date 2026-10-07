@@ -1,0 +1,14 @@
+{
+  "schema": "generals-gather-abba-probe-v1",
+  "status": "pending source and input bindings",
+  "order": ["baseline", "gather", "gather", "baseline"],
+  "baseline_commit": "c1cae5f10d3f1e15abcfc0cd2d3910cd74f06d27",
+  "gather_commit": null,
+  "input_manifest_sha256": null,
+  "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+  "purpose": "Same-GPU bounded diagnostic only; all arms use fresh optimizer and exact selected source. Qualification is a separate 4Mi experiment.",
+  "per_run_steps": 2097152,
+  "per_run_seconds": 480,
+  "warmup_epochs": 2,
+  "runtime_bound": {"provider_minutes": 60, "execution_minutes": 58, "aggregate_minutes_from_first_allocation": 60, "max_restarts": 0}
+}
