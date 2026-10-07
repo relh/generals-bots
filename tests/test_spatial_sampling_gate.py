@@ -239,3 +239,53 @@ def test_current_report_cannot_smuggle_retired_sampler_field(tmp_path, location)
     (tmp_path / "evaluation.json").write_text(json.dumps(record))
     with pytest.raises(ValueError, match="retired sampler"):
         source_sampling_gate_report(tmp_path)
+
+@pytest.mark.parametrize('stage', ['qualification', 'continuation'])
+@pytest.mark.parametrize('wrong_checkpoint', [False, True])
+def test_monotone_runner_checks_stage_local_exact_initializer_gate(tmp_path, monkeypatch, stage, wrong_checkpoint):
+    """Exercise actual runner and CLI guard; GPU evaluation/training are replaced by test fixtures."""
+    from integrations.monotone_force_trial import Trial, digest
+    from integrations.policy_execution import runtime_environment
+    import integrations.launch_spatial_selfplay_training as launcher
+    fixture = tmp_path/'fixture'
+    fixture.mkdir()
+    argv, environment, _, report = gate_fixture(fixture, restore=stage=='continuation')
+    trial = Trial.__new__(Trial)
+    trial.output, trial.source = tmp_path/'experiment', tmp_path/'source'
+    trial.sampler = rollout_sampler_settings(environment)
+    root = trial.output/'control'
+    (root/'build').mkdir(parents=True)
+    (root/'build/build.json').write_bytes((fixture/'build/build.json').read_bytes())
+    out = root/stage
+    out.mkdir(parents=True)
+    (out/'config.json').write_bytes((fixture/'config.json').read_bytes())
+    marker = {}
+    for arm in ('control','candidate'):
+        q = trial.output/arm/'qualification'
+        for name in ('training-audit.json','asset/asset.json','serving-parity.json'):
+            p = q/name
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text('{}')  # Hash-bound lifecycle fixtures, not training evidence.
+        marker[arm] = {name:digest(q/name) for name in ('training-audit.json','asset/asset.json','serving-parity.json')}
+    (trial.output/'qualified.json').write_text(json.dumps(marker))
+    if wrong_checkpoint:
+        report['source_sha256'] = report['opponent_sha256'] = 'b'*64
+    monkeypatch.setattr(launcher, 'source_sampling_gate_report', lambda _: report)
+    calls = []
+    class ReachedTraining(Exception): pass
+    def call(module,args,output,name,seconds,config=None):
+        calls.append((module,args))
+        if module == 'evaluate_spatial_frozen_match':
+            assert args[args.index('--bundle')+1] == root/'qualification/bundle'
+            assert args[args.index('--opponent-bundle')+1] == root/'qualification/bundle'
+            return
+        assert module == 'launch_spatial_selfplay_training'
+        assert (out/'sampling-gate.json').is_file()
+        # Validate again at the exact CLI/environment boundary used by execute.
+        launcher.validate_sampling_gate(['launcher',*map(str,args)], runtime_environment(trial.source,out,trial.sampler))
+        raise ReachedTraining
+    trial.call = call
+    with pytest.raises(ValueError if wrong_checkpoint else ReachedTraining):
+        trial.train('control',stage)
+    assert sum(module=='evaluate_spatial_frozen_match' for module,_ in calls) == (stage=='continuation')
+    assert sum(module=='launch_spatial_selfplay_training' for module,_ in calls) == (not wrong_checkpoint)
