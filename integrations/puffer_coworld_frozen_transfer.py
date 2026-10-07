@@ -183,6 +183,7 @@ class BuildManifest(BaseModel):
     binary_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     model_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
     model_state_words: int = Field(default=0, ge=0)
+    native_admission_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
     environment_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
 
     @model_validator(mode="after")
@@ -190,9 +191,12 @@ class BuildManifest(BaseModel):
         if bool(self.config.python_environment) != bool(self.environment_sha256):
             raise ValueError("Python environments require an implementation fingerprint")
         if self.config.fabric:
+            from integrations import native_startup_admission
+            if self.native_admission_sha256 != native_startup_admission.digest(native_startup_admission.__file__):
+                raise ValueError("Native startup admission changed; rebuild the executable")
             if not self.model_sha256 or self.model_state_words != 0:
                 raise ValueError("Spatial builds require a model fingerprint and zero external state")
-        elif self.model_sha256 or self.model_state_words:
+        elif self.model_sha256 or self.model_state_words or self.native_admission_sha256:
             raise ValueError("Native models cannot declare Fabric metadata")
         return self
 
@@ -343,6 +347,8 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
     if config.fabric:
         from integrations.puffer_stateless_spatial import install_stateless_spatial
         install_stateless_spatial(source)
+        from integrations.native_startup_admission import install as install_startup_admission
+        install_startup_admission(source)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)
@@ -351,6 +357,7 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         binary_sha256=hashlib.sha256((output / "puffer").read_bytes()).hexdigest(),
         model_sha256=model_digest,
         model_state_words=state_words,
+        native_admission_sha256=hashlib.sha256(Path(__file__).with_name("native_startup_admission.py").read_bytes()).hexdigest() if config.fabric else "",
         environment_sha256=environment_fingerprint(config.python_environment) if config.python_environment else "",
     )
     (output / "build.json").write_text(manifest.model_dump_json(indent=2) + "\n")
@@ -434,12 +441,10 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     environment["METTA_PYTHON_EXECUTABLE"] = sys.executable
     environment["METTA_RUN_RECORD"] = str(output / "training.json")
     if config.initialize:
-        from integrations.native_spatial_asset import load_asset, canonical_json, training_contract
-        from integrations.export_spatial_policy_bundle import realized_model
+        from integrations.native_spatial_asset import load_asset, training_contract
         from integrations.learner_checkpoint import LearnerCheckpoint as NativeLearnerCheckpoint
         from integrations.classic_contract import validate_training_contract
         import importlib
-        import jax
 
         reference = config.initialize
         asset = load_asset(reference.asset, manifest_sha256=reference.manifest_sha256)
@@ -449,20 +454,12 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
         validate_training_contract(manifest.config.model_dump(mode="json"), config.model_dump(mode="json"))
         factory_module = importlib.import_module(fabric.factory.split(":", 1)[0])
         factory_sha256 = hashlib.sha256(Path(factory_module.__file__).read_bytes()).hexdigest()
-        # Realize the actual current compiled graph. Neither archived source
-        # fingerprints nor a config-only digest establish flat layout equality.
-        with jax.default_device(jax.devices("cpu")[0]):
-            policy, _, target_model, target_abi = realized_model(
-                canonical_json(fabric.model_dump(mode="json")).decode(),
-                Path(factory_module.__file__), factory_sha256)
-        asset.verify_target(factory_source_sha256=factory_sha256,
-                            model_sha256=manifest.model_sha256, abi_sha256=target_abi)
-        if (target_model != manifest.model_sha256
+        # The actual native actor admits its ABI before checkpoint loading.
+        if (asset.metadata["factory_source_sha256"] != factory_sha256
+                or asset.metadata["model_sha256"] != manifest.model_sha256
                 or fabric_fingerprint(fabric) != manifest.model_sha256
-                or policy.state_words != manifest.model_state_words
-                or policy.buffers.parameter_words != asset.metadata["parameter_count"]
                 or FabricConfig.model_validate(asset.metadata["fabric"]) != fabric):
-            raise ValueError("Native asset differs from the actual target model and complete checkpoint layout")
+            raise ValueError("Native asset factory, model or Fabric configuration differs")
         initial_parameters = asset.policy
         initialization = InitializationRecord(
             asset=reference.asset.resolve(), manifest_sha256=reference.manifest_sha256,
@@ -531,6 +528,10 @@ def initialize_run(run: PreparedRun, monitor: RunMonitor) -> None:
     (run.output / "training.json").write_text(
         TrainingRecord(build=run.manifest, config=run.config).model_dump_json(indent=2) + "\n"
     )
+    if run.manifest.config.fabric:
+        from integrations import native_startup_admission
+        run.environment["METTA_NATIVE_ADMISSION_RUN_SHA256"] = native_startup_admission.digest(run.output / "training.json")
+        run.environment["METTA_NATIVE_ADMISSION_SOURCE_SHA256"] = native_startup_admission.digest(native_startup_admission.__file__)
     if run.initialization:
         (run.output / "initial-policy.bin").write_bytes(run.initial_parameters)
         (run.output / "initialization.json").write_text(run.initialization.model_dump_json(indent=2) + "\n")
@@ -550,6 +551,11 @@ def initialize_run(run: PreparedRun, monitor: RunMonitor) -> None:
 
 def finish_run(run: PreparedRun, monitor: RunMonitor) -> TrainingResult:
     output, manifest = run.output, run.manifest
+    if manifest.config.fabric:
+        from integrations.native_startup_admission import digest, verify_receipt
+        if digest(output / "training.json") != run.environment["METTA_NATIVE_ADMISSION_RUN_SHA256"]:
+            raise ValueError("Native admission training record changed")
+        verify_receipt(output / "training.json")
     checkpoints = sorted((output / "checkpoints").rglob("*.bin"))
     final_checkpoint = (
         output / "checkpoints" / manifest.config.environment / output.name / f"{run.expected_step:016d}.bin"
