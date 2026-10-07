@@ -24,7 +24,8 @@ Score evaluation by game outcome.
 Native training uses the supported pinned Metta/Puffer CUDA image, Fabric build
 and verified current asset. `generals-native-spatial-asset-v1` binds `asset.json`,
 `policy.bin` and optional `policy.bin.learner` to source/model/ABI hashes,
-sampler, seed and provenance. Initialization with `restore_learner: false`
+sampler, seed and provenance. The current direct actor uses ABI v2 with zero
+external recurrent state; old ABI assets must be explicitly migrated. Initialization with `restore_learner: false`
 starts a fresh optimizer from exact policy weights; `true` requires matching
 learner bytes and effective game/codec/reward settings. Actual completed PPO
 writes `training.json`. Publish only that authentic run; do not synthesize
@@ -41,7 +42,11 @@ python -m integrations.policy preflight --build BUILD_DIRECTORY --config RUN_CON
 
 `preflight` exercises the real CPU launcher in a supported native container.
 Run it once per sealed configuration; actual GPU initialization still checks
-its asset. AppleDouble sidecars are metadata and never justify bypassing asset
+its asset. The actual native actor must emit `native-admission.json` before
+policy or optimizer loading. Completion requires that receipt, the unchanged
+training record, and the admission-source fingerprint in `build.json`; a stale
+binary is rejected before launch. Parent preflight no longer constructs a
+duplicate model graph. AppleDouble sidecars are metadata and never justify bypassing asset
 identity. Seal source revision and inputs; provider contexts use files-only GNU
 tar with mode 644 so rootless builders can read the Dockerfile. Verify tar
 contents before upload. A native image build alone does not prove launch.
