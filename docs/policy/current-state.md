@@ -211,6 +211,25 @@ For Slurm, `AGENTS.md` requires B200/B300, Nice `2147483645`, controller
 readback of Priority 1 and a finite limit. Preserve the champion until the full
 hosted acceptance gate passes.
 
+## Local opponent coverage
+
+The local pool contains ten historical Fabric checkpoints and three scripts;
+none is bound to the hosted Daveey actor `daveey-grl:v7`. No authorized published
+bundle was found in the inspected metadata/SDK; this does not prove none exists.
+The incumbent source declaration names `cee053c`, but an immutable deployed
+image/source receipt is missing. Its reference Python and local native bot
+matched 128/128 sampled incumbent actions from four retained games, with native
+memory supplied from reference history. This is bounded action agreement, not
+complete recurrent trajectory or image parity. A separate cold-memory check on
+128 source-side views found two differences caused by padding.
+
+Selected-source local wins were 548/906 against siege, 428/638 against `83dc`,
+and 554/986 against `d2`. Hosted source results remain 18/32 incumbent and 9/32
+Daveey. Different maps, counts and actors prevent causal comparisons. This
+supports keeping fresh named-opponent hosted acceptance mandatory; it does not
+support blaming padding or changing the active trial. Evidence is hash-bound
+in the manifest; no new matches or training were performed for this audit.
+
 ## Learning-path repair awaiting GPU qualification
 
 At replay ratio 0.5, the pinned native learner selects 32 contiguous minibatches

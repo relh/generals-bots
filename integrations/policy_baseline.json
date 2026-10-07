@@ -1287,5 +1287,79 @@
       "integrations/softmax/local-output/row-rotation-launch-20261007/validation.json": "effa4078829a292814f0796df9fdb3b4dea36fc55879c18168d983a8f2e388ba",
       "integrations/softmax/local-output/row-rotation-launch-20261007/collect_and_audit.py": "ffe60501b650c38525582d2b6fcab58aa9616fb380f4973ffbac06198596d4f4"
     }
+  },
+  "opponent_coverage_audit": {
+    "receipt": "integrations/softmax/local-output/opponent-coverage-20261007/receipt.json",
+    "receipt_sha256": "176bae627366a26d564357ce841f1ae7605b3427baa61adce7bf734a65d94968",
+    "coverage": {
+      "source_checkpoint": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "source_local_evaluation": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/monotone-force-retry-20261007/results-job-wgtyc/inner/generals/heldout-source/evaluation.json",
+      "local": {
+        "classic_siege_padded": {
+          "games": 906,
+          "wins": 548,
+          "losses": 353,
+          "draws": 5,
+          "win_rate": 0.6048565121412803
+        },
+        "frozen_83dc8144eafc": {
+          "games": 638,
+          "wins": 428,
+          "losses": 205,
+          "draws": 5,
+          "win_rate": 0.670846394984326
+        },
+        "frozen_d2c30ee48e80": {
+          "games": 986,
+          "wins": 554,
+          "losses": 420,
+          "draws": 12,
+          "win_rate": 0.5618661257606491
+        }
+      },
+      "hosted_source": {
+        "Daveey": {
+          "wins": 9,
+          "games": 32
+        },
+        "incumbent": {
+          "wins": 18,
+          "games": 32
+        }
+      },
+      "incumbent": {
+        "policy_version_id": "e53e30be-0b23-4d62-b944-4dd249a483fe",
+        "name": "co-gas-generals-siege-relh",
+        "version": 4,
+        "declared_source_git": "cee053c298ed2e67dd3745e911e34af43d2e7931",
+        "declaration_image_binding": "Missing immutable image/source receipt; declaration plus 128 public action matches does not prove image identity"
+      },
+      "Daveey": {
+        "policy_version_id": "76b0a083-f0a4-4ec7-9811-038349266633",
+        "name": "daveey-grl",
+        "version": 7,
+        "bundle": "No legitimate published downloadable bundle found in inspected local metadata/SDK. Owned policy listing absence is not evidence of global absence."
+      },
+      "limitations": [
+        "Local opponents are ten historical same-family Fabric checkpoints and three scripts; no Daveey actor identity in pool.",
+        "Local and hosted results differ in maps, sample count and opponent behavior; descriptive only, no causal estimate.",
+        "Incumbent reference matches checked 128/128 selected actions; native padded matches128/128 on those states given reference memory; separate cold-memory selected-source states show126/128 padded vs128/128 exact-dimension reference.",
+        "No new hosted games, uploads, GPU jobs, policy updates or training on retained trajectories."
+      ],
+      "next_step": "Keep current trial fixed. Freeze promising corrected policy and use a fresh balanced named-opponent development screen; use fresh confirmation panel for promotion. Exact incumbent local actor source is available, but require image receipt binding or keep labeled declared reference; treat Daveey as hosted-held-out until an authorized published actor exists."
+    },
+    "incumbent_action_check": {
+      "scope": "128 selected public opponent-side states from 4 uniformly selected sorted incumbent penalty8-panel episodes, 32 uniformly spaced turns each. Official visibility projection reconstructed separately for incumbent seat. Reference Python advances on each preceding public state to obtain memory; native uses reference memory. No new games or training; not end-to-end native recurrent trajectory parity or immutable image/source proof.",
+      "opponent": "e53e30be-0b23-4d62-b944-4dd249a483fe",
+      "reference_commit": "cee053c298ed2e67dd3745e911e34af43d2e7931",
+      "states": 128,
+      "reference_hosted_matches": 128,
+      "native_hosted_matches": 128,
+      "padded_hosted_matches": 128
+    },
+    "incumbent_checked_seat_counts": {
+      "1": 96,
+      "0": 32
+    }
   }
 }
