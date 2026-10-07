@@ -1,47 +1,39 @@
 # Winning Classic policy roadmap
 
-The selected radius-2 Classic source has a qualified GPU execution path but
-does not meet the hosted winning gate. See [current state](current-state.md)
-for live experiments and evidence, [runbook](runbook.md) for commands, and
-the [manifest](../../integrations/policy_baseline.json) for machine-readable
-artifact identities. Git history retains superseded attempts.
+The selected radius-2 source does not meet the hosted winning gate. Its weights
+are unchanged. The current state-free execution path still needs GPU
+qualification; historical throughput measurements do not qualify this refactor.
+See [current state](current-state.md) for live work and results,
+[runbook](runbook.md) for commands, and the
+[manifest](../../integrations/policy_baseline.json) for artifact identities.
 
 ## Next decisions
 
-1. Identify a new mechanism for improving defense while preserving effective
-   routing. Global removal of the direct route shortcut collapsed from 2,758
-   source wins to 74 candidate wins in 4,096 paired games; it is rejected and
-   receives no confirmation. Static missed-defense examples are diagnostic
-   evidence only. Source-mirror, hard-opponent weighting, siege-opponent and
-   Product changes also failed development gates. Revisit a rejected approach
-   only with a new mechanism and preregistered comparison. The existing dense
-   global readout already distinguishes source sites.
-   Global temperature2 and log-gap4 exploration also failed completed GPU
-   trials. Earlier public states show available merges but do not establish
-   their strategic value. The matched monotone stack-mass trial `job-wgtyc`
-   completed both 32 Mi arms with independently verified training and parity,
-   but its candidate was worse than the selected source and did not improve
-   over control. Reject this fixed intervention; no confirmation or promotion.
-   The fresh first-contact counterfactual `job-k8yfq` also failed its primary
-   gate: forced merge delta −0.03125, clustered 95% CI [−0.08105, +0.01758]
-   over 256 maps and four replicas. Different-source and pass alternatives
-   had no established gain. Do not train a merge teacher from this evidence.
-   A native learner audit found permanent row starvation at replay ratio0.5.
-   Row rotation is implemented; `job-zsz35` verified native row coverage but
-   failed the throughput gate at 29,811 SPS. The profiled retry also failed at 28,788 SPS despite a faster fixed CPU callback.
-   Diagnose its hardware telemetry and optimize measured execution costs.
-   Require ≥30K SPS, then compare the corrected candidate
-   with the selected source and retained control on fresh maps. Actor sampling
-   and inspected PPO gradients showed no separate probability mismatch.
-
-2. Keep source, opponent pool, reward, maps, sampler and seats matched while
-   testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its
-   exact GPU training setup before a long run.
-3. Confirm a positive paired development result on independent maps, freeze
+1. Finish the bounded bridge comparison, currently `job-zwt6d`. Verify actual
+   CUDA ownership checks and all four A–B–B–A runs before interpreting timing.
+   Instrumented results cannot qualify sustained training.
+2. Select the bridge implementation from that evidence and seal the
+   [state-free qualification](../../integrations/stateless_qualification/plan.json).
+   Run 4,194,304 uninstrumented steps with the exact migrated source and opponent
+   assets. Require source/checkpoint parity, complete action/reward audits,
+   all 13 opponents on both seats, and ≥30K SPS across epochs 3–8 after two
+   warmup epochs. Retain the rolling throughput guard. If it fails, use the
+   measured bottleneck to choose the next performance change.
+3. Once the execution setup qualifies, complete the controlled row-rotation
+   learning experiment. Permanent row starvation at replay ratio 0.5 is fixed
+   in code, but neither prior attempt qualified throughput or tested strength.
+   Keep source, opponent pool, reward, maps, sampler and seats matched; compare
+   the resulting candidate with the selected source and retained control on
+   fresh maps. A runtime improvement alone is not a policy improvement.
+4. Confirm a positive paired development result on independent maps. Freeze
    the checkpoint and sampler, then run fresh balanced hosted matches against
    the incumbent and Daveey. Promote only after all acceptance gates pass.
-   The conditional `job-wgtyc` confirmation was not activated because its
-   development gate failed. No confirmation configuration, context or job exists.
+
+Prior route-prior, exploration, shaping, teacher and opponent-mixture trials
+have not established a winning improvement. Their evidence is recorded in the
+manifest and current-state document. Revisit a rejected intervention only with
+a new mechanism and a preregistered comparison; static examples alone do not
+establish a useful training target.
 
 ## Winning acceptance
 
@@ -50,5 +42,5 @@ artifact identities. Git history retains superseded attempts.
 - Broad Classic opponent-pool preservation and no unexplained seat regression.
 - Zero unexplained illegal actions, timeouts or forfeits; verified bundle,
   checkpoint, sampler and serving parity.
-- For new long training, a measured steady end-to-end GPU rate of at least
-  30,000 environment steps per second after compilation warmup.
+- For new long training, at least 30,000 measured end-to-end GPU environment
+  steps per second after compilation warmup on the exact execution setup.
