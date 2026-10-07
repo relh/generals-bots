@@ -2213,6 +2213,14 @@
         "active_generals_jobs": []
       },
       "ready_sha256": "399c351977824146a2acc3d26cbfb399cf84414c76787a2c6c8f82612d745d1d"
+    },
+    "prior_control_learning_diagnostic": {
+      "path": "integrations/softmax/local-output/stateless-continuation-launch-20261007/learning-trend-diagnostic.json",
+      "sha256": "d977ae20717c4f6baa1117a9279baa9fe62cef86a5fa72e495c9dcfe4edb0013",
+      "checkpoint_intervals_independently_verified": 7,
+      "final_relative_parameter_drift_from_qualification": 0.03128759686439537,
+      "interpretation": "Weights update throughout; rounded losses and mixed training outcomes do not establish convergence or strength. Current data provides no upward late trend supporting automatic extension. Assess fresh-start results before another training decision.",
+      "limits": "Training outcomes are not independent held-out checkpoint comparisons; 33.55M steps cannot rule out later learning; printed zero KL has only three decimal precision."
     }
   },
   "pending_runner_cleanup": {
