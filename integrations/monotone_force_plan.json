@@ -53,10 +53,10 @@
     "exploration_history_receipt_sha256": "50feb5781ef62f10da23fe9f24b1154a17e054c45a079519ddd02aae298828c9"
   },
   "runtime_bound": {
-    "provider_minutes": 120,
+    "provider_minutes": 150,
     "expected_minutes_from_previous_measured_phases": [
-      100,
-      108
+      109,
+      117
     ],
     "qualification_train_seconds_per_arm": 900,
     "continuation_train_seconds_per_arm": 1800,
@@ -64,7 +64,10 @@
     "build_publish_export_parity_seconds_each": 600,
     "minimum_steady_sps": 30000,
     "max_restarts": 0,
-    "continuation_sampler_seconds_per_arm": 360
+    "continuation_sampler_seconds_per_arm": 360,
+    "execution_minutes": 148,
+    "runtime_price_usd_per_hour": 2.97,
+    "max_runtime_cost_usd": 7.425
   },
   "continuation_gate_seed": 11008105,
   "continuation_gate_sample_seed": 11008107

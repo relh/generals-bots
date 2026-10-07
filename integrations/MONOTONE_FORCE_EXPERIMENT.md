@@ -43,9 +43,13 @@ with phases in this order:
    remains required before promotion.
 
 Per-phase process caps are enforced by the existing execution lifecycle;
-provider total cap is 120 minutes, based on previous measured phases
-projecting 100–108 minutes including four training starts and four trained
-publication/export/parity sequences. No upload or submission command is included.
+provider total cap is 150 minutes with an internal 148-minute execution limit
+and two minutes reserved for collection. At $2.97/hour the maximum runtime
+cost is $7.425. The measured-phase projection is 109–117 minutes, including
+four training starts, four trained publication/export/parity sequences and
+two new exact-initializer continuation self-matches. The retry entrypoint is
+`python -m integrations.monotone_force_entrypoint`; it reads its execution
+limit from the same preregistered plan. No upload or submission command is included.
 
 ## Evidence limits
 
