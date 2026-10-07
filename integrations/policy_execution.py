@@ -86,8 +86,15 @@ def training_step_range(config):
 
 
 def execute(module, arguments, *, source, output, sampler, name, seconds, training_config=None,
-            startup_seconds=300):
+            startup_seconds=300, diagnostic_profile=False):
     """Start one process group; preserve logs on every outcome."""
+    if diagnostic_profile:
+        if training_config is None or seconds > 480:
+            raise ValueError("Diagnostic training requires a <=480-second bounded run")
+        diagnostic = json.loads(Path(training_config).read_text())
+        start, end = training_step_range(diagnostic)
+        if end - start > 2_097_152:
+            raise ValueError("Diagnostic training is limited to 2,097,152 incremental steps")
     output.mkdir(parents=True, exist_ok=True)
     env = runtime_environment(source, output, sampler)
     env.pop("METTA_AUDIT_TARGET_AGENT_STEPS", None)
@@ -152,11 +159,20 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         text = console.read_text(errors="replace") if console.exists() else ""
                         if "NonFiniteGradsError" in text or "FloatingPointError" in text:
                             raise FloatingPointError("Native training produced nonfinite values")
+                        if diagnostic_profile:
+                            import re
+                            if any(int(n) for n in re.findall(r"DEVICE_ACTION_MASK_AUDIT actions=\d+ illegal=(\d+)", text)):
+                                raise ValueError("Diagnostic training produced illegal actions")
+                            for line in text.splitlines():
+                                if line.startswith("DEVICE_REWARD_AUDIT "):
+                                    audit = json.loads(line.split(" ", 1)[1])
+                                    if any(audit[k] for k in ("nonfinite_rewards", "native_clipped_rewards", "native_clipped_terminal_rewards")):
+                                        raise ValueError("Diagnostic training reward audit failed")
                         times = completed_epoch_times(text)
                         if elapsed > startup_seconds and not times:
                             raise TimeoutError(f"No completed training epoch after {startup_seconds}s")
                         sps = interval_sps(times, 2, steps_per_epoch)
-                        if len(times) >= 4 and sps is not None and sps < 30_000:
+                        if not diagnostic_profile and len(times) >= 4 and sps is not None and sps < 30_000:
                             raise RuntimeError(f"Sustained training throughput below 30,000 SPS: {sps}")
                     time.sleep(1)
                 if process.returncode:
