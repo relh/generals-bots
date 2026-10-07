@@ -1668,8 +1668,8 @@
         "job_id": "job-wv4b3",
         "context_id": "ctx-28e3bf5d",
         "submitted_at": "2026-10-07T19:33:29.524859+00:00",
-        "status": "building; image pushing",
-        "last_observed_at": "2026-10-07T19:42:35.451855+00:00",
+        "status": "starting; image downloading",
+        "last_observed_at": "2026-10-07T19:46:53.650435+00:00",
         "archive_sha256": "8f75aac9f0679acda23bfcf5c8125ebae3dc5b8605a9ea9574b818ff3140eeda",
         "files_verified": 624,
         "git_source_files_verified": 251,
@@ -1689,7 +1689,9 @@
           "integrations/softmax/local-output/stateless-qualification-launch-20261007/pre-submit-active-check.json": "21cc24690b10d4a173ef7a939f110d08c2d22ea66d3da0ca5af0b648cf105893",
           "integrations/softmax/local-output/stateless-qualification-launch-20261007/aggregate-guard-process.json": "8b3f0a6f7cbad5184efd5120dadf31ff4a92a521de59c0407ee53b6eb91b8c88",
           "integrations/softmax/local-output/stateless-qualification-launch-20261007/collect_and_audit.py": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d"
-        }
+        },
+        "aggregate_deadline": "2026-10-07T20:20:21.741497+00:00",
+        "first_allocation_lower_bound_at": "2026-10-07T19:45:21.741497+00:00"
       }
     },
     "startup_admission": {
@@ -1724,7 +1726,18 @@
       "provider_minutes": 75,
       "internal_minutes": 73,
       "max_restarts": 0,
-      "validation": "Nine focused tests passed, including failed/timed-out subprocess artifact retention and cleanup races. Pending qualification cannot pass admission."
+      "validation": "Nine focused tests passed, including failed/timed-out subprocess artifact retention and cleanup races. Pending qualification cannot pass admission.",
+      "inert_staging": {
+        "files_verified": 373,
+        "qualification_artifacts_pending": true,
+        "sealed": false,
+        "receipts": {
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/staging.json": "a3c56ed3037da41552b1e3fdaee400dc67bbed29d107d5477a3d1998b83fd7f6",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/root-stage-review.json": "263e32d0dd7b5a17e1e08c11c60a6f5a5a63fd82724c105a6a2c704f7bec7bbc",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "a1cd0c460a55191c357157a0471d11c7c4d004f1d6cc32ae4e129789e964cfe2",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/guard-admission.json": "131eee942216eac9b55d6e41340e70bd97488028ac8d1a293e0300941f78b8eb"
+        }
+      }
     }
   },
   "bridge_execution_probe_retry": {

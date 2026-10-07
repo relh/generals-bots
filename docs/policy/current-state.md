@@ -2,8 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. At **2026-10-07 19:42 UTC**, stateless qualification
-**`job-wv4b3` has built its H100 image and is pushing it**; training has not started. The bridge
+job `35892`. At **2026-10-07 19:46 UTC**, stateless qualification
+**`job-wv4b3` is starting its H100 allocation and downloading the image**; training has not started. The bridge
 diagnostic completed and verified a small output-copy saving, without a
 repeatable overall speedup. The preceding row-rotation qualifications failed
 the throughput gate; no long continuation or fresh strength evaluation ran.
@@ -100,6 +100,9 @@ finishes. One continuation would add 29,360,128 steps to epoch 64 / 33,554,432
 run steps, then evaluate all three frozen arms. Shared bounded process cleanup
 retains partial artifacts on failure; nine focused checks passed. No continuation
 has been submitted. Its separate limits are 75/73/75 minutes, zero restarts.
+Inert local staging contains 373 independently verified files, including the
+historical control and 46 parity fixtures. Qualification artifacts and the
+final source seal remain pending.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
@@ -245,7 +248,8 @@ building; training had not started. Root verified all **624 sealed files**,
 including **251 exact Git source files**, migrated policies and 46 parity
 states. Limits are **35/33/35 minutes provider/internal/aggregate**, zero
 restarts, one H100, maximum quoted runtime cost **$1.7325**. Detached guard
-**PID 38362** is live; it fixes the aggregate deadline at first allocation.
+**PID 38362** is live with deadline **20:20:21 UTC**, anchored to the conservative
+19:45:21 UTC preallocation observation.
 No dependent long training is queued. The existing policy weights remain selected.
 
 Startup simplification **`f7cca32`** removes duplicate parent graph construction.
