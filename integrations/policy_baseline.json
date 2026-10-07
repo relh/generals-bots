@@ -1820,7 +1820,7 @@
     "continuation_plan": {
       "path": "integrations/stateless_continuation_plan.json",
       "sha256": "6259badd474e3a1691c17ce7a87e54bd5ea39a8966f8ab27f61020f516802be3",
-      "status": "sealed and submitted: job-mwvdb allocation starting; training and strength results pending",
+      "status": "job-mwvdb training from verified restored epoch8; initial postwarmup throughput above30K; finalaudit and strength pending",
       "integration_revision": "95d1dea",
       "coordinator_sha256": "182f8889340679290a470f3cd95aaa1be2ced0a729f175ca1d66df4a3f95b0d8",
       "entrypoint_sha256": "f90ad0c54e940042eac5d4ffb00a5de118056047b5a771762a7dabe1a4373532",
@@ -1847,7 +1847,7 @@
       "binding_integration_revision": "cc5c2a1",
       "launch": {
         "job_id": "job-mwvdb",
-        "status": "starting; image downloading",
+        "status": "running; native training",
         "submitted_at": "2026-10-07T20:43:44.788274+00:00",
         "attempt": 0,
         "max_cost_usd": 3.7125,
@@ -1874,11 +1874,44 @@
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/pre-submit-active-check.json": "0a0361d1edaecd44676daa4fbb81644d6e5df10410794c2534069372cb2bbfab",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/aggregate-guard-process.json": "1c5d1e89ea5207a09f8574d0cdd26e0f8bff5283aab2a9b5a96338fac0473dc2",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "5f4ece221fae297b203fa0f1a265d5b8413c844d7f0eb2fbfa7c7661c873ad93",
-          "integrations/softmax/local-output/stateless-continuation-launch-20261007/allocation-deadline.json": "64e8377234564f1f72e73155e237c796d3e2feb12868dc686eeacf791f56e667"
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/allocation-deadline.json": "64e8377234564f1f72e73155e237c796d3e2feb12868dc686eeacf791f56e667",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/first-training-evidence.json": "15b6568496c3c144fbb4a4c907110a3df5d2c5eeeef903396da148774a01c70b"
         },
-        "last_observed_at": "2026-10-07T21:04:03.078584+00:00",
+        "last_observed_at": "2026-10-07T21:18:46.794656+00:00",
         "aggregate_deadline": "2026-10-07T22:18:45.188150+00:00",
-        "first_allocation_lower_bound_at": "2026-10-07T21:03:45.188150+00:00"
+        "first_allocation_lower_bound_at": "2026-10-07T21:03:45.188150+00:00",
+        "first_training_evidence": {
+          "job_id": "job-mwvdb",
+          "observed_at": "2026-10-07T21:18:46.794656+00:00",
+          "status": "running",
+          "completed_epoch": 13,
+          "restored_epoch": 8,
+          "warmup_epochs": 2,
+          "measured_steps": 1572864,
+          "measured_seconds": 38.29099999999998,
+          "postwarmup_sps": 41076.59763390877,
+          "last_two_epoch_sps": 40021.98473282444,
+          "log_sha256": "40f1ea4e853f5ad1fcef4a5b376c9f2411a2f205a684d507c7295ab64901491c",
+          "native_admission": {
+            "receipt_sha256": "c2c687b3ba01f709ebe17e94053c03c3d8033abb272bd456796056224fbe6ba8",
+            "schema": "generals-native-startup-admission-v1",
+            "run_sha256": "b40d316a47ab1bc91382407d966ac5631e19c2aa8b12f3b1964916191a96e16a",
+            "admission_source_sha256": "995ab98a9d228f532aee0ff5076b2d99a461c752a3ba463184eb07d867a95560",
+            "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+            "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
+            "external_state_words": 0,
+            "initializer_manifest_sha256": "15ad4defe757324956bd9c98abd15d7a3d8157ff57f461270dd2e1a5070ddd55",
+            "initial_policy_sha256": "d690c3f122871f58fb9ccbb04ee11be95b55959260d0859829d5672e2e87b955",
+            "initial_learner_sha256": "54b9363c35942a621a6b8832c313accc224ecbe5122e100580f4e44fc12ff5d3",
+            "expected_abi_sha256": "1a4e74cf2df1a30b6e4ed068968e0b82877a8764e28c5fe400d67824df70f62c",
+            "expected_parameter_count": 578860,
+            "initialization": "restored",
+            "native_pid": 7051,
+            "actual_abi_sha256": "1a4e74cf2df1a30b6e4ed068968e0b82877a8764e28c5fe400d67824df70f62c",
+            "actual_parameter_count": 578860
+          },
+          "scope": "Live log evidence only; terminal checkpoint, full-interval audit and strength panels pending"
+        }
       }
     },
     "gpu_stateless_source_parity_passed": true,

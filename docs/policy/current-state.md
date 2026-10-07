@@ -7,7 +7,8 @@ job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
 confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
 4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
 Continuation **`job-mwvdb` was submitted at 20:43:44 UTC** and reached
-allocation startup at **21:04 UTC**;
+allocation startup at **21:04 UTC**. At **21:18:46 UTC**, restored training
+has completed epoch 13, with initial post-warmup throughput above 40K SPS;
 it targets 33,554,432 run steps and fresh strength panels. No strength improvement or hosted acceptance is established.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -101,8 +102,8 @@ sources. All seven evidence bindings are sealed against successful `job-tvqh9`
 in **`cc5c2a1`**. The continuation adds 29,360,128 steps to epoch 64 / 33,554,432
 run steps, then evaluate all three frozen arms. Shared bounded process cleanup
 retains partial artifacts on failure; nine focused checks passed. No continuation
-has completed yet. **`job-mwvdb`** is downloading its image on allocation
-from context `ctx-5f217fc4`,
+has completed yet. **`job-mwvdb`** is training from verified epoch-8 policy and
+optimizer bytes, from context `ctx-5f217fc4`,
 source **`d47ae09`** (same committed plan/runtime code as integrated main).
 Root verified all **789 sealed files**, including 256 exact Git source files,
 authentic qualification artifacts, historical control and 46 parity fixtures.
