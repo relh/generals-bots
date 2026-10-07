@@ -1,15 +1,15 @@
 {
   "schema": "generals-stateless-continuation-v1",
-  "status": "pending qualifying terminal audit; unsealable until all bindings are reviewed",
-  "qualification_job_id": null,
+  "status": "sealed after qualifying terminal audit",
+  "qualification_job_id": "job-tvqh9",
   "bindings": {
-    "qualification-audit.json": null,
-    "qualification-collection.json": null,
-    "qualification/qualified.json": null,
-    "qualification/candidate/qualification/asset/asset.json": null,
-    "qualification/candidate/qualification/asset/policy.bin": null,
-    "qualification/candidate/qualification/asset/policy.bin.learner": null,
-    "qualification-context-seal.json": null
+    "qualification-audit.json": "890cf9952f80b141d08cfa7adc88cc70a4916918108ce67be7f4bdb160142719",
+    "qualification-collection.json": "313f094da598637013f698e82497b30af0ad27ca0f46bb6392184e018aab39b5",
+    "qualification-context-seal.json": "4f0dc764f65afa3707b2e13536094e67beb348016cfd783ff7b88e076e5b391a",
+    "qualification/qualified.json": "31d443a4056e7a6613934e72f0144164a218333dce1dc1f9ee783437b327a359",
+    "qualification/candidate/qualification/asset/asset.json": "15ad4defe757324956bd9c98abd15d7a3d8157ff57f461270dd2e1a5070ddd55",
+    "qualification/candidate/qualification/asset/policy.bin": "d690c3f122871f58fb9ccbb04ee11be95b55959260d0859829d5672e2e87b955",
+    "qualification/candidate/qualification/asset/policy.bin.learner": "54b9363c35942a621a6b8832c313accc224ecbe5122e100580f4e44fc12ff5d3"
   },
   "starting_run_steps": 4194304,
   "starting_epoch": 8,
