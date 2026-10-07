@@ -88,7 +88,7 @@ def install_minibatch_rotation(source: Path) -> None:
         int start_block = (int)(((int64_t)pufferl->epoch * total_minibatches) % blocks);
         int dest_off = ((start_block + mb) % blocks) * mb_segs;
         if (mb == 0) {
-            printf("MINIBATCH_ROTATION epoch=%d start_block=%d total_minibatches=%d total_blocks=%d rows_per_block=%d rule=epoch_times_updates_mod_blocks\\n",
+            printf("MINIBATCH_ROTATION epoch=%ld start_block=%d total_minibatches=%d total_blocks=%d rows_per_block=%d rule=epoch_times_updates_mod_blocks\\n",
                 pufferl->epoch, start_block, total_minibatches, blocks, mb_segs);
             fflush(stdout);
         }"""
@@ -190,8 +190,8 @@ class BuildManifest(BaseModel):
         if bool(self.config.python_environment) != bool(self.environment_sha256):
             raise ValueError("Python environments require an implementation fingerprint")
         if self.config.fabric:
-            if not self.model_sha256 or self.model_state_words == 0:
-                raise ValueError("Fabric builds require a model fingerprint and recurrent-state allocation")
+            if not self.model_sha256 or self.model_state_words != 0:
+                raise ValueError("Spatial builds require a model fingerprint and zero external state")
         elif self.model_sha256 or self.model_state_words:
             raise ValueError("Native models cannot declare Fabric metadata")
         return self
@@ -340,6 +340,9 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
     )
     install_advantage_normalization(source)
     install_minibatch_rotation(source)
+    if config.fabric:
+        from integrations.puffer_stateless_spatial import install_stateless_spatial
+        install_stateless_spatial(source)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)

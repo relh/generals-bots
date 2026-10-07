@@ -171,17 +171,13 @@ def audit(bundle, replay_root, factory_source, game_indices, turns, batch_size):
     stage("input_placement_ready")
     for start in range(0, len(views), batch_size):
         selected = views[start : start + batch_size]
-        state = jax.device_put(
-            np.repeat(native.buffers.pack_state(native.buffers.template), len(selected), axis=0), device
-        )
         observations = jax.device_put(selected[:, None, :], device)
         terminals = jax.device_put(np.zeros((len(selected), 1), np.float32), device)
         stage("forward_start", batch_start=start, batch_size=len(selected))
         with jax.default_matmul_precision("highest"):
             raw_output = native.direct_spatial.forward(parameters, observations)
-            acting_output, _, _ = native._forward_arrays(
+            acting_output, _ = native._forward_arrays(
                 parameters,
-                state,
                 observations,
                 terminals,
                 len(selected),

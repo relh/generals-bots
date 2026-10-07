@@ -369,6 +369,8 @@ def abi_descriptor(policy):
             "sha256": sha256(np.ascontiguousarray(data).tobytes()),
         }
 
+    if policy.state_words != 0 or not getattr(policy, "_generals_direct_spatial", False):
+        raise ValueError("ABI v2 requires the installed stateless spatial callback")
     buffers = policy.buffers
     model = DirectSpatial(policy)
     maps = {}
@@ -412,21 +414,27 @@ def abi_descriptor(policy):
     ]
     optimizer_shapes, optimizer_blocks = logical_optimizer_shapes(model, buffers, context_matrix=True)
     return {
-        "schema": "generals-native-spatial-abi-v1",
+        "schema": "generals-native-spatial-abi-v2",
+        "external_state_words": 0,
+        "callback_version": "stateless-direct-spatial-v1",
+        "direct_adapter_sha256": sha256(Path(__file__).with_name("direct_spatial_optimization.py").read_bytes()),
+        "native_stateless_sha256": sha256(Path(__file__).with_name("puffer_stateless_spatial.py").read_bytes()),
         "bridge_sha256": BRIDGE_SHA256,
         "observation_size": model.observation_size,
         "output_size": 3530,
         "parameter_words": buffers.parameter_words,
-        "state_words": buffers.state_words,
         "inputs": policy.inputs,
         "outputs": list(policy.outputs),
         "output_order": list(policy.output_order),
         "parameters": parameters,
         "template": leaves,
         "maps": maps,
-        "state_shapes": [list(shape) for shape in buffers.state_shapes],
-        "state_dtypes": [str(dtype) for dtype in buffers.state_dtypes],
-        "state_sizes": list(buffers.state_sizes),
+        "compiler_internal_state": {
+            "words": buffers.state_words,
+            "shapes": [list(shape) for shape in buffers.state_shapes],
+            "dtypes": [str(dtype) for dtype in buffers.state_dtypes],
+            "sizes": list(buffers.state_sizes),
+        },
         "optimizer_shapes": [list(shape) for shape in optimizer_shapes],
         "optimizer_blocks": optimizer_blocks,
     }

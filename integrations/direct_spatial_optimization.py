@@ -214,6 +214,7 @@ def install(native_module=None):
         verify_configuration(configuration)
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
+        self.state_words = 0  # Compiler mailboxes remain internal; no external carry.
         if (os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") != "1"
                 or os.environ.get("METTA_SPATIAL_OPTIMIZER_LAYOUT") != "logical"
                 or os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") != "1"
@@ -264,7 +265,7 @@ def install(native_module=None):
             raise ValueError("Doomed attack route penalty must be finite and nonnegative")
 
     @functools.wraps(forward)
-    def direct_forward(self, parameters, state, transported, terminals, batch, time, rollout):
+    def direct_forward(self, parameters, transported, terminals, batch, time, rollout):
         if transported.shape != (batch, time, self.direct_spatial.observation_size) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
@@ -298,7 +299,7 @@ def install(native_module=None):
             acting = acting.at[..., :3529].divide(self.spatial_full_action_temperature)
         if not bool(jnp.isfinite(acting).all()):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
-        return acting, state, DirectTape(parameters, transported, outputs)
+        return acting, DirectTape(parameters, transported, outputs)
 
     @functools.wraps(backward)
     def direct_backward(self, tape, logits, values):
@@ -328,7 +329,24 @@ def install(native_module=None):
             raise FloatingPointError("Direct spatial gradients became nonfinite")
         return gradient
 
+    def device_forward(self, parameters, observations, terminals, batch, time, rollout):
+        params = jax.dlpack.from_dlpack(parameters)
+        observed = jax.dlpack.from_dlpack(observations)
+        done = (jax.dlpack.from_dlpack(terminals) if terminals is not None else
+                jnp.zeros((batch, time), dtype=jnp.float32, device=params.device))
+        return self._forward_arrays(params, observed, done, batch, time, rollout)
+
+    def host_forward(self, parameters, observations, terminals, batch, time, rollout):
+        acting, tape = self._forward_arrays(
+            jnp.asarray(np.frombuffer(parameters, dtype=np.float32)),
+            jnp.asarray(np.frombuffer(observations, dtype=np.float32).reshape(batch,time,self.input_size)),
+            jnp.asarray(np.frombuffer(terminals, dtype=np.float32).reshape(batch,time)),
+            batch, time, rollout)
+        return np.asarray(acting).tobytes(), tape
+
     cls.__init__ = init
+    cls.forward_device = device_forward
+    cls.forward = host_forward
     cls._forward_arrays = direct_forward
     cls.backward_device_arrays = direct_backward
     cls._generals_direct_spatial = True

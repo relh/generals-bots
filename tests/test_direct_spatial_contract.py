@@ -67,7 +67,7 @@ def test_selected_native_hook_matches_independent_action_and_value_vjp(tmp_path,
     policy = Native('{}')
     parameters = jnp.linspace(-.3, .2, 3530)
     observations = jnp.zeros((1, 1, 7056))
-    outputs, _, tape = policy._forward_arrays(parameters, None, observations, jnp.zeros((1, 1)), 1, 1, True)
+    outputs, tape = policy._forward_arrays(parameters, observations, jnp.zeros((1, 1)), 1, 1, True)
     action_cot = jnp.linspace(-.1, .3, 3529).reshape(1, 1, 3529)
     value_cot = jnp.array([[.4]])
     expected, vjp = jax.vjp(lambda p: acting_logits(p.reshape(1, 1, 3530), .05, .15, jnp), parameters)
