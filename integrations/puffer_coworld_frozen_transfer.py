@@ -76,6 +76,42 @@ def install_advantage_normalization(source: Path) -> None:
     ini_path.write_text(ini.replace("momentum = 0.95\n", "momentum = 0.95\nnorm_adv = 0\n", 1))
 
 
+def install_minibatch_rotation(source: Path) -> None:
+    """Rotate contiguous rollout blocks so fractional replay cannot starve rows."""
+    path = source / "src/pufferl.cu"
+    text = path.read_text()
+    old = "        int dest_off = (mb * mb_segs) % n_rows;"
+    new = """        // Host epoch offsets require graph-disabled execution.
+        assert(!hypers->cudagraphs && "Minibatch rotation requires CUDA graphs disabled");
+        assert(Nmb == mb_segs && n_rows % mb_segs == 0 && total_minibatches > 0);
+        int blocks = n_rows / mb_segs;
+        int start_block = (int)(((int64_t)pufferl->epoch * total_minibatches) % blocks);
+        int dest_off = ((start_block + mb) % blocks) * mb_segs;
+        if (mb == 0) {
+            printf("MINIBATCH_ROTATION epoch=%d start_block=%d total_minibatches=%d total_blocks=%d rows_per_block=%d rule=epoch_times_updates_mod_blocks\\n",
+                pufferl->epoch, start_block, total_minibatches, blocks, mb_segs);
+            fflush(stdout);
+        }"""
+    if text.count(old) != 1:
+        raise ValueError("Pinned Puffer minibatch selection anchor changed")
+    path.write_text(text.replace(old, new, 1))
+
+
+def validate_minibatch_rotation(settings: ConfigParser) -> None:
+    """Validate the exact contiguous-row schedule before native training."""
+    if settings.getint("base", "cudagraphs") != -1:
+        raise ValueError("Minibatch rotation requires base.cudagraphs=-1")
+    agents = settings.getint("vec", "total_agents")
+    horizon = settings.getint("train", "horizon")
+    minibatch = settings.getint("train", "minibatch_size")
+    replay = settings.getfloat("train", "replay_ratio")
+    if (agents <= 0 or horizon <= 0 or minibatch <= 0
+            or minibatch % horizon or (agents * horizon) % minibatch
+            or not 0 < replay < float("inf")
+            or int(replay * agents * horizon / minibatch) < 1):
+        raise ValueError("Minibatch rotation requires whole contiguous row blocks and at least one update")
+
+
 class BuildConfig(Configuration):
     environment: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
     mode: Literal["train", "eval"] = "train"
@@ -300,6 +336,7 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         device_python_env=bool(config.python_environment and config.python_environment.device_resident),
     )
     install_advantage_normalization(source)
+    install_minibatch_rotation(source)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)
@@ -366,6 +403,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             raise ValueError("Each native buffer must contain a positive whole number of Python environments")
         if manifest.config.python_environment.device_resident and (buffers != 1 or agents != per_environment):
             raise ValueError("Device-resident Python environments require one GPU buffer with all agents")
+    validate_minibatch_rotation(settings)
     batch_steps = settings.getint("vec", "total_agents") * settings.getint("train", "horizon")
     world_size = settings.getint("train", "gpus")
     environment_count = (
