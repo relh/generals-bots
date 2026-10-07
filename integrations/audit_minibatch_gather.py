@@ -98,27 +98,38 @@ def model_parity(directory, build):
         return jax.device_put(obs, devices[0]), jax.device_put(mask, devices[0])
     observations, masks = load('reference')
     gathered, gathered_masks = load('gather')
+    return dict(**ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks),
+                policy_sha256=metadata['policy_sha256'], abi_sha256=metadata['abi_sha256'])
+
+
+def ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks):
+    """Exercise the native forward tape and production PPO backward API."""
+    import jax
+    import jax.numpy as jnp
+    import numpy as np
     terminals = jnp.asarray(np.arange(8).reshape(8,1)%2, dtype=jnp.float32)
-    def predictions(weights, obs):
-        return policy._forward_arrays(weights, obs, terminals, 8, 1, False)[0]
-    initial = predictions(parameters, observations)
-    legal = masks > 0
-    logits = jnp.where(legal, initial[...,:3529], -1e9)
+    with jax.default_matmul_precision('highest'):
+        initial, tape_a = policy._forward_arrays(parameters, observations, terminals, 8, 1, False)
+        candidate, tape_b = policy._forward_arrays(parameters, gathered, terminals, 8, 1, False)
+    logits = jnp.where(masks > 0, initial[...,:3529], -1e9)
     actions = jnp.argmax(logits, axis=-1)
     old_logp = jnp.take_along_axis(jax.nn.log_softmax(logits), actions[...,None], -1)[...,0]
     old_logp = jax.lax.stop_gradient(old_logp - jnp.log(jnp.asarray([.5,.9,1.1,1.5,.5,.9,1.1,1.5]).reshape(8,1)))
     advantage = jnp.linspace(-1,1,8).reshape(8,1)
     returns = jax.lax.stop_gradient(initial[...,3529] + advantage*.1)
-    def objective(weights, obs, mask):
-        out = predictions(weights, obs)
+    def objective(out, mask):
         logp = jax.nn.log_softmax(jnp.where(mask>0,out[...,:3529],-1e9))
         ratio = jnp.exp(jnp.take_along_axis(logp,actions[...,None],-1)[...,0]-old_logp)
         loss = -jnp.mean(jnp.minimum(ratio*advantage,jnp.clip(ratio,.8,1.2)*advantage)) + .5*jnp.mean((out[...,3529]-returns)**2)
         return loss, jnp.exp(logp)
+    # The native boundary performs concrete finite checks. Differentiate the PPO
+    # output loss, then feed its cotangents to the same native backward as training.
     operation = jax.jit(jax.value_and_grad(objective, has_aux=True))
     with jax.default_matmul_precision('highest'):
-        (loss_a, probabilities_a), gradient_a = operation(parameters, observations, masks)
-        (loss_b, probabilities_b), gradient_b = operation(parameters, gathered, gathered_masks)
+        (loss_a, probabilities_a), cotangents_a = operation(initial, masks)
+        (loss_b, probabilities_b), cotangents_b = operation(candidate, gathered_masks)
+        gradient_a = policy.backward_device_arrays(tape_a, cotangents_a[...,:3529], cotangents_a[...,3529])
+        gradient_b = policy.backward_device_arrays(tape_b, cotangents_b[...,:3529], cotangents_b[...,3529])
     for label,a,b in [('loss',loss_a,loss_b),('probabilities',probabilities_a,probabilities_b),('parameter_gradient',gradient_a,gradient_b)]:
         a,b=np.asarray(a),np.asarray(b)
         if not np.isfinite(a).all() or not np.array_equal(a.view(np.uint32),b.view(np.uint32)):
@@ -127,7 +138,7 @@ def model_parity(directory, build):
         raise ValueError('Degenerate zero-gradient admission')
     return dict(states=8, parameter_words=int(parameters.size), mixed_terminals=True,
                 probabilities_bitwise=True, ppo_loss_bitwise=True, parameter_gradient_bitwise=True,
-                policy_sha256=metadata['policy_sha256'], abi_sha256=metadata['abi_sha256'])
+                gradient_api='NativeFabricPolicy.backward_device_arrays')
 
 
 def main():
