@@ -310,6 +310,9 @@ class PreparedRun(Record):
 
 def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
     """Build in an exclusive directory; never modify another checkout or build."""
+    if config.fabric and (os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION") != "canonical"
+                          or os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") != "1"):
+        raise ValueError("Current spatial builds require canonical dense and context-matrix Muon hooks")
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     source = output / "source"
@@ -349,6 +352,8 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         install_stateless_spatial(source)
         from integrations.native_startup_admission import install as install_startup_admission
         install_startup_admission(source)
+        from integrations.spatial_muon_orientation import finalize_build_receipt
+        finalize_build_receipt(source, config.fabric)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)

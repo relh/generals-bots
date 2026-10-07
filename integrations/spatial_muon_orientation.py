@@ -80,6 +80,35 @@ def install_build_hook(puffer_module):
     puffer_module.install_fabric = install
 
 
+FINAL_STATELESS_ALGO_SHA256 = {
+    1.01: "fe6f832ae684ecd99caea1b5b4a57057ba0d1627da6722401a3d0b124f3009f2",
+    2.01: "3b87ff67e8871cee8fd515ba6f62a317d96e4f0066b39d78f00c03b18fdd7fe7",
+}
+
+
+def finalize_build_receipt(source, config):
+    """Seal the compiled source after the stateless ABI transformation."""
+    from integrations.spatial_muon_context import config_radius, geometry, geometry_receipt
+    source = Path(source)
+    radius = config_radius(config)
+    build = source.parent
+    receipt_path = build / "spatial-muon-orientation.json"
+    receipt = json.loads(receipt_path.read_text())
+    intermediate = geometry(radius)[3]
+    final = hashlib.sha256((source / "src/algo.cu").read_bytes()).hexdigest()
+    if (receipt["mode"] != "canonical_dense" or receipt["marker"] != MARKER
+            or receipt["original_algo_sha256"] != INSTALLED_ALGO_SHA256
+            or receipt["dense_algo_sha256"] != CANONICAL_ALGO_SHA256
+            or receipt["patched_algo_sha256"] != intermediate
+            or receipt.get("context_matrix") is not True
+            or json.loads((build / "spatial-muon-context.json").read_text()) != geometry_receipt(radius)
+            or final != FINAL_STATELESS_ALGO_SHA256[radius]):
+        raise ValueError("Final spatial optimizer transformation chain differs")
+    receipt.update(optimizer_algo_sha256=intermediate, patched_algo_sha256=final,
+                   stateless_installer_sha256=hashlib.sha256(Path(__file__).with_name("puffer_stateless_spatial.py").read_bytes()).hexdigest())
+    receipt_path.write_text(json.dumps(receipt, indent=2) + "\n")
+
+
 def validate_build_mode(build, mode, *, context_matrix=False):
     if mode not in ("storage", "canonical"):
         raise ValueError("Spatial Muon orientation must be storage or canonical")
@@ -97,10 +126,14 @@ def validate_build_mode(build, mode, *, context_matrix=False):
     validate_geometry(manifest["config"]["fabric"])
     receipt = json.loads((build / "spatial-muon-orientation.json").read_text())
     source_hash = hashlib.sha256((build / "source/src/algo.cu").read_bytes()).hexdigest()
-    expected_hash = (geometry(config_radius(manifest["config"]["fabric"]))[3]
-                     if context_matrix else CANONICAL_ALGO_SHA256)
+    if not context_matrix:
+        raise ValueError("Current stateless spatial builds require convolution matrix mode")
+    radius = config_radius(manifest["config"]["fabric"])
+    expected_hash = FINAL_STATELESS_ALGO_SHA256[radius]
     if (receipt["mode"] != "canonical_dense" or receipt["marker"] != MARKER
             or receipt["original_algo_sha256"] != INSTALLED_ALGO_SHA256
+            or receipt.get("optimizer_algo_sha256") != geometry(radius)[3]
+            or receipt.get("stateless_installer_sha256") != hashlib.sha256(Path(__file__).with_name("puffer_stateless_spatial.py").read_bytes()).hexdigest()
             or receipt["patched_algo_sha256"] != source_hash
             or source_hash != expected_hash
             or bool(receipt.get("context_matrix", False)) != context_matrix
