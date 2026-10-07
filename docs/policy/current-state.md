@@ -169,6 +169,9 @@ but copies its unchanged 77,684-word state into JAX and back during rollout:
 An isolated zero-external-state implementation is being prepared, with explicit
 asset ABI migration and unchanged weight/optimizer layout required. It does
 not alter this submitted bridge probe or qualify a new policy.
+The migration inventory binds 14 asset manifests, 12 serving bundles and two
+optimizer snapshots across the radius-1 and radius-2 layouts (570,668 and
+578,860 parameters). All policy and optimizer bytes must remain identical.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.

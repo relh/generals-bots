@@ -1592,6 +1592,18 @@
     "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
     "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
     "branch": "codex/stateless-spatial-abi",
-    "scope": "Remove external carry unused by direct forward/backward; preserve compiler mailbox scratch, parameter/optimizer layout and bytes; explicit ABI migration required. Active bridge probe unchanged."
+    "scope": "Remove external carry unused by direct forward/backward; preserve compiler mailbox scratch, parameter/optimizer layout and bytes; explicit ABI migration required. Active bridge probe unchanged.",
+    "asset_inventory": {
+      "path": "integrations/softmax/local-output/stateless-abi-inventory-20261007/inventory.json",
+      "sha256": "c1ff13062073c311415c92b169d532132ed48cb49ae906e965389bd2d2821b56",
+      "asset_manifests": 14,
+      "serving_bundles": 12,
+      "unique_policies": 12,
+      "optimizer_snapshots": 2,
+      "parameter_layouts": [
+        570668,
+        578860
+      ]
+    }
   }
 }
