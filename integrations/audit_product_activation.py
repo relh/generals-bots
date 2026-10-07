@@ -7,6 +7,7 @@ only their own wire observation; no hidden state or hosted replay is an input.
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -124,14 +125,19 @@ def audit(source_bundle, trained_bundle, checkpoint, parity_report, views):
     if not np.array_equal(q0, np.zeros_like(q0)):
         raise ValueError("Product source head was not exactly zero")
     parity = json.loads(parity_report.read_text())
-    if (parity.get("checkpoint_sha256") != checkpoint_sha
+    parity_metrics = ("max_logit_difference", "max_action_probability_difference",
+                      "max_rollout_transform_difference")
+    if (any(type(parity.get(key)) not in (int, float) or not math.isfinite(parity[key])
+            for key in parity_metrics)
+            or parity.get("checkpoint_sha256") != checkpoint_sha
             or parity.get("factory_source_sha256") != trained.asset.metadata["factory_source_sha256"]
             or parity.get("bundle_manifest_sha256") != trained_manifest_sha
             or parity.get("engine_sha256") != ENGINE_SHA256
             or parity.get("public_states", 0) < 16
             or parity.get("matching_top_actions") != parity.get("public_states")
             or parity.get("max_logit_difference", 1) > 2e-5
-            or parity.get("max_action_probability_difference", 1) > 1e-5):
+            or parity.get("max_action_probability_difference", 1) > 1e-5
+            or parity.get("max_rollout_transform_difference", 1) > 1e-5):
         raise ValueError("Native-to-serving Product parity proof is missing or mismatched")
     raw = trained.forward(values)
     zero_weights = dict(trained.weights, product_action_kernel=np.zeros_like(trained.weights["product_action_kernel"]))
