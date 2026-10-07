@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, as of the 22:54 UTC gather-probe submission.
+Updated 2026-10-07, as of the 23:11 UTC gather-probe startup.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -81,7 +81,8 @@ also applies zero midgame probability to automatic episode recycling.
 
 ## Live work: gather memory comparison
 
-**`job-tjqy8`**, submitted **22:54:13 UTC**, was building at this snapshot.
+**`job-tjqy8`**, submitted **22:54:13 UTC**, entered first-attempt startup
+at 23:10 UTC and is downloading its image at this snapshot.
 Its sealed package replaces duplicate full transposed observations/masks with
 float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
 row rotation and optimizer math are preserved. CPU indexing and actual-framework
@@ -94,7 +95,8 @@ source with a fresh optimizer: four 2,097,152-step diagnostics, two warmup epoch
 and the geometry above. Every arm uses fresh-game resets.
 
 Limits: **60 provider/aggregate minutes, 58 execution minutes, zero restarts**,
-maximum quote **$2.97**; allocation guard is active. This comparison tests gather
+maximum quote **$2.97**; the live allocation guard fixes the deadline at
+**2026-10-08 00:10:10 UTC**. This comparison tests gather
 storage, not whether reset distribution caused the previous slowdown.
 Both gather runs must reach 30K SPS before considering a **separate full
 qualification**. Diagnostic completion does not authorize long training.

@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-tjqy8 submitted building; GPU correctness and speed unverified",
+    "status": "job-tjqy8 first attempt starting; GPU correctness and speed unverified",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2397,6 +2397,18 @@
         "observed_at": "2026-10-07T22:54:13.133237+00:00",
         "jobs_checked": 104,
         "active_generals_jobs": []
+      },
+      "allocation_guard": {
+        "job_id": "job-tjqy8",
+        "minutes": 60,
+        "pid": 18065,
+        "running": true,
+        "observed_at": "2026-10-07T23:11:32.726657+00:00",
+        "status": "starting",
+        "last_preallocation_observed_at": "2026-10-07T23:10:10.923918+00:00",
+        "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
+        "first_allocation_lower_bound_at": "2026-10-07T23:10:10.923918+00:00",
+        "deadline": "2026-10-08T00:10:10.923918+00:00"
       }
     }
   }
