@@ -38,6 +38,9 @@ def build(args):
         return environment
     trainer.install_driver=install
     trainer.build_puffer(args.output/'build',trainer.BuildConfig.model_validate(read(args.output/'build-config.json')))
+    generated=args.output/'build/source/src'
+    write(args.output/'generated-source.json',{name:sha(generated/name) for name in
+          ('pufferl.cu','metta_device_environment.cuh','metta_fabric.cuh','bridge_execution_profile.cuh','bridge_lifetime_probe.cu')})
     lifetime=helper.compile_and_run_lifetime_probe(args.output/'build/source',args.output/'lifetime',
                                          4 if args.variant=='baseline' else 1)
     assert lifetime['passed'] and lifetime['iterations']==64 and lifetime['arrays_per_iteration']==4
