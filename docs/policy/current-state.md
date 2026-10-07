@@ -2,7 +2,7 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. One bounded experiment, `job-kzmub`, is building its native trainers.
+job `35892`. No GPU experiment is active; a launch-path repair is being prepared.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -58,17 +58,22 @@ moves, candidate timeouts or forfeits. After local files disappeared, separate
 Observatory recovery reproduced both counts and audited 277,894 turns across
 512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Active bounded experiment
+## Matched experiment: launch repair
 
-`job-kzmub` was submitted **2026-10-07 08:43:52 UTC**, isolated source
-`a3569ae`, context `ctx-cac8804f`. At **09:09:41 UTC** it was running on
-attempt 1, without failures or retries. Source serving parity passed on all
-46 public states (maximum probability difference 4.44e−6). The source sampling
-gate completed 512 games, 267W/240L/5D, against the identical source policy.
-Both startup checks passed; native trainer builds are underway.
-**GPU qualification and playing strength remain unproven.**
+`job-kzmub` **failed before training** at 2026-10-07 09:12:58 UTC, on
+attempt 1 with zero runtime restarts. Both native builds completed. Source
+serving parity passed on 46 public states, and the 512-game identical-source
+sampling gate completed 267W/240L/5D. The qualification launcher then looked
+for `control/qualification/sampling-gate.json`, while the authentic gate was
+saved at the shared experiment root. The artifact and all 34 retained file
+hashes were independently verified; exact hashes are in the manifest.
 
-One H100 is capped at **120 minutes/$5.94**, with zero runtime restarts.
+The stage gate path is being repaired for a bounded retry; **no retry is
+submitted**. No training steps, GPU throughput qualification, or strength
+result were produced. The selected policy and champion remain unchanged.
+
+The proposed retry retains one H100 capped at **120 minutes/$5.94**, with
+zero runtime restarts.
 Control and candidate start the exact selected policy with fresh optimizers;
 each first trains 4,194,304 qualification steps. **Both** must pass ≥30,000
 steady SPS, native serving parity and legality/reward/population audits before

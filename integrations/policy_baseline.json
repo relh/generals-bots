@@ -348,15 +348,20 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": ["job-kzmub"],
+  "active_experiments": [],
   "monotone_force_matched_training": {
     "job": "job-kzmub",
-    "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T09:09:41.681668+00:00",
-    "last_observed_phase": "native builds; source parity and sampling gate passed",
+    "last_observed_state": "failed",
+    "last_observed_utc": "2026-10-07T09:12:58.259585+00:00",
+    "last_observed_phase": "qualification launcher failed before training: missing stage-local sampling gate",
     "source_parity_top_actions_matched": 46,
-    "source_parity_max_probability_difference": 0.0000044405460357666016,
-    "source_sampling_gate": {"games": 512, "wins": 267, "losses": 240, "draws": 5},
+    "source_parity_max_probability_difference": 4.4405460357666016e-06,
+    "source_sampling_gate": {
+      "games": 512,
+      "wins": 267,
+      "losses": 240,
+      "draws": 5
+    },
     "attempt": 1,
     "build_retries": 0,
     "runtime_restarts": 0,
@@ -397,7 +402,22 @@
     "evaluation_sample_seed": 12001103,
     "bootstrap_seed": 12001111,
     "evaluation_games_per_arm": 4096,
-    "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required."
+    "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
+    "training_started": false,
+    "training_steps_completed": 0,
+    "native_builds_passed": true,
+    "retry_submitted": false,
+    "retry_status": "preparation",
+    "failure_reason": "Missing stage-local sampling-gate.json; execute default resolves stage output while smoke wrote shared root gate.",
+    "result_archive_sha256": "8264781cf3aab2c68887950bb346da6984a61d54ff2506413cc5004e4e374ecb",
+    "results_archive_sha256": "4d874f7e877c84502e9ee78dd49f1be7a9fbccb2c3d6d68dbf5fc6c196bfed4a",
+    "collection_sha256": "20739b52e02e0ffcb0e9e1a0653cfd0b0a5ff137d96f80f78b8c17dfe33b900e",
+    "terminal_audit_sha256": "e309a594b80510cc403d894c51795457eac738f7a9bdd23c314ef6c3bcc10a04",
+    "failure_log_sha256": "02f353ce735f6b6e51fcef75ebff097812acac22759323ed0d7188f7f3c07374",
+    "native_build_receipt_sha256": {
+      "control": "e8fa3a68796661f6439e7ed7e3cd67db980b3adca0352015de7bc90e007ab97d",
+      "candidate": "d522b9ec9a7ba33218eae12d0dab5595f8ee5d5bdaee74a6251e57ba2fe348fe"
+    }
   },
   "route_shortcut_development": {
     "job": "job-wwvk3",
