@@ -21,7 +21,7 @@
     "minibatch": 8192,
     "replay_ratio": 0.5,
     "steady_sps_floor": 30000,
-    "warmup_epochs": 2,
+    "warmup_epochs": 6,
     "initializer": "Same migrated zero-Q Product source policy and fresh optimizer in both arms",
     "single_factor": "Control zeros the 64 Q gradient words before native global clipping; treatment trains Q under the same logical optimizer ABI"
   },
