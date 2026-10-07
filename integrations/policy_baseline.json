@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T10:31:47.845384Z",
-    "last_observed_phase": "runtime qualification passed for both arms; control trained-initializer self-play started before continuation",
+    "last_observed_utc": "2026-10-07T10:39:44.376169Z",
+    "last_observed_phase": "control continuation producing steps; candidate continuation not started",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -633,7 +633,46 @@
       "parity_log_sha256": "cdcc2557d5e5559c4e0421eb708f5f85306dc0fae3ae08662309939556129195"
     },
     "gpu_qualification_scope": "Runtime console records both training audits and trained serving parity passing. Independent collected artifact audit remains pending.",
-    "terminal_qualification_verified": false
+    "terminal_qualification_verified": false,
+    "control_continuation_console": {
+      "log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T103944376169Z-sanitized.log",
+      "log_sha256": "bb40b2760310715e8e725e704e25bbe514f0ddb5dd3b14e940300cf579f1c7c8",
+      "attempt": 3,
+      "starting_steps": 4194304,
+      "observed_total_steps": 6291456,
+      "advanced_steps": 2097152,
+      "warmup_epochs_excluded": [
+        9,
+        10
+      ],
+      "steady_interval": {
+        "first_epoch": 10,
+        "last_epoch": 12,
+        "first_uptime_seconds": 49.007,
+        "last_uptime_seconds": 75.744,
+        "steps": 1048576,
+        "seconds": 26.737,
+        "sps": 39218.162097467924
+      },
+      "hardware": "one H100",
+      "parallel_games": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "dashboard_vram_gib": 66.6,
+      "dashboard_ram_gib": 4.3,
+      "nonfinite_rewards": 0,
+      "native_clipped_rewards": 0,
+      "native_clipped_terminal_rewards": 0,
+      "initializer_sampling_gate": {
+        "checkpoint_sha256": "59f07adce7b6d07141582bdfbae377f73fbdc74ac8bd83fbb3efe562b18e441c",
+        "games": 512,
+        "wins": 276,
+        "losses": 233,
+        "draws": 3
+      },
+      "scope": "Console progress and dashboard snapshots; independent learner-byte verification and collected GPU metrics pending."
+    }
   },
   "route_shortcut_development": {
     "job": "job-wwvk3",
