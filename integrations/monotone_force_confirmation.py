@@ -52,7 +52,8 @@ def verify_development(audit_path, expected_sha, source_input):
     if read(root/'selection.json')['selected'] is not True:raise ValueError('Development selection was negative')
     source_input=source_input.resolve()
     binding=read(root/'source-binding.json')
-    if sha(source_input/'source-manifest.json')!=binding['source_manifest_sha256']:
+    if (sha(source_input/'source-manifest.json')!=binding['source_manifest_sha256']
+            or binding['source_manifest_sha256']!=PLAN['required_input_manifest_sha256']):
         raise ValueError('Original submitted input manifest differs')
     for name,digest in read(source_input/'source-manifest.json').items():
         relative=Path(name)

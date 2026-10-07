@@ -1,7 +1,7 @@
 # Conditional independent confirmation
 
 This branch prepares one frozen evaluation only. It does not modify submitted
-job-kzmub, train another policy, upload context, or submit a job.
+job-wgtyc, train another policy, upload context, or submit a job.
 
 Prerequisite: a SHA-bound independent terminal audit with schema
 `generals-monotone-force-independent-terminal-audit-v1`. The helper requires
@@ -26,3 +26,9 @@ training, parameter selection, or sampler change is part of confirmation.
 
 This is not hosted winning qualification. Candidate/control checkpoint pins
 cannot be filled until the real development job finishes and passes.
+
+The corrected development submission is source `6b297db`, context
+`ctx-66b75696`, archive SHA256
+`98ea465c868ee317f0dde15aac8dd7f7f2a1cb4f40e4a297992d24cd26556390`.
+Its exact input-manifest digest is pinned in the confirmation plan and required
+by the gate; a result from the failed first submission cannot qualify.

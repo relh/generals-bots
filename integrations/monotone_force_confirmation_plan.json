@@ -1,8 +1,8 @@
 {
   "schema": "generals-monotone-force-confirmation-v1",
   "status": "conditional preparation; no qualifying development result exists yet",
-  "required_job_id": "job-kzmub",
-  "development_source_revision": "a3569ae796d983652a894c4d1b0effe21253a20c",
+  "required_job_id": "job-wgtyc",
+  "development_source_revision": "6b297dbb49d5073ee7732b4a24880f93e18e63f2",
   "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
   "required_terminal_audit_schema": "generals-monotone-force-independent-terminal-audit-v1",
   "evaluation_seed": 12002101,
@@ -10,10 +10,23 @@
   "bootstrap_seed": 12002111,
   "games_per_arm": 4096,
   "bootstrap_resamples": 10000,
-  "arms": ["source", "control", "candidate"],
+  "arms": [
+    "source",
+    "control",
+    "candidate"
+  ],
   "pool": "Exact ten frozen opponents and three scripts from development; balanced seats and unchanged weights",
   "gate": "Verified technically succeeded terminal; original provider artifact/result/collection/completion hashes; both final trained parity/qualification receipts; recomputed positive development candidate-source and candidate-control clustered lower95 bounds with >=100-game strata delta>=-.10",
   "confirmation": "Both independent candidate-source and candidate-control clustered lower95 bounds strictly positive; every >=100-game opponent-by-seat stratum delta>=-.10. Smaller strata reported.",
-  "forbidden": ["additional training", "parameter tuning", "sampler changes", "reusing development evaluation seeds", "producing runnable configuration after gate failure"],
-  "promotion": "Successful independent local confirmation still does not establish hosted winning strength"
+  "forbidden": [
+    "additional training",
+    "parameter tuning",
+    "sampler changes",
+    "reusing development evaluation seeds",
+    "producing runnable configuration after gate failure"
+  ],
+  "promotion": "Successful independent local confirmation still does not establish hosted winning strength",
+  "development_context_id": "ctx-66b75696",
+  "development_context_archive_sha256": "98ea465c868ee317f0dde15aac8dd7f7f2a1cb4f40e4a297992d24cd26556390",
+  "required_input_manifest_sha256": "a5233e37a186a9248a7ad87b6dd03e59d88e4343e0bc8b18af688b2a1ffbfc01"
 }
