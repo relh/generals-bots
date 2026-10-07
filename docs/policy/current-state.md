@@ -1,5 +1,57 @@
 # Current policy state
 
+Updated **2026-10-07**. Generals training is stopped at the user's requested
+pivot to Gods of the Arena. The retained, evaluated checkpoint adds
+**360,710,144 training steps** (44.79% of the planned 805,306,368-step run).
+The full planned run did not complete. Both owned H100 nodes are stopped.
+
+## Selected H100 checkpoint and hosted verification
+
+Policy SHA-256: `e8bab2e56756e6731a84b1e28219431b66c0577ff0b2f02be9a82ceb3c2f2817`.
+The native checkpoint, matching optimizer and portable serving bundle are retained.
+Checkpoint archive SHA-256:
+`49d752e9a80046ad9517705032b53beeff7cc64627586f659c01ce8028f31435`.
+
+Held-out evaluation used 4,096 games per policy, matched maps, opponents,
+seats and sampling seeds, with official Classic rules and ordinary 2,000-turn budgets.
+Candidate: **2,831 wins / 1,213 losses / 52 draws** (69.12% wins).
+Starting baseline: **2,743 / 1,317 / 36** (66.97% wins).
+Match-score improvement: **2.34 percentage points**, map-clustered 95% confidence
+interval **[0.72, 3.96]**. These are held-out maps against the existing opponent pool.
+Classic Siege regressed from 57.51% to 53.86% wins; broad improvement is not universal.
+
+The exact evaluated bundle was uploaded as **richard-generals-h100-360m:v1**,
+policy version `edc335f6-bb76-4c80-96ac-94d0f3775099`.
+Hosted image digest:
+`sha256:df26a338d5360a0060e169804c91dff722669f336b053f4ac765e0e1545ac923`.
+Eight hosted smoke episodes completed: **2W/2L against Daveey v7** and
+**2W/2L against the incumbent**, balanced seats. Replay audit checked **10,660 actions**:
+zero illegal moves, timeouts or forfeits. This small panel verifies runtime;
+it does not establish winning strength. Hosted smoke cost: **$0.106342**.
+
+Submission `sub_e0f35bcb-880a-4570-8f43-0c4cfa382e97` targets Classic 1v1
+as **richard**, with automatic champion promotion after qualification.
+The user's relh entry is unchanged. Placement is verified: membership
+`lpm_2fb3c6c0-92c3-42dc-8df7-68779bd9bf40` is competing, active and champion.
+The eight episodes above are private hosted smoke matches, not scheduled league rounds.
+
+The restored host's retry stopped at 362,807,296 steps when the runtime
+throughput guard measured 24,946 steps/second. Its cause remains unqualified;
+that attempt is not the selected checkpoint. The earlier host sustained about
+34,000 steps/second with one native opponent worker.
+
+Evidence is retained at `/Users/relh/Code/run-artifacts/generals-h100-20261006/`.
+The compact hosted results and replay audit are checked in beside this document.
+Focused monitor, execution, codec and hosted-policy validation: **23 passed**.
+Full CI still has 11 pre-existing failures involving missing `metta_training`
+and obsolete Slurm-container test calls; this branch does not fix those failures.
+
+## Historical October 6 state
+
+The following entries record the preceding experiments, not active jobs or
+current submission instructions. The user subsequently requested publication
+of the best retained checkpoint and a pivot to GotA.
+
 Updated **2026-10-06**. **The winning-policy objective remains unmet.**
 Training and serving are qualified; the matched warm candidate's broad strength
 is unknown. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
