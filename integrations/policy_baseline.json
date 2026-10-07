@@ -172,10 +172,20 @@
     "castle_goal_states": 57,
     "visible_threat_states": 133,
     "castle_threat_overlap": 0,
-    "potential_reinforcement_states": 6,
-    "potential_reinforcement_games": 4,
+    "original_screen_candidate_states": 6,
+    "original_screen_candidate_games": 4,
+    "conservative_accounting_screen_candidate_states": 4,
+    "reinforcement_accounting_check_sha256": "67abc5ecdd3848a3f1222caefe1b20310c339755607073ed888fb156ebfa3fc0",
+    "strict_early_interception_states": 1,
+    "strict_early_interception_games": 1,
+    "interception_screen_sha256": "169dca5af07f63dc9e2ce489473766526a408f8a79fbe1fbaaa0c9b56f99d7db",
     "canonical_public_views_verified": 133,
-    "scope": "Static public defense feasibility and frozen logit attribution; not proved rescue or strength improvement"
+    "scope": "Original reinforcement screen double-counted evacuated defenders. Corrected conservative static screens and frozen logit attribution do not prove rescue, impossibility of other defenses, or strength improvement."
+  },
+  "exploration_history_review": {
+    "path": "integrations/softmax/local-output/exploration-history-20261007/receipt.json",
+    "sha256": "50feb5781ef62f10da23fe9f24b1154a17e054c45a079519ddd02aae298828c9",
+    "decision": "Completed global temperature2 and log-gap4 GPU trials did not improve the selected source; do not repeat unchanged. Nonroute-only exploration remains untested, not recommended by this review."
   },
   "classic_siege_pressure_rejection": {
     "job": "job-m9ina",

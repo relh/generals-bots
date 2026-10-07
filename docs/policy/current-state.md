@@ -208,9 +208,14 @@ more global source discrimination is the next missing capability.
 The final 50 public states of 23 verified Daveey losses do **not** support
 castle priority as the immediate failure: 57 castle-goal states and 133
 visible nearby threat states had zero overlap. A static public path/army
-screen found six potentially timely capital reinforcements in four games;
-all six actual moves increased distance from the general. These are possible
-defenses, not proven rescues under simultaneous opponent actions.
+screen originally flagged six capital reinforcements in four games;
+all six actual moves increased distance from the general. That screen
+double-counted defenders evacuated from the enemy's path. Correcting the
+army accounting leaves four candidates; a stricter interception screen
+requiring earlier arrival and safe intermediate timing retains one of 133
+threat states, in one game. These conservative screens omit helpful merges,
+growth and alternative paths: rejection does not prove defense impossible,
+and a surviving candidate does not prove rescue against an opponent response.
 
 The route hint also has a direct learned action shortcut, worth roughly
 12.73–14.44 logits at the selected temperature. With network inputs fixed,

@@ -16,6 +16,10 @@ artifact identities. Git history retains superseded attempts.
    Product changes also failed development gates. Revisit a rejected approach
    only with a new mechanism and preregistered comparison. The existing dense
    global readout already distinguishes source sites.
+   Global temperature2 and log-gap4 exploration also failed completed GPU
+   trials. Audit earlier force assembly and threat response before choosing
+   another intervention: the original six reinforcement examples included
+   double-counted defenders, and stricter static timing retains only one.
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its
    exact GPU training setup before a long run.
