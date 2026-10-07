@@ -4,7 +4,8 @@ Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
 job `35892`. As of **2026-10-07 16:39 UTC**, row-rotation trial `job-zsz35` is **failed**:
 its throughput gate stopped qualification at 29,811 SPS. No GPU job remains
-active. Hardware telemetry and CPU-worker profiling are being prepared.
+active. Hardware telemetry and CPU-worker profiling are implemented; the sealed retry
+is approved for submission after a fresh capacity and price check.
 The completed first-contact diagnostic did not pass its improvement gate.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -96,8 +97,8 @@ zero application restarts. A detached guard conservatively caps aggregate
 runtime across preemptions at 75 minutes from a pre-allocation observation
 (or submission when no such observation exists). Its PID and observed state
 are recorded in the launch receipts. The validated maximum runtime quote was
-**$3.7125**, excluding any separate build fees. GPU coverage, throughput and
-strength are pending; there is no promotion or new qualification claim.
+**$3.7125**, excluding any separate build fees. This attempt subsequently failed the throughput gate described below; there
+was no promotion or new qualification claim.
 
 The image build completed and worker download began at 16:20:19 UTC. The external
 guard now freezes its bound on `starting` as well as `running`, so startup cannot
@@ -121,8 +122,8 @@ audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
 forced stop left no complete action-mask audit. Billing was **761 seconds,
 $0.627**. The guard observed termination and exited.
 
-The next bounded qualification will retain the 30K gate and learning settings,
-record hardware capacity and clocks, and measure native CPU-worker choices on
+The sealed retry (`ba8461e`) retains the 30K gate and learning settings,
+records hardware capacity and clocks, and measures native CPU-worker choices on
 fixed public inputs before selecting a worker count. Exact action/memory
 agreement is required; no learning or strength claim comes from that benchmark.
 
