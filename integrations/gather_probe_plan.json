@@ -8,8 +8,8 @@
     "baseline"
   ],
   "baseline_commit": "c1cae5f10d3f1e15abcfc0cd2d3910cd74f06d27",
-  "gather_commit": "f69435bcc60f236aed68e2ed8d21803076a5a060",
-  "input_manifest_sha256": "8e1b1a7ccf2f0b0057331c2cd73578e990d71d781d0d70856436b5cf2b1511a0",
+  "gather_commit": "31950251f439c4b42af54345a021d8d71f981267",
+  "input_manifest_sha256": "19c06e08b3e33c0c4355a85c7acccebad46ee1d41e85304de456f33f488f790c",
   "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
   "purpose": "Same-GPU bounded diagnostic only; all arms use fresh optimizer and exact selected source. Qualification is a separate 4Mi experiment.",
   "per_run_steps": 2097152,
