@@ -1,120 +1,35 @@
 """Finite stateless qualification with retained artifacts and no continuation."""
-
-import hashlib, json, os, signal, subprocess, sys, tarfile, time, resource
-
-resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+import os
 from pathlib import Path
-
-INPUT = Path("/work/input")
-RESULTS = Path("/work/results/generals")
-OUTPUT = Path(os.environ.get("GMN_OUTPUT_DIR", "/output"))
-OUTPUT.mkdir(parents=True, exist_ok=True)
-RESULTS.parent.mkdir(parents=True, exist_ok=True)
+import sys
+from integrations.bounded_policy_entrypoint import run
+from integrations.row_rotation_trial import digest, read
 from integrations.stateless_qualification_run import PLAN
 
-EXECUTION_SECONDS = 60 * PLAN["bounds"]["internal_minutes"]
-if EXECUTION_SECONDS >= 60 * PLAN["bounds"]["provider_minutes"]:
-    raise ValueError("Execution limit must reserve time for artifact collection")
-START = time.monotonic()
-child = None
-complete = False
+
+def completion(results):
+    qualification = read(results / 'qualified.json')
+    if qualification['qualified'] is not True:
+        raise ValueError('Qualification did not pass')
+    return dict(qualified=True, continuation_authorized=False,
+                qualification_sha256=digest(results / 'qualified.json'))
 
 
-def stop(signum, frame):
-    raise InterruptedError(f"Experiment interrupted by signal {signum}")
-
-
-signal.signal(signal.SIGTERM, stop)
-signal.signal(signal.SIGINT, stop)
-try:
-    for phase in ("prepare", "smoke", "build", "qualify"):
-        remaining = EXECUTION_SECONDS - (time.monotonic() - START)
-        if remaining <= 0:
-            raise TimeoutError("Experiment reached its preregistered execution limit")
-        print("EXPERIMENT_PHASE " + json.dumps(dict(phase=phase, event="start")), flush=True)
+def main():
+    seconds = 60 * PLAN['bounds']['internal_minutes']
+    if seconds >= 60 * PLAN['bounds']['provider_minutes']:
+        raise ValueError('Execution limit must reserve time for artifact collection')
+    results = Path('/work/results/generals')
+    commands = []
+    for phase in ('prepare', 'smoke', 'build', 'qualify'):
         env = dict(os.environ)
-        if phase == "prepare":
-            env["JAX_PLATFORMS"] = "cpu"
-        child = subprocess.Popen(
-            [
-                sys.executable,
-                "-u",
-                "-m",
-                "integrations.stateless_qualification_run",
-                phase,
-                "--input",
-                str(INPUT),
-                "--output",
-                str(RESULTS),
-            ],
-            env=env,
-            start_new_session=True,
-        )
-        try:
-            code = child.wait(timeout=remaining)
-        except BaseException:
-            try:
-                os.killpg(child.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            try:
-                child.wait(timeout=15)
-            except subprocess.TimeoutExpired:
-                try:
-                    os.killpg(child.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                child.wait()
-            raise
-        finally:
-            child = None
-        if code:
-            raise RuntimeError(f"Experiment phase {phase} failed, exit {code}")
-        print(
-            "EXPERIMENT_PHASE " + json.dumps(dict(phase=phase, event="complete", elapsed=time.monotonic() - START)),
-            flush=True,
-        )
-    complete = True
-except BaseException as exc:
-    (OUTPUT / "FAILED.json").write_text(json.dumps(dict(error=str(exc), elapsed=time.monotonic() - START)) + "\n")
-    raise
-finally:
-    retained = []
-    if RESULTS.exists():
-        for p in sorted(RESULTS.rglob("*")):
-            if not p.is_file() or p.is_symlink():
-                continue
-            rel = p.relative_to(RESULTS)
-            # Source is reconstructible from sealed input plus pinned Puffer/framework.
-            # Preserve actual generated optimizer source/config and native binary.
-            parts = rel.parts
-            if "build" in parts and "source" in parts:
-                tail = Path(*parts[parts.index("source") + 1 :])
-                if not (tail.parts[0] == "config" or tail.parts[0] == "src" and p.suffix in (".cu", ".cuh", ".h")):
-                    continue
-            retained.append((p, rel))
-    receipt = dict(
-        schema="generals-stateless-qualification-result-v1",
-        complete=complete,
-        elapsed_seconds=time.monotonic() - START,
-        files={str(rel): hashlib.sha256(p.read_bytes()).hexdigest() for p, rel in retained},
-    )
-    (OUTPUT / "collection.json").write_text(json.dumps(receipt, indent=2) + "\n")
-    with tarfile.open(OUTPUT / "results.tar.gz", "w:gz") as archive:
-        for p, rel in retained:
-            archive.add(p, arcname="generals/" + str(rel), recursive=False)
-    if complete:
-        qualification = json.loads((RESULTS / "qualified.json").read_text())
-        (OUTPUT / "COMPLETED.json").write_text(
-            json.dumps(
-                dict(
-                    schema="generals-stateless-qualification-completed-v1",
-                    qualified=qualification["qualified"],
-                    continuation_authorized=False,
-                    results_sha256=hashlib.sha256((OUTPUT / "results.tar.gz").read_bytes()).hexdigest(),
-                    qualification_sha256=hashlib.sha256((RESULTS / "qualified.json").read_bytes()).hexdigest(),
-                    plan_sha256=hashlib.sha256((RESULTS / "plan.json").read_bytes()).hexdigest(),
-                )
-            )
-            + "\n"
-        )
+        if phase == 'prepare':
+            env['JAX_PLATFORMS'] = 'cpu'
+        commands.append(([sys.executable, '-u', '-m', 'integrations.stateless_qualification_run',
+                          phase, '--input', '/work/input', '--output', str(results)], env))
+    run(commands, results, Path(os.environ.get('GMN_OUTPUT_DIR', '/output')), seconds,
+        kind='stateless-qualification', completion=completion)
+
+
+if __name__ == '__main__':
+    main()

@@ -8,7 +8,8 @@
     "qualification/qualified.json": null,
     "qualification/candidate/qualification/asset/asset.json": null,
     "qualification/candidate/qualification/asset/policy.bin": null,
-    "qualification/candidate/qualification/asset/policy.bin.learner": null
+    "qualification/candidate/qualification/asset/policy.bin.learner": null,
+    "qualification-context-seal.json": null
   },
   "starting_run_steps": 4194304,
   "starting_epoch": 8,

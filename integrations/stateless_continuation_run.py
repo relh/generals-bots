@@ -2,13 +2,18 @@
 import argparse
 import re
 import shutil
-import signal
 from pathlib import Path
 
 from integrations import row_rotation_trial as trial_module
 from integrations.row_rotation_trial import Trial, digest, read, write
 
 PLAN_PATH = Path(__file__).with_name('stateless_continuation_plan.json')
+REQUIRED_BINDINGS = {
+    'qualification-audit.json', 'qualification-collection.json', 'qualification-context-seal.json',
+    'qualification/qualified.json', 'qualification/candidate/qualification/asset/asset.json',
+    'qualification/candidate/qualification/asset/policy.bin',
+    'qualification/candidate/qualification/asset/policy.bin.learner',
+}
 CHECKPOINT = 'run/checkpoints/metta_generals/run/0000000004194304.bin'
 
 
@@ -18,6 +23,8 @@ def bound_plan(inputs):
             or not isinstance(plan['qualification_job_id'], str)
             or not re.fullmatch(r'job-[a-z0-9]+', plan['qualification_job_id'])):
         raise ValueError('Continuation is pending a reviewed qualifying terminal audit')
+    if set(plan['bindings']) != REQUIRED_BINDINGS:
+        raise ValueError('Qualification bindings differ from the required set')
     for name, expected in plan['bindings'].items():
         if not isinstance(expected, str) or not re.fullmatch('[a-f0-9]{64}', expected):
             raise ValueError('Unbound qualification input: ' + name)
@@ -30,7 +37,51 @@ def bound_plan(inputs):
     if tuple(plan[k] for k in ('starting_run_steps', 'starting_epoch', 'ending_run_steps',
                               'ending_epoch', 'incremental_steps')) != (4194304, 8, 33554432, 64, 29360128):
         raise ValueError('Fixed cumulative clock changed')
+    if plan['runtime_bound'] != dict(provider_minutes=75, execution_minutes=73,
+                                     aggregate_minutes_from_first_allocation=75, max_restarts=0):
+        raise ValueError('Continuation bounds must reserve two minutes for collection')
     return plan
+
+
+def execution_binding(inputs):
+    """Qualification covers the same actor, learner, compiler and native inputs."""
+    seal = read(inputs / 'qualification-context-seal.json')
+    if seal['schema'] != 'generals-stateless-qualification-context-v1':
+        raise ValueError('Qualification context seal schema differs')
+    import importlib.util
+    framework = Path(importlib.util.find_spec('metta_training.native_build').origin).parents[1]
+    coordinator_changes = {'input/source/integrations/stateless_qualification_entrypoint.py'}
+    files = seal['files']
+    selected = {}
+    for name, expected in files.items():
+        path = Path(name)
+        if name in coordinator_changes:
+            continue
+        if (name.startswith(('framework-source/', 'input/puffer.git/'))
+                or name.startswith(('input/source/generals/', 'input/source/integrations/'))
+                and (path.suffix in ('.py', '.cpp', '.cu', '.cuh', '.h')
+                     or path.name in ('spatial_context_muon_gather.json', 'spatial_context_muon_radius2_gather.json'))):
+            actual = framework / path.relative_to('framework-source') if name.startswith('framework-source/') else inputs.parent / path
+            if path.is_absolute() or '..' in path.parts or digest(actual) != expected:
+                raise ValueError('Qualified execution input changed: ' + name)
+            selected[name] = expected
+    required = ('input/source/integrations/direct_spatial_optimization.py',
+                'input/source/integrations/puffer_coworld_frozen_transfer.py',
+                'input/source/integrations/generals_fabric.py',
+                'framework-source/metta_training/native_build.py')
+    if not all(name in selected for name in required):
+        raise ValueError('Qualified execution seal is incomplete')
+    allowed_new = {'stateless_continuation_run.py', 'stateless_continuation_entrypoint.py',
+                   'bounded_policy_entrypoint.py', 'stateless_qualification_entrypoint.py'}
+    for root in (framework, inputs / 'source/generals', inputs / 'source/integrations'):
+        for path in root.rglob('*'):
+            if path.suffix in ('.py', '.cpp', '.cu', '.cuh', '.h'):
+                name = ('framework-source/' + str(path.relative_to(framework)) if root == framework
+                        else str(path.relative_to(inputs.parent)))
+                if name not in selected and not (path.parent == inputs / 'source/integrations' and path.name in allowed_new):
+                    raise ValueError('Unqualified execution module added: ' + name)
+    return dict(qualification_source_revision=seal['source_revision'],
+                qualification_context_sha256=digest(inputs / 'qualification-context-seal.json'), files=selected)
 
 
 def clock(path, words, steps, epoch):
@@ -46,6 +97,7 @@ def prepare(inputs, output):
     plan = bound_plan(inputs)
     if output.exists():
         raise ValueError('Continuation requires a fresh output directory')
+    runtime = execution_binding(inputs)
     audit = read(inputs / 'qualification-audit.json')
     collection = read(inputs / 'qualification-collection.json')
     retained = inputs / 'qualification'
@@ -94,6 +146,7 @@ def prepare(inputs, output):
     shutil.copytree(q, output / 'candidate/qualification')
     write(output / 'candidate/build-config.json', read(retained / 'candidate/build-config.json'))
     write(output / 'plan.json', plan)
+    write(output / 'execution-binding.json', runtime)
     marker = {p: digest(q / p) for p in ('training-audit.json', 'asset/asset.json', 'serving-parity.json')}
     write(output / 'qualified.json', {'candidate': marker})
     config['total_timesteps'] = 33554432
@@ -121,11 +174,6 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     plan = bound_plan(args.input)
-    # One process bounds build, continuation and all three evaluation panels.
-    def expired(*_):
-        raise TimeoutError('Continuation execution budget exhausted')
-    signal.signal(signal.SIGALRM, expired)
-    signal.alarm(plan['runtime_bound']['execution_minutes'] * 60)
     from integrations.cuda_runtime_binding import configure
     configure()
     prepare(args.input.resolve(), args.output.resolve())
