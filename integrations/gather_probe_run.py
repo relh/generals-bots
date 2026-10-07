@@ -159,12 +159,16 @@ def main():
                     header_sha256=built/'source/src/metta_rollout_memory.cuh',
                     rollout_memory_receipt_sha256=built/'rollout-memory.json',
                     generated_pufferl_sha256=built/'source/src/pufferl.cu',
-                    audit_module_sha256=inputs/'sources/gather/integrations/audit_minibatch_gather.py')
+                    audit_module_sha256=inputs/'sources/gather/integrations/audit_minibatch_gather.py',
+                    direct_spatial_source_sha256=inputs/'sources/gather/integrations/direct_spatial_optimization.py')
     if any(parity.get(key) != digest(path) for key, path in bindings.items()):
         raise ValueError('GPU parity actual build bindings differ')
     if (parity.get('all_64_blocks_bitwise') is not True or parity.get('scratch_reuse_passes') != 2
             or any(parity.get('model', {}).get(key) is not True
-                   for key in ('probabilities_bitwise', 'ppo_loss_bitwise', 'parameter_gradient_bitwise'))):
+                   for key in ('probabilities_bitwise', 'ppo_loss_bitwise', 'backward_inputs_bitwise', 'gradients_finite'))
+            or parity.get('model', {}).get('gradient_parameter_words') != 578860
+            or parity.get('model', {}).get('teacher_ppo_coefficient') != 1.0
+            or parity.get('model', {}).get('gradient_api') != 'NativeFabricPolicy.backward_device_arrays'):
         raise ValueError('Incomplete GPU contents or gradient parity')
     reports = []
     for index, arm in enumerate(ORDER):

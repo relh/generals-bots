@@ -64,7 +64,7 @@ int main(int argc,char** argv){
 '''
 
 
-def model_parity(directory, build):
+def model_parity(directory, build, diagnostic_path):
     import os
     import numpy as np
     # Use the same acting transform configuration as the qualified native trainer.
@@ -98,11 +98,11 @@ def model_parity(directory, build):
         return jax.device_put(obs, devices[0]), jax.device_put(mask, devices[0])
     observations, masks = load('reference')
     gathered, gathered_masks = load('gather')
-    return dict(**ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks),
+    return dict(**ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks, diagnostic_path=diagnostic_path),
                 policy_sha256=metadata['policy_sha256'], abi_sha256=metadata['abi_sha256'])
 
 
-def ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks):
+def ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks, *, diagnostic_path=None):
     """Exercise the native forward tape and production PPO backward API."""
     import jax
     import jax.numpy as jnp
@@ -128,16 +128,69 @@ def ppo_parity(policy, parameters, observations, masks, gathered, gathered_masks
     with jax.default_matmul_precision('highest'):
         (loss_a, probabilities_a), cotangents_a = operation(initial, masks)
         (loss_b, probabilities_b), cotangents_b = operation(candidate, gathered_masks)
-        gradient_a = policy.backward_device_arrays(tape_a, cotangents_a[...,:3529], cotangents_a[...,3529])
-        gradient_b = policy.backward_device_arrays(tape_b, cotangents_b[...,:3529], cotangents_b[...,3529])
-    for label,a,b in [('loss',loss_a,loss_b),('probabilities',probabilities_a,probabilities_b),('parameter_gradient',gradient_a,gradient_b)]:
-        a,b=np.asarray(a),np.asarray(b)
-        if not np.isfinite(a).all() or not np.array_equal(a.view(np.uint32),b.view(np.uint32)):
-            raise ValueError('Gather changed spatial PPO '+label)
-    if not np.any(np.asarray(gradient_a)):
-        raise ValueError('Degenerate zero-gradient admission')
+    def compare(a, b):
+        a, b = np.asarray(a), np.asarray(b)
+        if a.shape != b.shape or a.dtype != b.dtype:
+            raise ValueError('Admission tensor shape or dtype differs')
+        difference = a.astype(np.float64) - b.astype(np.float64)
+        return dict(words=int(a.size), mismatching_words=int(np.count_nonzero(np.any(
+                        np.frombuffer(a.tobytes(),np.uint8).reshape(a.size,a.dtype.itemsize) !=
+                        np.frombuffer(b.tobytes(),np.uint8).reshape(b.size,b.dtype.itemsize),axis=1))),
+                    nonfinite_left=int(np.count_nonzero(~np.isfinite(a))), nonfinite_right=int(np.count_nonzero(~np.isfinite(b))),
+                    max_abs=float(np.max(np.abs(difference))) if np.isfinite(difference).all() else None,
+                    l2=float(np.linalg.norm(difference)) if np.isfinite(difference).all() else None,
+                    left_l2=float(np.linalg.norm(a.astype(np.float64))) if np.isfinite(a).all() else None)
+    coefficient=float(policy.teacher_phase.ppo_coefficient)
+    if coefficient != 1.0 or policy.teacher is not None:
+        raise ValueError('Selected source PPO coefficient differs')
+    diagnostics = dict(schema='generals-gather-gradient-diagnostics-v1', backend=parameters.device.platform,
+                       parameters=compare(tape_a.parameters,tape_b.parameters), inputs=compare(tape_a.observations,tape_b.observations),
+                       masks=compare(masks,gathered_masks), raw_predictions=compare(tape_a.predictions,tape_b.predictions),
+                       predictions=compare(initial,candidate), loss=compare(loss_a,loss_b),
+                       probabilities=compare(probabilities_a,probabilities_b), cotangents=compare(cotangents_a,cotangents_b),
+                       action_cotangents=compare(cotangents_a[...,:3529],cotangents_b[...,:3529]),
+                       value_cotangents=compare(cotangents_a[...,3529],cotangents_b[...,3529]),
+                       teacher_ppo_coefficient=coefficient, gradients={}, comparisons={},
+                       scope='Exact backward inputs; repeated GPU gradients may differ in floating-point reduction order')
+    gradients = {}
+    def retain():
+        if diagnostic_path is not None:
+            diagnostic_path.parent.mkdir(parents=True,exist_ok=True)
+            diagnostic_path.write_text(json.dumps(diagnostics,indent=2,allow_nan=False)+'\n')
+    retain()
+    try:
+        for label in ('parameters','inputs','masks','raw_predictions','predictions','loss','probabilities','cotangents',
+                      'action_cotangents','value_cotangents'):
+            row=diagnostics[label]
+            if row['nonfinite_left'] or row['nonfinite_right'] or row['mismatching_words']:
+                raise ValueError('Gather changed spatial PPO '+label)
+        # Interleave same-buffer repeats with gather. Synchronize and retain every
+        # result so equal-input GPU nondeterminism can be distinguished from gathering.
+        for label,tape,cotangents in [('reference-1',tape_a,cotangents_a),('gather-1',tape_b,cotangents_b),
+                                      ('reference-2',tape_a,cotangents_a),('gather-2',tape_b,cotangents_b),
+                                      ('reference-3',tape_a,cotangents_a),('gather-3',tape_b,cotangents_b)]:
+            with jax.default_matmul_precision('highest'):
+                gradient = policy.backward_device_arrays(tape,cotangents[...,:3529],cotangents[...,3529])
+            gradients[label] = np.asarray(gradient).copy()
+            diagnostics['gradients'][label] = dict(sha256=hashlib.sha256(gradients[label].tobytes()).hexdigest())
+            if diagnostic_path is not None:
+                path=diagnostic_path.with_name(diagnostic_path.stem+'-'+label+'.npy')
+                np.save(path,gradients[label],allow_pickle=False)
+                diagnostics['gradients'][label]['file']=path.name
+            for before in list(gradients)[:-1]:
+                diagnostics['comparisons'][before+' vs '+label]=compare(gradients[before],gradients[label])
+            retain()
+            if policy.teacher_phase.ppo_coefficient != coefficient:
+                raise ValueError('PPO coefficient changed during admission')
+            if gradients[label].shape != (578860,) or not np.isfinite(gradients[label]).all() or not np.any(gradients[label]):
+                raise ValueError('Invalid gradient shape, nonfinite values or zero gradient')
+    except BaseException as exc:
+        diagnostics['error']=type(exc).__name__+': '+str(exc)
+        retain()
+        raise
     return dict(states=8, parameter_words=int(parameters.size), mixed_terminals=True,
-                probabilities_bitwise=True, ppo_loss_bitwise=True, parameter_gradient_bitwise=True,
+                probabilities_bitwise=True, ppo_loss_bitwise=True, backward_inputs_bitwise=True,
+                gradients_finite=True, gradient_parameter_words=578860, teacher_ppo_coefficient=coefficient,
                 gradient_api='NativeFabricPolicy.backward_device_arrays')
 
 
@@ -168,11 +221,18 @@ def main():
         (directory/'admission.cu').write_text('#include <initializer_list>\n'+CUDA)
         subprocess.run(['nvcc','-std=c++17','-O2','-I',str(header.parent),str(directory/'admission.cu'),'-o',str(directory/'admission')],check=True,timeout=120)
         subprocess.run([str(directory/'admission'),str(directory)],check=True,timeout=180)
-        model=model_parity(directory,build)
+        kernel=dict(schema='generals-gather-kernel-diagnostics-v1',passed=True,backend='gpu',
+                    build_sha256=digest(args.build/'build.json'),binary_sha256=build['binary_sha256'],
+                    header_sha256=digest(header),audit_module_sha256=digest(__file__),
+                    fixture_sha256=fixtures,fixture_labels=labels[:8],all_64_blocks_bitwise=True,scratch_reuse_passes=2,
+                    model_admission=False)
+        args.output.with_name('gather-kernel-diagnostics.json').write_text(json.dumps(kernel,indent=2)+'\n')
+        model=model_parity(directory,build,args.output.with_name('gather-gradient-diagnostics.json'))
     report=dict(schema='generals-minibatch-gather-gpu-admission-v1',passed=True,backend='gpu',
                 build_sha256=digest(args.build/'build.json'),binary_sha256=build['binary_sha256'],
                 header_sha256=digest(header),rollout_memory_receipt_sha256=digest(args.build/'rollout-memory.json'),
                 generated_pufferl_sha256=digest(args.build/'source/src/pufferl.cu'),audit_module_sha256=digest(__file__),
+                direct_spatial_source_sha256=digest(Path(__file__).with_name('direct_spatial_optimization.py')),
                 all_64_blocks_bitwise=True,scratch_reuse_passes=2,geometry=dict(agents=4096,horizon=128,minibatch_rows=64,features=[7056,3529]),
                 model=model,fixture_sha256=fixtures,fixture_labels=labels[:8],scope='Actual compiled gather header, exact full-size float32 observations/binary masks; spatial PPO parity on eight authenticated public replay states. No claim of end-to-end training equivalence.')
     args.output.write_text(json.dumps(report,indent=2)+'\n')
