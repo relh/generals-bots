@@ -96,8 +96,12 @@ settings; dashboard VRAM was 66.6 GiB. Continuation reports zero illegal
 actions, nonfinite or clipped rewards, and one zero-reward terminal event.
 Control's final checkpoint `f4b185ef` was exported and passed GPU/native versus
 NumPy serving parity on **46/46 states**, with maximum probability difference
-0.00000268. By 10:58:56 UTC the candidate's 512-game initializer self-match
-had reached turn 201; candidate continuation training was not yet observed.
+0.00000268. By 11:05:45 UTC the candidate's initializer
+self-match passed: **273W/233L/6D in 512 games**, across 328 unique initial
+states, with the exact `37e23e20` checkpoint and intended sampler for both
+actors. Native continuation startup has begun with all 13 opponents balanced
+by seat; no new steps are observed yet. First-epoch startup is bounded at
+420 seconds and continuation at 1,800 seconds.
 These are runtime console results. Checkpoint artifacts, learner-byte checks,
 training audits and GPU CSV await terminal collection and independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were

@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T10:58:56.948839Z",
-    "last_observed_phase": "control final trained parity passed; candidate initializer self-play at turn 201; candidate continuation not observed",
+    "last_observed_utc": "2026-10-07T11:05:45.590175Z",
+    "last_observed_phase": "candidate initializer gate passed; native continuation startup, no new steps observed",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -659,6 +659,21 @@
       "max_action_probability_difference": 2.682209014892578e-06,
       "parity_log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T105856948839Z-sanitized.log",
       "parity_log_sha256": "de5ae91c1e5f170ba67f33338d3dc15edc43f90d2f674700cf3d17169e942018"
+    },
+    "candidate_continuation_console": {
+      "path": "integrations/softmax/local-output/monotone-force-retry-20261007/candidate-continuation-startup-console-attempt3.json",
+      "sha256": "01f7ad3d23cceeacacebc064d95602452144dcc156723cdd13e18f73ce212398",
+      "attempt": 3,
+      "initializer_policy_sha256": "37e23e203c2abffbd6a9347a23d840b09a61f33f54896c9f99a8d7e78f0aa085",
+      "initializer_sampling_games": 512,
+      "initializer_wld": [
+        273,
+        233,
+        6
+      ],
+      "unique_initial_states": 328,
+      "new_training_steps_observed": false,
+      "collected_audit_verified": false
     }
   },
   "route_shortcut_development": {
