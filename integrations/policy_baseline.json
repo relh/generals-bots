@@ -288,7 +288,39 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [],
+  "active_experiments": [
+    {
+      "kind": "logical_product_matched_control_h100",
+      "branch": "codex/product-logical-pair",
+      "revision": "7ce0fc0639231b113629608d1a008f3e9cd26fd5",
+      "job": "job-9sump",
+      "last_observed_state": "submitted",
+      "context": "ctx-3bbefa89",
+      "context_archive_sha256": "2b0ace146b3c2a274094025b6ab0fbfffebde69fda7cad91898dea804c33311f",
+      "context_seal_sha256": "9c44a487fa2bb1b3d1ad9c426a125ab58f71630d3844bec72f4c375f4f0cb5ff",
+      "input_seal_sha256": "7fe6839ba6835a6af1f8b14c4e51835efc5db1631af84e895bb9ed82b1a18cc8",
+      "offline_probe_qualification_sha256": "b3652ee785a961c27f3ab9b3790d307ef9e81cd11c60e7ac865452a3d92e00ab",
+      "gpu_model": "H100",
+      "gpu_count": 1,
+      "max_duration_minutes": 103,
+      "max_cost_usd": 5.0985,
+      "max_restarts": 0,
+      "training_steps_per_arm": 16777216,
+      "initialization": "same zero-Q source, fresh optimizer",
+      "control": "freeze 64 Q gradient words before global clipping",
+      "treatment": "train Q/U/V",
+      "required_checks": [
+        "trained serving parity for both arms",
+        "control zero-Q invariance and treatment activation",
+        "paired development strength comparison"
+      ],
+      "development_games_per_arm": 4096,
+      "development_map_seed": 10445701,
+      "development_sample_seed": 10445703,
+      "development_bootstrap_seed": 10445711,
+      "has_strength_result": false
+    }
+  ],
   "repaired_product_probe_recovered_activation": {
     "kind": "repaired_product_final_steady_h100_probe",
     "branch": "codex/product-logical-migration",

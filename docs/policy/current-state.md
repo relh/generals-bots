@@ -170,9 +170,18 @@ This recovers the activation evidence without changing the provider outcome.
 The terminal artifact SHA-256 is
 `ee3b3caec3943ad630421b5e471f4cbc3e86fbe8eb044b986e4513c232b218af`;
 terminal and recovery audit hashes are in the manifest. The probe billed
-$1.2771. There is no policy-strength result or active probe; the selected source
-and champion remain unchanged. The next experiment is the matched control
-versus activated Product training comparison.
+$1.2771. There is no policy-strength result; the selected source and champion remain
+unchanged.
+
+Matched H100 job `job-9sump` is submitted from `codex/product-logical-pair`
+at `7ce0fc0`, context `ctx-3bbefa89`, bounded to 103 minutes/$5.0985 with
+zero restarts. Each arm trains 16,777,216 steps from the same zero-Q source
+with a fresh optimizer. Control freezes the 64 Q gradient words before global
+clipping; treatment trains Q/U/V. Both require trained serving parity and
+the corresponding control-invariance or Product-activation check before
+4,096 paired fresh development games per arm (map/sample/bootstrap seeds
+10445701/10445703/10445711). The recovered probe qualification and sealed
+context hashes are recorded in the manifest. Strength remains unmeasured.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
