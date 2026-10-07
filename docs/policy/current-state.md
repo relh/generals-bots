@@ -2,8 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 17:00 UTC**, profiled row-rotation retry
-**`job-5cirw` is building**. Its predecessor stopped at the strict throughput
+job `35892`. As of **2026-10-07 17:08 UTC**, profiled row-rotation retry
+**`job-5cirw` is starting** (worker image download). Its predecessor stopped at the strict throughput
 gate (29,811 SPS); no long continuation or strength evaluation ran.
 The completed first-contact diagnostic did not pass its improvement gate.
 
@@ -104,7 +104,7 @@ audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
 forced stop left no complete action-mask audit. Billing was **761 seconds,
 $0.627**. The guard observed termination and exited.
 
-### Profiled retry: building
+### Profiled retry: worker starting
 
 `job-5cirw` was submitted **2026-10-07 16:59:07 UTC**, source `ba8461e`,
 context `ctx-31be43a7`. It retains the strict 30K gate and learning settings,
@@ -118,7 +118,8 @@ The provider/internal/aggregate limits are 75/73/75 minutes, with zero applicati
 restarts. The validated runtime quote is **$3.7125**, excluding separate build
 fees. Detached guard **PID 84329** is verified live. Its aggregate bound freezes
 on `starting` or `running` from the last pre-allocation observation and never
-advances after preemption. Source, admission, archive and request hashes are in
+advances after preemption. The bound is frozen at **2026-10-07 18:22:54 UTC**
+from the 17:07:54 pre-allocation observation. Source, admission, archive and request hashes are in
 the manifest and launch receipts. GPU qualification and strength remain pending.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub

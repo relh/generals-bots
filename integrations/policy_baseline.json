@@ -1277,7 +1277,7 @@
     }
   },
   "minibatch_rotation_repair": {
-    "status": "Native row coverage verified; first qualification failed at 29,811 SPS. Profiled retry job-5cirw building; no strength gain established.",
+    "status": "Native row coverage verified; first qualification failed at 29,811 SPS. Profiled retry job-5cirw starting; no strength gain established.",
     "implementation_revision": "d945bae29d65b18cfea56a4d283dd4299a40a0f6",
     "admission_path": "integrations/softmax/local-output/minibatch-rotation-admission-20261007/admission.json",
     "admission_sha256": "d10ad1bece0e60c1b84bf96574956ad23f9c965cc7c0135cf82346c2346df9e8",
@@ -1456,7 +1456,7 @@
     }
   },
   "row_rotation_profile_retry": {
-    "status": "building",
+    "status": "starting",
     "source_revision": "ba8461ee66ec94315916d15643cfda5064f6d78f",
     "plan_path": "integrations/row_rotation_plan.json",
     "plan_sha256": "d0540f79771292f783fe17efae7973dc3682cf2a82247e29d1c3188108171c3a",
@@ -1481,8 +1481,10 @@
     "submitted_at": "2026-10-07T16:59:07.118208+00:00",
     "context_id": "ctx-31be43a7",
     "request_sha256": "c8a62ba080fcacf14f667e6f153babb756453c4e74189d6dfcb1c6360b525a0c",
-    "last_observed_at": "2026-10-07T17:01:07.117341+00:00",
+    "last_observed_at": "2026-10-07T17:08:54.979752+00:00",
     "guard_pid": 84329,
-    "quoted_runtime_max_usd": 3.7125
+    "quoted_runtime_max_usd": 3.7125,
+    "aggregate_deadline_utc": "2026-10-07T18:22:54.009234+00:00",
+    "first_allocation_lower_bound_at": "2026-10-07T17:07:54.009234+00:00"
   }
 }
