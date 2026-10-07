@@ -238,7 +238,7 @@ def load_asset(path: Path, *, manifest_sha256: str) -> NativeSpatialAsset:
     validate_fabric(metadata["fabric"])
     validate_sampler(metadata["sampler"])
     provenance = metadata["provenance"]
-    if provenance["operation"] not in ("source_cleanup", "supervised", "reinforcement_learning"):
+    if provenance["operation"] not in ("source_cleanup", "supervised", "reinforcement_learning", "policy_ablation"):
         raise ValueError("Unknown native asset provenance operation")
     ancestors = provenance["ancestors"]
     if not isinstance(ancestors, dict) or not ancestors:
@@ -249,7 +249,7 @@ def load_asset(path: Path, *, manifest_sha256: str) -> NativeSpatialAsset:
         check_digest(value)
     steps = provenance["reinforcement_learning_steps_added"]
     if type(steps) is not int or steps < 0 or (provenance["operation"] != "reinforcement_learning" and steps != 0):
-        raise ValueError("Source cleanup and supervised changes add zero RL steps")
+        raise ValueError("Non-training provenance operations add zero RL steps")
     if provenance["operation"] == "source_cleanup":
         check_digest(provenance["abi_proof_sha256"])
     count = metadata["parameter_count"]
