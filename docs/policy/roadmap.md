@@ -30,6 +30,10 @@ artifact identities. Git history retains superseded attempts.
 3. Confirm a positive paired development result on independent maps, freeze
    the checkpoint and sampler, then run fresh balanced hosted matches against
    the incumbent and Daveey. Promote only after all acceptance gates pass.
+   Conditional preparation is on `codex/monotone-force-confirmation` at
+   `20abb14`: it requires the independently audited successful development
+   result, pins its exact actors and uses fresh seeds 12002101/03/11.
+   No confirmation configuration, context or job exists yet.
 
 ## Winning acceptance
 
