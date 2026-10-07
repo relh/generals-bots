@@ -1668,8 +1668,8 @@
         "job_id": "job-wv4b3",
         "context_id": "ctx-28e3bf5d",
         "submitted_at": "2026-10-07T19:33:29.524859+00:00",
-        "status": "building",
-        "last_observed_at": "2026-10-07T19:33:56.594968+00:00",
+        "status": "building; image pushing",
+        "last_observed_at": "2026-10-07T19:42:35.451855+00:00",
         "archive_sha256": "8f75aac9f0679acda23bfcf5c8125ebae3dc5b8605a9ea9574b818ff3140eeda",
         "files_verified": 624,
         "git_source_files_verified": 251,
@@ -1709,6 +1709,22 @@
       "duplicate_full_rollouts_GiB": 41.3671875,
       "optional_minibatch_gather_saving_GiB": 20.350799560546875,
       "status": "read-only source-derived estimate; no implementation or measured speedup; do not delay qualified strength run solely for this optional change"
+    },
+    "continuation_plan": {
+      "path": "integrations/stateless_continuation_plan.json",
+      "sha256": "211f1188c3874be093da624be0282e57164e80b0a2cd7a68dd5d5fbff0b38a98",
+      "status": "integrated conditional runner; seven qualification bindings pending terminal success; no continuation submitted",
+      "integration_revision": "95d1dea",
+      "coordinator_sha256": "182f8889340679290a470f3cd95aaa1be2ced0a729f175ca1d66df4a3f95b0d8",
+      "entrypoint_sha256": "f90ad0c54e940042eac5d4ffb00a5de118056047b5a771762a7dabe1a4373532",
+      "shared_bounded_entrypoint_sha256": "e9194fc286880cede0c5629abd9162b31f7e1a0adfaf62c7f6e923944041c41b",
+      "incremental_steps": 29360128,
+      "ending_run_steps": 33554432,
+      "fresh_panel_games_per_arm": 4096,
+      "provider_minutes": 75,
+      "internal_minutes": 73,
+      "max_restarts": 0,
+      "validation": "Nine focused tests passed, including failed/timed-out subprocess artifact retention and cleanup races. Pending qualification cannot pass admission."
     }
   },
   "bridge_execution_probe_retry": {

@@ -2,8 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. At **2026-10-07 19:37 UTC**, stateless qualification
-**`job-wv4b3` is building its H100 image**; training has not started. The bridge
+job `35892`. At **2026-10-07 19:42 UTC**, stateless qualification
+**`job-wv4b3` has built its H100 image and is pushing it**; training has not started. The bridge
 diagnostic completed and verified a small output-copy saving, without a
 repeatable overall speedup. The preceding row-rotation qualifications failed
 the throughput gate; no long continuation or fresh strength evaluation ran.
@@ -91,6 +91,15 @@ seeds 14001101/14001103 (bootstrap 14001111). Both paired improvements must
 have positive clustered lower bounds and satisfy the stratum guard before a
 fresh independent confirmation. A historical control on another allocation
 is not an identical floating-point training trajectory.
+
+The conditional continuation coordinator is integrated through **`95d1dea`**.
+It requires the independent successful qualification audit, complete artifact
+hashes, the exact epoch-8 policy and optimizer, and unchanged training execution
+sources. Seven evidence bindings remain deliberately unset until qualification
+finishes. One continuation would add 29,360,128 steps to epoch 64 / 33,554,432
+run steps, then evaluate all three frozen arms. Shared bounded process cleanup
+retains partial artifacts on failure; nine focused checks passed. No continuation
+has been submitted. Its separate limits are 75/73/75 minutes, zero restarts.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
