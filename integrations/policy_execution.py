@@ -70,6 +70,22 @@ def runtime_environment(source, output, sampler):
     return env
 
 
+def training_step_range(config):
+    """Read lifetime progress from the exact authenticated initializer."""
+    starting = 0
+    reference = config.get("initialize") or {}
+    if reference.get("restore_learner"):
+        from integrations.native_spatial_asset import load_asset
+        from integrations.learner_checkpoint import LearnerCheckpoint
+        asset = load_asset(Path(reference["asset"]), manifest_sha256=reference["manifest_sha256"])
+        starting = LearnerCheckpoint.from_bytes(asset.learner, asset.metadata["parameter_count"]).agent_steps
+    ending = config["total_timesteps"]
+    batch = config["overrides"]["vec.total_agents"] * config["overrides"]["train.horizon"]
+    if starting % batch or ending % batch or ending <= starting:
+        raise ValueError("Training budget must advance complete rollout epochs")
+    return starting, ending
+
+
 def execute(module, arguments, *, source, output, sampler, name, seconds, training_config=None,
             startup_seconds=300):
     """Start one process group; preserve logs on every outcome."""
@@ -85,9 +101,8 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
         training = json.loads(Path(training_config).read_text())
         config = training["overrides"]
         steps_per_epoch = config["vec.total_agents"] * config["train.horizon"]
-        env["METTA_AUDIT_TARGET_AGENT_STEPS"] = str(
-            training["total_timesteps"] // steps_per_epoch * steps_per_epoch
-        )
+        starting, ending = training_step_range(training)
+        env["METTA_AUDIT_TARGET_AGENT_STEPS"] = str(ending - starting)
 
     def interrupted(signum, frame):
         raise SystemExit(128 + signum)
@@ -191,15 +206,23 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
         signal.signal(signal.SIGTERM, previous_sigterm)
 
 
-def training_audit(output, config):
+def training_audit(output, config, *, build_config=None):
     from integrations.monitor_coworld_steady_interval import completed_epoch_times, interval_sps
 
     completed = json.loads((output / "run/completed.json").read_text())
     expected = config["total_timesteps"]
     if completed["trained_timesteps"] != expected:
         raise ValueError("Incomplete native training budget")
+    starting, ending = training_step_range(config)
+    reference = config.get("initialize") or {}
+    if reference.get("restore_learner"):
+        from integrations.native_spatial_asset import load_asset
+        asset = load_asset(Path(reference["asset"]), manifest_sha256=reference["manifest_sha256"])
+        if (output / "run/initial-policy.bin.learner").read_bytes() != asset.learner:
+            raise ValueError("Training audit restored learner differs from source")
+    advanced = ending - starting
     text = (output / "run/console.log").read_text()
-    if f"DEVICE_ACTION_MASK_AUDIT actions={expected} illegal=0" not in text:
+    if f"DEVICE_ACTION_MASK_AUDIT actions={advanced} illegal=0" not in text:
         raise ValueError("Complete zero-illegal-action audit is missing")
     rewards = [
         json.loads(line.split("DEVICE_REWARD_AUDIT ", 1)[1])
@@ -208,7 +231,7 @@ def training_audit(output, config):
     ]
     if (
         not rewards
-        or rewards[-1]["agent_steps"] != expected
+        or rewards[-1]["agent_steps"] != advanced
         or any(
             rewards[-1][key]
             for key in ("nonfinite_rewards", "native_clipped_rewards", "native_clipped_terminal_rewards")
@@ -218,7 +241,7 @@ def training_audit(output, config):
     population = json.loads(
         (output / f"run/environments/{config['seed']}/spatial-opponent-population.json").read_text()
     )
-    build = json.loads((output.parent / "build-config.json").read_text())
+    build = json.loads((build_config or output.parent / "build-config.json").read_text())
     pool = build["python_environment"]["options"]
     expected_hashes = [
         hashlib.sha256((Path(path) / "policy.bin").read_bytes()).hexdigest() for path in pool["frozen_bundles"]
@@ -238,7 +261,9 @@ def training_audit(output, config):
     if sps is None or sps < 30_000:
         raise ValueError("Completed run does not qualify 30,000 end-to-end SPS")
     report = {
-        "environment_steps": expected,
+        "environment_steps": advanced,
+        "starting_agent_steps": starting,
+        "ending_agent_steps": expected,
         "environment_count": options["vec.total_agents"],
         "horizon": options["train.horizon"],
         "minibatch": options["train.minibatch_size"],
