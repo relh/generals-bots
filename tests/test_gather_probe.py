@@ -10,7 +10,9 @@ from integrations.gather_probe_entrypoint import completion
 
 class GatherProbeTest(unittest.TestCase):
     def test_pending_plan_cannot_launch(self):
-        with TemporaryDirectory() as directory:
+        pending = json.loads(probe.PLAN.read_text())
+        pending['status'] = 'pending source and input bindings'
+        with TemporaryDirectory() as directory, patch.object(probe, 'read', return_value=pending):
             with self.assertRaisesRegex(ValueError, 'Unsealed'):
                 probe.prepare(Path(directory), Path(directory)/'out')
 
