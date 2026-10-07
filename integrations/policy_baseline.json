@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T10:03:18.916518+00:00",
-    "last_observed_phase": "control qualification launcher initialization",
+    "last_observed_utc": "2026-10-07T10:10:59.546480Z",
+    "last_observed_phase": "control 4 Mi training complete; publishing; trained parity and pair qualification pending",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -526,6 +526,18 @@
       "training_steps_observed": false,
       "log_path": "integrations/softmax/local-output/monotone-force-retry-20261007/job-wgtyc-run-attempt3-20261007T100318916518Z-sanitized.log",
       "scope": "Runtime console observation; final artifact verification pending. Not throughput or strength qualification."
+    },
+    "control_qualification_console": {
+      "path": "integrations/softmax/local-output/monotone-force-retry-20261007/control-qualification-console-attempt3.json",
+      "sha256": "975afb39266fcba3212e21e1e63d45fc879f75e07cf23602e82ee576a5f243f2",
+      "attempt": 3,
+      "completed_steps": 4194304,
+      "steady_sps": 35528.48962627484,
+      "steady_interval_steps": 3145728,
+      "steady_interval_seconds": 88.541,
+      "warmup_epochs": 2,
+      "collected_audit_verified": false,
+      "trained_serving_parity_verified": false
     }
   },
   "route_shortcut_development": {

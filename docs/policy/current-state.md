@@ -68,12 +68,17 @@ for `control/qualification/sampling-gate.json`, while the authentic gate was
 saved at the shared experiment root. The artifact and all 34 retained file
 hashes were independently verified; exact hashes are in the manifest.
 
-`job-wgtyc` was submitted at 2026-10-07 09:26:55 UTC and was **running
-startup checks** as of 10:03:18 UTC, attempt 3. Source GPU parity and sampling checks passed,
-both native builds completed, and the control qualification launcher passed
-the repaired gate handoff. Training is initializing; no completed steps are
-observed yet. The provider preempted the first two attempts; it reports two
-preemptions and zero runtime restarts. No replacement job was submitted.
+`job-wgtyc` completed the control arm's **4,194,304 qualification steps**
+as of 2026-10-07 10:10:59 UTC on attempt 3 and started publishing. One H100,
+4,096 environments, horizon 128, minibatch 8,192 and replay ratio 0.5 achieved
+**35,528.49 steady end-to-end SPS** after two warmup epochs: 3,145,728 steps
+between native uptimes 114.749 and 203.290 seconds (88.541 seconds). All 13
+opponents had balanced seats; console reports zero illegal actions. The final
+dashboard showed 66.9/79 GiB VRAM, 6.1 GiB RAM and 54% GPU utilization (a
+snapshot, not an interval mean). Collected training audits, GPU CSV and trained
+serving parity remain pending. Candidate and pair qualification are unproven.
+The provider preempted the first two attempts; no replacement job was submitted,
+and runtime restarts remain zero.
 
 Repaired source `6b297db`, context `ctx-66b75696`, runs on one H100. The
 provider's **150-minute limit and $7.425 quote apply per attempt**; preemptions
@@ -83,7 +88,7 @@ stop deadline is **2026-10-07 11:56:55 UTC** (150 minutes from submission),
 not an enforced provider-wide cap; no automatic watchdog is installed yet.
 Qualification binds the authentic source gate at each stage; each
 continuation requires fresh 512-game self-play of its exact trained initializer.
-No GPU throughput qualification or strength result is available yet. The
+No completed pair qualification or strength result is available yet. The
 selected policy and champion remain unchanged.
 Control and candidate start the exact selected policy with fresh optimizers;
 each first trains 4,194,304 qualification steps. **Both** must pass ≥30,000
