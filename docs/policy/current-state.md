@@ -88,14 +88,15 @@ zero illegal actions, nonfinite or clipped rewards. Candidate checkpoint
 `37e23e20` then passed GPU serving parity on 46/46 states (maximum probability
 difference 0.00000244), with the exact intended sampler. **Both runtime
 qualification gates passed** by 10:31:47 UTC. Control's trained-initializer
-self-match passed (276W/233L/3D in 512 games). By 10:39:44 UTC its continuation
-advanced from 4,194,304 to **6,291,456 total steps**. After excluding resumed
-warmup epochs 9–10, epochs 10–12 measured **39,218.16 SPS**: 1,048,576 steps
-in 26.737 seconds (uptime 49.007→75.744), with the same H100 and batch settings.
-The dashboard showed 66.6 GiB VRAM and 4.3 GiB RAM; reward counters remain
-clean across 2,097,152 resumed steps. Candidate continuation has not started.
-These are console observations; learner-byte checks, collected training audits
-and GPU CSV still await independent verification. The log monitor now
+self-match passed (276W/233L/3D in 512 games). By 10:51:40 UTC the control completed
+**33,554,432 total steps**, including 29,360,128 continuation steps. Excluding
+resumed warmup epochs 9–10, epochs 10–64 measured **38,261.28 SPS**: 28,311,552
+steps in 739.953 seconds (uptime 49.007→788.960), with the same H100 and batch
+settings; dashboard VRAM was 66.6 GiB. Continuation reports zero illegal
+actions, nonfinite or clipped rewards, and one zero-reward terminal event.
+Control is publishing; final trained parity remains pending. Candidate
+continuation has not started. These are console observations; learner-byte
+checks, collected training audits and GPU CSV await independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were
 recovered completely.
 The provider preempted the first two attempts; no replacement job was submitted,
