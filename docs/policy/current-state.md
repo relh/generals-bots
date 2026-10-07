@@ -3,7 +3,7 @@
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
 job `35892`. As of **2026-10-07 17:59 UTC**, bounded bridge diagnostic
-**`job-6khn8` is running on an H100**. The preceding row-rotation qualifications failed the
+**`job-6khn8` failed before training; no task GPU job remains active**. The preceding row-rotation qualifications failed the
 strict throughput gate; no long continuation or strength evaluation ran.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -139,11 +139,16 @@ slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
 retained 61-second fully allocated interval. These observations do not isolate
 a cause; they provide no support for changing power limits or CPU quota.
 
-### Bridge execution diagnostic: running
+### Bridge execution diagnostic: report-protocol failure
 
 `job-6khn8` was submitted **2026-10-07 17:58:15 UTC**, context `ctx-12ac3324`,
-for one H100. The image build passed; at **18:22:05 UTC** attempt 1 was compiling
-the baseline executable. Training had not started. It compares the original bridge with four output-copy waits
+for one H100. The image and baseline native executable built successfully. Attempt 1
+failed at **18:22:38 UTC**, before training: the compiled CUDA lifetime
+executable exited zero, but its wrapper could not parse stdout as JSON. Raw
+stdout was not retained, so lifetime success and the precise output remain
+unproven. All **118 retained files** were verified; billing was **124 seconds,
+$0.1023**, with no restarts or preemptions. A corrected diagnostic will write
+a dedicated report file and retain compile/run stdout and stderr. It compares the original bridge with four output-copy waits
 consolidated into one, in **A–B–B–A order**. Each fresh run has 2,097,152 steps,
 two warmup epochs and two measured epochs; workers stay fixed at eight.
 All DLPack owners remain alive through the final output wait; input readiness
@@ -159,8 +164,8 @@ exact inputs and receipts are bound in the manifest.
 
 Limits are **45 minutes provider/aggregate**, 43 minutes internal, 480 seconds
 per run, zero application restarts. The validated runtime quote is **$2.2275**.
-Detached guard **PID 77874** is verified live, with aggregate deadline fixed at
-**19:03:05 UTC** from the conservative preallocation observation. These instrumented runs are
+Detached guard **PID 77874** observed terminal failure at **18:22:50 UTC**
+and exited; its unused aggregate deadline was **19:03:05 UTC**. These instrumented runs are
 bounded diagnostics; no continuation or strength evaluation follows, and full
 uninstrumented **≥30,000 SPS** qualification remains required.
 

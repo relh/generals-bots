@@ -1551,7 +1551,7 @@
     }
   },
   "bridge_execution_probe": {
-    "status": "running",
+    "status": "failed",
     "plan_path": "integrations/bridge_profile_plan.json",
     "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
     "baseline_revision": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1563,7 +1563,7 @@
     "job_id": "job-6khn8",
     "context_id": "ctx-12ac3324",
     "submitted_at": "2026-10-07T17:58:15.367097+00:00",
-    "last_observed_at": "2026-10-07T18:22:05.088378+00:00",
+    "last_observed_at": "2026-10-07T18:22:56.568671+00:00",
     "guard_pid": 77874,
     "quoted_runtime_max_usd": 2.2275,
     "source_revisions": {
@@ -1585,10 +1585,20 @@
       "integrations/softmax/local-output/bridge-profile-launch-20261007/validation.json": "386a9bde7c6b6441bfccec4ce4600707d928134e6c790d22f4e62e00307e1ac7",
       "integrations/softmax/local-output/bridge-profile-launch-20261007/aggregate-guard-process.json": "4fe932f024f6ad267f8c9b9d45213d9dfe489424b3da501a7815211ec3865bcd",
       "integrations/softmax/local-output/bridge-profile-launch-20261007/invalidated-ready.json": "6fc2d457c6092053d00d30680ba78e4a22b32b5018214986d6ad5e30787922d7",
-      "integrations/softmax/local-output/bridge-profile-launch-20261007/allocation-deadline.json": "291db59809f835adac4ebe82febaeb6cf6e42600667d70f0338a58ee9a6dfa8a"
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/allocation-deadline.json": "291db59809f835adac4ebe82febaeb6cf6e42600667d70f0338a58ee9a6dfa8a",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/terminal-audit-job-6khn8.json": "cdcb9f613b66b6efe4cafa003e2e85f1926b21c80e4ea39df09edd28721ebdfd",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/results-job-6khn8/terminal.json": "4a105d4e74609d84a26d3214db0ad8b47ca67ca9a4681cacafa9acafad556922",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/results-job-6khn8/inner/bridge/baseline/build-process.log": "0abe36f62427668278c07545a16b6ad2161600393a1b78c9bf153c25f9e862be",
+      "integrations/softmax/local-output/bridge-profile-launch-20261007/results-job-6khn8/inner/bridge/baseline/build/build.log": "9dd160ec81705c773e756d527cc9193da2da0e9706a218aab925b5f168b837bb"
     },
     "aggregate_deadline": "2026-10-07T19:03:05.588716+00:00",
-    "runtime_phase": "baseline native build"
+    "runtime_phase": "lifetime report JSON parse failed after baseline trainer and probe compilation",
+    "finished_at": "2026-10-07T18:22:38.135774+00:00",
+    "files_verified": 118,
+    "billed_seconds": 124,
+    "charged_usd": 0.1023,
+    "training_started": false,
+    "failure": "Lifetime executable exited 0; JSONDecodeError parsing stdout. Raw stdout was not preserved; actual report content and lifetime success are unproven."
   },
   "stateless_execution_work": {
     "status": "isolated implementation; no GPU experiment or asset migration completed",
