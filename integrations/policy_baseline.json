@@ -1775,8 +1775,9 @@
         "receipts": {
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/staging.json": "a3c56ed3037da41552b1e3fdaee400dc67bbed29d107d5477a3d1998b83fd7f6",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/root-stage-review.json": "263e32d0dd7b5a17e1e08c11c60a6f5a5a63fd82724c105a6a2c704f7bec7bbc",
-          "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "a1cd0c460a55191c357157a0471d11c7c4d004f1d6cc32ae4e129789e964cfe2",
-          "integrations/softmax/local-output/stateless-continuation-launch-20261007/guard-admission.json": "131eee942216eac9b55d6e41340e70bd97488028ac8d1a293e0300941f78b8eb"
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "dd54e53ed87713f24ba36bbc7590f2b0634bb3560ef5286f901ba59bf5e12bd5",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/guard-admission.json": "131eee942216eac9b55d6e41340e70bd97488028ac8d1a293e0300941f78b8eb",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/corrected-source-review.json": "8180e880c8d36c51dfb28f28572e1c4218296ca1db42ad5c052a3731a72f257b"
         }
       }
     },
