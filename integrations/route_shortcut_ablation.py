@@ -16,9 +16,9 @@ def main():
     root = Path('/work/input')
     output = Path('/output/generals')
     plan = json.loads((root / 'plan.json').read_text())
-    assert plan['schema'] == 'generals-route-shortcut-ablation-v1'
+    assert plan['schema'] == 'generals-route-shortcut-confirmation-v1'
     assert plan['games_per_arm'] == 4096
-    assert [plan[k] for k in ('map_seed', 'sample_seed', 'bootstrap_seed')] == [11007101, 11007103, 11007111]
+    assert [plan[k] for k in ('map_seed', 'sample_seed', 'bootstrap_seed')] == [11008101, 11008103, 11008111]
     for relative, digest in json.loads((root / 'seal.json').read_text()).items():
         if sha(root / relative) != digest:
             raise ValueError('Sealed input changed: ' + relative)
@@ -51,6 +51,12 @@ def main():
         oh = floats_before[row['half_output_weight_index']]
         expected = struct.unpack('<f', struct.pack('<f', floats_before[half] - floats_before[full] * of / oh))[0]
         assert floats_after[full] == 0 and floats_after[half] == expected
+    development = json.loads((root / 'evidence/development-completed.json').read_text())
+    assert development['selected_for_independent_confirmation'] is True
+    assert development['initial_state_cluster_ci95'][0] > 0
+    assert not development['broad_stratum_failures']
+    assert sha(root / 'evidence/development-completed.json') == plan['development_completed_sha256']
+    assert plan['development_job'] == 'job-wwvk3'
     from integrations.cuda_runtime_binding import configure
     from integrations.slurm_s3_job import visible_gpu_identity, verify_gpu_idle
     from integrations.policy_execution import execute
@@ -94,13 +100,13 @@ def main():
             assert seats['0']['games'] == seats['1']['games'] > 0
         evaluations[arm] = {'sha256': sha(path), **{k: record[k] for k in ('wins', 'losses', 'draws')}}
     selected = result['initial_state_cluster_ci95'][0] > 0 and not broad_failures
-    report = {'schema': 'generals-route-shortcut-development-v1',
+    report = {'schema': 'generals-route-shortcut-confirmation-result-v1',
               'plan_sha256': sha(root / 'plan.json'), 'comparison_sha256': sha(comparison),
-              'evaluation': evaluations, 'selected_for_independent_confirmation': selected,
+              'evaluation': evaluations, 'eligible_for_hosted_qualification': selected,
               'broad_stratum_failures': broad_failures,
               'paired_signed_score_delta': result['paired_signed_score_delta'],
               'initial_state_cluster_ci95': result['initial_state_cluster_ci95'],
-              'scope': 'Development evidence only; positive result requires independent confirmation before hosted qualification.'}
+              'scope': 'Independent confirmation only; positive result permits hosted qualification, not promotion.'}
     (output / 'COMPLETED.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report), flush=True)
 
