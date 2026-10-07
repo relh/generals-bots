@@ -28,8 +28,9 @@ artifact identities. Git history retains superseded attempts.
    had no established gain. Do not train a merge teacher from this evidence.
    A native learner audit found permanent row starvation at replay ratio0.5.
    Row rotation is implemented; `job-zsz35` verified native row coverage but
-   failed the throughput gate at 29,811 SPS. The profiled retry records hardware and selects CPU workers on fixed public
-   inputs. Require ≥30K SPS, then compare the corrected candidate
+   failed the throughput gate at 29,811 SPS. The profiled retry also failed at 28,788 SPS despite a faster fixed CPU callback.
+   Diagnose its hardware telemetry and optimize measured execution costs.
+   Require ≥30K SPS, then compare the corrected candidate
    with the selected source and retained control on fresh maps. Actor sampling
    and inspected PPO gradients showed no separate probability mismatch.
 

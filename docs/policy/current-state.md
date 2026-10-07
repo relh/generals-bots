@@ -2,8 +2,8 @@
 
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
-job `35892`. As of **2026-10-07 17:15 UTC**, profiled row-rotation retry
-**`job-5cirw` is building the native trainer**. Its predecessor stopped at the strict throughput
+job `35892`. As of **2026-10-07 17:24 UTC**, profiled row-rotation retry
+**`job-5cirw` failed the throughput gate at 28,788 SPS**. Its predecessor stopped at the strict throughput
 gate (29,811 SPS); no long continuation or strength evaluation ran.
 The completed first-contact diagnostic did not pass its improvement gate.
 
@@ -104,12 +104,12 @@ audit covered 2,097,152 agent steps with no nonfinite/clipped rewards, but the
 forced stop left no complete action-mask audit. Billing was **761 seconds,
 $0.627**. The guard observed termination and exited.
 
-### Profiled retry: native trainer build
+### Profiled retry: throughput failed
 
 `job-5cirw` was submitted **2026-10-07 16:59:07 UTC**, source `ba8461e`,
 context `ctx-31be43a7`. Preparation and the bounded worker benchmark completed
 in 26.3 seconds. Source GPU parity passed 46/46 top actions with maximum
-action-probability difference 0.00000445; native trainer compilation is active. It retains the strict 30K gate and learning settings,
+action-probability difference 0.00000445; native trainer compilation succeeded. It retained the strict 30K gate and learning settings,
 records CPU quota/affinity and GPU clocks/power, and selects native opponent
 workers from 1/2/4/8 on fixed public replay inputs. Exact action/memory agreement
 is required. The selected count applies to candidate training and all evaluation
@@ -118,11 +118,23 @@ actors; the CPU benchmark makes no training-throughput or strength claim.
 One H100 runs 4,096 environments, horizon 128, minibatch 8,192, replay ratio 0.5.
 The provider/internal/aggregate limits are 75/73/75 minutes, with zero application
 restarts. The validated runtime quote is **$3.7125**, excluding separate build
-fees. Detached guard **PID 84329** is verified live. Its aggregate bound freezes
+fees. Detached guard **PID 84329** observed termination and exited. Its aggregate bound froze
 on `starting` or `running` from the last pre-allocation observation and never
 advances after preemption. The bound is frozen at **2026-10-07 18:22:54 UTC**
 from the 17:07:54 pre-allocation observation. Source, admission, archive and request hashes are in
-the manifest and launch receipts. GPU qualification and strength remain pending.
+the manifest and launch receipts. GPU throughput qualification failed; strength remains untested.
+
+The retry terminated at **17:23:19 UTC**, attempt 1, zero restarts/preemptions.
+It selected **8 workers** from 1/2/4/8 on a **28-CPU quota**. The fixed fixture
+median improved from 28.42 ms at 4 workers to 18.90 ms at 8, but training reached
+only **28,788.05 SPS** (1,048,576 steps / 36.424 seconds, epochs 2–4 after two
+warmup epochs). The last individual epoch reached 31.6K; it does not override
+the failed prescribed interval. No continuation or strength panel ran.
+Independent terminal collection verified **40 files**, including CPU/GPU telemetry
+and worker-profile inputs. Hardware was **H100 80GB HBM3**, peak console VRAM
+**66.9 GiB**, host RAM **7.1 GiB**. Billing was **776 seconds, $0.6402**.
+No task GPU job remains active. Diagnose retained telemetry and measured callback
+costs before another bounded qualification; retain the strict 30K gate.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.
