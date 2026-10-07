@@ -230,8 +230,8 @@ probabilities within 2.98e−7. The original selected source was recovered
 byte-for-byte to durable local storage and remains selected.
 
 The job compares 4,096 fresh games per arm on one H100, capped at 50 minutes
-and $2.475 with zero restarts. This is submission, not evidence of GPU
-execution or a strength result. A positive development result requires
+and $2.475 with zero restarts. At 06:34:12 UTC it was building after context
+download, with no failure reported; GPU execution and strength are unverified. A positive development result requires
 independent confirmation before hosted testing. No training is included.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice

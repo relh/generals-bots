@@ -314,7 +314,8 @@
   "active_experiments": ["job-wwvk3"],
   "route_shortcut_development": {
     "job": "job-wwvk3",
-    "last_observed_state": "submitted",
+    "last_observed_state": "building",
+    "last_observed_utc": "2026-10-07T06:34:12Z",
     "submitted_utc": "2026-10-07T06:33:54Z",
     "branch": "codex/route-shortcut-ablation",
     "revision": "601177976538bc8cd31ceea014496a35662e1f8d",
