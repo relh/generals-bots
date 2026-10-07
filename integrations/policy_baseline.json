@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-8tdud first attempt starting; GPU correctness and ABBA pending",
+    "status": "job-8tdud failed parameter-gradient bitwise audit before ABBA; investigating GPU repeatability",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2622,13 +2622,14 @@
         "job_id": "job-8tdud",
         "minutes": 60,
         "pid": 23839,
-        "running": true,
-        "observed_at": "2026-10-07T23:39:43.023100+00:00",
-        "status": "starting",
+        "running": false,
+        "observed_at": "2026-10-07T23:51:14.839108+00:00",
+        "status": "failed",
         "last_preallocation_observed_at": "2026-10-07T23:39:02.361274+00:00",
         "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
         "first_allocation_lower_bound_at": "2026-10-07T23:39:02.361274+00:00",
-        "deadline": "2026-10-08T00:39:02.361274+00:00"
+        "deadline": "2026-10-08T00:39:02.361274+00:00",
+        "terminal_observed_at": "2026-10-07T23:51:14.839108+00:00"
       }
     },
     "fresh_start_readiness": {
@@ -2643,6 +2644,57 @@
       ],
       "staging_tools": "integrations/softmax/local-output/fresh-start-gather-launch-20261007",
       "plan_evidence_bindings_pending": true
+    },
+    "retry_terminal_audit": {
+      "schema": "generals-gather-probe-independent-audit-v1",
+      "job_id": "job-8tdud",
+      "status": "failed",
+      "technical_success": false,
+      "qualified_for_long_training": false,
+      "files_verified": 224,
+      "artifact_sha256": "fac0ee2e2b8b08a7ce0b44c7f60d9b33da1e97fbc07ae350d59f7fad3f4b8056",
+      "collection_sha256": "b0d5589bc464927e33c85bae80d266199fdb901b9be37401d9f84c0b2c19e323",
+      "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/gather-probe-retry-launch-20261007/results-job-8tdud/inner/generals",
+      "results_sha256": "71c0c0653273e6976729301f094a93b4dbcda1a0d69eef7b90dc5876a2572289",
+      "failure": {
+        "error": "Experiment failed, exit 1",
+        "elapsed": 579.5823904749996
+      },
+      "retained_telemetry": []
+    },
+    "retry_terminal_provider": {
+      "job_id": "job-8tdud",
+      "status": "failed",
+      "finished_at": "2026-10-07T23:51:09.254646+00:00",
+      "failure_reason": "exit 1",
+      "attempt": 1,
+      "restarts_used": 0,
+      "receipt": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "billed_seconds": 581,
+            "charged_usd_micros": 478500,
+            "gpu_count": 1,
+            "rate_usd_micros_per_gpu_minute": 49414
+          }
+        ],
+        "billed_attempts": 1,
+        "billed_seconds": 581,
+        "charged_usd_micros": 478500,
+        "image_digest": "sha256:c116b2b2fc4052375f60d7de765d6e0e1be1ce19e4bda27c19ce5544174f1f9f"
+      }
+    },
+    "retry_failure_diagnosis": {
+      "failure": "Gather changed spatial PPO parameter_gradient",
+      "source_gpu_parity_states": 46,
+      "training_steps": 0,
+      "cuda_contents_check_completed": true,
+      "probabilities_and_loss_bitwise_checks_passed": true,
+      "numeric_gradient_difference_retained": false,
+      "hypothesis": "GPU execution nondeterminism in scatter/convolution gradients; not yet empirically established",
+      "next": "Retain exact-input, cotangent and repeated-baseline gradient diagnostics; correct inappropriate repeatability assumptions without changing production runtime",
+      "reference": "https://openxla.org/xla/determinism"
     }
   }
 }

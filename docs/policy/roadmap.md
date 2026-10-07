@@ -28,8 +28,10 @@ See [current state](current-state.md) for live work and results,
    final rolling throughput interval (28,091 SPS). No strength evaluation ran.
    The memory-gather comparison **job-tjqy8** failed in its new gradient audit
    before training. The repaired production-interface audit passed the complete
-   local gradient path; **job-8tdud** is starting for the same-GPU ABBA of four
-   bounded 2Mi diagnostics. Require
+   local gradient path, but **job-8tdud** failed the bitwise parameter-gradient
+   check before ABBA. Loss and probabilities matched; gradient differences were
+   not retained. Diagnose repeatability and retain numerical evidence before
+   another bounded comparison. Require
    separate full qualification before returning to fresh-start strength work;
    see [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler

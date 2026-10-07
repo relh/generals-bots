@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, as of the 23:39 UTC corrected gather-probe startup.
+Updated 2026-10-07, after the 23:51 UTC gather-gradient audit failure.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -79,7 +79,7 @@ memory was 65,420 MiB (63.89 GiB). No unchanged retry is planned.
 `INITIAL_POSITION_MIX` observes startup distribution. The shared reset function
 also applies zero midgame probability to automatic episode recycling.
 
-## Live work: corrected gather memory comparison
+## Gather memory comparison: GPU gradient audit failure
 
 **`job-tjqy8` failed at 23:22 UTC before training.** Both native builds and
 46-fixture source GPU parity passed. The new gradient audit incorrectly wrapped
@@ -93,10 +93,17 @@ loss and all 578,860 parameter gradients; an altered observation was rejected.
 Production finite checks are unchanged. The fix and downstream runner passed
 independent review.
 
-**`job-8tdud`**, submitted **23:30:12 UTC**, entered first-attempt startup at
-23:39 UTC. Its corrected package contains 1,155 verified files; the allocation
-guard fixes the deadline at **2026-10-08 00:39:02 UTC**. The prior
-failed attempt cost $0.4752. The retry maximum quote is **$2.97**.
+**`job-8tdud` failed at 23:51:09 UTC before training.** Both builds and
+46-state GPU source parity passed. The CUDA contents check completed, and
+probabilities and PPO loss matched bitwise; the parameter-gradient bitwise check
+failed. All **224 retained files** were independently verified. Numerical gradient
+differences were not retained by this audit, so their size is unknown.
+
+The prior Python-tracing bug is resolved. GPU gradient repeatability is now the
+question: the production path contains operations that can be nondeterministic
+under XLA. This is a hypothesis for the mismatch, not an established cause.
+The next audit must retain repeated identical-input gradients and cross-input
+differences. No unchanged retry or dependent training is authorized by this result.
 
 The proposed storage change replaces duplicate full transposed observations/masks
 with float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
@@ -123,7 +130,7 @@ This comparison does not establish the cause of the prior reset-run slowdown.
 - Gather changes are awaiting GPU qualification. The calculated 20.35 GiB saving
   is not yet an observed memory reduction or evidence of higher SPS.
 
-**Next:** inspect the GPU gate and same-allocation comparison from `job-8tdud`. Adopt
+**Next:** diagnose GPU gradient repeatability and repair the audit before another bounded comparison. Adopt
 only a demonstrated useful change; otherwise diagnose the measured bottleneck.
 The fresh-start runner now requires bound, independently audited probe success,
 both gather diagnostics ≥30K SPS, measured memory reduction and matching
