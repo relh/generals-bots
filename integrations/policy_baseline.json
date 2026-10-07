@@ -1638,7 +1638,7 @@
     "qualification_plan": {
       "path": "integrations/stateless_qualification/plan.json",
       "sha256": "7c36fa67896a202b58bd9323b873dd29973d4d3ae9dd22acd765342061b75683",
-      "status": "bridge source selected; final context seal pending",
+      "status": "sealed and submitted; building image, GPU qualification pending",
       "steps": 4194304,
       "steady_interval_steps": 3145728,
       "warmup_epochs": 2,
@@ -1654,15 +1654,43 @@
         "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/staging.json",
         "sha256": "239b1a87dd36797d24eb8340166033cd4a1b73a16f1eb9ecfbc747e83c5091bd",
         "files_verified": 371,
-        "sealed": false,
-        "source_selection_pending": true,
+        "sealed": true,
+        "source_selection_pending": false,
         "root_verification": {
           "path": "integrations/softmax/local-output/stateless-qualification-launch-20261007/root-stage-review.json",
           "sha256": "9ab45870d94d52b60725a998dde3eacc120436bcfadd15fbc11b80dc2591a958"
         }
       },
       "startup_evidence_integration_revision": "1b05d1b",
-      "collector_sha256": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d"
+      "collector_sha256": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d",
+      "source_revision": "a82ac6f9831f47bdf7a68ce696c29c3b6110f563",
+      "launch": {
+        "job_id": "job-wv4b3",
+        "context_id": "ctx-28e3bf5d",
+        "submitted_at": "2026-10-07T19:33:29.524859+00:00",
+        "status": "building",
+        "last_observed_at": "2026-10-07T19:33:56.594968+00:00",
+        "archive_sha256": "8f75aac9f0679acda23bfcf5c8125ebae3dc5b8605a9ea9574b818ff3140eeda",
+        "files_verified": 624,
+        "git_source_files_verified": 251,
+        "provider_minutes": 35,
+        "internal_minutes": 33,
+        "aggregate_minutes": 35,
+        "max_restarts": 0,
+        "quoted_runtime_max_usd": 1.7325,
+        "guard_pid": 38362,
+        "receipts": {
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/ready.json": "1cd42c0541b2a27792860f44ee930770e4156a994cb88d4c29d646f5b5269cf3",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/context-seal.json": "108dd0f6bb5bbfa23507abd0f95a1350bbf620030ffdeca1c973d62aa4bbeda4",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/cpu-admission.json": "b24d3be1b1060eb73ac1a585489b32e64faf78e9510fe2acad73e3799b8a600c",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/root-launch-review.json": "d0f3cdb91b1739f16aa1085ebfc4f0baab056a672f06f8220c5906c6bb5cffec",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/submission.json": "bde86f23ac474781501c327bbf08774c2cc72049c3c7206b6fcac615d9e02e6b",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/validation.json": "e21debdc3f0f479e09a9c66ae74b11dc1231260208fecfdb54ae0917645b31ac",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/pre-submit-active-check.json": "21cc24690b10d4a173ef7a939f110d08c2d22ea66d3da0ca5af0b648cf105893",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/aggregate-guard-process.json": "8b3f0a6f7cbad5184efd5120dadf31ff4a92a521de59c0407ee53b6eb91b8c88",
+          "integrations/softmax/local-output/stateless-qualification-launch-20261007/collect_and_audit.py": "33b9877949e0952efd5e9b44821e961e225a7e8c7bbe900514707e82c27b2f7d"
+        }
+      }
     },
     "startup_admission": {
       "source_revision": "878ea2414da18505530ccbb3bd7ed99bce5401e9",

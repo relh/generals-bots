@@ -225,10 +225,15 @@ checkpoint parity, complete action/reward audits and all 13 opponents in both
 seats are required. Coordinator **`1181b57`** reuses the shared execution path;
 local preparation against actual migrated assets passed, and its audit rejected
 slow/incomplete runs, wrong checkpoint clocks or initial weights, and an
-unexpected restored optimizer. The bridge implementation is selected; final source/input sealing is next.
-Local staging now contains 371 verified files, including migrated policies and
-all 46 parity fixture states. Final source/input sealing and submission
-remain pending; this staging creates no GPU allocation.
+unexpected restored optimizer. The bridge implementation is selected.
+Qualification **`job-wv4b3`** was submitted at **2026-10-07 19:33:29 UTC**,
+context `ctx-28e3bf5d`, source **`a82ac6f`**. At 19:33:56 UTC its image was
+building; training had not started. Root verified all **624 sealed files**,
+including **251 exact Git source files**, migrated policies and 46 parity
+states. Limits are **35/33/35 minutes provider/internal/aggregate**, zero
+restarts, one H100, maximum quoted runtime cost **$1.7325**. Detached guard
+**PID 38362** is live; it fixes the aggregate deadline at first allocation.
+No dependent long training is queued. The existing policy weights remain selected.
 
 Startup simplification **`f7cca32`** removes duplicate parent graph construction.
 The actual native actor now undergoes complete ABI admission before policy or

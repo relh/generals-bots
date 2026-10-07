@@ -9,8 +9,9 @@ See [current state](current-state.md) for live work and results,
 
 ## Next decisions
 
-1. Seal and run the
+1. Complete the
    [state-free qualification](../../integrations/stateless_qualification/plan.json).
+   Job `job-wv4b3` is building its sealed image.
    The completed bridge comparison verified copies and owner lifetime. Retain
    one output fence for its small measured local saving; overall speedup was
    ambiguous across the two orders. Instrumented SPS does not qualify training.
