@@ -397,10 +397,10 @@
     "evaluation_games_per_arm": 4096,
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
-    "last_observed_state": "starting",
-    "last_observed_utc": "2026-10-07T09:38:11.074397+00:00",
-    "last_observed_phase": "downloading",
-    "attempt": 1,
+    "last_observed_state": "running",
+    "last_observed_utc": "2026-10-07T09:43:51.003534+00:00",
+    "last_observed_phase": "smoke: source serving parity",
+    "attempt": 2,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
     "branch": "codex/monotone-force-potential",
@@ -470,7 +470,17 @@
       "configuration_generated": false,
       "context_created": false,
       "submitted": false
-    }
+    },
+    "preempted_count": 1,
+    "attempt_history": [
+      {
+        "attempt": 1,
+        "end_cause": "preempt",
+        "ended_at": "2026-10-07T09:42:45.717488+00:00",
+        "outcome": "severed",
+        "started_at": "2026-10-07T09:39:17.314550+00:00"
+      }
+    ]
   },
   "route_shortcut_development": {
     "job": "job-wwvk3",
