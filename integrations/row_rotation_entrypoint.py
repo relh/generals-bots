@@ -50,7 +50,7 @@ finally:
             parts=rel.parts
             if 'build' in parts and 'source' in parts:
                 tail=Path(*parts[parts.index('source')+1:]).as_posix()
-                if tail not in ('src/algo.cu','config/default.ini','config/metta_generals.ini'):continue
+                if tail not in ('src/algo.cu','src/pufferl.cu','config/default.ini','config/metta_generals.ini'):continue
             retained.append((p,rel))
     receipt=dict(schema='generals-row-rotation-result-v1',complete=complete,elapsed_seconds=time.monotonic()-START,
                  files={str(rel):hashlib.sha256(p.read_bytes()).hexdigest() for p,rel in retained})
