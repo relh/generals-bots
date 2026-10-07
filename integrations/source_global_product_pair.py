@@ -35,7 +35,10 @@ def qualified_probe(marker: Path, terminal: Path, activation_report: Path,
                     marker_sha256: str, plan: dict, probe_intent: dict) -> dict:
     pinned = ("required_probe_job_id", "required_probe_marker_sha256", "required_probe_activation_sha256",
               "source_product_asset_sha256", "pool_migration_receipt_sha256", "abi_proof_sha256",
-              "source_parity_proof_sha256", "required_probe_native_source_parity_sha256")
+              "source_parity_proof_sha256", "required_probe_native_source_parity_sha256",
+              "required_probe_original_terminal_sha256", "required_probe_original_terminal_audit_sha256",
+              "required_probe_original_artifact_sha256", "required_probe_original_failure_log_sha256",
+              "required_probe_corrected_activation_auditor_sha256")
     if any(not isinstance(plan.get(key), str) or not plan[key] for key in pinned):
         raise ValueError("Repaired Product probe identities remain unpinned")
     if digest(marker) != marker_sha256 or marker_sha256 != plan["required_probe_marker_sha256"]:
@@ -48,9 +51,21 @@ def qualified_probe(marker: Path, terminal: Path, activation_report: Path,
     effect = activation.get("legal_logit_delta_max_abs")
     if type(effect) not in (int, float) or not math.isfinite(effect):
         raise ValueError("Product activation effect is not finite")
-    if (result.get("schema") != "generals-product-logical-muon-probe-qualified-v1"
+    if (result.get("schema") != "generals-product-logical-muon-offline-qualified-v1"
             or receipt.get("job_id") != plan["required_probe_job_id"]
-            or receipt.get("status") != "succeeded"
+            or receipt.get("status") != "failed"
+            or receipt.get("exit_code") != 1
+            or result.get("original_job_status") != "failed"
+            or result.get("original_exit_code") != 1
+            or result.get("recovery_reason") != "raw_sampler_dictionary_defaults_only"
+            or digest(terminal) != plan["required_probe_original_terminal_sha256"]
+            or any(result.get(key) != plan["required_probe_" + key] for key in (
+                "original_terminal_sha256", "original_terminal_audit_sha256", "original_artifact_sha256",
+                "original_failure_log_sha256", "corrected_activation_auditor_sha256"))
+            or result["terminal_audit"]["status"] != "failed"
+            or result["terminal_audit"]["job_id"] != receipt.get("job_id")
+            or result["terminal_audit"]["artifact_sha256"] != result["original_artifact_sha256"]
+            or result["terminal_audit"]["training"] != audit
             or receipt.get("restarts_used") != 0
             or result["intent"] != probe_intent
             or probe_intent.get("schema") != "generals-product-logical-muon-probe-intent-v1"
@@ -117,6 +132,9 @@ def prepare(probe_input: Path, repository: Path, marker: Path, terminal: Path,
             or intent["opponent_weights"] != plan["opponent_weights"]):
         raise ValueError("Product probe source or migrated population differs from preregistration")
     verify_source_proofs(probe_input, plan, intent)
+    if digest(repository / "integrations/audit_product_activation.py") != plan[
+            "required_probe_corrected_activation_auditor_sha256"]:
+        raise ValueError("Matched pair must use the independently re-audited activation repair")
     output.mkdir(parents=True)
     for name in ("assets", "bundles", "curriculum", "puffer.git", "raylib-5.5_linux_amd64", "leader-root"):
         shutil.copytree(probe_input / name, output / name, ignore=shutil.ignore_patterns("._*", ".DS_Store"))
@@ -225,6 +243,9 @@ def run_pair(inputs: Path, output: Path) -> None:
                                 inputs / "qualified-probe-activation.json", lineage["probe_marker_sha256"], plan,
                                 intent)
     verify_source_proofs(inputs, plan, intent)
+    if digest(source / "integrations/audit_product_activation.py") != plan[
+            "required_probe_corrected_activation_auditor_sha256"]:
+        raise ValueError("Matched pair activation auditor differs from recovered qualification")
     if (lineage["source_product_policy_sha256"] != plan["source_product_policy_sha256"]
             or digest(inputs / "assets/cold/policy.bin") != plan["source_product_policy_sha256"]
             or digest(inputs / "assets/cold/asset.json") != plan["source_product_asset_sha256"]
