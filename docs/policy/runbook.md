@@ -161,3 +161,7 @@ private panel does not require that preliminary league submission.
 Keep selected state and latest verified decisions in [current state](current-state.md),
 exact hashes in the manifest, and raw evidence in artifact directories. Never
 delete or rewrite protected Codex session histories or trajectory databases.
+
+Completed experiment runners live in Git history and their sealed job inputs.
+The defense distillation trial and completed first-contact diagnostic are no
+longer supported runtime commands; their retained results remain evidence.
