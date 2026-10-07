@@ -99,9 +99,13 @@ NumPy serving parity on **46/46 states**, with maximum probability difference
 0.00000268. By 11:05:45 UTC the candidate's initializer
 self-match passed: **273W/233L/6D in 512 games**, across 328 unique initial
 states, with the exact `37e23e20` checkpoint and intended sampler for both
-actors. Native continuation startup has begun with all 13 opponents balanced
-by seat; no new steps are observed yet. First-epoch startup is bounded at
-420 seconds and continuation at 1,800 seconds.
+actors. Candidate continuation reached **7,340,032 total steps** by 11:07:04 UTC.
+Excluding resumed warmup epochs 9–10, epochs 10–14 measured **37,706.35 SPS**:
+2,097,152 steps in 55.618 seconds (uptime 50.132→105.750), with the same H100
+and batch settings; dashboard VRAM/RAM were 66.6/4.3 GiB. All 13 opponents
+remain balanced by seat. The latest reward audit covers 2,097,152 resumed
+steps with no nonfinite or clipped rewards; its final action-mask audit is
+still pending. Continuation is bounded at 1,800 seconds.
 These are runtime console results. Checkpoint artifacts, learner-byte checks,
 training audits and GPU CSV await terminal collection and independent verification. The log monitor now
 reads every 64 KiB page with explicit attempt IDs; prior attempt logs were

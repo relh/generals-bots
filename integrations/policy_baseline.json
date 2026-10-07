@@ -398,8 +398,8 @@
     "selection": "Both candidate-minus-source and candidate-minus-control map-cluster lower95 bounds strictly positive; every opponent-by-seat stratum with >=100 games has signed-score delta >=-.10. Smaller strata reported without automatic rejection. Fresh independent confirmation required.",
     "job": "job-wgtyc",
     "last_observed_state": "running",
-    "last_observed_utc": "2026-10-07T11:05:45.590175Z",
-    "last_observed_phase": "candidate initializer gate passed; native continuation startup, no new steps observed",
+    "last_observed_utc": "2026-10-07T11:07:04.673292Z",
+    "last_observed_phase": "candidate continuation reached7,340,032 total steps; steady37,706.35 SPS",
     "attempt": 3,
     "runtime_restarts": 0,
     "submitted_utc": "2026-10-07T09:26:55.533111+00:00",
@@ -672,8 +672,17 @@
         6
       ],
       "unique_initial_states": 328,
-      "new_training_steps_observed": false,
-      "collected_audit_verified": false
+      "new_training_steps_observed": true,
+      "collected_audit_verified": false,
+      "progress_receipt_path": "integrations/softmax/local-output/monotone-force-retry-20261007/candidate-continuation-progress-console-attempt3.json",
+      "progress_receipt_sha256": "8a490041e5f34c2f1a4491a38fb17acf299d75ef3eb33f3d05f91b9be175bc3d",
+      "observed_total_steps": 7340032,
+      "advanced_steps": 3145728,
+      "steady_sps": 37706.35405803876,
+      "steady_interval_steps": 2097152,
+      "steady_interval_seconds": 55.618,
+      "reward_audit_advanced_steps": 2097152,
+      "continuation_action_mask_completion_audit_observed": false
     }
   },
   "route_shortcut_development": {
