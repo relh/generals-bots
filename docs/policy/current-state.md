@@ -1,297 +1,149 @@
 # Current Classic policy state
 
-Updated 2026-10-06. **Winning-policy acceptance has not passed; no champion was
-changed.** The selected policy is still the radius-2 Classic source from B300
-job `35892`. This page records the decision; the
-[machine manifest](../../integrations/policy_baseline.json) holds exact artifact
-paths and hashes, the [runbook](runbook.md) holds operational steps, and the
-[roadmap](roadmap.md) holds the next decisions.
+Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
+changed.** The selected policy remains the radius-2 Classic source from B300
+job `35892`. One bounded experiment, `job-kzmub`, is building.
+
+The [machine manifest](../../integrations/policy_baseline.json) records exact
+artifact identities, paths, qualification receipts and rejected experiments.
+Use the [runbook](runbook.md) for operations and [roadmap](roadmap.md) for
+planned decisions. Older prose remains in Git history.
 
 ## Selected policy and game
 
 | Item | Selected value |
 | --- | --- |
-| Checkpoint SHA-256 | `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14` |
-| Optimizer SHA-256 | `1c4832d6f5516ed85a97cf0b476b303ba8829467defeac4b5a7e6d1f6b11599b` |
+| Checkpoint identity | `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14` |
 | Lifetime agent steps | 2,499,805,184 |
 | Hosted policy ID | `64649097-765f-4706-8310-910e57067a34` |
-| Frozen sampler | Structured; move/split temperatures 0.05/0.15; neutral bonus 6; weak-owned and doomed-attack penalties 4 |
+| Frozen sampler | Structured; move/split temperatures 0.05/0.15; opening move temperature 0.10 for 100 turns; neutral bonus 6; weak-owned and doomed-attack penalties 4 |
 | Baseline hosted screen | Daveey 9/32; incumbent 18/32 |
 
-The selected build-compatible native asset and portable bundle are in
-`/tmp/generals-appledouble-clean-cold-migration-v1/`. A verified metadata
-rebind preserved the policy and learner bytes, ABI and acting logits; it added
-zero RL steps. The manifest binds both assets and the rebind proof. The official
-Softmax Coworld Classic engine SHA-256 is
-`f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318`;
-qualification uses independently sampled 18–21 tile maps, fog and a 2,000-turn
-limit.
+The restored, build-compatible native asset and portable bundle live under
+`integrations/softmax/local-output/route-shortcut-diagnosis-20261007/` in
+`source-asset/` and `source-bundle/`. Recovery and metadata rebind preserved
+checkpoint and optimizer bytes, ABI and acting logits; they added no RL steps.
+The manifest pins the original identities and separate recovery evidence.
 
-## Qualification and hosted decision
+Qualification uses the pinned official Softmax Coworld **Classic** engine,
+independently sampled 18–21 tile map dimensions, fog and a 2,000-turn limit.
+The generic chasing/smaller-army engine is not equivalent. Engine hashes and
+rule-parity evidence are in the manifest.
 
-The selected source qualified on one H100 80GB with 4,096 environments, horizon
-128, minibatch 8,192 and replay 0.5: **36,182.7 steady end-to-end SPS** after
-warmup over 4,194,304 completed steps. All 13 opponent types were sampled in
-both seats; illegal actions, nonfinite rewards and clipped rewards were zero.
-The result archive hash is in the manifest. Any changed long-training setup
-needs its own ≥30,000 SPS qualification.
+## Throughput and acceptance gates
 
-A same-weight penalty-8 sampler passed local paired development but failed its
-completed balanced 512-game hosted panel:
+The selected source qualified on **one H100 80GB**: 4,096 environments,
+horizon 128, minibatch 8,192, replay ratio 0.5; **36,182.7 steady end-to-end
+SPS** after warmup in a 4,194,304-step probe. All 13 opponent types appeared
+on both seats; illegal actions, nonfinite rewards and clipped rewards were
+zero. This qualifies that setup, not every subsequent change.
 
-| Opponent | Seat 0 | Seat 1 | Total | Wilson 95% lower |
+Every changed long-training setup must independently pass **≥30,000 steady
+end-to-end SPS**, measured after compilation and warmup and including rollout,
+transfers and optimization. High GPU utilization alone does not qualify it.
+Potential shaping must use the learner's exact discount. Mixed-opponent
+training must sample every opponent on both seats.
+
+Hosted acceptance requires **at least 65% wins against each named opponent**,
+each Wilson 95% lower bound above 50%, broad-pool preservation and clean
+execution. The completed penalty-8 hosted panel failed:
+
+| Opponent | Seat 0 | Seat 1 | Total wins | Wilson 95% lower |
 | --- | --- | --- | --- | --- |
-| Daveey | 50/128 | 48/128 | **98/256 (38.28%)** | 32.54% |
-| Incumbent | 68/128 | 81/128 | **149/256 (58.20%)** | 52.08% |
+| Daveey | 50/128 | 48/128 | 98/256 (38.28%) | 32.54% |
+| Incumbent | 68/128 | 81/128 | 149/256 (58.20%) | 52.08% |
 
-All 512 replay identities and outcomes were audited; the panel had no failed
-requests, illegal actions, candidate timeouts or forfeits. Hosted acceptance
-requires **at least 65% wins against each** named opponent, each Wilson 95%
-lower bound above 50%, broad-pool preservation and clean execution. The
-penalty-8 candidate was rejected and the selected source remains unchanged.
-The manifest retains the original evidence hashes. Those local files went
-missing; a separate 2026-10-07 recovery fetched all 512 outcomes and replays
-from Observatory, reproduced both win counts, and passed the existing replay
-audit over 277,894 turns and 512 unique seeds. The new recovery hashes and
-durable local path are recorded separately; they do not replace the original
-files' identities.
+All 512 identities/outcomes were audited, without failed requests, illegal
+moves, candidate timeouts or forfeits. After local files disappeared, separate
+Observatory recovery reproduced both counts and audited 277,894 turns across
+512 unique seeds. Recovery hashes do not replace original evidence identities.
 
-## Development status
+## Active bounded experiment
 
-The safe-owned half-split, public capital-threat gathering and general-garrison
-split sampler pilots had no reliable paired development gain. The source-mirror
-PPO treatment and exact matched control each qualified on H100 (38,100.9 and
-36,903.5 steady SPS), but the fresh paired 4,096-game Classic panel rejected
-the treatment: mirror minus control signed-score delta −0.00293, clustered 95%
-CI [−0.03278,+0.02575]. None changed the selected policy.
+`job-kzmub` was submitted **2026-10-07 08:43:52 UTC**, isolated source
+`a3569ae`, context `ctx-cac8804f`. At **08:51:08 UTC** it was building,
+GPU attempt 0, without reported failure or retries; the last inspected build
+log had completed all 11 Docker steps and image export; the provider was
+pushing the image.
+**GPU qualification and playing strength remain unproven.**
 
-The hard-opponent weighting probe `job-izcgj` qualified the exact treatment on
-H100: 4,096 environments/H128/minibatch 8,192/replay 0.5, 4,194,304 steps,
-**34,494.9 steady SPS** over the final 1,048,576 steps after six warmup epochs.
-All 13 opponents appeared on both seats; illegal actions and nonfinite or
-clipped rewards were zero. Its qualification marker SHA-256 is
-`6fd0a28c23fdfe252ae7b86fc60b08df0b5e595bc504d0d63f39d341fda0df44`.
-This is a throughput result, not a strength result.
+One H100 is capped at **120 minutes/$5.94**, with zero runtime restarts.
+Control and candidate start the exact selected policy with fresh optimizers;
+each first trains 4,194,304 qualification steps. **Both** must pass ≥30,000
+steady SPS, native serving parity and legality/reward/population audits before
+either continues its own authentic learner to **33,554,432 total steps**.
 
-The full matched hard-opponent weighting run `job-6cwtq` **rejected** the
-treatment. Both arms completed 16,777,216 steps on H100 with fresh optimizers
-and exact matched settings except frozen `d2c30` and `classic_siege` weights
-17/16→34/32. Control and treatment reached 37,027.3 and 34,576.8 steady
-end-to-end SPS, all 13 opponents on both seats, and zero illegal, nonfinite or
-clipped rewards. On 4,096 paired fresh Classic games, control won 2,759 and
-treatment 2,700; treatment-minus-control signed-score delta was −0.027832,
-clustered 95% CI [−0.059182,+0.003395]. Its reweighted-opponent delta was
-also negative (−0.038055), and one broad seat stratum regressed. Verified
-artifact SHA-256:
-`87710e728221e5d9fd9b322a777e67d1a41bd15b195147f2204e3573a23a5b73`.
-No independent confirmation or hosted panel follows.
+Candidate adds a fixed 0.05 potential from turn 100 using own minus opponent
+`F = sum(army²) / (10000 + sum(army²))`. Control retains the original reward.
+Unlike the rejected normalized-concentration prototype, this potential cannot
+increase merely because own troops disappear. It still rewards location-blind
+merging and may discourage expansion; no strength benefit is established.
 
-The separate `job-m9ina` paired siege-opponent panel **rejected**
-the proposed pressure bot. In 3,640 paired siege games, the frozen learner won
-2,162 (59.40%) against the old bot and 3,615 (99.31%) against the new bot;
-the new bot was much weaker on both learner seats. Candidate-minus-control
-learner win-rate delta was +39.92 points, clustered 95% CI [+38.09,+41.72].
-All 4,096 episodes per arm were completed, paired by initial state, seat and
-opponent label, with zero illegal moves. The verified archive SHA-256 is
-`813be34c1185a42545b21e6d1187bd80c20737c5a28623f898fd016dedd5df36`.
-The new bot made far more half moves, dispersed stacks into neutral cells and
-rarely reached its remembered-general target; the aggregate trace cannot
-isolate one cause of the loss.
-The narrower `job-wz2x8` early full-army border reinforcement pilot also
-**failed**. In 904 paired siege rows (452 per seat), the learner won 537
-(59.40%) against the old bot and 684 (75.66%) against the candidate;
-candidate-minus-control learner win-rate delta was +16.26 points, paired 95%
-CI [+12.54,+20.18]. Both seats worsened. The 1,024 episodes per arm matched
-on maps, seats and labels, with zero illegal actions. Verified archive SHA-256:
-`d5d340133d640691a66689f52c533c2b5f15538dc56b9fb33ab5221b2d8513b4`.
-Stop this siege-opponent line; neither variant qualifies for training.
-No training-population or serving change follows. Hosted replays suggest that
-general defense and army gathering are promising mechanisms; use fresh paired
-development and independent confirmation rather than those hosted losses as a
-tuning set.
+CPU admission used explicitly reconstructed receipts for a retained binary
+fixture. It does not qualify a fresh CUDA build or GPU training. The final
+4,096-game paired panel must improve over **both source and control**, with
+positive clustered lower confidence bounds and signed-score delta at least
+−0.10 in each opponent/seat group with at least 100 games. Smaller groups are
+reported without automatic rejection. A positive result needs independent confirmation
+before hosted qualification. The manifest binds input seals and timing budget.
 
-The isolated rank-8 source-conditioned global residual on
-`codex/source-global-product` at `817a258` preserves the public observation
-and action ABI. Its zero-head transplant reproduces selected source logits
-exactly before training; all ten frozen neural opponents were migrated once
-with old/new direct logit parity. Its bounded H100 `job-ffctd` **qualified**:
-4,194,304 steps at **37,787.9 steady end-to-end SPS** over the final
-1,048,576 steps after six warmup epochs, with 4,096 environments/H128/
-minibatch 8,192/replay 0.5, all 13 opponents balanced by seat, and zero
-illegal, nonfinite or clipped rewards. The 512-game source/serving gate and
-native CPU preflight passed before PPO. The job had zero restarts and billed
-$0.7293; verified result archive SHA-256:
-`46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23`.
-The bounded matched Product ablation `job-6y2gf` **did not clear the paired
-Classic development gate**. Both Product-ABI arms completed 16,777,216 PPO
-steps from the same source, optimizer seed and opponent pool; the control
-masked only the new Q-head gradients. On one H100, control and Product reached
-36,544.66 and 36,788.27 steady end-to-end SPS with 4,096 environments/H128/
-minibatch 8,192/replay 0.5. On 4,096 paired fresh first episodes (2,588 unique
-initial states), control went 2,729W/1,336L/31D and Product went
-2,737W/1,320L/39D. Product-minus-control paired signed-score delta was
-+0.005859, initial-state-clustered 95% CI [−0.022529,+0.034493]. The
-verified terminal artifact SHA-256 is
-`678fe6903e6782be772e033f37fc1612a20b80f2615dee51c6fb3f6c82257b49`.
-The trained Product Q-head norm was only 1.6655e-5; Product U/V stayed
-bitwise identical to the control. Sentinel seat 1 also regressed by 0.12931
-signed-score over 116 games, breaching the preregistered broad-stratum guard.
-The independent lineage and execution audit passed; the strength decision is
-negative. No independent confirmation, hosted evaluation or promotion follows.
-The selected source and serving version remain unchanged; exact checkpoint,
-comparison and audit hashes are in the manifest.
+## Rejected experiments: retain these lessons
 
-The repaired logical-matrix Product probe `job-24kw9` **failed its live SPS
-guard** at epoch 4: 21,436.7 SPS over the interval ending after 2,097,152
-completed steps. It produced no trained checkpoint or activation measurement,
-and no game-strength result. Its source 512-game gate and native parity passed;
-all 13 opponents appeared on both seats, with zero nonfinite or clipped rewards
-through the partial run. Verified result artifact SHA-256:
-`9e6aa536be345d6433248ddef1291be613ba94c45d2fd906f2bf8be544a91afb`.
-The repair uses logical Product U/V/Q matrices and a 128× gain; zero Q matches
-the source exactly and 11 migrated policies have byte-identical weights under
-both topologies. The live guard fired before the preregistered final-two-epoch
-steady interval after six warmup epochs. Its verified audit receipt SHA-256 is
-`e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac`;
-it billed $1.0186.
+Signed-score deltas below are candidate minus matched control unless noted.
+Exact settings, artifacts and audits are indexed by experiment in the manifest;
+these outcomes do not authorize promotion or repeat tuning on hosted losses.
 
-The corrected bounded H100 probe `job-g45tq` at `3a57c87` completed
-4,194,304 training steps and achieved **36,117.94 steady end-to-end SPS**:
-1,048,576 steps / 29.032 seconds after six warmup epochs. Settings were
-4,096 environments/H128/minibatch 8,192/replay 0.5; peak GPU memory was
-67.79 GiB. All 13 opponents had balanced assignments on both seats, with
-zero illegal actions, nonfinite rewards or clipped rewards. Source and trained
-native-to-serving parity passed, including 46/46 matching top actions.
+| Experiment | Result and lesson |
+| --- | --- |
+| Penalty-8 sampler | Local gain did not survive the hosted acceptance panel above. |
+| Safe-owned split, capital-threat gathering, garrison split | No reliable paired development gain. |
+| Force-assembly reset curriculum (`job-xbqmn`) | Candidate 2,778 wins versus source 2,791/4,096; no demonstrated gain. Frontier-join and early-border ideas are prior work, not unexplored fixes. |
+| Source-mirror PPO | Delta −0.00293, 95% CI [−0.03278,+0.02575]. |
+| Full-action temperature2 | 33.55M-step candidate 2,715 wins versus original 2,742/4,096; no established gain. |
+| Log-gap4 exploration | 8.39M-step candidate 2,633 wins versus original 2,780/4,096; delta −0.07251, CI [−0.10446,−0.04044]. |
+| Hard-opponent weights (`job-6cwtq`) | Both arms trained 16,777,216 steps at 37,027.3/34,576.8 SPS; delta −0.027832, CI [−0.059182,+0.003395]; one broad seat stratum regressed. |
+| Siege pressure bot (`job-m9ina`) | Learner wins rose 59.40%→99.31%: proposed opponent was much weaker on both seats. |
+| Early-border siege bot (`job-wz2x8`) | Learner wins rose 59.40%→75.66%; both seats worsened. Stop this opponent line. |
+| Original Product residual (`job-6y2gf`) | Delta +0.005859, CI [−0.022529,+0.034493]; tiny Q activation and sentinel-seat regression. |
+| Repaired Product early guard (`job-24kw9`) | Stopped at epoch 4, 21,436.7 SPS before planned warmup ended; no trained checkpoint or strength result. |
+| Repaired Product qualification (`job-g45tq`) | 36,117.94 SPS, 67.79 GiB peak; provider failed on omitted-versus-explicit sampler defaults. Separate CPU audit recovered activation on unchanged bytes; provider remains failed. |
+| Repaired Product pair (`job-9sump`) | Both arms trained 16,777,216 steps at 37,170.37/37,873.87 SPS; parity/activation passed, but delta −0.010010, CI [−0.040109,+0.019303]. |
+| Global route-shortcut removal (`job-wwvk3`) | Source 2,758 wins versus candidate 74/4,096; delta −1.300293, CI [−1.330346,−1.270591]. All 14 broad strata breached the guard. No confirmation. |
 
-The provider job nevertheless **failed** (exit 1) because its final activation
-audit compared raw sampler dictionaries: the source omitted
-`full_action_temperature=1.0` and `route_half_weight=0.0`, while the trained
-export included those same defaults. No original qualification marker exists.
-Audit correction `bd1dacf` compares their effective values. A separate CPU
-recovery on the unchanged checkpoint and bundle passed: Product legal-logit
-change max 0.01004052, RMS 0.00086386, with all U/V/Q matrices moving.
-This recovers the activation evidence without changing the provider outcome.
-The terminal artifact SHA-256 is
-`ee3b3caec3943ad630421b5e471f4cbc3e86fbe8eb044b986e4513c232b218af`;
-terminal and recovery audit hashes are in the manifest. The probe billed
-$1.2771. There is no policy-strength result; the selected source and champion remain
-unchanged.
+The Product comparisons do **not** establish missing global source
+awareness: the existing global readout is already a dense **32×3,530 matrix**
+with distinct source-site columns. Its default-semantic edges are excluded
+from the pinned Fabric sharing rule, and native/direct/serving preserve those
+parameter rows. The earlier contrary architecture rationale was incorrect.
 
-The corrected matched Product experiment `job-9sump` **failed the development
-strength gate**. Both arms completed 16,777,216 steps on one H100 at
-37,170.37/37,873.87 steady SPS (control/Product), with 4,096 environments,
-H128, minibatch 8,192 and replay 0.5. Each measurement covered the final
-1,048,576 steps after epoch 30. Both included all 13 opponents on both seats
-with zero illegal actions or nonfinite rewards. Trained serving parity,
-control invariance and Product activation passed: Product U/V/Q all moved,
-with legal-logit change max 0.01582146 and RMS 0.00154340.
+## Public diagnosis and cleanup
 
-Over 4,096 paired fresh games (2,616 distinct initial states), control scored
-2,801W/1,262L/33D versus Product 2,781W/1,283L/32D. Product-minus-control
-signed-score delta was −0.010010, clustered 95% CI [−0.040109,+0.019303].
-No broad stratum breached the −0.10 guard, but the overall improvement gate
-failed. No independent confirmation or promotion follows; the selected source
-and champion remain unchanged. The provider job succeeded on attempt 2 after
-one infrastructure start failure, with zero restarts and one billed attempt
-($2.728). Exact source, result and independent audit hashes are in the manifest.
+In the final 50 states of 23 Daveey losses, 57 castle-goal states and 133
+visible nearby-threat states had **zero overlap**. Castle priority is not
+supported as the immediate cause. An initial reinforcement screen double-counted
+evacuated defenders: accounting correction reduced six candidates to four;
+strict earlier-arrival/intermediate-safety screening retained one of 133 states.
+These conservative screens omit helpful merges, growth and alternate paths.
+Rejected candidates are not proof of impossible defense; survivors are not
+proof of rescue against an opponent response.
 
-Architecture correction: the actual global readout is a dense 32×3,530
-matrix, with distinct columns for different source sites. Its default-semantic
-edges are excluded from the pinned Fabric edge-sharing rule; DirectSpatial
-and serving preserve their native parameter rows. The earlier rationale that
-only the Product residual can distinguish source sites was incorrect.
-The failed Product comparison remains valid, but does not establish that
-more global source discrimination is the next missing capability.
+The learned route shortcut contributes roughly 12.73–14.44 logits at the
+selected temperature. Removing it improved a few static defense probabilities
+while preserving conditional splits, but the full paired ablation above
+collapsed. Static attribution is not evidence of improved playing strength.
 
-## Retired exploration runtime
+Earlier-window analysis verified 4,535 public states from the same losses.
+Before the first static threat, 3,117 states had visible enemies; 2,596 offered
+an immediate friendly merge increasing the largest stack, and selected actions
+increased it in 598. Median largest-stack share was 10.48%. Both merge
+directions are counted, but position and opportunity cost are not; correlated
+known-loss states without winning controls do not prove consolidation helps.
 
-The rejected log-gap experiment has been removed from training, serving and
-evaluation, including its standalone module. The selected source and all ten
-active frozen opponents use the remaining sampler: before/after logits and
-probabilities were bitwise identical on 133 recorded public views plus four
-opening-temperature boundary variants. Narrow checks passed (73 tests, four
-dependency skips; additional source-gate checks passed). Frozen-match reports
-now require schema v2; retired metadata and settings fail explicitly. This
-cleanup removes 210 net lines without claiming a strength improvement.
+Rejected log-gap runtime code was removed (210 net lines). Selected source
+and ten frozen opponents retained bitwise logits/probabilities on 133 public
+views and four temperature-boundary variants. Frozen reports require schema
+v2; retired metadata fails explicitly. This cleanup claims no strength gain.
 
-## Public loss diagnosis
-
-The final 50 public states of 23 verified Daveey losses do **not** support
-castle priority as the immediate failure: 57 castle-goal states and 133
-visible nearby threat states had zero overlap. A static public path/army
-screen originally flagged six capital reinforcements in four games;
-all six actual moves increased distance from the general. That screen
-double-counted defenders evacuated from the enemy's path. Correcting the
-army accounting leaves four candidates; a stricter interception screen
-requiring earlier arrival and safe intermediate timing retains one of 133
-threat states, in one game. These conservative screens omit helpful merges,
-growth and alternative paths: rejection does not prove defense impossible,
-and a surviving candidate does not prove rescue against an opponent response.
-
-The route hint also has a direct learned action shortcut, worth roughly
-12.73–14.44 logits at the selected temperature. With network inputs fixed,
-removing its full-route contribution equally from full/half heads raises one
-defense probability from 4.31e−7 to 0.17749 and another from 2.03e−9 to
-0.003569. Most other defenses remain unlikely. Conditional split logits stay
-within 4.77e−7 of baseline. All 133 saved public views match the canonical
-Classic observation code. The manifest binds the retained replays, scripts
-and attribution; this diagnostic uses the original screen, not new holdout
-strength evidence.
-
-Evaluation-only `job-wwvk3` **decisively rejected global shortcut removal**.
-The candidate changed eight native scalar weights while preserving encoded
-hints and conditional splits; native/direct/NumPy parity passed on 133 public
-states. On 4,096 paired fresh Classic games per arm (2,577 distinct initial
-states), source scored 2,758W/1,307L/31D and candidate 74W/3,949L/73D.
-Paired signed-score delta was −1.300293, clustered 95% CI
-[−1.330346,−1.270591]; all 14 broad opponent/seat strata breached the −0.10
-guard. All 13 opponents had balanced seats, and per-action legality checks
-passed. The isolated defensive probability improvements did not translate
-into playing strength: globally removing the shortcut destroys this policy.
-
-The H100 evaluation completed successfully at 2026-10-07 07:17:18 UTC on
-attempt 1, after one free image-loading retry, with zero runtime restarts.
-It billed 505 seconds/$0.4158 and added no training steps or throughput claim.
-The independent terminal audit and result archive hashes are in the manifest.
-No independent confirmation follows; the selected source and champion remain
-unchanged, and no experiment is active. The smaller evaluation image remains
-an unbuilt, unsubmitted artifact recorded in the manifest.
-
-The earlier-window audit checked 4,535 canonical public states across the
-same 23 losses. Before the first static threat, 3,117 states already had a
-visible enemy; 2,596 offered an immediate friendly merge that would grow the
-largest stack, while the actual action grew it in 598. The median largest
-stack held 10.48% of owned troops. This counts either direction of a merge,
-but neither position nor opportunity cost: correlated known-loss states
-without winning controls do not prove that consolidation improves play.
-
-The old, unwired normalized-concentration reward prototype is rejected:
-an official-engine counterexample rewards sacrificing nine troops because
-the surviving army becomes more concentrated. A monotone alternative,
-`F = sum(army²) / (10000 + sum(army²))`, cannot increase when own troops
-merely disappear. Eleven engine cases cover merging, transport, sacrifices,
-captures, growth and terminal treatment. It still rewards location-blind
-merging and can discourage expansion.
-
-Matched job `job-kzmub` was submitted at 2026-10-07 08:43:52 UTC from isolated
-source `a3569ae`, context `ctx-cac8804f`. It was building at 08:45:08 UTC;
-GPU qualification and strength remain unproven. One H100 is bounded to
-120 minutes/$5.94 with zero runtime restarts. Each arm starts the exact
-selected policy with a fresh optimizer and trains 4,194,304 qualification
-steps. **Both** must pass ≥30,000 steady end-to-end SPS, native serving parity
-and legality/reward/population audits before either continues its own authentic
-learner to 33,554,432 total steps. Candidate adds the fixed 0.05 monotone
-potential after turn 100; control retains the original reward.
-
-CPU admission passed using explicitly reconstructed receipts for a retained
-binary fixture. This does not qualify a fresh CUDA build or GPU training;
-both builds and training gates remain mandatory. The final 4,096-game paired
-panel must improve over both source and control with positive clustered lower
-confidence bounds and no negative opponent/seat point delta. A positive result
-still requires independent confirmation before hosted qualification. Exact
-input, context, CPU fixture and timing-budget hashes are in the manifest.
-
-For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
-`2147483645`, controller readback of Priority 1 and a finite limit, and a new
-≥30,000 steady end-to-end SPS gate for each long-training setup. Preserve the
-current champion until the full hosted acceptance gate passes.
+For Slurm, `AGENTS.md` requires B200/B300, Nice `2147483645`, controller
+readback of Priority 1 and a finite limit. Preserve the champion until the full
+hosted acceptance gate passes.
