@@ -51,6 +51,13 @@ def verify_development(audit_path, expected_sha, source_input):
     if not selected(reports):raise ValueError('Recomputed development comparison fails selection')
     if read(root/'selection.json')['selected'] is not True:raise ValueError('Development selection was negative')
     source_input=source_input.resolve()
+    binding=read(root/'source-binding.json')
+    if sha(source_input/'source-manifest.json')!=binding['source_manifest_sha256']:
+        raise ValueError('Original submitted input manifest differs')
+    for name,digest in read(source_input/'source-manifest.json').items():
+        relative=Path(name)
+        if relative.is_absolute() or '..' in relative.parts or sha(source_input/relative)!=digest:
+            raise ValueError('Original submitted input changed: '+name)
     bundles={'source':source_input/'bundles/cold',**{arm:root/arm/'continuation/bundle' for arm in ('control','candidate')}}
     from integrations.spatial_policy_bundle import SpatialPlayerPolicy
     policies={name:SpatialPlayerPolicy(path) for name,path in bundles.items()}
@@ -59,6 +66,8 @@ def verify_development(audit_path, expected_sha, source_input):
     identities={}
     for name,policy in policies.items():
         metadata=policy.asset.metadata
+        if read(root/('heldout-'+name)/'evaluation.json')['checkpoint_sha256']!=metadata['policy_sha256']:
+            raise ValueError('Development evaluation differs from frozen checkpoint: '+name)
         if (metadata['sampler']!=source['sampler'] or metadata['fabric']!=source['fabric']
                 or metadata['model_sha256']!=source['model_sha256'] or metadata['abi_sha256']!=source['abi_sha256']):
             raise ValueError('Frozen model/sampler identity differs: '+name)
