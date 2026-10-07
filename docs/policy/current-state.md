@@ -168,8 +168,20 @@ the largest stack despite an available alternative. Median best scaled own-force
 increment over passing was **2.56e−5**. This static own-transfer calculation
 omits growth, combat and opponent response; largest-stack growth is not proven
 strategic value. It supports neither a causal strength claim nor a coefficient
-sweep. Next is an offline opening/force-composition comparison across all 32
-games, with no GPU job or confirmed new mechanism.
+sweep.
+
+The completed opening comparison covered all 32 games. At turn 50, wins and
+losses had the same median army ratio (1.023) and largest-stack fraction (0.136).
+At first contact, largest-stack fractions were also similar (0.220/0.226), but
+its median distance from the capital was 1/9 and from visible enemies 13/2
+(wins/losses). Contact occurred earlier in wins: median turn **71 versus 85**.
+This timing difference, small unequal groups and sparse map dimensions prevent
+a causal claim that holding a stack back helps.
+
+Next is isolated preparation of a bounded GPU counterfactual diagnostic: compare
+public legal choices with paired future-policy rollouts on fresh simulated
+states before proposing new RL. Final preregistration is pending; no GPU job
+has been submitted and no new winning mechanism is established.
 
 Rejected log-gap runtime code was removed (210 net lines). Selected source
 and ten frozen opponents retained bitwise logits/probabilities on 133 public

@@ -22,7 +22,12 @@ artifact identities. Git history retains superseded attempts.
    completed both 32 Mi arms with independently verified training and parity,
    but its candidate was worse than the selected source and did not improve
    over control. Reject this fixed intervention; no confirmation or promotion.
-   Diagnose the completed evidence before choosing another mechanism.
+   Public opening comparisons show similar early army/concentration measures
+   but different first-contact timing and stack positions; these are confounded
+   correlations. Prepare a bounded, preregistered counterfactual diagnostic on
+   fresh simulated states to compare neglected public legal moves through
+   paired future-policy rollouts. No GPU job is submitted; final design remains
+   under review before any new RL or promotion.
 
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its

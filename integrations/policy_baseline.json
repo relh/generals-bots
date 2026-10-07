@@ -1052,6 +1052,36 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Offline comparison of opening and force composition across all32 retained source games; no GPU job or confirmed new mechanism."
+    "next_action": "Prepare isolated bounded counterfactual GPU diagnostic of public legal choices with paired future-policy rollouts on fresh states. Final preregistration pending; no GPU job submitted, no new RL or promotion.",
+    "opening_comparison": {
+      "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
+      "files_sha256": {
+        "opening_comparison.py": "f6f7b2711f5a0cf2fc758d83427c5dcb16eb3ebb54c29041fb92996c520bf5f9",
+        "opening-comparison.json": "a295abea317f2fb12fd599a5dce736c03acf5aad3ebfb62561c91d657980e54a",
+        "opening-contact-confounds.json": "c11340af1e4bf392212909b7b1528e46e9926685489cd2ebaf75fb831016cf18"
+      },
+      "games": 32,
+      "wins": 9,
+      "losses": 23,
+      "turn50_army_ratio_median_both": 1.023,
+      "turn50_largest_fraction_median_both": 0.136,
+      "first_contact_median_turn": {
+        "wins": 71,
+        "losses": 85
+      },
+      "first_contact_largest_fraction_median": {
+        "wins": 0.22,
+        "losses": 0.226
+      },
+      "first_contact_largest_distance_to_capital_median": {
+        "wins": 1,
+        "losses": 9
+      },
+      "first_contact_largest_distance_to_enemy_median": {
+        "wins": 13,
+        "losses": 2
+      },
+      "scope": "Public spatial information and scoreboard only; descriptive unequal small groups, later loss contact and sparse map dimensions confound comparisons. No causal holding-stack benefit or strength claim."
+    }
   }
 }
