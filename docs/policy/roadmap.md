@@ -26,8 +26,10 @@ artifact identities. Git history retains superseded attempts.
    but different first-contact timing and stack positions; these are confounded
    correlations. Prepare a bounded, preregistered counterfactual diagnostic on
    fresh simulated states to compare neglected public legal moves through
-   paired future-policy rollouts. No GPU job is submitted; final design remains
-   under review before any new RL or promotion.
+   paired future-policy rollouts. Plan `e4341f1` is preregistered and reviewed:
+   256 unique maps, two frozen opponents, balanced seats, four action branches
+   and four replicas. Implement and package it on the isolated branch; no GPU
+   job is submitted. Its diagnostic gate does not qualify new RL or promotion.
 
 2. Keep source, opponent pool, reward, maps, sampler and seats matched while
    testing one new mechanism. Require ≥30,000 steady end-to-end SPS on its

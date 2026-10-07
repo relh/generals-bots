@@ -1052,7 +1052,7 @@
       "scope": "Own friendly transfers only; no growth, combat, opponent movement or enemy potential. Correlated selected known-loss states; growing largest stack is a proxy, not demonstrated strategic benefit.",
       "conclusion": "Neither causal strategic value nor a coefficient sweep is established."
     },
-    "next_action": "Prepare isolated bounded counterfactual GPU diagnostic of public legal choices with paired future-policy rollouts on fresh states. Final preregistration pending; no GPU job submitted, no new RL or promotion.",
+    "next_action": "Implement and package reviewed isolated contact-counterfactual plan e4341f1; no GPU job submitted.",
     "opening_comparison": {
       "path": "integrations/softmax/local-output/public-memory-diagnosis-20261007",
       "files_sha256": {
@@ -1083,5 +1083,33 @@
       },
       "scope": "Public spatial information and scoreboard only; descriptive unequal small groups, later loss contact and sparse map dimensions confound comparisons. No causal holding-stack benefit or strength claim."
     }
+  },
+  "contact_counterfactual_preparation": {
+    "branch": "codex/contact-counterfactual",
+    "plan_revision": "e4341f1",
+    "plan_path": "integrations/contact_counterfactual_plan.json",
+    "plan_sha256": "c60b96175a4744e5d22913f3384a7960b2a3ac6829ec87a61f624692bd459cb6",
+    "status": "Preregistered and reviewed; isolated runner and packaging in progress; no new simulation or GPU job submitted.",
+    "unique_maps": 256,
+    "opponent_prefixes": [
+      "d2c30",
+      "83dc"
+    ],
+    "maps_per_opponent_seat": 64,
+    "collection_turn_cap": 600,
+    "action_branches": 4,
+    "replicas_per_branch": 4,
+    "primary": "Merge-minus-sampled-source signed terminal outcome, including unavailable merge duplicates; average replicas per map and bootstrap original maps.",
+    "positive_gate": {
+      "minimum_available_merge_maps": 128,
+      "minimum_mean_signed_delta": 0.02,
+      "cluster_ci95_lower_strictly_positive": true,
+      "minimum_opponent_seat_mean_delta": -0.1
+    },
+    "provider_minutes_per_attempt": 30,
+    "internal_minutes": 28,
+    "max_restarts": 0,
+    "training_steps": 0,
+    "scope": "Other arms exploratory. Diagnostic only; no promotion, hosted strength or learned-teacher qualification."
   }
 }

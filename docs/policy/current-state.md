@@ -178,10 +178,17 @@ its median distance from the capital was 1/9 and from visible enemies 13/2
 This timing difference, small unequal groups and sparse map dimensions prevent
 a causal claim that holding a stack back helps.
 
-Next is isolated preparation of a bounded GPU counterfactual diagnostic: compare
-public legal choices with paired future-policy rollouts on fresh simulated
-states before proposing new RL. Final preregistration is pending; no GPU job
-has been submitted and no new winning mechanism is established.
+The counterfactual diagnostic is now preregistered and reviewed on isolated
+`codex/contact-counterfactual`, plan commit `e4341f1`. It samples 256 unique
+first-contact maps by turn 600 against two frozen opponents (`d2c30`, `83dc`),
+with balanced seats, four legal-action branches and four random replicas each.
+The primary merge-minus-sampled-source terminal contrast includes unavailable
+merge duplicates. It requires at least 128 available merge maps, mean signed
+delta ≥0.02, clustered 95% lower bound >0 and every opponent/seat delta ≥−0.10.
+Other branches are exploratory. The planned one-H100 bound is 30 minutes per
+provider attempt, 28 internal, with no training or runtime restarts. Runner and
+packaging are in progress; no new simulation or GPU submission has occurred.
+This diagnostic cannot qualify a promotion or learned teacher.
 
 Rejected log-gap runtime code was removed (210 net lines). Selected source
 and ten frozen opponents retained bitwise logits/probabilities on 133 public
