@@ -119,15 +119,18 @@ native CPU preflight passed before PPO. The job had zero restarts and billed
 $0.7293; verified result archive SHA-256:
 `46caeb037c564cdf55f178c4e327d5bc46fd7ea66a57462f6513fd756de4ff23`.
 The Product architecture has no paired game-strength result or policy selection
-yet. A single-ABI matched ablation is submitted as bounded H100 `job-8tv8j`
+yet. A single-ABI matched ablation is submitted as bounded H100 `job-6y2gf`
 on `codex/product-single-abi-pair` at `83f68b4`. Both 16,777,216-step arms
 use the same Product source, opponent pool, Classic contract, seed, sampler and
 build; control masks only the 64 new Q-head gradients. The fresh 4,096-game
 paired development maps use seeds 10443701/10443703. Its sealed context
 archive SHA-256 is
-`5b849153bada2c164152febb8116437876e5ffbf36bbe193be7a07063905a67c`.
+`45408ff8c1c80afbd55afc6e3b968e9ba968bd07c044246a7fa1d9bb8ef6a5a2`.
 The job has zero restarts and an 80-minute/$3.96 cap. No strength decision
 exists until both arms and the paired panel complete.
+The first context `job-8tv8j` was canceled during build at $0 after tar
+inspection found macOS AppleDouble entries; the corrected archive passed full
+unprivileged readback with no such entries.
 
 For Slurm jobs, repository `AGENTS.md` requires B200/B300, maximum Nice
 `2147483645`, controller readback of Priority 1 and a finite limit, and a new
