@@ -175,12 +175,17 @@ A separate active-path audit found that the direct actor ignores recurrent carry
 but copies its unchanged 77,684-word state into JAX and back during rollout:
 **1.185 GiB per buffer, 303.453 GiB of explicit copies per 128-step epoch** at
 4,096 environments. These are code-derived byte counts, not measured speedups.
-An isolated zero-external-state implementation is being prepared, with explicit
-asset ABI migration and unchanged weight/optimizer layout required. It does
-not alter this submitted bridge probe or qualify a new policy.
-The migration inventory binds 14 asset manifests, 12 serving bundles and two
-optimizer snapshots across the radius-1 and radius-2 layouts (570,668 and
-578,860 parameters). All policy and optimizer bytes must remain identical.
+The zero-external-state implementation is integrated as **`ccf1895`**, with
+explicit ABI v2 and no compatibility path. It removes carry allocations, copies,
+resets and snapshots while preserving compiler scratch. All 12 policies match
+bitwise on fixed CPU rollout outputs, sampled actions and cotangent gradients;
+both layouts also match on multi-step training inputs with mixed terminals.
+All 14 asset manifests and 12 serving bundles were migrated, preserving policy,
+portable weight and both optimizer snapshots byte-for-byte. Root independently
+verified the comparisons and migrated bytes. The selected asset references now
+point to the migrated assets; historical experiment inputs remain hash-bound.
+**CUDA execution and throughput qualification are still pending.** This does
+not change the sealed bridge comparison or establish any policy strength gain.
 
 Main and the sealed source branch are pushed to the fork; transient GitHub
 server errors cleared on retry.

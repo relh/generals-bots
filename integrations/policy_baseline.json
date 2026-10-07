@@ -35,14 +35,14 @@
       "doomed_attack_route_penalty": 4.0
     },
     "native_asset": {
-      "path": "integrations/softmax/local-output/route-shortcut-diagnosis-20261007/source-asset/asset.json",
-      "sha256": "58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9"
+      "path": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/00-selected-native/asset.json",
+      "sha256": "1f2b3bbf25f597767a938e955aba0c5be8093726b8f07d0726feffa249fe8605"
     },
     "portable_bundle_manifest": {
-      "path": "integrations/softmax/local-output/route-shortcut-diagnosis-20261007/source-bundle/spatial-policy.json",
-      "sha256": "5fc3be611f408eec3cd9d8332884b60e17a32647a2c242611b40e268384cec8f"
+      "path": "integrations/softmax/local-output/stateless-abi-admission-20261007/migrated/01-selected-serving/spatial-policy.json",
+      "sha256": "1e4e043490617a6eb9d12f34e8814c4d336026199f41589e9eeab5f999053ba2"
     },
-    "byte_preserving_metadata_rebind_proof_sha256": "94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd"
+    "byte_preserving_metadata_rebind_proof_sha256": "554b6c04ac338724d7553fbf9b643d8e238cf4d364e3b8147f5b9c6bb4e1ded3"
   },
   "baseline_hosted_screen": {
     "games_per_opponent": 32,
@@ -1602,7 +1602,7 @@
     "retry_work": "Dedicated strict JSON report file and retained compiler/run streams implemented in isolated diagnostic; production-bootstrap admission and exact input-diff checks pending before submission."
   },
   "stateless_execution_work": {
-    "status": "isolated implementation; no GPU experiment or asset migration completed",
+    "status": "integrated; CPU equivalence and all asset migrations verified; CUDA execution and throughput qualification pending",
     "audit_path": "integrations/softmax/local-output/bridge-profile-launch-20261007/stateless-carry-audit.json",
     "audit_sha256": "06ddb044f226d642a8cf70ae61189189bd329b6b83ca55ea89004feb6e6c2e47",
     "branch": "codex/stateless-spatial-abi",
@@ -1618,6 +1618,22 @@
         570668,
         578860
       ]
+    },
+    "source_revision": "0e6a552ce8fd6b8dae7dd4e53f986e8462ed99d9",
+    "integration_revision": "ccf1895",
+    "admission": {
+      "path": "integrations/softmax/local-output/stateless-abi-admission-20261007/admission.json",
+      "sha256": "b58a0942316088f407be3305ed6438e9ca979adb938e3aec2d7bfd43ada12954"
+    },
+    "migration": {
+      "path": "integrations/softmax/local-output/stateless-abi-admission-20261007/migration.json",
+      "sha256": "03f0619ab349401971c6bd858c229e72ef2e7805182e566f83de94bd4e325ab9"
+    },
+    "external_state_words": 0,
+    "gpu_stateless_executed": false,
+    "independent_verification": {
+      "path": "integrations/softmax/local-output/stateless-abi-inventory-20261007/root-verification.json",
+      "sha256": "5beae808f60247d7f232d77cbb64224603e98047a39ff17e6f9afeca6cea284a"
     }
   }
 }
