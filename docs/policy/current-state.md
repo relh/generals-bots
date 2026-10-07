@@ -3,7 +3,7 @@
 Updated 2026-10-07. **Winning-policy acceptance has not passed; no champion
 changed.** The selected policy remains the radius-2 Classic source from B300
 job `35892`. As of **2026-10-07 17:59 UTC**, bounded bridge diagnostic
-**`job-6khn8` is building**. The preceding row-rotation qualifications failed the
+**`job-6khn8` is queued for an H100**. The preceding row-rotation qualifications failed the
 strict throughput gate; no long continuation or strength evaluation ran.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
@@ -139,10 +139,11 @@ slowed 3.086 and 1.111 seconds. Same physical GPU, sampled clocks fixed at
 retained 61-second fully allocated interval. These observations do not isolate
 a cause; they provide no support for changing power limits or CPU quota.
 
-### Bridge execution diagnostic: building
+### Bridge execution diagnostic: queued
 
 `job-6khn8` was submitted **2026-10-07 17:58:15 UTC**, context `ctx-12ac3324`,
-for one H100. It compares the original bridge with four output-copy waits
+for one H100. The image build passed; at **18:18:10 UTC** it was queued,
+with no runtime attempt yet. It compares the original bridge with four output-copy waits
 consolidated into one, in **A–B–B–A order**. Each fresh run has 2,097,152 steps,
 two warmup epochs and two measured epochs; workers stay fixed at eight.
 All DLPack owners remain alive through the final output wait; input readiness

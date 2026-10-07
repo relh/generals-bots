@@ -1551,7 +1551,7 @@
     }
   },
   "bridge_execution_probe": {
-    "status": "building",
+    "status": "queued",
     "plan_path": "integrations/bridge_profile_plan.json",
     "plan_sha256": "e4b55b5c05f265776c057c70357239cb9be8420e10d8f60b3a90af384089b22b",
     "baseline_revision": "0df0d24a1bafa658a5897c83fe77c1bc56935563",
@@ -1563,7 +1563,7 @@
     "job_id": "job-6khn8",
     "context_id": "ctx-12ac3324",
     "submitted_at": "2026-10-07T17:58:15.367097+00:00",
-    "last_observed_at": "2026-10-07T17:59:24.971588+00:00",
+    "last_observed_at": "2026-10-07T18:18:10.703415+00:00",
     "guard_pid": 77874,
     "quoted_runtime_max_usd": 2.2275,
     "source_revisions": {
