@@ -1820,7 +1820,7 @@
     "continuation_plan": {
       "path": "integrations/stateless_continuation_plan.json",
       "sha256": "6259badd474e3a1691c17ce7a87e54bd5ea39a8966f8ab27f61020f516802be3",
-      "status": "job-mwvdb training from verified restored epoch8; initial postwarmup throughput above30K; finalaudit and strength pending",
+      "status": "job-mwvdb completed32Mi run clock at42,432.618SPS; checkpoint publication/finalparity/strengthpanels pending",
       "integration_revision": "95d1dea",
       "coordinator_sha256": "182f8889340679290a470f3cd95aaa1be2ced0a729f175ca1d66df4a3f95b0d8",
       "entrypoint_sha256": "f90ad0c54e940042eac5d4ffb00a5de118056047b5a771762a7dabe1a4373532",
@@ -1847,7 +1847,7 @@
       "binding_integration_revision": "cc5c2a1",
       "launch": {
         "job_id": "job-mwvdb",
-        "status": "running; native training",
+        "status": "running; checkpoint publication",
         "submitted_at": "2026-10-07T20:43:44.788274+00:00",
         "attempt": 0,
         "max_cost_usd": 3.7125,
@@ -1875,9 +1875,10 @@
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/aggregate-guard-process.json": "1c5d1e89ea5207a09f8574d0cdd26e0f8bff5283aab2a9b5a96338fac0473dc2",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/collect_and_audit.py": "5f4ece221fae297b203fa0f1a265d5b8413c844d7f0eb2fbfa7c7661c873ad93",
           "integrations/softmax/local-output/stateless-continuation-launch-20261007/allocation-deadline.json": "64e8377234564f1f72e73155e237c796d3e2feb12868dc686eeacf791f56e667",
-          "integrations/softmax/local-output/stateless-continuation-launch-20261007/first-training-evidence.json": "15b6568496c3c144fbb4a4c907110a3df5d2c5eeeef903396da148774a01c70b"
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/first-training-evidence.json": "15b6568496c3c144fbb4a4c907110a3df5d2c5eeeef903396da148774a01c70b",
+          "integrations/softmax/local-output/stateless-continuation-launch-20261007/completed-training-evidence.json": "284ad44113f1d43af04aadc2f9a68ff727b1200ace65256c82069d32b84bea4b"
         },
-        "last_observed_at": "2026-10-07T21:18:46.794656+00:00",
+        "last_observed_at": "2026-10-07T21:29:19.927981+00:00",
         "aggregate_deadline": "2026-10-07T22:18:45.188150+00:00",
         "first_allocation_lower_bound_at": "2026-10-07T21:03:45.188150+00:00",
         "first_training_evidence": {
@@ -1911,6 +1912,29 @@
             "actual_parameter_count": 578860
           },
           "scope": "Live log evidence only; terminal checkpoint, full-interval audit and strength panels pending"
+        },
+        "completed_training_evidence": {
+          "job_id": "job-mwvdb",
+          "observed_at": "2026-10-07T21:29:19.927981+00:00",
+          "status": "running; checkpoint publication",
+          "starting_epoch": 8,
+          "ending_epoch": 64,
+          "incremental_steps": 29360128,
+          "ending_run_steps": 33554432,
+          "warmup_epochs": 2,
+          "measured_steps": 28311552,
+          "measured_seconds": 667.212,
+          "steady_sps": 42432.61811837916,
+          "minimum_rolling_two_epoch_sps": 37330.48524333361,
+          "illegal_actions": 0,
+          "reward_audit": {
+            "agent_steps": 29360128,
+            "nonfinite_rewards": 0,
+            "native_clipped_rewards": 0,
+            "native_clipped_terminal_rewards": 0
+          },
+          "log_sha256": "949d84c341ddfd08cb02bef2d6716c397ba16fa58d8d631588a5372c247401e3",
+          "scope": "Live console evidence; final checkpoint and learner hashes, final parity, telemetry and all strength panels pending terminal artifact audit"
         }
       }
     },

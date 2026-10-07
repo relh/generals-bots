@@ -7,9 +7,10 @@ job `35892`. Corrected stateless qualification **`job-tvqh9` succeeded at
 confirmed **41,601 end-to-end SPS**, source/final GPU parity and the authentic
 4,194,304-step checkpoint and optimizer. Sampled peak GPU memory was **63.35 GiB**.
 Continuation **`job-mwvdb` was submitted at 20:43:44 UTC** and reached
-allocation startup at **21:04 UTC**. At **21:18:46 UTC**, restored training
-has completed epoch 13, with initial post-warmup throughput above 40K SPS;
-it targets 33,554,432 run steps and fresh strength panels. No strength improvement or hosted acceptance is established.
+allocation startup at **21:04 UTC**. At **21:29 UTC**, all continuation training
+completed through epoch 64 / 33,554,432 run steps. The full post-warmup interval
+measured **42,433 SPS**. Checkpoint publication, final parity and strength panels
+are still pending. No strength improvement or hosted acceptance is established.
 
 The [machine manifest](../../integrations/policy_baseline.json) records exact
 artifact identities, paths, qualification receipts and rejected experiments.
@@ -102,8 +103,9 @@ sources. All seven evidence bindings are sealed against successful `job-tvqh9`
 in **`cc5c2a1`**. The continuation adds 29,360,128 steps to epoch 64 / 33,554,432
 run steps, then evaluate all three frozen arms. Shared bounded process cleanup
 retains partial artifacts on failure; nine focused checks passed. No continuation
-has completed yet. **`job-mwvdb`** is training from verified epoch-8 policy and
-optimizer bytes, from context `ctx-5f217fc4`,
+has passed its complete artifact/strength audit yet. **`job-mwvdb`** completed
+29,360,128 added steps from verified epoch-8 policy and optimizer bytes, from
+context `ctx-5f217fc4`,
 source **`d47ae09`** (same committed plan/runtime code as integrated main).
 Root verified all **789 sealed files**, including 256 exact Git source files,
 authentic qualification artifacts, historical control and 46 parity fixtures.
@@ -111,6 +113,10 @@ Actual CPU preparation restored the exact epoch-8 policy and optimizer.
 Limits: **75/73/75 minutes provider/internal/aggregate**, zero restarts;
 maximum quote **$3.7125**. Detached aggregate guard **PID 84888** is live,
 with fixed deadline **22:18:45 UTC** from conservative anchor **21:03:45 UTC**.
+Live logs show **28,311,552 post-warmup steps / 667.212 seconds = 42,432.618 SPS**;
+minimum rolling two-epoch throughput was **37,330.485 SPS**. All 29,360,128 new
+actions were legal; nonfinite/clipped reward counts were zero. This is training
+completion evidence, pending terminal artifact verification and strength results.
 
 `job-zsz35` terminated at **16:38:29 UTC** on attempt 1 after the qualification
 gate measured **29,811.11 SPS**: 1,048,576 steps / 35.174 seconds between epochs
