@@ -164,7 +164,11 @@ The diagnosis found identical GPU clocks, CPU quota, cuBLAS, build settings and
 interval. Model inference and optimization slowed roughly 2–2.6×, versus about
 1.4× for environments; the exact cause remains unproven.
 
-**`job-mcxks` submitted at 01:36:04 UTC and is building.** It compares compiled
+**`job-mcxks` submitted at 01:36:04 UTC; first startup began at 01:52:19 UTC.**
+The image build/push completed, and the allocated node is downloading it. The
+live guard fixes the allocation deadline at **02:52:00 UTC**, using the last
+preallocation observation. No infrastructure failure or retry is reported.
+It compares compiled
 action postprocessing against the existing dispatch path in one bounded
 baseline/fused/fused/baseline H100 job. Each arm uses 2,097,152 steps, the common
 geometry above, fresh optimizer state and zero midgame resets. Raw model and

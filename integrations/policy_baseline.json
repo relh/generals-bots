@@ -376,7 +376,7 @@
     {
       "job_id": "job-mcxks",
       "kind": "dispatch_fusion_probe",
-      "status": "building",
+      "status": "starting",
       "details": "dispatch_fusion_probe"
     }
   ],
@@ -3203,7 +3203,7 @@
     "memory_reduction_verified_mib": 21108.0
   },
   "dispatch_fusion_probe": {
-    "status": "submitted; building observed 2026-10-08T01:36:05Z",
+    "status": "starting; first allocation observed 2026-10-08T01:52:21Z",
     "job_id": "job-mcxks",
     "submitted_at": "2026-10-08T01:36:04.646233+00:00",
     "context_id": "ctx-662f334c",
@@ -3267,6 +3267,9 @@
     "qualified_for_long_training": false,
     "selected": false,
     "decision": "Diagnostic only; both candidate intervals >=30K permits separate full 4Mi qualification. No strength or promotion claim.",
-    "collector_python": "/private/tmp/generals-source-global-product-venv/bin/python (3.12; required for matching AST serialization)"
+    "collector_python": "/private/tmp/generals-source-global-product-venv/bin/python (3.12; required for matching AST serialization)",
+    "attempt": 1,
+    "guard_deadline": "2026-10-08T02:52:00.948513+00:00",
+    "first_allocation_lower_bound_at": "2026-10-08T01:52:00.948513+00:00"
   }
 }
