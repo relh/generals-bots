@@ -376,7 +376,7 @@
     {
       "job_id": "job-h8sqm",
       "kind": "fresh_start_dispatch_trial",
-      "status": "starting",
+      "status": "running",
       "details": "fresh_start_dispatch_trial"
     }
   ],
@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "starting",
+    "status": "running; source GPU parity passed; native build in progress",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3374,6 +3374,43 @@
     "attempt": 1,
     "startup_started_at": "2026-10-08T02:39:31.477727+00:00",
     "guard_deadline": "2026-10-08T04:09:24.903846+00:00",
-    "first_allocation_lower_bound_at": "2026-10-08T02:39:24.903846+00:00"
+    "first_allocation_lower_bound_at": "2026-10-08T02:39:24.903846+00:00",
+    "running_observed_at": "2026-10-08T02:54:43.887667+00:00",
+    "source_gpu_parity": {
+      "layout_backend": "cpu",
+      "inference_backend": "gpu",
+      "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+      "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+      "serving_action_selection": {
+        "doomed_attack_route_penalty": 4.0,
+        "early_route_temperature": 0.1,
+        "early_route_turns": 100,
+        "mode": "structured_sample",
+        "move_temperature": 0.05,
+        "neutral_route_bias": 6.0,
+        "split_temperature": 0.15,
+        "weak_owned_route_penalty": 4.0
+      },
+      "bundle_manifest_sha256": "a0964e572aa8971217588882fa6bdf6a14153444e943ce287aabade5857c242e",
+      "hosted_games": 4,
+      "replay_turns": [
+        0,
+        25,
+        99,
+        100,
+        150,
+        200
+      ],
+      "public_states": 46,
+      "native_batch": 8,
+      "max_logit_difference": 2.86102294921875e-06,
+      "max_action_probability_difference": 4.4405460357666016e-06,
+      "max_rollout_transform_difference": 1.7881393432617188e-07,
+      "matching_top_actions": 46,
+      "jax_backend": "gpu",
+      "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
+    },
+    "source_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T025856568319Z-sanitized.log"
   }
 }
