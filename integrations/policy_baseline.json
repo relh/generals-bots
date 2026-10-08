@@ -372,7 +372,14 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [],
+  "active_experiments": [
+    {
+      "job_id": "job-mcxks",
+      "kind": "dispatch_fusion_probe",
+      "status": "building",
+      "details": "dispatch_fusion_probe"
+    }
+  ],
   "monotone_force_matched_training": {
     "hardware": "one H100",
     "qualification_steps_per_arm": 4194304,
@@ -3194,5 +3201,72 @@
       "integrations/softmax/local-output/gather-probe-input-gate-launch-20261007/collect_and_audit.py": "b72ad9ac41d63b9edbe31c1c39b32a06ee896a54a362da577107172f133b866d"
     },
     "memory_reduction_verified_mib": 21108.0
+  },
+  "dispatch_fusion_probe": {
+    "status": "submitted; building observed 2026-10-08T01:36:05Z",
+    "job_id": "job-mcxks",
+    "submitted_at": "2026-10-08T01:36:04.646233+00:00",
+    "context_id": "ctx-662f334c",
+    "coordinator_commit": "9c52b5adc50f42d78c65e0412f47631c7327e810",
+    "baseline_commit": "589bfab160c583798f69892e4dd9387dae7f7f85",
+    "candidate_commit": "7f14fb0b0dacde471f879abe5329557dc11c9b08",
+    "intervention": "JIT acting postprocessing and finite reduction; raw forward/backward unchanged",
+    "order": [
+      "baseline",
+      "fused",
+      "fused",
+      "baseline"
+    ],
+    "hardware": "one H100",
+    "geometry": {
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch": 8192,
+      "replay_ratio": 0.5,
+      "workers": 8,
+      "midgame_reset_probability": 0.0
+    },
+    "per_arm_steps": 2097152,
+    "per_arm_seconds": 480,
+    "warmup_epochs": 2,
+    "measured_steps_per_arm": 1048576,
+    "provider_minutes": 60,
+    "internal_minutes": 58,
+    "aggregate_minutes_from_first_allocation": 60,
+    "max_restarts": 0,
+    "quoted_max_cost_usd": 2.97,
+    "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "new_abi_sha256": "8b855543272c195ab1750cfde5726dcbc289d5ebcfd4566a4acffde84c3862d8",
+    "policy_parameter_bytes_preserved": true,
+    "cpu_admission": {
+      "production_bootstrap": true,
+      "fixtures": 8,
+      "max_probability_difference": 4.6566128730773926e-09,
+      "matching_top_actions": true,
+      "finite_gradient_vectors": 12,
+      "independently_recomputed_gradient_pairs": 30,
+      "comparison_sha256": "2abde69cc438c404f0401771f08ab90cd1e66f6d74b5eb880a91baba702649a0"
+    },
+    "evidence_directory": "integrations/softmax/local-output/dispatch-probe-launch-20261008",
+    "bindings": {
+      "ready.json": "53cd0f07c7000ba9293e1a938394d82f09c0ddbff4e118b3e34183adc5df82ca",
+      "context-seal.json": "0d0639d79572e53026ba4d5531576edeb0ce5ad9b319a71e4e5591f523e10424",
+      "root-review.json": "1c0bc999581e041b934cc3f5adff28388fb7f970243fd5cd192d631cc8f43486",
+      "cpu-admission.json": "c16c67813ee3cf9036cef0899e84d4a7a11a53cfcede602d74486c14d34dab68",
+      "cpu-dispatch-admission.json": "c98479e5dc75a69b4138121091e63bd29ea1ac47fe3dbcdaf853a89950acafc1",
+      "collector-review.json": "a6f1b812f63c61858525eb44bbe7d6c1ff6f9bc6ffe2643a35674dc593e0ff29",
+      "asset-migration.json": "e1c12ac41cd8b1e5b1795eb1114a32cb41460029941ba33dc0dc20dd6cc1b7f0",
+      "submission.json": "746a1fbf7edef149292e2e9709b6db873653b866f85fc8e2ddc505856e7bbf83",
+      "request.json": "01365e2aa2445b33408090ac6af4149f20fefa8fed48debbed6e1add76a358f6"
+    },
+    "archive_sha256": "9cd38be1b16b6ae59b7ac341dc5414dccea399ee9a01a8630011d3f057824678",
+    "archive_bytes": 194510861,
+    "archive_members_verified": 1168,
+    "guard_pid": 35487,
+    "guard_live_verified": true,
+    "qualified_for_long_training": false,
+    "selected": false,
+    "decision": "Diagnostic only; both candidate intervals >=30K permits separate full 4Mi qualification. No strength or promotion claim.",
+    "collector_python": "/private/tmp/generals-source-global-product-venv/bin/python (3.12; required for matching AST serialization)"
   }
 }

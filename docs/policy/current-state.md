@@ -164,15 +164,25 @@ The diagnosis found identical GPU clocks, CPU quota, cuBLAS, build settings and
 interval. Model inference and optimization slowed roughly 2–2.6×, versus about
 1.4× for environments; the exact cause remains unproven.
 
-**Next:** compare compiled action postprocessing against the existing dispatch
-path in one bounded ABBA job, preserving raw forward/backward calculations and
-the immediate finite guard. The implementation is integrated. Fifteen focused
-checks and eight authentic CPU states passed; legal probabilities differed by
-at most 4.66e−9, with matching top actions. Raw forward/backward code is unchanged.
-GPU speed and GPU numerical parity remain unmeasured. Candidate asset metadata
-must explicitly bind the changed adapter hash before launch; original selected
-assets remain historical evidence. No new job is submitted. Do not resubmit the
-unchanged setup.
+**`job-mcxks` submitted at 01:36:04 UTC and is building.** It compares compiled
+action postprocessing against the existing dispatch path in one bounded
+baseline/fused/fused/baseline H100 job. Each arm uses 2,097,152 steps, the common
+geometry above, fresh optimizer state and zero midgame resets. Raw model and
+backward calculations, sampler and immediate finite guard are preserved.
+
+Fifteen focused checks and eight authentic CPU states passed, including the
+actual production bootstrap. Legal probabilities differed by at most 4.66e−9,
+with matching top actions. The collector independently recomputed 30 gradient
+comparisons. Explicit candidate asset migration changes only the adapter's
+source hash in the ABI descriptor; policy, optimizer and serving weight bytes
+are preserved. GPU parity and speed remain unmeasured.
+
+The job has zero retries, a 60-minute provider/aggregate bound, 58-minute internal
+bound, and a **$2.97 maximum quote**. The allocation guard is live. All 1,168
+archive files and three exact Git source archives were independently checked.
+Both candidate diagnostic intervals must reach 30K SPS before a separate full
+qualification is considered. This job does not authorize long training or policy
+selection. No unchanged retry of the failed setup was submitted.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**
