@@ -28,6 +28,8 @@ def prepare(inputs, output):
         raise ValueError('Unsealed or changed ABBA plan')
     manifest = read(inputs/'input-manifest.json')
     required = {'baseline-source.json', 'fused-source.json', 'config.json', 'build-config.json'}
+    required |= {'abi-migration/'+name for name in ('baseline.json', 'candidate.json', 'proof.json', 'migration.json', 'migrate.py')}
+    required |= {'fused/'+str(p.relative_to(inputs/'fused')) for p in (inputs/'fused').rglob('*') if p.is_file()}
     if not required <= manifest.keys():
         raise ValueError('Missing fixed input bindings')
     for name, expected in manifest.items():
@@ -59,6 +61,37 @@ def prepare(inputs, output):
                            manifest_sha256=item['manifest_sha256'])
         if asset.metadata['policy_sha256'] != item['policy_sha256']:
             raise ValueError('Source or opponent changed')
+    from integrations.native_spatial_asset import canonical_json, sha256
+    migration = inputs/'abi-migration'
+    descriptors = [read(migration/name) for name in ('baseline.json', 'candidate.json')]
+    if ({k for k in descriptors[0].keys() | descriptors[1].keys()
+         if descriptors[0].get(k) != descriptors[1].get(k)} != {'direct_adapter_sha256'}):
+        raise ValueError('Migration changed the native layout')
+    abis = [sha256(canonical_json(d)) for d in descriptors]
+    for arm, descriptor in zip(('baseline', 'fused'), descriptors, strict=True):
+        if descriptor['direct_adapter_sha256'] != digest(inputs/'sources'/arm/'integrations/direct_spatial_optimization.py'):
+            raise ValueError('Migration descriptor source differs')
+    receipt = read(migration/'migration.json')
+    if (receipt['proof_sha256'] != digest(migration/'proof.json')
+            or receipt['proof'] != read(migration/'proof.json')
+            or receipt['script_sha256'] != digest(migration/'migrate.py')
+            or [receipt['proof']['old_abi_sha256'], receipt['proof']['new_abi_sha256']] != abis
+            or receipt['proof']['baseline_descriptor_sha256'] != digest(migration/'baseline.json')
+            or receipt['proof']['candidate_descriptor_sha256'] != digest(migration/'candidate.json')
+            or [r['path'] for r in receipt['assets']] != ['assets/cold', 'bundles/cold']):
+        raise ValueError('Migration receipt differs')
+    for record in receipt['assets']:
+        before_path, after_path = inputs/record['path'], inputs/'fused'/record['path']
+        before = read(before_path/'asset.json')
+        after = load_asset(after_path/'asset.json', manifest_sha256=record['new_manifest_sha256']).metadata
+        if (digest(before_path/'asset.json') != record['old_manifest_sha256']
+                or [before['abi_sha256'], after['abi_sha256']] != abis
+                or {k:v for k,v in before.items() if k not in ('abi_sha256', 'provenance')}
+                   != {k:v for k,v in after.items() if k not in ('abi_sha256', 'provenance')}):
+            raise ValueError('Candidate migration changed weights, layout or objective')
+        for name in ('policy.bin', 'policy.bin.learner', 'weights.npz'):
+            if (before_path/name).exists() and digest(before_path/name) != digest(after_path/name):
+                raise ValueError('Candidate migration changed parameter bytes')
     if output.exists():
         raise ValueError('Fresh diagnostic output required')
     output.mkdir(parents=True)
@@ -141,34 +174,57 @@ def main():
         write(out/'build-config.json', build)
         execute('launch_spatial_selfplay_training', ['build', '--config', out/'build-config.json', '--output', out/'build'],
                 source=source, output=out, sampler=sampler, name='build', seconds=600)
-        execute('audit_spatial_checkpoint_serving_parity', ['--bundle', inputs/'bundles/cold', '--replay-root', inputs/'leader-root',
+        execute('audit_spatial_checkpoint_serving_parity', ['--bundle', (inputs/'fused/bundles/cold' if arm == 'fused' else inputs/'bundles/cold'), '--replay-root', inputs/'leader-root',
                 '--factory-source', source/'integrations/generals_fabric.py', '--output', out/'source-parity.json'],
                 source=source, output=out, sampler=sampler, name='source-parity', seconds=600)
         parity = read(out/'source-parity.json')
-        if parity['public_states'] != 46 or parity['matching_top_actions'] != 46 or parity['inference_backend'] != 'gpu':
+        from integrations.classic_contract import ENGINE_SHA256
+        bundle = inputs/('fused/bundles/cold' if arm == 'fused' else 'bundles/cold')
+        if (parity['public_states'] != 46 or parity['matching_top_actions'] != 46
+                or parity['inference_backend'] != 'gpu'
+                or not 0 <= parity['max_action_probability_difference'] <= 1e-5
+                or not 0 <= parity['max_rollout_transform_difference'] <= 1e-5
+                or parity['checkpoint_sha256'] != plan['source_policy_sha256']
+                or parity['engine_sha256'] != ENGINE_SHA256
+                or parity['factory_source_sha256'] != digest(source/'integrations/generals_fabric.py')
+                or parity['serving_action_selection'] != sampler
+                or parity['bundle_manifest_sha256'] != digest(bundle/'spatial-policy.json')):
             raise ValueError('Source serving parity failed')
-    # Compare the actual baseline and fused production forward/backward paths.
-    execute('audit_dispatch_fusion', ['--baseline-source', inputs/'sources/baseline',
-            '--candidate-source', inputs/'sources/fused', '--output', output/'dispatch-parity.json'],
-            source=inputs/'sources/fused', output=output, sampler=sampler, name='dispatch-parity', seconds=600)
+    coordinator = Path(__file__).resolve().parents[1]
+    for arm in ('baseline', 'fused'):
+        arguments = ['--source', inputs/'sources'/arm, '--input', inputs,
+                     '--asset', (inputs/'fused/assets/cold/asset.json' if arm == 'fused' else inputs/'assets/cold/asset.json'),
+                     '--output', output/('dispatch-'+arm)]
+        if arm == 'fused':
+            arguments += ['--baseline', output/'dispatch-baseline']
+        execute('audit_dispatch_fusion', arguments, source=coordinator, output=output,
+                sampler=sampler, name='dispatch-'+arm, seconds=600)
+    execute('audit_dispatch_fusion', ['--compare', output/'dispatch-baseline', output/'dispatch-fused',
+            '--output', output/'dispatch-parity.json'], source=coordinator, output=output,
+            sampler=sampler, name='dispatch-compare', seconds=120)
     parity = read(output/'dispatch-parity.json')
     if parity.get('passed') is not True or parity.get('backend') != 'gpu':
         raise ValueError('Production dispatch parity failed')
-    bindings = dict(baseline_source_sha256=inputs/'sources/baseline/integrations/direct_spatial_optimization.py',
-                    candidate_source_sha256=inputs/'sources/fused/integrations/direct_spatial_optimization.py',
-                    audit_module_sha256=inputs/'sources/fused/integrations/audit_dispatch_fusion.py')
-    if any(parity.get(key) != digest(path) for key, path in bindings.items()):
-        raise ValueError('Production dispatch audit source bindings differ')
+    for arm, expected in zip(('baseline', 'fused'), parity['admissions'], strict=True):
+        receipt = output/('dispatch-'+arm)/'admission.json'
+        admission = read(receipt)
+        if (digest(receipt) != expected or admission['source_sha256'] != digest(inputs/'sources'/arm/'integrations/direct_spatial_optimization.py')
+                or admission['audit_module_sha256'] != digest(coordinator/'integrations/audit_dispatch_fusion.py')):
+            raise ValueError('Production dispatch audit source bindings differ')
     reports = []
     for index, arm in enumerate(ORDER):
         stage = output/f'{index+1}-{arm}'
-        write(stage/'config.json', config)
-        write(stage/'build-config.json', build)
+        run_config = copy.deepcopy(config)
+        if arm == 'fused':
+            asset = inputs/'fused/assets/cold/asset.json'
+            run_config['initialize'] = dict(asset=str(asset), manifest_sha256=digest(asset), restore_learner=False)
+        write(stage/'config.json', run_config)
+        write(stage/'build-config.json', read(output/arm/'build-config.json'))
         write(stage/'sampling-gate.json', sampling)
         execute('launch_spatial_selfplay_training', ['train', '--build', output/arm/'build', '--config', stage/'config.json',
                 '--output', stage/'run'], source=inputs/'sources'/arm, output=stage, sampler=sampler, name='train',
                 seconds=480, startup_seconds=300, training_config=stage/'config.json', diagnostic_profile=True)
-        reports.append(dict(arm=arm, **audit(stage, config, identity['uuid'])))
+        reports.append(dict(arm=arm, **audit(stage, run_config, identity['uuid'])))
     peaks = {arm: sum(r['sampled_peak_mib'] for r in reports if r['arm'] == arm)/2 for arm in ('baseline', 'fused')}
     write(output/'COMPLETED.json', dict(plan_sha256=digest(output/'plan.json'), stages=reports,
           mean_sampled_peak_mib=peaks, sampled_memory_saving_mib=peaks['baseline']-peaks['fused'],
