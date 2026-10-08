@@ -97,11 +97,19 @@ qualified; a winning strength improvement remains unresolved.
 
 ## Next decision
 
-Inspect whether critic values and advantages carry outcome information across
-128-step rollout boundaries. Games can last 2,000 turns, so this is a distinct
-learning-signal hypothesis, not an established bug. Define a bounded diagnostic
-using retained policies and fresh episodes before changing training. Earlier
-continuation `job-mwvdb` also failed selection; neither rejected checkpoint
+The optional critic diagnostic is implemented and passed four focused tests.
+Two 256-game own-policy panels will compare values with complete shaped returns
+and measure pre-normalization advantage sensitivity at H128/H256 boundaries.
+A minimal GPU package is being prepared; **no job has been submitted**. Longer
+targets being mechanically closer to complete targets alone cannot justify training.
+
+Inspection also found a concrete normalization issue: raw bootstrap-row advantages
+are zero, but minibatch normalization includes those rows and can make their actor
+advantages nonzero before PPO. A focused correction is in progress separately;
+it must pass a bounded GPU check before training. The critic diagnostic does not
+change training or establish that this issue explains the strength plateau.
+
+Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
 should be extended or promoted.
 
 ## Winning acceptance

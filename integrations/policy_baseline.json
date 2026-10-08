@@ -3582,5 +3582,43 @@
       }
     ],
     "collection_note": "138 missing local staging files restored byte-for-byte from SHA-verified sealed context archive before audit; collector unchanged."
+  },
+  "critic_credit_diagnostic": {
+    "status": "implemented; minimal GPU staging in progress; not submitted",
+    "hypothesis": "The critic may poorly estimate distant shaped returns, causing bootstrap error at H128 rollout boundaries; this is not an established bug.",
+    "policies": [
+      "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+      "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f"
+    ],
+    "games_per_policy": 256,
+    "map_pool_size": 1024,
+    "proposed_map_seed": 17002101,
+    "proposed_action_seed": 17002103,
+    "lineage_and_prior_seed_check": "required before sealing",
+    "design": "Two own-policy first-episode panels on matched fresh maps and action seeds; all 13 opponents on both seats. Preserve policy sampler, Classic rules and exact training reward/discount contract. No training.",
+    "measurements": [
+      "Critic residual against complete discounted episodic shaped return, including terminal and truncation handling",
+      "Pre-normalization native shifted reward convention reproduced for H128/H256 GAE at importance one; nonbootstrap rows only. Native normalization does not exclude the bootstrap row.",
+      "Offline boundary bootstrap replacement, holding interior values, rewards and actions fixed",
+      "Advantage sign disagreement and target error by remaining episode length; aggregate offsets per map before cluster uncertainty"
+    ],
+    "interpretation": "Observed return is a noisy sample, not true expected value. Longer targets being mechanically closer to complete targets does not itself justify training. Report effect magnitude, calibration relative to return variance, and differences between each policy on its own trajectories. No selection or promotion from this diagnostic.",
+    "provider_minutes": 30,
+    "execution_minutes": 28,
+    "aggregate_minutes_from_first_allocation": 30,
+    "max_restarts": 0,
+    "training_steps": 0,
+    "runtime_commit": "0da2364",
+    "verification": "Four deterministic tests passed: terminal reset exclusion, action/reward indexing, potential telescoping, vectorized windows versus explicit recurrence."
+  },
+  "bootstrap_advantage_normalization_issue": {
+    "status": "verified from retained native source; focused fix in progress, not GPU qualified",
+    "evidence_job": "job-h8sqm",
+    "mechanism": "puff_advantage leaves each H-1 raw advantage zero; subsequent minibatch standardization includes every row, producing -mean/scale on bootstrap rows. PPO processes N*T rows without a final-row mask.",
+    "scope": "Restore zero actor advantage on bootstrap rows and exclude them from normalization statistics; preserve training settings and loss scaling. No strength claim.",
+    "files": [
+      "integrations/puffer_advantage_normalization.cuh",
+      "integrations/puffer_coworld_frozen_transfer.py"
+    ]
   }
 }
