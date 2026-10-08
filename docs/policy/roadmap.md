@@ -30,10 +30,12 @@ See [current state](current-state.md) for live work and results,
    before training. The repaired production-interface audit passed the complete
    local gradient path, but **job-8tdud** failed the bitwise parameter-gradient
    check before ABBA. Loss and probabilities matched; gradient differences were
-   not retained. **job-mf4rq** now runs exact backward-input checks and retains
-   repeated gradient diagnostics before the bounded comparison. Require
-   separate full qualification before returning to fresh-start strength work;
-   see [current state](current-state.md).
+   not retained. **job-mf4rq succeeded**: exact backward-input and CUDA contents
+   checks passed, both gather diagnostics exceeded 43K SPS, and sampled peak
+   GPU memory fell 20.613 GiB. Retain this storage change and stage the original
+   fresh-start strength experiment. A new full 4Mi qualification must pass before
+   the 32Mi budget; no dependent job has been submitted. See
+   [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
    The unused confirmation seeds remain reserved: maps **16001101**, action

@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, as of the 2026-10-08 00:16 UTC input-gate startup.
+Updated 2026-10-08, after independent verification of the 00:43 UTC probe completion.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -79,7 +79,7 @@ memory was 65,420 MiB (63.89 GiB). No unchanged retry is planned.
 `INITIAL_POSITION_MIX` observes startup distribution. The shared reset function
 also applies zero midgame probability to automatic episode recycling.
 
-## Live work: exact-input gather comparison
+## Completed memory-gather diagnostic
 
 **`job-tjqy8` failed at 23:22 UTC before training.** Both native builds and
 46-fixture source GPU parity passed. The new gradient audit incorrectly wrapped
@@ -107,24 +107,36 @@ repeat bitwise. The production gradient contains 18 nonunique scatter operations
 [XLA documents potential nondeterminism](https://openxla.org/xla/determinism),
 but the failed run did not retain enough data to establish its cause.
 
-The complete local check and altered-input rejection passed, and the collector
-independently recomputed the six-array diagnostics. Production training code
-and settings are unchanged. **`job-mf4rq`**, submitted **23:59:34 UTC**, is
-starting on its first attempt after the image push, from 1,155 verified package
-files. Bounds remain **60/58/60 minutes**, zero restarts, maximum quote **$2.97**;
-the allocation guard fixes the deadline at **2026-10-08 01:15:14 UTC**.
+**`job-mf4rq` succeeded at 2026-10-08 00:43:42 UTC**, first attempt,
+zero restarts or preemptions. All **330 retained files** were independently
+verified. The actual compiled gather preserved all 64 minibatch blocks bitwise;
+production backward inputs, probabilities and PPO loss matched. Six finite,
+nonzero gradient arrays showed tiny differences even between repeated identical
+inputs (reference-repeat maximum absolute difference **3.73e−9**).
 
-The proposed storage change replaces duplicate full transposed observations/masks
-with float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
-row rotation and optimizer math are preserved. **Completed GPU correctness,
-measured memory reduction and speed remain unverified.**
+The baseline / gather / gather / baseline comparison used the same H100
+(`GPU-0b7d4265-69a6-df4c-65f4-82dfa28c5872`, 1,980 MHz), 4,096 games,
+horizon 128, minibatch 8,192, replay ratio 0.5 and eight Siege workers.
+Each fresh-optimizer diagnostic ran 2,097,152 steps, with two warmup epochs
+and 1,048,576 measured end-to-end steps:
 
-The planned comparison remains **baseline / gather / gather / baseline** on one
-H100, each from the exact source with a fresh optimizer: four 2,097,152-step
-diagnostics, two warmup epochs, the geometry above and fresh-game resets.
-Limits are **60 provider/aggregate minutes, 58 execution minutes, zero restarts**.
-Both gather runs must reach 30K SPS before a separate full qualification.
-This comparison does not establish the cause of the prior reset-run slowdown.
+| Arm | SPS | Sampled peak GPU MiB |
+| --- | ---: | ---: |
+| Baseline 1 | 41,746 | 64,869 |
+| Gather 1 | 43,407 | 43,491 |
+| Gather 2 | 43,960 | 43,491 |
+| Baseline 2 | 43,940 | 64,329 |
+
+Mean sampled peak memory fell **21,108 MiB (20.613 GiB)**. This supports
+retaining the lossless storage change; the comparison does not establish
+repeatable acceleration or explain the earlier fresh-reset slowdown.
+The provider billed **1,567 seconds / $1.2925**.
+
+The local collector needed a schema correction: Classic rules are fixed by the
+factory, not a configurable option. Verification now checks the retained Classic
+contract and actual runtime population flags, horizon, factory and shaping
+discount. Sealed runtime code was unchanged; the corrected independent audit
+passed. This is a diagnostic result, **not full training qualification**.
 
 ## Current implementation and next decision
 
@@ -136,17 +148,14 @@ This comparison does not establish the cause of the prior reset-run slowdown.
   but the earlier ABBA did not establish repeatable end-to-end acceleration.
 - One explicit-plan trial runner and shared audits replaced completed experiment
   launchers, removing 1,037 net lines. Fixed configs and assets were preserved.
-- Gather changes are awaiting GPU qualification. The calculated 20.35 GiB saving
-  is not yet an observed memory reduction or evidence of higher SPS.
+- Gather passed GPU input/gradient-path checks and reduced sampled memory by
+  20.613 GiB. Separate full training qualification remains outstanding.
 
-**Next:** inspect the retained gradient controls and same-GPU ABBA from `job-mf4rq`. Adopt
-only a demonstrated useful change; otherwise diagnose the measured bottleneck.
-The fresh-start runner now requires bound, independently audited probe success,
-both gather diagnostics ≥30K SPS, measured memory reduction and matching
-execution sources. Its plan remains pending that evidence. A successful
-diagnostic must be followed by full 4Mi qualification before resuming the
-fresh-start 32Mi strength experiment. Positive development results
-then require independent confirmation and fresh balanced hosted matches.
+**Next:** stage the reduced-memory fresh-start run with the verified probe
+bindings. No new job is submitted yet. Keep the full **4,194,304-step qualification**
+with the 30K full and rolling throughput gates before continuing to **33,554,432**
+steps and the three fixed strength panels. Positive development results then
+require independent confirmation and fresh balanced hosted matches.
 
 ## Winning acceptance
 

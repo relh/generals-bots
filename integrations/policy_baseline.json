@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-mf4rq first attempt starting; exact backward-input gate and ABBA pending",
+    "status": "job-mf4rq succeeded; lossless gather GPU admission and memory reduction verified; separate full4Mi qualification pending",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2634,7 +2634,7 @@
     },
     "fresh_start_readiness": {
       "commit": "d80303f",
-      "status": "Pending positive job-mf4rq audit; no dependent allocation",
+      "status": "Positive job-mf4rq audit verified; staging separate full4Mi qualification and32Mi strength run; no dependent allocation",
       "requirements": [
         "Successful independently audited compiled GPU gather and production gradient gate",
         "Both gather diagnostic runs at least 30000 SPS",
@@ -2643,7 +2643,7 @@
         "Separate full 4194304-step qualification before continuation"
       ],
       "staging_tools": "integrations/softmax/local-output/fresh-start-gather-launch-20261007",
-      "plan_evidence_bindings_pending": true
+      "plan_evidence_bindings_pending": false
     },
     "retry_terminal_audit": {
       "schema": "generals-gather-probe-independent-audit-v1",
@@ -2893,6 +2893,153 @@
         "first_allocation_lower_bound_at": "2026-10-08T00:15:14.867893+00:00",
         "deadline": "2026-10-08T01:15:14.867893+00:00"
       }
-    }
+    },
+    "input_gate_terminal_audit": {
+      "schema": "generals-gather-probe-independent-audit-v1",
+      "job_id": "job-mf4rq",
+      "status": "succeeded",
+      "technical_success": true,
+      "qualified_for_long_training": false,
+      "files_verified": 330,
+      "artifact_sha256": "c09cae429a0459603bc559ebca3ef63fe5320b03098211c91eb032c56764a19a",
+      "collection_sha256": "171edaf7bf7b34ab2b34a54f72887abf694d89f7e414673afc9bc4792e0d70c2",
+      "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/gather-probe-input-gate-launch-20261007/results-job-mf4rq/inner/generals",
+      "results_sha256": "d9d65121cd31f3e0c1d45420dc5444eb5def2e2ff484ee2066a9ec28c4d3c1bb",
+      "plan_sha256": "55d379db40eb0ed48dc683ab7344dc497bc48614a0ee6680f7fd5d47bad4765b",
+      "stages": [
+        {
+          "arm": "baseline",
+          "steady_sps": 41745.9988852616,
+          "sampled_peak_mib": 64869.0,
+          "gpu_uuid": "GPU-0b7d4265-69a6-df4c-65f4-82dfa28c5872",
+          "warmup_epochs": 2,
+          "measured_steps": 1048576,
+          "measured_seconds": 25.11799999999998,
+          "geometry": {
+            "environments": 4096,
+            "horizon": 128,
+            "minibatch": 8192,
+            "replay_ratio": 0.5,
+            "workers": 8
+          }
+        },
+        {
+          "arm": "gather",
+          "steady_sps": 43406.714409901884,
+          "sampled_peak_mib": 43491.0,
+          "gpu_uuid": "GPU-0b7d4265-69a6-df4c-65f4-82dfa28c5872",
+          "warmup_epochs": 2,
+          "measured_steps": 1048576,
+          "measured_seconds": 24.157000000000004,
+          "geometry": {
+            "environments": 4096,
+            "horizon": 128,
+            "minibatch": 8192,
+            "replay_ratio": 0.5,
+            "workers": 8
+          }
+        },
+        {
+          "arm": "gather",
+          "steady_sps": 43959.92118391817,
+          "sampled_peak_mib": 43491.0,
+          "gpu_uuid": "GPU-0b7d4265-69a6-df4c-65f4-82dfa28c5872",
+          "warmup_epochs": 2,
+          "measured_steps": 1048576,
+          "measured_seconds": 23.852999999999994,
+          "geometry": {
+            "environments": 4096,
+            "horizon": 128,
+            "minibatch": 8192,
+            "replay_ratio": 0.5,
+            "workers": 8
+          }
+        },
+        {
+          "arm": "baseline",
+          "steady_sps": 43939.65806235334,
+          "sampled_peak_mib": 64329.0,
+          "gpu_uuid": "GPU-0b7d4265-69a6-df4c-65f4-82dfa28c5872",
+          "warmup_epochs": 2,
+          "measured_steps": 1048576,
+          "measured_seconds": 23.863999999999997,
+          "geometry": {
+            "environments": 4096,
+            "horizon": 128,
+            "minibatch": 8192,
+            "replay_ratio": 0.5,
+            "workers": 8
+          }
+        }
+      ],
+      "mean_sampled_peak_mib": {
+        "baseline": 64599.0,
+        "gather": 43491.0
+      },
+      "sampled_memory_saving_mib": 21108.0,
+      "eligible_for_separate_qualification": true,
+      "decision": "Diagnostic only; separate 4Mi qualification required before long training.",
+      "gradient_diagnostics": {
+        "arrays": 6,
+        "comparisons": 15,
+        "max_absolute_difference": 3.725290298461914e-09,
+        "max_l2_difference": 8.22745708862622e-09,
+        "all_finite": true,
+        "scope": "Exact backward inputs; repeated GPU gradient reductions need not be bitwise identical."
+      }
+    },
+    "input_gate_terminal_provider": {
+      "job_id": "job-mf4rq",
+      "status": "succeeded",
+      "attempt": 1,
+      "finished_at": "2026-10-08T00:43:42.422049+00:00",
+      "failure_reason": null,
+      "restarts_used": 0,
+      "artifact": {
+        "artifact_id": "art-rn4tp",
+        "sha256": "c09cae429a0459603bc559ebca3ef63fe5320b03098211c91eb032c56764a19a",
+        "size_bytes": 37365760,
+        "state": "ready"
+      },
+      "billed_seconds": null,
+      "charged_usd": null,
+      "charged_usd_micros": null,
+      "receipt": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "billed_seconds": 1567,
+            "charged_usd_micros": 1292500,
+            "gpu_count": 1,
+            "rate_usd_micros_per_gpu_minute": 49489
+          }
+        ],
+        "billed_attempts": 1,
+        "billed_seconds": 1567,
+        "charged_usd_micros": 1292500,
+        "image_digest": "sha256:4c82739346e06f1afe0860e9a4b71c6e82dfca662c756909d9c5850a826cb3c2"
+      },
+      "attempt_history": null,
+      "preempted_count": 0
+    },
+    "collector_schema_correction": {
+      "before_sha256": "f46588f69c943a1d7d8299f9928f6f2a68ef3ff7229ee10a950efa4809e91d9d",
+      "after_sha256": "b72ad9ac41d63b9edbe31c1c39b32a06ee896a54a362da577107172f133b866d",
+      "audit_sha256": "fd887c241a54e9bd0c1349f6a705210906c9aaa23d74e9925b7503c1c06e1ee1",
+      "job_id": "job-mf4rq",
+      "correction": "coworld_classic_rules is a fixed Classic factory setting, absent from configurable options. Verify retained Classic contract and each actual population runtime flag, episode limit, exact runtime factory/options, and shaping discount instead.",
+      "sealed_runtime_sources": {
+        "metta_puffer": "5a152023c6e8cb29d7ceefd6fba2a583d4b6c1a014eeaaed9b53af58e027d2bc",
+        "spatial_selfplay": "45034d88fd2617cefa28fdb404cec19eb673cbb30f278dd439012748c51eb4aa"
+      },
+      "audit_only_exit_code": 0,
+      "provider_actions": 0
+    },
+    "input_gate_terminal_evidence": {
+      "integrations/softmax/local-output/gather-probe-input-gate-launch-20261007/terminal-audit-job-mf4rq.json": "fd887c241a54e9bd0c1349f6a705210906c9aaa23d74e9925b7503c1c06e1ee1",
+      "integrations/softmax/local-output/gather-probe-input-gate-launch-20261007/collector-correction.json": "7d56764773aa2cf2c2197cd81021c122f295cd621ad5d1e0dcfdde6721ff5b68",
+      "integrations/softmax/local-output/gather-probe-input-gate-launch-20261007/collect_and_audit.py": "b72ad9ac41d63b9edbe31c1c39b32a06ee896a54a362da577107172f133b866d"
+    },
+    "memory_reduction_verified_mib": 21108.0
   }
 }
