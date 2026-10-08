@@ -120,27 +120,27 @@ CPU arithmetic/installer tests passed; CUDA verification and throughput qualific
 remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
-User approved **$500 total task spending** on 2026-10-08. The normalization
-trial **`job-48zqh` is running, attempt 1**, using ready context
-`ctx-3e0010cf`: one H100, maximum **$5.67**, 90-minute provider limit,
-88-minute internal limit, zero retries. Submitted at **22:39:20 UTC**;
-the independent runtime watchdog was verified live. Budget committed so far:
-**$11.34 of $500**, conservatively retaining both job caps until billing is known; actual billed cost remains pending. Source-policy GPU parity began by **22:59:29 UTC**. CUDA normalization admission,
-throughput qualification and strength selection remain pending. The watchdog
-deadline is **2026-10-09 00:26:18 UTC**, including allocation startup.
+User approved **$500 total task spending** on 2026-10-08. Current trial
+**`job-pue42` is building**, context `ctx-9633be0e`, runtime `0d97357`:
+one H100, maximum **$5.67**, 90-minute provider limit, 88-minute internal
+limit, zero retries. Submitted **23:04:14 UTC**; watchdog verified live.
+Confirmed spend is **$0.168**, plus up to **$5.67** for this active job.
 
-The first submission was rejected because the new organization lacked the old
-mission grouping. An empty active-job reconciliation confirmed no job existed;
-removing that optional field allowed submission. No duplicate job was created.
+`job-48zqh` passed source GPU serving parity on **46/46 states**, maximum action
+probability difference **3.04e-6**, then failed before training at 23:01:37 UTC.
+The normalization installer changed but its launcher hash pin had not been
+updated. All **14 artifacts** were independently verified; the run cost $0.168.
+Commit `abacc9b` corrects the reviewed pin. Package admission now executes the
+trainer identity check and real launcher import against the packaged framework;
+four focused test invocations passed. CUDA normalization and training remain
+unqualified until the new run passes their gates.
 
-`job-dbjvf` failed during image build at 22:37:53 UTC, before any GPU attempt:
-`framework-source` had mode 0700 and the build worker could not read it. The
-corrected archive verifies directory traversal and file readability for every
-member, with all 629 file content hashes unchanged. Its replacement is
-`job-48zqh`; the prior watchdog observed terminal state and exited.
+Earlier `job-dbjvf` failed before allocation because recovered directory mode
+0700 blocked the build worker. Its cost was **$0**. Archive permission checks
+now cover every member. Both prior watchdogs observed terminal state and exited.
 
-Reboot recovery is complete: persistent archive **164,775,107 bytes**, all
-**629 files verified**, runtime `9bfc68b`. Four retained hosted Classic replays
+Reboot recovery is complete: persistent archive **164,776,365 bytes**, all
+**629 files verified**, runtime `0d97357`. Four retained hosted Classic replays
 replace the inaccessible originals; the pinned engine verified replay frames
 and extracted **46 public states** across both seats. The run plan explicitly
 selects those games. GPU policy parity is still required during the job.

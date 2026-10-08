@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-48zqh running attempt 1; source GPU parity in progress; training not yet started",
+    "status": "job-pue42 building after reviewed trainer pin fix; previous run passed source parity then failed before training",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3740,27 +3740,28 @@
     "execution_minutes": 88,
     "aggregate_minutes": 90,
     "max_restarts": 0,
-    "runtime_commit": "9bfc68b85d1d534fc639bacf165794deb5682968",
+    "runtime_commit": "0d97357e579c1980e5b15744915c6f4825c5a6f5",
     "evidence_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
-    "archive_sha256": "c7fba18786a28748f7084eeea59268add001bc5a3efda115aa69763b2937d8eb",
-    "archive_bytes": 164775107,
+    "archive_sha256": "852f64f7669ac6824d1fd64c03e1331f38971b1539bd76f6e892377976aac090",
+    "archive_bytes": 164776365,
     "archive_members": 629,
     "bindings": {
-      "ready.json": "d8a20ff501e07c2d3d0c3d905ba2ad544f551caa01029437cf2e81540debef99",
-      "context-seal.json": "caac49cd22cfc722e73d3b9deaf6a098b92f58a4ecdb25d8380f47cde8571815",
-      "cpu-admission.json": "5e1f41574cbbcef3375a086a122b239a366b4f71f17fdbad94b6d9ca123bc4d1",
-      "request-template.json": "6fe311430dafd4f58532e071d70bb8237df7a08373246166fbba4443750c5a33",
+      "ready.json": "3f99130128660ad6c6c0485b1ef61eef5cac404040109b003535a1432fa36ebb",
+      "context-seal.json": "34a57ed0ec36216f78d35a227fe6e57d7afd6e29f404e0f81c65e0bfe90dae5b",
+      "cpu-admission.json": "c2b5a046ed81cf7c1f766071ee898e212467b7a8baec3edaccec4e6d0d2691cf",
+      "request-template.json": "f4da6b04313ea2b85af7dc0e6d9776336bb6d7f16116bb56076a949fa8431e99",
       "integration.json": "7c5b82a487800f93be99d9289f8677efef2961b0117c9edf34b5005a0033aff7",
       "replacement-parity-admission.json": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
-      "validation.json": "e92c9d7cafa77078c7c6e687797909764a1631a6d7f5481028cf027f19cfa42a",
-      "submission.json": "d3282b046d8aee18a9810fce9c440c3b65966f2ee00d2831fb5c48432e302131",
-      "permissions-admission.json": "d4ed8f815ac34901ee7af4c9d79fdc55668e65bcb3a1f59b34939c8aa1c1c757"
+      "validation.json": "d375f16622cd7bbe90da636e02d6bd318d649068ecef3a8607d42de3685ae172",
+      "submission.json": "a2256190801fe8ebb12b2558a735e22f024c3eb8a7cc06c8748c74601dfa8300",
+      "permissions-admission.json": "d4ed8f815ac34901ee7af4c9d79fdc55668e65bcb3a1f59b34939c8aa1c1c757",
+      "terminal-audit-job-48zqh.json": "134ee02c8725c455c6bc9ef51825d3d0bd3a5ea256e44af7f0a434d3b9a6a3ab"
     },
-    "context_id": "ctx-3e0010cf",
+    "context_id": "ctx-9633be0e",
     "provider_block": null,
     "available_credit_usd": 2000,
     "required_reservation_usd": 5.67,
-    "ready_sha256": "d8a20ff501e07c2d3d0c3d905ba2ad544f551caa01029437cf2e81540debef99",
+    "ready_sha256": "3f99130128660ad6c6c0485b1ef61eef5cac404040109b003535a1432fa36ebb",
     "approved_cost_ceiling_usd": 5.67,
     "context_access": "ready under new relh token",
     "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
@@ -3783,7 +3784,7 @@
         "http_status": 403,
         "recovered": false
       },
-      "next_action": "Monitor job-48zqh and independently audit terminal artifacts",
+      "next_action": "Monitor job-pue42 and independently audit terminal artifacts",
       "replacement_parity": {
         "admission_sha256": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
         "passed": true,
@@ -3809,17 +3810,17 @@
       "curriculum_recovery": "Not required: integrations/metta_puffer.py only loads curriculum when probability is nonzero; remove inactive path/checksum and audit only these config differences",
       "uploaded": true
     },
-    "job_id": "job-48zqh",
+    "job_id": "job-pue42",
     "submission": {
-      "job_id": "job-48zqh",
+      "job_id": "job-pue42",
       "status": "submitted",
-      "submitted_at": "2026-10-08T22:39:20.684592+00:00",
+      "submitted_at": "2026-10-08T23:04:14.078079+00:00",
       "attempt": 0,
       "max_cost_usd": 5.67,
       "max_restarts": 0,
       "restarts_used": 0,
-      "request_sha256": "483d6a9a8664e6c9b45f09e2f0f2445d3f36ffd810448782cc731301e0ee56d5",
-      "context_id": "ctx-3e0010cf",
+      "request_sha256": "f7336c164da76332c4c691b1e01d12649745fdc9da865eb49e9bfb806f71ea0f",
+      "context_id": "ctx-9633be0e",
       "max_duration_minutes": 90
     },
     "failed_submission": {
@@ -3830,14 +3831,16 @@
       "allocated_attempts": 0,
       "resolution": "Archive grants directory traversal and file readability; all 629 content hashes unchanged"
     },
-    "runtime_observation": {
-      "observed_at": "2026-10-08T22:59:29.085196+00:00",
-      "status": "running",
-      "attempt": 1,
-      "stage": "source GPU serving parity",
-      "restarts_used": 0,
-      "infra_start_failures": 0,
-      "watchdog_deadline": "2026-10-09T00:26:18.742482+00:00"
+    "previous_runtime_failure": {
+      "job_id": "job-48zqh",
+      "reason": "Normalization installer changed without launcher trainer hash update",
+      "files_verified": 14,
+      "source_gpu_parity_states": 46,
+      "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
+      "training_steps": 0,
+      "charged_usd": 0.168,
+      "fix_commit": "abacc9b",
+      "local_verification": "Trainer hash and imported launcher ABI verified against packaged framework; 4 focused test invocations passed"
     }
   },
   "compute_budget": {
@@ -3847,18 +3850,24 @@
       {
         "job_id": "job-dbjvf",
         "max_cost_usd": 5.67,
-        "actual_cost_usd": null,
+        "actual_cost_usd": 0,
         "status": "build_failed"
       },
       {
         "job_id": "job-48zqh",
         "max_cost_usd": 5.67,
-        "actual_cost_usd": null,
-        "status": "running"
+        "actual_cost_usd": 0.168,
+        "status": "failed"
+      },
+      {
+        "job_id": "job-pue42",
+        "status": "building",
+        "max_cost_usd": 5.67,
+        "actual_cost_usd": null
       }
     ],
-    "committed_max_usd": 11.34,
-    "actual_cost_usd": 0,
-    "accounting_note": "Conservatively retain both maximum reservations until actual billing is available; first job never allocated a GPU"
+    "committed_max_usd": 5.838,
+    "actual_cost_usd": 0.168,
+    "accounting_note": "Committed maximum includes confirmed prior spend plus active job cap"
   }
 }
