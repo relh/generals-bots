@@ -29,8 +29,9 @@ See [current state](current-state.md) for live work and results,
    Lossless minibatch gathering and compiled action postprocessing are qualified
    execution improvements. Keep the tested source and migrated asset bindings;
    any changed training setup must independently pass full and rolling ≥30K SPS.
-3. `job-krq94` is the bounded, nontraining critic diagnostic: two 256-game
-   own-policy panels measure return calibration and rollout-boundary sensitivity.
+3. `job-krq94` completed the nontraining critic diagnostic: 22 files verified,
+   no clear candidate critic calibration improvement. H128 sign disagreement
+   was about 26%; H256 reduced it to 16–17%, without proving a strength gain.
    Separately, inspection established that normalization gave bootstrap rows
    unintended actor advantages. The correction keeps those rows zero and excludes
    them from normalization statistics; 17 focused CPU tests passed.
@@ -38,7 +39,8 @@ See [current state](current-state.md) for live work and results,
    then 4Mi fresh-optimizer qualification before conditional 32Mi total. Keep
    horizon 128 and all prior fresh-start training settings. Compare with selected
    source and the `job-h8sqm` control on fresh maps 17003101, action seed 17003103,
-   bootstrap seed 17003111. No additional GPU job while the diagnostic is live.
+   bootstrap seed 17003111. The package is uploaded; GMN submission is blocked by $0 available credit
+   against its $4.455 reservation. No new job exists.
    The corrected native path is **not yet GPU qualified**.
 4. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.

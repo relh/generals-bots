@@ -3584,7 +3584,7 @@
     "collection_note": "138 missing local staging files restored byte-for-byte from SHA-verified sealed context archive before audit; collector unchanged."
   },
   "critic_credit_diagnostic": {
-    "status": "building; provider restarted lost build worker under same job; no GPU attempt yet",
+    "status": "succeeded; 22 retained files independently audited",
     "hypothesis": "The critic may poorly estimate distant shaped returns, causing bootstrap error at H128 rollout boundaries; this is not an established bug.",
     "policies": [
       "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
@@ -3619,7 +3619,7 @@
     "archive_bytes": 64652484,
     "archive_members": 572,
     "guard_pid": 84423,
-    "guard_live_verified": true,
+    "guard_live_verified": false,
     "bindings": {
       "ready.json": "eb745a9f83edfcf03e06012838aa1f2273b86224c104ad0358f2416bd490a391",
       "root-review.json": "faf768eb1d51b8ed7dd490f632455a7fe72e9726d73c39b294cf2a147f36644f",
@@ -3639,8 +3639,72 @@
       }
     ],
     "replacement_build_started_at": "2026-10-08T04:04:01.609919+00:00",
-    "run_attempt": 0,
-    "restarts_used": 0
+    "run_attempt": 1,
+    "restarts_used": 0,
+    "finished_at": "2026-10-08T04:18:35.922165+00:00",
+    "files_verified": 22,
+    "technical_success": true,
+    "billed_seconds": 196,
+    "charged_usd": 0.1617,
+    "terminal_audit_sha256": "2c7581f82d62230fd5220ec6f8c452e22fb9d656301b835d0485fee9a306481b",
+    "collection_sha256": "eb8eb8dc25c36a71394c8e47978212cfc094c98472a478f00afd5ffb25ffaac2",
+    "results": {
+      "source": {
+        "value_mse": {
+          "mean": 0.018823160620006576,
+          "ci95": [
+            0.01610456387016081,
+            0.021863322486583573
+          ],
+          "maps": 234
+        },
+        "mse_over_return_variance": 0.6714133423559879,
+        "h128_sign_disagreement": {
+          "mean": 0.26055305960024466,
+          "ci95": [
+            0.24976492709803433,
+            0.2713951535445762
+          ],
+          "maps": 234
+        },
+        "h256_sign_disagreement": {
+          "mean": 0.16163945866013057,
+          "ci95": [
+            0.14972082746850796,
+            0.17313924914682446
+          ],
+          "maps": 234
+        }
+      },
+      "candidate": {
+        "value_mse": {
+          "mean": 0.019129364317558226,
+          "ci95": [
+            0.01639061929528307,
+            0.021915203587893374
+          ],
+          "maps": 234
+        },
+        "mse_over_return_variance": 0.7154871506938989,
+        "h128_sign_disagreement": {
+          "mean": 0.26496130657230066,
+          "ci95": [
+            0.2526024198570772,
+            0.2770518501706397
+          ],
+          "maps": 234
+        },
+        "h256_sign_disagreement": {
+          "mean": 0.17123783966396547,
+          "ci95": [
+            0.15872129495343779,
+            0.18356906624451996
+          ],
+          "maps": 234
+        }
+      }
+    },
+    "decision": "No clear candidate critic calibration improvement. H256 reduces disagreement with full-episode estimates, which is not itself policy-strength evidence. Proceed with independently established normalization fix alone at H128 before considering a horizon intervention."
   },
   "bootstrap_advantage_normalization_issue": {
     "status": "fixed in source; CPU arithmetic and installer tests passed; bounded CUDA verification pending",
@@ -3656,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "sealed and root-reviewed locally; not uploaded or submitted; waiting for critic diagnostic result",
+    "status": "uploaded and reviewed; submission blocked by provider available credit $0; no job created",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3688,6 +3752,11 @@
       "cpu-admission.json": "aedcfbd689e8d510632677ef753fb472fdd0d2660a6ed9cea900d58be990ae80",
       "collector-review.json": "4b01739bda2623a2caf0c95b96463bcaf02093f567792ea98d36f6c01b65bcdf",
       "request-template.json": "ffd4995ec1ca6c68743c38f9136cfb9d9e91e197a401793da4cbcdc6da85f9ed"
-    }
+    },
+    "context_id": "ctx-f60b41ec",
+    "provider_block": "preflight/cost-cap",
+    "available_credit_usd": 0,
+    "required_reservation_usd": 4.455,
+    "ready_sha256": "c00b449f90e98abe6224235b9c26939551904476f11606bfec508b5de9125c5b"
   }
 }

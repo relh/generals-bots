@@ -97,18 +97,20 @@ qualified; a winning strength improvement remains unresolved.
 
 ## Next decision
 
-The optional critic diagnostic is implemented and passed four focused tests.
-Two 256-game own-policy panels will compare values with complete shaped returns
-and measure pre-normalization advantage sensitivity at H128/H256 boundaries.
-**`job-krq94` was submitted at 03:54:24 UTC and is building**. One H100,
-30-minute provider/aggregate and 28-minute internal limits, zero retries, maximum
-quote **$1.485**. The allocation guard is live. All 572 archive files, fixed
-framework and policy assets, and exact source `0da2364` were verified; two-step
-CPU checks passed for both policies. There are no diagnostic GPU results yet.
-The first build worker stopped reporting during image push at **04:04:01 UTC**.
-The provider marked that build free and started a replacement under the same
-job ID. No manual resubmission or GPU runtime retry occurred. Longer
-targets being mechanically closer to complete targets alone cannot justify training.
+**`job-krq94` succeeded at 04:18:35 UTC.** All 22 retained files passed
+independent verification, including reward reconstruction and report recomputation.
+One H100 evaluated two 256-game own-policy panels on 234 unique initial states;
+all 13 opponents appeared on both seats. Cost **$0.1617 / 196 billed seconds**.
+The provider replaced one lost build worker for free; GPU execution succeeded on
+its first attempt, and the allocation guard exited.
+
+Source/candidate critic mean squared error was 0.01882 / 0.01913; their paired
+difference CI95 was [−0.00241, +0.00314], showing no clear calibration improvement.
+Pre-normalization H128 advantages disagreed in sign with full-episode estimates
+26.1% / 26.5% of the time; H256 reduced this to 16.2% / 17.1%. These sampled-return
+comparisons expose boundary sensitivity but do not prove longer rollouts improve
+policy strength. Test the independently verified normalization correction first,
+keeping H128 unchanged.
 
 Inspection also found a concrete normalization issue: raw bootstrap-row advantages
 are zero, but minibatch normalization includes those rows and can make their actor
@@ -117,6 +119,12 @@ normalization statistics and keep their actor advantages zero. Seventeen focused
 CPU arithmetic/installer tests passed; CUDA verification and throughput qualification
 remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
+
+The correction-only trial is sealed and uploaded as context `ctx-f60b41ec`,
+with actual CUDA kernel verification, 4Mi qualification and conditional 32Mi total.
+**Submission is blocked by GMN's cost-cap preflight: $0 available credit against
+$4.455 required reservation. No new GPU job was created.** Funding or an identified
+funded allocation is needed to execute the prepared experiment.
 
 Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
 should be extended or promoted.
