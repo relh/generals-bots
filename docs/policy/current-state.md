@@ -100,13 +100,19 @@ qualified; a winning strength improvement remains unresolved.
 The optional critic diagnostic is implemented and passed four focused tests.
 Two 256-game own-policy panels will compare values with complete shaped returns
 and measure pre-normalization advantage sensitivity at H128/H256 boundaries.
-A minimal GPU package is being prepared; **no job has been submitted**. Longer
+**`job-krq94` was submitted at 03:54:24 UTC and is building**. One H100,
+30-minute provider/aggregate and 28-minute internal limits, zero retries, maximum
+quote **$1.485**. The allocation guard is live. All 572 archive files, fixed
+framework and policy assets, and exact source `0da2364` were verified; two-step
+CPU checks passed for both policies. There are no diagnostic GPU results yet. Longer
 targets being mechanically closer to complete targets alone cannot justify training.
 
 Inspection also found a concrete normalization issue: raw bootstrap-row advantages
 are zero, but minibatch normalization includes those rows and can make their actor
-advantages nonzero before PPO. A focused correction is in progress separately;
-it must pass a bounded GPU check before training. The critic diagnostic does not
+advantages nonzero before PPO. The focused correction is integrated in `7cc2b03`: exclude bootstrap rows from
+normalization statistics and keep their actor advantages zero. Seventeen focused
+CPU arithmetic/installer tests passed; CUDA verification and throughput qualification
+remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint

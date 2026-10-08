@@ -3584,7 +3584,7 @@
     "collection_note": "138 missing local staging files restored byte-for-byte from SHA-verified sealed context archive before audit; collector unchanged."
   },
   "critic_credit_diagnostic": {
-    "status": "implemented; minimal GPU staging in progress; not submitted",
+    "status": "submitted; building; no diagnostic results yet",
     "hypothesis": "The critic may poorly estimate distant shaped returns, causing bootstrap error at H128 rollout boundaries; this is not an established bug.",
     "policies": [
       "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
@@ -3594,7 +3594,7 @@
     "map_pool_size": 1024,
     "proposed_map_seed": 17002101,
     "proposed_action_seed": 17002103,
-    "lineage_and_prior_seed_check": "required before sealing",
+    "lineage_and_prior_seed_check": "Passed before sealing: absent actor training lineages and prior tracked/retained operational seed records",
     "design": "Two own-policy first-episode panels on matched fresh maps and action seeds; all 13 opponents on both seats. Preserve policy sampler, Classic rules and exact training reward/discount contract. No training.",
     "measurements": [
       "Critic residual against complete discounted episodic shaped return, including terminal and truncation handling",
@@ -3609,16 +3609,38 @@
     "max_restarts": 0,
     "training_steps": 0,
     "runtime_commit": "0da2364",
-    "verification": "Four deterministic tests passed: terminal reset exclusion, action/reward indexing, potential telescoping, vectorized windows versus explicit recurrence."
+    "verification": "Four deterministic tests passed: terminal reset exclusion, action/reward indexing, potential telescoping, vectorized windows versus explicit recurrence.",
+    "job_id": "job-krq94",
+    "submitted_at": "2026-10-08T03:54:24.564549+00:00",
+    "context_id": "ctx-cdd1165d",
+    "max_cost_usd": 1.485,
+    "evidence_directory": "integrations/softmax/local-output/critic-credit-launch-20261008",
+    "archive_sha256": "2a56246751dc20384842290f3efadcfed8df0fc1c90f3fef02408726b584d1a4",
+    "archive_bytes": 64652484,
+    "archive_members": 572,
+    "guard_pid": 84423,
+    "guard_live_verified": true,
+    "bindings": {
+      "ready.json": "eb745a9f83edfcf03e06012838aa1f2273b86224c104ad0358f2416bd490a391",
+      "root-review.json": "faf768eb1d51b8ed7dd490f632455a7fe72e9726d73c39b294cf2a147f36644f",
+      "context-seal.json": "a334bd290a4ef6559ba637baddc149d3c8ed711f6ecc8e94aa3565281e12e794",
+      "cpu-admission.json": "e08746f2a8470b1b3a933db162a3e6141817fc11b01679d6b60e7183d06eade6",
+      "collector-review.json": "7639c36591639148ab61aa2cad3731bb6ee7faffb6b817d4e3aa892cced7cb14",
+      "submission.json": "e93915564b0cedc73954df9fb3e1c53bcb99666d3c9f42cb164a0ffe6e614415",
+      "request.json": "40220141e45c59e2df7894f8f908e6c7c3dad1acb155a14fbffda473375158fc"
+    }
   },
   "bootstrap_advantage_normalization_issue": {
-    "status": "verified from retained native source; focused fix in progress, not GPU qualified",
+    "status": "fixed in source; CPU arithmetic and installer tests passed; bounded CUDA verification pending",
     "evidence_job": "job-h8sqm",
     "mechanism": "puff_advantage leaves each H-1 raw advantage zero; subsequent minibatch standardization includes every row, producing -mean/scale on bootstrap rows. PPO processes N*T rows without a final-row mask.",
     "scope": "Restore zero actor advantage on bootstrap rows and exclude them from normalization statistics; preserve training settings and loss scaling. No strength claim.",
     "files": [
       "integrations/puffer_advantage_normalization.cuh",
       "integrations/puffer_coworld_frozen_transfer.py"
-    ]
+    ],
+    "commit": "7cc2b03",
+    "focused_tests": 17,
+    "asset_abi_changed": false
   }
 }
