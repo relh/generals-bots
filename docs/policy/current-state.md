@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, after the 23:51 UTC gather-gradient audit failure.
+Updated 2026-10-07, as of the 23:59 UTC corrected input-gate submission.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -79,7 +79,7 @@ memory was 65,420 MiB (63.89 GiB). No unchanged retry is planned.
 `INITIAL_POSITION_MIX` observes startup distribution. The shared reset function
 also applies zero midgame probability to automatic episode recycling.
 
-## Gather memory comparison: GPU gradient audit failure
+## Live work: exact-input gather comparison
 
 **`job-tjqy8` failed at 23:22 UTC before training.** Both native builds and
 46-fixture source GPU parity passed. The new gradient audit incorrectly wrapped
@@ -99,11 +99,19 @@ probabilities and PPO loss matched bitwise; the parameter-gradient bitwise check
 failed. All **224 retained files** were independently verified. Numerical gradient
 differences were not retained by this audit, so their size is unknown.
 
-The prior Python-tracing bug is resolved. GPU gradient repeatability is now the
-question: the production path contains operations that can be nondeterministic
-under XLA. This is a hypothesis for the mismatch, not an established cause.
-The next audit must retain repeated identical-input gradients and cross-input
-differences. No unchanged retry or dependent training is authorized by this result.
+The corrected gate verifies exact production backward inputs: weights,
+observations, raw predictions and PPO cotangents. It requires finite, nonzero,
+correctly shaped gradients and retains six interleaved reference/gather gradient
+arrays with all 15 pairwise comparisons. It does not require GPU reductions to
+repeat bitwise. The production gradient contains 18 nonunique scatter operations;
+[XLA documents potential nondeterminism](https://openxla.org/xla/determinism),
+but the failed run did not retain enough data to establish its cause.
+
+The complete local check and altered-input rejection passed, and the collector
+independently recomputed the six-array diagnostics. Production training code
+and settings are unchanged. **`job-mf4rq`**, submitted **23:59:34 UTC**, is
+building from 1,155 verified package files. Bounds remain **60/58/60 minutes**,
+zero restarts, maximum quote **$2.97**; its allocation guard is live.
 
 The proposed storage change replaces duplicate full transposed observations/masks
 with float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,
@@ -130,7 +138,7 @@ This comparison does not establish the cause of the prior reset-run slowdown.
 - Gather changes are awaiting GPU qualification. The calculated 20.35 GiB saving
   is not yet an observed memory reduction or evidence of higher SPS.
 
-**Next:** diagnose GPU gradient repeatability and repair the audit before another bounded comparison. Adopt
+**Next:** inspect the retained gradient controls and same-GPU ABBA from `job-mf4rq`. Adopt
 only a demonstrated useful change; otherwise diagnose the measured bottleneck.
 The fresh-start runner now requires bound, independently audited probe success,
 both gather diagnostics ≥30K SPS, measured memory reduction and matching

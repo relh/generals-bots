@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-8tdud failed parameter-gradient bitwise audit before ABBA; investigating GPU repeatability",
+    "status": "job-mf4rq building; exact backward-input gate and retained gradient repeat controls; ABBA pending",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2312,8 +2312,8 @@
     "independent_review": "No supported-path correctness blocker; actual CUDA contents, lifetime, probabilities and PPO gradients still require GPU admission",
     "comparison": "Same-GPU ABBA, four fresh 2097152-step diagnostics; two warmup epochs;60provider58internalminutes0restarts; only separate4Miqualification can authorize longtraining",
     "speed_improvement_proven": false,
-    "gather_source": "f69435bcc60f236aed68e2ed8d21803076a5a060",
-    "coordinator_source": "7cdace71b9ddef65ae2df405cb088d4dcf8d69d4",
+    "gather_source": "31950251f439c4b42af54345a021d8d71f981267",
+    "coordinator_source": "b1cfa85f707c122049fd4f0c97ea8462f02cf82b",
     "launch": {
       "submission": {
         "job_id": "job-tjqy8",
@@ -2634,7 +2634,7 @@
     },
     "fresh_start_readiness": {
       "commit": "d80303f",
-      "status": "Pending positive job-8tdud audit; no dependent allocation",
+      "status": "Pending positive job-mf4rq audit; no dependent allocation",
       "requirements": [
         "Successful independently audited compiled GPU gather and production gradient gate",
         "Both gather diagnostic runs at least 30000 SPS",
@@ -2695,6 +2695,192 @@
       "hypothesis": "GPU execution nondeterminism in scatter/convolution gradients; not yet empirically established",
       "next": "Retain exact-input, cotangent and repeated-baseline gradient diagnostics; correct inappropriate repeatability assumptions without changing production runtime",
       "reference": "https://openxla.org/xla/determinism"
+    },
+    "input_gate_fix": {
+      "commit": "3195025",
+      "scope": "Full CUDA gather contents and production backward inputs remain bitwise checked. Gradients must be finite, nonzero and correctly shaped; six arrays and all 15 comparisons retained. GPU reduction repeatability is measured rather than assumed. Production runtime unchanged.",
+      "cpu_admission": {
+        "passed": true,
+        "backend": "cpu",
+        "scope": "Authentic public replay fixtures, actual jitted PPO loss cotangents and production native backward; no CUDA gather qualification",
+        "result": {
+          "states": 8,
+          "parameter_words": 578860,
+          "mixed_terminals": true,
+          "probabilities_bitwise": true,
+          "ppo_loss_bitwise": true,
+          "backward_inputs_bitwise": true,
+          "gradients_finite": true,
+          "gradient_parameter_words": 578860,
+          "teacher_ppo_coefficient": 1.0,
+          "gradient_api": "NativeFabricPolicy.backward_device_arrays"
+        },
+        "negative_control": "Gather changed spatial PPO inputs",
+        "fixture_labels": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            25,
+            0
+          ],
+          [
+            0,
+            25,
+            1
+          ],
+          [
+            0,
+            99,
+            0
+          ],
+          [
+            0,
+            99,
+            1
+          ],
+          [
+            0,
+            100,
+            0
+          ],
+          [
+            0,
+            100,
+            1
+          ]
+        ],
+        "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+        "observation_sha256": "8584210b3af415d715a3788e3b6058f078b9da7c3a121d98c82da981f4bb8518",
+        "mask_sha256": "bf7a6a06e96119de277b6c6e9dc2b178b5df8efc7746bdc30e97ca116644a267",
+        "audit_module_sha256": "8d33995025679797341c85a1be2f15d90d8811af0d8f1ebf06a4accae22f78ac",
+        "script_sha256": "99083ee0490085cd04616f1e0073dde36e4d7bacb3b6bae6518ba900142024cb"
+      },
+      "collector_cpu_admission": {
+        "scope": "Actual CPU gradient artifacts verify collector numerical arithmetic only; no GPU receipt constructed.",
+        "backend": "cpu",
+        "passed": true,
+        "arrays": 6,
+        "pairs": 15,
+        "parameter_words": 578860,
+        "collector_sha256": "f46588f69c943a1d7d8299f9928f6f2a68ef3ff7229ee10a950efa4809e91d9d",
+        "diagnostics_sha256": "ae2e8bf62b628a22987ecc85b22ccb758af92d24e80a67077638872a0b8a9bd2",
+        "array_files": {
+          "positive-reference-1.npy": "0b839c75718edc8804139f71b25017557457bef8428dbe2a3dffac96000aa893",
+          "positive-gather-1.npy": "0b839c75718edc8804139f71b25017557457bef8428dbe2a3dffac96000aa893",
+          "positive-reference-2.npy": "0b839c75718edc8804139f71b25017557457bef8428dbe2a3dffac96000aa893",
+          "positive-gather-2.npy": "0b839c75718edc8804139f71b25017557457bef8428dbe2a3dffac96000aa893",
+          "positive-reference-3.npy": "0b839c75718edc8804139f71b25017557457bef8428dbe2a3dffac96000aa893",
+          "positive-gather-3.npy": "0b839c75718edc8804139f71b25017557457bef8428dbe2a3dffac96000aa893"
+        },
+        "max_mismatching_words": 0
+      },
+      "stablehlo_evidence": {
+        "scatter_operations": 19,
+        "nonunique_scatter_operations": 18,
+        "path": "integrations/softmax/local-output/gather-gradient-diagnosis-20261007/gradient-stablehlo.mlir",
+        "sha256": "ad344f1eea1667bb03eaeb52b4e15bd1b6294d446cd538d4fa832e63280415ba"
+      },
+      "reference": "https://openxla.org/xla/determinism"
+    },
+    "input_gate_launch": {
+      "submission": {
+        "job_id": "job-mf4rq",
+        "status": "submitted",
+        "submitted_at": "2026-10-07T23:59:34.186282+00:00",
+        "attempt": 0,
+        "max_cost_usd": 2.97,
+        "max_restarts": 0,
+        "restarts_used": 0,
+        "request_sha256": "82cc6720ea1e70b880b5c7b73e8ccd293ae43770bbd0043e69bf9bf089f2d5fe",
+        "context_id": "ctx-ca63f390",
+        "max_duration_minutes": 60
+      },
+      "guard": {
+        "pid": 4912,
+        "job_id": "job-mf4rq",
+        "minutes": 60,
+        "submission_sha256": "da70e899945d37b5edf5cf5ffe92bb068550fef7f508828ab042f12d2a7c4457",
+        "guard_sha256": "e4b618cbeb1b697bec9fefe25ee2a3f84ff97fde8eacd19f9c109a64a7ec22eb",
+        "live_verified": true,
+        "guard_state": {
+          "job_id": "job-mf4rq",
+          "minutes": 60,
+          "pid": 4912,
+          "running": true,
+          "observed_at": "2026-10-07T23:59:34.503552+00:00",
+          "status": "building",
+          "last_preallocation_observed_at": "2026-10-07T23:59:34.503552+00:00"
+        }
+      },
+      "ready": {
+        "source_revision": "b1cfa85f707c122049fd4f0c97ea8462f02cf82b",
+        "archive": "/private/tmp/generals-gather-probe-input-gate-stage/context.tar.zst",
+        "archive_sha256": "161c08f848b03dd6af8661b1c8a98791747a2c266905d82b52bc74995a7de836",
+        "archive_bytes": 185850963,
+        "members_verified": 1155,
+        "provider_minutes": 60,
+        "execution_minutes": 58,
+        "aggregate_minutes": 60,
+        "max_restarts": 0,
+        "reviewed_quote_ceiling_usd": 2.97,
+        "ready": true,
+        "root_review_pending": false,
+        "collector_review_pending": false,
+        "uploaded": false,
+        "submitted": false,
+        "source_materialized_sha256": "10f5559761fcb4c23be2641b707f453fd15a34f47f606fbfb3b77907436f03b2",
+        "cpu_admission_sha256": "23c8e2f5f386a99f810ba9ad1a57082f751ac730507b8ab5469525f46af0777b",
+        "context_seal_sha256": "86964d332ddc8fb0b63fea081f1fcd48ac5143681b99717e1014333b7d78ea5b",
+        "staging_sha256": "aff5c942d4528fcabdecf35f3fda45dd04d3f9a3dd1b57228a51b95138f3c877",
+        "guard_admission_sha256": "ee5cda6142111315dda872487ed639e6d85acdc6f005fadc69e82975ee59969f",
+        "collector_sha256": "f46588f69c943a1d7d8299f9928f6f2a68ef3ff7229ee10a950efa4809e91d9d",
+        "transport_sha256": "3cfda7c7e528799940fd42b2f39d81b8a79ec6365d8af9e47be716544fd73e31",
+        "launch_sha256": "ad54825eed1cc5ac18d353bb7295dcdb1ccb00039dd853d6c982176b2ffe7ef2",
+        "request_template_sha256": "5ea098799a9c013e4eef6252e542d502f6d99ba2eacbcb1ba00d469cd39f495d",
+        "cpu_gradient_admission_sha256": "c2cae364e76b265969b4dd8133a7a10908d60beae694ecb7d4fdffeef4cb60bd",
+        "collector_cpu_numerical_admission_sha256": "4f28e3220ac2973f17973a5447e49897082a737c46526e929f79792a1ddbf34e",
+        "seal_script_sha256": "9fc06b2c7bf8750a2e1776ecff8e68369f977c355919fe84dc1ec6d745de02c3",
+        "cpu_admission_script_sha256": "e4f929dfce85d708e4d49ffee94df4b65ef3b42fb6ddf03a1b87156a60d59778",
+        "guard_sha256": "e4b618cbeb1b697bec9fefe25ee2a3f84ff97fde8eacd19f9c109a64a7ec22eb",
+        "root_review_sha256": "0365e76bcfc9e822bec6aab26459a05dc54b5a665ab031dd293548588b923e27"
+      },
+      "quote": {
+        "would_submit": true,
+        "max_cost_usd": 2.97,
+        "request_sha256": "06d0cdffc72994472509cc2f4188f38272cdd1b5dd4eb6a733434d2eb896230d",
+        "reviewed_cost_ceiling_usd": 2.97
+      },
+      "cpu_admission": {
+        "passed": true,
+        "scope": "Actual coordinator prepare; all input hashes, staged framework imports and reviewed variant closure; no GPU execution",
+        "source_revision": "b1cfa85f707c122049fd4f0c97ea8462f02cf82b",
+        "plan_sha256": "55d379db40eb0ed48dc683ab7344dc497bc48614a0ee6680f7fd5d47bad4765b",
+        "input_manifest_sha256": "19c06e08b3e33c0c4355a85c7acccebad46ee1d41e85304de456f33f488f790c",
+        "staging_sha256": "aff5c942d4528fcabdecf35f3fda45dd04d3f9a3dd1b57228a51b95138f3c877",
+        "source_diff_sha256": "ef058b713dc28dfb31e51d0f963f6956832c1c5e372ba6d85edd0e925b0c695e",
+        "training_changes": [
+          "integrations/launch_spatial_selfplay_training.py",
+          "integrations/puffer_coworld_frozen_transfer.py",
+          "integrations/puffer_rollout_memory.cuh",
+          "integrations/puffer_rollout_memory.py",
+          "integrations/spatial_muon_orientation.py"
+        ],
+        "script_sha256": "e4f929dfce85d708e4d49ffee94df4b65ef3b42fb6ddf03a1b87156a60d59778"
+      },
+      "active_job_check": {
+        "observed_at": "2026-10-07T23:59:33.831664+00:00",
+        "jobs_checked": 106,
+        "active_generals_jobs": []
+      }
     }
   }
 }

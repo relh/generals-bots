@@ -30,8 +30,8 @@ See [current state](current-state.md) for live work and results,
    before training. The repaired production-interface audit passed the complete
    local gradient path, but **job-8tdud** failed the bitwise parameter-gradient
    check before ABBA. Loss and probabilities matched; gradient differences were
-   not retained. Diagnose repeatability and retain numerical evidence before
-   another bounded comparison. Require
+   not retained. **job-mf4rq** now runs exact backward-input checks and retains
+   repeated gradient diagnostics before the bounded comparison. Require
    separate full qualification before returning to fresh-start strength work;
    see [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler

@@ -74,6 +74,6 @@
     "probe-collection.json": null,
     "probe-context-seal.json": null
   },
-  "gather_probe_job_id": "job-8tdud",
-  "execution_repair": "Lossless float32 minibatch gathering replaces duplicate full observation/mask transposes. Successful bound GPU contents/production-gradient gate, both gather diagnostics >=30000 SPS and measured memory reduction precede a new independent 4Mi qualification. Strength hypothesis, seeds, control and budgets unchanged."
+  "gather_probe_job_id": "job-mf4rq",
+  "execution_repair": "Lossless float32 minibatch gathering replaces duplicate full observation/mask transposes. Successful bound CUDA contents and exact backward-input gate with finite gradients, both gather diagnostics >=30000 SPS and measured memory reduction precede a separate full 4Mi qualification. Strength hypothesis, seeds, control and budgets unchanged."
 }
