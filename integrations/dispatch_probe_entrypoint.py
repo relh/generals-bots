@@ -1,4 +1,4 @@
-"""Bounded GPU gather diagnostic with retained partial outputs."""
+"""Bounded GPU dispatch diagnostic with retained partial outputs."""
 import os
 from pathlib import Path
 import sys
