@@ -2113,7 +2113,7 @@
     ]
   },
   "fresh_start_experiment": {
-    "status": "job-r4xkt failed qualification throughput; no continuation or strength evaluation",
+    "status": "job-gu6wm building first attempt; fresh-start gather full4Mi qualification and conditional32Mi strength evaluation pending",
     "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
     "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
     "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
@@ -2287,6 +2287,57 @@
       "sha256": "8a198a054c4f348b85d0647f36257d1fa2969caab13a2d043ab619f6876f7377",
       "finding": "Lower1590MHz GPU than1980MHz successful control; optimizer and rollout model both slow; no last-minute CPU quota throttle or GPU throttle flags. Reset-distribution cause not established.",
       "next": "Adapt single-minibatch gather scratch to remove duplicate full transposed observation/action-mask buffers; preserve precision, PPO row rotation and loss math; qualify correctness then bounded GPU profile before long training."
+    },
+    "gather_launch": {
+      "submission": {
+        "job_id": "job-gu6wm",
+        "status": "submitted",
+        "submitted_at": "2026-10-08T00:48:02.847246+00:00",
+        "attempt": 0,
+        "max_cost_usd": 4.455,
+        "max_restarts": 0,
+        "restarts_used": 0,
+        "request_sha256": "9676f73d4249137f1e46343bc6b9f699e462bd2bd63c75b5c58edfe3ef0ab832",
+        "context_id": "ctx-079544c9",
+        "max_duration_minutes": 90
+      },
+      "source_revision": "589bfab160c583798f69892e4dd9387dae7f7f85",
+      "accepted_probe_job_id": "job-mf4rq",
+      "archive_sha256": "b0b3b84f88f8661418b667ad414cf0491683bb3ab68a3177c7132e28c6e6f3ca",
+      "members_verified": 1217,
+      "runtime_bound": {
+        "provider_minutes": 90,
+        "execution_minutes": 88,
+        "aggregate_minutes": 90,
+        "max_restarts": 0
+      },
+      "guard": {
+        "pid": 25460,
+        "job_id": "job-gu6wm",
+        "minutes": 90,
+        "submission_sha256": "5ca46e5bbfe36b4c76c91d3b0943d33e589ac7867168e62c3dbe8ca404147fc7",
+        "guard_sha256": "216ba7b352590b539d5799a16da76d28ead29b69ca86cca800c4daa098d46247",
+        "live_verified": true,
+        "guard_state": {
+          "job_id": "job-gu6wm",
+          "minutes": 90,
+          "pid": 25460,
+          "running": true,
+          "observed_at": "2026-10-08T00:48:03.277765+00:00",
+          "status": "building",
+          "last_preallocation_observed_at": "2026-10-08T00:48:03.277765+00:00"
+        }
+      },
+      "qualified": false,
+      "selected": false,
+      "evidence": {
+        "integrations/softmax/local-output/fresh-start-gather-launch-20261007/ready.json": "d1876b9d94852f0f20ddb3d914e7f494b8894dfc09df16578ed7a1df7b67b9b0",
+        "integrations/softmax/local-output/fresh-start-gather-launch-20261007/submission.json": "5ca46e5bbfe36b4c76c91d3b0943d33e589ac7867168e62c3dbe8ca404147fc7",
+        "integrations/softmax/local-output/fresh-start-gather-launch-20261007/context-seal.json": "bf874746e480c97afa0083e777143f4bcebac5558c612d8736eef5966c2b8bc8",
+        "integrations/softmax/local-output/fresh-start-gather-launch-20261007/aggregate-guard-process.json": "61348af63582c12bf16870a5ee734f4c095c849900c55b2c5d0854c3215b6f60",
+        "integrations/softmax/local-output/fresh-start-gather-launch-20261007/cpu-admission.json": "5c912b6ca2e2fcb6fae8b7b5841d9c40e6eadedc91959320da00c08aaa8e4972",
+        "integrations/softmax/local-output/fresh-start-gather-launch-20261007/root-review.json": "03a51542f22fe9a0713ed2974dad6319cb74ecfa6914cbb4e2af11250d1164f3"
+      }
     }
   },
   "runner_cleanup": {
@@ -2634,7 +2685,7 @@
     },
     "fresh_start_readiness": {
       "commit": "d80303f",
-      "status": "Positive job-mf4rq audit verified; staging separate full4Mi qualification and32Mi strength run; no dependent allocation",
+      "status": "Bound positive probe evidence; job-gu6wm building; full4Mi qualification still required before conditional32Mi continuation",
       "requirements": [
         "Successful independently audited compiled GPU gather and production gradient gate",
         "Both gather diagnostic runs at least 30000 SPS",
