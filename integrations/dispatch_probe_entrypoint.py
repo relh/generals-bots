@@ -15,9 +15,9 @@ def completion(results):
 
 def main():
     results = Path('/work/results/generals')
-    command = [sys.executable, '-u', '-m', 'integrations.gather_probe_run', '--input', '/work/input', '--output', str(results)]
+    command = [sys.executable, '-u', '-m', 'integrations.dispatch_probe_run', '--input', '/work/input', '--output', str(results)]
     run([(command, dict(os.environ))], results, Path(os.environ.get('GMN_OUTPUT_DIR', '/output')),
-        58*60, kind='gather-probe', completion=completion)
+        58*60, kind='dispatch-probe', completion=completion)
 
 
 if __name__ == '__main__':

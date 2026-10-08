@@ -9,8 +9,8 @@ from integrations.policy_execution import execute
 from integrations.policy_trial import digest, read, write, rotation_audit
 from integrations.training_inputs import CONFIG, ASSETS
 
-PLAN = Path(__file__).with_name('gather_probe_plan.json')
-ORDER = ('baseline', 'gather', 'gather', 'baseline')
+PLAN = Path(__file__).with_name('dispatch_probe_plan.json')
+ORDER = ('baseline', 'fused', 'fused', 'baseline')
 
 
 def prepare(inputs, output):
@@ -21,13 +21,13 @@ def prepare(inputs, output):
             or plan['warmup_epochs'] != 2
             or plan['runtime_bound'] != dict(provider_minutes=60, execution_minutes=58,
                 aggregate_minutes_from_first_allocation=60, max_restarts=0)
-            or plan['baseline_commit'] != 'c1cae5f10d3f1e15abcfc0cd2d3910cd74f06d27'
-            or not re.fullmatch('[a-f0-9]{40}', plan['gather_commit'] or '')
+            or plan['baseline_commit'] != '589bfab160c583798f69892e4dd9387dae7f7f85'
+            or not re.fullmatch('[a-f0-9]{40}', plan['fused_commit'] or '')
             or not re.fullmatch('[a-f0-9]{64}', plan['input_manifest_sha256'] or '')
             or digest(inputs/'input-manifest.json') != plan['input_manifest_sha256']):
         raise ValueError('Unsealed or changed ABBA plan')
     manifest = read(inputs/'input-manifest.json')
-    required = {'baseline-source.json', 'gather-source.json', 'config.json', 'build-config.json'}
+    required = {'baseline-source.json', 'fused-source.json', 'config.json', 'build-config.json'}
     if not required <= manifest.keys():
         raise ValueError('Missing fixed input bindings')
     for name, expected in manifest.items():
@@ -35,7 +35,7 @@ def prepare(inputs, output):
         if (inputs/name).is_symlink() or not path.is_relative_to(inputs.resolve()) or digest(path) != expected:
             raise ValueError('Input changed: ' + name)
     # Require complete source closures, not a manifest containing selected files only.
-    for arm in ('baseline', 'gather'):
+    for arm in ('baseline', 'fused'):
         source = inputs/'sources'/arm
         if any(p.is_symlink() for p in source.rglob('*')):
             raise ValueError('Source closure contains a symlink')
@@ -44,7 +44,7 @@ def prepare(inputs, output):
             raise ValueError('Incomplete source closure: ' + arm)
         if read(inputs/(arm+'-source.json'))['commit'] != plan[arm+'_commit']:
             raise ValueError('Source commit binding differs')
-    if digest(inputs/'sources/baseline/integrations/generals_fabric.py') != digest(inputs/'sources/gather/integrations/generals_fabric.py'):
+    if digest(inputs/'sources/baseline/integrations/generals_fabric.py') != digest(inputs/'sources/fused/integrations/generals_fabric.py'):
         raise ValueError('ABBA source factories differ')
     build = copy.deepcopy(read(CONFIG/'build-config.json'))
     build['python_environment']['options']['coworld_position_probability'] = 0.0
@@ -136,40 +136,29 @@ def main():
             or sampling['opponent_sampler'] != sampling['sampler']
             or sampling['match_seed'] != 11008101 or sampling['sample_seed'] != 11008103):
         raise ValueError('Historical sampling gate differs')
-    for arm in ('baseline', 'gather'):
+    for arm in ('baseline', 'fused'):
         source, out = inputs/'sources'/arm, output/arm
         write(out/'build-config.json', build)
         execute('launch_spatial_selfplay_training', ['build', '--config', out/'build-config.json', '--output', out/'build'],
                 source=source, output=out, sampler=sampler, name='build', seconds=600)
-        if arm == 'baseline':
-            execute('audit_spatial_checkpoint_serving_parity', ['--bundle', inputs/'bundles/cold', '--replay-root', inputs/'leader-root',
-                    '--factory-source', source/'integrations/generals_fabric.py', '--output', out/'source-parity.json'],
-                    source=source, output=out, sampler=sampler, name='source-parity', seconds=600)
-            parity = read(out/'source-parity.json')
-            if parity['public_states'] != 46 or parity['matching_top_actions'] != 46 or parity['inference_backend'] != 'gpu':
-                raise ValueError('Source serving parity failed')
-    # This module must audit actual generated CUDA before any diagnostic training.
-    execute('audit_minibatch_gather', ['--build', output/'gather/build', '--output', output/'gather-parity.json'],
-            source=inputs/'sources/gather', output=output, sampler=sampler, name='gather-parity', seconds=480)
-    parity = read(output/'gather-parity.json')
+        execute('audit_spatial_checkpoint_serving_parity', ['--bundle', inputs/'bundles/cold', '--replay-root', inputs/'leader-root',
+                '--factory-source', source/'integrations/generals_fabric.py', '--output', out/'source-parity.json'],
+                source=source, output=out, sampler=sampler, name='source-parity', seconds=600)
+        parity = read(out/'source-parity.json')
+        if parity['public_states'] != 46 or parity['matching_top_actions'] != 46 or parity['inference_backend'] != 'gpu':
+            raise ValueError('Source serving parity failed')
+    # Compare the actual baseline and fused production forward/backward paths.
+    execute('audit_dispatch_fusion', ['--baseline-source', inputs/'sources/baseline',
+            '--candidate-source', inputs/'sources/fused', '--output', output/'dispatch-parity.json'],
+            source=inputs/'sources/fused', output=output, sampler=sampler, name='dispatch-parity', seconds=600)
+    parity = read(output/'dispatch-parity.json')
     if parity.get('passed') is not True or parity.get('backend') != 'gpu':
-        raise ValueError('CUDA gather parity failed')
-    built = output/'gather/build'
-    bindings = dict(build_sha256=built/'build.json', binary_sha256=built/'puffer',
-                    header_sha256=built/'source/src/metta_rollout_memory.cuh',
-                    rollout_memory_receipt_sha256=built/'rollout-memory.json',
-                    generated_pufferl_sha256=built/'source/src/pufferl.cu',
-                    audit_module_sha256=inputs/'sources/gather/integrations/audit_minibatch_gather.py',
-                    direct_spatial_source_sha256=inputs/'sources/gather/integrations/direct_spatial_optimization.py')
+        raise ValueError('Production dispatch parity failed')
+    bindings = dict(baseline_source_sha256=inputs/'sources/baseline/integrations/direct_spatial_optimization.py',
+                    candidate_source_sha256=inputs/'sources/fused/integrations/direct_spatial_optimization.py',
+                    audit_module_sha256=inputs/'sources/fused/integrations/audit_dispatch_fusion.py')
     if any(parity.get(key) != digest(path) for key, path in bindings.items()):
-        raise ValueError('GPU parity actual build bindings differ')
-    if (parity.get('all_64_blocks_bitwise') is not True or parity.get('scratch_reuse_passes') != 2
-            or any(parity.get('model', {}).get(key) is not True
-                   for key in ('probabilities_bitwise', 'ppo_loss_bitwise', 'backward_inputs_bitwise', 'gradients_finite'))
-            or parity.get('model', {}).get('gradient_parameter_words') != 578860
-            or parity.get('model', {}).get('teacher_ppo_coefficient') != 1.0
-            or parity.get('model', {}).get('gradient_api') != 'NativeFabricPolicy.backward_device_arrays'):
-        raise ValueError('Incomplete GPU contents or gradient parity')
+        raise ValueError('Production dispatch audit source bindings differ')
     reports = []
     for index, arm in enumerate(ORDER):
         stage = output/f'{index+1}-{arm}'
@@ -180,10 +169,10 @@ def main():
                 '--output', stage/'run'], source=inputs/'sources'/arm, output=stage, sampler=sampler, name='train',
                 seconds=480, startup_seconds=300, training_config=stage/'config.json', diagnostic_profile=True)
         reports.append(dict(arm=arm, **audit(stage, config, identity['uuid'])))
-    peaks = {arm: sum(r['sampled_peak_mib'] for r in reports if r['arm'] == arm)/2 for arm in ('baseline', 'gather')}
+    peaks = {arm: sum(r['sampled_peak_mib'] for r in reports if r['arm'] == arm)/2 for arm in ('baseline', 'fused')}
     write(output/'COMPLETED.json', dict(plan_sha256=digest(output/'plan.json'), stages=reports,
-          mean_sampled_peak_mib=peaks, sampled_memory_saving_mib=peaks['baseline']-peaks['gather'],
-          eligible_for_separate_qualification=all(r['steady_sps'] >= 30000 for r in reports if r['arm'] == 'gather'),
+          mean_sampled_peak_mib=peaks, sampled_memory_saving_mib=peaks['baseline']-peaks['fused'],
+          eligible_for_separate_qualification=all(r['steady_sps'] >= 30000 for r in reports if r['arm'] == 'fused'),
           qualified_for_long_training=False))
 
 
