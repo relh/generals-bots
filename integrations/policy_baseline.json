@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "running; source GPU parity passed; native build in progress",
+    "status": "running; 4Mi training throughput passed; checkpoint processing underway",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3411,6 +3411,45 @@
       "jax_backend": "gpu",
       "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
     },
-    "source_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T025856568319Z-sanitized.log"
+    "source_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T025856568319Z-sanitized.log",
+    "live_qualification_training": {
+      "job_id": "job-h8sqm",
+      "scope": "Live console training segment only; checkpoint parity, continuation gate and terminal independent artifact audit pending",
+      "log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T030538054598Z-sanitized.log",
+      "log_sha256": "e2f79b90e298a22c4b5a0fe726fd75cc3df938b5cea8b0d3ced8c3391ac6c1da",
+      "trained_steps": 4194304,
+      "warmup_epochs": 2,
+      "epoch_uptime": {
+        "1": 88.962,
+        "2": 99.771,
+        "3": 110.209,
+        "4": 120.874,
+        "5": 131.354,
+        "6": 142.337,
+        "7": 153.335,
+        "8": 164.256
+      },
+      "measured_steps": 3145728,
+      "measured_seconds": 64.485,
+      "steady_sps": 48782.32147010933,
+      "rolling_sps": {
+        "4": 49688.48031085629,
+        "5": 49589.78481910615,
+        "6": 48855.052881703414,
+        "7": 47703.74414266868,
+        "8": 47838.678771841754
+      },
+      "minimum_rolling_sps": 47703.74414266868,
+      "throughput_passed": true,
+      "illegal_actions": 0,
+      "rewards_finite_unclipped": true,
+      "dashboard_gpu_memory_gib": 43.5,
+      "dashboard_ram_gib": 7.0,
+      "dashboard_utilization_percent_range": [
+        65,
+        70
+      ],
+      "qualified_for_long_training": false
+    }
   }
 }

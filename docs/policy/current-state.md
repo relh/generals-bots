@@ -199,14 +199,22 @@ source and migrated selected assets; the failed pre-fusion setup is not retried.
 
 **`job-h8sqm` is running on its first attempt**, observed at 02:54:43 UTC.
 Source GPU serving parity passed all 46 top actions, with maximum action
-probability difference 4.44e−6. Native trainer compilation is in progress. One H100,
+probability difference 4.44e−6. The 4,194,304-step training segment completed. One H100,
 zero retries, 90-minute provider/aggregate and 88-minute internal bounds;
 maximum quote **$4.455**. The independent allocation guard is live with a
 **04:09:24 UTC** deadline. All 1,516
 archive files and both exact Git source archives were checked; actual CPU
 preparation and the revised collector's dispatch prerequisite passed. The
 276 MiB package required a multipart upload, which recovered before submission.
-No duplicate training job was created. Training has not yet started.
+No duplicate training job was created.
+
+Live qualification console: **3,145,728 measured steps / 64.485 s = 48,782 SPS**
+after two warmup epochs, including rollout, transfers and optimization. Every
+rolling window passed; minimum **47,704 SPS**. All 4,194,304 actions were legal,
+and reward audits found no nonfinite or clipped rewards. Dashboard memory was
+43.5 GiB GPU / 7.0 GiB host, with 65–70% GPU utilization snapshots. Checkpoint
+processing, parity and continuation admission are still underway. These live
+measurements await the terminal independent artifact audit.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**
