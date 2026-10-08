@@ -48,6 +48,10 @@ def main():
     parser.add_argument("--sample-seed", type=int, required=True)
     parser.add_argument("--destination-audit", action="store_true",
                         help="Record first-episode destination types by game phase")
+    parser.add_argument('--critic-diagnostic', action='store_true',
+                        help='Record own-policy value and reconstructed training rewards; no learning')
+    parser.add_argument('--training-config', type=Path,
+                        help='Exact learner config required for critic diagnostic')
     args = parser.parse_args()
     if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
         raise ValueError("Require a positive even game count and positive pool size")
@@ -60,6 +64,27 @@ def main():
     environment = build["config"]["python_environment"]
     if environment["factory"] != "integrations.spatial_selfplay:SpatialPopulationOpponentPufferEnvironment":
         raise ValueError("Expected a pinned Classic spatial population build")
+    if args.critic_diagnostic:
+        from integrations.critic_credit_diagnostic import training_rewards
+        from generals.core import game
+        if args.training_config is None:
+            raise ValueError('Critic diagnostic requires exact learner config')
+        learner = json.loads(args.training_config.read_text())['overrides']
+        reward_contract = {key: environment['options'][key] for key in
+                           ('shaping_gamma', 'shaping_weight', 'reward_scale',
+                            'army_shaping_weight', 'land_shaping_weight', 'terminal_reward_mode')}
+        gamma, gae_lambda = learner['train.gamma'], learner['train.gae_lambda']
+        if reward_contract['terminal_reward_mode'] != 'win_only' or reward_contract['shaping_gamma'] != gamma:
+            raise ValueError('Diagnostic requires matched win_only shaping discount')
+
+        @jax.jit
+        def potentials(states, sides):
+            info = jax.vmap(game.get_info)(states)
+            rows = jnp.arange(args.games)
+            def margin(amount):
+                ours, theirs = amount[rows,sides], amount[rows,1-sides]
+                return (ours-theirs)/(ours+theirs+1)
+            return reward_contract['army_shaping_weight']*margin(info.army) + reward_contract['land_shaping_weight']*margin(info.land)
     opponent_fields = {"frozen_bundle", "frozen_bundles", "opponent_weights",
                        "scripted_opponents", "classic_siege_workers"}
     options = {key: value for key, value in environment["options"].items() if key in opponent_fields}
@@ -77,12 +102,19 @@ def main():
     def choose(values, masks, keys):
         with jax.default_matmul_precision("highest"):
             outputs = policy._forward(values[:, :policy.observation_size], jnp)
-        return frozen_action_indices(policy, outputs, masks, keys, values)
+        actions = frozen_action_indices(policy, outputs, masks, keys, values)
+        return (actions, outputs[:, 3529]) if args.critic_diagnostic else actions
 
     start = time.monotonic()
     finished = np.zeros(args.games, bool)
     outcomes = np.zeros(args.games, np.float32)
     destination_counts = np.zeros((args.games, 3, 4), np.int32) if args.destination_audit else None
+    traces = None
+    if args.critic_diagnostic:
+        traces = {key: np.zeros((env.horizon, args.games), np.float32) for key in
+                  ('values', 'rewards', 'potentials')}
+        traces['done'] = np.zeros((env.horizon,args.games),bool)
+        traces['lengths'] = np.zeros(args.games,np.int32)
     try:
         values, masks = env.reset_device(f"{args.seed}:0:0")
         sides = np.asarray(env.sides)
@@ -106,7 +138,15 @@ def main():
         np.save(args.output / "opponent_labels.npy", labels)
         for turn in range(env.horizon):
             keys = jax.random.split(jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn), args.games)
-            chosen = np.asarray(choose(values, masks, keys))
+            decision = choose(values, masks, keys)
+            if args.critic_diagnostic:
+                chosen, critic = map(np.asarray, decision)
+                before = np.asarray(potentials(env.states, env.sides))
+                active = ~finished
+                traces['values'][turn,active] = critic[active]
+                traces['potentials'][turn,active] = before[active]
+            else:
+                chosen = np.asarray(decision)
             legal = np.asarray(masks, bool)
             if not legal[np.arange(args.games), chosen].all():
                 raise ValueError("Candidate sampled an illegal action")
@@ -125,6 +165,12 @@ def main():
             reward = np.asarray(rewards)
             if not np.isfinite(reward).all() or not np.isin(reward[ended], (-1, 0, 1)).all():
                 raise ValueError("Population outcome is nonfinite or not signed terminal score")
+            if args.critic_diagnostic:
+                after = np.asarray(potentials(env.states,env.sides))
+                reconstructed = training_rewards(before,after,reward,np.asarray(done,bool),reward_contract)
+                traces['rewards'][turn,active] = reconstructed[active]
+                traces['done'][turn,active] = np.asarray(done,bool)[active]
+                traces['lengths'][ended] = turn+1
             outcomes[ended] = reward[ended]
             finished |= ended
             if turn % 100 == 0:
@@ -133,6 +179,17 @@ def main():
                 break
         if not finished.all():
             raise ValueError("Some first episodes did not terminate within the Classic cap")
+        if args.critic_diagnostic:
+            np.savez_compressed(args.output/'critic-trajectories.npz', **traces, outcomes=outcomes)
+            diagnostic = dict(gamma=gamma,gae_lambda=gae_lambda,reward_contract=reward_contract,
+                              seed=args.seed,sample_seed=args.sample_seed,games=args.games,
+                              policy_sha256=policy.asset.metadata['policy_sha256'],
+                              population_build_sha256=hashlib.sha256(args.population_build.read_bytes()).hexdigest(),
+                              training_config_sha256=hashlib.sha256(args.training_config.read_bytes()).hexdigest(),
+                              reward_scope='Recomputed native win_only training rewards from hidden potential for offline analysis only; actor unchanged',
+                              value_semantics='Raw output3529, shaped scaled discounted return; no sigmoid',
+                              terminal_scope='First episode only, terminated and truncated both bootstrap zero')
+            (args.output/'critic-diagnostic.json').write_text(json.dumps(diagnostic,indent=2)+'\n')
         result = dict(scope="Held-out first episodes by public-view opponent and learner seat",
                       checkpoint_sha256=policy.asset.metadata["policy_sha256"],
                       training_seeds=policy.asset.metadata["training_seeds"],
