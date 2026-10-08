@@ -2113,7 +2113,7 @@
     ]
   },
   "fresh_start_experiment": {
-    "status": "job-gu6wm first attempt starting after successful image build; full4Mi qualification and conditional32Mi strength evaluation pending",
+    "status": "job-gu6wm failed first rolling qualification gate23659.739615SPS; no continuation or strength panels; hardware/execution diagnosis pending",
     "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
     "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
     "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
@@ -2365,15 +2365,75 @@
         "job_id": "job-gu6wm",
         "minutes": 90,
         "pid": 25460,
-        "running": true,
-        "observed_at": "2026-10-08T01:04:38.388295+00:00",
-        "status": "starting",
+        "running": false,
+        "observed_at": "2026-10-08T01:16:11.653323+00:00",
+        "status": "failed",
         "last_preallocation_observed_at": "2026-10-08T01:02:56.891756+00:00",
         "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
         "first_allocation_lower_bound_at": "2026-10-08T01:02:56.891756+00:00",
-        "deadline": "2026-10-08T02:32:56.891756+00:00"
+        "deadline": "2026-10-08T02:32:56.891756+00:00",
+        "terminal_observed_at": "2026-10-08T01:16:11.653323+00:00"
       },
-      "allocation_guard_sha256": "9fb13c9b7cf377f2fb5d8f92a7893e412d4692a3fb9c065de1260fc16de7a89b"
+      "allocation_guard_sha256": "9f1b295cd59c68ebeca1d8eccb48701769433b828f51601930397b81a50541dc"
+    },
+    "gather_terminal_audit": {
+      "schema": "generals-fresh-start-independent-audit-v1",
+      "job_id": "job-gu6wm",
+      "status": "failed",
+      "technical_success": false,
+      "selected": false,
+      "requires_fresh_confirmation": true,
+      "files_verified": 137,
+      "artifact_sha256": "ecbae3189bde7f46ad4cfba6ae4241eed02a7cd781fb5b75decdf297040834df",
+      "collection_sha256": "a85f2947881a7598080c8cc3d50219e2fceaff86fe2a37ac6088fe221d6f9865",
+      "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/fresh-start-gather-launch-20261007/results-job-gu6wm/inner/generals",
+      "results_sha256": "bcc3abd81e386961d24d8342aede944b27f7619c3586a210ae46696fc7509c65",
+      "failure": {
+        "error": "Experiment failed, exit 1",
+        "elapsed": 628.3612291499885
+      },
+      "retained_telemetry": [
+        "candidate/qualification/hardware.jsonl"
+      ]
+    },
+    "gather_terminal_provider": {
+      "job_id": "job-gu6wm",
+      "status": "failed",
+      "attempt": 1,
+      "finished_at": "2026-10-08T01:16:00.825892+00:00",
+      "failure_reason": "exit 1",
+      "restarts_used": 0,
+      "artifact": {
+        "artifact_id": "art-hbh4h",
+        "sha256": "ecbae3189bde7f46ad4cfba6ae4241eed02a7cd781fb5b75decdf297040834df",
+        "size_bytes": 2744320,
+        "state": "ready"
+      },
+      "billed_seconds": null,
+      "charged_usd": null,
+      "charged_usd_micros": null,
+      "receipt": {
+        "attempts": [
+          {
+            "attempt": 1,
+            "billed_seconds": 629,
+            "charged_usd_micros": 518100,
+            "gpu_count": 1,
+            "rate_usd_micros_per_gpu_minute": 49421
+          }
+        ],
+        "billed_attempts": 1,
+        "billed_seconds": 629,
+        "charged_usd_micros": 518100,
+        "image_digest": "sha256:c68b9a7f0c9f93ad2397b34ddf8f57f844b9a1d4589436ed4de69620e3a3ce9e"
+      },
+      "attempt_history": null,
+      "preempted_count": 0
+    },
+    "gather_terminal_evidence": {
+      "integrations/softmax/local-output/fresh-start-gather-launch-20261007/terminal-audit-job-gu6wm.json": "ba876003c967601d752d9a6a34ad77b2b27a29cc0acfbf7dee7d9e17ff312e61",
+      "integrations/softmax/local-output/fresh-start-gather-launch-20261007/results-job-gu6wm/terminal.json": "f34a99d70ec67f351711b7330d8ca45456094e5dbc77b6b8727ebc1982a6f234",
+      "integrations/softmax/local-output/fresh-start-gather-launch-20261007/aggregate-guard.json": "9f1b295cd59c68ebeca1d8eccb48701769433b828f51601930397b81a50541dc"
     }
   },
   "runner_cleanup": {
@@ -2721,7 +2781,7 @@
     },
     "fresh_start_readiness": {
       "commit": "d80303f",
-      "status": "Bound positive probe evidence; job-gu6wm starting; full4Mi qualification still required before conditional32Mi continuation",
+      "status": "Probe memory reduction verified; job-gu6wm failed fullqualification attempt at firstrolling23659.739615SPS; diagnose before another allocation",
       "requirements": [
         "Successful independently audited compiled GPU gather and production gradient gate",
         "Both gather diagnostic runs at least 30000 SPS",

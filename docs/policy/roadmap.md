@@ -33,9 +33,10 @@ See [current state](current-state.md) for live work and results,
    not retained. **job-mf4rq succeeded**: exact backward-input and CUDA contents
    checks passed, both gather diagnostics exceeded 43K SPS, and sampled peak
    GPU memory fell 20.613 GiB. Retain this storage change and stage the original
-   fresh-start strength experiment. **job-gu6wm** is building from the reviewed
-   gather source; full 4Mi qualification must pass before its conditional 32Mi
-   budget and strength panels. See
+   fresh-start strength experiment. **job-gu6wm failed** its first rolling
+   qualification interval at 23,660 SPS; no long training or strength panels ran.
+   Diagnose the retained performance evidence before another allocation; full
+   4Mi qualification remains required before the conditional 32Mi budget. See
    [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
