@@ -3644,7 +3644,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "staging only; not submitted; pending live critic diagnostic and root review",
+    "status": "sealed and root-reviewed locally; not uploaded or submitted; waiting for critic diagnostic result",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3663,6 +3663,19 @@
     "provider_minutes": 90,
     "execution_minutes": 88,
     "aggregate_minutes": 90,
-    "max_restarts": 0
+    "max_restarts": 0,
+    "runtime_commit": "6ecdbb87d37a05bcbdc416941eb7931e5fc0c2c7",
+    "evidence_directory": "integrations/softmax/local-output/normalization-launch-20261008",
+    "archive_sha256": "b469b851b1a78d96b4c4e823e2f0eeb6e59047a37cbd0fe42400409a4931144c",
+    "archive_bytes": 165710024,
+    "archive_members": 664,
+    "root_review_sha256": "d03ee6207aff5630f838ce40018af45f7342b7f2ddbeccb03c7271ddca0d6db1",
+    "bindings": {
+      "ready.json": "da6071d4f18d01df4225bda683587e98e165734f483ec31958515ed1e8264f95",
+      "context-seal.json": "e0bc1d8cd718e94e0f5ac4634007a0763d692f8a58e76b6de301c562abd56940",
+      "cpu-admission.json": "aedcfbd689e8d510632677ef753fb472fdd0d2660a6ed9cea900d58be990ae80",
+      "collector-review.json": "4b01739bda2623a2caf0c95b96463bcaf02093f567792ea98d36f6c01b65bcdf",
+      "request-template.json": "ffd4995ec1ca6c68743c38f9136cfb9d9e91e197a401793da4cbcdc6da85f9ed"
+    }
   }
 }
