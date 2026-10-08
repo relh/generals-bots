@@ -70,10 +70,10 @@
     "bundles/control/asset.json": "0658b4ff2a1ba1f9fced98a35b45b2e20bb1d414730e5c92c86245c223ee4f53",
     "bundles/control/policy.bin": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
     "hypothesis.json": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
-    "probe-audit.json": "fd887c241a54e9bd0c1349f6a705210906c9aaa23d74e9925b7503c1c06e1ee1",
-    "probe-collection.json": "171edaf7bf7b34ab2b34a54f72887abf694d89f7e414673afc9bc4792e0d70c2",
-    "probe-context-seal.json": "86964d332ddc8fb0b63fea081f1fcd48ac5143681b99717e1014333b7d78ea5b"
+    "probe-audit.json": "a913eee246664454879b795b57d39c1ce39f5c89ec8773e9e45761e3295d19dc",
+    "probe-collection.json": "5bfceca82d6dd1d1234ec2ee662c111cdaba59cf63409253502c970a79d9c63f",
+    "probe-context-seal.json": "0d0639d79572e53026ba4d5531576edeb0ce5ad9b319a71e4e5591f523e10424"
   },
-  "gather_probe_job_id": "job-mf4rq",
-  "execution_repair": "Lossless float32 minibatch gathering replaces duplicate full observation/mask transposes. Successful bound CUDA contents and exact backward-input gate with finite gradients, both gather diagnostics >=30000 SPS and measured memory reduction precede a separate full 4Mi qualification. Strength hypothesis, seeds, control and budgets unchanged."
+  "execution_repair": "Lossless float32 minibatch gathering plus one compiled acting postprocessing transform. Independently collected same-GPU dispatch ABBA with successful production GPU parity and both fused diagnostics >=30000 SPS precedes a separate full 4Mi qualification. Exact audited fused source and migrated selected ABI metadata; source weights, sampler, objective, seeds, control and budgets unchanged.",
+  "dispatch_probe_job_id": "job-mcxks"
 }

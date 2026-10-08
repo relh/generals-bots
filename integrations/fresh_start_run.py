@@ -33,70 +33,63 @@ def bound_plan(inputs):
     return plan
 
 
-def gather_admission(inputs, plan):
-    """Bind the successful diagnostic and exact execution modules before qualification."""
+def dispatch_admission(inputs, plan):
+    """Require independently audited dispatch evidence and its exact frozen runtime."""
     import importlib.util
     audit = read(inputs/'probe-audit.json')
     collection = read(inputs/'probe-collection.json')
-    if (audit['schema'] != 'generals-gather-probe-independent-audit-v1'
-            or audit['job_id'] != plan['gather_probe_job_id'] or audit['status'] != 'succeeded'
+    if (audit['schema'] != 'generals-dispatch-probe-independent-audit-v1'
+            or audit['job_id'] != plan['dispatch_probe_job_id'] or audit['status'] != 'succeeded'
             or audit['technical_success'] is not True
             or audit['eligible_for_separate_qualification'] is not True
-            or audit['sampled_memory_saving_mib'] <= 0
+            or audit['qualified_for_long_training'] is not False
             or audit['collection_sha256'] != digest(inputs/'probe-collection.json')
             or collection['complete'] is not True):
-        raise ValueError('Gather diagnostic does not permit separate qualification')
+        raise ValueError('Dispatch diagnostic does not permit separate qualification')
     stages = audit['stages']
-    if ([r['arm'] for r in stages] != ['baseline', 'gather', 'gather', 'baseline']
-            or any(r['steady_sps'] < 30000 for r in stages if r['arm'] == 'gather')):
-        raise ValueError('Both gather diagnostics must pass 30K')
+    if ([r['arm'] for r in stages] != ['baseline', 'fused', 'fused', 'baseline']
+            or any(r['steady_sps'] < 30000 for r in stages if r['arm'] == 'fused')):
+        raise ValueError('Both fused diagnostics must pass 30K')
     for name, expected in collection['files'].items():
         if digest(inputs/'probe'/name) != expected:
             raise ValueError('Retained probe artifact changed: ' + name)
-    gate = read(inputs/'probe/gather-parity.json')
+    gate = read(inputs/'probe/dispatch-parity.json')
     if (gate['passed'] is not True or gate['backend'] != 'gpu'
-            or gate['model']['gradient_api'] != 'NativeFabricPolicy.backward_device_arrays'
-            or any(gate['model'][key] is not True for key in
-                   ('probabilities_bitwise', 'ppo_loss_bitwise', 'backward_inputs_bitwise', 'gradients_finite'))
-            or gate['model']['gradient_parameter_words'] != 578860):
-        raise ValueError('Successful production GPU gradient gate required')
-    if gate['direct_spatial_source_sha256'] != digest(inputs/'source/integrations/direct_spatial_optimization.py'):
-        raise ValueError('Production backward implementation changed')
-    if gate['model']['teacher_ppo_coefficient'] != 1.0:
-        raise ValueError('Production PPO coefficient changed')
+            or gate['admissions'] != [digest(inputs/'probe'/('dispatch-'+arm)/'admission.json')
+                                      for arm in ('baseline', 'fused')]):
+        raise ValueError('Successful bound production GPU dispatch gate required')
     seal = read(inputs/'probe-context-seal.json')
     framework = Path(importlib.util.find_spec('metta_training.native_build').origin).parents[1]
-    source = inputs/'source'
     checked = {}
+    prefix = 'input/sources/fused/'
+    source_files = {str(p.relative_to(inputs/'source')) for p in (inputs/'source').rglob('*') if p.is_file()}
+    if source_files != {name.removeprefix(prefix) for name in seal['files'] if name.startswith(prefix)}:
+        raise ValueError('Frozen candidate source file set differs')
     for name, expected in seal['files'].items():
         if name.startswith('framework-source/'):
             actual = framework/Path(name).relative_to('framework-source')
-        elif name.startswith(('input/sources/gather/integrations/', 'input/sources/gather/generals/')):
-            relative = Path(name).relative_to('input/sources/gather')
-            if relative.suffix not in ('.py', '.cu', '.cuh', '.h', '.cpp'):
-                continue
-            # This coordinator adds evidence admission; native execution is unchanged.
-            if str(relative) == 'integrations/fresh_start_run.py':
-                continue
-            actual = source/relative
+        elif name.startswith(prefix):
+            actual = inputs/'source'/name.removeprefix(prefix)
+        elif name.startswith(('input/fused/assets/cold/', 'input/fused/bundles/cold/')):
+            actual = inputs/Path(name).relative_to('input/fused')
         else:
             continue
         if digest(actual) != expected:
-            raise ValueError('Audited gather execution changed: ' + name)
+            raise ValueError('Audited dispatch execution or selected asset changed: ' + name)
         checked[name] = expected
-    native_files = ('puffer_rollout_memory.py', 'puffer_rollout_memory.cuh',
-                    'puffer_coworld_frozen_transfer.py', 'spatial_muon_orientation.py')
-    if not all('input/sources/gather/integrations/'+name in checked for name in native_files):
-        raise ValueError('Probe seal omits native execution inputs')
-    receipt = read(inputs/'probe/gather/build/rollout-memory.json')
-    if (receipt['installer_sha256'] != digest(source/'integrations/puffer_rollout_memory.py')
-            or receipt['gather_header_sha256'] != digest(source/'integrations/puffer_rollout_memory.cuh')
-            or receipt['patched_pufferl_sha256'] != digest(inputs/'probe/gather/build/source/src/pufferl.cu')
-            or gate['rollout_memory_receipt_sha256'] != digest(inputs/'probe/gather/build/rollout-memory.json')):
-        raise ValueError('Gather implementation or compiled receipt differs')
+    selected = {}
+    for name in ('assets/cold/asset.json', 'bundles/cold/asset.json'):
+        selected[name] = seal['files']['input/fused/'+name]
+    receipt = read(inputs/'probe/dispatch-fused/admission.json')
+    if (receipt['source_sha256'] != digest(inputs/'source/integrations/direct_spatial_optimization.py')
+            or receipt['audit_module_sha256'] != seal['files']['coordinator/integrations/audit_dispatch_fusion.py']
+            or receipt['policy_sha256'] != plan['source_policy_sha256']
+            or receipt['abi_sha256'] != read(inputs/'assets/cold/asset.json')['abi_sha256']
+            or receipt['teacher_ppo_coefficient'] != 1.0):
+        raise ValueError('Audited candidate identity differs')
     return dict(probe_job_id=audit['job_id'], audit_sha256=digest(inputs/'probe-audit.json'),
                 context_seal_sha256=digest(inputs/'probe-context-seal.json'), execution_files=checked,
-                qualification=False)
+                selected_assets=selected, qualification=False)
 
 
 def intervals(stage, first, last):
@@ -120,14 +113,15 @@ def intervals(stage, first, last):
     write(stage/'throughput-intervals.json', rates)
 
 
-def configs(inputs):
-    """Prove the intervention is a single distribution scalar, including fixed workers8."""
+def configs(inputs, admission):
+    """Preserve reset and learner settings; bind the audited selected ABI metadata."""
     reference = read(CONFIG/'build-config.json')
     if read(inputs/'control/candidate/build-config.json') != reference:
         raise ValueError('Retained stateless control configuration differs')
     build = copy.deepcopy(reference)
     build['python_environment']['options']['coworld_position_probability'] = 0.0
     config = read(CONFIG/'training-config.json')
+    config['initialize']['manifest_sha256'] = admission['selected_assets']['assets/cold/asset.json']
     if read(inputs/'build-config.json') != build or read(inputs/'config.json') != config:
         raise ValueError('Only the fixed fresh-start intervention is allowed')
     return build, config
@@ -137,7 +131,7 @@ def prepare(inputs, output):
     from integrations.native_spatial_asset import load_asset, training_contract
     from integrations.classic_contract import validate_training_contract
     plan = bound_plan(inputs)
-    admission = gather_admission(inputs, plan)
+    admission = dispatch_admission(inputs, plan)
     if output.exists():
         raise ValueError('Fresh output directory required')
     for name, expected in read(inputs/'source-manifest.json').items():
@@ -154,21 +148,22 @@ def prepare(inputs, output):
             raise ValueError('Retained control artifact changed: ' + name)
     for item in ASSETS:
         directory = inputs/Path(item['destination']).relative_to('/work/input')
-        asset = load_asset(directory/'asset.json', manifest_sha256=item['manifest_sha256'])
+        manifest = admission['selected_assets'].get(str(directory.relative_to(inputs)/'asset.json'), item['manifest_sha256'])
+        asset = load_asset(directory/'asset.json', manifest_sha256=manifest)
         if asset.metadata['policy_sha256'] != item['policy_sha256']:
             raise ValueError('Fixed source or opponent identity changed')
-    source = load_asset(inputs/'assets/cold/asset.json', manifest_sha256=ASSETS[0]['manifest_sha256'])
+    source = load_asset(inputs/'assets/cold/asset.json', manifest_sha256=admission['selected_assets']['assets/cold/asset.json'])
     control = load_asset(inputs/'bundles/control/asset.json', manifest_sha256=plan['bindings']['bundles/control/asset.json'])
     if (control.metadata['policy_sha256'] != plan['historical_control_policy_sha256']
             or control.metadata['sampler'] != source.metadata['sampler']
             or digest(inputs/'control/candidate/continuation/asset/policy.bin') != control.metadata['policy_sha256']):
         raise ValueError('Exact stateless control or sampler changed')
-    build, config = configs(inputs)
+    build, config = configs(inputs, admission)
     if training_contract(build['python_environment']['options'], config['overrides']) != source.metadata['training_contract']:
         raise ValueError('Source objective changed')
     output.mkdir(parents=True)
     write(output/'plan.json', plan)
-    write(output/'gather-admission.json', admission)
+    write(output/'dispatch-admission.json', admission)
     write(output/'candidate/classic-contract.json', validate_training_contract(build, config))
     write(output/'candidate/build-config.json', build)
     write(output/'candidate/qualification/config.json', config)
