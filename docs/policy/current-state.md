@@ -194,8 +194,16 @@ and serving weight bytes. The job cost **$1.4069** for 1,706 billed seconds.
 
 The dispatch optimization is accepted for a **separate full qualification**.
 Its two short diagnostic intervals do not qualify long training or policy
-selection. Preparation now binds the fresh-start experiment to the exact tested
+selection. The fresh-start experiment is bound to the exact tested
 source and migrated selected assets; the failed pre-fusion setup is not retried.
+
+**`job-h8sqm` submitted at 02:30:14 UTC and is building.** One H100,
+zero retries, 90-minute provider/aggregate and 88-minute internal bounds;
+maximum quote **$4.455**. The independent allocation guard is live. All 1,516
+archive files and both exact Git source archives were checked; actual CPU
+preparation and the revised collector's dispatch prerequisite passed. The
+276 MiB package required a multipart upload, which recovered before submission.
+No duplicate training job was created. Training has not yet started.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**

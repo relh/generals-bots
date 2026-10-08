@@ -372,7 +372,14 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [],
+  "active_experiments": [
+    {
+      "job_id": "job-h8sqm",
+      "kind": "fresh_start_dispatch_trial",
+      "status": "building",
+      "details": "fresh_start_dispatch_trial"
+    }
+  ],
   "monotone_force_matched_training": {
     "hardware": "one H100",
     "qualification_steps_per_arm": 4194304,
@@ -3326,5 +3333,43 @@
       "max_absolute_gradient_difference": 2.0954757928848267e-09,
       "max_l2_gradient_difference": 8.200670910249232e-09
     }
+  },
+  "fresh_start_dispatch_trial": {
+    "status": "building",
+    "job_id": "job-h8sqm",
+    "submitted_at": "2026-10-08T02:30:14.393174+00:00",
+    "context_id": "ctx-f9d5e7ad",
+    "coordinator_commit": "2c23a9c6c5b9bb5cc7aa01cd092d43d64496a9f0",
+    "runtime_commit": "7f14fb0b0dacde471f879abe5329557dc11c9b08",
+    "accepted_dispatch_job_id": "job-mcxks",
+    "evidence_directory": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008",
+    "hardware": "one H100",
+    "qualification_steps": 4194304,
+    "total_steps_including_qualification": 33554432,
+    "qualification": "Full and every rolling post-warmup interval >=30000 end-to-end SPS before continuation; parity, legal actions, reward and both-seat audits required.",
+    "strength": "Three 4096-game panels: selected source, historical control, candidate; fixed seeds 17001101/17001103/17001111; positive cluster CI lower95 against both and per-seat regression guard.",
+    "provider_minutes": 90,
+    "execution_minutes": 88,
+    "aggregate_minutes_from_first_allocation": 90,
+    "max_restarts": 0,
+    "quoted_max_cost_usd": 4.455,
+    "archive_sha256": "4bd8792e4f19665f72fb2edc2f46471bea4fd5d76cbf67b9bcb347bf8deac4fa",
+    "archive_bytes": 289770189,
+    "archive_members_verified": 1516,
+    "bindings": {
+      "ready.json": "5ec80dd1817dd03d415a708cd7317c7bc2bf81ca0df45d33317e8ae6151d168b",
+      "context-seal.json": "0b7f5519881bf79c114a06962217e04a8b0ad0900010c10e2df90bb164192773",
+      "root-review.json": "4e67bf14f42752004eebb3920836a35b9bbfc6f12e6613ca648b9161bbc06c99",
+      "cpu-admission.json": "f169e7f626d8e0285ebd55f6a34abf16331609549e9316abb72f7892c8f76cb7",
+      "collector-review.json": "269a7f330c07405c53008fd6bf5b9d5902650faed092677d8a9fdfebe1ac24b6",
+      "submission.json": "e36bc1ea871ea79f53c9dc777f220761f8c06f6120cd3ef7b43ab53ab59db97c",
+      "request.json": "183cfba8aab92ac70b9d8c725b5581679b64cc209d7766b9d2721ac4209f8edf"
+    },
+    "guard_pid": 50757,
+    "guard_live_verified": true,
+    "qualified_for_long_training": false,
+    "selected": false,
+    "upload_recovery": "Package exceeded 256 MiB single-upload limit; uploaded exact reviewed archive in two parts and finalized successfully. Empty reservation ctx-b86f375f sent no bytes; no job submitted for it.",
+    "decision": "One bounded conditional qualification, continuation and local development job. No promotion without positive independent confirmation and hosted acceptance."
   }
 }
