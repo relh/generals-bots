@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-dbjvf submitted and building; CUDA admission, throughput and strength gates pending",
+    "status": "job-48zqh building after archive permission fix; job-dbjvf build_failed before allocation",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3742,24 +3742,25 @@
     "max_restarts": 0,
     "runtime_commit": "9bfc68b85d1d534fc639bacf165794deb5682968",
     "evidence_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
-    "archive_sha256": "da56b96a9c03422d26dd0febeaa29b27caefd1de77bce141a7c6da756c435c53",
-    "archive_bytes": 164775160,
+    "archive_sha256": "c7fba18786a28748f7084eeea59268add001bc5a3efda115aa69763b2937d8eb",
+    "archive_bytes": 164775107,
     "archive_members": 629,
     "bindings": {
-      "ready.json": "a7404dec557aa5e62db751d4504d7a5c2e2a0d7ef4b0a45029f9a1771f1f54af",
+      "ready.json": "d8a20ff501e07c2d3d0c3d905ba2ad544f551caa01029437cf2e81540debef99",
       "context-seal.json": "caac49cd22cfc722e73d3b9deaf6a098b92f58a4ecdb25d8380f47cde8571815",
       "cpu-admission.json": "5e1f41574cbbcef3375a086a122b239a366b4f71f17fdbad94b6d9ca123bc4d1",
-      "request-template.json": "c94b0a0edf916e0ada55fcf1ba35feba464fc6269c8ddd6147d9b69cb21b7fef",
+      "request-template.json": "6fe311430dafd4f58532e071d70bb8237df7a08373246166fbba4443750c5a33",
       "integration.json": "7c5b82a487800f93be99d9289f8677efef2961b0117c9edf34b5005a0033aff7",
       "replacement-parity-admission.json": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
-      "validation.json": "dfab5d006d3c005bc2587601f8b8cebe57fc630a224b69e30d95417c2ecbf953",
-      "submission.json": "af5e55b6c291a314143acd963b2b0c7fb5359747e8f9b7e27b8e942fdb6be85f"
+      "validation.json": "e92c9d7cafa77078c7c6e687797909764a1631a6d7f5481028cf027f19cfa42a",
+      "submission.json": "d3282b046d8aee18a9810fce9c440c3b65966f2ee00d2831fb5c48432e302131",
+      "permissions-admission.json": "d4ed8f815ac34901ee7af4c9d79fdc55668e65bcb3a1f59b34939c8aa1c1c757"
     },
-    "context_id": "ctx-0e05a916",
+    "context_id": "ctx-3e0010cf",
     "provider_block": null,
     "available_credit_usd": 2000,
     "required_reservation_usd": 5.67,
-    "ready_sha256": "a7404dec557aa5e62db751d4504d7a5c2e2a0d7ef4b0a45029f9a1771f1f54af",
+    "ready_sha256": "d8a20ff501e07c2d3d0c3d905ba2ad544f551caa01029437cf2e81540debef99",
     "approved_cost_ceiling_usd": 5.67,
     "context_access": "ready under new relh token",
     "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
@@ -3782,7 +3783,7 @@
         "http_status": 403,
         "recovered": false
       },
-      "next_action": "Monitor job-dbjvf; collect and independently audit terminal results",
+      "next_action": "Monitor job-48zqh and independently audit terminal artifacts",
       "replacement_parity": {
         "admission_sha256": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
         "passed": true,
@@ -3808,18 +3809,26 @@
       "curriculum_recovery": "Not required: integrations/metta_puffer.py only loads curriculum when probability is nonzero; remove inactive path/checksum and audit only these config differences",
       "uploaded": true
     },
-    "job_id": "job-dbjvf",
+    "job_id": "job-48zqh",
     "submission": {
-      "job_id": "job-dbjvf",
+      "job_id": "job-48zqh",
       "status": "submitted",
-      "submitted_at": "2026-10-08T22:37:36.684937+00:00",
+      "submitted_at": "2026-10-08T22:39:20.684592+00:00",
       "attempt": 0,
       "max_cost_usd": 5.67,
       "max_restarts": 0,
       "restarts_used": 0,
-      "request_sha256": "1e5c733470924c1117706b8c0f8e22f77d14f95055fa8509b2dc6a5693b5cd84",
-      "context_id": "ctx-0e05a916",
+      "request_sha256": "483d6a9a8664e6c9b45f09e2f0f2445d3f36ffd810448782cc731301e0ee56d5",
+      "context_id": "ctx-3e0010cf",
       "max_duration_minutes": 90
+    },
+    "failed_submission": {
+      "job_id": "job-dbjvf",
+      "status": "build_failed",
+      "reason": "Recovered framework-source directory mode 0700 blocked build context read",
+      "finished_at": "2026-10-08T22:37:53.040733+00:00",
+      "allocated_attempts": 0,
+      "resolution": "Archive grants directory traversal and file readability; all 629 content hashes unchanged"
     }
   },
   "compute_budget": {
@@ -3830,10 +3839,17 @@
         "job_id": "job-dbjvf",
         "max_cost_usd": 5.67,
         "actual_cost_usd": null,
+        "status": "build_failed"
+      },
+      {
+        "job_id": "job-48zqh",
+        "max_cost_usd": 5.67,
+        "actual_cost_usd": null,
         "status": "building"
       }
     ],
-    "committed_max_usd": 5.67,
-    "actual_cost_usd": 0
+    "committed_max_usd": 11.34,
+    "actual_cost_usd": 0,
+    "accounting_note": "Conservatively retain both maximum reservations until actual billing is available; first job never allocated a GPU"
   }
 }

@@ -121,18 +121,24 @@ remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. The normalization
-trial **`job-dbjvf` is submitted and building**, using ready context
-`ctx-0e05a916`: one H100, maximum **$5.67**, 90-minute provider limit,
-88-minute internal limit, zero retries. Submitted at **22:37:36 UTC**;
+trial **`job-48zqh` is submitted and building**, using ready context
+`ctx-3e0010cf`: one H100, maximum **$5.67**, 90-minute provider limit,
+88-minute internal limit, zero retries. Submitted at **22:39:20 UTC**;
 the independent runtime watchdog was verified live. Budget committed so far:
-**$5.67 of $500**; actual billed cost remains pending. CUDA admission, throughput
+**$11.34 of $500**, conservatively retaining both job caps until billing is known; actual billed cost remains pending. CUDA admission, throughput
 qualification and strength selection are all pending.
 
 The first submission was rejected because the new organization lacked the old
 mission grouping. An empty active-job reconciliation confirmed no job existed;
 removing that optional field allowed submission. No duplicate job was created.
 
-Reboot recovery is complete: persistent archive **164,775,160 bytes**, all
+`job-dbjvf` failed during image build at 22:37:53 UTC, before any GPU attempt:
+`framework-source` had mode 0700 and the build worker could not read it. The
+corrected archive verifies directory traversal and file readability for every
+member, with all 629 file content hashes unchanged. Its replacement is
+`job-48zqh`; the prior watchdog observed terminal state and exited.
+
+Reboot recovery is complete: persistent archive **164,775,107 bytes**, all
 **629 files verified**, runtime `9bfc68b`. Four retained hosted Classic replays
 replace the inaccessible originals; the pinned engine verified replay frames
 and extracted **46 public states** across both seats. The run plan explicitly
