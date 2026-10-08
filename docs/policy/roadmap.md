@@ -1,7 +1,7 @@
 # Winning Classic policy roadmap
 
 The selected radius-2 source does not meet the hosted winning gate. Its weights
-are unchanged. The current state-free execution path qualified on H100 at 41,601 SPS,
+are unchanged. The current state-free execution path qualified on H100 at 49,631 SPS,
 with final checkpoint parity and an independent artifact audit.
 See [current state](current-state.md) for live work and results,
 [runbook](runbook.md) for commands, and the
@@ -16,28 +16,19 @@ See [current state](current-state.md) for live work and results,
 2. The controlled continuation completed technically, but `job-mwvdb` failed
    strength selection: both paired intervals include zero and sentinel seat 1
    regressed beyond the guard. Do not extend, confirm or promote this candidate.
-   Next test: set retained-midgame reset probability from **0.25 to 0.0**,
-   holding other training settings fixed. Both trained policies gained frozen-pool
-   wins but lost scripted-opponent wins. The retained pool has 384 positions
-   with median turn 385.5; this suggests a distribution hypothesis, not causation.
-   Start from selected source weights with a fresh optimizer; qualify 4,194,304
-   steps at ≥30K SPS before continuing to 33,554,432. Compare against source
-   and the retained stateless control on fresh maps **17001101**, sampling
-   **17001103**, bootstrap **17001111**.
 
-   Execution preparation is now complete: lossless minibatch gathering saved
-   20.613 GiB in `job-mf4rq`; compiled action postprocessing reached 51,466 and
-   51,313 SPS in the successful same-GPU `job-mcxks` comparison. The latter
-   passed independent verification of all 368 retained files, GPU parity and
-   gradient comparisons. This addresses the dispatch bottleneck observed in
-   the failed fresh-start qualification `job-gu6wm`; it does not establish
-   that allocation's exact slowdown cause.
+   The fresh-start test is also complete: `job-h8sqm` trained 33,554,432 steps
+   with midgame reset probability zero. Qualification reached 48,782 SPS;
+   continuation reached 49,631 SPS with a 46,747 minimum rolling window and
+   43.01 GiB sampled peak memory. All 250 retained files passed independent audit.
+   The candidate won 2,792/4,096 games versus source 2,759 and control 2,779.
+   Both paired confidence intervals include zero; seat-regression guards passed.
+   Do not extend, confirm or promote this candidate. Inspect learning-signal
+   and strategy evidence for a distinct, bounded next hypothesis.
 
-   Bind the fresh-start run to the exact tested source and migrated selected
-   assets. Run a separate full **4Mi qualification**, enforcing both full and
-   rolling ≥30K SPS, before the conditional **32Mi** total training budget and
-   strength panels. Completed diagnostic failures remain in the manifest and
-   Git history. See [current state](current-state.md).
+   Lossless minibatch gathering and compiled action postprocessing are qualified
+   execution improvements. Keep the tested source and migrated asset bindings;
+   any changed training setup must independently pass full and rolling ≥30K SPS.
 3. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
    The unused confirmation seeds remain reserved: maps **16001101**, action

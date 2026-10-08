@@ -197,36 +197,45 @@ Its two short diagnostic intervals do not qualify long training or policy
 selection. The fresh-start experiment is bound to the exact tested
 source and migrated selected assets; the failed pre-fusion setup is not retried.
 
-**`job-h8sqm` is running on its first attempt**, observed at 02:54:43 UTC.
-Source GPU serving parity passed all 46 top actions, with maximum action
-probability difference 4.44e−6. Qualification and continuation training finished; the held-out strength panels are running. One H100,
-zero retries, 90-minute provider/aggregate and 88-minute internal bounds;
-maximum quote **$4.455**. The independent allocation guard is live with a
-**04:09:24 UTC** deadline. All 1,516
-archive files and both exact Git source archives were checked; actual CPU
-preparation and the revised collector's dispatch prerequisite passed. The
-276 MiB package required a multipart upload, which recovered before submission.
-No duplicate training job was created.
+**`job-h8sqm` succeeded at 03:43:37 UTC on its first attempt**, with no
+restarts or preemptions. All **250 retained result files** passed independent
+verification. The allocation guard observed completion and exited. Cost:
+**$2.4233 for 2,938 billed seconds**. The exact sealed upload was verified;
+138 missing local staging files were restored from that archive before collection
+audit, with every hash matching and no collector changes.
 
-Live qualification console: **3,145,728 measured steps / 64.485 s = 48,782 SPS**
-after two warmup epochs, including rollout, transfers and optimization. Every
-rolling window passed; minimum **47,704 SPS**. All 4,194,304 actions were legal,
-and reward audits found no nonfinite or clipped rewards. Dashboard memory was
-43.5 GiB GPU / 7.0 GiB host, with 65–70% GPU utilization snapshots. Checkpoint GPU parity passed 46/46 matching top actions (maximum probability
-difference 1.85e−6). The fresh 512-game sampling check completed. Native
-continuation admission verified checkpoint `0c20a57c…`, its own optimizer state,
-and the exact migrated ABI. Continuation completed the fixed **33,554,432 cumulative steps**. Its full
-post-warmup interval was **28,311,552 steps / 570.443 s = 49,631 SPS**, with every
-rolling window passing (minimum **46,747 SPS**). All 29,360,128 continuation
-actions were legal and reward audits passed. Dashboard memory was 43.0 GiB GPU /
-4.3 GiB host. These live results await the terminal independent artifact audit.
+One H100, 4,096 environments, rollout horizon 128, minibatch 8,192, replay ratio
+0.5, eight opponent workers and zero midgame resets completed **33,554,432 steps**.
+After two warmup epochs per training segment:
 
-The trial remains **unselected**. Final checkpoint `7fb8edd4…` passed GPU
-serving parity with 46/46 matching top actions and maximum probability
-difference 3.78e−6. The three fixed 4,096-game strength panels have started;
-source, retained control and candidate use the same held-out evaluation setup.
-Positive development results require independent confirmation and fresh
-balanced hosted matches.
+| Segment | Measured steps | Seconds | End-to-end SPS | Lowest rolling SPS | Peak sampled GPU memory |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Qualification | 3,145,728 | 64.485 | 48,782 | 47,704 | 43.54 GiB |
+| Continuation | 28,311,552 | 570.443 | 49,631 | 46,747 | 43.01 GiB |
+
+These intervals include rollout, transfers and optimization. GPU utilization
+snapshots were approximately 64–70%. All training actions were legal, rewards
+were finite and unclipped, and all 13 opponents appeared on both seats. Source,
+qualification and final checkpoint GPU serving parity each matched all 46 top
+actions; final maximum probability difference was 3.78e−6. Continuation restored
+the qualification checkpoint and its own optimizer state.
+
+**Strength selection failed.** The three matched 4,096-game panels used 2,591
+unique held-out initial states, map seed 17001101 and action seed 17001103:
+
+| Policy | Wins | Losses | Draws |
+| --- | ---: | ---: | ---: |
+| Selected source | 2,759 | 1,310 | 27 |
+| Retained control | 2,779 | 1,296 | 21 |
+| Fresh-start candidate | 2,792 | 1,261 | 43 |
+
+Candidate signed-score improvement was **+0.0200** versus source
+(cluster 95% CI **[−0.0090, +0.0484]**) and **+0.0117** versus control
+(**[−0.0194, +0.0420]**). Both intervals include zero. Both opponent-seat
+regression guards passed, but the preregistered improvement gates did not.
+Checkpoint `7fb8edd4…` is **unselected**: no extension, confirmation or hosted
+promotion. Selected source weights remain unchanged. The execution path is
+qualified; a winning strength improvement remains unresolved.
 
 ## Winning acceptance
 

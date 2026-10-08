@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "running; final GPU parity passed; held-out strength panels started",
+    "status": "succeeded; independently audited; failed strength selection",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3366,11 +3366,11 @@
       "request.json": "183cfba8aab92ac70b9d8c725b5581679b64cc209d7766b9d2721ac4209f8edf"
     },
     "guard_pid": 50757,
-    "guard_live_verified": true,
+    "guard_live_verified": false,
     "qualified_for_long_training": true,
     "selected": false,
     "upload_recovery": "Package exceeded 256 MiB single-upload limit; uploaded exact reviewed archive in two parts and finalized successfully. Empty reservation ctx-b86f375f sent no bytes; no job submitted for it.",
-    "decision": "One bounded conditional qualification, continuation and local development job. No promotion without positive independent confirmation and hosted acceptance.",
+    "decision": "Failed both positive lower95 improvement gates; no extension, confirmation or promotion. Both opponent-seat regression guards passed.",
     "attempt": 1,
     "startup_started_at": "2026-10-08T02:39:31.477727+00:00",
     "guard_deadline": "2026-10-08T04:09:24.903846+00:00",
@@ -3412,45 +3412,6 @@
       "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
     },
     "source_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T025856568319Z-sanitized.log",
-    "live_qualification_training": {
-      "job_id": "job-h8sqm",
-      "scope": "Live console training segment only; checkpoint parity, continuation gate and terminal independent artifact audit pending",
-      "log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T030538054598Z-sanitized.log",
-      "log_sha256": "e2f79b90e298a22c4b5a0fe726fd75cc3df938b5cea8b0d3ced8c3391ac6c1da",
-      "trained_steps": 4194304,
-      "warmup_epochs": 2,
-      "epoch_uptime": {
-        "1": 88.962,
-        "2": 99.771,
-        "3": 110.209,
-        "4": 120.874,
-        "5": 131.354,
-        "6": 142.337,
-        "7": 153.335,
-        "8": 164.256
-      },
-      "measured_steps": 3145728,
-      "measured_seconds": 64.485,
-      "steady_sps": 48782.32147010933,
-      "rolling_sps": {
-        "4": 49688.48031085629,
-        "5": 49589.78481910615,
-        "6": 48855.052881703414,
-        "7": 47703.74414266868,
-        "8": 47838.678771841754
-      },
-      "minimum_rolling_sps": 47703.74414266868,
-      "throughput_passed": true,
-      "illegal_actions": 0,
-      "rewards_finite_unclipped": true,
-      "dashboard_gpu_memory_gib": 43.5,
-      "dashboard_ram_gib": 7.0,
-      "dashboard_utilization_percent_range": [
-        65,
-        70
-      ],
-      "qualified_for_long_training": false
-    },
     "qualification_checkpoint_gpu_parity": {
       "layout_backend": "cpu",
       "inference_backend": "gpu",
@@ -3505,23 +3466,7 @@
       "actual_parameter_count": 578860
     },
     "continuation_admission_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T031821903253Z-sanitized.log",
-    "terminal_independent_audit_pending": true,
-    "live_continuation_training": {
-      "scope": "Completed live training console; terminal artifacts and final parity/strength evaluation pending",
-      "log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T032758258917Z-sanitized.log",
-      "log_sha256": "503a84335423f4a0af15d82d6400fa0f9f7fc87ced16597a34c4aa2b9baa2a2c",
-      "cumulative_steps": 33554432,
-      "continuation_steps": 29360128,
-      "warmup_epochs": 2,
-      "measured_steps": 28311552,
-      "measured_seconds": 570.443,
-      "steady_sps": 49630.81675119162,
-      "minimum_rolling_sps": 46746.73443002987,
-      "illegal_actions": 0,
-      "rewards_finite_unclipped": true,
-      "dashboard_gpu_memory_gib": 43.0,
-      "dashboard_host_memory_gib": 4.3
-    },
+    "terminal_independent_audit_pending": false,
     "final_checkpoint_gpu_parity": {
       "layout_backend": "cpu",
       "inference_backend": "gpu",
@@ -3557,6 +3502,85 @@
       "jax_backend": "gpu",
       "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
     },
-    "final_checkpoint_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T033515295916Z-sanitized.log"
+    "final_checkpoint_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T033515295916Z-sanitized.log",
+    "finished_at": "2026-10-08T03:43:37.894727+00:00",
+    "technical_success": true,
+    "files_verified": 250,
+    "terminal_audit_sha256": "7151f0f39eee5fa27d3c7b4d28e5168e3cd4ee0ca04de6888c48d872c20fe144",
+    "artifact_sha256": "b04404e697d7c0beab1774ddd92e029c860d7258f87f7aa04457421beaae8ace",
+    "collection_sha256": "93e7d7dcb149962c8a301203f87720f03df13899d3a65b9e8304fe81b3b2b38b",
+    "results_sha256": "7bfee75c0bb1f65cf1b8f847b66c0f1a30733c96e0ac30c5c6d500660b0f35b9",
+    "billed_seconds": 2938,
+    "charged_usd": 2.4233,
+    "qualification_result": {
+      "environment_steps": 4194304,
+      "whole_postwarmup_steps": 3145728,
+      "whole_postwarmup_seconds": 64.485,
+      "whole_postwarmup_sps": 48782.32147010933,
+      "rolling_two_epoch_sps": {
+        "4": 49688.48031085629,
+        "5": 49589.78481910615,
+        "6": 48855.052881703414,
+        "7": 47703.74414266868,
+        "8": 47838.678771841754
+      },
+      "gpu_uuid": "GPU-319d54ca-e104-facf-3e65-6eed55d7f032",
+      "sampled_peak_gpu_memory_mib": 44582.0
+    },
+    "continuation_result": {
+      "incremental_steps": 29360128,
+      "warmup_epochs": 2,
+      "whole_postwarmup_steps": 28311552,
+      "whole_postwarmup_seconds": 570.443,
+      "whole_postwarmup_sps": 49630.81675119162,
+      "sampled_peak_gpu_memory_mib": 44042.0,
+      "gpu_uuid": "GPU-319d54ca-e104-facf-3e65-6eed55d7f032",
+      "minimum_rolling_sps": 46746.73443002987
+    },
+    "strength_results": [
+      {
+        "games": 4096,
+        "unique_initial_states": 2591,
+        "baseline_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+        "candidate_checkpoint_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
+        "baseline": {
+          "wins": 2759,
+          "losses": 1310,
+          "draws": 27
+        },
+        "candidate": {
+          "wins": 2792,
+          "losses": 1261,
+          "draws": 43
+        },
+        "paired_signed_score_delta": 0.02001953125,
+        "initial_state_cluster_ci95": [
+          -0.009049221744356732,
+          0.048392596356558494
+        ]
+      },
+      {
+        "games": 4096,
+        "unique_initial_states": 2591,
+        "baseline_checkpoint_sha256": "28a090d46c8a4e30580f3daf9811caec3b296925727b53baadfd9acd67e213ed",
+        "candidate_checkpoint_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
+        "baseline": {
+          "wins": 2779,
+          "losses": 1296,
+          "draws": 21
+        },
+        "candidate": {
+          "wins": 2792,
+          "losses": 1261,
+          "draws": 43
+        },
+        "paired_signed_score_delta": 0.01171875,
+        "initial_state_cluster_ci95": [
+          -0.01935175598347092,
+          0.04196180037889397
+        ]
+      }
+    ],
+    "collection_note": "138 missing local staging files restored byte-for-byte from SHA-verified sealed context archive before audit; collector unchanged."
   }
 }
