@@ -89,7 +89,8 @@ class Trial:
 
     def parity(self,bundle,path,out,name):
         self.call('audit_spatial_checkpoint_serving_parity',['--bundle',bundle,'--replay-root',self.inputs/'leader-root',
-                  '--factory-source',self.source/'integrations/generals_fabric.py','--output',path],out,name,600)
+                  '--factory-source',self.source/'integrations/generals_fabric.py','--output',path,
+                  '--games',*map(str,self.plan['parity_games'])],out,name,600)
 
     def train(self,stage):
         root=self.output/'candidate'; out=root/stage; config=read(out/'config.json')
