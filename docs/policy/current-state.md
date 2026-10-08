@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-07, as of the 23:59 UTC corrected input-gate submission.
+Updated 2026-10-07, as of the 2026-10-08 00:16 UTC input-gate startup.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -110,8 +110,9 @@ but the failed run did not retain enough data to establish its cause.
 The complete local check and altered-input rejection passed, and the collector
 independently recomputed the six-array diagnostics. Production training code
 and settings are unchanged. **`job-mf4rq`**, submitted **23:59:34 UTC**, is
-building from 1,155 verified package files. Bounds remain **60/58/60 minutes**,
-zero restarts, maximum quote **$2.97**; its allocation guard is live.
+starting on its first attempt after the image push, from 1,155 verified package
+files. Bounds remain **60/58/60 minutes**, zero restarts, maximum quote **$2.97**;
+the allocation guard fixes the deadline at **2026-10-08 01:15:14 UTC**.
 
 The proposed storage change replaces duplicate full transposed observations/masks
 with float32 minibatch scratch: calculated saving **20.3508 GiB**. Actor storage,

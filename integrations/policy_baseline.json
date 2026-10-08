@@ -2302,7 +2302,7 @@
     "integration_evidence": "Collector only imports unchanged learner_checkpoint and monitor_coworld_steady_interval; sealed pair analysis uses staged source. Collector import and archive digest verified after integration."
   },
   "minibatch_gather_work": {
-    "status": "job-mf4rq building; exact backward-input gate and retained gradient repeat controls; ABBA pending",
+    "status": "job-mf4rq first attempt starting; exact backward-input gate and ABBA pending",
     "implementation_commit": "0f38fdd",
     "probe_commit": "585deac",
     "memory_saving_bytes": 21851504640,
@@ -2880,6 +2880,18 @@
         "observed_at": "2026-10-07T23:59:33.831664+00:00",
         "jobs_checked": 106,
         "active_generals_jobs": []
+      },
+      "allocation_guard": {
+        "job_id": "job-mf4rq",
+        "minutes": 60,
+        "pid": 4912,
+        "running": true,
+        "observed_at": "2026-10-08T00:16:17.095532+00:00",
+        "status": "starting",
+        "last_preallocation_observed_at": "2026-10-08T00:15:14.867893+00:00",
+        "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
+        "first_allocation_lower_bound_at": "2026-10-08T00:15:14.867893+00:00",
+        "deadline": "2026-10-08T01:15:14.867893+00:00"
       }
     }
   }
