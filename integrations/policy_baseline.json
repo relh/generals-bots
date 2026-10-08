@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "running; 4Mi training throughput passed; checkpoint processing underway",
+    "status": "running; qualification gates passed and exact learner continuation training",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3367,7 +3367,7 @@
     },
     "guard_pid": 50757,
     "guard_live_verified": true,
-    "qualified_for_long_training": false,
+    "qualified_for_long_training": true,
     "selected": false,
     "upload_recovery": "Package exceeded 256 MiB single-upload limit; uploaded exact reviewed archive in two parts and finalized successfully. Empty reservation ctx-b86f375f sent no bytes; no job submitted for it.",
     "decision": "One bounded conditional qualification, continuation and local development job. No promotion without positive independent confirmation and hosted acceptance.",
@@ -3450,6 +3450,61 @@
         70
       ],
       "qualified_for_long_training": false
-    }
+    },
+    "qualification_checkpoint_gpu_parity": {
+      "layout_backend": "cpu",
+      "inference_backend": "gpu",
+      "checkpoint_sha256": "0c20a57cdb73075b2b8a2351ae6dc86793fce386424232f5ed4b78a2f1b23a30",
+      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+      "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+      "serving_action_selection": {
+        "doomed_attack_route_penalty": 4.0,
+        "early_route_temperature": 0.1,
+        "early_route_turns": 100,
+        "mode": "structured_sample",
+        "move_temperature": 0.05,
+        "neutral_route_bias": 6.0,
+        "split_temperature": 0.15,
+        "weak_owned_route_penalty": 4.0
+      },
+      "bundle_manifest_sha256": "899d041cde150e72d563be972c7219ef43416c52d1a0393f84f2b58a14b9ac80",
+      "hosted_games": 4,
+      "replay_turns": [
+        0,
+        25,
+        99,
+        100,
+        150,
+        200
+      ],
+      "public_states": 46,
+      "native_batch": 8,
+      "max_logit_difference": 5.245208740234375e-06,
+      "max_action_probability_difference": 1.8477439880371094e-06,
+      "max_rollout_transform_difference": 1.7881393432617188e-07,
+      "matching_top_actions": 46,
+      "jax_backend": "gpu",
+      "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
+    },
+    "continuation_native_admission": {
+      "receipt_sha256": "da873f6ce52599269e6aa87d2b458a74ed7c31545e0208b51b4000fca802e709",
+      "schema": "generals-native-startup-admission-v1",
+      "run_sha256": "1ac3103adef27899210c3c6a5cd2e247f2d4035170b0cbc229a9d817babf557f",
+      "admission_source_sha256": "995ab98a9d228f532aee0ff5076b2d99a461c752a3ba463184eb07d867a95560",
+      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+      "model_sha256": "cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61",
+      "external_state_words": 0,
+      "initializer_manifest_sha256": "6f13576634e0ac2da0253d5754cefff98a73c43775b8884a3a4c2f3fd90c8cdc",
+      "initial_policy_sha256": "0c20a57cdb73075b2b8a2351ae6dc86793fce386424232f5ed4b78a2f1b23a30",
+      "initial_learner_sha256": "8e2d86d7d02820fcb8cdbc3677affc0dbaf773c622316a4212702dff979ce6fa",
+      "expected_abi_sha256": "8b855543272c195ab1750cfde5726dcbc289d5ebcfd4566a4acffde84c3862d8",
+      "expected_parameter_count": 578860,
+      "initialization": "restored",
+      "native_pid": 21759,
+      "actual_abi_sha256": "8b855543272c195ab1750cfde5726dcbc289d5ebcfd4566a4acffde84c3862d8",
+      "actual_parameter_count": 578860
+    },
+    "continuation_admission_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T031821903253Z-sanitized.log",
+    "terminal_independent_audit_pending": true
   }
 }
