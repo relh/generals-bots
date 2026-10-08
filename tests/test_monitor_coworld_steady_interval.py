@@ -45,3 +45,11 @@ def test_native_dashboard_day_hour_format_without_milliseconds():
     times = completed_epoch_times(history)
     assert times == {0: 0.0, 12: 3598.5, 32: 3640.0}
     assert interval_sps(times, 20, 8192 * 32) > 120000
+
+
+def test_full_fast_interval_can_contain_slow_rolling_window():
+    times = dict(enumerate([100, 112, 113, 114, 150, 151, 152, 153], 1))
+    assert interval_sps(times, 6, 524288) > 30000
+    windows = [interval_sps({epoch: seconds for epoch, seconds in times.items() if epoch <= end},
+                            2, 524288) for end in range(4, 9)]
+    assert any(rate < 30000 for rate in windows)
