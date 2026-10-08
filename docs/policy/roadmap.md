@@ -23,21 +23,21 @@ See [current state](current-state.md) for live work and results,
    Start from selected source weights with a fresh optimizer; qualify 4,194,304
    steps at ≥30K SPS before continuing to 33,554,432. Compare against source
    and the retained stateless control on fresh maps **17001101**, sampling
-   **17001103**, bootstrap **17001111**. The implementation and sealed package
-   passed review; **job-r4xkt** completed qualification steps but failed its
-   final rolling throughput interval (28,091 SPS). No strength evaluation ran.
-   The memory-gather comparison **job-tjqy8** failed in its new gradient audit
-   before training. The repaired production-interface audit passed the complete
-   local gradient path, but **job-8tdud** failed the bitwise parameter-gradient
-   check before ABBA. Loss and probabilities matched; gradient differences were
-   not retained. **job-mf4rq succeeded**: exact backward-input and CUDA contents
-   checks passed, both gather diagnostics exceeded 43K SPS, and sampled peak
-   GPU memory fell 20.613 GiB. Retain this storage change and stage the original
-   fresh-start strength experiment. **job-gu6wm failed** its first rolling
-   qualification interval at 23,660 SPS; no long training or strength panels ran.
-   Diagnose the retained performance evidence before another allocation; full
-   4Mi qualification remains required before the conditional 32Mi budget. See
-   [current state](current-state.md).
+   **17001103**, bootstrap **17001111**.
+
+   Execution preparation is now complete: lossless minibatch gathering saved
+   20.613 GiB in `job-mf4rq`; compiled action postprocessing reached 51,466 and
+   51,313 SPS in the successful same-GPU `job-mcxks` comparison. The latter
+   passed independent verification of all 368 retained files, GPU parity and
+   gradient comparisons. This addresses the dispatch bottleneck observed in
+   the failed fresh-start qualification `job-gu6wm`; it does not establish
+   that allocation's exact slowdown cause.
+
+   Bind the fresh-start run to the exact tested source and migrated selected
+   assets. Run a separate full **4Mi qualification**, enforcing both full and
+   rolling ≥30K SPS, before the conditional **32Mi** total training budget and
+   strength panels. Completed diagnostic failures remain in the manifest and
+   Git history. See [current state](current-state.md).
 3. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
    The unused confirmation seeds remain reserved: maps **16001101**, action
