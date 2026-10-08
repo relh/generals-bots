@@ -3642,5 +3642,27 @@
     "commit": "7cc2b03",
     "focused_tests": 17,
     "asset_abi_changed": false
+  },
+  "bootstrap_normalization_trial": {
+    "status": "staging only; not submitted; pending live critic diagnostic and root review",
+    "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
+    "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
+    "control_job_id": "job-h8sqm",
+    "training_seed": 11007101,
+    "qualification_steps": 4194304,
+    "total_steps_including_qualification": 33554432,
+    "horizon": 128,
+    "reset_probability": 0.0,
+    "map_seed": 17003101,
+    "sample_seed": 17003103,
+    "bootstrap_seed": 17003111,
+    "games_per_policy": 4096,
+    "throughput_gate": "Actual built CUDA normalization kernel verification, then full and all rolling post-warmup intervals >=30000 end-to-end SPS before continuation",
+    "strength_gate": "Positive map-cluster CI95 lower bound vs both source and control; every opponent-seat stratum with >=100 games signed-score delta >=-0.10",
+    "provider_minutes": 90,
+    "execution_minutes": 88,
+    "aggregate_minutes": 90,
+    "max_restarts": 0
   }
 }

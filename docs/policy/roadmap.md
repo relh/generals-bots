@@ -1,7 +1,7 @@
 # Winning Classic policy roadmap
 
 The selected radius-2 source does not meet the hosted winning gate. Its weights
-are unchanged. The current state-free execution path qualified on H100 at 49,631 SPS,
+are unchanged. The last measured state-free execution path qualified on H100 at 49,631 SPS,
 with final checkpoint parity and an independent artifact audit.
 See [current state](current-state.md) for live work and results,
 [runbook](runbook.md) for commands, and the
@@ -29,7 +29,18 @@ See [current state](current-state.md) for live work and results,
    Lossless minibatch gathering and compiled action postprocessing are qualified
    execution improvements. Keep the tested source and migrated asset bindings;
    any changed training setup must independently pass full and rolling ≥30K SPS.
-3. After a future positive development result, freeze its checkpoint and sampler
+3. `job-krq94` is the bounded, nontraining critic diagnostic: two 256-game
+   own-policy panels measure return calibration and rollout-boundary sensitivity.
+   Separately, inspection established that normalization gave bootstrap rows
+   unintended actor advantages. The correction keeps those rows zero and excludes
+   them from normalization statistics; 17 focused CPU tests passed.
+   Prepare a controlled correction-only run: actual CUDA kernel verification,
+   then 4Mi fresh-optimizer qualification before conditional 32Mi total. Keep
+   horizon 128 and all prior fresh-start training settings. Compare with selected
+   source and the `job-h8sqm` control on fresh maps 17003101, action seed 17003103,
+   bootstrap seed 17003111. No additional GPU job while the diagnostic is live.
+   The corrected native path is **not yet GPU qualified**.
+4. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
    The unused confirmation seeds remain reserved: maps **16001101**, action
    sampling **16001103**, bootstrap **16001111**. Recheck training lineages.
