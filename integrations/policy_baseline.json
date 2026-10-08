@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "uploaded and reviewed; submission blocked by provider available credit $0; no job created",
+    "status": "new token funded; original context inaccessible; reboot-cleared package recovery underway; $5.67 quote approval pending",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3754,9 +3754,12 @@
       "request-template.json": "ffd4995ec1ca6c68743c38f9136cfb9d9e91e197a401793da4cbcdc6da85f9ed"
     },
     "context_id": "ctx-f60b41ec",
-    "provider_block": "preflight/cost-cap",
-    "available_credit_usd": 0,
-    "required_reservation_usd": 4.455,
-    "ready_sha256": "c00b449f90e98abe6224235b9c26939551904476f11606bfec508b5de9125c5b"
+    "provider_block": null,
+    "available_credit_usd": 2000,
+    "required_reservation_usd": 5.67,
+    "ready_sha256": "c00b449f90e98abe6224235b9c26939551904476f11606bfec508b5de9125c5b",
+    "approved_cost_ceiling_usd": 4.455,
+    "context_access": "ctx-f60b41ec not accessible with new relh token",
+    "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008"
   }
 }

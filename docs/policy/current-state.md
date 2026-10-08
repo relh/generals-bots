@@ -120,11 +120,12 @@ CPU arithmetic/installer tests passed; CUDA verification and throughput qualific
 remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
-The correction-only trial is sealed and uploaded as context `ctx-f60b41ec`,
-with actual CUDA kernel verification, 4Mi qualification and conditional 32Mi total.
-**Submission is blocked by GMN's cost-cap preflight: $0 available credit against
-$4.455 required reservation. No new GPU job was created.** Funding or an identified
-funded allocation is needed to execute the prepared experiment.
+The new relh token passes GMN funding preflight with **$2,000 available credit**.
+The same 90-minute H100 trial now quotes **$5.67**, above the previous **$4.455**
+ceiling; approval for that increase is pending. The old context `ctx-f60b41ec`
+is inaccessible under the new token, and reboot cleared the temporary package.
+Recovery is rebuilding the exact sealed contents from Git and retained artifacts
+in persistent local output. **No normalization training job has been submitted.**
 
 Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
 should be extended or promoted.
