@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "running; 33.55M training steps completed above all throughput gates; final checkpoint processing",
+    "status": "running; final GPU parity passed; held-out strength panels started",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3521,6 +3521,42 @@
       "rewards_finite_unclipped": true,
       "dashboard_gpu_memory_gib": 43.0,
       "dashboard_host_memory_gib": 4.3
-    }
+    },
+    "final_checkpoint_gpu_parity": {
+      "layout_backend": "cpu",
+      "inference_backend": "gpu",
+      "checkpoint_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
+      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+      "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+      "serving_action_selection": {
+        "doomed_attack_route_penalty": 4.0,
+        "early_route_temperature": 0.1,
+        "early_route_turns": 100,
+        "mode": "structured_sample",
+        "move_temperature": 0.05,
+        "neutral_route_bias": 6.0,
+        "split_temperature": 0.15,
+        "weak_owned_route_penalty": 4.0
+      },
+      "bundle_manifest_sha256": "892fc91471a6f8469895e7bf772b68aea05cc059f9e83d8925601d5117669b31",
+      "hosted_games": 4,
+      "replay_turns": [
+        0,
+        25,
+        99,
+        100,
+        150,
+        200
+      ],
+      "public_states": 46,
+      "native_batch": 8,
+      "max_logit_difference": 2.384185791015625e-06,
+      "max_action_probability_difference": 3.7848949432373047e-06,
+      "max_rollout_transform_difference": 2.384185791015625e-07,
+      "matching_top_actions": 46,
+      "jax_backend": "gpu",
+      "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
+    },
+    "final_checkpoint_gpu_parity_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T033515295916Z-sanitized.log"
   }
 }

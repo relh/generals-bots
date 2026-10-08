@@ -199,7 +199,7 @@ source and migrated selected assets; the failed pre-fusion setup is not retried.
 
 **`job-h8sqm` is running on its first attempt**, observed at 02:54:43 UTC.
 Source GPU serving parity passed all 46 top actions, with maximum action
-probability difference 4.44e−6. Qualification and continuation training finished; final checkpoint processing is underway. One H100,
+probability difference 4.44e−6. Qualification and continuation training finished; the held-out strength panels are running. One H100,
 zero retries, 90-minute provider/aggregate and 88-minute internal bounds;
 maximum quote **$4.455**. The independent allocation guard is live with a
 **04:09:24 UTC** deadline. All 1,516
@@ -221,8 +221,10 @@ rolling window passing (minimum **46,747 SPS**). All 29,360,128 continuation
 actions were legal and reward audits passed. Dashboard memory was 43.0 GiB GPU /
 4.3 GiB host. These live results await the terminal independent artifact audit.
 
-The trial remains **unselected**. Finish final checkpoint export and parity,
-then run the three fixed strength panels.
+The trial remains **unselected**. Final checkpoint `7fb8edd4…` passed GPU
+serving parity with 46/46 matching top actions and maximum probability
+difference 3.78e−6. The three fixed 4,096-game strength panels have started;
+source, retained control and candidate use the same held-out evaluation setup.
 Positive development results require independent confirmation and fresh
 balanced hosted matches.
 
