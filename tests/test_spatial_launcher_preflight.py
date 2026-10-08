@@ -30,5 +30,5 @@ def test_real_imported_launcher_retains_checkpoint_abi_and_native_guard(tmp_path
     assert trainer.PUFFER_REVISION == "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2"
     assert set(trainer.CheckpointInitialization.model_fields) == {"asset", "manifest_sha256", "restore_learner"}
     (tmp_path / "puffer").write_bytes(b"unqualified native build")
-    with pytest.raises(ValueError, match="orientation does not match"):
+    with pytest.raises(FileNotFoundError, match="rollout-memory.json"):
         trainer.prepare_run(tmp_path, tmp_path / "out", None)
