@@ -376,7 +376,7 @@
     {
       "job_id": "job-h8sqm",
       "kind": "fresh_start_dispatch_trial",
-      "status": "building",
+      "status": "starting",
       "details": "fresh_start_dispatch_trial"
     }
   ],
@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "building",
+    "status": "starting",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3370,6 +3370,10 @@
     "qualified_for_long_training": false,
     "selected": false,
     "upload_recovery": "Package exceeded 256 MiB single-upload limit; uploaded exact reviewed archive in two parts and finalized successfully. Empty reservation ctx-b86f375f sent no bytes; no job submitted for it.",
-    "decision": "One bounded conditional qualification, continuation and local development job. No promotion without positive independent confirmation and hosted acceptance."
+    "decision": "One bounded conditional qualification, continuation and local development job. No promotion without positive independent confirmation and hosted acceptance.",
+    "attempt": 1,
+    "startup_started_at": "2026-10-08T02:39:31.477727+00:00",
+    "guard_deadline": "2026-10-08T04:09:24.903846+00:00",
+    "first_allocation_lower_bound_at": "2026-10-08T02:39:24.903846+00:00"
   }
 }
