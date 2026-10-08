@@ -124,8 +124,15 @@ The new relh token passes GMN funding preflight with **$2,000 available credit**
 The same 90-minute H100 trial now quotes **$5.67**, above the previous **$4.455**
 ceiling; approval for that increase is pending. The old context `ctx-f60b41ec`
 is inaccessible under the new token, and reboot cleared the temporary package.
-Recovery is rebuilding the exact sealed contents from Git and retained artifacts
-in persistent local output. **No normalization training job has been submitted.**
+Recovery restored **605 of 664 sealed files exactly** in persistent local output.
+The remaining original files are 32 parity replays plus their manifest, two
+curriculum files, and 24 Puffer Git-container files. The pinned Puffer commit
+and tree are recovered, but its new packaging requires a new seal. The official
+replay artifact endpoint returned HTTP 403 with the existing Softmax login.
+Recover authorized artifact access or generate a newly verified parity set;
+remove the unused curriculum binding (reset probability is zero) if its archive
+cannot be recovered. The rebuilt package needs fresh admission and a new seal
+before upload. **No normalization training job has been submitted.**
 
 Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
 should be extended or promoted.

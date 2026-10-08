@@ -3760,6 +3760,27 @@
     "ready_sha256": "c00b449f90e98abe6224235b9c26939551904476f11606bfec508b5de9125c5b",
     "approved_cost_ceiling_usd": 4.455,
     "context_access": "ctx-f60b41ec not accessible with new relh token",
-    "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008"
+    "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
+    "package_recovery": {
+      "exact_files_recovered": 605,
+      "original_files": 664,
+      "report_sha256": "43b8a828fd26ee5ae7de924c122627fbfd88e40294c6de1b308845b0b41f592b",
+      "missing_original_inputs": {
+        "parity_replays": 32,
+        "parity_manifest": 1,
+        "curriculum_files": 2,
+        "puffer_git_container_files": 24
+      },
+      "puffer_commit_recovered": "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2",
+      "puffer_tree_recovered": "59ee157ec73021dd55ae01d2a899c28b54bfa4d3",
+      "requires_reseal": true,
+      "ready_to_upload": false,
+      "remote_replay_probe": {
+        "episode_id": "1a3f4091-6f7f-4833-aff5-8a8a93eec996",
+        "http_status": 403,
+        "recovered": false
+      },
+      "next_action": "Recover authorized artifacts or regenerate and verify parity inputs; remove unused reset-probability-zero curriculum binding if unrecoverable; rerun local admission and reseal before upload"
+    }
   }
 }
