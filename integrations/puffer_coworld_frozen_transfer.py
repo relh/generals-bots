@@ -41,7 +41,7 @@ def install_advantage_normalization(source: Path) -> None:
     path = source / "src/pufferl.cu"
     text = path.read_text()
     kernel_bytes = Path(__file__).with_name("puffer_advantage_normalization.cuh").read_bytes()
-    if hashlib.sha256(kernel_bytes).hexdigest() != "2e0875e14e85008ffa2f990109355fe0e29204f3e16dec4fd27adc3bd999b63c":
+    if hashlib.sha256(kernel_bytes).hexdigest() != "f86375c1190da5abe28bdc74a95b10cdfd51011bb59a53ad1bea55e96cb87cef":
         raise ValueError("Advantage normalizer differs from the pinned Metta implementation")
     kernel = kernel_bytes.decode()
     replacements = (
@@ -55,9 +55,9 @@ def install_advantage_normalization(source: Path) -> None:
         ("        ppo_loss_fwd_bwd(dec, p_logstd, graph,",
          "        if (hypers->norm_adv) {\n"
          "            int count = (int)numel(graph.mb_advantages.shape);\n"
-         "            assert(count > 1);\n"
+         "            assert(Tmb > 1 && count % Tmb == 0 && count - count / Tmb > 1);\n"
          "            metta_standardize_ppo_advantages<<<1, 256, 0, stream>>>(\n"
-         "                graph.mb_advantages.data, count);\n"
+         "                graph.mb_advantages.data, count, Tmb);\n"
          "        }\n"
          "        ppo_loss_fwd_bwd(dec, p_logstd, graph,"),
     )
