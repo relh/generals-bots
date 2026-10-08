@@ -125,14 +125,17 @@ The same 90-minute H100 trial now quotes **$5.67**, above the previous **$4.455*
 ceiling; approval for that increase is pending. The old context `ctx-f60b41ec`
 is inaccessible under the new token, and reboot cleared the temporary package.
 Recovery restored **605 of 664 sealed files exactly** in persistent local output.
-The remaining original files are 32 parity replays plus their manifest, two
-curriculum files, and 24 Puffer Git-container files. The pinned Puffer commit
-and tree are recovered, but its new packaging requires a new seal. The official
-replay artifact endpoint returned HTTP 403 with the existing Softmax login.
-Recover authorized artifact access or generate a newly verified parity set;
-remove the unused curriculum binding (reset probability is zero) if its archive
-cannot be recovered. The rebuilt package needs fresh admission and a new seal
-before upload. **No normalization training job has been submitted.**
+The original missing replay inputs are inaccessible (the official artifact
+endpoint returned HTTP 403), but four retained hosted Classic replays now
+provide a replacement set. Replaying them through the pinned engine verified
+all sampled frame transitions and extracted **46 public states** across both
+seats at turns 0, 25, 99, 100, 150 and 200 where available. GPU policy parity
+remains pending. The pinned Puffer commit and tree are recovered; new Git
+packaging needs resealing. The zero-probability curriculum is never loaded by
+the environment, so its stale path/checksum can be removed without changing
+training behavior. Integrate these replacements, explicitly audit config
+changes against the control, run fresh local admission, and reseal before upload.
+**No normalization training job has been submitted.**
 
 Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
 should be extended or promoted.
