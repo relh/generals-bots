@@ -3335,7 +3335,7 @@
     }
   },
   "fresh_start_dispatch_trial": {
-    "status": "running; qualification gates passed and exact learner continuation training",
+    "status": "running; 33.55M training steps completed above all throughput gates; final checkpoint processing",
     "job_id": "job-h8sqm",
     "submitted_at": "2026-10-08T02:30:14.393174+00:00",
     "context_id": "ctx-f9d5e7ad",
@@ -3505,6 +3505,22 @@
       "actual_parameter_count": 578860
     },
     "continuation_admission_log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T031821903253Z-sanitized.log",
-    "terminal_independent_audit_pending": true
+    "terminal_independent_audit_pending": true,
+    "live_continuation_training": {
+      "scope": "Completed live training console; terminal artifacts and final parity/strength evaluation pending",
+      "log": "integrations/softmax/local-output/fresh-start-dispatch-launch-20261008/job-h8sqm-run-attempt1-20261008T032758258917Z-sanitized.log",
+      "log_sha256": "503a84335423f4a0af15d82d6400fa0f9f7fc87ced16597a34c4aa2b9baa2a2c",
+      "cumulative_steps": 33554432,
+      "continuation_steps": 29360128,
+      "warmup_epochs": 2,
+      "measured_steps": 28311552,
+      "measured_seconds": 570.443,
+      "steady_sps": 49630.81675119162,
+      "minimum_rolling_sps": 46746.73443002987,
+      "illegal_actions": 0,
+      "rewards_finite_unclipped": true,
+      "dashboard_gpu_memory_gib": 43.0,
+      "dashboard_host_memory_gib": 4.3
+    }
   }
 }

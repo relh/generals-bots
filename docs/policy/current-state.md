@@ -199,7 +199,7 @@ source and migrated selected assets; the failed pre-fusion setup is not retried.
 
 **`job-h8sqm` is running on its first attempt**, observed at 02:54:43 UTC.
 Source GPU serving parity passed all 46 top actions, with maximum action
-probability difference 4.44e−6. Qualification gates passed; exact checkpoint/optimizer continuation is training. One H100,
+probability difference 4.44e−6. Qualification and continuation training finished; final checkpoint processing is underway. One H100,
 zero retries, 90-minute provider/aggregate and 88-minute internal bounds;
 maximum quote **$4.455**. The independent allocation guard is live with a
 **04:09:24 UTC** deadline. All 1,516
@@ -215,11 +215,14 @@ and reward audits found no nonfinite or clipped rewards. Dashboard memory was
 43.5 GiB GPU / 7.0 GiB host, with 65–70% GPU utilization snapshots. Checkpoint GPU parity passed 46/46 matching top actions (maximum probability
 difference 1.85e−6). The fresh 512-game sampling check completed. Native
 continuation admission verified checkpoint `0c20a57c…`, its own optimizer state,
-and the exact migrated ABI. Continuation is training toward the fixed total
-budget below. These live results await the terminal independent artifact audit.
+and the exact migrated ABI. Continuation completed the fixed **33,554,432 cumulative steps**. Its full
+post-warmup interval was **28,311,552 steps / 570.443 s = 49,631 SPS**, with every
+rolling window passing (minimum **46,747 SPS**). All 29,360,128 continuation
+actions were legal and reward audits passed. Dashboard memory was 43.0 GiB GPU /
+4.3 GiB host. These live results await the terminal independent artifact audit.
 
-The trial remains **unselected**. Complete **33,554,432** cumulative training
-steps under the rolling 30K gate, then run the three fixed strength panels.
+The trial remains **unselected**. Finish final checkpoint export and parity,
+then run the three fixed strength panels.
 Positive development results require independent confirmation and fresh
 balanced hosted matches.
 
