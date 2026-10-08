@@ -38,7 +38,7 @@ def run(args):
     devices=jax.devices(args.backend)
     assert len(devices)==1 and not args.output.exists()
     args.output.mkdir(parents=True)
-    install(native)
+    if not getattr(native.NativeFabricPolicy,'_generals_direct_spatial',False):install(native)
     with jax.default_device(jax.devices('cpu')[0]):
         policy=native.NativeFabricPolicy(json.dumps(metadata['fabric']))
         observations,masks,labels=verified_views(args.input/'leader-root',[0,6,7,10],{0,25,99,100,150,200})
