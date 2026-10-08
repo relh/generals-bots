@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-08, as of the 00:48 UTC fresh-start gather submission.
+Updated 2026-10-08, as of the 01:04 UTC fresh-start gather startup.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -151,11 +151,14 @@ passed. This is a diagnostic result, **not full training qualification**.
 - Gather passed GPU input/gradient-path checks and reduced sampled memory by
   20.613 GiB. Separate full training qualification remains outstanding.
 
-**Live:** `job-gu6wm`, submitted **00:48:02 UTC**, is building on its first
+**Live:** `job-gu6wm`, submitted **00:48:02 UTC**, completed its build and is starting on its first
 attempt from source `589bfab` and context `ctx-079544c9`. The package contains
 1,217 verified files and binds the successful probe. Bounds are **90 provider /
 88 execution / 90 aggregate minutes**, zero restarts, maximum quote **$4.455**.
-The allocation guard is live (PID 25460).
+The allocation guard is live (PID 25460), with a fixed deadline of
+**02:32:56 UTC** from the conservative 01:02:56 allocation lower bound.
+At 01:04 UTC, image download had reached 1.910/3.143 GB and 13/18 layers;
+no failure, restart or preemption was reported.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**

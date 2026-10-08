@@ -2113,7 +2113,7 @@
     ]
   },
   "fresh_start_experiment": {
-    "status": "job-gu6wm building first attempt; fresh-start gather full4Mi qualification and conditional32Mi strength evaluation pending",
+    "status": "job-gu6wm first attempt starting after successful image build; full4Mi qualification and conditional32Mi strength evaluation pending",
     "hypothesis_evidence": "integrations/softmax/local-output/stateless-continuation-launch-20261007/fresh-start-hypothesis.json",
     "hypothesis_evidence_sha256": "9a8c9150ba6d8474fdb0dd2043dfbcb2c2f122d20d7c0a0a79b291dff9b27448",
     "change": "coworld_position_probability 0.25 to 0.0; all other training model/reward/sampler/opponent settings fixed",
@@ -2337,7 +2337,43 @@
         "integrations/softmax/local-output/fresh-start-gather-launch-20261007/aggregate-guard-process.json": "61348af63582c12bf16870a5ee734f4c095c849900c55b2c5d0854c3215b6f60",
         "integrations/softmax/local-output/fresh-start-gather-launch-20261007/cpu-admission.json": "5c912b6ca2e2fcb6fae8b7b5841d9c40e6eadedc91959320da00c08aaa8e4972",
         "integrations/softmax/local-output/fresh-start-gather-launch-20261007/root-review.json": "03a51542f22fe9a0713ed2974dad6319cb74ecfa6914cbb4e2af11250d1164f3"
-      }
+      },
+      "startup_observation": {
+        "observed_at": "2026-10-08T01:04:13.014344+00:00",
+        "job_id": "job-gu6wm",
+        "status": "starting",
+        "attempt": 1,
+        "build": null,
+        "build_history": null,
+        "startup": {
+          "bytes_downloaded": 1909845936,
+          "bytes_total": 3143356434,
+          "layers_done": 13,
+          "layers_total": 18,
+          "phase": "downloading",
+          "started_at": "2026-10-08T01:03:18.927827+00:00",
+          "updated_at": "2026-10-08T01:04:12.499969+00:00"
+        },
+        "failure_reason": null,
+        "finished_at": null,
+        "infra_start_failures": 0,
+        "restarts_used": 0,
+        "preempted_count": 0,
+        "attempt_history": null
+      },
+      "allocation_guard": {
+        "job_id": "job-gu6wm",
+        "minutes": 90,
+        "pid": 25460,
+        "running": true,
+        "observed_at": "2026-10-08T01:04:38.388295+00:00",
+        "status": "starting",
+        "last_preallocation_observed_at": "2026-10-08T01:02:56.891756+00:00",
+        "deadline_basis": "conservative preallocation observation or submission; never later than allocation",
+        "first_allocation_lower_bound_at": "2026-10-08T01:02:56.891756+00:00",
+        "deadline": "2026-10-08T02:32:56.891756+00:00"
+      },
+      "allocation_guard_sha256": "9fb13c9b7cf377f2fb5d8f92a7893e412d4692a3fb9c065de1260fc16de7a89b"
     }
   },
   "runner_cleanup": {
@@ -2685,7 +2721,7 @@
     },
     "fresh_start_readiness": {
       "commit": "d80303f",
-      "status": "Bound positive probe evidence; job-gu6wm building; full4Mi qualification still required before conditional32Mi continuation",
+      "status": "Bound positive probe evidence; job-gu6wm starting; full4Mi qualification still required before conditional32Mi continuation",
       "requirements": [
         "Successful independently audited compiled GPU gather and production gradient gate",
         "Both gather diagnostic runs at least 30000 SPS",
