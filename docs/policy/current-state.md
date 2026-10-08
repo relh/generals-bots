@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-08, after verification of the 01:16 UTC fresh-start gather failure.
+Updated 2026-10-08, while preparing the bounded dispatch comparison.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -166,8 +166,13 @@ interval. Model inference and optimization slowed roughly 2–2.6×, versus abou
 
 **Next:** compare compiled action postprocessing against the existing dispatch
 path in one bounded ABBA job, preserving raw forward/backward calculations and
-the immediate finite guard. Implementation and authentic-policy checks are in
-progress; no new job is submitted. Do not resubmit the unchanged setup.
+the immediate finite guard. The implementation is integrated. Fifteen focused
+checks and eight authentic CPU states passed; legal probabilities differed by
+at most 4.66e−9, with matching top actions. Raw forward/backward code is unchanged.
+GPU speed and GPU numerical parity remain unmeasured. Candidate asset metadata
+must explicitly bind the changed adapter hash before launch; original selected
+assets remain historical evidence. No new job is submitted. Do not resubmit the
+unchanged setup.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**
