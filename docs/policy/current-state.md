@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-08, while preparing the bounded dispatch comparison.
+Updated 2026-10-08 after the successful dispatch comparison.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the previously measured setup. Playing
 strength remains the unmet goal.
@@ -164,29 +164,38 @@ The diagnosis found identical GPU clocks, CPU quota, cuBLAS, build settings and
 interval. Model inference and optimization slowed roughly 2–2.6×, versus about
 1.4× for environments; the exact cause remains unproven.
 
-**`job-mcxks` submitted at 01:36:04 UTC; first startup began at 01:52:19 UTC.**
-The image build/push completed, and the allocated node is downloading it. The
-live guard fixes the allocation deadline at **02:52:00 UTC**, using the last
-preallocation observation. No infrastructure failure or retry is reported.
-It compares compiled
-action postprocessing against the existing dispatch path in one bounded
-baseline/fused/fused/baseline H100 job. Each arm uses 2,097,152 steps, the common
-geometry above, fresh optimizer state and zero midgame resets. Raw model and
-backward calculations, sampler and immediate finite guard are preserved.
+**`job-mcxks` succeeded at 02:22:57 UTC on its first attempt**, with no
+restarts or preemptions. The allocation guard observed completion and exited.
+This same-H100 baseline/fused/fused/baseline comparison compiled action
+postprocessing while preserving raw model/backward calculations and the sampler.
+Each arm trained 2,097,152 steps with fresh optimizer state and zero midgame resets.
 
-Fifteen focused checks and eight authentic CPU states passed, including the
-actual production bootstrap. Legal probabilities differed by at most 4.66e−9,
-with matching top actions. The collector independently recomputed 30 gradient
-comparisons. Explicit candidate asset migration changes only the adapter's
-source hash in the ABI descriptor; policy, optimizer and serving weight bytes
-are preserved. GPU parity and speed remain unmeasured.
+| Arm | Measured seconds | End-to-end SPS | Sampled peak GPU memory |
+| --- | ---: | ---: | ---: |
+| Baseline 1 | 26.403 | 39,714 | 43.00 GiB |
+| Fused 1 | 20.374 | 51,466 | 42.47 GiB |
+| Fused 2 | 20.435 | 51,313 | 42.47 GiB |
+| Baseline 2 | 29.108 | 36,024 | 42.47 GiB |
 
-The job has zero retries, a 60-minute provider/aggregate bound, 58-minute internal
-bound, and a **$2.97 maximum quote**. The allocation guard is live. All 1,168
-archive files and three exact Git source archives were independently checked.
-Both candidate diagnostic intervals must reach 30K SPS before a separate full
-qualification is considered. This job does not authorize long training or policy
-selection. No unchanged retry of the failed setup was submitted.
+Each measurement covers 1,048,576 steps after two warmup epochs, using the common
+4,096-environment geometry above. The fused mean was **35.7% faster** than the
+baseline mean in this bounded comparison. Dashboard GPU utilization was around
+62–66% for fused training; whole-subprocess telemetry is retained, rather than
+claimed as an interval-aligned average.
+
+All **368 retained files** passed independent verification. Both variants passed
+46-state GPU serving parity. Eight native GPU audit states produced identical
+raw/acting outputs, probabilities, loss and cotangents. Thirty gradient-pair
+comparisons were independently recomputed; maximum absolute difference was
+2.10e−9, including repeat-to-repeat GPU variation. All 8,388,608 training actions
+were legal; rewards passed finite/unclipped checks and every arm covered all
+13 opponents on both seats. Explicit ABI migration preserved policy, optimizer
+and serving weight bytes. The job cost **$1.4069** for 1,706 billed seconds.
+
+The dispatch optimization is accepted for a **separate full qualification**.
+Its two short diagnostic intervals do not qualify long training or policy
+selection. Preparation now binds the fresh-start experiment to the exact tested
+source and migrated selected assets; the failed pre-fusion setup is not retried.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**

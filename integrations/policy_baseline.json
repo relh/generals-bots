@@ -372,14 +372,7 @@
     "audit_receipt_sha256": "e8a9126276b5e6f941d6fd18b7b2f5d67ba935d35f8e02a5a4e540cb1da7e2ac",
     "billed_usd": 1.0186
   },
-  "active_experiments": [
-    {
-      "job_id": "job-mcxks",
-      "kind": "dispatch_fusion_probe",
-      "status": "starting",
-      "details": "dispatch_fusion_probe"
-    }
-  ],
+  "active_experiments": [],
   "monotone_force_matched_training": {
     "hardware": "one H100",
     "qualification_steps_per_arm": 4194304,
@@ -3203,7 +3196,7 @@
     "memory_reduction_verified_mib": 21108.0
   },
   "dispatch_fusion_probe": {
-    "status": "starting; first allocation observed 2026-10-08T01:52:21Z",
+    "status": "succeeded; independent audit passed; separate full qualification required",
     "job_id": "job-mcxks",
     "submitted_at": "2026-10-08T01:36:04.646233+00:00",
     "context_id": "ctx-662f334c",
@@ -3263,13 +3256,75 @@
     "archive_bytes": 194510861,
     "archive_members_verified": 1168,
     "guard_pid": 35487,
-    "guard_live_verified": true,
+    "guard_live_verified": false,
     "qualified_for_long_training": false,
     "selected": false,
-    "decision": "Diagnostic only; both candidate intervals >=30K permits separate full 4Mi qualification. No strength or promotion claim.",
+    "decision": "Accepted execution optimization; separate full 4Mi qualification required before long training. No strength or promotion claim.",
     "collector_python": "/private/tmp/generals-source-global-product-venv/bin/python (3.12; required for matching AST serialization)",
     "attempt": 1,
     "guard_deadline": "2026-10-08T02:52:00.948513+00:00",
-    "first_allocation_lower_bound_at": "2026-10-08T01:52:00.948513+00:00"
+    "first_allocation_lower_bound_at": "2026-10-08T01:52:00.948513+00:00",
+    "finished_at": "2026-10-08T02:22:57.340061+00:00",
+    "guard_terminal_status": "succeeded",
+    "billed_seconds": 1706,
+    "charged_usd": 1.4069,
+    "files_verified": 368,
+    "technical_success": true,
+    "eligible_for_separate_qualification": true,
+    "artifact_sha256": "a788346f96b1012bf63ea78ef78d20f02bf44a708ee069dee62e312c3f632b3e",
+    "collection_sha256": "5bfceca82d6dd1d1234ec2ee662c111cdaba59cf63409253502c970a79d9c63f",
+    "results_sha256": "048b3981e383677caa2626fe0e6fc62e87627dfdcec9a89bfa3db2635ee42dcd",
+    "terminal_audit_sha256": "a913eee246664454879b795b57d39c1ce39f5c89ec8773e9e45761e3295d19dc",
+    "stages": [
+      {
+        "arm": "baseline",
+        "measured_seconds": 26.403000000000006,
+        "steady_sps": 39714.27489300457,
+        "gpu_uuid": "GPU-4c4eebdc-85ae-ca39-49da-81fdc1c370fa",
+        "sampled_peak_mib": 44031.0,
+        "hardware_samples": 55
+      },
+      {
+        "arm": "fused",
+        "measured_seconds": 20.373999999999995,
+        "steady_sps": 51466.3787179739,
+        "gpu_uuid": "GPU-4c4eebdc-85ae-ca39-49da-81fdc1c370fa",
+        "sampled_peak_mib": 43491.0,
+        "hardware_samples": 37
+      },
+      {
+        "arm": "fused",
+        "measured_seconds": 20.435000000000002,
+        "steady_sps": 51312.747736726196,
+        "gpu_uuid": "GPU-4c4eebdc-85ae-ca39-49da-81fdc1c370fa",
+        "sampled_peak_mib": 43491.0,
+        "hardware_samples": 39
+      },
+      {
+        "arm": "baseline",
+        "measured_seconds": 29.108000000000004,
+        "steady_sps": 36023.63611378315,
+        "gpu_uuid": "GPU-4c4eebdc-85ae-ca39-49da-81fdc1c370fa",
+        "sampled_peak_mib": 43491.0,
+        "hardware_samples": 44
+      }
+    ],
+    "mean_sps_gain_fraction": 0.3570367216160599,
+    "gpu_source_parity": {
+      "fixtures_per_variant": 46,
+      "matching_top_actions_per_variant": 46,
+      "passed": true
+    },
+    "illegal_actions": 0,
+    "audited_actions": 8388608,
+    "opponent_seat_coverage": "all 13 opponents on both seats in each arm",
+    "gpu_gradient_audit": {
+      "fixtures": 8,
+      "retained_gradient_vectors": 12,
+      "independently_recomputed_pairs": 30,
+      "forward_loss_cotangents_identical": true,
+      "max_absolute_gradient_difference": 2.0954757928848267e-09,
+      "max_l2_gradient_difference": 8.200670910249232e-09
+    }
   }
 }
