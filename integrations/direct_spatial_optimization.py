@@ -198,6 +198,52 @@ class DirectSpatial:
         return outputs.reshape(*shape, 3530)
 
 
+def compile_acting_transform(policy):
+    """Compile validated sampler postprocessing separately from the raw model."""
+    spatial_doomed_attack_route_penalty = policy.spatial_doomed_attack_route_penalty
+    spatial_early_route_temperature = policy.spatial_early_route_temperature
+    spatial_early_route_turns = policy.spatial_early_route_turns
+    spatial_full_action_temperature = policy.spatial_full_action_temperature
+    spatial_neutral_route_bias = policy.spatial_neutral_route_bias
+    spatial_policy_temperature = policy.spatial_policy_temperature
+    spatial_route_half_weight = policy.spatial_route_half_weight
+    spatial_split_temperature = policy.spatial_split_temperature
+    spatial_weak_owned_route_penalty = policy.spatial_weak_owned_route_penalty
+
+    def transform(outputs, transported):
+        move_temperature = spatial_policy_temperature
+        if spatial_early_route_temperature is not None:
+            from integrations.spatial_action_sampling import public_early_route_temperature
+
+            move_temperature = public_early_route_temperature(
+                transported, move_temperature, spatial_early_route_temperature,
+                spatial_early_route_turns, jnp)
+        from integrations.spatial_action_sampling import acting_logits
+
+        acting = acting_logits(outputs, move_temperature, spatial_split_temperature, jnp,
+                               route_half_weight=spatial_route_half_weight)
+        if spatial_neutral_route_bias:
+            from integrations.spatial_action_sampling import public_neutral_route_bonus
+
+            bonus = public_neutral_route_bonus(transported, spatial_neutral_route_bias, jnp)
+            acting = acting.at[..., :3529].add(bonus)
+        if spatial_weak_owned_route_penalty:
+            from integrations.spatial_action_sampling import public_weak_owned_route_penalty
+
+            penalty = public_weak_owned_route_penalty(transported, spatial_weak_owned_route_penalty, jnp)
+            acting = acting.at[..., :3529].add(penalty)
+        if spatial_doomed_attack_route_penalty:
+            from integrations.spatial_action_sampling import public_doomed_attack_route_penalty
+
+            penalty = public_doomed_attack_route_penalty(transported, spatial_doomed_attack_route_penalty, jnp)
+            acting = acting.at[..., :3529].add(penalty)
+        if spatial_full_action_temperature != 1:
+            acting = acting.at[..., :3529].divide(spatial_full_action_temperature)
+        return acting, jnp.isfinite(acting).all()
+
+    return jax.jit(transform)
+
+
 def install(native_module=None):
     native_module = native_module or importlib.import_module("metta_training.native_fabric")
     from pathlib import Path
@@ -263,41 +309,15 @@ def install(native_module=None):
             os.environ.get("METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY", "0"))
         if not np.isfinite(self.spatial_doomed_attack_route_penalty) or self.spatial_doomed_attack_route_penalty < 0:
             raise ValueError("Doomed attack route penalty must be finite and nonnegative")
+        self.spatial_acting_transform = compile_acting_transform(self)
 
     @functools.wraps(forward)
     def direct_forward(self, parameters, transported, terminals, batch, time, rollout):
         if transported.shape != (batch, time, self.direct_spatial.observation_size) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
-        move_temperature = self.spatial_policy_temperature
-        if self.spatial_early_route_temperature is not None:
-            from integrations.spatial_action_sampling import public_early_route_temperature
-
-            move_temperature = public_early_route_temperature(
-                transported, move_temperature, self.spatial_early_route_temperature,
-                self.spatial_early_route_turns, jnp)
-        from integrations.spatial_action_sampling import acting_logits
-
-        acting = acting_logits(outputs, move_temperature, self.spatial_split_temperature, jnp,
-                               route_half_weight=self.spatial_route_half_weight)
-        if self.spatial_neutral_route_bias:
-            from integrations.spatial_action_sampling import public_neutral_route_bonus
-
-            bonus = public_neutral_route_bonus(transported, self.spatial_neutral_route_bias, jnp)
-            acting = acting.at[..., :3529].add(bonus)
-        if self.spatial_weak_owned_route_penalty:
-            from integrations.spatial_action_sampling import public_weak_owned_route_penalty
-
-            penalty = public_weak_owned_route_penalty(transported, self.spatial_weak_owned_route_penalty, jnp)
-            acting = acting.at[..., :3529].add(penalty)
-        if self.spatial_doomed_attack_route_penalty:
-            from integrations.spatial_action_sampling import public_doomed_attack_route_penalty
-
-            penalty = public_doomed_attack_route_penalty(transported, self.spatial_doomed_attack_route_penalty, jnp)
-            acting = acting.at[..., :3529].add(penalty)
-        if self.spatial_full_action_temperature != 1:
-            acting = acting.at[..., :3529].divide(self.spatial_full_action_temperature)
-        if not bool(jnp.isfinite(acting).all()):
+        acting, finite = self.spatial_acting_transform(outputs, transported)
+        if not bool(finite):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
         return acting, DirectTape(parameters, transported, outputs)
 
