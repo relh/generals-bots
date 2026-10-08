@@ -2434,6 +2434,12 @@
       "integrations/softmax/local-output/fresh-start-gather-launch-20261007/terminal-audit-job-gu6wm.json": "ba876003c967601d752d9a6a34ad77b2b27a29cc0acfbf7dee7d9e17ff312e61",
       "integrations/softmax/local-output/fresh-start-gather-launch-20261007/results-job-gu6wm/terminal.json": "f34a99d70ec67f351711b7330d8ca45456094e5dbc77b6b8727ebc1982a6f234",
       "integrations/softmax/local-output/fresh-start-gather-launch-20261007/aggregate-guard.json": "9f1b295cd59c68ebeca1d8eccb48701769433b828f51601930397b81a50541dc"
+    },
+    "performance_diagnosis": {
+      "path": "integrations/softmax/local-output/fresh-start-gather-launch-20261007/performance-diagnosis-job-gu6wm.json",
+      "sha256": "2f9b6d301c80ee00ed0e43eb7eeabc2b5e4f1e35c22d5fc96a205c21aa7036f1",
+      "cause_established": false,
+      "next_intervention": "Compile acting postprocessing and finite reduction only; preserve raw forward, backward and immediate finite guard; require bounded same-GPU ABBA."
     }
   },
   "runner_cleanup": {

@@ -159,9 +159,15 @@ files** were independently verified. The provider billed **629 seconds / $0.5181
 The allocation guard observed termination at 01:16:11 UTC and exited before its
 02:32:56 deadline.
 
-**Next:** diagnose the retained CPU/GPU telemetry and rollout/optimizer timings
-against the successful same-GPU probe. The cause is not established; do not
-resubmit the unchanged setup.
+The diagnosis found identical GPU clocks, CPU quota, cuBLAS, build settings and
+102 generated native files. CPU throttling ended before the measured training
+interval. Model inference and optimization slowed roughly 2–2.6×, versus about
+1.4× for environments; the exact cause remains unproven.
+
+**Next:** compare compiled action postprocessing against the existing dispatch
+path in one bounded ABBA job, preserving raw forward/backward calculations and
+the immediate finite guard. Implementation and authentic-policy checks are in
+progress; no new job is submitted. Do not resubmit the unchanged setup.
 
 The trial remains unqualified and unselected. Keep the full **4,194,304-step qualification**
 with the 30K full and rolling throughput gates before continuing to **33,554,432**
