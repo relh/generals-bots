@@ -104,7 +104,10 @@ and measure pre-normalization advantage sensitivity at H128/H256 boundaries.
 30-minute provider/aggregate and 28-minute internal limits, zero retries, maximum
 quote **$1.485**. The allocation guard is live. All 572 archive files, fixed
 framework and policy assets, and exact source `0da2364` were verified; two-step
-CPU checks passed for both policies. There are no diagnostic GPU results yet. Longer
+CPU checks passed for both policies. There are no diagnostic GPU results yet.
+The first build worker stopped reporting during image push at **04:04:01 UTC**.
+The provider marked that build free and started a replacement under the same
+job ID. No manual resubmission or GPU runtime retry occurred. Longer
 targets being mechanically closer to complete targets alone cannot justify training.
 
 Inspection also found a concrete normalization issue: raw bootstrap-row advantages
