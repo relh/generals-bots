@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-48zqh building after archive permission fix; job-dbjvf build_failed before allocation",
+    "status": "job-48zqh running attempt 1; source GPU parity in progress; training not yet started",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3829,6 +3829,15 @@
       "finished_at": "2026-10-08T22:37:53.040733+00:00",
       "allocated_attempts": 0,
       "resolution": "Archive grants directory traversal and file readability; all 629 content hashes unchanged"
+    },
+    "runtime_observation": {
+      "observed_at": "2026-10-08T22:59:29.085196+00:00",
+      "status": "running",
+      "attempt": 1,
+      "stage": "source GPU serving parity",
+      "restarts_used": 0,
+      "infra_start_failures": 0,
+      "watchdog_deadline": "2026-10-09T00:26:18.742482+00:00"
     }
   },
   "compute_budget": {
@@ -3845,7 +3854,7 @@
         "job_id": "job-48zqh",
         "max_cost_usd": 5.67,
         "actual_cost_usd": null,
-        "status": "building"
+        "status": "running"
       }
     ],
     "committed_max_usd": 11.34,

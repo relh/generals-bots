@@ -121,12 +121,13 @@ remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. The normalization
-trial **`job-48zqh` is submitted and building**, using ready context
+trial **`job-48zqh` is running, attempt 1**, using ready context
 `ctx-3e0010cf`: one H100, maximum **$5.67**, 90-minute provider limit,
 88-minute internal limit, zero retries. Submitted at **22:39:20 UTC**;
 the independent runtime watchdog was verified live. Budget committed so far:
-**$11.34 of $500**, conservatively retaining both job caps until billing is known; actual billed cost remains pending. CUDA admission, throughput
-qualification and strength selection are all pending.
+**$11.34 of $500**, conservatively retaining both job caps until billing is known; actual billed cost remains pending. Source-policy GPU parity began by **22:59:29 UTC**. CUDA normalization admission,
+throughput qualification and strength selection remain pending. The watchdog
+deadline is **2026-10-09 00:26:18 UTC**, including allocation startup.
 
 The first submission was rejected because the new organization lacked the old
 mission grouping. An empty active-job reconciliation confirmed no job existed;
