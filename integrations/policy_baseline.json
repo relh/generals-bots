@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "new token funded; original context inaccessible; reboot-cleared package recovery underway; $5.67 quote approval pending",
+    "status": "Recovered package uploaded and provider validation passed; $5.67 maximum cost approval pending; no job submitted",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3740,26 +3740,27 @@
     "execution_minutes": 88,
     "aggregate_minutes": 90,
     "max_restarts": 0,
-    "runtime_commit": "6ecdbb87d37a05bcbdc416941eb7931e5fc0c2c7",
-    "evidence_directory": "integrations/softmax/local-output/normalization-launch-20261008",
-    "archive_sha256": "b469b851b1a78d96b4c4e823e2f0eeb6e59047a37cbd0fe42400409a4931144c",
-    "archive_bytes": 165710024,
-    "archive_members": 664,
-    "root_review_sha256": "d03ee6207aff5630f838ce40018af45f7342b7f2ddbeccb03c7271ddca0d6db1",
+    "runtime_commit": "9bfc68b85d1d534fc639bacf165794deb5682968",
+    "evidence_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
+    "archive_sha256": "da56b96a9c03422d26dd0febeaa29b27caefd1de77bce141a7c6da756c435c53",
+    "archive_bytes": 164775160,
+    "archive_members": 629,
     "bindings": {
-      "ready.json": "da6071d4f18d01df4225bda683587e98e165734f483ec31958515ed1e8264f95",
-      "context-seal.json": "e0bc1d8cd718e94e0f5ac4634007a0763d692f8a58e76b6de301c562abd56940",
-      "cpu-admission.json": "aedcfbd689e8d510632677ef753fb472fdd0d2660a6ed9cea900d58be990ae80",
-      "collector-review.json": "4b01739bda2623a2caf0c95b96463bcaf02093f567792ea98d36f6c01b65bcdf",
-      "request-template.json": "ffd4995ec1ca6c68743c38f9136cfb9d9e91e197a401793da4cbcdc6da85f9ed"
+      "ready.json": "30e08b1f0e40df30d5cfade08b5539894581e41a7b7b3a3f4fc8280df9680ef9",
+      "context-seal.json": "caac49cd22cfc722e73d3b9deaf6a098b92f58a4ecdb25d8380f47cde8571815",
+      "cpu-admission.json": "5e1f41574cbbcef3375a086a122b239a366b4f71f17fdbad94b6d9ca123bc4d1",
+      "request-template.json": "de14098e4a17b28ca4c67f2d04a9d50e26d8825dd70bf494749c1177c40e4340",
+      "integration.json": "7c5b82a487800f93be99d9289f8677efef2961b0117c9edf34b5005a0033aff7",
+      "replacement-parity-admission.json": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
+      "validation.json": "dff55fde4ee3d429299029891bb17d700fd62c8db915379fc6f484c768e76699"
     },
-    "context_id": "ctx-f60b41ec",
+    "context_id": "ctx-0e05a916",
     "provider_block": null,
     "available_credit_usd": 2000,
     "required_reservation_usd": 5.67,
-    "ready_sha256": "c00b449f90e98abe6224235b9c26939551904476f11606bfec508b5de9125c5b",
+    "ready_sha256": "30e08b1f0e40df30d5cfade08b5539894581e41a7b7b3a3f4fc8280df9680ef9",
     "approved_cost_ceiling_usd": 4.455,
-    "context_access": "ctx-f60b41ec not accessible with new relh token",
+    "context_access": "ready under new relh token",
     "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
     "package_recovery": {
       "exact_files_recovered": 605,
@@ -3773,14 +3774,14 @@
       },
       "puffer_commit_recovered": "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2",
       "puffer_tree_recovered": "59ee157ec73021dd55ae01d2a899c28b54bfa4d3",
-      "requires_reseal": true,
-      "ready_to_upload": false,
+      "requires_reseal": false,
+      "ready_to_upload": true,
       "remote_replay_probe": {
         "episode_id": "1a3f4091-6f7f-4833-aff5-8a8a93eec996",
         "http_status": 403,
         "recovered": false
       },
-      "next_action": "Integrate verified replacement parity set with explicit game indices; remove unused curriculum bindings; preserve exact training settings; rerun local admission and reseal",
+      "next_action": "Await explicit approval increasing this one job ceiling from $4.455 to $5.67; then fresh active-job check and submit once",
       "replacement_parity": {
         "admission_sha256": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
         "passed": true,
@@ -3803,7 +3804,8 @@
         "manifest_sha256": "ae0ff2f7f1fb24017b943537ed54ee737b16ba92710beb8d8ba5522f29773902",
         "scope": "Retained hosted replay frames replayed through pinned Classic engine; observation extraction only, GPU policy parity pending"
       },
-      "curriculum_recovery": "Not required: integrations/metta_puffer.py only loads curriculum when probability is nonzero; remove inactive path/checksum and audit only these config differences"
+      "curriculum_recovery": "Not required: integrations/metta_puffer.py only loads curriculum when probability is nonzero; remove inactive path/checksum and audit only these config differences",
+      "uploaded": true
     }
   }
 }

@@ -121,21 +121,23 @@ remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 The new relh token passes GMN funding preflight with **$2,000 available credit**.
-The same 90-minute H100 trial now quotes **$5.67**, above the previous **$4.455**
-ceiling; approval for that increase is pending. The old context `ctx-f60b41ec`
-is inaccessible under the new token, and reboot cleared the temporary package.
-Recovery restored **605 of 664 sealed files exactly** in persistent local output.
-The original missing replay inputs are inaccessible (the official artifact
-endpoint returned HTTP 403), but four retained hosted Classic replays now
-provide a replacement set. Replaying them through the pinned engine verified
-all sampled frame transitions and extracted **46 public states** across both
-seats at turns 0, 25, 99, 100, 150 and 200 where available. GPU policy parity
-remains pending. The pinned Puffer commit and tree are recovered; new Git
-packaging needs resealing. The zero-probability curriculum is never loaded by
-the environment, so its stale path/checksum can be removed without changing
-training behavior. Integrate these replacements, explicitly audit config
-changes against the control, run fresh local admission, and reseal before upload.
-**No normalization training job has been submitted.**
+The recovered package is uploaded as **`ctx-0e05a916` (ready)**. Provider validation
+accepts its request and quotes **$5.67** for one H100, at most 90 minutes, with
+zero retries. This exceeds the prior **$4.455** ceiling; user approval remains
+required under the instruction not to expand spending authority. No other
+Generals job was active at the upload check. **No normalization job is submitted.**
+
+Reboot recovery is complete: persistent archive **164,775,160 bytes**, all
+**629 files verified**, runtime `9bfc68b`. Four retained hosted Classic replays
+replace the inaccessible originals; the pinned engine verified replay frames
+and extracted **46 public states** across both seats. The run plan explicitly
+selects those games. GPU policy parity is still required during the job.
+The original control config is retained and hashed: local preparation verifies
+that only the unused curriculum path/checksum were removed (reset probability
+remains zero). Puffer commit/tree are unchanged; Git packaging was resealed.
+Actual local preparation passed, and the collector preserves the same CUDA,
+throughput, legal-action and strength gates. Launch receipts and the archive are
+in `integrations/softmax/local-output/normalization-recovery-20261008`.
 
 Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
 should be extended or promoted.
