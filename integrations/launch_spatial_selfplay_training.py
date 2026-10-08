@@ -244,7 +244,7 @@ def verify_runtime_bootstrap(environ=os.environ):
 # Reviewed trainer supports verified current-model transfer and learner resume.
 # Keep this identity explicit: updating trainer code requires reviewing its ABI
 # and updating this binding together; an archive manifest alone is insufficient.
-PINNED_TRAINER_SHA256 = "65e51722ba7b542c770507c018337a5e32ce68826ce9bde69ae995d9fd24dbfc"
+PINNED_TRAINER_SHA256 = "57d4118ce3a2bc993eeb6655eb9b7115cb9d0bb9472ca62186d95819028ee4f3"
 
 
 def verify_trainer_source(source=None):
