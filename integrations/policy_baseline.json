@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "Recovered package uploaded and provider validation passed; $5.67 maximum cost approval pending; no job submitted",
+    "status": "job-dbjvf submitted and building; CUDA admission, throughput and strength gates pending",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3746,20 +3746,21 @@
     "archive_bytes": 164775160,
     "archive_members": 629,
     "bindings": {
-      "ready.json": "30e08b1f0e40df30d5cfade08b5539894581e41a7b7b3a3f4fc8280df9680ef9",
+      "ready.json": "a7404dec557aa5e62db751d4504d7a5c2e2a0d7ef4b0a45029f9a1771f1f54af",
       "context-seal.json": "caac49cd22cfc722e73d3b9deaf6a098b92f58a4ecdb25d8380f47cde8571815",
       "cpu-admission.json": "5e1f41574cbbcef3375a086a122b239a366b4f71f17fdbad94b6d9ca123bc4d1",
-      "request-template.json": "de14098e4a17b28ca4c67f2d04a9d50e26d8825dd70bf494749c1177c40e4340",
+      "request-template.json": "c94b0a0edf916e0ada55fcf1ba35feba464fc6269c8ddd6147d9b69cb21b7fef",
       "integration.json": "7c5b82a487800f93be99d9289f8677efef2961b0117c9edf34b5005a0033aff7",
       "replacement-parity-admission.json": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
-      "validation.json": "dff55fde4ee3d429299029891bb17d700fd62c8db915379fc6f484c768e76699"
+      "validation.json": "dfab5d006d3c005bc2587601f8b8cebe57fc630a224b69e30d95417c2ecbf953",
+      "submission.json": "af5e55b6c291a314143acd963b2b0c7fb5359747e8f9b7e27b8e942fdb6be85f"
     },
     "context_id": "ctx-0e05a916",
     "provider_block": null,
     "available_credit_usd": 2000,
     "required_reservation_usd": 5.67,
-    "ready_sha256": "30e08b1f0e40df30d5cfade08b5539894581e41a7b7b3a3f4fc8280df9680ef9",
-    "approved_cost_ceiling_usd": 4.455,
+    "ready_sha256": "a7404dec557aa5e62db751d4504d7a5c2e2a0d7ef4b0a45029f9a1771f1f54af",
+    "approved_cost_ceiling_usd": 5.67,
     "context_access": "ready under new relh token",
     "recovery_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
     "package_recovery": {
@@ -3781,7 +3782,7 @@
         "http_status": 403,
         "recovered": false
       },
-      "next_action": "Await explicit approval increasing this one job ceiling from $4.455 to $5.67; then fresh active-job check and submit once",
+      "next_action": "Monitor job-dbjvf; collect and independently audit terminal results",
       "replacement_parity": {
         "admission_sha256": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
         "passed": true,
@@ -3806,6 +3807,33 @@
       },
       "curriculum_recovery": "Not required: integrations/metta_puffer.py only loads curriculum when probability is nonzero; remove inactive path/checksum and audit only these config differences",
       "uploaded": true
+    },
+    "job_id": "job-dbjvf",
+    "submission": {
+      "job_id": "job-dbjvf",
+      "status": "submitted",
+      "submitted_at": "2026-10-08T22:37:36.684937+00:00",
+      "attempt": 0,
+      "max_cost_usd": 5.67,
+      "max_restarts": 0,
+      "restarts_used": 0,
+      "request_sha256": "1e5c733470924c1117706b8c0f8e22f77d14f95055fa8509b2dc6a5693b5cd84",
+      "context_id": "ctx-0e05a916",
+      "max_duration_minutes": 90
     }
+  },
+  "compute_budget": {
+    "authorized_total_usd": 500,
+    "scope": "Task spending following explicit user approval on 2026-10-08",
+    "jobs": [
+      {
+        "job_id": "job-dbjvf",
+        "max_cost_usd": 5.67,
+        "actual_cost_usd": null,
+        "status": "building"
+      }
+    ],
+    "committed_max_usd": 5.67,
+    "actual_cost_usd": 0
   }
 }

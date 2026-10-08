@@ -120,12 +120,17 @@ CPU arithmetic/installer tests passed; CUDA verification and throughput qualific
 remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
-The new relh token passes GMN funding preflight with **$2,000 available credit**.
-The recovered package is uploaded as **`ctx-0e05a916` (ready)**. Provider validation
-accepts its request and quotes **$5.67** for one H100, at most 90 minutes, with
-zero retries. This exceeds the prior **$4.455** ceiling; user approval remains
-required under the instruction not to expand spending authority. No other
-Generals job was active at the upload check. **No normalization job is submitted.**
+User approved **$500 total task spending** on 2026-10-08. The normalization
+trial **`job-dbjvf` is submitted and building**, using ready context
+`ctx-0e05a916`: one H100, maximum **$5.67**, 90-minute provider limit,
+88-minute internal limit, zero retries. Submitted at **22:37:36 UTC**;
+the independent runtime watchdog was verified live. Budget committed so far:
+**$5.67 of $500**; actual billed cost remains pending. CUDA admission, throughput
+qualification and strength selection are all pending.
+
+The first submission was rejected because the new organization lacked the old
+mission grouping. An empty active-job reconciliation confirmed no job existed;
+removing that optional field allowed submission. No duplicate job was created.
 
 Reboot recovery is complete: persistent archive **164,775,160 bytes**, all
 **629 files verified**, runtime `9bfc68b`. Four retained hosted Classic replays

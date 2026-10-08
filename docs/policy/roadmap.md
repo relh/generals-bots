@@ -39,9 +39,9 @@ See [current state](current-state.md) for live work and results,
    then 4Mi fresh-optimizer qualification before conditional 32Mi total. Keep
    horizon 128 and all prior fresh-start training settings. Compare with selected
    source and the `job-h8sqm` control on fresh maps 17003101, action seed 17003103,
-   bootstrap seed 17003111. The new token has credit. Recovered package `ctx-0e05a916` is ready;
-   the new $5.67 quote exceeds the prior $4.455 ceiling and awaits approval.
-   No new job exists.
+   bootstrap seed 17003111. User approved $500 total task spending. `job-dbjvf` is building
+   from recovered context `ctx-0e05a916`, capped at $5.67 with zero retries.
+   Monitor the existing job and independently audit its artifacts.
    The corrected native path is **not yet GPU qualified**.
 4. After a future positive development result, freeze its checkpoint and sampler
    and confirm on independent maps before fresh balanced hosted matches.
