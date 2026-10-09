@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn completed 33,554,432 training steps above throughput gate; final checkpoint publication underway",
+    "status": "job-4smbn completed training and final GPU serving parity; held-out source/control/candidate evaluation underway",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3853,15 +3853,15 @@
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
     },
     "live_observation": {
-      "observed_at": "2026-10-09T05:07:36.432038+00:00",
+      "observed_at": "2026-10-09T05:15:22.371941+00:00",
       "status": "running",
       "attempt": 1,
       "source_gpu_parity_states": 46,
       "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
       "training_steps_observed": 33554432,
-      "log_sha256": "5dc4a6c3b78c28bce58aa324448f15e515b2a6322bc92a3ab256a618817bd1da",
+      "log_sha256": "048c3ca8a95fa19ec3bab5f92cc2bbe4b921e0794cf6157564903c567c7b9c1c",
       "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00",
-      "tail_log_sha256": "e72476634da4d182ecd818d84260cfe393257b391baf479ab9adea6ab2eb9e70"
+      "tail_log_sha256": "7a4300b23d7707e9a82927f417149fa586fef4baaff8b628b54ca310d4ef193e"
     },
     "cuda_normalization_audit_live": {
       "schema": "generals-advantage-normalization-cuda-v1",
@@ -3960,12 +3960,47 @@
       "end_to_end_sps": 58700.39352610169,
       "console_vram_gib": 43.0,
       "console_gpu_utilization_percent": 67,
-      "scope": "Live completed continuation console and device audits; export/parity/evaluation and independent terminal artifact audit pending",
+      "scope": "Live completed continuation console and device audits; export/parity passed; held-out evaluation and independent terminal artifact audit pending",
       "minimum_rolling_two_epoch_sps": 56851.87594881817,
       "illegal_actions": 0,
       "audited_actions": 29360128,
       "nonfinite_rewards": 0,
       "opponent_types_on_both_sides": 13
+    },
+    "final_candidate_serving_parity_live": {
+      "layout_backend": "cpu",
+      "inference_backend": "gpu",
+      "checkpoint_sha256": "0c52eddeed95d5c2ea5cc110dfbc15e33e8f643a0286f6da36fb3c500d2e0cc0",
+      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
+      "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
+      "serving_action_selection": {
+        "doomed_attack_route_penalty": 4.0,
+        "early_route_temperature": 0.1,
+        "early_route_turns": 100,
+        "mode": "structured_sample",
+        "move_temperature": 0.05,
+        "neutral_route_bias": 6.0,
+        "split_temperature": 0.15,
+        "weak_owned_route_penalty": 4.0
+      },
+      "bundle_manifest_sha256": "c0a57ecb00a7852fb6c76e3e5710601f9f05130560310c727684e0e709a82467",
+      "hosted_games": 4,
+      "replay_turns": [
+        0,
+        25,
+        99,
+        100,
+        150,
+        200
+      ],
+      "public_states": 46,
+      "native_batch": 8,
+      "max_logit_difference": 2.86102294921875e-06,
+      "max_action_probability_difference": 3.1888484954833984e-06,
+      "max_rollout_transform_difference": 1.7881393432617188e-07,
+      "matching_top_actions": 46,
+      "jax_backend": "gpu",
+      "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
     }
   },
   "compute_budget": {

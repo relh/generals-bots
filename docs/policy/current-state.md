@@ -119,7 +119,7 @@ normalization statistics and keep their actor advantages zero. Seventeen focused
 CPU arithmetic/installer tests passed; actual CUDA verification now passed in
 `job-4smbn`. Qualification training, trained checkpoint serving parity and continuation
 sampling passed. All 33,554,432 training steps completed above the throughput
-gate; final checkpoint publication and evaluation remain pending. The critic diagnostic does not
+gate. Final checkpoint serving parity passed; held-out evaluation is underway. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
@@ -146,8 +146,10 @@ all rolling two-epoch intervals passed, minimum **56,852 SPS**. The final consol
 reported **43.0 GiB VRAM** and **67% GPU utilization**, with unchanged settings.
 The continuation device audit covered **29,360,128 actions**, with **zero illegal
 actions**, **zero nonfinite rewards**, and all **13 opponent types on both sides**.
-Final checkpoint publication is underway; export, serving parity and held-out
-strength comparisons remain pending. These are live log results
+At **05:15:22 UTC**, final checkpoint `0c52edde` was published and exported,
+and passed GPU serving parity on **46/46 states** (maximum action-probability
+error **3.19e-6**). The three paired **4,096-game** source/control/candidate
+held-out panels are underway; no strength result or selection yet. These are live log results
 pending independent terminal artifact collection. The independent watchdog deadline is
 **06:03:58 UTC**.
 
