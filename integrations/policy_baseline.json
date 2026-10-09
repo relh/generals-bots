@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn building after removing final inactive curriculum asset reference",
+    "status": "job-4smbn running: source GPU parity passed; native trainer compilation underway",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3851,6 +3851,16 @@
       "training_steps": 0,
       "charged_usd": 0.315,
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
+    },
+    "live_observation": {
+      "observed_at": "2026-10-09T04:40:26.233074+00:00",
+      "status": "running",
+      "attempt": 1,
+      "source_gpu_parity_states": 46,
+      "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
+      "training_steps_observed": 0,
+      "log_sha256": "3fcebbf9f3737dd8246c1dd7cd933979267f9ed34d94796fa28cee38c5bf9714",
+      "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00"
     }
   },
   "compute_budget": {
@@ -3877,7 +3887,7 @@
       },
       {
         "job_id": "job-4smbn",
-        "status": "building",
+        "status": "running",
         "max_cost_usd": 5.67,
         "actual_cost_usd": null
       }

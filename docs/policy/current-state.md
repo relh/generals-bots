@@ -121,10 +121,14 @@ remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
-**`job-4smbn` is building**, context `ctx-9405fcf7`, runtime `0d97357`:
+**`job-4smbn` is running**, context `ctx-9405fcf7`, runtime `0d97357`:
 one H100, maximum **$5.67**, 90-minute provider limit, 88-minute internal
 limit, zero retries. Submitted **2026-10-09 04:25:07 UTC**; watchdog verified live.
 Confirmed spend is **$0.483**, plus up to **$5.67** for this active job.
+At **04:40:26 UTC**, attempt 1 passed source GPU serving parity on **46/46
+states** (maximum probability error **3.04e-6**) and reached native trainer
+compilation. No training steps observed yet; CUDA normalization and SPS gates
+remain pending. The independent watchdog deadline is **06:03:58 UTC**.
 
 `job-pue42` failed before training at 23:20:24 UTC. The trainer pin passed,
 but environment fingerprinting found a stale curriculum path in the asset list.
