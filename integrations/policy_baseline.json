@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn running: qualification training completed above SPS gate; checkpoint publication and serving checks underway",
+    "status": "job-4smbn running: qualification and trained checkpoint serving parity passed; continuation sampling check underway",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3853,13 +3853,13 @@
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
     },
     "live_observation": {
-      "observed_at": "2026-10-09T04:47:19.041153+00:00",
+      "observed_at": "2026-10-09T04:53:57.307015+00:00",
       "status": "running",
       "attempt": 1,
       "source_gpu_parity_states": 46,
       "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
       "training_steps_observed": 4194304,
-      "log_sha256": "8cdcece5e216182e95d0081a797c42830b2e9698024de0a78f8a97c79fca9ae1",
+      "log_sha256": "4f57047e9e4c842011cd4f0289d61a24158ffff7cc859df33587a167965c3a66",
       "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00"
     },
     "cuda_normalization_audit_live": {
@@ -3935,6 +3935,15 @@
       "console_vram_gib": 43.5,
       "console_gpu_utilization_percent_last": 67,
       "scope": "Live completed epoch console timings; terminal artifacts and remaining qualification checks pending"
+    },
+    "qualification_serving_parity_live": {
+      "policy_sha256": "e35a5704418477c1406a5bff24c95f3437936766b0528752774b90416aaaf712",
+      "bundle_manifest_sha256": "0c8f2c6662deaa5da1d94bfdd52f1b8c36eac14bee3f780998f7b68714866788",
+      "public_states": 46,
+      "matching_top_actions": 46,
+      "max_action_probability_difference": 2.2202730178833008e-06,
+      "inference_backend": "gpu",
+      "scope": "Live log result; independent terminal artifact audit pending"
     }
   },
   "compute_budget": {

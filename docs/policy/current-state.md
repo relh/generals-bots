@@ -117,8 +117,8 @@ are zero, but minibatch normalization includes those rows and can make their act
 advantages nonzero before PPO. The focused correction is integrated in `7cc2b03`: exclude bootstrap rows from
 normalization statistics and keep their actor advantages zero. Seventeen focused
 CPU arithmetic/installer tests passed; actual CUDA verification now passed in
-`job-4smbn`. Qualification training has passed the throughput gate; checkpoint export and
-serving checks remain pending before extended training. The critic diagnostic does not
+`job-4smbn`. Qualification training and trained checkpoint serving parity passed; the
+continuation sampling check is underway before extended training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
@@ -135,7 +135,10 @@ workers, epochs 2→8 completed **3,145,728 steps / 54.28 seconds = 57,954 SPS**
 All postwarmup rolling two-epoch intervals passed; minimum **57,156 SPS**.
 The console reported **43.5 GiB VRAM** and 67% GPU utilization at epoch 7.
 Epoch 1 included compilation/startup and is excluded from steady-state timing.
-Checkpoint export and serving checks are underway. These are live log results
+At **04:53:57 UTC**, the exported qualification checkpoint `e35a5704` passed
+GPU serving parity on **46/46 states**, maximum action-probability error
+**2.22e-6**. Qualification completed and the 512-game continuation sampling
+check began. These are live log results
 pending independent terminal artifact collection. The independent watchdog deadline is
 **06:03:58 UTC**.
 
@@ -153,7 +156,7 @@ updated. All **14 artifacts** were independently verified; the run cost $0.168.
 Commit `abacc9b` corrects the reviewed pin. Package admission now executes the
 trainer identity check and real launcher import against the packaged framework;
 four focused test invocations passed. The current run has passed the CUDA
-normalization and qualification throughput gates; checkpoint checks are pending.
+normalization, qualification throughput, and trained checkpoint parity gates.
 
 Earlier `job-dbjvf` failed before allocation because recovered directory mode
 0700 blocked the build worker. Its cost was **$0**. Archive permission checks
