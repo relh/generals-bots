@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn running: native build and CUDA normalization audit passed; qualification startup underway",
+    "status": "job-4smbn running: qualification training completed above SPS gate; checkpoint publication and serving checks underway",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3853,13 +3853,13 @@
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
     },
     "live_observation": {
-      "observed_at": "2026-10-09T04:43:09.583085+00:00",
+      "observed_at": "2026-10-09T04:47:19.041153+00:00",
       "status": "running",
       "attempt": 1,
       "source_gpu_parity_states": 46,
       "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
-      "training_steps_observed": 0,
-      "log_sha256": "566764611976241befeedced6f9de7b3b28b5cee96d0168cc24f0674f3c7f736",
+      "training_steps_observed": 4194304,
+      "log_sha256": "8cdcece5e216182e95d0081a797c42830b2e9698024de0a78f8a97c79fca9ae1",
       "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00"
     },
     "cuda_normalization_audit_live": {
@@ -3917,6 +3917,24 @@
         }
       ],
       "scope": "Actual built FP32 header and 256-thread CUDA reduction; synthetic inputs only"
+    },
+    "qualification_throughput_live": {
+      "hardware": "one H100",
+      "environments": 4096,
+      "horizon": 128,
+      "minibatch_size": 8192,
+      "replay_ratio": 0.5,
+      "opponent_workers": 8,
+      "warmup": "Measure after completed epoch 2; epoch 1 includes startup/compilation",
+      "measured_first_epoch": 2,
+      "measured_last_epoch": 8,
+      "measured_steps": 3145728,
+      "measured_seconds": 54.28,
+      "end_to_end_sps": 57953.72144436256,
+      "minimum_rolling_two_epoch_sps": 57155.56524583014,
+      "console_vram_gib": 43.5,
+      "console_gpu_utilization_percent_last": 67,
+      "scope": "Live completed epoch console timings; terminal artifacts and remaining qualification checks pending"
     }
   },
   "compute_budget": {

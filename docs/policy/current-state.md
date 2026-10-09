@@ -117,7 +117,8 @@ are zero, but minibatch normalization includes those rows and can make their act
 advantages nonzero before PPO. The focused correction is integrated in `7cc2b03`: exclude bootstrap rows from
 normalization statistics and keep their actor advantages zero. Seventeen focused
 CPU arithmetic/installer tests passed; actual CUDA verification now passed in
-`job-4smbn`. Throughput qualification remains pending before extended training. The critic diagnostic does not
+`job-4smbn`. Qualification training has passed the throughput gate; checkpoint export and
+serving checks remain pending before extended training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
@@ -128,9 +129,14 @@ Confirmed spend is **$0.483**, plus up to **$5.67** for this active job.
 At **04:43:09 UTC**, attempt 1 had passed source GPU serving parity on **46/46
 states** (maximum probability error **3.04e-6**), built the native trainer, and
 passed all **four actual CUDA normalization cases** at H128/H256 (constant and
-varying inputs; maximum absolute error **7.73e-8**). Qualification startup is
-underway; no training steps observed yet. These are live log results pending
-independent terminal artifact collection. The independent watchdog deadline is
+varying inputs; maximum absolute error **7.73e-8**). Qualification completed **4,194,304 steps** by **04:47:19 UTC**. With one H100,
+4,096 environments, H128, minibatches 8,192, replay ratio 0.5 and 8 opponent
+workers, epochs 2→8 completed **3,145,728 steps / 54.28 seconds = 57,954 SPS**.
+All postwarmup rolling two-epoch intervals passed; minimum **57,156 SPS**.
+The console reported **43.5 GiB VRAM** and 67% GPU utilization at epoch 7.
+Epoch 1 included compilation/startup and is excluded from steady-state timing.
+Checkpoint export and serving checks are underway. These are live log results
+pending independent terminal artifact collection. The independent watchdog deadline is
 **06:03:58 UTC**.
 
 `job-pue42` failed before training at 23:20:24 UTC. The trainer pin passed,
@@ -147,7 +153,7 @@ updated. All **14 artifacts** were independently verified; the run cost $0.168.
 Commit `abacc9b` corrects the reviewed pin. Package admission now executes the
 trainer identity check and real launcher import against the packaged framework;
 four focused test invocations passed. The current run has passed the CUDA
-normalization gate; training throughput remains unqualified.
+normalization and qualification throughput gates; checkpoint checks are pending.
 
 Earlier `job-dbjvf` failed before allocation because recovered directory mode
 0700 blocked the build worker. Its cost was **$0**. Archive permission checks
