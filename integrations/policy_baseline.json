@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn running: qualification and trained checkpoint serving parity passed; continuation sampling check underway",
+    "status": "job-4smbn continuation training active above 30K SPS gate",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3853,14 +3853,15 @@
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
     },
     "live_observation": {
-      "observed_at": "2026-10-09T04:53:57.307015+00:00",
+      "observed_at": "2026-10-09T04:59:57.846660+00:00",
       "status": "running",
       "attempt": 1,
       "source_gpu_parity_states": 46,
       "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
-      "training_steps_observed": 4194304,
-      "log_sha256": "4f57047e9e4c842011cd4f0289d61a24158ffff7cc859df33587a167965c3a66",
-      "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00"
+      "training_steps_observed": 6815744,
+      "log_sha256": "39064b77da8fa28b29d2059c547442dceada606535b469c7b3aec4640246138e",
+      "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00",
+      "tail_log_sha256": "cc7298e5f75ca4b8ed25ee3c59ccda88b2cc794d3fe408eff2308434aabbe9b6"
     },
     "cuda_normalization_audit_live": {
       "schema": "generals-advantage-normalization-cuda-v1",
@@ -3944,6 +3945,22 @@
       "max_action_probability_difference": 2.2202730178833008e-06,
       "inference_backend": "gpu",
       "scope": "Live log result; independent terminal artifact audit pending"
+    },
+    "continuation_live": {
+      "initial_policy_sha256": "e35a5704418477c1406a5bff24c95f3437936766b0528752774b90416aaaf712",
+      "initial_learner_sha256": "4d07f2e9c20ac76488d948ed0a20e4a5d90e029134db1d2897a56a18cfce5860",
+      "initialization": "restored",
+      "sampling_games": 512,
+      "sampling_passed": true,
+      "completed_epoch": 13,
+      "measured_first_epoch": 10,
+      "measured_last_epoch": 12,
+      "measured_steps": 1048576,
+      "measured_seconds": 17.817,
+      "end_to_end_sps": 58852.55654711792,
+      "console_vram_gib": 43.0,
+      "console_gpu_utilization_percent": 72,
+      "scope": "Live first postwarmup interval; full continuation and terminal artifact audit pending"
     }
   },
   "compute_budget": {
