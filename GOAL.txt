@@ -1,0 +1,14 @@
+Produce a winning Puffer policy for hosted Coworld Classic.
+
+Current user authorization (2026-10-05): sole codebase ownership; refactor,
+reorganize, repair, train, evaluate and push to the relh fork. Use subagents.
+Preserve checkpoint/research evidence and all protected agent history.
+
+Acceptance: reproducible official Classic game contract; >=30,000 sustained
+end-to-end training SPS after warmup; a frozen portable policy with >=65% hosted
+wins against each named strong opponent, balanced confirmation games and a
+95% confidence lower bound above 50%; clean serving and justified promotion.
+
+Current state and plan: docs/policy/current-state.md and docs/policy/roadmap.md.
+Run commands: python -m integrations.policy --help.
+Earlier code and handoffs are preserved in Git history.

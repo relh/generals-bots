@@ -1,0 +1,29 @@
+{
+  "initialize": {
+    "asset": "/work/input/assets/cold/asset.json",
+    "manifest_sha256": "1f2b3bbf25f597767a938e955aba0c5be8093726b8f07d0726feffa249fe8605",
+    "restore_learner": false
+  },
+  "overrides": {
+    "base.checkpoint_interval": 8,
+    "base.cudagraphs": -1,
+    "base.eval_episodes": 0,
+    "sweep.downsample": 1,
+    "train.anneal_lr": 0,
+    "train.ent_coef": 0.0,
+    "train.gae_lambda": 0.999,
+    "train.gamma": 0.999,
+    "train.horizon": 128,
+    "train.learning_rate": 0.0002,
+    "train.max_grad_norm": 0.5,
+    "train.minibatch_size": 8192,
+    "train.norm_adv": 1,
+    "train.replay_ratio": 0.5,
+    "train.vf_coef": 1.0,
+    "vec.num_buffers": 1,
+    "vec.num_threads": 1,
+    "vec.total_agents": 4096
+  },
+  "seed": 11007101,
+  "total_timesteps": 4194304
+}

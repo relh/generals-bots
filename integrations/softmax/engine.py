@@ -5,8 +5,9 @@ import jax.numpy as jnp
 import numpy as np
 
 from generals import GeneralsEnv
-from generals.core import game
-from generals.core.match import make_board, make_transition
+from generals.core import coworld_game
+from generals.core.match import make_board
+from integrations.classic_contract import CLASSIC_MAP_OPTIONS, verify_engine
 
 from .protocol import PASS, VERSION
 
@@ -15,38 +16,31 @@ RULESET = "classic"
 
 @jax.jit
 def executed_moves(state, actions):
-    """Receipts for the base moves, using the engine's actual resolution order.
-
-    Observe each action separately, before growth or the other action can mask
-    its effects.
-    """
+    """Classic move receipts use the pinned Coworld resolution order."""
     executed = jnp.zeros((2,), dtype=bool)
-    for player in game._determine_move_order(state, actions):
+    for player in coworld_game._determine_move_order(state, actions):
         action = actions[player]
         r, c = action[1], action[2]
         before = state.armies[r, c]
-        state = game.execute_action(state, player, action)
+        state = coworld_game.execute_action(state, player, action)
         executed = executed.at[player].set((action[0] == 0) & (state.armies[r, c] < before))
     return executed
 
 
 class Match:
     def __init__(self, seed: int):
-        # Keep the hosted 1v1 map dimensions, using ordinary engine combat and
-        # neutral castles (40–50 defenders), without the competition modifiers.
-        self.env = GeneralsEnv(
-            min_grid_size=18, max_grid_size=21, pad_to=21, truncation=1200,
-            mountain_density_range=(0.24, 0.26), min_generals_distance=17,
-            build_castles=False, deathtouch_turn=None,
-        )
+        verify_engine()
+        self.env = GeneralsEnv(**CLASSIC_MAP_OPTIONS)
         self.state = make_board(self.env, seed)
-        self.transition = jax.jit(make_transition(self.env))
+        self._game = coworld_game
+        self._executed_moves = executed_moves
+        self.transition = jax.jit(lambda state, actions: coworld_game.step(state, actions, general_trade=False))
         self.last_move_executed = [None, None]
         # Compile before /healthz and before player deadlines begin.
         jax.block_until_ready(self.transition(self.state, jnp.array([PASS, PASS], dtype=jnp.int32)))
-        jax.block_until_ready(executed_moves(self.state, jnp.array([PASS, PASS], dtype=jnp.int32)))
+        jax.block_until_ready(self._executed_moves(self.state, jnp.array([PASS, PASS], dtype=jnp.int32)))
         for slot in range(2):
-            jax.block_until_ready(game.get_observation(self.state, slot))
+            jax.block_until_ready(self._game.get_observation(self.state, slot))
         self.height, self.width = self.state.armies.shape
 
     @property
@@ -54,7 +48,7 @@ class Match:
         return int(self.state.time)
 
     def observation(self, slot: int) -> dict:
-        obs = game.get_observation(self.state, slot)
+        obs = self._game.get_observation(self.state, slot)
         kinds = np.ones((self.height, self.width), dtype=np.int32)
         for name, value in (
             ("fog_cells", 0),
@@ -92,7 +86,7 @@ class Match:
         owners = np.zeros_like(kinds)
         for slot in range(2):
             owners[np.asarray(s.ownership[slot])] = slot + 1
-        info = game.get_info(s)
+        info = self._game.get_info(s)
         return {
             "turn": self.turn,
             "type_grid": kinds.tolist(),
@@ -106,7 +100,7 @@ class Match:
         if any(action[0] not in (0, 1) for action in actions):
             raise ValueError("classic rules accept only moves and passes")
         batch = jnp.array(actions, dtype=jnp.int32)
-        executed = executed_moves(self.state, batch)
+        executed = self._executed_moves(self.state, batch)
         self.state, info = self.transition(self.state, batch)
         self.last_move_executed = [bool(executed[s]) if actions[s][0] == 0 else None for s in range(2)]
         return int(info.winner) if bool(info.is_done) else -1
