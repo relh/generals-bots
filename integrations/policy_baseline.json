@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn running: source GPU parity passed; native trainer compilation underway",
+    "status": "job-4smbn running: native build and CUDA normalization audit passed; qualification startup underway",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3853,14 +3853,70 @@
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
     },
     "live_observation": {
-      "observed_at": "2026-10-09T04:40:26.233074+00:00",
+      "observed_at": "2026-10-09T04:43:09.583085+00:00",
       "status": "running",
       "attempt": 1,
       "source_gpu_parity_states": 46,
       "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
       "training_steps_observed": 0,
-      "log_sha256": "3fcebbf9f3737dd8246c1dd7cd933979267f9ed34d94796fa28cee38c5bf9714",
+      "log_sha256": "566764611976241befeedced6f9de7b3b28b5cee96d0168cc24f0674f3c7f736",
       "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00"
+    },
+    "cuda_normalization_audit_live": {
+      "schema": "generals-advantage-normalization-cuda-v1",
+      "passed": true,
+      "backend": "cuda",
+      "build_sha256": "a11d5d5acd50548413f887b8cfa1b39d0a64ac2af26e6bc21126a5eeb3c4e4f9",
+      "binary_sha256": "a8296920a4355bc158a51d1e7658b5e3f026219e741b822883a0ea1c7a309dfb",
+      "header_sha256": "f86375c1190da5abe28bdc74a95b10cdfd51011bb59a53ad1bea55e96cb87cef",
+      "generated_pufferl_sha256": "a04c42366f41cdc928ba764c4f99249bf01c5c7e6211ba90e1d747c27ca2c791",
+      "audit_module_sha256": "eded71d9c53cc264a7efad4106fd06269e7fbbe5a080cfd4cda4840b05f7c10e",
+      "compiler_flags": [
+        "-std=c++17",
+        "-O2",
+        "-DPRECISION_FLOAT"
+      ],
+      "rtol": 1e-05,
+      "atol": 1e-05,
+      "cases": [
+        {
+          "horizon": 128,
+          "count": 8192,
+          "threads": 256,
+          "fixture": "varying",
+          "max_abs_error": 7.714301886174724e-08,
+          "input_sha256": "113d6544e0a768908cfb1f297959c5f2eae75e892f0d8ecbb196d3ac644bcac1",
+          "output_sha256": "3cded7edf6bd66ece6868c999611bb81fa8821e4a301ae654899093dcf3acb5e"
+        },
+        {
+          "horizon": 128,
+          "count": 8192,
+          "threads": 256,
+          "fixture": "constant",
+          "max_abs_error": 0.0,
+          "input_sha256": "f01b94d5497c8d8120f1f31981307e2251825f65bea6a3e37da37d1f1e58ef6a",
+          "output_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
+        },
+        {
+          "horizon": 256,
+          "count": 8192,
+          "threads": 256,
+          "fixture": "varying",
+          "max_abs_error": 7.72786055147634e-08,
+          "input_sha256": "eeb78f6cfa377340af85e029a233da8db43f1b887c8ac2bbb0844ceddef62b75",
+          "output_sha256": "842834cf18aaadd9822b8690351646b4f6ee62870a63192f459832cbd98383dc"
+        },
+        {
+          "horizon": 256,
+          "count": 8192,
+          "threads": 256,
+          "fixture": "constant",
+          "max_abs_error": 0.0,
+          "input_sha256": "828fa9fd775e3b113f05731a6fcf9867a35af454501f69a07450bf7bfa8df451",
+          "output_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
+        }
+      ],
+      "scope": "Actual built FP32 header and 256-thread CUDA reduction; synthetic inputs only"
     }
   },
   "compute_budget": {

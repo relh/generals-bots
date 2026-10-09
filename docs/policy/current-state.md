@@ -116,8 +116,8 @@ Inspection also found a concrete normalization issue: raw bootstrap-row advantag
 are zero, but minibatch normalization includes those rows and can make their actor
 advantages nonzero before PPO. The focused correction is integrated in `7cc2b03`: exclude bootstrap rows from
 normalization statistics and keep their actor advantages zero. Seventeen focused
-CPU arithmetic/installer tests passed; CUDA verification and throughput qualification
-remain pending before training. The critic diagnostic does not
+CPU arithmetic/installer tests passed; actual CUDA verification now passed in
+`job-4smbn`. Throughput qualification remains pending before extended training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
@@ -125,10 +125,13 @@ User approved **$500 total task spending** on 2026-10-08. Current trial
 one H100, maximum **$5.67**, 90-minute provider limit, 88-minute internal
 limit, zero retries. Submitted **2026-10-09 04:25:07 UTC**; watchdog verified live.
 Confirmed spend is **$0.483**, plus up to **$5.67** for this active job.
-At **04:40:26 UTC**, attempt 1 passed source GPU serving parity on **46/46
-states** (maximum probability error **3.04e-6**) and reached native trainer
-compilation. No training steps observed yet; CUDA normalization and SPS gates
-remain pending. The independent watchdog deadline is **06:03:58 UTC**.
+At **04:43:09 UTC**, attempt 1 had passed source GPU serving parity on **46/46
+states** (maximum probability error **3.04e-6**), built the native trainer, and
+passed all **four actual CUDA normalization cases** at H128/H256 (constant and
+varying inputs; maximum absolute error **7.73e-8**). Qualification startup is
+underway; no training steps observed yet. These are live log results pending
+independent terminal artifact collection. The independent watchdog deadline is
+**06:03:58 UTC**.
 
 `job-pue42` failed before training at 23:20:24 UTC. The trainer pin passed,
 but environment fingerprinting found a stale curriculum path in the asset list.
@@ -143,8 +146,8 @@ The normalization installer changed but its launcher hash pin had not been
 updated. All **14 artifacts** were independently verified; the run cost $0.168.
 Commit `abacc9b` corrects the reviewed pin. Package admission now executes the
 trainer identity check and real launcher import against the packaged framework;
-four focused test invocations passed. CUDA normalization and training remain
-unqualified until the new run passes their gates.
+four focused test invocations passed. The current run has passed the CUDA
+normalization gate; training throughput remains unqualified.
 
 Earlier `job-dbjvf` failed before allocation because recovered directory mode
 0700 blocked the build worker. Its cost was **$0**. Archive permission checks
