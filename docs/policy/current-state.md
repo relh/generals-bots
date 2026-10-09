@@ -118,7 +118,8 @@ advantages nonzero before PPO. The focused correction is integrated in `7cc2b03`
 normalization statistics and keep their actor advantages zero. Seventeen focused
 CPU arithmetic/installer tests passed; actual CUDA verification now passed in
 `job-4smbn`. Qualification training, trained checkpoint serving parity and continuation
-sampling passed. Extended training is underway above the throughput gate. The critic diagnostic does not
+sampling passed. All 33,554,432 training steps completed above the throughput
+gate; final checkpoint publication and evaluation remain pending. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
@@ -138,12 +139,15 @@ Epoch 1 included compilation/startup and is excluded from steady-state timing.
 At **04:53:57 UTC**, the exported qualification checkpoint `e35a5704` passed
 GPU serving parity on **46/46 states**, maximum action-probability error
 **2.22e-6**. Qualification completed and the 512-game continuation sampling
-check subsequently passed. By **04:59:57 UTC**, continuation restored the
-qualification policy and saved learner state and reached **epoch 13 / 6,815,744
-total steps**. Its first postwarmup measurement, epochs 10→12, completed
-**1,048,576 steps / 17.817 seconds = 58,853 SPS**; epoch 13 reported **43.0 GiB
-VRAM** and **72% GPU utilization** with unchanged training settings. The full
-continuation interval and strength evaluations remain pending. These are live log results
+check subsequently passed. By **05:07:36 UTC**, continuation completed
+**33,554,432 total steps**, restoring the qualification policy and learner state.
+Epochs 10→64 completed **28,311,552 steps / 482.306 seconds = 58,700 SPS**;
+all rolling two-epoch intervals passed, minimum **56,852 SPS**. The final console
+reported **43.0 GiB VRAM** and **67% GPU utilization**, with unchanged settings.
+The continuation device audit covered **29,360,128 actions**, with **zero illegal
+actions**, **zero nonfinite rewards**, and all **13 opponent types on both sides**.
+Final checkpoint publication is underway; export, serving parity and held-out
+strength comparisons remain pending. These are live log results
 pending independent terminal artifact collection. The independent watchdog deadline is
 **06:03:58 UTC**.
 
