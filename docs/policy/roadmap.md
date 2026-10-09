@@ -39,8 +39,8 @@ See [current state](current-state.md) for live work and results,
    then 4Mi fresh-optimizer qualification before conditional 32Mi total. Keep
    horizon 128 and all prior fresh-start training settings. Compare with selected
    source and the `job-h8sqm` control on fresh maps 17003101, action seed 17003103,
-   bootstrap seed 17003111. User approved $500 total task spending. `job-pue42` is building after the reviewed trainer-pin correction
-   from recovered context `ctx-9633be0e`, capped at $5.67 with zero retries.
+   bootstrap seed 17003111. User approved $500 total task spending. `job-4smbn` is building after trainer-pin and inactive-asset corrections
+   from recovered context `ctx-9405fcf7`, capped at $5.67 with zero retries.
    Monitor the existing job and independently audit its artifacts.
    The corrected native path is **not yet GPU qualified**.
 4. After a future positive development result, freeze its checkpoint and sampler

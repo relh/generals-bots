@@ -121,10 +121,17 @@ remain pending before training. The critic diagnostic does not
 change training or establish that this issue explains the strength plateau.
 
 User approved **$500 total task spending** on 2026-10-08. Current trial
-**`job-pue42` is building**, context `ctx-9633be0e`, runtime `0d97357`:
+**`job-4smbn` is building**, context `ctx-9405fcf7`, runtime `0d97357`:
 one H100, maximum **$5.67**, 90-minute provider limit, 88-minute internal
-limit, zero retries. Submitted **23:04:14 UTC**; watchdog verified live.
-Confirmed spend is **$0.168**, plus up to **$5.67** for this active job.
+limit, zero retries. Submitted **2026-10-09 04:25:07 UTC**; watchdog verified live.
+Confirmed spend is **$0.483**, plus up to **$5.67** for this active job.
+
+`job-pue42` failed before training at 23:20:24 UTC. The trainer pin passed,
+but environment fingerprinting found a stale curriculum path in the asset list.
+All **121 artifacts** were independently verified; cost **$0.315**. The inactive
+asset reference is removed. Local admission now runs the actual fingerprint
+function over all 40 required policy assets, in addition to trainer loading and
+config/control checks; it passed before resealing and submitting the current job.
 
 `job-48zqh` passed source GPU serving parity on **46/46 states**, maximum action
 probability difference **3.04e-6**, then failed before training at 23:01:37 UTC.
@@ -139,13 +146,13 @@ Earlier `job-dbjvf` failed before allocation because recovered directory mode
 0700 blocked the build worker. Its cost was **$0**. Archive permission checks
 now cover every member. Both prior watchdogs observed terminal state and exited.
 
-Reboot recovery is complete: persistent archive **164,776,365 bytes**, all
+Reboot recovery is complete: persistent archive **164,776,430 bytes**, all
 **629 files verified**, runtime `0d97357`. Four retained hosted Classic replays
 replace the inaccessible originals; the pinned engine verified replay frames
 and extracted **46 public states** across both seats. The run plan explicitly
 selects those games. GPU policy parity is still required during the job.
 The original control config is retained and hashed: local preparation verifies
-that only the unused curriculum path/checksum were removed (reset probability
+that only the unused curriculum options and asset reference were removed (reset probability
 remains zero). Puffer commit/tree are unchanged; Git packaging was resealed.
 Actual local preparation passed, and the collector preserves the same CUDA,
 throughput, legal-action and strength gates. Launch receipts and the archive are
