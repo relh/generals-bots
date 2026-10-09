@@ -3707,7 +3707,7 @@
     "decision": "No clear candidate critic calibration improvement. H256 reduces disagreement with full-episode estimates, which is not itself policy-strength evidence. Proceed with independently established normalization fix alone at H128 before considering a horizon intervention."
   },
   "bootstrap_advantage_normalization_issue": {
-    "status": "fixed in source; CPU arithmetic and installer tests passed; bounded CUDA verification pending",
+    "status": "Correctness fix qualified by actual CUDA audit and 58,700 SPS training in job-4smbn; strength improvement not established",
     "evidence_job": "job-h8sqm",
     "mechanism": "puff_advantage leaves each H-1 raw advantage zero; subsequent minibatch standardization includes every row, producing -mean/scale on bootstrap rows. PPO processes N*T rows without a final-row mask.",
     "scope": "Restore zero actor advantage on bootstrap rows and exclude them from normalization statistics; preserve training settings and loss scaling. No strength claim.",
@@ -3720,7 +3720,7 @@
     "asset_abi_changed": false
   },
   "bootstrap_normalization_trial": {
-    "status": "job-4smbn completed training and final GPU serving parity; held-out source/control/candidate evaluation underway",
+    "status": "complete: technically qualified; strength selection failed; candidate unselected",
     "intervention": "Exclude bootstrap slots from actor advantage normalization statistics and keep output zero; preserve PPO denominator and all other training settings",
     "source_policy_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
     "control_policy_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
@@ -3785,7 +3785,7 @@
         "http_status": 403,
         "recovered": false
       },
-      "next_action": "Monitor job-4smbn and independently audit terminal artifacts",
+      "next_action": "Completed: 259 artifacts independently verified; candidate rejected; pass closed at user request",
       "replacement_parity": {
         "admission_sha256": "26702def2a6700031cab115ff1cde853ea7b5c8acb0f87adf3a8ed8d2b68000a",
         "passed": true,
@@ -3852,156 +3852,95 @@
       "charged_usd": 0.315,
       "resolution": "Remove inactive asset reference; execute actual environment_fingerprint locally with all 40 required policy assets before sealing"
     },
-    "live_observation": {
-      "observed_at": "2026-10-09T05:15:22.371941+00:00",
-      "status": "running",
-      "attempt": 1,
-      "source_gpu_parity_states": 46,
-      "source_gpu_parity_max_probability_error": 3.039836883544922e-06,
-      "training_steps_observed": 33554432,
-      "log_sha256": "048c3ca8a95fa19ec3bab5f92cc2bbe4b921e0794cf6157564903c567c7b9c1c",
-      "watchdog_deadline": "2026-10-09T06:03:58.699836+00:00",
-      "tail_log_sha256": "7a4300b23d7707e9a82927f417149fa586fef4baaff8b628b54ca310d4ef193e"
-    },
-    "cuda_normalization_audit_live": {
-      "schema": "generals-advantage-normalization-cuda-v1",
-      "passed": true,
-      "backend": "cuda",
-      "build_sha256": "a11d5d5acd50548413f887b8cfa1b39d0a64ac2af26e6bc21126a5eeb3c4e4f9",
-      "binary_sha256": "a8296920a4355bc158a51d1e7658b5e3f026219e741b822883a0ea1c7a309dfb",
-      "header_sha256": "f86375c1190da5abe28bdc74a95b10cdfd51011bb59a53ad1bea55e96cb87cef",
-      "generated_pufferl_sha256": "a04c42366f41cdc928ba764c4f99249bf01c5c7e6211ba90e1d747c27ca2c791",
-      "audit_module_sha256": "eded71d9c53cc264a7efad4106fd06269e7fbbe5a080cfd4cda4840b05f7c10e",
-      "compiler_flags": [
-        "-std=c++17",
-        "-O2",
-        "-DPRECISION_FLOAT"
-      ],
-      "rtol": 1e-05,
-      "atol": 1e-05,
-      "cases": [
+    "terminal_audit": {
+      "job_id": "job-4smbn",
+      "status": "succeeded",
+      "technical_success": true,
+      "selected": false,
+      "files_verified": 259,
+      "artifact_sha256": "3d270e3f6111d42a6955325917b87b137e9fee6572064b6923920bd89029b024",
+      "collection_sha256": "c6098f4a3dc898c78cf7db9e24df112b73e4ef9e1a0e5927fafd4a4644b31d6e",
+      "results_sha256": "a002e853e1a402a2ae6f8e8e84e249f4e3b94ed6276e06d93cd08ef2a19c7414",
+      "retained_root": "/Users/relh/Code/worktrees/generals-policy-overhaul/integrations/softmax/local-output/normalization-recovery-20261008/results-job-4smbn/inner/generals",
+      "whole_postwarmup_steps": 28311552,
+      "whole_postwarmup_seconds": 482.306,
+      "whole_postwarmup_sps": 58700.39352610169,
+      "sampled_peak_gpu_memory_mib": 44042.0,
+      "sha256": "b7f7ca7ad747e5e2abefd9bba47383f9a4236669017ce93c1d847adc4eb54420",
+      "finished_at": "2026-10-09T05:22:39.601387+00:00",
+      "charged_usd": 2.9064,
+      "billed_seconds": 2769,
+      "minimum_rolling_sps": 56851.87594881817,
+      "comparisons": [
         {
-          "horizon": 128,
-          "count": 8192,
-          "threads": 256,
-          "fixture": "varying",
-          "max_abs_error": 7.714301886174724e-08,
-          "input_sha256": "113d6544e0a768908cfb1f297959c5f2eae75e892f0d8ecbb196d3ac644bcac1",
-          "output_sha256": "3cded7edf6bd66ece6868c999611bb81fa8821e4a301ae654899093dcf3acb5e"
+          "baseline_checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+          "candidate_checkpoint_sha256": "0c52eddeed95d5c2ea5cc110dfbc15e33e8f643a0286f6da36fb3c500d2e0cc0",
+          "baseline": {
+            "wins": 2780,
+            "losses": 1297,
+            "draws": 19
+          },
+          "candidate": {
+            "wins": 2766,
+            "losses": 1299,
+            "draws": 31
+          },
+          "paired_signed_score_delta": -0.00390625,
+          "initial_state_cluster_ci95": [
+            -0.03391493412637143,
+            0.02686222637203029
+          ],
+          "stratum_failures": [
+            {
+              "opponent": "frozen_201e147f536f",
+              "seat": "1",
+              "games": 116,
+              "delta": -0.1206896551724138
+            },
+            {
+              "opponent": "frozen_f8df1ccd67a1",
+              "seat": "0",
+              "games": 145,
+              "delta": -0.14482758620689656
+            },
+            {
+              "opponent": "sentinel",
+              "seat": "1",
+              "games": 116,
+              "delta": -0.1206896551724138
+            }
+          ]
         },
         {
-          "horizon": 128,
-          "count": 8192,
-          "threads": 256,
-          "fixture": "constant",
-          "max_abs_error": 0.0,
-          "input_sha256": "f01b94d5497c8d8120f1f31981307e2251825f65bea6a3e37da37d1f1e58ef6a",
-          "output_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
-        },
-        {
-          "horizon": 256,
-          "count": 8192,
-          "threads": 256,
-          "fixture": "varying",
-          "max_abs_error": 7.72786055147634e-08,
-          "input_sha256": "eeb78f6cfa377340af85e029a233da8db43f1b887c8ac2bbb0844ceddef62b75",
-          "output_sha256": "842834cf18aaadd9822b8690351646b4f6ee62870a63192f459832cbd98383dc"
-        },
-        {
-          "horizon": 256,
-          "count": 8192,
-          "threads": 256,
-          "fixture": "constant",
-          "max_abs_error": 0.0,
-          "input_sha256": "828fa9fd775e3b113f05731a6fcf9867a35af454501f69a07450bf7bfa8df451",
-          "output_sha256": "c35020473aed1b4642cd726cad727b63fff2824ad68cedd7ffb73c7cbd890479"
+          "baseline_checkpoint_sha256": "7fb8edd40effb16e1e8213f62a9066035275b9da46d811b6c77196a5c7c1d66f",
+          "candidate_checkpoint_sha256": "0c52eddeed95d5c2ea5cc110dfbc15e33e8f643a0286f6da36fb3c500d2e0cc0",
+          "baseline": {
+            "wins": 2796,
+            "losses": 1272,
+            "draws": 28
+          },
+          "candidate": {
+            "wins": 2766,
+            "losses": 1299,
+            "draws": 31
+          },
+          "paired_signed_score_delta": -0.013916015625,
+          "initial_state_cluster_ci95": [
+            -0.04479107205004275,
+            0.016720402530686084
+          ],
+          "stratum_failures": [
+            {
+              "opponent": "frozen_f8df1ccd67a1",
+              "seat": "1",
+              "games": 145,
+              "delta": -0.12413793103448276
+            }
+          ]
         }
-      ],
-      "scope": "Actual built FP32 header and 256-thread CUDA reduction; synthetic inputs only"
+      ]
     },
-    "qualification_throughput_live": {
-      "hardware": "one H100",
-      "environments": 4096,
-      "horizon": 128,
-      "minibatch_size": 8192,
-      "replay_ratio": 0.5,
-      "opponent_workers": 8,
-      "warmup": "Measure after completed epoch 2; epoch 1 includes startup/compilation",
-      "measured_first_epoch": 2,
-      "measured_last_epoch": 8,
-      "measured_steps": 3145728,
-      "measured_seconds": 54.28,
-      "end_to_end_sps": 57953.72144436256,
-      "minimum_rolling_two_epoch_sps": 57155.56524583014,
-      "console_vram_gib": 43.5,
-      "console_gpu_utilization_percent_last": 67,
-      "scope": "Live completed epoch console timings; terminal artifacts and remaining qualification checks pending"
-    },
-    "qualification_serving_parity_live": {
-      "policy_sha256": "e35a5704418477c1406a5bff24c95f3437936766b0528752774b90416aaaf712",
-      "bundle_manifest_sha256": "0c8f2c6662deaa5da1d94bfdd52f1b8c36eac14bee3f780998f7b68714866788",
-      "public_states": 46,
-      "matching_top_actions": 46,
-      "max_action_probability_difference": 2.2202730178833008e-06,
-      "inference_backend": "gpu",
-      "scope": "Live log result; independent terminal artifact audit pending"
-    },
-    "continuation_live": {
-      "initial_policy_sha256": "e35a5704418477c1406a5bff24c95f3437936766b0528752774b90416aaaf712",
-      "initial_learner_sha256": "4d07f2e9c20ac76488d948ed0a20e4a5d90e029134db1d2897a56a18cfce5860",
-      "initialization": "restored",
-      "sampling_games": 512,
-      "sampling_passed": true,
-      "completed_epoch": 64,
-      "measured_first_epoch": 10,
-      "measured_last_epoch": 64,
-      "measured_steps": 28311552,
-      "measured_seconds": 482.306,
-      "end_to_end_sps": 58700.39352610169,
-      "console_vram_gib": 43.0,
-      "console_gpu_utilization_percent": 67,
-      "scope": "Live completed continuation console and device audits; export/parity passed; held-out evaluation and independent terminal artifact audit pending",
-      "minimum_rolling_two_epoch_sps": 56851.87594881817,
-      "illegal_actions": 0,
-      "audited_actions": 29360128,
-      "nonfinite_rewards": 0,
-      "opponent_types_on_both_sides": 13
-    },
-    "final_candidate_serving_parity_live": {
-      "layout_backend": "cpu",
-      "inference_backend": "gpu",
-      "checkpoint_sha256": "0c52eddeed95d5c2ea5cc110dfbc15e33e8f643a0286f6da36fb3c500d2e0cc0",
-      "factory_source_sha256": "48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a",
-      "engine_sha256": "f39e448a6b2822869d75cb07cce4cb43d589c4112fef04007ade951809d4a318",
-      "serving_action_selection": {
-        "doomed_attack_route_penalty": 4.0,
-        "early_route_temperature": 0.1,
-        "early_route_turns": 100,
-        "mode": "structured_sample",
-        "move_temperature": 0.05,
-        "neutral_route_bias": 6.0,
-        "split_temperature": 0.15,
-        "weak_owned_route_penalty": 4.0
-      },
-      "bundle_manifest_sha256": "c0a57ecb00a7852fb6c76e3e5710601f9f05130560310c727684e0e709a82467",
-      "hosted_games": 4,
-      "replay_turns": [
-        0,
-        25,
-        99,
-        100,
-        150,
-        200
-      ],
-      "public_states": 46,
-      "native_batch": 8,
-      "max_logit_difference": 2.86102294921875e-06,
-      "max_action_probability_difference": 3.1888484954833984e-06,
-      "max_rollout_transform_difference": 1.7881393432617188e-07,
-      "matching_top_actions": 46,
-      "jax_backend": "gpu",
-      "scope": "Exact checkpoint: native Fabric forward versus exported NumPy forward and legal sampled action probabilities on SHA-verified Classic hosted observations"
-    }
+    "decision": "Keep verified normalization correctness fix. Candidate failed selection: no extension, confirmation or promotion. User requested close-out; no further experiment started."
   },
   "compute_budget": {
     "authorized_total_usd": 500,
@@ -4027,13 +3966,28 @@
       },
       {
         "job_id": "job-4smbn",
-        "status": "running",
+        "status": "succeeded",
         "max_cost_usd": 5.67,
-        "actual_cost_usd": null
+        "actual_cost_usd": 2.9064
       }
     ],
-    "committed_max_usd": 6.153,
-    "actual_cost_usd": 0.483,
-    "accounting_note": "Committed maximum includes confirmed prior spend plus active job cap"
+    "committed_max_usd": 3.3894,
+    "actual_cost_usd": 3.3894,
+    "accounting_note": "Committed maximum includes confirmed prior spend plus active job cap",
+    "remaining_authorized_usd": 496.6106
+  },
+  "closeout": {
+    "date": "2026-10-09",
+    "requested_by_user": true,
+    "milestone": "Normalization correction GPU-qualified; bounded training and strength comparison completed and audited",
+    "larger_goal_achieved": false,
+    "active_agents": 0,
+    "active_gmn_generals_jobs": [],
+    "jobs_observed_at": "2026-10-09T05:31:14.870413+00:00",
+    "watchdog_exited": true,
+    "new_experiment_started": false,
+    "remaining_work": "Winning strength remains unproven; no confirmation, hosted acceptance, or promotion. H256 is an unstarted hypothesis only.",
+    "evidence_directory": "integrations/softmax/local-output/normalization-recovery-20261008",
+    "access_note": "Local artifacts are retained and ignored by Git; manifest preserves hashes. metta0 previously timed out; no new Slurm job was submitted or access retry made during close-out."
   }
 }

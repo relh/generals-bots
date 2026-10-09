@@ -1,6 +1,6 @@
 # Current Classic policy state
 
-Updated 2026-10-08 after the audited fresh-start strength result.
+Updated 2026-10-09 after the independently audited normalization trial.
 **Winning acceptance has not passed; the selected policy and champion are unchanged.**
 Training execution is qualified for the exact setup below. Playing
 strength remains the unmet goal.
@@ -43,150 +43,90 @@ Historical asset identities are evidence, not supported runtime formats.
 - Compiled action postprocessing preserved raw model/backward calculations and
   improved mean diagnostic throughput **35.7%** in `job-mcxks` (368 files verified).
 - The complete combined path passed full and rolling training qualification in
-  `job-h8sqm`, below. One explicit-plan runner and shared audits replaced retired
+  `job-4smbn`, below. One explicit-plan runner and shared audits replaced retired
   experiment launchers. Previous failures and their corrections are in the manifest
   and Git history.
 
 ## Latest completed experiment
 
-The fresh-start experiment changed midgame reset probability from **0.25 to zero**.
-It tested whether the retained 384-position curriculum, with median turn 385.5,
-was hurting fresh-game performance. It began from selected source weights with
-a fresh optimizer and compared against both source and the previous 32Mi control.
-The reset change applies at startup and automatic episode recycling.
+**`job-4smbn` succeeded at 2026-10-09 05:22:39 UTC**, first attempt, no retries
+or preemptions. Independent collection verified **259 files**, checkpoint and
+learner clocks, native source changes, CUDA arithmetic, game contract, training
+throughput, serving parity and paired strength statistics. The watchdog exited.
 
-**`job-h8sqm` succeeded at 03:43:37 UTC on its first attempt**, with no
-restarts or preemptions. All **250 retained result files** passed independent
-verification. The allocation guard observed completion and exited. Cost:
-**$2.4233 for 2,938 billed seconds**. The exact sealed upload was verified;
-138 missing local staging files were restored from that archive before collection
-audit, with every hash matching and no collector changes.
+The sole training intervention corrected bootstrap-row advantage normalization:
+exclude those rows from normalization statistics and keep their actor advantages
+zero. The actual CUDA audit passed four H128/H256 constant/varying cases. Keep
+this correctness fix; this experiment does **not** establish a strength gain.
 
-One H100, 4,096 environments, rollout horizon 128, minibatch 8,192, replay ratio
-0.5, eight opponent workers and zero midgame resets completed **33,554,432 steps**.
-After two warmup epochs per training segment:
+One H100, 4,096 environments, H128, minibatch 8,192, replay ratio 0.5, eight
+opponent workers and zero midgame resets completed **33,554,432 steps** from
+selected source weights with a fresh optimizer. Continuation restored its own
+qualification policy and learner state. After two warmup epochs per segment:
 
-| Segment | Measured steps | Seconds | End-to-end SPS | Lowest rolling SPS | Peak sampled GPU memory |
+| Segment | Measured steps | Seconds | End-to-end SPS | Lowest rolling SPS | Sampled peak GPU memory |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Qualification | 3,145,728 | 64.485 | 48,782 | 47,704 | 43.54 GiB |
-| Continuation | 28,311,552 | 570.443 | 49,631 | 46,747 | 43.01 GiB |
+| Qualification | 3,145,728 | 54.280 | 57,954 | 57,156 | 43.54 GiB |
+| Continuation | 28,311,552 | 482.306 | 58,700 | 56,852 | 43.01 GiB |
 
-These intervals include rollout, transfers and optimization. GPU utilization
-snapshots were approximately 64–70%. All training actions were legal, rewards
-were finite and unclipped, and all 13 opponents appeared on both seats. Source,
-qualification and final checkpoint GPU serving parity each matched all 46 top
-actions; final maximum probability difference was 3.78e−6. Continuation restored
-the qualification checkpoint and its own optimizer state.
+Timing includes rollouts, transfers and optimization; the final console GPU
+utilization was 67%. All actions were legal, rewards finite and unclipped, and
+all 13 opponents appeared on both seats. Source, qualification and final GPU
+serving parity matched all 46 top actions. Final probability error was 3.19e-6.
 
-**Strength selection failed.** The three matched 4,096-game panels used 2,591
-unique held-out initial states, map seed 17001101 and action seed 17001103:
+**Strength selection failed.** Matched panels used 4,096 games, 2,588 unique
+initial states, map seed 17003101 and action seed 17003103:
 
 | Policy | Wins | Losses | Draws |
 | --- | ---: | ---: | ---: |
-| Selected source | 2,759 | 1,310 | 27 |
-| Retained control | 2,779 | 1,296 | 21 |
-| Fresh-start candidate | 2,792 | 1,261 | 43 |
+| Selected source | 2,780 | 1,297 | 19 |
+| Fresh-start control | 2,796 | 1,272 | 28 |
+| Normalization candidate | 2,766 | 1,299 | 31 |
 
-Candidate signed-score improvement was **+0.0200** versus source
-(cluster 95% CI **[−0.0090, +0.0484]**) and **+0.0117** versus control
-(**[−0.0194, +0.0420]**). Both intervals include zero. Both opponent-seat
-regression guards passed, but the preregistered improvement gates did not.
-Checkpoint `7fb8edd4…` is **unselected**: no extension, confirmation or hosted
-promotion. Selected source weights remain unchanged. The execution path is
-qualified; a winning strength improvement remains unresolved.
+Candidate signed-score delta was **−0.00391** versus source (map-cluster 95% CI
+**[−0.03391, +0.02686]**) and **−0.01392** versus control
+(**[−0.04479, +0.01672]**). Both intervals include zero. Three opponent-seat
+strata failed the −0.10 regression guard versus source; one failed versus control.
+Exact strata and identities are in the manifest. Candidate `0c52edde…` remains
+**unselected**: do not extend, confirm or promote it.
 
-## Next decision
+## Budget and recovered execution
 
-**`job-krq94` succeeded at 04:18:35 UTC.** All 22 retained files passed
-independent verification, including reward reconstruction and report recomputation.
-One H100 evaluated two 256-game own-policy panels on 234 unique initial states;
-all 13 opponents appeared on both seats. Cost **$0.1617 / 196 billed seconds**.
-The provider replaced one lost build worker for free; GPU execution succeeded on
-its first attempt, and the allocation guard exited.
+The user authorized **$500 total**. Confirmed spending under that authorization
+is **$3.3894**, with **no live job or outstanding compute commitment** at terminal
+collection. The completed run cost **$2.9064 / 2,769 billed seconds**; earlier
+recovery failures cost $0.483. Remaining authorization: **$496.6106**.
 
-Source/candidate critic mean squared error was 0.01882 / 0.01913; their paired
-difference CI95 was [−0.00241, +0.00314], showing no clear calibration improvement.
-Pre-normalization H128 advantages disagreed in sign with full-episode estimates
-26.1% / 26.5% of the time; H256 reduced this to 16.2% / 17.1%. These sampled-return
-comparisons expose boundary sensitivity but do not prove longer rollouts improve
-policy strength. Test the independently verified normalization correction first,
-keeping H128 unchanged.
+The sealed recovery context `ctx-9405fcf7` used runtime `0d97357`, 629 verified
+files and four retained hosted replays supplying 46 parity states. Trainer hash,
+archive permissions and inactive asset references were corrected before launch.
+Actual environment fingerprinting checks all 40 required policy assets. Exact
+failure receipts, hashes and recovery provenance remain in the manifest and Git.
+Persistent artifacts are under
+`integrations/softmax/local-output/normalization-recovery-20261008`.
 
-Inspection also found a concrete normalization issue: raw bootstrap-row advantages
-are zero, but minibatch normalization includes those rows and can make their actor
-advantages nonzero before PPO. The focused correction is integrated in `7cc2b03`: exclude bootstrap rows from
-normalization statistics and keep their actor advantages zero. Seventeen focused
-CPU arithmetic/installer tests passed; actual CUDA verification now passed in
-`job-4smbn`. Qualification training, trained checkpoint serving parity and continuation
-sampling passed. All 33,554,432 training steps completed above the throughput
-gate. Final checkpoint serving parity passed; held-out evaluation is underway. The critic diagnostic does not
-change training or establish that this issue explains the strength plateau.
+## Close-out and remaining work
 
-User approved **$500 total task spending** on 2026-10-08. Current trial
-**`job-4smbn` is running**, context `ctx-9405fcf7`, runtime `0d97357`:
-one H100, maximum **$5.67**, 90-minute provider limit, 88-minute internal
-limit, zero retries. Submitted **2026-10-09 04:25:07 UTC**; watchdog verified live.
-Confirmed spend is **$0.483**, plus up to **$5.67** for this active job.
-At **04:43:09 UTC**, attempt 1 had passed source GPU serving parity on **46/46
-states** (maximum probability error **3.04e-6**), built the native trainer, and
-passed all **four actual CUDA normalization cases** at H128/H256 (constant and
-varying inputs; maximum absolute error **7.73e-8**). Qualification completed **4,194,304 steps** by **04:47:19 UTC**. With one H100,
-4,096 environments, H128, minibatches 8,192, replay ratio 0.5 and 8 opponent
-workers, epochs 2→8 completed **3,145,728 steps / 54.28 seconds = 57,954 SPS**.
-All postwarmup rolling two-epoch intervals passed; minimum **57,156 SPS**.
-The console reported **43.5 GiB VRAM** and 67% GPU utilization at epoch 7.
-Epoch 1 included compilation/startup and is excluded from steady-state timing.
-At **04:53:57 UTC**, the exported qualification checkpoint `e35a5704` passed
-GPU serving parity on **46/46 states**, maximum action-probability error
-**2.22e-6**. Qualification completed and the 512-game continuation sampling
-check subsequently passed. By **05:07:36 UTC**, continuation completed
-**33,554,432 total steps**, restoring the qualification policy and learner state.
-Epochs 10→64 completed **28,311,552 steps / 482.306 seconds = 58,700 SPS**;
-all rolling two-epoch intervals passed, minimum **56,852 SPS**. The final console
-reported **43.0 GiB VRAM** and **67% GPU utilization**, with unchanged settings.
-The continuation device audit covered **29,360,128 actions**, with **zero illegal
-actions**, **zero nonfinite rewards**, and all **13 opponent types on both sides**.
-At **05:15:22 UTC**, final checkpoint `0c52edde` was published and exported,
-and passed GPU serving parity on **46/46 states** (maximum action-probability
-error **3.19e-6**). The three paired **4,096-game** source/control/candidate
-held-out panels are underway; no strength result or selection yet. These are live log results
-pending independent terminal artifact collection. The independent watchdog deadline is
-**06:03:58 UTC**.
+**This pass is closed at the user’s request.** No next experiment was started.
+GMN read-only reconciliation at 05:31:14 UTC found no active Generals jobs;
+no subagents remain active, and the watchdog process exited. Existing artifacts
+and history are preserved. No Slurm allocation was created during this pass;
+metta0’s previously observed SSH timeout was not retried.
 
-`job-pue42` failed before training at 23:20:24 UTC. The trainer pin passed,
-but environment fingerprinting found a stale curriculum path in the asset list.
-All **121 artifacts** were independently verified; cost **$0.315**. The inactive
-asset reference is removed. Local admission now runs the actual fingerprint
-function over all 40 required policy assets, in addition to trainer loading and
-config/control checks; it passed before resealing and submitting the current job.
+A **longer-rollout H256** experiment is an unstarted hypothesis for a future pass.
+The audited critic diagnostic `job-krq94` found H128 advantage-sign disagreement
+with full-episode estimates of 26.1% / 26.5%; H256 reduced it to 16.2% / 17.1%.
+This motivates a controlled test, not a strength claim. Source/candidate critic
+MSE showed no clear improvement. Normalization alone has now failed selection.
 
-`job-48zqh` passed source GPU serving parity on **46/46 states**, maximum action
-probability difference **3.04e-6**, then failed before training at 23:01:37 UTC.
-The normalization installer changed but its launcher hash pin had not been
-updated. All **14 artifacts** were independently verified; the run cost $0.168.
-Commit `abacc9b` corrects the reviewed pin. Package admission now executes the
-trainer identity check and real launcher import against the packaged framework;
-four focused test invocations passed. The current run has passed the CUDA
-normalization, qualification throughput, and trained checkpoint parity gates.
-
-Earlier `job-dbjvf` failed before allocation because recovered directory mode
-0700 blocked the build worker. Its cost was **$0**. Archive permission checks
-now cover every member. Both prior watchdogs observed terminal state and exited.
-
-Reboot recovery is complete: persistent archive **164,776,430 bytes**, all
-**629 files verified**, runtime `0d97357`. Four retained hosted Classic replays
-replace the inaccessible originals; the pinned engine verified replay frames
-and extracted **46 public states** across both seats. The run plan explicitly
-selects those games. GPU policy parity is still required during the job.
-The original control config is retained and hashed: local preparation verifies
-that only the unused curriculum options and asset reference were removed (reset probability
-remains zero). Puffer commit/tree are unchanged; Git packaging was resealed.
-Actual local preparation passed, and the collector preserves the same CUDA,
-throughput, legal-action and strength gates. Launch receipts and the archive are
-in `integrations/softmax/local-output/normalization-recovery-20261008`.
-
-Earlier continuation `job-mwvdb` also failed selection; neither rejected checkpoint
-should be extended or promoted.
+A future pass would first derive memory and replay-row coverage for H256 and choose a matched
+parallelism/batch comparison that fits the allocated GPU. Preserve Classic maps,
+normalization correctness, reward discount, action sampler and held-out gates.
+Require fresh full and rolling ≥30K SPS qualification before long training.
+Compare against selected source and the corrected H128 control on fresh seeds;
+retain the independent confirmation seeds for a positive development result.
+Do not extend rejected candidates. Prior fresh-start and curriculum continuation
+results also failed selection; consult the manifest before revisiting them.
 
 ## Winning acceptance
 
