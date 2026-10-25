@@ -181,3 +181,6 @@ uv.lock
 integrations/softmax/local-output/
 integrations/softmax/dist/
 tmp/coworld-*/
+
+# Local task history remains preserved outside the review diff.
+/GOAL.txt
