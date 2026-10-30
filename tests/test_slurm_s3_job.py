@@ -348,8 +348,9 @@ def test_storage_failure_records_exact_available_and_required_values(tmp_path):
 def test_retired_recovery_mount_configuration_is_rejected():
     import pytest
     with patch.dict(os.environ, {'SLURM_JOB_ID': '999'}):
-        with pytest.raises(ValueError, match='mount_recovery'):
-            SlurmJob(dict(scratch_parent='/tmp', receipt={}, mount_recovery=True))
+        for name in ('mount_recovery', 'enroot_storage_paths', 'retained_container'):
+            with pytest.raises(ValueError, match=name):
+                SlurmJob(dict(scratch_parent='/tmp', receipt={}, **{name: True}))
 
 
 def test_timed_out_container_creation_stops_descendant_writer_before_archive(tmp_path):

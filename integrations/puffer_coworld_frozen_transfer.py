@@ -32,6 +32,8 @@ from metta_training.native_build import (
 )
 from metta_training.telemetry import RunMonitor, RunSnapshot
 
+from integrations.learner_checkpoint import TrainingResult
+
 PUFFER_REPOSITORY = "https://github.com/PufferAI/PufferLib.git"
 PUFFER_REVISION = "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2"
 
@@ -281,14 +283,6 @@ def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
         initialization = InitializationRecord.model_validate_json((run / "initialization.json").read_text())
         seeds.update(initialization.training_seeds)
     return seeds
-
-
-class TrainingResult(Record):
-    checkpoints: list[Path]
-    final_checkpoint: Path
-    revision: str
-    trained_timesteps: int = Field(gt=0)
-    metrics: Path
 
 
 class PreparedRun(Record):
