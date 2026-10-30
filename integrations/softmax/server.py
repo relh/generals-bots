@@ -11,13 +11,14 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 import uvicorn
+from anyio import CancelScope
 from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .artifacts import read_json, write_json
 from .config import GameConfig
-from .engine import Match, RULESET
+from .engine import RULESET, Match
 from .protocol import PASS, VERSION, parse_action
 
 STATIC = Path(__file__).parent / "static"
@@ -228,7 +229,8 @@ async def socket_session(ws, queue, receive):
     finally:
         for task in (sender, receiver):
             task.cancel()
-        await asyncio.gather(sender, receiver, return_exceptions=True)
+        with CancelScope(shield=True):
+            await asyncio.gather(sender, receiver, return_exceptions=True)
 
 
 def create_app(config: GameConfig | None = None, artifacts: dict | None = None, shutdown=None):
