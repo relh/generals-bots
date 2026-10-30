@@ -20,7 +20,8 @@ PY
 fi
 test -s "$checkpoint"
 
-exec bash /work/source-gpu/integrations/run_puffer_gpu.sh evaluate \
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+exec bash "$script_dir/run_puffer_gpu.sh" evaluate \
     --config "$evaluation_config" \
     --build "$build_directory" \
     --run "$run_directory" \
