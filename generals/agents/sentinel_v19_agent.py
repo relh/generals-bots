@@ -17,7 +17,6 @@ import jax
 import jax.numpy as jnp
 
 from .sentinel_agent import _distance, _neighbors
-from .sentinel_v3_agent import _campaign_decision
 from .sentinel_v5_agent import _HORIZON, _home_growth
 from .sentinel_v6_agent import DefenderMemory, _destination
 from .sentinel_v18_agent import SentinelV18Agent
@@ -108,7 +107,7 @@ class _RetainedDefender:
         def alternative(_):
             # Frozen campaign scores and tie order, excluding only moves from
             # the held defender. Already selected builds/nonowned moves gate us out.
-            _, _, scores = _campaign_decision(self.parent.base.campaign, obs, key)
+            _, _, scores = self.parent.base.campaign.campaign_decision(obs, key)
             scores = jnp.where((cells == defender)[..., None, None], -1e9, scores)
             best = jnp.argmax(scores)
             source = best // 8
