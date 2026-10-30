@@ -3,8 +3,12 @@ import copy
 import pytest
 
 from integrations.spatial_muon_orientation import (
-    MARKER, canonical_dense_source, validate_build_mode, validate_geometry,
+    MARKER,
+    canonical_dense_source,
+    validate_build_mode,
+    validate_geometry,
 )
+from tests.test_puffer_rollout_memory import retained_rollout_fixture
 
 
 def configuration():
@@ -43,6 +47,7 @@ def test_kernel_patch_refuses_unknown_source():
 
 
 def test_runtime_refuses_mislabeled_cached_binary(tmp_path):
+    retained_rollout_fixture(tmp_path)
     binary = tmp_path / "puffer"
     binary.write_bytes(b"existing storage-oriented executable")
     validate_build_mode(tmp_path, "storage")

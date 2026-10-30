@@ -12,6 +12,7 @@ from integrations.spatial_muon_context import (
     validate_model_gather,
 )
 from integrations.spatial_muon_orientation import validate_build_mode
+from tests.test_puffer_rollout_memory import retained_rollout_fixture
 
 
 def model(radius=1.01):
@@ -52,6 +53,7 @@ def test_context_kernel_requires_pinned_dense_source():
 
 
 def test_context_cached_binary_cannot_run_as_vector(tmp_path):
+    retained_rollout_fixture(tmp_path)
     (tmp_path / "puffer").write_bytes(MARKER.encode())
     with pytest.raises(ValueError, match="Convolution matrix mode"):
         validate_build_mode(tmp_path, "canonical")

@@ -1,4 +1,6 @@
 """The production gather index must reproduce transpose-and-slice bitwise."""
+import hashlib
+import json
 import shutil
 import subprocess
 import tempfile
@@ -6,6 +8,24 @@ import unittest
 from pathlib import Path
 
 from integrations.puffer_rollout_memory import install
+
+
+def retained_rollout_fixture(build):
+    """Supply the memory admission prerequisite for binary-mode rejection cases."""
+    import integrations.puffer_rollout_memory as memory
+
+    source = build / "source/src"
+    source.mkdir(parents=True)
+    installer = Path(memory.__file__)
+    header = installer.with_suffix(".cuh").read_bytes()
+    generated = b"retained rollout source fixture\n"
+    (source / "pufferl.cu").write_bytes(generated)
+    (source / "metta_rollout_memory.cuh").write_bytes(header)
+    (build / "rollout-memory.json").write_text(json.dumps({
+        "patched_pufferl_sha256": hashlib.sha256(generated).hexdigest(),
+        "gather_header_sha256": hashlib.sha256(header).hexdigest(),
+        "installer_sha256": hashlib.sha256(installer.read_bytes()).hexdigest(),
+    }))
 
 
 class MinibatchGatherTests(unittest.TestCase):
