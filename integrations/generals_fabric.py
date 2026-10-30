@@ -1,0 +1,450 @@
+"""Small memoryless Fabric policy for batched Generals observations."""
+
+import jax
+import numpy as np
+from fabric import lang as fl
+from fabric import nn
+from metta_training.fabric import PolicyGraph
+
+
+def _silu_step(self, state, parameters, inbox, rho):
+    return state.replace(pub=jax.nn.silu(inbox.drive * parameters.weight + parameters.bias))
+
+
+def _silu_publish(self, state, parameters):
+    return state.pub
+
+
+@fl.atom
+class SiLU:
+    """Current-tick nonlinearity with no recurrent read or credit path."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(drive=fl.slot(1, merge=fl.monoids.sum))
+    params = fl.params(
+        weight=fl.local((1,), init=fl.inits.constant(1.0)),
+        bias=fl.local((1,), init=fl.inits.constant(0.0)),
+    )
+    step = _silu_step
+    publish = _silu_publish
+
+
+@fl.atom
+class GlobalSiLU:
+    """Separate current-tick population for the global projection."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(drive=fl.slot(1, merge=fl.monoids.sum))
+    params = fl.params(
+        weight=fl.local((1,), init=fl.inits.constant(1.0)),
+        bias=fl.local((1,), init=fl.inits.constant(0.0)),
+    )
+    step = _silu_step
+    publish = _silu_publish
+
+
+def _normalized_global_step(self, state, parameters, inbox, rho):
+    return state.replace(pub=jax.nn.silu(inbox.drive * parameters.weight / 32.0 + parameters.bias))
+
+
+@fl.atom
+class NormalizedGlobalSiLU:
+    """Scale the fan-in from all board sites before the global activation."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(drive=fl.slot(1, merge=fl.monoids.sum))
+    params = fl.params(
+        weight=fl.local((1,), init=fl.inits.constant(1.0)),
+        bias=fl.local((1,), init=fl.inits.constant(0.0)),
+    )
+    step = _normalized_global_step
+    publish = _silu_publish
+
+
+@fl.atom
+class ContextSiLU:
+    """Second spatial stage; keep its pool separate from the first stage."""
+
+    visibility = fl.config(0)
+    state = fl.state(pub=fl.f32(1))
+    inboxes = fl.inboxes(drive=fl.slot(1, merge=fl.monoids.sum))
+    params = fl.params(
+        weight=fl.local((1,), init=fl.inits.constant(1.0)),
+        bias=fl.local((1,), init=fl.inits.constant(0.0)),
+    )
+    step = _silu_step
+    publish = _silu_publish
+
+
+def memoryless_mlp_policy(*, observation_size: int, output_size: int, hidden: int = 64) -> PolicyGraph:
+    if min(observation_size, output_size, hidden) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    sense = nn.cluster("sense", nn.atoms.Input(), n=observation_size)
+    core = nn.cluster("core", SiLU(), n=hidden)
+    out = nn.cluster("out", nn.atoms.Output(), n=output_size)
+    graph = nn.cluster("mlp", {"sense": sense, "core": core, "out": out})
+    graph.add(
+        (sense >> core).by(nn.rules.all_to_all()),
+        (core >> out).by(nn.rules.all_to_all()),
+    )
+    return PolicyGraph(graph, "sense", ("out",))
+
+
+def spatial_mlp_policy(
+    *, observation_size: int, output_size: int, channels: int, height: int, width: int, features_per_site: int = 8
+) -> PolicyGraph:
+    """Memoryless local features with a global action readout."""
+    if min(channels, height, width, output_size, features_per_site) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    image_size = channels * height * width
+    if observation_size < image_size:
+        raise ValueError("Observation size must contain the image")
+    columns, rows = (width + 1) // 2, (height + 1) // 2
+    sites = columns * rows
+    sense = nn.cluster(
+        "sense",
+        nn.atoms.Input(),
+        n=observation_size,
+        geometry=nn.geometry.fields(
+            own={
+                (f"input_{i}",): {"coord": (i % width, (i // width) % height), "image": i < image_size}
+                for i in range(observation_size)
+            }
+        ),
+    )
+    core = nn.cluster(
+        "core",
+        SiLU(),
+        n=sites * features_per_site,
+        geometry=nn.geometry.fields(
+            own={
+                (f"a_{i}",): {"coord": (2 * (i % columns), 2 * ((i // columns) % rows))}
+                for i in range(sites * features_per_site)
+            }
+        ),
+    )
+    out = nn.cluster("out", nn.atoms.Output(), n=output_size)
+    graph = nn.cluster("spatial_mlp", {"sense": sense, "core": core, "out": out})
+    graph.add(
+        (sense >> core).by(nn.rules.stencil(src=nn.select.input_atoms().where(image=True), radius=2**0.5)),
+        (core >> out).by(nn.rules.all_to_all()),
+    )
+    if observation_size > image_size:
+        graph.add((sense >> out).by(nn.rules.all_to_all(src=nn.select.input_atoms().where(image=False))))
+    return PolicyGraph(graph, "sense", ("out",))
+
+
+def _local_kernel_key(source, target, context):
+    if source[0] != "sense" or target[0] != "core":
+        return ("unique", source, target)
+    src_x, src_y = context.src.attr(source, "coord")
+    dst_x, dst_y = context.dst.attr(target, "coord")
+    return (
+        context.src.attr(source, "channel"),
+        dst_x - src_x,
+        dst_y - src_y,
+        context.dst.attr(target, "feature"),
+    )
+
+
+def tied_spatial_mlp_policy(
+    *, observation_size: int, output_size: int, channels: int, height: int, width: int, features_per_site: int = 8
+) -> PolicyGraph:
+    """Local Fabric features with shared spatial kernels and feature parameters."""
+    if min(channels, height, width, output_size, features_per_site) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    image_size = channels * height * width
+    if observation_size != image_size:
+        raise ValueError("Tied spatial policy expects channel-first image observations")
+    columns, rows = (width + 1) // 2, (height + 1) // 2
+    sense = nn.cluster(
+        "sense",
+        nn.atoms.Input(),
+        n=observation_size,
+        geometry=nn.geometry.fields(
+            own={
+                (f"input_{i}",): {"coord": (i % width, (i // width) % height), "channel": i // (height * width)}
+                for i in range(observation_size)
+            }
+        ),
+    )
+    core = nn.cluster(
+        "core",
+        SiLU(),
+        n=columns * rows * features_per_site,
+        geometry=nn.geometry.fields(
+            own={
+                (f"a_{i}",): {
+                    "coord": (2 * ((i // features_per_site) % columns), 2 * ((i // features_per_site) // columns)),
+                    "feature": i % features_per_site,
+                    "core": True,
+                }
+                for i in range(columns * rows * features_per_site)
+            }
+        ),
+    )
+    out = nn.cluster("out", nn.atoms.Output(), n=output_size)
+    graph = nn.cluster("tied_spatial_mlp", {"sense": sense, "core": core, "out": out})
+    graph.add(
+        (sense >> core).by(nn.rules.stencil(radius=2**0.5)).semantics(
+            nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
+        ),
+        (core >> out).by(nn.rules.all_to_all()),
+        nn.tie(core).by(nn.sharing.field("feature")).on("weight", "bias"),
+        nn.tie(graph).by(nn.sharing.edge_key(_local_kernel_key)),
+    )
+    return PolicyGraph(graph, "sense", ("out",))
+
+
+def _local_action_key(source, target, context):
+    if source[0] == "sense" and target[0] == "local":
+        sx, sy = context.src.attr(source, "coord")
+        dx, dy = context.dst.attr(target, "coord")
+        return ("input", context.src.attr(source, "channel"), dx - sx, dy - sy,
+                context.dst.attr(target, "feature"))
+    if source[0] == "local" and target[0] == "out":
+        if not context.dst.attr(target, "move"):
+            return ("special", context.src.attr(source, "feature"),
+                    context.dst.attr(target, "readout_group"))
+        return ("action", context.src.attr(source, "feature"), context.dst.attr(target, "direction"))
+    return ("unique", source, target)
+
+
+def tied_local_action_policy(
+    *, observation_size: int, output_size: int, channels: int, height: int, width: int,
+    features_per_site: int = 8, global_features: int = 32, input_radius: float = 2**0.5,
+    tie_readout: bool = False, hint_prior_strength: float = 0.0,
+    local_special_readout: bool = False, normalized_global: bool = False,
+) -> PolicyGraph:
+    """Share board kernels and action-direction readouts, with global context."""
+    cells = height * width
+    if min(channels, height, width, features_per_site, global_features) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    if observation_size != channels * cells or output_size != 4 * cells + 4:
+        raise ValueError("This policy requires channel-first maps and factorized Generals actions")
+    sense = nn.cluster(
+        "sense", nn.atoms.Input(), n=observation_size,
+        geometry=nn.geometry.fields(own={
+            (f"input_{i}",): {"coord": (i % width, (i // width) % height), "channel": i // cells}
+            for i in range(observation_size)
+        }),
+    )
+    local = nn.cluster(
+        "local", SiLU(), n=cells * features_per_site,
+        geometry=nn.geometry.fields(own={
+            (f"a_{i}",): {
+                "coord": ((i // features_per_site) % width, (i // features_per_site) // width),
+                "feature": i % features_per_site,
+            }
+            for i in range(cells * features_per_site)
+        }),
+    )
+    global_core = nn.cluster("global", NormalizedGlobalSiLU() if normalized_global else GlobalSiLU(), n=global_features)
+    out = nn.cluster(
+        "out", nn.atoms.Output(), n=output_size,
+        geometry=nn.geometry.fields(own={
+            (f"a_{i}",): {
+                "coord": ((i % cells) % width, (i % cells) // width) if i < 4 * cells
+                else (0, 0) if local_special_readout else (-100, -100),
+                "direction": i // cells if i < 4 * cells else -1,
+                "move": i < 4 * cells,
+                "readout_group": i // cells if i < 4 * cells else i,
+            }
+            for i in range(output_size)
+        }),
+    )
+    graph = nn.cluster("tied_local_action", {"sense": sense, "local": local, "global": global_core, "out": out})
+    fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
+    def readout_key(source, target, context):
+        if tie_readout and source[0] == "global" and target[0] == "out":
+            return ("global", source[1], context.dst.attr(target, "readout_group"))
+        return _local_action_key(source, target, context)
+    graph.add(
+        (sense >> local).by(nn.rules.stencil(radius=input_radius)).semantics(fixed),
+        (local >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
+        (local >> global_core).by(nn.rules.all_to_all()),
+        (global_core >> out).by(nn.rules.all_to_all()),
+        nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
+        nn.tie(graph).by(nn.sharing.edge_key(readout_key)),
+    )
+    if hint_prior_strength:
+        if channels < 8:
+            raise ValueError("The action-hint prior requires at least eight input channels")
+        hint_edges = [((4 + direction) * cells + cell, direction * cells + cell)
+                      for direction in range(4) for cell in range(cells)]
+        graph.add(
+            (sense >> out).by(nn.rules.edges(np.asarray(hint_edges, dtype=np.int32))).semantics(
+                nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength))
+            ),
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [(3 * cells + cell, 4 * cells) for cell in range(cells)], dtype=np.int32
+            ))).semantics(
+                nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))
+            ),
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [(2 * cells + cell, 4 * cells + 2) for cell in range(cells)], dtype=np.int32
+            ))).semantics(
+                nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))
+            ),
+        )
+    if tie_readout:
+        graph.add(nn.tie(out).by(nn.sharing.field("readout_group")).on("W", "b"))
+    return PolicyGraph(graph, "sense", ("out",))
+
+
+def two_stage_tied_local_action_policy(
+    *, observation_size: int, output_size: int, channels: int, height: int, width: int,
+    features_per_site: int = 2, global_features: int = 2,
+    context_radius: float = 1.01, hint_prior_strength: float = 8.0,
+    broadcast_global_context: bool = False, route_prior_strength: float = 0.0,
+    source_army_prior_strength: float = 0.0,
+    factorized_actions: bool = True, half_prior_scale: float = 0.25,
+    full_split_prior_strength: float = 0.0,
+) -> PolicyGraph:
+    """Read neighboring learned site features before scoring each move."""
+    cells = height * width
+    if min(channels, height, width, features_per_site, global_features) < 1:
+        raise ValueError("Policy dimensions must be positive")
+    move_logits = (4 if factorized_actions else 8) * cells
+    if observation_size != channels * cells or output_size != move_logits + (4 if factorized_actions else 2):
+        raise ValueError("This policy requires channel-first maps and the matching Generals action layout")
+    if context_radius < 1:
+        raise ValueError("The context layer must reach neighboring sites")
+    if min(route_prior_strength, source_army_prior_strength, full_split_prior_strength) < 0:
+        raise ValueError("Public action priors must be nonnegative")
+    if not 0 <= half_prior_scale <= 1:
+        raise ValueError("Half-army prior scale must be in [0, 1]")
+    if not factorized_actions and hint_prior_strength:
+        raise ValueError("The exact-action hint prior requires factorized actions")
+    if factorized_actions and full_split_prior_strength:
+        raise ValueError("The full-army action prior requires flat actions")
+    if hint_prior_strength and (route_prior_strength or source_army_prior_strength or full_split_prior_strength):
+        raise ValueError("Public action priors and the exact-action hint must be exclusive")
+    if (route_prior_strength or source_army_prior_strength or full_split_prior_strength) and channels not in (11, 12, 16):
+        raise ValueError("Public action priors require directional observations with an optional turn plane")
+    sense = nn.cluster(
+        "sense", nn.atoms.Input(), n=observation_size,
+        geometry=nn.geometry.fields(own={
+            (f"input_{i}",): {"coord": (i % width, (i // width) % height), "channel": i // cells}
+            for i in range(observation_size)
+        }),
+    )
+    def site_layer(name, atom):
+        return nn.cluster(
+            name, atom, n=cells * features_per_site,
+            geometry=nn.geometry.fields(own={
+                (f"a_{i}",): {
+                    "coord": ((i // features_per_site) % width, (i // features_per_site) // width),
+                    "feature": i % features_per_site,
+                }
+                for i in range(cells * features_per_site)
+            }),
+        )
+    local = site_layer("local", SiLU())
+    context = site_layer("context", ContextSiLU())
+    global_core = nn.cluster(
+        "global", NormalizedGlobalSiLU() if broadcast_global_context else GlobalSiLU(),
+        n=global_features,
+    )
+    out = nn.cluster(
+        "out", nn.atoms.Output(), n=output_size,
+        geometry=nn.geometry.fields(own={
+            (f"a_{i}",): {
+                "coord": ((i % cells) % width, (i % cells) // width) if i < move_logits else (-100, -100),
+                "direction": (i // cells) % 4 if i < move_logits else -1,
+                "move": i < move_logits,
+                "readout_group": i // cells if i < move_logits else i,
+                **({"split": i // (4 * cells)} if i < move_logits and not factorized_actions else {}),
+            }
+            for i in range(output_size)
+        }),
+    )
+    graph = nn.cluster("two_stage_tied_local_action", {
+        "sense": sense, "local": local, "context": context, "global": global_core, "out": out,
+    })
+    fixed = nn.couplings.ScalarWeighted(weight_init=fl.inits.normal(0.05))
+    def edge_key(source, target, geometry):
+        src_kind, dst_kind = source[0], target[0]
+        if (src_kind, dst_kind) == ("sense", "local"):
+            sx, sy = geometry.src.attr(source, "coord")
+            dx, dy = geometry.dst.attr(target, "coord")
+            return ("input", geometry.src.attr(source, "channel"), dx - sx, dy - sy,
+                    geometry.dst.attr(target, "feature"))
+        if (src_kind, dst_kind) == ("local", "context"):
+            sx, sy = geometry.src.attr(source, "coord")
+            dx, dy = geometry.dst.attr(target, "coord")
+            return ("context", geometry.src.attr(source, "feature"), dx - sx, dy - sy,
+                    geometry.dst.attr(target, "feature"))
+        if (src_kind, dst_kind) == ("global", "context"):
+            return ("broadcast", source[1], geometry.dst.attr(target, "feature"))
+        if (src_kind, dst_kind) == ("context", "out"):
+            key = ("action", geometry.src.attr(source, "feature"), geometry.dst.attr(target, "direction"))
+            return key if factorized_actions else (*key, geometry.dst.attr(target, "split"))
+        if (src_kind, dst_kind) == ("global", "out"):
+            return ("global", source[1], geometry.dst.attr(target, "readout_group"))
+        if (src_kind, dst_kind) == ("sense", "out"):
+            channel = geometry.src.attr(source, "channel")
+            if channel == 0 and source_army_prior_strength:
+                return ("source_army",) if factorized_actions else ("source_army", geometry.dst.attr(target, "split"))
+            if channel == 4 and full_split_prior_strength:
+                return ("full_split",)
+            if route_prior_strength:
+                key = ("route", geometry.dst.attr(target, "direction"))
+                return key if factorized_actions else (*key, geometry.dst.attr(target, "split"))
+        return ("unique", source, target)
+    graph_edges = [
+        (sense >> local).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
+        (local >> context).by(nn.rules.stencil(radius=context_radius)).semantics(fixed),
+        (context >> out).by(nn.rules.stencil(radius=0.1)).semantics(fixed),
+        ((local if broadcast_global_context else context) >> global_core).by(nn.rules.all_to_all()),
+        (global_core >> out).by(nn.rules.all_to_all()),
+    ]
+    if broadcast_global_context:
+        graph_edges.append((global_core >> context).by(nn.rules.all_to_all()))
+    graph.add(
+        *graph_edges,
+        nn.tie(local).by(nn.sharing.field("feature")).on("weight", "bias"),
+        nn.tie(context).by(nn.sharing.field("feature")).on("weight", "bias"),
+        nn.tie(graph).by(nn.sharing.edge_key(edge_key)),
+        nn.tie(out).by(nn.sharing.field("readout_group")).on("W", "b"),
+    )
+    if hint_prior_strength:
+        if channels < 8:
+            raise ValueError("The action-hint prior requires at least eight input channels")
+        graph.add(
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [((4 + direction) * cells + cell, direction * cells + cell)
+                 for direction in range(4) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength))),
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [(3 * cells + cell, 4 * cells) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))),
+            (sense >> out).by(nn.rules.edges(np.asarray(
+                [(2 * cells + cell, 4 * cells + 2) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(hint_prior_strength / cells))),
+        )
+    if route_prior_strength:
+        for split in range(1 if factorized_actions else 2):
+            graph.add((sense >> out).by(nn.rules.edges(np.asarray(
+                [((7 + direction) * cells + cell, (4 * split + direction) * cells + cell)
+                 for direction in range(4) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(
+                weight_init=fl.inits.constant(route_prior_strength * (half_prior_scale if split else 1.0))
+            )))
+    if source_army_prior_strength:
+        for split in range(1 if factorized_actions else 2):
+            graph.add((sense >> out).by(nn.rules.edges(np.asarray(
+                [(cell, (4 * split + direction) * cells + cell)
+                 for direction in range(4) for cell in range(cells)], dtype=np.int32
+            ))).semantics(nn.couplings.ScalarWeighted(
+                weight_init=fl.inits.constant(source_army_prior_strength * (half_prior_scale if split else 1.0))
+            )))
+    if full_split_prior_strength:
+        graph.add((sense >> out).by(nn.rules.edges(np.asarray(
+            [(4 * cells + cell, direction * cells + cell)
+             for direction in range(4) for cell in range(cells)], dtype=np.int32
+        ))).semantics(nn.couplings.ScalarWeighted(weight_init=fl.inits.constant(full_split_prior_strength))))
+    return PolicyGraph(graph, "sense", ("out",))

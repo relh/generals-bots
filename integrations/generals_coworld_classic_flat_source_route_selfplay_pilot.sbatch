@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+# Bundle marker is replaced with base64 tar of the source files at submission.
+#SBATCH --job-name=relh-classic-flat-source-route-selfplay-pilot
+#SBATCH --partition=b300
+#SBATCH --nodelist=metta-fabric-b300-1
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --time=00:45:00
+#SBATCH --nice=2147483645
+#SBATCH --chdir=/tmp
+#SBATCH --output=/var/tmp/relh-generals-recovery/classic-flat-source-route-selfplay-pilot-%j.log
+set -euo pipefail
+
+# Mandatory user policy: verify lowest scheduling priority before workload startup.
+slurm_task_priority_record=$(scontrol show job -o "${SLURM_JOB_ID:?}")
+[[ " $slurm_task_priority_record " == *" Nice=2147483645 "* ]] || { printf 'Lowest Slurm Nice verification failed\n' >&2; exit 1; }
+slurm_task_priority=unknown
+for slurm_task_field in $slurm_task_priority_record; do
+  case "$slurm_task_field" in Priority=*) slurm_task_priority=${slurm_task_field#Priority=} ;; esac
+done
+[[ "$slurm_task_priority" =~ ^[0-9]+$ ]] || exit 1
+printf 'SLURM_PRIORITY_READBACK JobId=%s Nice=2147483645 Priority=%s\n' "$SLURM_JOB_ID" "$slurm_task_priority" >&2
+unset slurm_task_priority_record slurm_task_field
+
+srun --nice=2147483645 --nodes=1 --ntasks=1 --gres=gpu:1 --cpus-per-task=8 bash -s <<'NODE'
+set -euo pipefail
+w=/tmp/relh-generals-coworld
+disk=/var/tmp/relh-generals-recovery
+out=$disk/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID
+mkdir -p "$out/staged"
+base64 -d <<'BUNDLE' | tar -xz -C "$out/staged"
+__SOURCE_BUNDLE__
+BUNDLE
+source=$out/staged
+sha256sum "$source"/*
+test -f "$source/puffer_coworld_frozen_transfer.py"
+test -f "$source/puffer_codec.py"
+test -f "$source/audit_coworld_flat_action_codec.py"
+gpu=$(bash "$source/allocated_gpu_uuid.sh")
+echo "job=$SLURM_JOB_ID node=$(hostname) partition=$SLURM_JOB_PARTITION gpu_uuid=$gpu cpus=$SLURM_CPUS_PER_TASK mem=64G"
+echo "source_revision=$(git -C "$w/source-spatial2" rev-parse HEAD 2>/dev/null || echo snapshot)"
+nvidia-smi -L
+nvidia-smi --query-gpu=index,uuid,name,compute_cap,driver_version,memory.used,memory.total,utilization.gpu --format=csv,noheader
+nvidia-smi --query-compute-apps=pid,gpu_uuid,used_gpu_memory,process_name --format=csv,noheader
+IFS=, read -r uuid memory utilization <<< "$(nvidia-smi --query-gpu=uuid,memory.used,utilization.gpu --format=csv,noheader,nounits)"
+uuid=${uuid//[[:space:]]/}; memory=${memory//[[:space:]]/}; utilization=${utilization//[[:space:]]/}
+test "$uuid" = "$gpu"
+(( memory < 2048 && utilization < 20 )) || { echo "Allocated physical GPU is occupied; stopping" >&2; exit 1; }
+docker_root=$(docker info --format '{{.DockerRootDir}}')
+echo "docker_root=$docker_root"
+df -h "$docker_root" "$disk"
+docker image inspect relh-generals-b300:20260923b --format '{{.Id}}'
+test -f "$w/source-spatial2/integrations/run_puffer_gpu.sh"
+test -f "$w/metta-device-wide-source.tar.gz"
+test -f "$disk/classic-selfplay-iter1-build-28048/build/build.json"
+name=relh-classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID
+sampler=
+cleanup() {
+    test -z "$sampler" || kill "$sampler" 2>/dev/null || true
+    docker stop -t 5 "$name" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+trap 'exit 143' TERM
+common=(--rm --gpus "device=$gpu" --cpus=8 --ulimit core=0:0
+    --user "$(id -u):$(id -g)" -v "$w:/work" -v "$disk:/recovery"
+    -v "$source/metta_puffer.py:/work/source-spatial2/integrations/metta_puffer.py:ro"
+    -v "$source/generals_fabric.py:/work/source-spatial2/integrations/generals_fabric.py:ro"
+    -v "$source/puffer_codec.py:/work/source-spatial2/integrations/puffer_codec.py:ro"
+    -v "$w/source-spatial2/integrations/generals_fabric.py:/work/source-normalized-16245/integrations/generals_fabric.py:ro"
+    -v /tmp/relh-generals-gpu/runtime:/work/runtime:ro
+    -v /tmp/relh-generals-gpu/source-gpu:/work/oldsource:ro -w /work
+    -e HOME=/recovery -e XDG_CACHE_HOME=/recovery/cache-spatial-land-gain
+    -e JAX_COMPILATION_CACHE_DIR=/recovery/jax-compile-cache-spatial-land-gain
+    -e PYTHONPATH=/work/metta-device-wide-source:/work/runtime:/work/source-spatial2:/work/oldsource
+    -e JAX_PLATFORMS=cuda,cpu -e XLA_PYTHON_CLIENT_PREALLOCATE=false
+    -e LD_LIBRARY_PATH=/work/runtime/nvidia/cu13/lib)
+container_uuid=$(docker run "${common[@]}" --name "$name" --entrypoint nvidia-smi \
+    relh-generals-b300:20260923b --query-gpu=uuid --format=csv,noheader)
+test "$container_uuid" = "$gpu"
+docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
+    bash -c 'nvcc --version | tail -4; python -c "import jax, metta_training, generals; print(jax.devices(\"gpu\"))"' \
+    > "$out/runtime.log" 2>&1
+cat "$out/runtime.log"
+timeout -k 30s 4m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
+    python "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/staged/audit_coworld_flat_action_codec.py" \
+    > "$out/codec-audit.log" 2>&1
+tail -n 2 "$out/codec-audit.log"
+python3 - "$disk/classic-selfplay-iter1-build-28048/build/build.json" "$out/build-config.json" \
+    "$disk/classic-selfplay-iter1-calibrated-h128-28074/config.json" "$out/config.json" <<'PYCONFIG'
+import json,sys
+from pathlib import Path
+source,target,run_source,run_target=map(Path,sys.argv[1:])
+manifest=json.loads(source.read_text())
+config=manifest['config']
+assert manifest['model_sha256']=='4f718ad75a43d99e6c33de5a23bdc553443b243f23ad5268f66d9f276bf10a67'
+env=config['python_environment']
+assert env['factory']=='integrations.metta_puffer:BatchedGeneralsSelfPlayPufferEnvironment'
+assert env['spec']['agents']==8192 and env['options']['parallel_games']==4096
+assert env['spec']['observation_size']==14*21*21
+assert config['fabric']['teacher']['phases'][0]['coefficient']==0
+env['spec']['observation_size']=11*21*21
+env['spec']['action_sizes']=[8*21*21+1]
+env['spec']['teacher']=False
+env['options'].update(
+    teacher=None, supervise_teacher=False, hint_features=False,
+    prior_hint_features=False, expander_hint_features=False,
+    context_hint_features=False, directional_features=True,
+    factorized_actions=False,
+    deduplicate_opponent_branches=False,
+    coworld_pool_size=256,
+)
+env['options'].pop('move_hint_scale',None)
+env['options'].pop('split_hint_scale',None)
+config['fabric']['observation_size']=11*21*21
+config['fabric']['action_sizes']=[8*21*21+1]
+config['fabric']['options']['channels']=11
+config['fabric']['options']['hint_prior_strength']=0.0
+config['fabric']['options']['route_prior_strength']=0.5
+config['fabric']['options']['source_army_prior_strength']=4.0
+config['fabric']['options']['factorized_actions']=False
+config['fabric']['options']['half_prior_scale']=0.25
+config['fabric']['options']['full_split_prior_strength']=2.0
+config['fabric']['teacher']=None
+target.write_text(json.dumps(config)+'\n')
+run=json.loads(run_source.read_text())
+run['seed']=733
+run['total_timesteps']=67_108_864
+run['overrides']['vec.total_agents']=8192
+run['overrides']['train.minibatch_size']=32768
+run['overrides']['train.ent_coef']=0.01
+run['overrides']['base.checkpoint_interval']=16
+assert run['overrides']['train.horizon']==128
+assert run['overrides']['train.gamma']==0.999
+run.pop('initialize',None)
+run_target.write_text(json.dumps(run)+'\n')
+PYCONFIG
+timeout -k 30s 8m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
+    bash /work/source-spatial2/integrations/run_puffer_gpu.sh build \
+    --config "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/build-config.json" \
+    --output "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/build" > "$out/build.log" 2>&1
+python3 - "$out/build/build.json" <<'PYBUILD'
+import json,sys
+d=json.load(open(sys.argv[1]))
+assert d['config']['python_environment']['spec']['agents']==8192
+assert d['config']['python_environment']['spec']['observation_size']==11*21*21
+assert d['config']['python_environment']['spec']['action_sizes']==[8*21*21+1]
+assert d['config']['fabric']['action_sizes']==[8*21*21+1]
+assert d['config']['fabric']['options']['route_prior_strength']==0.5
+assert d['config']['fabric']['options']['source_army_prior_strength']==4.0
+assert d['config']['fabric']['options']['factorized_actions'] is False
+assert d['config']['fabric']['options']['full_split_prior_strength']==2.0
+assert d['config']['fabric']['teacher'] is None
+print('target_model_sha256='+d['model_sha256'],flush=True)
+PYBUILD
+ln -s "$out/run" "$disk/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID-0"
+(
+    while true; do
+        nvidia-smi --query-gpu=utilization.gpu,utilization.memory,memory.used --format=csv,noheader,nounits
+        docker stats --no-stream --format '{{.Name}},{{.CPUPerc}},{{.MemUsage}}' "$name" \
+            >> "$out/cpu.csv" 2>/dev/null || true
+        sleep 2
+    done
+) > "$disk/classic-flat-source-route-selfplay-gpu-$SLURM_JOB_ID.csv" 2>&1 &
+sampler=$!
+mkdir -p "$out/timing"
+timeout -k 30s 26m docker run "${common[@]}" --name "$name" \
+    -e METTA_EPOCH_TIMING_DIR="/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/timing" \
+    relh-generals-b300:20260923b \
+    python "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/staged/launch_classic_frozen_opponent_training.py" train \
+    --config "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/config.json" \
+    --build "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/build" \
+    --output "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/run" > "$out/train.log" 2>&1 &
+pid=$!
+start=$(date +%s)
+while kill -0 "$pid" 2>/dev/null; do
+    sleep 15
+    now=$(date +%s)
+    if ! python3 "$disk/monitor_coworld_steady_interval-v2.py" \
+        "$disk" "$SLURM_JOB_ID" "$((now-start))" classic-flat-source-route-selfplay 600 1048576 60000 8 12 20; then
+        echo "Flat source-route self-play pilot stopped by environment throughput or progress guard" >&2
+        cleanup
+        wait "$pid" || true
+        exit 1
+    fi
+done
+wait "$pid"
+test -f "$out/run/completed.json"
+python3 "$disk/monitor_coworld_steady_interval-v2.py" \
+    "$disk" "$SLURM_JOB_ID" "$(( $(date +%s)-start ))" classic-flat-source-route-selfplay 600 1048576 60000 8 12 20
+for step in 16777216 67108864; do
+for opponent in expander_harvester sentinel; do
+    checkpoint=$(printf '%s/run/checkpoints/metta_generals/run/%016d.bin' "$out" "$step")
+    digest=$(sha256sum "$checkpoint" | cut -d' ' -f1)
+    tag=$step-$opponent
+    timeout -k 30s 5m docker run "${common[@]}" --name "$name" relh-generals-b300:20260923b \
+        python "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/staged/evaluate_coworld_frozen_opponent_pilot.py" \
+        --build "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/build/build.json" \
+        --run "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/run" \
+        --checkpoint "${checkpoint/$disk/\/recovery}" --sha256 "$digest" \
+        --games 128 --pool-size 128 --seed 1386 --opponent "$opponent" --reward-diagnostics \
+        --output "/recovery/classic-flat-source-route-selfplay-pilot-$SLURM_JOB_ID/$tag" > "$out/$tag.log" 2>&1
+    python3 - "$out/$tag/evaluation.json" <<'PYSCORE'
+import json,sys
+r=json.load(open(sys.argv[1]))
+print(r['checkpoint_sha256'],r['opponent'],r['wins'],r['losses'],r['draws'],r['score'],flush=True)
+PYSCORE
+done
+done
+NODE

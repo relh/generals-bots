@@ -1,0 +1,68 @@
+{
+  "environment": "metta_generals",
+  "python_environment": {
+    "factory": "integrations.metta_puffer:BatchedGeneralsPufferEnvironment",
+    "options": {
+      "opponent": "mixed",
+      "shaping_weight": 1.0,
+      "teacher": "harvester",
+      "supervise_teacher": false,
+      "factorized_actions": true,
+      "parallel_games": 2048,
+      "coworld_classic": true,
+      "coworld_pool_size": 64,
+      "compact_features": true,
+      "lean_features": true,
+      "sparse_teacher": true,
+      "directional_features": true
+    },
+    "spec": {
+      "observation_size": 4851,
+      "action_sizes": [
+        1765,
+        2
+      ],
+      "teacher": false,
+      "agents": 2048,
+      "replay_metadata_size": 2
+    },
+    "source_modules": [
+      "generals",
+      "integrations.puffer_codec"
+    ]
+  },
+  "fabric": {
+    "observation_size": 4851,
+    "action_sizes": [
+      1765,
+      2
+    ],
+    "factory": "integrations.generals_fabric:tied_local_action_policy",
+    "options": {
+      "channels": 11,
+      "height": 21,
+      "width": 21,
+      "features_per_site": 2,
+      "global_features": 2,
+      "input_radius": 0.1
+    },
+    "platform": "cuda",
+    "compiler": "standard",
+    "replay_metadata_size": 2,
+    "losses": [
+      {
+        "name": "sparse_teacher",
+        "factory": "integrations.sparse_teacher:SparseActionTeacher",
+        "outputs": 0,
+        "options": {
+          "action_sizes": [
+            1765,
+            2
+          ],
+          "coefficient": 1.0
+        },
+        "replace_ppo": true
+      }
+    ]
+  }
+}
