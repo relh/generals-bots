@@ -10,8 +10,7 @@ import jax
 import jax.numpy as jnp
 
 from .agent import Agent
-from .sentinel_agent import SentinelAgent, _build_prices, _distance, _neighbors
-from .sentinel_v3_agent import _campaign_decision
+from .sentinel_agent import FrozenSentinelAgent, _build_prices, _distance, _neighbors
 
 
 def _build_threat(obs, horizon):
@@ -48,7 +47,7 @@ class SentinelV4Agent(Agent):
         self.deathtouch_turn = deathtouch_turn
         self.max_turns = max_turns
         self.build_threat_horizon = build_threat_horizon
-        self.campaign = SentinelAgent(build_castles=False, deathtouch_turn=deathtouch_turn, max_turns=max_turns)
+        self.campaign = FrozenSentinelAgent(build_castles=False, deathtouch_turn=deathtouch_turn, max_turns=max_turns)
 
     @partial(jax.jit, static_argnums=0)
     def act(self, obs, key):
@@ -56,7 +55,7 @@ class SentinelV4Agent(Agent):
 
     @partial(jax.jit, static_argnums=0)
     def decision(self, obs, key):
-        action, telemetry, _ = _campaign_decision(self.campaign, obs, key)
+        action, telemetry, _ = self.campaign.campaign_decision(obs, key)
         telemetry = dict(
             telemetry,
             build_candidate_count=jnp.int32(0),
