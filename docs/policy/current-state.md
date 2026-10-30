@@ -1,11 +1,147 @@
-# Current policy state
+# Current Classic policy state
 
-Updated **2026-10-07**. Generals training is stopped at the user's requested
-pivot to Gods of the Arena. The retained, evaluated checkpoint adds
-**360,710,144 training steps** (44.79% of the planned 805,306,368-step run).
-The full planned run did not complete. Both owned H100 nodes are stopped.
+Updated 2026-10-09 after the independently audited normalization trial.
+**Winning acceptance has not passed; the selected policy and champion are unchanged.**
+Training execution is qualified for the exact setup below. Playing
+strength remains the unmet goal.
 
-## Selected H100 checkpoint and hosted verification
+The [machine manifest](../../integrations/policy_baseline.json) owns exact
+artifact identities, retained evidence paths and experiment outcomes. Use the
+[roadmap](roadmap.md) for decisions and [runbook](runbook.md) for operations.
+Completed experiment narratives and retired source remain in Git history.
+
+## Selected policy and game contract
+
+| Item | Authoritative value |
+| --- | --- |
+| Selected checkpoint | `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14` |
+| Lifetime agent steps | 2,499,805,184 |
+| Hosted policy | `64649097-765f-4706-8310-910e57067a34` |
+| Architecture | Radius-2 spatial policy; 578,860 parameters |
+| Hosted source screen | Daveey 9/32; incumbent 18/32 |
+| Sampler | Structured; move 0.05, split 0.15, opening move 0.10 for 100 turns; neutral bonus 6; weak-owned and doomed-attack penalties 4 |
+
+Use the pinned official Softmax Coworld **Classic** rules: independently sampled
+18–21 tile map dimensions, fog and a 2,000-turn limit. The generic engine's
+chasing/smaller-army priority is a different ruleset. Engine hashes and rule
+parity evidence are pinned in the manifest. Potential shaping uses the learner's
+exact discount, currently 0.999; all 13 training opponents must appear on both seats.
+
+Native and serving assets use stateless ABI v2. The dispatch migration changed
+adapter-bound metadata while preserving selected policy, optimizer and serving
+weight bytes. The manifest records the exact current pair and migration proof.
+Historical asset identities are evidence, not supported runtime formats.
+
+## Current execution
+
+- Stateless execution removes unused external recurrent state; startup admission
+  binds the actual actor, initializer and compiled build.
+- PPO rotates 32 updated minibatch blocks across all 64 blocks over two epochs,
+  fixing permanently skipped environment rows without increasing update budget.
+- Lossless minibatch gathering reduced sampled memory by **20.613 GiB** in the
+  same-H100 comparison `job-mf4rq` (330 retained files verified).
+- Compiled action postprocessing preserved raw model/backward calculations and
+  improved mean diagnostic throughput **35.7%** in `job-mcxks` (368 files verified).
+- The complete combined path passed full and rolling training qualification in
+  `job-4smbn`, below. One explicit-plan runner and shared audits replaced retired
+  experiment launchers. Previous failures and their corrections are in the manifest
+  and Git history.
+
+## Latest completed experiment
+
+**`job-4smbn` succeeded at 2026-10-09 05:22:39 UTC**, first attempt, no retries
+or preemptions. Independent collection verified **259 files**, checkpoint and
+learner clocks, native source changes, CUDA arithmetic, game contract, training
+throughput, serving parity and paired strength statistics. The watchdog exited.
+
+The sole training intervention corrected bootstrap-row advantage normalization:
+exclude those rows from normalization statistics and keep their actor advantages
+zero. The actual CUDA audit passed four H128/H256 constant/varying cases. Keep
+this correctness fix; this experiment does **not** establish a strength gain.
+
+One H100, 4,096 environments, H128, minibatch 8,192, replay ratio 0.5, eight
+opponent workers and zero midgame resets completed **33,554,432 steps** from
+selected source weights with a fresh optimizer. Continuation restored its own
+qualification policy and learner state. After two warmup epochs per segment:
+
+| Segment | Measured steps | Seconds | End-to-end SPS | Lowest rolling SPS | Sampled peak GPU memory |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Qualification | 3,145,728 | 54.280 | 57,954 | 57,156 | 43.54 GiB |
+| Continuation | 28,311,552 | 482.306 | 58,700 | 56,852 | 43.01 GiB |
+
+Timing includes rollouts, transfers and optimization; the final console GPU
+utilization was 67%. All actions were legal, rewards finite and unclipped, and
+all 13 opponents appeared on both seats. Source, qualification and final GPU
+serving parity matched all 46 top actions. Final probability error was 3.19e-6.
+
+**Strength selection failed.** Matched panels used 4,096 games, 2,588 unique
+initial states, map seed 17003101 and action seed 17003103:
+
+| Policy | Wins | Losses | Draws |
+| --- | ---: | ---: | ---: |
+| Selected source | 2,780 | 1,297 | 19 |
+| Fresh-start control | 2,796 | 1,272 | 28 |
+| Normalization candidate | 2,766 | 1,299 | 31 |
+
+Candidate signed-score delta was **−0.00391** versus source (map-cluster 95% CI
+**[−0.03391, +0.02686]**) and **−0.01392** versus control
+(**[−0.04479, +0.01672]**). Both intervals include zero. Three opponent-seat
+strata failed the −0.10 regression guard versus source; one failed versus control.
+Exact strata and identities are in the manifest. Candidate `0c52edde…` remains
+**unselected**: do not extend, confirm or promote it.
+
+## Budget and recovered execution
+
+The user authorized **$500 total**. Confirmed spending under that authorization
+is **$3.3894**, with **no live job or outstanding compute commitment** at terminal
+collection. The completed run cost **$2.9064 / 2,769 billed seconds**; earlier
+recovery failures cost $0.483. Remaining authorization: **$496.6106**.
+
+The sealed recovery context `ctx-9405fcf7` used runtime `0d97357`, 629 verified
+files and four retained hosted replays supplying 46 parity states. Trainer hash,
+archive permissions and inactive asset references were corrected before launch.
+Actual environment fingerprinting checks all 40 required policy assets. Exact
+failure receipts, hashes and recovery provenance remain in the manifest and Git.
+Persistent artifacts are under
+`integrations/softmax/local-output/normalization-recovery-20261008`.
+
+## Close-out and remaining work
+
+**This pass is closed at the user’s request.** No next experiment was started.
+GMN read-only reconciliation at 05:31:14 UTC found no active Generals jobs;
+no subagents remain active, and the watchdog process exited. Existing artifacts
+and history are preserved. No Slurm allocation was created during this pass;
+metta0’s previously observed SSH timeout was not retried.
+
+A **longer-rollout H256** experiment is an unstarted hypothesis for a future pass.
+The audited critic diagnostic `job-krq94` found H128 advantage-sign disagreement
+with full-episode estimates of 26.1% / 26.5%; H256 reduced it to 16.2% / 17.1%.
+This motivates a controlled test, not a strength claim. Source/candidate critic
+MSE showed no clear improvement. Normalization alone has now failed selection.
+
+A future pass would first derive memory and replay-row coverage for H256 and choose a matched
+parallelism/batch comparison that fits the allocated GPU. Preserve Classic maps,
+normalization correctness, reward discount, action sampler and held-out gates.
+Require fresh full and rolling ≥30K SPS qualification before long training.
+Compare against selected source and the corrected H128 control on fresh seeds;
+retain the independent confirmation seeds for a positive development result.
+Do not extend rejected candidates. Prior fresh-start and curriculum continuation
+results also failed selection; consult the manifest before revisiting them.
+
+## Winning acceptance
+
+Require **≥65% hosted wins against each Daveey and incumbent**, each Wilson
+95% lower bound above 50%, broad-pool preservation and no unexplained seat
+regression. Freeze checkpoint and sampler; verify serving parity and clean
+execution without unexplained illegal actions, timeouts or forfeits.
+Every changed long-training setup independently requires **≥30,000 end-to-end
+GPU SPS** after warmup. High utilization alone does not qualify it.
+
+Prior route-prior, exploration, shaping, teacher and opponent-mixture trials
+have not established a winning improvement. Consult the manifest before
+revisiting them; require new evidence and a preregistered comparison.
+
+## Historical H100 checkpoint and hosted verification (October 7)
 
 Policy SHA-256: `e8bab2e56756e6731a84b1e28219431b66c0577ff0b2f02be9a82ceb3c2f2817`.
 The native checkpoint, matching optimizer and portable serving bundle are retained.
@@ -43,162 +179,4 @@ that attempt is not the selected checkpoint. The earlier host sustained about
 Evidence is retained at `/Users/relh/Code/run-artifacts/generals-h100-20261006/`.
 The compact hosted results and replay audit are checked in beside this document.
 Focused monitor, execution, codec and hosted-policy validation: **23 passed**.
-Full CI still has 11 pre-existing failures involving missing `metta_training`
-and obsolete Slurm-container test calls; this branch does not fix those failures.
-
-## Historical October 6 state
-
-The following entries record the preceding experiments, not active jobs or
-current submission instructions. The user subsequently requested publication
-of the best retained checkpoint and a pivot to GotA.
-
-Updated **2026-10-06**. **The winning-policy objective remains unmet.**
-Training and serving are qualified; the matched warm candidate's broad strength
-is unknown. Use the [runbook](runbook.md) for operations, [roadmap](roadmap.md)
-for decisions and [machine manifest](../../integrations/policy_baseline.json)
-for current artifact identities. Git history preserves superseded attempt records.
-
-## Selected baseline and qualification
-
-Retain the radius-2 baseline from B300 job **35892**, with log-gap scale 0.
-Its latest hosted screen won **9/32 against Daveey v7** and **18/32 against the
-incumbent**, unchanged from the preceding candidate. Local improvement was
-inconclusive; neither these screens nor runtime smoke establish winning strength.
-
-| Identity or evidence | Recorded value |
-| --- | --- |
-| Policy SHA-256 | `f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14` |
-| Optimizer SHA-256 | `1c4832d6f5516ed85a97cf0b476b303ba8829467defeac4b5a7e6d1f6b11599b` |
-| Lifetime steps | 2,499,805,184; last baseline continuation added 33,554,432 |
-| Hosted policy | `64649097-765f-4706-8310-910e57067a34` |
-| Daveey seats | Seat 0: 3W/13L; seat 1: 6W/10L |
-| Incumbent seats | Each seat: 9W/7L |
-| Hosted execution | 64 unique fresh seeds; no failed requests, timeouts or illegal replay moves |
-| Paired local panel | 4,096 games: parent 2699W/1364L/33D; baseline 2713W/1348L/35D |
-| Signed-score delta | +0.007324; clustered 95% CI [−0.022176, +0.036830] |
-
-Baseline evidence: `/tmp/relh-generals-portable-result-35892/` and
-`/tmp/relh-generals-serving-35892-final/`; durable S3 result key
-`relh/generals-classic-results-20261004T004731Z-ee3fda7c`, archive SHA-256
-`744e8d92b59a019cf0738acf56a62535a927dbc483fb2d0cec7d167fc9abb8b1`.
-It sustained 83,326 audited SPS with 8,192 games, horizon/minibatch 256/8,192,
-replay 0.5 and four native opponent workers; all 13 opponents sampled both seats.
-A broad post-warmup interval was 25,165,824 steps / 301.407s = 83,494 SPS;
-first epoch took 111.555s, sampled GPU utilization 30–100%.
-
-Acceptance requires at least **65% wins against each named strong opponent**,
-balanced fresh hosted seats, a 95% confidence lower bound above 50%, preservation
-against the broad pool, verified parity and clean execution. No champion change
-is justified by the current evidence.
-
-## Active held-out evaluation
-
-**Held-out evaluation `job-9fkii` is SUBMITTED**, 07:22:36 UTC, source
-`512af1f91ce83d43fab8e0864f204eb064340d01`, context `ctx-95843f1b`.
-Provider validation passed; one H100, **120-minute/$5.94 maximum**, zero restarts.
-Sealed archive 212,623,426 B, SHA
-`264e933205a15532ec7a39ce8cd3a4f0d88cb5f95436b00d24e7a589d973cc64`,
-consuming authenticated `job-vezu3` artifact `d57aafc8…`.
-Four **4,096-game Classic first-episode panels**, preregistered seeds 51213/17431,
-run source/warm/control/distilled, each capped 1,440s. Earlier 512 games took 145.39s;
-~1,163s/panel is a scaling estimate, not a measurement. **Paired analysis and
-`EVALUATED.json` remain pending; no strength claim yet.** Receipt:
-`/tmp/generals-heldout-4x4096-512af1f-submission.json`.
-
-## Qualified H100 execution
-
-**Confirmation job `job-s79eq` SUCCEEDED and qualifies 4,096/H128 on H100.**
-Source `e649d73d28a5ccbe1995837010db50d8d35e7199`; minibatch 8,192, replay 0.5,
-**4,194,304 completed steps**, last two epochs **36,182.7467 end-to-end SPS**,
-sampled peak **68,517 MiB** on H100 80GB. Final reward audit covers all
-4,194,304 agent steps: **0 nonfinite rewards, 0 clipped rewards, 0 illegal
-actions**, with all 13 opponents sampled on both seats. One H100 billed
-**608s/$0.5016**. Verified collector:
-`/tmp/generals-h100-qualification-4096h128-results-job-s79eq/`.
-Archive SHA: `fe574ca31f60d61a825a84c1a4922362b6d378f3e403e453cd88a758cdb8abe5`;
-profile result SHA: `c21491a7b94f0190ed023908f7f5ae3cce59b386e41599f63ab4f6030fd81a98`.
-The 2.21 MiB policy fits H100 at 4,096/H128. The previous 8,192/H256 setup
-retained 172.503 GiB of known buffers; its 205.584 GiB device-used reading includes
-allocator caches, not peak live tensors. Do not infer intrinsic model memory
-from that geometry. Accounting: `/tmp/generals-native-memory-accounting-20261005.json`.
-Keep both matched arms at the same qualified geometry.
-
-## Completed matched training
-
-**Continuation `job-vezu3` SUCCEEDED**, 1,760 billed H100 seconds/**$1.452**.
-Control and warm each completed **8,388,608 PPO steps**, 4,096 env/H128,
-minibatch 8,192/replay 0.5, at **36,171.513 / 36,265.339 steady SPS** respectively.
-Both final audits have **zero illegal actions, nonfinite and clipped rewards**;
-policy sampler, seats and 13-opponent pool match. Sampled H100 peaks were
-**69,078 MiB control / 68,517 MiB warm**, for this smaller geometry.
-Control is preserved from `job-uyssa`; the continuation published it and trained
-warm, without repeating control PPO. Native/serving parity passed on 46 public
-states, max probability errors **4.38e-6 / 5.60e-6**.
-
-| Frozen result | SHA-256 |
-| --- | --- |
-| Control checkpoint | `8d5c65e0de7da8074aa353386cb22a2bf40f1a773ff88db47d692b807769c7bf` |
-| Warm checkpoint | `c44316f304f833332d0cb2804d3fdf3551aeaa49313217f4263c129f6f409c46` |
-| Control bundle manifest | `9dd95fb69258eb1bf666626985f5094a2d5e6cf5f2af1ad4570831220eac88d8` |
-| Warm bundle manifest | `4de62a328e7afe5cc5ed622c8d8a7bd8b293afab892bec543b0e38973addf503` |
-
-Distillation used 256 batches×128 labels; on 512 independent held-out maps,
-safe-defense action probability mass improved **0.19454→0.63000**, top1 accuracy **0.1914→0.6367**.
-These tactical metrics do not establish broad warm-policy strength. **Four
-4,096-game held-out panels remain; no matched strength result yet.**
-Artifacts: `/tmp/generals-matched-continuation-results-job-vezu3/`, archive SHA
-`d57aafc8e5dbb34b1b55dac869a0b1d2e904a8cbbb900a5f6248999f72545456`.
-
-## Diagnostics and interpretation
-
-Training-pool diagnostic is adverse: control **7,192/10,896 wins (66.0%)**
-versus warm **4,430/10,198 (43.4%)**, worse across all **13 opponents/26 seats**;
-the final-quarter gap persists. This is correlated, reused training-pool evidence
-and **cannot select a winner**. Post-PPO tactical retention is measured on reused teacher states below;
-frozen held-out `job-9fkii` results remain pending. SHA-bound diagnostic:
-`/tmp/generals-matched-training-pool-comparison-vezu3.json`, SHA
-`6cb6ace308a3820cb5b60e9cb911b86792d0a37c0bf4bd83f13b44cec26f9b06`.
-
-Tactical retention diagnostic on ARM64 CPU uses the same **512 preexisting
-teacher held-out states**: public-serving safe probability source **19.45%**,
-control **19.93%**, distilled **63.00%**, warm **61.17%**, with zero illegal top1
-actions. Warm retained most CE gain after 8M PPO. This reuses the CE metric
-holdout: **neither fresh confirmation nor full-game strength**. `job-9fkii`
-remains pending. Analysis:
-`/tmp/generals-vezu3-heldout-defense-serving-cpu-v2/analysis.json`, SHA
-`0f2f74222314573464bbb265e4af9715d081f4ebcd4470c8acd58b9f20014cba`.
-
-## Current artifact contract and proofs
-
-Supported native graph: 16 planes, F32/G32, five priors, flat actions, radius
-1.01 or 2.01. Factory SHA:
-`48767fb4ee333ae0b1a02ae644fbdf6f52f7f6df6c90c97ab3fc3888ba0c0d8a`.
-Native assets bind weights/learner, architecture, sampler, seeds and objective;
-portable manifests bind `asset.json`, `policy.bin`, `weights.npz` and have no learner.
-The current clean radius-2 model SHA is
-`cead5dce2bc2f507363854d62bfa9ef9f2a76c7a231afabca6ba658fef6a1c61`, ABI
-`0c7a1fb0dfb646b394dd94fbabbad397182bfc3fe62fd739889f2cfd6a8de851`.
-
-| Proof / artifact | Pointer and SHA-256 |
-| --- | --- |
-| Exact source-cleanup graph/layout/VJP/sampler equivalence, both radii | `/tmp/generals-native-proof/equivalence-proof.json`; `c1125da1b820a46fecb0163e7dd6d5b264709eb3df3569b0bb587a9a722d7a87` |
-| AppleDouble metadata rebind: 243 executable sources unchanged, ABI preserved, all 23 tensors bitwise, 18 states max logit 1.19e-6 | `/tmp/generals-appledouble-clean-cold-migration-v1/proof.json`; `94972ea9e22e84cac5b11b2c97c6e8d5a5676f93c13c73c3ff88809fcaed75cd` |
-| Clean cold native asset, unchanged baseline policy | `/tmp/generals-appledouble-clean-cold-migration-v1/asset/asset.json`; `58925af1dbeaa46e17230d0ea856739232d4e057b28a14417e3d9ea65903a5b9` |
-| Current 13-policy source inputs | `/tmp/generals-current-policy-input-v2/`, with the proven metadata-clean cold asset substituted in the authenticated capsule |
-| Fresh public curriculum: 2,048 training /512 independent confirmation views, legal labels | `/tmp/generals-fresh-public-curriculum-770-780-v1/`; `3c2d31a86863bbaa555adbfa1d78742f0fa8120cb56587b1b187b2c8f2923efb` |
-
-Source/metadata cleanup added zero RL steps and preserved original assets.
-Proofs include all 299 portable tensors and a 151-array public-environment trace.
-Slurm work must retain maximum Nice 2147483645/Priority 1, controller readback and
-finite bounds. Prior scheduling receipts and failure outcomes remain in
-[Git history](https://github.com/relh/generals-bots/blob/eb54d60/docs/policy/current-state.md)
-and the retained result directories, without changing scheduler state.
-
-## Next decision
-
-Collect the four preregistered panels and validate complete seed/seat coverage,
-legal execution, frozen hashes and paired confidence intervals. Compare warm
-against matched control and source; retain the baseline unless evidence supports
-fresh independent confirmation, then balanced hosted qualification. The prior
-exploration intervention regressed and was rejected. Do not choose a winner
-from tactical metrics or reused training outcomes.
+At recording time, CI had 11 failures involving the optional trainer and retired container APIs.

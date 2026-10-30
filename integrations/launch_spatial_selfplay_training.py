@@ -33,8 +33,9 @@ def rollout_sampler_settings(environ=os.environ):
     import math
 
     from integrations.spatial_action_sampling import validate_full_action_temperature
-    from integrations.spatial_exploration import validate_log_gap_scale
 
+    if "METTA_SPATIAL_LOG_GAP_SCALE" in environ:
+        raise ValueError("Unsupported retired sampler environment: METTA_SPATIAL_LOG_GAP_SCALE")
     settings = dict(
         mode="structured_sample",
         move_temperature=float(environ.get("METTA_SPATIAL_POLICY_TEMPERATURE", "1")),
@@ -42,7 +43,6 @@ def rollout_sampler_settings(environ=os.environ):
         full_action_temperature=validate_full_action_temperature(
             float(environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1"))
         ),
-        log_gap_scale=validate_log_gap_scale(float(environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0"))),
         route_half_weight=float(environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0")),
         neutral_route_bias=float(environ.get("METTA_SPATIAL_NEUTRAL_ROUTE_BIAS", "0")),
         weak_owned_route_penalty=float(environ.get("METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY", "0")),
@@ -76,6 +76,10 @@ def source_sampling_gate_report(match):
 
     match = Path(match)
     record = json.loads((match / "evaluation.json").read_text())
+    if record.get("schema") != "generals-frozen-match-v2":
+        raise ValueError("Source gate requires the current frozen-match report schema")
+    if "log_gap_scale" in record or "log_gap_scale" in record.get("opponent_action_parameters", {}):
+        raise ValueError("Source report contains retired sampler settings")
     if (
         not record["held_out"]
         or record["smoke_cpu"]
@@ -85,10 +89,7 @@ def source_sampling_gate_report(match):
         or record["opponent_action_selection"] != "structured_sample"
     ):
         raise ValueError("Source gate requires held-out official GPU Classic sampled self-play")
-    if any(
-        record[k] != 0
-        for k in ("half_logit_bias", "owned_split_bias", "safe_owned_split_bias", "guided_owned_split_bias")
-    ):
+    if record["half_logit_bias"] != 0:
         raise ValueError("Source gate requires the actual PPO sampler without evaluation-only biases")
     hashes = np.load(match / "initial_state_sha256.npy", allow_pickle=False)
     sides = np.load(match / "initial_sides.npy", allow_pickle=False)
@@ -115,7 +116,6 @@ def source_sampling_gate_report(match):
         "early_route_turns",
         "route_half_weight",
         "full_action_temperature",
-        "log_gap_scale",
         "neutral_route_bias",
         "weak_owned_route_penalty",
         "doomed_attack_route_penalty",
@@ -244,7 +244,7 @@ def verify_runtime_bootstrap(environ=os.environ):
 # Reviewed trainer supports verified current-model transfer and learner resume.
 # Keep this identity explicit: updating trainer code requires reviewing its ABI
 # and updating this binding together; an archive manifest alone is insufficient.
-PINNED_TRAINER_SHA256 = "84370db5eaa1b8aab194d9cab50e0e3a8e5051a555287b0ee9bd99ae268752ea"
+PINNED_TRAINER_SHA256 = "57d4118ce3a2bc993eeb6655eb9b7115cb9d0bb9472ca62186d95819028ee4f3"
 
 
 def verify_trainer_source(source=None):

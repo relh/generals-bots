@@ -42,7 +42,7 @@ def test_selected_native_hook_matches_independent_action_and_value_vjp(tmp_path,
         'METTA_DIRECT_SPATIAL_ROLLOUT': '1', 'METTA_SPATIAL_OPTIMIZER_LAYOUT': 'logical',
         'METTA_SPATIAL_MUON_CONTEXT_MATRIX': '1', 'METTA_SPATIAL_MUON_DENSE_ORIENTATION': 'canonical',
         'METTA_SPATIAL_POLICY_TEMPERATURE': '.05', 'METTA_SPATIAL_SPLIT_TEMPERATURE': '.15',
-        'METTA_SPATIAL_FULL_ACTION_TEMPERATURE': '1', 'METTA_SPATIAL_LOG_GAP_SCALE': '0',
+        'METTA_SPATIAL_FULL_ACTION_TEMPERATURE': '1',
         'METTA_SPATIAL_ROUTE_HALF_WEIGHT': '0', 'METTA_SPATIAL_NEUTRAL_ROUTE_BIAS': '0',
         'METTA_SPATIAL_WEAK_OWNED_ROUTE_PENALTY': '0', 'METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY': '0',
     }.items():
@@ -67,7 +67,7 @@ def test_selected_native_hook_matches_independent_action_and_value_vjp(tmp_path,
     policy = Native('{}')
     parameters = jnp.linspace(-.3, .2, 3530)
     observations = jnp.zeros((1, 1, 7056))
-    outputs, _, tape = policy._forward_arrays(parameters, None, observations, jnp.zeros((1, 1)), 1, 1, True)
+    outputs, tape = policy._forward_arrays(parameters, observations, jnp.zeros((1, 1)), 1, 1, True)
     action_cot = jnp.linspace(-.1, .3, 3529).reshape(1, 1, 3529)
     value_cot = jnp.array([[.4]])
     expected, vjp = jax.vjp(lambda p: acting_logits(p.reshape(1, 1, 3530), .05, .15, jnp), parameters)

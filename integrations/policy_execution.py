@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import codecs
 import hashlib
 import json
 import os
@@ -13,6 +14,11 @@ from pathlib import Path
 
 
 def runtime_environment(source, output, sampler):
+    from integrations.native_spatial_asset import validate_sampler
+
+    validate_sampler(sampler)
+    if "METTA_SPATIAL_LOG_GAP_SCALE" in os.environ:
+        raise ValueError("Unsupported retired sampler environment: METTA_SPATIAL_LOG_GAP_SCALE")
     env = dict(os.environ)
     # Optional sampler fields must never inherit a previous experiment's settings.
     for key in (
@@ -21,7 +27,6 @@ def runtime_environment(source, output, sampler):
         "EARLY_ROUTE_TEMPERATURE",
         "EARLY_ROUTE_TURNS",
         "FULL_ACTION_TEMPERATURE",
-        "LOG_GAP_SCALE",
         "ROUTE_HALF_WEIGHT",
         "NEUTRAL_ROUTE_BIAS",
         "WEAK_OWNED_ROUTE_PENALTY",
@@ -47,7 +52,6 @@ def runtime_environment(source, output, sampler):
         METTA_AUDIT_SPATIAL_SPLITS="0",
         METTA_AUDIT_ACTION_MASK="1",
         METTA_AUDIT_POPULATION_WINS="0",
-        METTA_EPOCH_TIMING_DIR=str(output / "timing"),
         METTA_SPATIAL_SAMPLING_GATE_REPORT=str(output / "sampling-gate.json"),
     )
     for name, value in sampler.items():
@@ -65,9 +69,32 @@ def runtime_environment(source, output, sampler):
     return env
 
 
+def training_step_range(config):
+    """Read lifetime progress from the exact authenticated initializer."""
+    starting = 0
+    reference = config.get("initialize") or {}
+    if reference.get("restore_learner"):
+        from integrations.native_spatial_asset import load_asset
+        from integrations.learner_checkpoint import LearnerCheckpoint
+        asset = load_asset(Path(reference["asset"]), manifest_sha256=reference["manifest_sha256"])
+        starting = LearnerCheckpoint.from_bytes(asset.learner, asset.metadata["parameter_count"]).agent_steps
+    ending = config["total_timesteps"]
+    batch = config["overrides"]["vec.total_agents"] * config["overrides"]["train.horizon"]
+    if starting % batch or ending % batch or ending <= starting:
+        raise ValueError("Training budget must advance complete rollout epochs")
+    return starting, ending
+
+
 def execute(module, arguments, *, source, output, sampler, name, seconds, training_config=None,
-            startup_seconds=300):
+            startup_seconds=300, diagnostic_profile=False):
     """Start one process group; preserve logs on every outcome."""
+    if diagnostic_profile:
+        if training_config is None or seconds > 480:
+            raise ValueError("Diagnostic training requires a <=480-second bounded run")
+        diagnostic = json.loads(Path(training_config).read_text())
+        start, end = training_step_range(diagnostic)
+        if end - start > 2_097_152:
+            raise ValueError("Diagnostic training is limited to 2,097,152 incremental steps")
     output.mkdir(parents=True, exist_ok=True)
     env = runtime_environment(source, output, sampler)
     env.pop("METTA_AUDIT_TARGET_AGENT_STEPS", None)
@@ -80,18 +107,30 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
         training = json.loads(Path(training_config).read_text())
         config = training["overrides"]
         steps_per_epoch = config["vec.total_agents"] * config["train.horizon"]
-        env["METTA_AUDIT_TARGET_AGENT_STEPS"] = str(
-            training["total_timesteps"] // steps_per_epoch * steps_per_epoch
-        )
+        starting, ending = training_step_range(training)
+        env["METTA_AUDIT_TARGET_AGENT_STEPS"] = str(ending - starting)
 
     def interrupted(signum, frame):
         raise SystemExit(128 + signum)
 
     previous_sigterm = signal.signal(signal.SIGTERM, interrupted)
     try:
-        with (output / f"{name}-process.log").open("xb") as log:
+        log_path = output / f"{name}-process.log"
+        with log_path.open("xb") as log, log_path.open("rb") as progress:
+            decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+
+            native_progress = None
+            native_decoder = codecs.getincrementaldecoder("utf-8")(errors="replace")
+
+            def tee_progress(stream=progress, text_decoder=decoder):
+                chunk = stream.read(64 * 1024)
+                if chunk:
+                    sys.stdout.write(text_decoder.decode(chunk))
+                    sys.stdout.flush()
+                return bool(chunk)
+
             process = subprocess.Popen(
-                [sys.executable, "-m", "integrations." + module, *map(str, arguments)],
+                [sys.executable, "-u", "-m", "integrations." + module, *map(str, arguments)],
                 env=env,
                 stdout=log,
                 stderr=subprocess.STDOUT,
@@ -100,6 +139,7 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
             started, sampled = time.monotonic(), 0.0
             try:
                 while process.poll() is None:
+                    tee_progress()
                     elapsed = time.monotonic() - started
                     if elapsed > seconds:
                         raise TimeoutError(f"{name} exceeded {seconds}s; inspect retained log")
@@ -108,29 +148,31 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                         from integrations.slurm_s3_job import visible_gpu_identity
 
                         if elapsed - sampled >= 5:
-                            with (output / "gpu.csv").open("ab") as samples:
-                                subprocess.run(
-                                    [
-                                        "nvidia-smi",
-                                        "--id=" + visible_gpu_identity()["uuid"],
-                                        "--query-gpu=timestamp,uuid,memory.used,utilization.gpu",
-                                        "--format=csv,noheader",
-                                    ],
-                                    stdout=samples,
-                                    stderr=log,
-                                    check=True,
-                                    timeout=10,
-                                )
+                            from integrations.policy_runtime_profile import telemetry
+                            telemetry(output, visible_gpu_identity()["uuid"])
                             sampled = elapsed
                         console = output / "run/console.log"
+                        if native_progress is None and console.exists():
+                            native_progress = console.open("rb")
+                        if native_progress is not None:
+                            tee_progress(native_progress, native_decoder)
                         text = console.read_text(errors="replace") if console.exists() else ""
                         if "NonFiniteGradsError" in text or "FloatingPointError" in text:
                             raise FloatingPointError("Native training produced nonfinite values")
+                        if diagnostic_profile:
+                            import re
+                            if any(int(n) for n in re.findall(r"DEVICE_ACTION_MASK_AUDIT actions=\d+ illegal=(\d+)", text)):
+                                raise ValueError("Diagnostic training produced illegal actions")
+                            for line in text.splitlines():
+                                if line.startswith("DEVICE_REWARD_AUDIT "):
+                                    audit = json.loads(line.split(" ", 1)[1])
+                                    if any(audit[k] for k in ("nonfinite_rewards", "native_clipped_rewards", "native_clipped_terminal_rewards")):
+                                        raise ValueError("Diagnostic training reward audit failed")
                         times = completed_epoch_times(text)
                         if elapsed > startup_seconds and not times:
                             raise TimeoutError(f"No completed training epoch after {startup_seconds}s")
                         sps = steady_sps(times, steps_per_epoch)
-                        if len(times) >= 4 and sps is not None and sps < 30_000:
+                        if not diagnostic_profile and len(times) >= 4 and sps is not None and sps < 30_000:
                             raise RuntimeError(f"Sustained training throughput below 30,000 SPS: {sps}")
                     time.sleep(1)
                 if process.returncode:
@@ -149,19 +191,42 @@ def execute(module, arguments, *, source, output, sampler, name, seconds, traini
                     os.killpg(process.pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
+                while tee_progress():
+                    pass
+                sys.stdout.write(decoder.decode(b"", final=True))
+                if training_config:
+                    console = output / "run/console.log"
+                    if native_progress is None and console.exists():
+                        native_progress = console.open("rb")
+                    if native_progress is not None:
+                        try:
+                            while tee_progress(native_progress, native_decoder):
+                                pass
+                            sys.stdout.write(native_decoder.decode(b"", final=True))
+                        finally:
+                            native_progress.close()
+                sys.stdout.flush()
     finally:
         signal.signal(signal.SIGTERM, previous_sigterm)
 
 
-def training_audit(output, config):
+def training_audit(output, config, *, build_config=None):
     from integrations.monitor_coworld_steady_interval import completed_epoch_times, steady_sps
 
     completed = json.loads((output / "run/completed.json").read_text())
     expected = config["total_timesteps"]
     if completed["trained_timesteps"] != expected:
         raise ValueError("Incomplete native training budget")
+    starting, ending = training_step_range(config)
+    reference = config.get("initialize") or {}
+    if reference.get("restore_learner"):
+        from integrations.native_spatial_asset import load_asset
+        asset = load_asset(Path(reference["asset"]), manifest_sha256=reference["manifest_sha256"])
+        if (output / "run/initial-policy.bin.learner").read_bytes() != asset.learner:
+            raise ValueError("Training audit restored learner differs from source")
+    advanced = ending - starting
     text = (output / "run/console.log").read_text()
-    if f"DEVICE_ACTION_MASK_AUDIT actions={expected} illegal=0" not in text:
+    if f"DEVICE_ACTION_MASK_AUDIT actions={advanced} illegal=0" not in text:
         raise ValueError("Complete zero-illegal-action audit is missing")
     rewards = [
         json.loads(line.split("DEVICE_REWARD_AUDIT ", 1)[1])
@@ -170,7 +235,7 @@ def training_audit(output, config):
     ]
     if (
         not rewards
-        or rewards[-1]["agent_steps"] != expected
+        or rewards[-1]["agent_steps"] != advanced
         or any(
             rewards[-1][key]
             for key in ("nonfinite_rewards", "native_clipped_rewards", "native_clipped_terminal_rewards")
@@ -180,7 +245,7 @@ def training_audit(output, config):
     population = json.loads(
         (output / f"run/environments/{config['seed']}/spatial-opponent-population.json").read_text()
     )
-    build = json.loads((output.parent / "build-config.json").read_text())
+    build = json.loads((build_config or output.parent / "build-config.json").read_text())
     pool = build["python_environment"]["options"]
     expected_hashes = [
         hashlib.sha256((Path(path) / "policy.bin").read_bytes()).hexdigest() for path in pool["frozen_bundles"]
@@ -200,7 +265,9 @@ def training_audit(output, config):
     if sps is None or sps < 30_000:
         raise ValueError("Completed run does not qualify 30,000 end-to-end SPS")
     report = {
-        "environment_steps": expected,
+        "environment_steps": advanced,
+        "starting_agent_steps": starting,
+        "ending_agent_steps": expected,
         "environment_count": options["vec.total_agents"],
         "horizon": options["train.horizon"],
         "minibatch": options["train.minibatch_size"],

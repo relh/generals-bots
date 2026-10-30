@@ -9,6 +9,8 @@ import numpy as np
 
 def load_arm(path):
     record = json.loads((path / "evaluation.json").read_text())
+    if "log_gap_scale" in record.get("action_selection", {}):
+        raise ValueError("Population report contains retired sampler settings")
     arrays = {
         name: np.load(path / f"{name}.npy", allow_pickle=False)
         for name in ("initial_state_sha256", "initial_sides", "opponent_labels", "outcomes")

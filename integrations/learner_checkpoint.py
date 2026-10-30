@@ -10,6 +10,8 @@ import struct
 from dataclasses import dataclass
 from pathlib import Path
 
+from pydantic import BaseModel, ConfigDict, Field
+
 LEARNER_HEADER = struct.Struct('<8sQQQf')
 
 
@@ -37,3 +39,24 @@ class LearnerCheckpoint:
         if not math.isfinite(rate) or rate < 0 or not all(math.isfinite(v) for (v,) in momentum):
             raise ValueError('Learner checkpoint contains invalid optimizer state')
         return cls(epoch, steps, rate, count)
+
+
+class LearnerCheckpointIdentity(BaseModel):
+    """Public checkpoint hashes required before publishing a portable asset."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    state_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    run_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    environment_sha256: list[str]
+
+
+class TrainingResult(BaseModel):
+    """Completed native run record shared by publication and the optional trainer."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    checkpoints: list[Path]
+    final_checkpoint: Path
+    revision: str
+    trained_timesteps: int = Field(gt=0)
+    metrics: Path

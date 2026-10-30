@@ -2,9 +2,7 @@ import numpy as np
 import pytest
 
 from integrations.spatial_policy_bundle import structured_action_probabilities
-from integrations.spatial_action_sampling import (acting_logits, public_owned_split_bias,
-                                                  public_safe_owned_split_bias,
-                                                  public_guided_owned_split_bias,
+from integrations.spatial_action_sampling import (acting_logits,
                                                   public_weak_owned_route_penalty,
                                                   public_doomed_attack_route_penalty)
 
@@ -79,70 +77,6 @@ def test_public_neutral_route_bonus_changes_route_without_changing_split():
     assert biased[up] / biased[1764 + up] == pytest.approx(baseline[up] / baseline[1764 + up])
     with pytest.raises(ValueError, match="public observations"):
         structured_action_probabilities(outputs, legal, .05, .15, neutral_route_bias=3.0)
-
-
-def test_owned_split_bias_preserves_route_mass_and_uses_public_army():
-    source = 10 * 21 + 10
-    up, right = source, 3 * 441 + source
-    outputs = np.zeros(3530, np.float32)
-    outputs[[1764 + up, 1764 + right]] = -.3
-    public = np.zeros(16 * 441, np.float32)
-    public[4 * 441 + source - 21] = 1
-    public[source] = np.log1p(5) / 8
-    split_bias = public_owned_split_bias(public, 4.0, np)
-    assert split_bias[up] == 4.0
-    assert split_bias[right] == 0.0
-    before = acting_logits(outputs, .05, .15, np)
-    after = acting_logits(outputs, .05, .15, np, split_bias)
-    assert np.logaddexp(after[up], after[1764 + up]) == pytest.approx(
-        np.logaddexp(before[up], before[1764 + up]), abs=1e-6)
-    assert (after[1764 + up] - after[up]) == pytest.approx(
-        before[1764 + up] - before[up] + 4.0, abs=1e-6)
-    public[source] = np.log1p(4) / 8
-    assert public_owned_split_bias(public, 4.0, np)[up] == 0
-
-
-def test_safe_owned_split_bias_requires_interior_middle_stack():
-    source = 10 * 21 + 10
-    up = source
-    public = np.zeros(16 * 441, np.float32)
-    public[4 * 441 + source] = 1
-    public[4 * 441 + source - 21] = 1
-    public[source] = np.log1p(5) / 8
-    bias = public_safe_owned_split_bias(public, 4.0, np)
-    assert bias[up] == 4.0
-    before = acting_logits(np.zeros(3530, np.float32), .05, .15, np)
-    after = acting_logits(np.zeros(3530, np.float32), .05, .15, np, bias)
-    assert np.logaddexp(after[up], after[1764 + up]) == pytest.approx(
-        np.logaddexp(before[up], before[1764 + up]), abs=1e-6)
-    public[5 * 441 + source - 42] = 1
-    assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
-    public[5 * 441 + source - 42] = 0
-    public[source] = np.log1p(4) / 8
-    assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
-    public[source] = np.log1p(20) / 8
-    assert public_safe_owned_split_bias(public, 4.0, np)[up] == 0
-
-
-def test_guided_owned_split_bias_uses_public_route_and_two_stacks():
-    source = 10 * 21 + 10
-    up, right = source, 3 * 441 + source
-    public = np.zeros(16 * 441, np.float32)
-    public[0 * 441 + source] = np.log1p(10) / 8
-    public[0 * 441 + source - 21] = np.log1p(6) / 8
-    public[4 * 441 + source - 21] = 1
-    public[7 * 441 + source] = 1
-    bias = public_guided_owned_split_bias(public, 2.0, np)
-    assert bias[up] == 2.0 and bias[right] == 0.0
-    before = acting_logits(np.zeros(3530, np.float32), .05, .15, np)
-    after = acting_logits(np.zeros(3530, np.float32), .05, .15, np, bias)
-    assert np.logaddexp(after[up], after[1764 + up]) == pytest.approx(
-        np.logaddexp(before[up], before[1764 + up]), abs=1e-6)
-    public[7 * 441 + source] = 0
-    assert public_guided_owned_split_bias(public, 2.0, np)[up] == 0
-    public[7 * 441 + source] = 1
-    public[0 * 441 + source - 21] = np.log1p(4) / 8
-    assert public_guided_owned_split_bias(public, 2.0, np)[up] == 0
 
 
 def test_weak_owned_route_penalty_requires_early_land_and_small_stack():

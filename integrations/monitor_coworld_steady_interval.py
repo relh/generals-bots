@@ -8,9 +8,6 @@ from __future__ import annotations
 
 import re
 
-STEPS_PER_EPOCH = 4096 * 32
-
-
 def completed_epoch_times(history: str) -> dict[int, float]:
     result = {}
     for block in history.split("╭"):
@@ -25,7 +22,7 @@ def completed_epoch_times(history: str) -> dict[int, float]:
     return result
 
 
-def interval_sps(times: dict[int, float], span: int, steps_per_epoch: int = STEPS_PER_EPOCH) -> float | None:
+def interval_sps(times: dict[int, float], span: int, steps_per_epoch: int) -> float | None:
     if not times:
         return None
     last = max(times)
@@ -35,7 +32,7 @@ def interval_sps(times: dict[int, float], span: int, steps_per_epoch: int = STEP
     return span * steps_per_epoch / (times[last] - times[first])
 
 
-def steady_sps(times: dict[int, float], steps_per_epoch: int = STEPS_PER_EPOCH) -> float | None:
+def steady_sps(times: dict[int, float], steps_per_epoch: int) -> float | None:
     """Exclude startup and measure up to 32 recent completed epoch intervals."""
     if len(times) < 3:
         return None

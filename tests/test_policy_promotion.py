@@ -129,12 +129,13 @@ def test_operational_promotion_requires_complete_current_panel(tmp_path):
     assert operational_report(summary, directory)['strength_gate_passes']
     directory = tmp_path / 'pending'
     summary = prepared_panel(directory, pending=True)
-    assert summary['completed'] == 1020 and summary['pending'] == 4
+    assert summary['completed'] == 1024 - len(summary['request_ids'])
+    assert summary['pending'] == len(summary['request_ids'])
     counts_only = dict(summary, pending=0)
     assert strength_report(counts_only, ['incumbent', 'Daveey'])['strength_gate_passes']
     report = operational_report(summary, directory)
     assert not report['strength_gate_passes'] and not report['evidence_gate_passes']
-    assert report['pending_episodes'] == 4
+    assert report['pending_episodes'] == len(summary['request_ids'])
 
 
 def test_operational_promotion_rejects_provenance_and_receipt_tampering(tmp_path):
@@ -155,7 +156,7 @@ def test_operational_promotion_rejects_provenance_and_receipt_tampering(tmp_path
     altered = dict(summary, cost_usd=99.0)
     with pytest.raises(ValueError, match='differs from retained panel states'):
         operational_report(altered, directory)
-    path = directory / 'incumbent-seat0-receipt.json'
+    path = directory / 'incumbent-seat0-batch0-receipt.json'
     receipt = json.loads(path.read_text())
     save(path, {'id': receipt['id'] + '-different'})
     with pytest.raises(ValueError, match='receipt identity'):

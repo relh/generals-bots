@@ -8,16 +8,12 @@ import json
 from pathlib import Path
 
 from integrations.export_spatial_policy_bundle import realized_model
-from integrations.learner_checkpoint import LearnerCheckpoint
+from integrations.learner_checkpoint import LearnerCheckpoint, LearnerCheckpointIdentity, TrainingResult
 from integrations.native_spatial_asset import canonical_json, load_asset, training_contract, write_asset
 
 
 def completed_checkpoint(run, record, checkpoint, expected_sha, parameter_count):
     """Validate the final per-GPU clock and hashes actually published by Puffer."""
-    from metta_training.learner import LearnerCheckpointIdentity
-
-    from integrations.puffer_coworld_frozen_transfer import TrainingResult
-
     completed = TrainingResult.model_validate_json((run / "completed.json").read_text())
     relative = checkpoint.resolve().relative_to(run.resolve())
     batch = record.config.overrides["vec.total_agents"] * record.config.overrides["train.horizon"]

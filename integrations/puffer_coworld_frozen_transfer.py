@@ -32,6 +32,8 @@ from metta_training.native_build import (
 )
 from metta_training.telemetry import RunMonitor, RunSnapshot
 
+from integrations.learner_checkpoint import TrainingResult
+
 PUFFER_REPOSITORY = "https://github.com/PufferAI/PufferLib.git"
 PUFFER_REVISION = "6ffa5b10dbbbe4d1e8288367c7d9d3acd3bad4a2"
 
@@ -41,7 +43,7 @@ def install_advantage_normalization(source: Path) -> None:
     path = source / "src/pufferl.cu"
     text = path.read_text()
     kernel_bytes = Path(__file__).with_name("puffer_advantage_normalization.cuh").read_bytes()
-    if hashlib.sha256(kernel_bytes).hexdigest() != "2e0875e14e85008ffa2f990109355fe0e29204f3e16dec4fd27adc3bd999b63c":
+    if hashlib.sha256(kernel_bytes).hexdigest() != "f86375c1190da5abe28bdc74a95b10cdfd51011bb59a53ad1bea55e96cb87cef":
         raise ValueError("Advantage normalizer differs from the pinned Metta implementation")
     kernel = kernel_bytes.decode()
     replacements = (
@@ -55,9 +57,9 @@ def install_advantage_normalization(source: Path) -> None:
         ("        ppo_loss_fwd_bwd(dec, p_logstd, graph,",
          "        if (hypers->norm_adv) {\n"
          "            int count = (int)numel(graph.mb_advantages.shape);\n"
-         "            assert(count > 1);\n"
+         "            assert(Tmb > 1 && count % Tmb == 0 && count - count / Tmb > 1);\n"
          "            metta_standardize_ppo_advantages<<<1, 256, 0, stream>>>(\n"
-         "                graph.mb_advantages.data, count);\n"
+         "                graph.mb_advantages.data, count, Tmb);\n"
          "        }\n"
          "        ppo_loss_fwd_bwd(dec, p_logstd, graph,"),
     )
@@ -74,6 +76,42 @@ def install_advantage_normalization(source: Path) -> None:
     path.write_text(text)
     (source / "src/metta_advantage.cuh").write_text(kernel)
     ini_path.write_text(ini.replace("momentum = 0.95\n", "momentum = 0.95\nnorm_adv = 0\n", 1))
+
+
+def install_minibatch_rotation(source: Path) -> None:
+    """Rotate contiguous rollout blocks so fractional replay cannot starve rows."""
+    path = source / "src/pufferl.cu"
+    text = path.read_text()
+    old = "        int dest_off = (mb * mb_segs) % n_rows;"
+    new = """        // Host epoch offsets require graph-disabled execution.
+        assert(!hypers->cudagraphs && "Minibatch rotation requires CUDA graphs disabled");
+        assert(Nmb == mb_segs && n_rows % mb_segs == 0 && total_minibatches > 0);
+        int blocks = n_rows / mb_segs;
+        int start_block = (int)(((int64_t)pufferl->epoch * total_minibatches) % blocks);
+        int dest_off = ((start_block + mb) % blocks) * mb_segs;
+        if (mb == 0) {
+            printf("MINIBATCH_ROTATION epoch=%ld start_block=%d total_minibatches=%d total_blocks=%d rows_per_block=%d rule=epoch_times_updates_mod_blocks\\n",
+                pufferl->epoch, start_block, total_minibatches, blocks, mb_segs);
+            fflush(stdout);
+        }"""
+    if text.count(old) != 1:
+        raise ValueError("Pinned Puffer minibatch selection anchor changed")
+    path.write_text(text.replace(old, new, 1))
+
+
+def validate_minibatch_rotation(settings: ConfigParser) -> None:
+    """Validate the exact contiguous-row schedule before native training."""
+    if settings.getint("base", "cudagraphs") != -1:
+        raise ValueError("Minibatch rotation requires base.cudagraphs=-1")
+    agents = settings.getint("vec", "total_agents")
+    horizon = settings.getint("train", "horizon")
+    minibatch = settings.getint("train", "minibatch_size")
+    replay = settings.getfloat("train", "replay_ratio")
+    if (agents <= 0 or horizon <= 0 or minibatch <= 0
+            or minibatch % horizon or (agents * horizon) % minibatch
+            or not 0 < replay < float("inf")
+            or int(replay * agents * horizon / minibatch) < 1):
+        raise ValueError("Minibatch rotation requires whole contiguous row blocks and at least one update")
 
 
 class BuildConfig(Configuration):
@@ -147,6 +185,7 @@ class BuildManifest(BaseModel):
     binary_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     model_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
     model_state_words: int = Field(default=0, ge=0)
+    native_admission_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
     environment_sha256: str = Field(default="", pattern=r"^(?:|[0-9a-f]{64})$")
 
     @model_validator(mode="after")
@@ -154,9 +193,12 @@ class BuildManifest(BaseModel):
         if bool(self.config.python_environment) != bool(self.environment_sha256):
             raise ValueError("Python environments require an implementation fingerprint")
         if self.config.fabric:
-            if not self.model_sha256 or self.model_state_words == 0:
-                raise ValueError("Fabric builds require a model fingerprint and recurrent-state allocation")
-        elif self.model_sha256 or self.model_state_words:
+            from integrations import native_startup_admission
+            if self.native_admission_sha256 != native_startup_admission.digest(native_startup_admission.__file__):
+                raise ValueError("Native startup admission changed; rebuild the executable")
+            if not self.model_sha256 or self.model_state_words != 0:
+                raise ValueError("Spatial builds require a model fingerprint and zero external state")
+        elif self.model_sha256 or self.model_state_words or self.native_admission_sha256:
             raise ValueError("Native models cannot declare Fabric metadata")
         return self
 
@@ -243,14 +285,6 @@ def training_lineage_seeds(run: Path, record: TrainingRecord) -> set[int]:
     return seeds
 
 
-class TrainingResult(Record):
-    checkpoints: list[Path]
-    final_checkpoint: Path
-    revision: str
-    trained_timesteps: int = Field(gt=0)
-    metrics: Path
-
-
 class PreparedRun(Record):
     build: Path
     output: Path
@@ -270,6 +304,9 @@ class PreparedRun(Record):
 
 def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
     """Build in an exclusive directory; never modify another checkout or build."""
+    if config.fabric and (os.environ.get("METTA_SPATIAL_MUON_DENSE_ORIENTATION") != "canonical"
+                          or os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") != "1"):
+        raise ValueError("Current spatial builds require canonical dense and context-matrix Muon hooks")
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     source = output / "source"
@@ -281,6 +318,9 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         raise RuntimeError(f"Puffer source mismatch: {revision}")
     if config.python_environment:
         install_environment(source, config.environment, config.python_environment)
+        if config.python_environment.device_resident:
+            from integrations.puffer_device_output import install_output_fence
+            install_output_fence(source)
     suffix = "cu" if config.environment_backend == "cuda" else "h"
     if not (source / "ocean" / config.environment / f"{config.environment}.{suffix}").is_file():
         raise ValueError(f"Upstream has no {config.environment_backend} environment for {config.environment}")
@@ -300,6 +340,16 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         device_python_env=bool(config.python_environment and config.python_environment.device_resident),
     )
     install_advantage_normalization(source)
+    install_minibatch_rotation(source)
+    if config.fabric:
+        from integrations.puffer_stateless_spatial import install_stateless_spatial
+        install_stateless_spatial(source)
+        from integrations.native_startup_admission import install as install_startup_admission
+        install_startup_admission(source)
+        from integrations.puffer_rollout_memory import install as install_rollout_memory
+        install_rollout_memory(source)
+        from integrations.spatial_muon_orientation import finalize_build_receipt
+        finalize_build_receipt(source, config.fabric)
     model_digest = fabric_fingerprint(config.fabric) if config.fabric else ""
     with (output / "build.log").open("x") as log:
         subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True, env=environment)
@@ -308,6 +358,7 @@ def build_puffer(output: Path, config: BuildConfig) -> BuildManifest:
         binary_sha256=hashlib.sha256((output / "puffer").read_bytes()).hexdigest(),
         model_sha256=model_digest,
         model_state_words=state_words,
+        native_admission_sha256=hashlib.sha256(Path(__file__).with_name("native_startup_admission.py").read_bytes()).hexdigest() if config.fabric else "",
         environment_sha256=environment_fingerprint(config.python_environment) if config.python_environment else "",
     )
     (output / "build.json").write_text(manifest.model_dump_json(indent=2) + "\n")
@@ -366,6 +417,7 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
             raise ValueError("Each native buffer must contain a positive whole number of Python environments")
         if manifest.config.python_environment.device_resident and (buffers != 1 or agents != per_environment):
             raise ValueError("Device-resident Python environments require one GPU buffer with all agents")
+    validate_minibatch_rotation(settings)
     batch_steps = settings.getint("vec", "total_agents") * settings.getint("train", "horizon")
     world_size = settings.getint("train", "gpus")
     environment_count = (
@@ -390,12 +442,10 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
     environment["METTA_PYTHON_EXECUTABLE"] = sys.executable
     environment["METTA_RUN_RECORD"] = str(output / "training.json")
     if config.initialize:
-        from integrations.native_spatial_asset import load_asset, canonical_json, training_contract
-        from integrations.export_spatial_policy_bundle import realized_model
+        from integrations.native_spatial_asset import load_asset, training_contract
         from integrations.learner_checkpoint import LearnerCheckpoint as NativeLearnerCheckpoint
         from integrations.classic_contract import validate_training_contract
         import importlib
-        import jax
 
         reference = config.initialize
         asset = load_asset(reference.asset, manifest_sha256=reference.manifest_sha256)
@@ -405,20 +455,12 @@ def prepare_run(build: Path, output: Path, config: RunConfig, *, name: str | Non
         validate_training_contract(manifest.config.model_dump(mode="json"), config.model_dump(mode="json"))
         factory_module = importlib.import_module(fabric.factory.split(":", 1)[0])
         factory_sha256 = hashlib.sha256(Path(factory_module.__file__).read_bytes()).hexdigest()
-        # Realize the actual current compiled graph. Neither archived source
-        # fingerprints nor a config-only digest establish flat layout equality.
-        with jax.default_device(jax.devices("cpu")[0]):
-            policy, _, target_model, target_abi = realized_model(
-                canonical_json(fabric.model_dump(mode="json")).decode(),
-                Path(factory_module.__file__), factory_sha256)
-        asset.verify_target(factory_source_sha256=factory_sha256,
-                            model_sha256=manifest.model_sha256, abi_sha256=target_abi)
-        if (target_model != manifest.model_sha256
+        # The actual native actor admits its ABI before checkpoint loading.
+        if (asset.metadata["factory_source_sha256"] != factory_sha256
+                or asset.metadata["model_sha256"] != manifest.model_sha256
                 or fabric_fingerprint(fabric) != manifest.model_sha256
-                or policy.state_words != manifest.model_state_words
-                or policy.buffers.parameter_words != asset.metadata["parameter_count"]
                 or FabricConfig.model_validate(asset.metadata["fabric"]) != fabric):
-            raise ValueError("Native asset differs from the actual target model and complete checkpoint layout")
+            raise ValueError("Native asset factory, model or Fabric configuration differs")
         initial_parameters = asset.policy
         initialization = InitializationRecord(
             asset=reference.asset.resolve(), manifest_sha256=reference.manifest_sha256,
@@ -487,6 +529,10 @@ def initialize_run(run: PreparedRun, monitor: RunMonitor) -> None:
     (run.output / "training.json").write_text(
         TrainingRecord(build=run.manifest, config=run.config).model_dump_json(indent=2) + "\n"
     )
+    if run.manifest.config.fabric:
+        from integrations import native_startup_admission
+        run.environment["METTA_NATIVE_ADMISSION_RUN_SHA256"] = native_startup_admission.digest(run.output / "training.json")
+        run.environment["METTA_NATIVE_ADMISSION_SOURCE_SHA256"] = native_startup_admission.digest(native_startup_admission.__file__)
     if run.initialization:
         (run.output / "initial-policy.bin").write_bytes(run.initial_parameters)
         (run.output / "initialization.json").write_text(run.initialization.model_dump_json(indent=2) + "\n")
@@ -506,6 +552,11 @@ def initialize_run(run: PreparedRun, monitor: RunMonitor) -> None:
 
 def finish_run(run: PreparedRun, monitor: RunMonitor) -> TrainingResult:
     output, manifest = run.output, run.manifest
+    if manifest.config.fabric:
+        from integrations.native_startup_admission import digest, verify_receipt
+        if digest(output / "training.json") != run.environment["METTA_NATIVE_ADMISSION_RUN_SHA256"]:
+            raise ValueError("Native admission training record changed")
+        verify_receipt(output / "training.json")
     checkpoints = sorted((output / "checkpoints").rglob("*.bin"))
     final_checkpoint = (
         output / "checkpoints" / manifest.config.environment / output.name / f"{run.expected_step:016d}.bin"

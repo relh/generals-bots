@@ -14,21 +14,21 @@ def test_checkpoint_dip_does_not_hide_sustained_slowdown():
             f"│ Uptime {minutes}m {seconds}s {milliseconds}ms │\n"
         )
     times = completed_epoch_times(history)
-    assert interval_sps({k: v for k, v in times.items() if k <= 36}, 16) > 30_000
-    assert interval_sps({k: v for k, v in times.items() if k <= 36}, 20) > 30_000
-    assert steady_sps({k: v for k, v in times.items() if k <= 36}) > 30_000
+    assert interval_sps({k: v for k, v in times.items() if k <= 36}, 16, 4096 * 32) > 30_000
+    assert interval_sps({k: v for k, v in times.items() if k <= 36}, 20, 4096 * 32) > 30_000
+    assert steady_sps({k: v for k, v in times.items() if k <= 36}, 4096 * 32) > 30_000
 
     slow = {epoch: (uptime + (epoch - 40) * 5.0 if epoch > 40 else value)
             for epoch, value in times.items()}
     slow.update({epoch: times[40] + (epoch - 40) * 5.0 for epoch in range(41, 62)})
-    assert interval_sps(slow, 16) < 30_000
-    assert interval_sps(slow, 20) < 30_000
-    assert steady_sps(slow) < 30_000
+    assert interval_sps(slow, 16, 4096 * 32) < 30_000
+    assert interval_sps(slow, 20, 4096 * 32) < 30_000
+    assert steady_sps(slow, 4096 * 32) < 30_000
 
 
 def test_steady_interval_excludes_startup_compilation():
-    assert steady_sps({0: 0.0, 1: 120.0}) is None
-    assert steady_sps({0: 0.0, 1: 120.0, 2: 124.0, 3: 128.0}) == 32768
+    assert steady_sps({0: 0.0, 1: 120.0}, 4096 * 32) is None
+    assert steady_sps({0: 0.0, 1: 120.0, 2: 124.0, 3: 128.0}, 4096 * 32) == 32768
 
 
 def test_steady_interval_crosses_hour_boundary():
@@ -94,3 +94,12 @@ def test_h100_transient_dip_does_not_stop_qualified_training():
     }
     assert interval_sps(times, 2, 4096 * 128) < 30_000
     assert steady_sps(times, 4096 * 128) > 30_000
+
+
+
+def test_full_fast_interval_can_contain_slow_rolling_window():
+    times = dict(enumerate([100, 112, 113, 114, 150, 151, 152, 153], 1))
+    assert interval_sps(times, 6, 524288) > 30000
+    windows = [interval_sps({epoch: seconds for epoch, seconds in times.items() if epoch <= end},
+                            2, 524288) for end in range(4, 9)]
+    assert any(rate < 30000 for rate in windows)

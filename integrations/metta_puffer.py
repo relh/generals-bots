@@ -123,11 +123,10 @@ class BatchedGeneralsSelfPlayPufferEnvironment:
         state_keys = jax.random.split(jax.random.PRNGKey(numeric), self.parallel_games)
         self.keys = jax.random.split(jax.random.PRNGKey(numeric ^ 0xA5A5A5A5), self.parallel_games)
         self.states = self._init_states(self.base.pool, state_keys)
-        if self.base.position_probability:
-            print("INITIAL_POSITION_MIX " + json.dumps(dict(
-                games=self.parallel_games, midgame=int(np.count_nonzero(np.asarray(self.states.time) > 0)),
-                probability=self.base.position_probability,
-            )), flush=True)
+        print("INITIAL_POSITION_MIX " + json.dumps(dict(
+            games=self.parallel_games, midgame=int(np.count_nonzero(np.asarray(self.states.time) > 0)),
+            probability=self.base.position_probability,
+        )), flush=True)
 
     def reset_device(self, seed):
         self._reset_states(seed)

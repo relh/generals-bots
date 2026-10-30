@@ -58,13 +58,13 @@ def test_full_temperature_matches_serving_and_frozen_sampler_with_priors():
     expected = np.exp(logits - logits.max())
     expected /= expected.sum()
     portable = structured_action_probabilities(raw, mask, .05, .15,
-        observations=public, neutral_route_bias=6, full_action_temperature=10, log_gap_scale=0.)
+        observations=public, neutral_route_bias=6, full_action_temperature=10)
     np.testing.assert_allclose(portable, expected, atol=1e-8, rtol=1e-6)
     assert np.all(portable[~mask] == 0)
     policy = SimpleNamespace(action_mode='structured_sample', move_temperature=.05,
         early_route_temperature=None, early_route_turns=None, route_half_weight=0.,
         weak_owned_route_penalty=0., doomed_attack_route_penalty=0.,
-        split_temperature=.15, neutral_route_bias=6, full_action_temperature=10, log_gap_scale=0.)
+        split_temperature=.15, neutral_route_bias=6, full_action_temperature=10)
     count = 8192
     keys = jax.random.split(jax.random.PRNGKey(31), count)
     sampled = np.asarray(jax.jit(lambda k: frozen_action_indices(policy,

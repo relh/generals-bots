@@ -18,7 +18,7 @@ class CudaBindingTests(unittest.TestCase):
             root = Path(directory)
             for name in ('cu13', 'cudnn', 'nccl'):
                 (root / 'nvidia' / name / 'lib').mkdir(parents=True)
-            argv = ['python', '-m', 'integrations.policy_trial', 'control']
+            argv = ['python', '-m', 'integrations.policy', 'status']
             with patch.dict(os.environ, {'LD_LIBRARY_PATH': '/usr/local/cuda/lib64'}, clear=True), \
                     patch('sysconfig.get_path', return_value=directory), \
                     patch('sys.orig_argv', argv), \

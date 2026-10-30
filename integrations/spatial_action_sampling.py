@@ -52,93 +52,6 @@ def public_neutral_route_bonus(observations, strength, xp):
     return xp.concatenate((bonus, bonus, xp.zeros_like(bonus[..., :1])), axis=-1)
 
 
-def public_owned_split_bias(observations, strength, xp):
-    """Favor half moves between owned cells from stacks of at least five."""
-    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:
-        raise ValueError("Owned split bias requires public 21x21 observations")
-    planes = observations.reshape((*observations.shape[:-1], -1, 441))
-    routes = xp.arange(MOVE_COUNT)
-    source = routes % 441
-    direction = routes // 441
-    row, col = source // 21, source % 21
-    target_row = row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
-    target_col = col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
-    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
-    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
-    eligible = (on_board &
-                (xp.take(planes[..., 4, :], target, axis=-1) > 0.5) &
-                (xp.take(planes[..., 0, :], source, axis=-1) >= math.log1p(5) / 8 - 1e-6))
-    return eligible.astype(observations.dtype) * strength
-
-
-def public_safe_owned_split_bias(observations, strength, xp):
-    """Favor half moves on interior owned routes from 5–19 army stacks.
-
-    This diagnostic uses only the learner's public observation. Visible enemy
-    tiles adjacent to either end of the route disable the bias.
-    """
-    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:
-        raise ValueError("Safe owned split bias requires public 21x21 observations")
-    planes = observations.reshape((*observations.shape[:-1], -1, 441))
-    routes = xp.arange(MOVE_COUNT)
-    source = routes % 441
-    direction = routes // 441
-    source_row, source_col = source // 21, source % 21
-    target_row = source_row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
-    target_col = source_col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
-    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
-    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
-    army_log = xp.take(planes[..., 0, :], source, axis=-1)
-    middle_stack = ((army_log >= math.log1p(5) / 8 - 1e-6) &
-                    (army_log < math.log1p(20) / 8 - 1e-6))
-
-    def visible_enemy_neighbor(rows, cols):
-        nearby = xp.zeros_like(middle_stack, dtype=bool)
-        for delta_row, delta_col in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-            row, col = rows + delta_row, cols + delta_col
-            valid = (row >= 0) & (row < 21) & (col >= 0) & (col < 21)
-            cell = xp.clip(row, 0, 20) * 21 + xp.clip(col, 0, 20)
-            nearby = nearby | (valid & (xp.take(planes[..., 5, :], cell, axis=-1) > 0.5))
-        return nearby
-
-    eligible = (on_board & middle_stack &
-                (xp.take(planes[..., 4, :], source, axis=-1) > 0.5) &
-                (xp.take(planes[..., 4, :], target, axis=-1) > 0.5) &
-                ~visible_enemy_neighbor(source_row, source_col) &
-                ~visible_enemy_neighbor(target_row, target_col))
-    return eligible.astype(observations.dtype) * strength
-
-
-def public_guided_owned_split_bias(observations, strength, xp):
-    """Diagnostic split bias on a public route cue joining two owned stacks.
-
-    The source has 5–19 armies and the destination has at least five. This
-    only changes full versus half probability on a route; it cannot change
-    the probability of choosing that route.
-    """
-    if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 11:
-        raise ValueError("Guided split bias requires directional public 21x21 observations")
-    planes = observations.reshape((*observations.shape[:-1], -1, 441))
-    routes = xp.arange(MOVE_COUNT)
-    source = routes % 441
-    direction = routes // 441
-    row, col = source // 21, source % 21
-    target_row = row + xp.take(xp.asarray((-1, 1, 0, 0)), direction)
-    target_col = col + xp.take(xp.asarray((0, 0, -1, 1)), direction)
-    on_board = (target_row >= 0) & (target_row < 21) & (target_col >= 0) & (target_col < 21)
-    target = xp.clip(target_row, 0, 20) * 21 + xp.clip(target_col, 0, 20)
-    source_army = xp.take(planes[..., 0, :], source, axis=-1)
-    target_army = xp.take(planes[..., 0, :], target, axis=-1)
-    directional_cue = xp.concatenate(tuple(planes[..., 7 + i, :] for i in range(4)), axis=-1)
-    eligible = (on_board &
-                (source_army >= math.log1p(5) / 8 - 1e-6) &
-                (source_army < math.log1p(20) / 8 - 1e-6) &
-                (target_army >= math.log1p(5) / 8 - 1e-6) &
-                (xp.take(planes[..., 4, :], target, axis=-1) > .5) &
-                (directional_cue > .5))
-    return eligible.astype(observations.dtype) * strength
-
-
 def public_weak_owned_route_penalty(observations, strength, xp):
     """Discourage early shuffling of small armies between owned cells."""
     if observations.shape[-1] % 441 or observations.shape[-1] // 441 < 7:
@@ -195,7 +108,7 @@ def scale_action_logits(logits, temperature):
     return logits if temperature == 1 else logits / temperature
 
 
-def acting_logits(predictions, move_temperature, split_temperature, xp, split_bias=None,
+def acting_logits(predictions, move_temperature, split_temperature, xp,
                   *, route_half_weight=0.0):
     if not isinstance(route_half_weight, (int, float)) or isinstance(route_half_weight, bool) or (
             not math.isfinite(route_half_weight) or not 0 <= route_half_weight <= 1):
@@ -205,8 +118,6 @@ def acting_logits(predictions, move_temperature, split_temperature, xp, split_bi
     pass_logit = predictions[..., PASS_INDEX:PASS_INDEX + 1]
     value = predictions[..., PASS_INDEX + 1:PASS_INDEX + 2]
     difference = (half - full) / split_temperature
-    if split_bias is not None:
-        difference = difference + split_bias
     log_partition = xp.logaddexp(0, difference)
     route = (full + route_half_weight * (half - full)) / move_temperature
     return xp.concatenate((route - log_partition,
@@ -215,7 +126,7 @@ def acting_logits(predictions, move_temperature, split_temperature, xp, split_bi
 
 
 def raw_cotangents(predictions, logit_cotangents, value_cotangents,
-                   move_temperature, split_temperature, xp, split_bias=None,
+                   move_temperature, split_temperature, xp,
                    *, route_half_weight=0.0):
     if not isinstance(route_half_weight, (int, float)) or isinstance(route_half_weight, bool) or (
             not math.isfinite(route_half_weight) or not 0 <= route_half_weight <= 1):
@@ -223,8 +134,6 @@ def raw_cotangents(predictions, logit_cotangents, value_cotangents,
     full = predictions[..., :MOVE_COUNT]
     half = predictions[..., MOVE_COUNT:PASS_INDEX]
     difference = (half - full) / split_temperature
-    if split_bias is not None:
-        difference = difference + split_bias
     half_probability = xp.exp(difference - xp.logaddexp(0, difference))
     full_probability = 1 - half_probability
     full_cotangent = logit_cotangents[..., :MOVE_COUNT]

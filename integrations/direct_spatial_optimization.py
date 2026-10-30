@@ -24,7 +24,6 @@ class DirectTape:
     parameters: object
     observations: object
     predictions: object
-    exploration_logits: object = None
 
     def __getitem__(self, index):
         # Plain PPO's auxiliary collector only needs the observation batch axis.
@@ -199,6 +198,52 @@ class DirectSpatial:
         return outputs.reshape(*shape, 3530)
 
 
+def compile_acting_transform(policy):
+    """Compile validated sampler postprocessing separately from the raw model."""
+    spatial_doomed_attack_route_penalty = policy.spatial_doomed_attack_route_penalty
+    spatial_early_route_temperature = policy.spatial_early_route_temperature
+    spatial_early_route_turns = policy.spatial_early_route_turns
+    spatial_full_action_temperature = policy.spatial_full_action_temperature
+    spatial_neutral_route_bias = policy.spatial_neutral_route_bias
+    spatial_policy_temperature = policy.spatial_policy_temperature
+    spatial_route_half_weight = policy.spatial_route_half_weight
+    spatial_split_temperature = policy.spatial_split_temperature
+    spatial_weak_owned_route_penalty = policy.spatial_weak_owned_route_penalty
+
+    def transform(outputs, transported):
+        move_temperature = spatial_policy_temperature
+        if spatial_early_route_temperature is not None:
+            from integrations.spatial_action_sampling import public_early_route_temperature
+
+            move_temperature = public_early_route_temperature(
+                transported, move_temperature, spatial_early_route_temperature,
+                spatial_early_route_turns, jnp)
+        from integrations.spatial_action_sampling import acting_logits
+
+        acting = acting_logits(outputs, move_temperature, spatial_split_temperature, jnp,
+                               route_half_weight=spatial_route_half_weight)
+        if spatial_neutral_route_bias:
+            from integrations.spatial_action_sampling import public_neutral_route_bonus
+
+            bonus = public_neutral_route_bonus(transported, spatial_neutral_route_bias, jnp)
+            acting = acting.at[..., :3529].add(bonus)
+        if spatial_weak_owned_route_penalty:
+            from integrations.spatial_action_sampling import public_weak_owned_route_penalty
+
+            penalty = public_weak_owned_route_penalty(transported, spatial_weak_owned_route_penalty, jnp)
+            acting = acting.at[..., :3529].add(penalty)
+        if spatial_doomed_attack_route_penalty:
+            from integrations.spatial_action_sampling import public_doomed_attack_route_penalty
+
+            penalty = public_doomed_attack_route_penalty(transported, spatial_doomed_attack_route_penalty, jnp)
+            acting = acting.at[..., :3529].add(penalty)
+        if spatial_full_action_temperature != 1:
+            acting = acting.at[..., :3529].divide(spatial_full_action_temperature)
+        return acting, jnp.isfinite(acting).all()
+
+    return jax.jit(transform)
+
+
 def install(native_module=None):
     native_module = native_module or importlib.import_module("metta_training.native_fabric")
     from pathlib import Path
@@ -215,6 +260,7 @@ def install(native_module=None):
         verify_configuration(configuration)
         initialize(self, configuration, *args, **kwargs)
         self.direct_spatial = DirectSpatial(self)
+        self.state_words = 0  # Compiler mailboxes remain internal; no external carry.
         if (os.environ.get("METTA_DIRECT_SPATIAL_ROLLOUT") != "1"
                 or os.environ.get("METTA_SPATIAL_OPTIMIZER_LAYOUT") != "logical"
                 or os.environ.get("METTA_SPATIAL_MUON_CONTEXT_MATRIX") != "1"
@@ -241,10 +287,9 @@ def install(native_module=None):
 
         self.spatial_full_action_temperature = validate_full_action_temperature(
             float(os.environ.get("METTA_SPATIAL_FULL_ACTION_TEMPERATURE", "1")))
-        from integrations.spatial_exploration import validate_log_gap_scale
 
-        self.spatial_log_gap_scale = validate_log_gap_scale(
-            float(os.environ.get("METTA_SPATIAL_LOG_GAP_SCALE", "0")))
+        if "METTA_SPATIAL_LOG_GAP_SCALE" in os.environ:
+            raise ValueError("Unsupported retired sampler environment: METTA_SPATIAL_LOG_GAP_SCALE")
         self.spatial_route_half_weight = float(os.environ.get("METTA_SPATIAL_ROUTE_HALF_WEIGHT", "0"))
         if (not np.isfinite(self.spatial_route_half_weight) or
                 not 0 <= self.spatial_route_half_weight <= 1):
@@ -264,50 +309,17 @@ def install(native_module=None):
             os.environ.get("METTA_SPATIAL_DOOMED_ATTACK_ROUTE_PENALTY", "0"))
         if not np.isfinite(self.spatial_doomed_attack_route_penalty) or self.spatial_doomed_attack_route_penalty < 0:
             raise ValueError("Doomed attack route penalty must be finite and nonnegative")
+        self.spatial_acting_transform = compile_acting_transform(self)
 
     @functools.wraps(forward)
-    def direct_forward(self, parameters, state, transported, terminals, batch, time, rollout):
+    def direct_forward(self, parameters, transported, terminals, batch, time, rollout):
         if transported.shape != (batch, time, self.direct_spatial.observation_size) or terminals.shape != (batch, time):
             raise ValueError("Direct optimization requires plain public observations")
         outputs = self.direct_spatial.forward(parameters, transported)
-        move_temperature = self.spatial_policy_temperature
-        if self.spatial_early_route_temperature is not None:
-            from integrations.spatial_action_sampling import public_early_route_temperature
-
-            move_temperature = public_early_route_temperature(
-                transported, move_temperature, self.spatial_early_route_temperature,
-                self.spatial_early_route_turns, jnp)
-        from integrations.spatial_action_sampling import acting_logits
-
-        acting = acting_logits(outputs, move_temperature, self.spatial_split_temperature, jnp,
-                               route_half_weight=self.spatial_route_half_weight)
-        if self.spatial_neutral_route_bias:
-            from integrations.spatial_action_sampling import public_neutral_route_bonus
-
-            bonus = public_neutral_route_bonus(transported, self.spatial_neutral_route_bias, jnp)
-            acting = acting.at[..., :3529].add(bonus)
-        if self.spatial_weak_owned_route_penalty:
-            from integrations.spatial_action_sampling import public_weak_owned_route_penalty
-
-            penalty = public_weak_owned_route_penalty(transported, self.spatial_weak_owned_route_penalty, jnp)
-            acting = acting.at[..., :3529].add(penalty)
-        if self.spatial_doomed_attack_route_penalty:
-            from integrations.spatial_action_sampling import public_doomed_attack_route_penalty
-
-            penalty = public_doomed_attack_route_penalty(transported, self.spatial_doomed_attack_route_penalty, jnp)
-            acting = acting.at[..., :3529].add(penalty)
-        if self.spatial_full_action_temperature != 1:
-            acting = acting.at[..., :3529].divide(self.spatial_full_action_temperature)
-        exploration_logits = None
-        if self.spatial_log_gap_scale:
-            from integrations.spatial_exploration import log_gap_logits, public_action_mask
-
-            exploration_logits = acting[..., :3529]
-            acting = acting.at[..., :3529].set(log_gap_logits(
-                exploration_logits, public_action_mask(transported, jnp), self.spatial_log_gap_scale, jnp))
-        if not bool(jnp.isfinite(acting).all()):
+        acting, finite = self.spatial_acting_transform(outputs, transported)
+        if not bool(finite):
             raise FloatingPointError("Direct spatial predictions became nonfinite")
-        return acting, state, DirectTape(parameters, transported, outputs, exploration_logits)
+        return acting, DirectTape(parameters, transported, outputs)
 
     @functools.wraps(backward)
     def direct_backward(self, tape, logits, values):
@@ -319,11 +331,6 @@ def install(native_module=None):
         self.active_objectives.clear()
         coefficient = self.teacher_phase.ppo_coefficient
         # Chain rule for the final action-only transform; preserve value gradients.
-        if self.spatial_log_gap_scale:
-            from integrations.spatial_exploration import log_gap_cotangents, public_action_mask
-
-            logits = log_gap_cotangents(tape.exploration_logits, public_action_mask(tape.observations, jnp),
-                                       logits, self.spatial_log_gap_scale, jnp)
         logits = logits / self.spatial_full_action_temperature
         from integrations.spatial_action_sampling import raw_cotangents
 
@@ -342,7 +349,24 @@ def install(native_module=None):
             raise FloatingPointError("Direct spatial gradients became nonfinite")
         return gradient
 
+    def device_forward(self, parameters, observations, terminals, batch, time, rollout):
+        params = jax.dlpack.from_dlpack(parameters)
+        observed = jax.dlpack.from_dlpack(observations)
+        done = (jax.dlpack.from_dlpack(terminals) if terminals is not None else
+                jnp.zeros((batch, time), dtype=jnp.float32, device=params.device))
+        return self._forward_arrays(params, observed, done, batch, time, rollout)
+
+    def host_forward(self, parameters, observations, terminals, batch, time, rollout):
+        acting, tape = self._forward_arrays(
+            jnp.asarray(np.frombuffer(parameters, dtype=np.float32)),
+            jnp.asarray(np.frombuffer(observations, dtype=np.float32).reshape(batch,time,self.input_size)),
+            jnp.asarray(np.frombuffer(terminals, dtype=np.float32).reshape(batch,time)),
+            batch, time, rollout)
+        return np.asarray(acting).tobytes(), tape
+
     cls.__init__ = init
+    cls.forward_device = device_forward
+    cls.forward = host_forward
     cls._forward_arrays = direct_forward
     cls.backward_device_arrays = direct_backward
     cls._generals_direct_spatial = True
