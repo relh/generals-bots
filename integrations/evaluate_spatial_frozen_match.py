@@ -1,0 +1,311 @@
+"""Count first-episode capture outcomes between two immutable spatial actors."""
+
+import argparse
+import hashlib
+import json
+import time
+from pathlib import Path
+
+import jax
+import jax.numpy as jnp
+import numpy as np
+from metta_training.environment import EnvironmentContext
+
+from integrations.spatial_action_sampling import (
+    acting_logits,
+    public_doomed_attack_route_penalty,
+    public_neutral_route_bonus,
+    public_weak_owned_route_penalty,
+)
+from integrations.spatial_frozen_sampling import sample_flat_logits
+from integrations.spatial_policy_bundle import SpatialPlayerPolicy
+from integrations.spatial_selfplay import SpatialFrozenOpponentPufferEnvironment
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--bundle", type=Path, required=True)
+    parser.add_argument("--opponent-bundle", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--games", type=int, default=512)
+    parser.add_argument("--pool-size", type=int, default=128)
+    parser.add_argument("--seed", type=int, default=1513)
+    parser.add_argument("--smoke-cpu", action="store_true")
+    parser.add_argument("--sample-seed", type=int)
+    parser.add_argument("--acting-greedy", action="store_true",
+                        help="Choose argmax after the route/split transform used by PPO")
+    parser.add_argument("--sampling-temperature", type=float, default=1.0)
+    parser.add_argument("--early-route-temperature", type=float,
+                        help="Diagnostic route temperature during the first --early-route-turns turns")
+    parser.add_argument("--early-route-turns", type=int,
+                        help="Number of opening turns using --early-route-temperature")
+    parser.add_argument("--split-sampling-temperature", type=float,
+                        help="Sample route at --sampling-temperature and full/half conditionally at this temperature")
+    parser.add_argument("--full-action-temperature", type=float, default=1.0)
+    parser.add_argument("--route-half-weight", type=float, default=0.0,
+                        help="Fraction of the half head included in each route score")
+    parser.add_argument("--half-logit-bias", type=float, default=0.0,
+                        help="Diagnostic: add this offset to learner half-move logits before greedy selection")
+    parser.add_argument("--expansion-audit", action="store_true",
+                        help="Count first-episode move destinations and territory/army margins at fixed turns")
+    parser.add_argument("--neutral-route-bias", type=float, default=0.0,
+                        help="Diagnostic sampled-logit bonus for moves into visible empty neutral cells")
+    parser.add_argument("--weak-owned-route-penalty", type=float, default=0.0,
+                        help="Diagnostic route penalty for small-stack owned moves before 15 owned tiles")
+    parser.add_argument("--doomed-attack-route-penalty", type=float, default=0.0,
+                        help="Diagnostic route penalty when full army cannot capture a visible enemy")
+    args = parser.parse_args()
+    if args.games <= 0 or args.games % 2 or args.pool_size <= 0:
+        raise ValueError("Require a positive even game count and positive pool size")
+    if not np.isfinite(args.sampling_temperature) or args.sampling_temperature <= 0:
+        raise ValueError("Sampling temperature must be finite and positive")
+    if (args.early_route_temperature is None) != (args.early_route_turns is None):
+        raise ValueError("Early route temperature and turn count must be set together")
+    if args.early_route_temperature is not None and (
+            not np.isfinite(args.early_route_temperature) or args.early_route_temperature <= 0
+            or args.early_route_turns <= 0 or args.sample_seed is None
+            or args.split_sampling_temperature is None):
+        raise ValueError("Early route schedule requires positive temperatures, turns, and structured sampling")
+    if args.acting_greedy and args.sample_seed is not None:
+        raise ValueError("Acting-greedy and sampled actions are separate modes")
+    if args.acting_greedy and args.split_sampling_temperature is None:
+        raise ValueError("Acting-greedy requires the structured route/split transform")
+    if args.sampling_temperature != 1 and args.sample_seed is None and not args.acting_greedy:
+        raise ValueError("Nondefault temperature requires sampled or acting-greedy actions")
+    from integrations.spatial_action_sampling import validate_full_action_temperature
+
+    validate_full_action_temperature(args.full_action_temperature)
+    if args.full_action_temperature != 1 and args.split_sampling_temperature is None:
+        raise ValueError("Full action temperature requires structured sampling")
+    if (not np.isfinite(args.route_half_weight) or not 0 <= args.route_half_weight <= 1 or
+            (args.route_half_weight and args.split_sampling_temperature is None)):
+        raise ValueError("Route half weight requires structured sampling and must be between zero and one")
+    if args.split_sampling_temperature is not None and (
+            (args.sample_seed is None and not args.acting_greedy) or not np.isfinite(args.split_sampling_temperature)
+            or args.split_sampling_temperature <= 0):
+        raise ValueError("Split temperature requires sampled or acting-greedy actions and a positive finite value")
+    if not np.isfinite(args.half_logit_bias) or (
+            args.half_logit_bias and (args.sample_seed is not None or args.acting_greedy)):
+        raise ValueError("Half-logit bias requires greedy learner actions")
+    if not np.isfinite(args.neutral_route_bias) or args.neutral_route_bias < 0 or (
+            args.neutral_route_bias and args.sample_seed is None and not args.acting_greedy):
+        raise ValueError("Neutral route bias requires sampled or acting-greedy actions and a finite nonnegative value")
+    if not np.isfinite(args.weak_owned_route_penalty) or args.weak_owned_route_penalty < 0 or (
+            args.weak_owned_route_penalty and args.split_sampling_temperature is None):
+        raise ValueError("Weak owned route penalty requires structured actions and a finite nonnegative value")
+    if not np.isfinite(args.doomed_attack_route_penalty) or args.doomed_attack_route_penalty < 0 or (
+            args.doomed_attack_route_penalty and args.split_sampling_temperature is None):
+        raise ValueError("Doomed attack route penalty requires structured actions and a finite nonnegative value")
+    policy = SpatialPlayerPolicy(args.bundle)
+    opponent = SpatialPlayerPolicy(args.opponent_bundle)
+    if any(args.seed in actor.asset.metadata["training_seeds"] for actor in (policy, opponent)):
+        raise ValueError("Match seed must be absent from both training lineages")
+    if not args.smoke_cpu and jax.devices()[0].platform != "gpu":
+        raise RuntimeError("Frozen match evaluation requires GPU execution")
+    options = dict(parallel_games=args.games, coworld_pool_size=args.pool_size, balance_opponent_sides=True,
+                   coworld_position_probability=0.0, shaping_weight=0.0,
+                   reward_scale=1.0, terminal_reward_mode="signed")
+    if args.smoke_cpu:
+        options.update(require_gpu=False, horizon=4)
+    args.output.mkdir(parents=True, exist_ok=False)
+    context = EnvironmentContext(seed=args.seed, index=0, mode="train", output=args.output)
+    env = SpatialFrozenOpponentPufferEnvironment(frozen_bundle=str(args.opponent_bundle), context=context, **options)
+
+    @jax.jit
+    def forward(values):
+        with jax.default_matmul_precision("highest"):
+            return policy._forward(values, jnp)
+
+    start = time.monotonic()
+    finished = np.zeros(args.games, bool)
+    outcomes = np.zeros(args.games, np.float32)
+    action_counts = np.zeros(3, np.int64)
+    action_disagreements = np.zeros(2, np.int64)
+    destination_counts = np.zeros(4, np.int64)
+    checkpoints = (25, 50, 100, 150, 200)
+    progress = {}
+
+    @jax.jit
+    def audit_destinations(states, sides, indices):
+        cells = 21 * 21
+        passing = indices == 8 * cells
+        route = indices % (4 * cells)
+        source = route % cells
+        direction = route // cells
+        row, col = source // 21, source % 21
+        dr = jnp.take(jnp.array((-1, 1, 0, 0)), direction)
+        dc = jnp.take(jnp.array((0, 0, -1, 1)), direction)
+        dest_row = jnp.clip(row + dr, 0, 20)
+        dest_col = jnp.clip(col + dc, 0, 20)
+        rows = jnp.arange(indices.shape[0])
+        own = states.ownership[rows, sides, dest_row, dest_col]
+        neutral = states.ownership_neutral[rows, dest_row, dest_col]
+        return jnp.where(passing, 3, jnp.where(own, 0, jnp.where(neutral, 1, 2))).astype(jnp.int8)
+
+    @jax.jit
+    def audit_progress(states, sides):
+        rows = jnp.arange(sides.shape[0])
+        land = jnp.sum(states.ownership, axis=(2, 3), dtype=jnp.int32)
+        army = jnp.sum(states.armies[:, None] * states.ownership, axis=(2, 3), dtype=jnp.int32)
+        return (land[rows, sides] - land[rows, 1 - sides],
+                army[rows, sides] - army[rows, 1 - sides])
+    try:
+        values, masks = env.reset_device(f"{args.seed}:0:0")
+        sides = np.asarray(env.sides)
+        device_sides = jnp.asarray(sides)
+        assert (sides == 0).sum() == (sides == 1).sum() == args.games // 2
+        np.save(args.output / "initial_sides.npy", sides)
+        leaves = [np.asarray(leaf) for leaf in jax.tree.leaves(env.states)]
+        assert all(leaf.shape[0] == args.games for leaf in leaves)
+        hashes = []
+        for row in range(args.games):
+            digest = hashlib.sha256()
+            for leaf in leaves:
+                digest.update(str((leaf.dtype.str, leaf.shape[1:])).encode())
+                digest.update(leaf[row].tobytes())
+            hashes.append(digest.hexdigest())
+        np.save(args.output / "initial_state_sha256.npy", np.asarray(hashes, dtype="U64"))
+        for turn in range(env.horizon):
+            route_temperature = (args.early_route_temperature
+                                 if args.early_route_turns is not None and turn < args.early_route_turns
+                                 else args.sampling_temperature)
+            outputs = np.asarray(forward(values)).copy()
+            assert outputs.shape == (args.games, 3530) and np.isfinite(outputs).all()
+            legal = np.asarray(masks, bool)
+            raw_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
+            if args.half_logit_bias:
+                outputs[:, 1764:3528] += args.half_logit_bias
+            biased_greedy = np.argmax(np.where(legal, outputs[:, :3529], -np.inf), axis=1)
+            if args.sample_seed is None:
+                if args.acting_greedy:
+                    logits = np.asarray(acting_logits(outputs, route_temperature,
+                                                      args.split_sampling_temperature, np,
+                                                      route_half_weight=args.route_half_weight)[:, :3529])
+                    if args.neutral_route_bias:
+                        logits += public_neutral_route_bonus(values, args.neutral_route_bias, np)
+                    if args.weak_owned_route_penalty:
+                        logits += public_weak_owned_route_penalty(np.asarray(values), args.weak_owned_route_penalty, np)
+                    if args.doomed_attack_route_penalty:
+                        logits += public_doomed_attack_route_penalty(
+                            np.asarray(values), args.doomed_attack_route_penalty, np)
+                    chosen = np.argmax(np.where(legal, logits, -np.inf), axis=1)
+                else:
+                    chosen = biased_greedy
+            else:
+                key = jax.random.fold_in(jax.random.PRNGKey(args.sample_seed), turn)
+                logits = (acting_logits(jnp.asarray(outputs), route_temperature,
+                                       args.split_sampling_temperature, jnp,
+                                       route_half_weight=args.route_half_weight)[:, :3529]
+                          if args.split_sampling_temperature is not None
+                          else jnp.asarray(outputs[:, :3529]) / route_temperature)
+                if args.neutral_route_bias:
+                    logits += jnp.asarray(public_neutral_route_bonus(
+                        np.asarray(values), args.neutral_route_bias, np))
+                if args.weak_owned_route_penalty:
+                    logits += jnp.asarray(public_weak_owned_route_penalty(
+                        np.asarray(values), args.weak_owned_route_penalty, np))
+                if args.doomed_attack_route_penalty:
+                    logits += jnp.asarray(public_doomed_attack_route_penalty(
+                        np.asarray(values), args.doomed_attack_route_penalty, np))
+                logits = logits / args.full_action_temperature
+                chosen = np.asarray(sample_flat_logits(
+                    key, logits, jnp.asarray(legal),
+                ))
+            actions = chosen.astype(np.int32)[:, None]
+            assert legal[np.arange(args.games), actions[:, 0]].all()
+            action_counts += np.bincount(np.where(chosen < 1764, 0,
+                                                  np.where(chosen < 3528, 1, 2))[~finished], minlength=3)
+            chosen_route = np.where(chosen == 3528, 1764, chosen % 1764)
+            greedy_route = np.where(raw_greedy == 3528, 1764, raw_greedy % 1764)
+            action_disagreements[0] += np.count_nonzero((chosen_route != greedy_route) & ~finished)
+            action_disagreements[1] += np.count_nonzero((chosen_route == greedy_route)
+                                                        & (chosen != raw_greedy) & ~finished)
+            if args.expansion_audit:
+                destinations = np.asarray(audit_destinations(env.states, device_sides, jnp.asarray(chosen)))
+                destination_counts += np.bincount(destinations[~finished], minlength=4)
+                if turn in checkpoints:
+                    land_margin, army_margin = map(np.asarray, audit_progress(env.states, device_sides))
+                    progress[str(turn)] = dict(games=int((~finished).sum()),
+                                               land_margin_sum=int(land_margin[~finished].sum()),
+                                               army_margin_sum=int(army_margin[~finished].sum()))
+            if turn == 0:
+                reference = policy.forward(np.asarray(values))
+                if args.half_logit_bias:
+                    reference[:, 1764:3528] += args.half_logit_bias
+                assert np.allclose(outputs, reference, rtol=2e-5, atol=2e-5)
+                if args.sample_seed is None and not args.acting_greedy:
+                    assert np.array_equal(
+                        actions[:, 0], np.argmax(np.where(legal, reference[:, :3529], -np.inf), axis=1))
+            values, masks, rewards, done, _ = env.step_device(jnp.asarray(actions))
+            ended = np.asarray(done, bool) & ~finished
+            reward = np.asarray(rewards)
+            assert np.isfinite(reward).all() and np.isin(reward[ended], (-1, 0, 1)).all()
+            outcomes[ended] = reward[ended]
+            finished |= ended
+            if turn % 100 == 0:
+                print(json.dumps(dict(turn=turn + 1, finished=int(finished.sum()))), flush=True)
+            if finished.all():
+                break
+        assert finished.all(), "Every first episode must reach capture or truncation"
+    finally:
+        env.close()
+    result = dict(schema="generals-frozen-match-v2",
+                  scope="First held-out episodes between frozen public-view actors; CPU smoke is not strength evidence",
+                  smoke_cpu=args.smoke_cpu, games=args.games, seed=args.seed, pool_size=args.pool_size,
+                  held_out=True, unique_initial_states=len(set(hashes)),
+                  training_seeds=policy.asset.metadata["training_seeds"],
+                  opponent_training_seeds=opponent.asset.metadata["training_seeds"],
+                  action_selection=("argmax_acting" if args.acting_greedy
+                                    else "argmax" if args.sample_seed is None else "sample"),
+                  sample_seed=args.sample_seed,
+                  sampling_temperature=(args.sampling_temperature
+                                        if (args.sample_seed is not None or args.acting_greedy) else None),
+                  early_route_temperature=args.early_route_temperature,
+                  early_route_turns=args.early_route_turns,
+                  split_sampling_temperature=args.split_sampling_temperature,
+                  route_half_weight=args.route_half_weight,
+                  full_action_temperature=args.full_action_temperature,
+                  half_logit_bias=args.half_logit_bias,
+                  neutral_route_bias=args.neutral_route_bias,
+                  weak_owned_route_penalty=args.weak_owned_route_penalty,
+                  doomed_attack_route_penalty=args.doomed_attack_route_penalty,
+                  first_episode_actions=dict(full=int(action_counts[0]), half=int(action_counts[1]),
+                                             pass_actions=int(action_counts[2])),
+                  first_episode_vs_raw_greedy=dict(route_changes=int(action_disagreements[0]),
+                                                   split_changes=int(action_disagreements[1])),
+                  opponent_action_selection=env._frozen.action_mode,
+                  opponent_action_parameters=(
+                      dict(
+                           move_temperature=env._frozen.move_temperature,
+                           split_temperature=env._frozen.split_temperature,
+                           early_route_temperature=env._frozen.early_route_temperature,
+                           early_route_turns=env._frozen.early_route_turns,
+                           route_half_weight=env._frozen.route_half_weight,
+                           full_action_temperature=env._frozen.full_action_temperature,
+                           neutral_route_bias=env._frozen.neutral_route_bias,
+                           weak_owned_route_penalty=env._frozen.weak_owned_route_penalty,
+                           doomed_attack_route_penalty=env._frozen.doomed_attack_route_penalty)
+                      if env._frozen.action_mode == "structured_sample"
+                      else {}
+                  ),
+                  checkpoint_sha256=policy.asset.metadata["policy_sha256"],
+                  opponent_sha256=opponent.asset.metadata["policy_sha256"],
+                  episode_limit=env.horizon,
+                  coworld_classic_rules=env.base.env.coworld_classic_rules,
+                  pool_generation=int(env._pool_generation),
+                  wins=int((outcomes > 0).sum()), losses=int((outcomes < 0).sum()), draws=int((outcomes == 0).sum()),
+                  score=float(outcomes.mean()), turns=turn + 1, wall_seconds=time.monotonic() - start)
+    if args.expansion_audit:
+        result["expansion_audit"] = dict(
+            destination_counts=dict(own=int(destination_counts[0]), neutral=int(destination_counts[1]),
+                                    enemy=int(destination_counts[2]), passes=int(destination_counts[3])),
+            checkpoints=progress,
+            scope="Post-game omniscient audit of first-episode actions and state; no hidden information fed to actors",
+        )
+    np.save(args.output / "outcomes.npy", outcomes)
+    (args.output / "evaluation.json").write_text(json.dumps(result, indent=2) + "\n")
+    print(json.dumps(result), flush=True)
+
+
+if __name__ == "__main__":
+    main()

@@ -7,7 +7,7 @@ from pathlib import Path
 from integrations.softmax.config import GameConfig
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = "https://github.com/strakam/generals-bots/tree/softmax/integrations/softmax"
+SOURCE = "https://github.com/relh/generals-bots/tree/relh/policy-overhaul/integrations/softmax"
 
 
 def document(filename):
@@ -25,7 +25,7 @@ def template():
             "scores": scores,
             "winner": {"type": "integer", "enum": [-1, 0, 1]},
             "reason": {"type": "string", "enum": ["general_capture", "turn_limit", "forfeit", "double_forfeit"]},
-            "turns": {"type": "integer", "minimum": 0, "maximum": 1200},
+            "turns": {"type": "integer", "minimum": 0, "maximum": 2000},
             "army": counts,
             "land": counts,
             "timeouts": counts,
@@ -69,15 +69,15 @@ def template():
             {
                 "id": "competition",
                 "name": "Classic 1v1",
-                "description": "Regular capture-only rules, 1200-turn cap, fresh private seed; fast bot play.",
-                "game_config": {"players": players, "max_turns": 1200},
+                "description": "Regular capture-only rules, 2000-turn cap, fresh private seed; fast bot play.",
+                "game_config": {"players": players, "max_turns": 2000},
             },
             {
                 "id": "human",
                 "name": "Human play 1v1",
                 "description": "The same classic rules paced at two turns per second.",
                 "game_config": {
-                    "players": players, "max_turns": 1200,
+                    "players": players, "max_turns": 2000,
                     "tick_interval_seconds": 0.5, "turn_timeout_seconds": 1,
                 },
             },

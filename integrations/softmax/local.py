@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--player-image", help="Run this Docker player image through the real WebSocket game")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--port", type=int, default=8080)
-    parser.add_argument("--max-turns", type=int, default=1200)
+    parser.add_argument("--max-turns", type=int, default=2000)
     parser.add_argument("--human", action="store_true", help="control slot 0 in the browser")
     parser.add_argument("--keep-open", action="store_true", help="keep the server open for replay inspection")
     parser.add_argument("--output", type=Path, default=ROOT / "integrations/softmax/local-output")

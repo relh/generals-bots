@@ -30,6 +30,7 @@ import jax.numpy as jnp
 import jax.random as jrandom
 
 from generals.core import game
+from generals.core import coworld_game
 from generals.core.game import GameInfo, GameState, create_initial_state
 from generals.core.grid import generate_grid
 from generals.core.observation import Observation
@@ -133,6 +134,7 @@ class GeneralsEnv:
         min_grid_size: int | None = None,
         max_grid_size: int | None = None,
         pad_to: int | None = None,
+        dynamic_pool: bool = False,
         # Observation mode
         perfect_info: bool = False,
         # Build-castles modifier: no neutral castles spawn; players build their
@@ -145,6 +147,8 @@ class GeneralsEnv:
         # of the current chasing > reinforcing > smaller-army rule. Only for
         # reproducing archived generals.io replays; see game._determine_move_order.
         legacy_move_priority: bool = False,
+        # Capture-only Classic rules from the official Softmax engine.
+        coworld_classic_rules: bool = False,
         # Named ruleset preset (e.g. "competition"); overrides the args above.
         mode: str | None = None,
         # Players. num_players=N is an N-way free-for-all; teams=(N,) team ids
@@ -204,6 +208,7 @@ class GeneralsEnv:
         self.min_generals_distance = min_generals_distance
         self.max_generals_distance = max_generals_distance
         self.pool_size = pool_size
+        self.dynamic_pool = dynamic_pool
         self.castle_val_range = castle_val_range
         self.perfect_info = perfect_info
         self.build_castles = build_castles
@@ -212,6 +217,9 @@ class GeneralsEnv:
             raise ValueError("legacy_move_priority is a plain-ruleset replay aid; "
                              "it cannot be combined with build_castles or deathtouch_turn")
         self.legacy_move_priority = legacy_move_priority
+        if coworld_classic_rules and (build_castles or deathtouch_turn is not None or legacy_move_priority):
+            raise ValueError("Coworld Classic rules require capture-only play without legacy priority")
+        self.coworld_classic_rules = coworld_classic_rules
 
         if teams is None:
             num_players = 2 if num_players is None else int(num_players)
@@ -224,6 +232,8 @@ class GeneralsEnv:
                 raise ValueError(f"num_players={num_players} does not match teams of length {teams.shape[0]}")
         self.teams = teams
         self.num_players = int(teams.shape[0])
+        if self.coworld_classic_rules and self.num_players != 2:
+            raise ValueError("Coworld Classic rules require two players")
         if self.deathtouch_turn is not None and self.num_players != 2:
             raise NotImplementedError("the deathtouch modifier is defined for two players only")
 
@@ -243,6 +253,25 @@ class GeneralsEnv:
         if self.build_castles:
             grid = _build_castles.strip_neutral_castles(grid, num_players=self.num_players)
         return create_initial_state(grid.astype(jnp.int32), teams=self.teams)
+
+    def _make_single_state_dynamic(self, key: jnp.ndarray, dims: jnp.ndarray) -> GameState:
+        grid = generate_grid(
+            key,
+            grid_dims=(self.pad_to, self.pad_to),
+            playable_dims=dims,
+            pad_to=self.pad_to,
+            mountain_density_range=self.mountain_density_range,
+            num_castles_range=self.num_castles_range,
+            min_generals_distance=self.min_generals_distance,
+            max_generals_distance=self.max_generals_distance,
+            castle_val_range=self.castle_val_range,
+            num_players=self.num_players,
+        )
+        return create_initial_state(grid.astype(jnp.int32), teams=self.teams)
+
+    @partial(jax.jit, static_argnums=0)
+    def _make_dynamic_pool_batch(self, keys: jnp.ndarray, dims: jnp.ndarray) -> GameState:
+        return jax.vmap(self._make_single_state_dynamic)(keys, dims)
 
 
 
@@ -274,7 +303,15 @@ class GeneralsEnv:
         """
         k_pool, k_init, k_shuffle = jrandom.split(key, 3)
 
-        if self._fixed_dims is not None and self.min_grid_size == self.max_grid_size:
+        if self.dynamic_pool:
+            if self._fixed_dims is not None:
+                raise ValueError("A dynamic pool requires variable board sizes")
+            pool_keys = jrandom.split(k_pool, self.pool_size)
+            dims = jrandom.randint(
+                k_shuffle, (self.pool_size, 2), self.min_grid_size, self.max_grid_size + 1
+            )
+            pool = self._make_dynamic_pool_batch(pool_keys, dims)
+        elif self._fixed_dims is not None and self.min_grid_size == self.max_grid_size:
             # Fast path: single grid size
             h, w = self._fixed_dims
             pool_keys = jrandom.split(k_pool, self.pool_size)
@@ -311,7 +348,11 @@ class GeneralsEnv:
             # Update pool_size to actual (may differ due to integer division)
             self.pool_size = actual_size
 
-        init_state = self._make_single_state_fixed(k_init, self.max_grid_size, self.max_grid_size)
+        init_state = (
+            jax.tree.map(lambda field: field[0], pool)
+            if self.dynamic_pool
+            else self._make_single_state_fixed(k_init, self.max_grid_size, self.max_grid_size)
+        )
         return pool, init_state
 
     def init_state(self, key: jnp.ndarray) -> GameState:
@@ -360,6 +401,9 @@ class GeneralsEnv:
         # Step game (deathtouch wraps the base step when configured)
         if self.deathtouch_turn is not None:
             new_state, info = _deathtouch.step(state, actions, self.deathtouch_turn)
+        elif self.coworld_classic_rules:
+            # Pinned official softmax revision 0fcb5a00226387670624d2f326f6d5ad61914584.
+            new_state, info = coworld_game.step(state, actions, general_trade=False)
         else:
             new_state, info = game.step(state, actions, legacy_move_priority=self.legacy_move_priority)
 
@@ -387,9 +431,13 @@ class GeneralsEnv:
         )
 
         # Get observations (perfect-info skips fog-of-war masking), one per player
-        get_obs = game.get_full_observation if self.perfect_info else game.get_observation
-        per_player = [get_obs(final_state, i) for i in range(self.num_players)]
-        observation = jax.tree.map(lambda *xs: jnp.stack(xs, axis=0), *per_player)
+        if self.coworld_classic_rules:
+            get_obs = coworld_game.get_full_observations if self.perfect_info else coworld_game.get_observations
+            observation = get_obs(final_state)
+        else:
+            get_obs = game.get_full_observation if self.perfect_info else game.get_observation
+            per_player = [get_obs(final_state, i) for i in range(self.num_players)]
+            observation = jax.tree.map(lambda *xs: jnp.stack(xs, axis=0), *per_player)
 
         timestep = TimeStep(
             observation=observation,
