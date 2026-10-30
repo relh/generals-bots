@@ -16,7 +16,6 @@ import jax
 import jax.numpy as jnp
 
 from .sentinel_agent import _distance
-from .sentinel_v3_agent import _campaign_decision
 from .sentinel_v5_agent import _HORIZON, _INF, SentinelV5Agent, _home_growth, _owned_route_plan
 
 
@@ -130,7 +129,7 @@ class SentinelV6Agent:
         keep = valid & jnp.any(visible_need) & target_allowed & ((arrived & (required <= 0)) | progressing)
         follow = jnp.array([0, defender // width, defender % width, direction.reshape(-1)[defender], 0], jnp.int32)
 
-        campaign_action, campaign_telemetry, scores = _campaign_decision(self.base.campaign, obs, key)
+        campaign_action, campaign_telemetry, scores = self.base.campaign.campaign_decision(obs, key)
         dest = _destination(campaign_action, width, a.shape)
         source = campaign_action[1] * width + campaign_action[2]
         moved = jnp.where(campaign_action[4] == 1, a.reshape(-1)[source] // 2, a.reshape(-1)[source] - 1)

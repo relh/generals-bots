@@ -9,7 +9,7 @@ import jax.numpy as jnp
 import numpy as np
 
 from competition.agents.sentinel_python.main import read_observation
-from generals.agents.sentinel_agent import SentinelAgent
+from generals.agents.sentinel_agent import FrozenSentinelAgent
 from generals.agents.sentinel_v5_agent import SentinelV5Agent, _home_growth
 from generals.core import game
 from generals.core.action import compute_valid_move_mask_obs
@@ -48,7 +48,7 @@ def test_forward_reinforcement_has_adequate_timely_added_defense():
 def test_no_futile_recall_when_no_stack_can_add_enough_defense_in_time():
     obs = intercept_board(enemy=100, own=5)
     action, telemetry = SentinelV5Agent().decision(obs, KEY)
-    np.testing.assert_array_equal(action, SentinelAgent().act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent().act(obs, KEY))
     assert not telemetry["intercept_override"]
     assert not telemetry["intercept_feasible"]
     assert telemetry["intercept_home_deficit"] > 50
@@ -66,7 +66,7 @@ def test_existing_corridor_garrisons_are_not_counted_twice_as_new_defense():
     )
     action, telemetry = SentinelV5Agent().decision(obs, KEY)
     assert not telemetry["intercept_feasible"]
-    np.testing.assert_array_equal(action, SentinelAgent().act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent().act(obs, KEY))
 
 
 def test_three_step_owned_collection_matches_actual_transfers_without_counting_screen_twice():
@@ -100,7 +100,7 @@ def test_three_step_owned_collection_matches_actual_transfers_without_counting_s
 
 
 def test_benign_enemy_and_original_corridor_controls_keep_campaign_actions():
-    agent, base = SentinelV5Agent(), SentinelAgent()
+    agent, base = SentinelV5Agent(), FrozenSentinelAgent()
     observations = [
         intercept_board(home=40),
         board([(1, 1, 2, True)], [(2, 1, 2, True)]),
@@ -119,7 +119,7 @@ def test_guaranteed_home_growth_counts_only_before_attack():
     mountains = [(r, c) for r in range(11) for c in range(4) if (r, c) not in open_cells]
     obs = board([(10, 2, 10, True), (8, 1, 9, False)], [(0, 2, 24, False)], mountains=mountains, shape=(11, 4), time=1)
     action, telemetry = SentinelV5Agent().decision(obs, KEY)
-    np.testing.assert_array_equal(action, SentinelAgent().act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent().act(obs, KEY))
     assert not telemetry["intercept_override"]
 
 
@@ -133,7 +133,7 @@ def test_currently_adequate_screen_cannot_be_drained_into_a_side_branch():
         shape=(6, 6),
         time=232,
     )
-    base = SentinelAgent().act(obs, KEY)
+    base = FrozenSentinelAgent().act(obs, KEY)
     np.testing.assert_array_equal(base, [0, 2, 3, 3, 0])
     action, telemetry = SentinelV5Agent().decision(obs, KEY)
     assert telemetry["intercept_guard"] and telemetry["intercept_override"]
@@ -151,7 +151,7 @@ def test_expensive_already_safe_branch_is_not_selected_as_interception():
     action, telemetry = SentinelV5Agent().decision(obs, KEY)
     assert not telemetry["intercept_feasible"]
     assert telemetry["intercept_target_index"] == -1
-    np.testing.assert_array_equal(action, SentinelAgent().act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent().act(obs, KEY))
 
 
 def test_projected_deathtouch_removes_home_army_from_future_protection():
@@ -162,7 +162,7 @@ def test_projected_deathtouch_removes_home_army_from_future_protection():
     assert projected["intercept_projected_deathtouch"]
     assert projected["intercept_home_deficit"] > 0
     assert not projected["intercept_feasible"]  # A small blocker cannot stop this army before touch.
-    np.testing.assert_array_equal(action, SentinelAgent(deathtouch_turn=800).act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent(deathtouch_turn=800).act(obs, KEY))
 
 
 def test_winning_general_capture_precedes_visible_home_threat():
@@ -188,7 +188,7 @@ def test_disabled_actions_and_original_telemetry_match_v2_and_enabled_vmaps():
     observations = jax.vmap(lambda state: game.get_observation(state, 0))(states)
     keys = jax.random.split(KEY, size)
     kwargs = dict(build_castles=True, deathtouch_turn=800, max_turns=1200)
-    reference = jax.jit(jax.vmap(SentinelAgent(**kwargs).decision))(observations, keys)
+    reference = jax.jit(jax.vmap(FrozenSentinelAgent(**kwargs).decision))(observations, keys)
     actions, telemetry = jax.jit(jax.vmap(SentinelV5Agent(**kwargs, intercept_threats=False).decision))(
         observations, keys
     )
