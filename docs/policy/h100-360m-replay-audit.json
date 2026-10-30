@@ -1,0 +1,104 @@
+{
+  "episodes": [
+    {
+      "seed": 795161449,
+      "turns": 421,
+      "actions": 842,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 115206720,
+      "turns": 1169,
+      "actions": 2338,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 3385741523,
+      "turns": 1094,
+      "actions": 2188,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 2030194629,
+      "turns": 955,
+      "actions": 1910,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 3703329155,
+      "turns": 606,
+      "actions": 1212,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 1391383344,
+      "turns": 395,
+      "actions": 790,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 3307597687,
+      "turns": 406,
+      "actions": 812,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    },
+    {
+      "seed": 418002514,
+      "turns": 284,
+      "actions": 568,
+      "illegal": [],
+      "timeouts": [
+        0,
+        0
+      ],
+      "forfeits": 0,
+      "reason": "general_capture"
+    }
+  ],
+  "actions": 10660,
+  "illegal": 0,
+  "timeouts": 0,
+  "forfeits": 0
+}

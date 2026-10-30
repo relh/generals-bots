@@ -1,0 +1,240 @@
+{
+  "checkpoint_steps": 360710144,
+  "paired_games": 4096,
+  "candidate": {
+    "checkpoint_sha256": "e8bab2e56756e6731a84b1e28219431b66c0577ff0b2f02be9a82ceb3c2f2817",
+    "wins": 2831,
+    "losses": 1213,
+    "draws": 52,
+    "wall_seconds": 251.6696346710014
+  },
+  "baseline": {
+    "checkpoint_sha256": "f4ef5616f76131bb23eee42c25b450353de73832e609ec63499887c7a2634d14",
+    "wins": 2743,
+    "losses": 1317,
+    "draws": 36,
+    "wall_seconds": 237.33899740299967
+  },
+  "candidate_win_rate": 0.691162109375,
+  "baseline_win_rate": 0.669677734375,
+  "win_rate_delta": 0.021484375,
+  "paired_score_delta": 0.0234375,
+  "paired_score_delta_ci95": [
+    0.007236182837919353,
+    0.03963881716208065
+  ],
+  "confidence_interval_method": "Normal approximation with standard error clustered by identical initial map state",
+  "unique_initial_states": 1008,
+  "score_definition": "win=1, draw=0.5, loss=0",
+  "by_opponent": {
+    "frozen_fff930fd304a": {
+      "candidate": {
+        "games": 58,
+        "wins": 50,
+        "losses": 8,
+        "draws": 0,
+        "win_rate": 0.8620689655172413
+      },
+      "baseline": {
+        "games": 58,
+        "wins": 55,
+        "losses": 3,
+        "draws": 0,
+        "win_rate": 0.9482758620689655
+      }
+    },
+    "frozen_704b0949c9a5": {
+      "candidate": {
+        "games": 116,
+        "wins": 95,
+        "losses": 18,
+        "draws": 3,
+        "win_rate": 0.8189655172413793
+      },
+      "baseline": {
+        "games": 116,
+        "wins": 101,
+        "losses": 15,
+        "draws": 0,
+        "win_rate": 0.8706896551724138
+      }
+    },
+    "frozen_4940d3db1222": {
+      "candidate": {
+        "games": 58,
+        "wins": 53,
+        "losses": 4,
+        "draws": 1,
+        "win_rate": 0.9137931034482759
+      },
+      "baseline": {
+        "games": 58,
+        "wins": 47,
+        "losses": 11,
+        "draws": 0,
+        "win_rate": 0.8103448275862069
+      }
+    },
+    "frozen_a4591eb43f96": {
+      "candidate": {
+        "games": 58,
+        "wins": 54,
+        "losses": 4,
+        "draws": 0,
+        "win_rate": 0.9310344827586207
+      },
+      "baseline": {
+        "games": 58,
+        "wins": 53,
+        "losses": 5,
+        "draws": 0,
+        "win_rate": 0.9137931034482759
+      }
+    },
+    "frozen_3eb2fe3f22af": {
+      "candidate": {
+        "games": 58,
+        "wins": 53,
+        "losses": 4,
+        "draws": 1,
+        "win_rate": 0.9137931034482759
+      },
+      "baseline": {
+        "games": 58,
+        "wins": 48,
+        "losses": 10,
+        "draws": 0,
+        "win_rate": 0.8275862068965517
+      }
+    },
+    "frozen_201e147f536f": {
+      "candidate": {
+        "games": 232,
+        "wins": 197,
+        "losses": 34,
+        "draws": 1,
+        "win_rate": 0.8491379310344828
+      },
+      "baseline": {
+        "games": 232,
+        "wins": 189,
+        "losses": 41,
+        "draws": 2,
+        "win_rate": 0.8146551724137931
+      }
+    },
+    "frozen_f8df1ccd67a1": {
+      "candidate": {
+        "games": 290,
+        "wins": 243,
+        "losses": 45,
+        "draws": 2,
+        "win_rate": 0.8379310344827586
+      },
+      "baseline": {
+        "games": 290,
+        "wins": 219,
+        "losses": 67,
+        "draws": 4,
+        "win_rate": 0.7551724137931034
+      }
+    },
+    "frozen_f589aa8f2745": {
+      "candidate": {
+        "games": 290,
+        "wins": 220,
+        "losses": 65,
+        "draws": 5,
+        "win_rate": 0.7586206896551724
+      },
+      "baseline": {
+        "games": 290,
+        "wins": 216,
+        "losses": 73,
+        "draws": 1,
+        "win_rate": 0.7448275862068966
+      }
+    },
+    "frozen_83dc8144eafc": {
+      "candidate": {
+        "games": 638,
+        "wins": 462,
+        "losses": 171,
+        "draws": 5,
+        "win_rate": 0.7241379310344828
+      },
+      "baseline": {
+        "games": 638,
+        "wins": 411,
+        "losses": 221,
+        "draws": 6,
+        "win_rate": 0.6442006269592476
+      }
+    },
+    "frozen_d2c30ee48e80": {
+      "candidate": {
+        "games": 986,
+        "wins": 610,
+        "losses": 358,
+        "draws": 18,
+        "win_rate": 0.6186612576064908
+      },
+      "baseline": {
+        "games": 986,
+        "wins": 567,
+        "losses": 410,
+        "draws": 9,
+        "win_rate": 0.5750507099391481
+      }
+    },
+    "expander_harvester": {
+      "candidate": {
+        "games": 174,
+        "wins": 132,
+        "losses": 41,
+        "draws": 1,
+        "win_rate": 0.7586206896551724
+      },
+      "baseline": {
+        "games": 174,
+        "wins": 142,
+        "losses": 29,
+        "draws": 3,
+        "win_rate": 0.8160919540229885
+      }
+    },
+    "sentinel": {
+      "candidate": {
+        "games": 232,
+        "wins": 174,
+        "losses": 52,
+        "draws": 6,
+        "win_rate": 0.75
+      },
+      "baseline": {
+        "games": 232,
+        "wins": 174,
+        "losses": 49,
+        "draws": 9,
+        "win_rate": 0.75
+      }
+    },
+    "classic_siege_padded": {
+      "candidate": {
+        "games": 906,
+        "wins": 488,
+        "losses": 409,
+        "draws": 9,
+        "win_rate": 0.5386313465783664
+      },
+      "baseline": {
+        "games": 906,
+        "wins": 521,
+        "losses": 383,
+        "draws": 2,
+        "win_rate": 0.5750551876379691
+      }
+    }
+  },
+  "scope": "Held-out sampled maps against the training opponent population; not unseen opponents or hosted matches"
+}

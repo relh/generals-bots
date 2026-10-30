@@ -1,0 +1,119 @@
+{
+  "by_opponent_and_seat": {
+    "Daveey-seat0": {
+      "draws": 0,
+      "games": 2,
+      "losses": 2,
+      "wins": 0
+    },
+    "Daveey-seat1": {
+      "draws": 0,
+      "games": 2,
+      "losses": 0,
+      "wins": 2
+    },
+    "incumbent-seat0": {
+      "draws": 0,
+      "games": 2,
+      "losses": 1,
+      "wins": 1
+    },
+    "incumbent-seat1": {
+      "draws": 0,
+      "games": 2,
+      "losses": 1,
+      "wins": 1
+    }
+  },
+  "checkpoint_sha256": "e8bab2e56756e6731a84b1e28219431b66c0577ff0b2f02be9a82ceb3c2f2817",
+  "completed": 8,
+  "cost_usd": 0.106342,
+  "episodes": [
+    {
+      "cost_usd": 0.007476,
+      "episode_id": "9a7e6264-e1a6-4b7a-a7a9-0102bdaffcda",
+      "episode_request_id": "ereq_2d5b832c-604d-433a-9ab6-0e8c68759489",
+      "opponent_seat": "Daveey-seat0",
+      "request_id": "xreq_c395581a-3cc1-47d8-81a2-f4249251ccfd",
+      "score": -1.0
+    },
+    {
+      "cost_usd": 0.016307,
+      "episode_id": "b21df533-f91a-454c-a70f-774ed9bd80ad",
+      "episode_request_id": "ereq_b36186da-ceb0-4682-8c10-f4b370fe0276",
+      "opponent_seat": "Daveey-seat0",
+      "request_id": "xreq_c395581a-3cc1-47d8-81a2-f4249251ccfd",
+      "score": -1.0
+    },
+    {
+      "cost_usd": 0.037747,
+      "episode_id": "d7705af2-e640-48e9-b5fa-14ac7330f421",
+      "episode_request_id": "ereq_f4fade19-ef4d-4414-abaa-3ea35d6969b3",
+      "opponent_seat": "Daveey-seat1",
+      "request_id": "xreq_21e1bd3e-1f33-4e7c-a700-de76cf2c6bc9",
+      "score": 1.0
+    },
+    {
+      "cost_usd": 0.012247,
+      "episode_id": "9c4eb54c-c305-4706-96ca-aa7ad0200a26",
+      "episode_request_id": "ereq_5d5011e2-79ba-4a5d-850a-235ef6220cfb",
+      "opponent_seat": "Daveey-seat1",
+      "request_id": "xreq_21e1bd3e-1f33-4e7c-a700-de76cf2c6bc9",
+      "score": 1.0
+    },
+    {
+      "cost_usd": 0.009017,
+      "episode_id": "97981483-b6ae-4161-9357-774b73f0d358",
+      "episode_request_id": "ereq_1229143d-5f86-4cd1-8508-c81a09913a61",
+      "opponent_seat": "incumbent-seat0",
+      "request_id": "xreq_cb0ccc28-8b1f-4713-9f41-00807b53cda4",
+      "score": -1.0
+    },
+    {
+      "cost_usd": 0.004664,
+      "episode_id": "0f61ccdd-5f2c-422c-a4f8-e158a513dffd",
+      "episode_request_id": "ereq_b0393ad8-118e-4978-993d-b9225987f174",
+      "opponent_seat": "incumbent-seat0",
+      "request_id": "xreq_cb0ccc28-8b1f-4713-9f41-00807b53cda4",
+      "score": 1.0
+    },
+    {
+      "cost_usd": 0.010207,
+      "episode_id": "6dabaa98-7f1c-49cf-a599-d27a64a064c4",
+      "episode_request_id": "ereq_67575ed3-eda5-4a9d-80db-e49e27e4d98f",
+      "opponent_seat": "incumbent-seat1",
+      "request_id": "xreq_14530c41-dcde-4599-b6f0-16f5a191beae",
+      "score": 1.0
+    },
+    {
+      "cost_usd": 0.008677,
+      "episode_id": "b430919c-9769-4982-b499-3d78b5d2f9df",
+      "episode_request_id": "ereq_ca3a0ff0-9b05-4ca9-94c5-dea6def0f8e4",
+      "opponent_seat": "incumbent-seat1",
+      "request_id": "xreq_14530c41-dcde-4599-b6f0-16f5a191beae",
+      "score": -1.0
+    }
+  ],
+  "failed": 0,
+  "image_digest": "sha256:df26a338d5360a0060e169804c91dff722669f336b053f4ac765e0e1545ac923",
+  "opponents": {
+    "Daveey": "76b0a083-f0a4-4ec7-9811-038349266633",
+    "incumbent": "1d53d8de-24df-47c2-903f-61d5dc437ac8"
+  },
+  "pending": 0,
+  "policy_id": "edc335f6-bb76-4c80-96ac-94d0f3775099",
+  "request_ids": [
+    "xreq_c395581a-3cc1-47d8-81a2-f4249251ccfd",
+    "xreq_21e1bd3e-1f33-4e7c-a700-de76cf2c6bc9",
+    "xreq_cb0ccc28-8b1f-4713-9f41-00807b53cda4",
+    "xreq_14530c41-dcde-4599-b6f0-16f5a191beae"
+  ],
+  "request_payload_sha256": {
+    "Daveey-seat0": "f32f16d2f741997dcd48d4ac407ee857d9988579d9c6c848141a55df4301eb00",
+    "Daveey-seat1": "77c2285b6595e4a92ee6bebfaa24ed0c7fe2adc65908a874b44cd00ba6701840",
+    "incumbent-seat0": "f7c18ebb204352f543accd964afaad00b69e40c64333f24b26460415b9a61fe2",
+    "incumbent-seat1": "3a35415155162f6618113b15af4259cdb062252de77f6939411448a5b748d066"
+  },
+  "schema": "generals-hosted-results-v1",
+  "source_commit": "9ac5c8b65f1fc80132946ae7556c75b5d8ea6dd2"
+}
