@@ -4,7 +4,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from generals.agents.sentinel_agent import SentinelAgent
+from generals.agents.sentinel_agent import FrozenSentinelAgent
 from generals.agents.sentinel_v3_agent import SentinelV3Agent
 from tests.test_sentinel_agent import board
 
@@ -19,7 +19,7 @@ def step(agent, obs, memory=None):
 
 def test_disabled_ablations_match_frozen_policy():
     agent = SentinelV3Agent(remember_threats=False, sustained_defense=False, build_castles=True)
-    baseline = SentinelAgent(build_castles=True)
+    baseline = FrozenSentinelAgent(build_castles=True)
     observations = [
         board([(0, 0, 10, True), (2, 2, 80, False)]),
         board([(1, 1, 23, True), (0, 1, 2, False)], [(2, 2, 13, False)]),
@@ -134,7 +134,7 @@ def test_planning_buffer_alone_does_not_recall_forward_army():
     action, _, telemetry = step(SentinelV3Agent(), obs)
     assert telemetry["visible_reserve"] == 14
     assert not telemetry["defense_override"]
-    np.testing.assert_array_equal(action, SentinelAgent().act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent().act(obs, KEY))
 
 
 def test_uses_safe_half_sortie_instead_of_recalling_more_troops():
@@ -143,7 +143,7 @@ def test_uses_safe_half_sortie_instead_of_recalling_more_troops():
     memory = agent.initial_memory((4, 4))._replace(
         reserve=jnp.float32(10), defend_until=jnp.int32(10), last_turn=jnp.int32(0)
     )
-    base = SentinelAgent().act(obs, KEY)
+    base = FrozenSentinelAgent().act(obs, KEY)
     assert tuple(np.asarray(base[1:3])) == (0, 0) and base[4] == 0
     action, _, telemetry = step(agent, obs, memory)
     np.testing.assert_array_equal(action, base.at[4].set(1))
@@ -167,7 +167,6 @@ def test_adequate_garrison_does_not_pull_in_extra_stacks():
 
 
 def test_extracted_campaign_scores_preserve_v2_on_observation_corpus():
-    from generals.agents.sentinel_v3_agent import _campaign_decision
     from generals.core import game
     from generals.core.action import compute_valid_move_mask_obs
 
@@ -186,8 +185,8 @@ def test_extracted_campaign_scores_preserve_v2_on_observation_corpus():
     )
     observations = jax.vmap(lambda state: game.get_observation(state, 0))(states)
     keys = jax.random.split(KEY, size)
-    base = SentinelAgent(build_castles=True, deathtouch_turn=800)
-    actions, _, scores = jax.jit(jax.vmap(lambda obs, key: _campaign_decision(base, obs, key)))(observations, keys)
+    base = FrozenSentinelAgent(build_castles=True, deathtouch_turn=800)
+    actions, _, scores = jax.jit(jax.vmap(lambda obs, key: base.campaign_decision(obs, key)))(observations, keys)
     np.testing.assert_array_equal(actions, jax.vmap(base.act)(observations, keys))
     valid = jax.vmap(compute_valid_move_mask_obs)(observations)[..., None]
     assert jnp.all((scores <= -1e8) | valid)
