@@ -1,7 +1,10 @@
 """Rule and termination tests for the instrumented arena."""
+import sys
+
 import jax
 import jax.numpy as jnp
 import numpy as np
+import pytest
 
 from generals.core import game
 from generals.evaluation.arena import Rules, make_runner, transition
@@ -81,3 +84,16 @@ def test_rejected_build_on_captured_general_does_not_count_as_construction():
     assert int(info.winner) == 1
     assert bool(after.castles[0, 0])
     assert int(action_counters(state, after, actions, rules)[0, 3]) == 0
+
+
+@pytest.mark.parametrize(("flag", "value"), [("--suites", "classic8"), ("--opponents", "random")])
+def test_duplicate_matchup_rejected_before_output(tmp_path, monkeypatch, capsys, flag, value):
+    from generals.evaluation.cli import main
+
+    output = tmp_path / "run"
+    monkeypatch.setattr(sys, "argv", ["arena", "--output", str(output), flag, value, value])
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code == 2
+    assert f"{flag} contains duplicate names" in capsys.readouterr().err
+    assert not output.exists()

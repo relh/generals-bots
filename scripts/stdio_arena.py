@@ -331,9 +331,22 @@ def ask_pair(agents, payloads, shape):
 
 def identity(run_sh):
     hashes = {}
-    for path in sorted(run_sh.parent.rglob("*")):
-        if path.is_file() and "__pycache__" not in path.parts and not path.is_symlink():
-            hashes[str(path.relative_to(run_sh.parent))] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+    def collect(directory, ancestors):
+        resolved = directory.resolve()
+        if resolved in ancestors:
+            raise ValueError(f"Directory cycle in agent identity: {directory}")
+        for path in directory.iterdir():
+            if path.name == "__pycache__":
+                continue
+            if path.is_dir():
+                collect(path, ancestors | {resolved})
+            elif path.is_file():
+                hashes[str(path.relative_to(run_sh.parent))] = sha256(path)
+            elif path.is_symlink():
+                raise ValueError(f"Unresolved or non-file agent symlink: {path}")
+
+    collect(run_sh.parent, set())
     digest = hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest()
     result = dict(run_sh=str(run_sh), directory_sha256=digest, file_sha256=hashes)
     for name, path in (
@@ -346,7 +359,8 @@ def identity(run_sh):
 
 
 def sha256(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
 def process_record(pid):
@@ -1088,7 +1102,7 @@ def main():
     for name, archive in (("candidate", args.candidate_bundle), ("opponent", args.opponent_bundle)):
         if archive:
             metadata[name]["archive"] = str(archive.resolve())
-            metadata[name]["archive_sha256"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+            metadata[name]["archive_sha256"] = sha256(archive)
     root = Path(__file__).resolve().parents[1]
     metadata["source_sha256"] = {
         str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()

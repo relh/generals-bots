@@ -152,6 +152,10 @@ def main():
     parser.add_argument('--suites', nargs='+', choices=['open', 'terrain'], default=['open', 'terrain'])
     parser.add_argument('--opponents', nargs='+', default=['training_random', 'random', 'expander', 'hunter', 'harvester'])
     args = parser.parse_args()
+    for name in ("suites", "opponents"):
+        values = getattr(args, name)
+        if len(values) != len(set(values)):
+            parser.error(f"--{name} contains duplicate names; use --repeats for additional games")
     if min(args.repeats, args.terrain_boards, args.batch_size, args.max_turns) < 1:
         parser.error('counts must be positive')
     args.output.mkdir(parents=True, exist_ok=True)
