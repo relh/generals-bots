@@ -1,11 +1,16 @@
 """Historical replay must preserve stochastic keys, seats and arena termination."""
 
+import csv
+import json
+import sys
+
 import jax
 import jax.numpy as jnp
 import numpy as np
 import pytest
 
 from generals.agents import RandomAgent
+from generals.core import game
 from generals.evaluation import replay
 from generals.evaluation.arena import Rules, make_runner
 from generals.evaluation.replay import compare_result, load_grid, replay_game, select_rows
@@ -32,6 +37,36 @@ def test_replay_matches_batched_stochastic_arena_and_counter_order(seat):
         assert np.all(arrays[f"observation_{player}_armies"][fog] == 0)
     assert compare_result(actual, {key: str(value) for key, value in actual.items()}) == {}
     assert "turns" in compare_result(actual, {"turns": actual["turns"] + 1})
+
+
+def test_cli_records_stateless_opponent_decisions(tmp_path, monkeypatch):
+    grid = np.array([[1, 0, 0], [0, -1, 0], [0, 0, 2]], dtype=np.int32)
+    np.savez_compressed(tmp_path / "tiny_boards.npz", **{"0": grid})
+    metadata = {"candidate": "random", "suite_rules": {"tiny": {"max_turns": 2}}}
+    (tmp_path / "metadata.json").write_text(json.dumps(metadata))
+    row = dict(candidate="random", opponent="sentinel", suite="tiny", board_id=0, repeat=0,
+               swapped=0, seat=1, action_seed=183, height=3, width=3, result="draw")
+    with (tmp_path / "games.csv").open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=row)
+        writer.writeheader()
+        writer.writerow(row)
+    monkeypatch.setattr(sys, "argv", ["replay", str(tmp_path), "--result", "draw"])
+    replay.main()
+
+    rules = Rules(max_turns=2)
+    _, decision = replay.make_policy("sentinel", rules)
+    state = game.create_initial_state(jnp.asarray(grid))
+    with np.load(next((tmp_path / "replays").glob("*.npz")), allow_pickle=False) as trace:
+        assert len(trace["actions"]) == rules.max_turns
+        for turn, actions in enumerate(trace["actions"]):
+            key = jax.random.split(trace["keys"][turn], 3)[2]
+            action, telemetry = decision(game.get_observation(state, 0), key)
+            np.testing.assert_array_equal(actions[0], action)
+            leaves, _ = jax.tree_util.tree_flatten_with_path(telemetry)
+            assert trace["opponent_telemetry_paths"].tolist() == [jax.tree_util.keystr(path) for path, _ in leaves]
+            for index, (_, value) in enumerate(leaves):
+                np.testing.assert_array_equal(trace[f"opponent_telemetry_leaf_{index}"][turn], value)
+            state, _ = replay.transition(state, actions, rules)
 
 
 def test_load_stored_board_swaps_only_general_labels(tmp_path):

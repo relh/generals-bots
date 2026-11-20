@@ -111,7 +111,7 @@ def compact_replay_summary(name, report):
 def load_grid(run_dir, row):
     """Recover the stored board and original general-label permutation."""
     with np.load(Path(run_dir) / f"{row['suite']}_boards.npz", allow_pickle=False) as boards:
-        grid = boards[str(row["board_id"])].copy()
+        grid = boards[str(row["board_id"])]
     if int(row["swapped"]):
         grid = np.where(grid == 1, 2, np.where(grid == 2, 1, grid))
     if grid.shape != (int(row["height"]), int(row["width"])):
@@ -179,7 +179,7 @@ def store_tree_trace(arrays, prefix, snapshots):
         arrays[f"{prefix}_leaf_{index}"] = np.stack([values[index] for values in flattened])
 
 
-def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision=None):
+def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision=None, opponent_decision=None):
     """Record full state only outside policies; policies receive fog observations.
 
     Keys split in the exact candidate/opponent order used by arena.make_runner.
@@ -188,15 +188,21 @@ def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision
     comes from the same step that selected the action, never a second call.
     """
 
+    def recorded_step(policy, decision_fn, obs, key, memory):
+        action, memory, telemetry = policy_step(policy, obs, key, memory)
+        if decision_fn is not None and not callable(getattr(policy, "step", None)):
+            telemetry = decision_fn(obs, key)[1]
+        return action, memory, telemetry
+
     @jax.jit
     def step(state, key, memories):
         keys = jax.random.split(key, 3)
         ours = game.get_observation(state, seat)
         theirs = game.get_observation(state, 1 - seat)
-        action, own_memory, telemetry = policy_step(candidate, ours, keys[1], memories[0])
-        if decision is not None and not callable(getattr(candidate, "step", None)):
-            telemetry = decision(ours, keys[1])[1]
-        enemy_action, enemy_memory, enemy_telemetry = policy_step(opponent, theirs, keys[2], memories[1])
+        action, own_memory, telemetry = recorded_step(candidate, decision, ours, keys[1], memories[0])
+        enemy_action, enemy_memory, enemy_telemetry = recorded_step(
+            opponent, opponent_decision, theirs, keys[2], memories[1]
+        )
         actions = jnp.stack((action, enemy_action) if seat == 0 else (enemy_action, action))
         observations = (ours, theirs) if seat == 0 else (theirs, ours)
         after, info = transition(state, actions, rules)
@@ -215,19 +221,22 @@ def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision
     state = game.create_initial_state(jnp.array(grid))
     key = jax.random.PRNGKey(action_seed)
     memories = tuple(initial_memory(policy, grid.shape) for policy in (candidate, opponent))
-    memory_history = [jax.device_get(memories)]
-    states = [jax.device_get(state)]
+    state_host, memory_host, key_host = jax.device_get((state, memories, key))
+    memory_history = [memory_host]
+    states = [state_host]
     records = []
-    finished = bool(state.winner >= 0)
-    while int(state.time) < rules.max_turns and not finished:
-        old_key = np.asarray(key)
+    finished = bool(state_host.winner >= 0)
+    while int(state_host.time) < rules.max_turns and not finished:
+        old_key = key_host
         state, key, obs, actions, counters, telemetry, terminal, memories = step(state, key, memories)
-        state_host, obs, actions, counters, telemetry = jax.device_get((state, obs, actions, counters, telemetry))
+        state_host, key_host, obs, actions, counters, telemetry, terminal, memory_host = jax.device_get(
+            (state, key, obs, actions, counters, telemetry, terminal, memories)
+        )
         states.append(state_host)
-        memory_history.append(jax.device_get(memories))
+        memory_history.append(memory_host)
         records.append((old_key, obs, actions, counters, telemetry))
         finished = bool(terminal)
-    arrays = {"initial_grid": np.asarray(grid), "final_key": np.asarray(key)}
+    arrays = {"initial_grid": np.asarray(grid), "final_key": key_host}
     for index, role in enumerate(("candidate", "opponent")):
         store_tree_trace(arrays, f"{role}_memory", [memory[index] for memory in memory_history])
     for field in state._fields:
@@ -249,9 +258,9 @@ def replay_game(grid, candidate, opponent, rules, *, seat, action_seed, decision
             for field, value in records[0][4][0].items():
                 if isinstance(value, (np.ndarray, np.generic, int, float, bool)):
                     arrays[f"telemetry_{field}"] = np.stack([r[4][0][field] for r in records])
-    winner = int(state.winner)
+    winner = int(state_host.winner)
     outcome = "draw" if winner < 0 else ("win" if winner == seat else "loss")
-    result = dict(result=outcome, winner=winner, turns=int(state.time), terminal=finished)
+    result = dict(result=outcome, winner=winner, turns=int(state_host.time), terminal=finished)
     totals = arrays["action_counters"].sum(axis=0)
     for prefix, player in (("own", seat), ("enemy", 1 - seat)):
         result.update({f"{prefix}_{metric}": int(value) for metric, value in zip(METRICS, totals[player])})
@@ -511,7 +520,7 @@ def main():
     metadata = json.loads((args.run_dir / "metadata.json").read_text())
     with (args.run_dir / "games.csv").open() as stream:
         rows = select_rows(
-            list(csv.DictReader(stream)),
+            csv.DictReader(stream),
             max_samples=args.max_samples,
             result=args.result,
             candidate=metadata["candidate"],
@@ -541,7 +550,7 @@ def main():
         ours, decision = make_policy(
             row["candidate"], rules, checkpoint, args.candidate_source, options=metadata.get("candidate_options")
         )
-        theirs, _ = make_policy(
+        theirs, opponent_decision = make_policy(
             row["opponent"], rules, options=metadata.get("opponent_options", {}).get(row["opponent"])
         )
         arrays, actual = replay_game(
@@ -552,6 +561,7 @@ def main():
             seat=int(row["seat"]),
             action_seed=int(row["action_seed"]),
             decision=decision,
+            opponent_decision=opponent_decision,
         )
         mismatch = compare_result(actual, row)
         evidence_state = replay_evidence_state(mismatch, provenance, rule_provenance)
