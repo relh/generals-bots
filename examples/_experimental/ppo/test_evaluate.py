@@ -1,4 +1,6 @@
 """Checks for paired game setup, outcome accounting, and batched simulation."""
+import sys
+
 import pytest
 
 pytest.importorskip('equinox')
@@ -59,3 +61,16 @@ def test_batched_games_match_serial_reference():
             state, _ = game.step(state, actions)
         for batched, single in zip(jax.tree.leaves(actual), jax.tree.leaves(state)):
             np.testing.assert_array_equal(batched[i], single)
+
+
+@pytest.mark.parametrize(("flag", "value"), [("--suites", "terrain"), ("--opponents", "random")])
+def test_duplicate_matchup_rejected_before_loading_model(tmp_path, monkeypatch, capsys, flag, value):
+    from .evaluate import main
+
+    output = tmp_path / "run"
+    monkeypatch.setattr(sys, "argv", ["evaluate", "--model", "unused", "--output", str(output), flag, value, value])
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code == 2
+    assert f"{flag} contains duplicate names" in capsys.readouterr().err
+    assert not output.exists()
