@@ -10,6 +10,7 @@ from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
+import anyio
 import uvicorn
 from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.responses import FileResponse, JSONResponse
@@ -228,7 +229,10 @@ async def socket_session(ws, queue, receive):
     finally:
         for task in (sender, receiver):
             task.cancel()
-        await asyncio.gather(sender, receiver, return_exceptions=True)
+        # Finish joining our children even if the ASGI host cancels the
+        # session during disconnect. Its cancel scope owns the outer task.
+        with anyio.CancelScope(shield=True):
+            await asyncio.gather(sender, receiver, return_exceptions=True)
 
 
 def create_app(config: GameConfig | None = None, artifacts: dict | None = None, shutdown=None):
