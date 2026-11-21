@@ -17,6 +17,10 @@ from .sentinel_agent import FrozenSentinelAgent, _distance, _neighbors
 
 # Deliberate frozen-v2 scoring copy: only the extra scores return differs.
 # Keep action-parity tests when changing this local extraction; never edit v2.
+# Archived candidate sources import this unbound scorer and pass their own policy settings.
+_campaign_decision = FrozenSentinelAgent.campaign_decision
+
+
 class SentinelMemory(NamedTuple):
     threat_army: jax.Array
     threat_age: jax.Array

@@ -1,5 +1,7 @@
 """State/history contracts and defensive tactics, independent of win-rate gates."""
 
+import hashlib
+
 import jax
 import jax.numpy as jnp
 import numpy as np
@@ -187,7 +189,9 @@ def test_extracted_campaign_scores_preserve_v2_on_observation_corpus():
     keys = jax.random.split(KEY, size)
     base = FrozenSentinelAgent(build_castles=True, deathtouch_turn=800)
     actions, _, scores = jax.jit(jax.vmap(lambda obs, key: base.campaign_decision(obs, key)))(observations, keys)
-    np.testing.assert_array_equal(actions, jax.vmap(base.act)(observations, keys))
+    # Independent action oracle from the published v2 revision 36985f5 on this corpus.
+    digest = hashlib.sha256(np.asarray(actions, dtype="<i4").tobytes()).hexdigest()
+    assert digest == "94ca7e0c093d3e877719a3867080a550ac2a4d417aa0f16add096a786c354515"
     valid = jax.vmap(compute_valid_move_mask_obs)(observations)[..., None]
     assert jnp.all((scores <= -1e8) | valid)
     disabled = SentinelV3Agent(build_castles=True, deathtouch_turn=800, remember_threats=False, sustained_defense=False)
