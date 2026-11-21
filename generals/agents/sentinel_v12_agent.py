@@ -12,7 +12,6 @@ import jax
 import jax.numpy as jnp
 
 from .sentinel_agent import _build_prices, _distance
-from .sentinel_v3_agent import _campaign_decision
 from .sentinel_v5_agent import _HORIZON, _home_growth
 from .sentinel_v6_agent import _destination
 from .sentinel_v10_agent import SentinelV10Agent
@@ -102,7 +101,7 @@ class SentinelV12Agent:
             parent_safe, parent_deficit = evaluate(action)
 
             def replace(_):
-                campaign, campaign_telemetry, scores = _campaign_decision(self.campaign, obs, key)
+                campaign, campaign_telemetry, scores = self.campaign.campaign_decision(obs, key)
                 imminent = campaign_telemetry["adjacent_threat"]
                 home_army = campaign_telemetry["general_army"]
                 pass_unsafe = (imminent > home_army) | (campaign_telemetry["deathtouch_active"] & (imminent > 0))
