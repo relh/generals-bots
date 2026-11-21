@@ -9,7 +9,7 @@ import jax.numpy as jnp
 import numpy as np
 import pytest
 
-from generals.agents.sentinel_agent import SentinelAgent
+from generals.agents.sentinel_agent import FrozenSentinelAgent
 from generals.agents.sentinel_v4_agent import SentinelV4Agent, _build_threat
 from generals.core import game
 from generals.core.observation import Observation
@@ -33,10 +33,10 @@ def construction_board(*, alternate=False, mountain=False, enemy_army=19):
 
 def test_two_step_build_threat_uses_campaign_fallback():
     obs = construction_board()
-    old = SentinelAgent(build_castles=True).act(obs, KEY)
+    old = FrozenSentinelAgent(build_castles=True).act(obs, KEY)
     assert tuple(np.asarray(old)) == (2, 5, 5, 0, 0)
     action, telemetry = SentinelV4Agent(build_castles=True).decision(obs, KEY)
-    np.testing.assert_array_equal(action, SentinelAgent(build_castles=False).act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent(build_castles=False).act(obs, KEY))
     assert action[0] == 0  # A useful campaign move remains; no build-veto pass.
     assert telemetry["build_rejected_threat_count"] == 1
     assert telemetry["build_candidate_count"] == 0
@@ -77,7 +77,7 @@ def test_weak_visible_army_and_clear_observation_do_not_create_stale_threats():
 @pytest.mark.parametrize("time", [0, 800, 1150])
 def test_build_rules_payback_and_winning_capture_priorities(time):
     obs = construction_board()._replace(timestep=jnp.int32(time))
-    np.testing.assert_array_equal(SentinelV4Agent().act(obs, KEY), SentinelAgent().act(obs, KEY))
+    np.testing.assert_array_equal(SentinelV4Agent().act(obs, KEY), FrozenSentinelAgent().act(obs, KEY))
     late = construction_board(alternate=True)._replace(timestep=jnp.int32(1150))
     assert SentinelV4Agent(build_castles=True).act(late, KEY)[0] != 2
     win = board([(0, 0, 20, True), (2, 2, 2, False), (8, 1, 80, False)], [(2, 3, 100, True)], shape=(10, 10), time=800)
@@ -101,7 +101,7 @@ def test_horizon_one_matches_v2_over_complete_engine_observations_and_vmaps():
     )
     observations = jax.vmap(lambda state: game.get_observation(state, 0))(states)
     keys = jax.random.split(KEY, size)
-    base = SentinelAgent(build_castles=True, deathtouch_turn=800)
+    base = FrozenSentinelAgent(build_castles=True, deathtouch_turn=800)
     ablation = SentinelV4Agent(build_castles=True, deathtouch_turn=800, build_threat_horizon=1)
     reference = jax.jit(jax.vmap(base.decision))(observations, keys)
     actions, telemetry = jax.jit(jax.vmap(ablation.decision))(observations, keys)
@@ -145,9 +145,9 @@ def test_recorded_development_turn_283_rejects_unsafe_investment():
     assert obs.armies[12, 9] == 40 and obs.armies[13, 10] == 19
     assert _build_threat(obs, 1)[12, 9] == 0 and _build_threat(obs, 2)[12, 9] == 18
     kwargs = dict(build_castles=True, deathtouch_turn=800, max_turns=1200)
-    old = SentinelAgent(**kwargs).act(obs, KEY)
+    old = FrozenSentinelAgent(**kwargs).act(obs, KEY)
     np.testing.assert_array_equal(old, [2, 12, 9, 0, 0])
     np.testing.assert_array_equal(SentinelV4Agent(**kwargs, build_threat_horizon=1).act(obs, KEY), old)
     action, telemetry = SentinelV4Agent(**kwargs).decision(obs, KEY)
     assert action[0] != 2 and telemetry["build_rejected_threat_count"] == 1
-    np.testing.assert_array_equal(action, SentinelAgent(deathtouch_turn=800).act(obs, KEY))
+    np.testing.assert_array_equal(action, FrozenSentinelAgent(deathtouch_turn=800).act(obs, KEY))

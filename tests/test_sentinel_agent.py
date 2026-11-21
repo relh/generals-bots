@@ -3,7 +3,7 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 
-from generals.agents.sentinel_agent import SentinelAgent, _build_prices, _distance
+from generals.agents.sentinel_agent import FrozenSentinelAgent, SentinelAgent, _build_prices, _distance
 from generals.core.observation import Observation
 
 
@@ -35,6 +35,12 @@ def board(owned, enemies=(), castles=(), mountains=(), *, shape=(4, 4), time=0):
 
 def action(obs, **kwargs):
     return np.asarray(SentinelAgent(**kwargs).act(obs, jax.random.PRNGKey(0)))
+
+
+def test_two_army_opening_preserves_live_expansion_and_frozen_reserve():
+    obs = board([(1, 1, 2, True)], time=2)
+    np.testing.assert_array_equal(action(obs), [0, 1, 1, 1, 0])
+    assert FrozenSentinelAgent().act(obs, jax.random.PRNGKey(0))[0] == 1
 
 
 def test_takes_winning_general_capture():
