@@ -11,8 +11,7 @@ import jax
 import jax.numpy as jnp
 
 from .agent import Agent
-from .sentinel_agent import SentinelAgent, _build_prices, _distance, _neighbors
-from .sentinel_v3_agent import _campaign_decision
+from .sentinel_agent import FrozenSentinelAgent, _build_prices, _distance, _neighbors
 
 _HORIZON = 10
 _TARGETS_PER_END = 6
@@ -102,7 +101,7 @@ class SentinelV5Agent(Agent):
         self.deathtouch_turn = deathtouch_turn
         self.max_turns = max_turns
         self.intercept_threats = intercept_threats
-        self.campaign = SentinelAgent(build_castles=build_castles, deathtouch_turn=deathtouch_turn, max_turns=max_turns)
+        self.campaign = FrozenSentinelAgent(build_castles=build_castles, deathtouch_turn=deathtouch_turn, max_turns=max_turns)
 
     @partial(jax.jit, static_argnums=0)
     def act(self, obs, key):
@@ -110,7 +109,7 @@ class SentinelV5Agent(Agent):
 
     @partial(jax.jit, static_argnums=0)
     def decision(self, obs, key):
-        base, telemetry, scores = _campaign_decision(self.campaign, obs, key)
+        base, telemetry, scores = self.campaign.campaign_decision(obs, key)
         defense = dict(
             intercept_override=jnp.array(False),
             intercept_guard=jnp.array(False),
