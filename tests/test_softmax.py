@@ -1,5 +1,6 @@
 """Coworld rule parity, player boundaries, and complete episode lifecycle."""
 
+import asyncio
 import json
 
 import jax.numpy as jnp
@@ -16,7 +17,7 @@ from integrations.softmax.artifacts import read_json, write_json
 from integrations.softmax.config import GameConfig
 from integrations.softmax.engine import Match, executed_moves
 from integrations.softmax.protocol import PASS, parse_action, stdio_frame
-from integrations.softmax.server import create_app
+from integrations.softmax.server import create_app, socket_session
 
 
 def config(**overrides):
@@ -171,6 +172,44 @@ def test_episode_records_reproducible_replay_and_scores(tmp_path):
         assert turn["applied"]
         match.advance(turn["actions"])
         assert frame == match.frame()
+
+
+def test_session_cancellation_during_peer_cleanup():
+    import anyio
+
+    async def exercise():
+        receiving = asyncio.Event()
+        cleaned_up = asyncio.Event()
+        queue = asyncio.Queue()
+        queue.put_nowait({"type": "final"})
+
+        class Socket:
+            async def send_json(self, message):
+                await receiving.wait()
+
+            async def close(self, code):
+                pass
+
+        with anyio.CancelScope() as session_scope:
+
+            async def receive():
+                receiving.set()
+                try:
+                    await asyncio.Event().wait()
+                finally:
+                    # The sender has closed. Reproduce the host cancelling the
+                    # session while it is joining the unfinished receiver.
+                    session_scope.cancel()
+                    await asyncio.sleep(0)
+                    cleaned_up.set()
+
+            await socket_session(Socket(), queue, receive)
+            await anyio.lowlevel.checkpoint()
+
+        assert session_scope.cancelled_caught
+        assert cleaned_up.is_set()
+
+    asyncio.run(asyncio.wait_for(exercise(), timeout=5))
 
 
 def test_live_public_routes_do_not_reveal_hidden_state(tmp_path):
