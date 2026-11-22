@@ -242,6 +242,10 @@ def main():
     parser.add_argument("--seed", type=int, default=31000)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    for name in ("suites", "opponents"):
+        values = getattr(args, name)
+        if len(values) != len(set(values)):
+            parser.error(f"--{name} contains duplicate names; use --repeats for additional games")
     if min(args.boards, args.repeats, args.batch_size) < 1:
         parser.error("counts must be positive")
     if args.candidate in ("learned", "old-ppo") and args.checkpoint is None:

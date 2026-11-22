@@ -554,3 +554,38 @@ def test_completed_runner_does_not_own_unrelated_shared_shell_process_group(tmp_
     finally:
         child.kill()
         child.wait(timeout=2)
+
+
+@pytest.mark.parametrize("linked_directory", [False, True])
+def test_resume_identity_tracks_linked_policy_contents(tmp_path, linked_directory):
+    agent = tmp_path / "agent"
+    agent.mkdir()
+    run_sh = agent / "run.sh"
+    run_sh.write_text("cat weights/policy")
+    external = tmp_path / "external"
+    external.mkdir()
+    policy = external / "policy"
+    policy.write_text("first")
+    if linked_directory:
+        (agent / "weights").symlink_to(external)
+    else:
+        (agent / "weights").mkdir()
+        (agent / "weights/policy").symlink_to(policy)
+
+    def metadata():
+        return dict(candidate=arena.identity(run_sh), source_sha256={"scripts/stdio_arena.py": "same"})
+
+    old = metadata()
+    assert old["candidate"]["file_sha256"]["weights/policy"] == arena.sha256(policy)
+    assert arena.verify_resume_metadata(old, metadata()) is None
+    policy.write_text("second")
+    with pytest.raises(ValueError, match="identity/options mismatch: candidate"):
+        arena.verify_resume_metadata(old, metadata())
+
+
+def test_agent_identity_rejects_directory_cycle(tmp_path):
+    run_sh = tmp_path / "run.sh"
+    run_sh.touch()
+    (tmp_path / "loop").symlink_to(tmp_path)
+    with pytest.raises(ValueError, match="Directory cycle"):
+        arena.identity(run_sh)
