@@ -10,6 +10,7 @@ import ast
 import csv
 import fcntl
 import hashlib
+import io
 import json
 import os
 import select
@@ -543,19 +544,30 @@ def verify_resume_metadata(old, current, equivalence=None):
     return proof
 
 
-def validate_completed_rows(output, cases):
+def validate_completed_rows(output, cases, *, legacy=False):
     """Reject partial/duplicate/conflicting data; recover durable complete JSON rows."""
     expected = {case["game_id"]: case for case in cases}
     rows, seen, recovered = [], set(), []
     csv_path = output / "games.csv"
+    fragment = ""
+    fields = None
+    raw = []
     if csv_path.exists():
+
+        def committed_lines(stream):
+            nonlocal fragment
+            for line in stream:
+                if not line.endswith(("\r", "\n")):
+                    fragment = line
+                    return
+                yield line
+
         with csv_path.open(newline="") as stream:
-            reader = csv.DictReader(stream)
+            reader = csv.DictReader(committed_lines(stream))
             raw = list(reader)
-        if not reader.fieldnames or (not raw and csv_path.stat().st_size == 0):
-            raise ValueError("Partial or empty existing CSV")
-    else:
-        raw = []
+            fields = reader.fieldnames
+            if fields == []:
+                raise ValueError("Empty existing CSV header")
     for row in raw:
         if None in row or any(value is None for value in row.values()):
             raise ValueError("Partial CSV row")
@@ -591,8 +603,12 @@ def validate_completed_rows(output, cases):
         if row["reason"] not in ("terminal", "turn_cap_draw", "fault_forfeit", "process_forfeit", "both_forfeit"):
             raise ValueError("Unknown or incomplete termination reason")
         details = json.loads((output / f"game-{game_id:04d}.json").read_text())
-        if details.get("cleanup", {}).get("status") == "pending":
-            raise ValueError("Partial game cleanup evidence cannot be resumed")
+        # Legacy game files predate the provisional/final publication markers.
+        if not legacy or "cleanup" in details or "runner_error" in details:
+            if details.get("cleanup", {}).get("status") not in ("complete", "failed") or "runner_error" not in details:
+                raise ValueError("Partial game cleanup evidence cannot be resumed")
+        if details.get("runner_error") is not None:
+            raise ValueError("Interrupted game report cannot be resumed")
         if not details.get("frames"):
             raise ValueError("Completed case has no frame evidence")
         totals = [0, 0]
@@ -656,6 +672,20 @@ def validate_completed_rows(output, cases):
         outcome = "draw" if winner < 0 else "win" if winner == int(row["seat"]) else "loss"
         if row["result"] != outcome:
             raise ValueError("Conflicting winner/result")
+    if fragment:
+        # JSON is published before its CSV append. Only discard a torn suffix
+        # if a fully validated, unindexed game explains those exact bytes.
+        for row in rows[len(raw) :]:
+            encoded = io.StringIO(newline="")
+            writer = csv.DictWriter(encoded, fieldnames=fields or list(row))
+            if fields is None:
+                writer.writeheader()
+            else:
+                writer.writerow(row)
+            if encoded.getvalue().startswith(fragment):
+                break
+        else:
+            raise ValueError("Partial CSV append conflicts with game evidence")
     return sorted(rows, key=lambda row: int(row["game_id"])), recovered
 
 
@@ -895,7 +925,7 @@ def run_output(args, paths, environment, cpus, metadata):
     for game_id, case in enumerate(paired_cases(boards, args.seed + 1)):
         case.pop("action_seed")
         cases.append(dict(case, game_id=game_id))
-    rows, recovered = validate_completed_rows(output, cases) if args.resume else ([], [])
+    rows, recovered = validate_completed_rows(output, cases, legacy=legacy) if args.resume else ([], [])
     completed = {int(row["game_id"]) for row in rows}
     pending = [case for case in cases if case["game_id"] not in completed]
     if args.check_resume:

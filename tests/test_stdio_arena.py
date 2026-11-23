@@ -304,6 +304,7 @@ def complete_details(row):
         ],
         processes=[dict(pid=987654320 + i, faults=0, fault_reasons={}) for i in range(2)],
         cleanup=dict(status="complete"),
+        runner_error=None,
     )
 
 
@@ -386,6 +387,49 @@ def test_resume_recovers_only_complete_durable_json_without_rerunning(tmp_path):
     (tmp_path / "games.csv").unlink()
     rows, recovered = arena.validate_completed_rows(tmp_path, cases)
     assert rows == [row] and recovered == [0]
+
+
+@pytest.mark.parametrize("cut", ["empty", "header", "middle", "terminator", "conflict"])
+def test_resume_proves_torn_csv_append_from_json(tmp_path, cut):
+    row, cases = completed_fixture(tmp_path)
+    path = tmp_path / "games.csv"
+    header, record = path.read_bytes().splitlines(keepends=True)
+    fragments = {
+        "empty": b"",
+        "header": header[:4],
+        "middle": header + record[:6],
+        "terminator": header + record.rstrip(b"\r\n"),
+        "conflict": header + b"9,",
+    }
+    path.write_bytes(fragments[cut])
+    if cut == "conflict":
+        with pytest.raises(ValueError, match="conflicts"):
+            arena.validate_completed_rows(tmp_path, cases)
+    else:
+        assert arena.validate_completed_rows(tmp_path, cases) == ([row], [0])
+    assert path.read_bytes() == fragments[cut]
+
+
+@pytest.mark.parametrize("indexed", [True, False])
+def test_resume_requires_finished_report(tmp_path, indexed):
+    row, cases = completed_fixture(tmp_path)
+    if not indexed:
+        (tmp_path / "games.csv").unlink()
+    path = tmp_path / "game-0000.json"
+    details = json.loads(path.read_text())
+    details["runner_error"] = "KeyboardInterrupt()"
+    arena.atomic_json(path, details)
+    with pytest.raises(ValueError, match="Interrupted game report"):
+        arena.validate_completed_rows(tmp_path, cases)
+    del details["runner_error"]
+    del details["cleanup"]
+    arena.atomic_json(path, details)
+    with pytest.raises(ValueError, match="Partial game cleanup"):
+        arena.validate_completed_rows(tmp_path, cases)
+    assert arena.validate_completed_rows(tmp_path, cases, legacy=True) == ([row], [] if indexed else [0])
+    path.write_bytes(path.read_bytes()[:-8])
+    with pytest.raises(json.JSONDecodeError):
+        arena.validate_completed_rows(tmp_path, cases)
 
 
 @pytest.mark.parametrize("field", ["candidate", "opponent", "runtime", "cpus", "seed", "rules", "boards_sha256"])
