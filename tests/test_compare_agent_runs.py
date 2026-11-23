@@ -1,6 +1,10 @@
 import csv
 import hashlib
 import json
+import subprocess
+import sys
+import zipfile
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -222,6 +226,10 @@ def test_completed_legacy_nonresumable_runs_remain_comparable(tmp_path):
         (path / "metadata.json").write_text(json.dumps(metadata))
     result = compare(a, b, resamples=100)
     assert result["execution_segments"][0]["legacy_nonresumable"]
+    board = result["paired_maps"]["maps"][0]
+    assert board["opponent"] == "fixture-opponent"
+    seed_column = result["paired_maps"]["case_columns"].index("action_seed")
+    assert all(case[seed_column] is None for case in board["cases"])
 
 
 def test_identically_missing_planned_board_does_not_count_as_complete(tmp_path):
@@ -242,3 +250,119 @@ def test_identically_missing_planned_board_does_not_count_as_complete(tmp_path):
         np.savez(path / "boards.npz", **{str(i): np.array([[1, 0], [0, 2]]) for i in range(7)})
     with pytest.raises(ValueError, match="planned case set"):
         compare(a, b, resamples=100)
+
+
+def test_export_preserves_matched_outcomes_and_board_identity(tmp_path):
+    a, b = tmp_path / "control", tmp_path / "candidate"
+    for path in (a, b):
+        write_run(path, "draw", local=True)
+        metadata = json.loads((path / "metadata.json").read_text())
+        metadata.update(boards=3, suites=["tiny"], seed=19)
+        (path / "metadata.json").write_text(json.dumps(metadata))
+        (path / "boards.npz").unlink()
+        grids = {str(i): np.array([[1, i // 2], [0, 2]]) for i in range(3)}
+        if path == a:
+            np.savez_compressed(path / "tiny_boards.npz", **grids)
+        else:
+            np.savez(path / "tiny_boards.npz", **{k: np.asfortranarray(v) for k, v in grids.items()})
+        with (path / "games.csv").open() as stream:
+            template = list(csv.DictReader(stream))
+        rows = []
+        for board in range(3):
+            for row in template:
+                seat = int(row["seat"])
+                candidate = ("win", "loss") if board < 2 else ("draw", "win")
+                result = "draw" if path == a else candidate[seat]
+                rows.append(dict(row, suite="tiny", board_id=board, action_seed=19 + board, result=result))
+        with (path / "games.csv").open("w") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+            writer.writeheader()
+            writer.writerows(rows if path == a else reversed(rows))
+    output = tmp_path / "comparison.json"
+    script = Path(__file__).resolve().parents[1] / "scripts/compare_agent_runs.py"
+    stdout = subprocess.check_output([sys.executable, script, a, b, "--output", output], text=True)
+    report = json.loads(output.read_text())
+    assert json.loads(stdout) == report["matchups"]
+    matchup = report["matchups"]["tiny/hunter"]
+    assert matchup["board_score_differences"] == {"0": 0, "1": 0, "2": 0.25}
+    assert matchup["equal_map_seat_deltas"] == {
+        "0": {"maps": 2, "paired_cases": 6, "score_delta": 0.25},
+        "1": {"maps": 2, "paired_cases": 6, "score_delta": 0.0},
+    }
+    paired = report["paired_maps"]
+    assert paired["control_seed"] == paired["candidate_seed"] == 19
+    assert len(paired["maps"]) == 3
+    distinct_hashes = sorted({board["board_sha256"] for board in paired["maps"]})
+    assert len(distinct_hashes) == 2
+    assert matchup["board_hashes_by_seat"] == {
+        seat: {"paired": distinct_hashes, "unpaired_control": [], "unpaired_candidate": []} for seat in ("0", "1")
+    }
+    for board in paired["maps"]:
+        i = board["board_id"]
+        assert (board["suite"], board["opponent"]) == ("tiny", "hunter")
+        with zipfile.ZipFile(a / "tiny_boards.npz") as archive:
+            assert board["board_sha256"] == hashlib.sha256(archive.read(f"{i}.npy")).hexdigest()
+        cases = [dict(zip(paired["case_columns"], row, strict=True)) for row in board["cases"]]
+        assert len(cases) == 4
+        for case in cases:
+            assert case["action_seed"] == 19 + i and case["repeat"] == 0
+            assert case["control_result"] == "draw"
+            outcomes = ("win", "loss") if i < 2 else ("draw", "win")
+            assert case["candidate_result"] == outcomes[case["seat"]]
+
+
+def test_cli_rejects_one_sided_seat_results_and_identifies_each_arm(tmp_path):
+    control, candidate = tmp_path / "control", tmp_path / "candidate"
+    for path, missing_seat in ((control, "1"), (candidate, "0")):
+        write_run(path, "win", local=True)
+        games = path / "games.csv"
+        with games.open() as stream:
+            rows = list(csv.DictReader(stream))
+        with games.open("w") as stream:
+            writer = csv.DictWriter(stream, fieldnames=rows[0])
+            writer.writeheader()
+            writer.writerows(row for row in rows if row["seat"] != missing_seat)
+    with zipfile.ZipFile(control / "boards.npz") as archive:
+        digest = hashlib.sha256(archive.read("0.npy")).hexdigest()
+    script = Path(__file__).resolve().parents[1] / "scripts/compare_agent_runs.py"
+    output = tmp_path / "report.json"
+    command = [sys.executable, script, control, candidate, "--output", output]
+    run = subprocess.run(command, capture_output=True, text=True)
+    assert run.returncode != 0 and not run.stdout and not output.exists()
+    coverage = json.loads(run.stderr.split("board_hashes_by_seat=", 1)[1])
+    assert coverage["hunter"] == {
+        "0": {"paired": [], "unpaired_control": [digest], "unpaired_candidate": []},
+        "1": {"paired": [], "unpaired_control": [], "unpaired_candidate": [digest]},
+    }
+
+
+@pytest.mark.parametrize(
+    "defect,diagnostic",
+    [
+        ("duplicate", "duplicate case"),
+        ("unpaired", "unpaired cases: control-only=1, candidate-only=0"),
+        ("blank_board", "missing map identity"),
+        ("missing_array", "missing map identity"),
+    ],
+)
+def test_invalid_pairs_have_distinct_diagnostics(tmp_path, defect, diagnostic):
+    control, candidate = tmp_path / "control", tmp_path / "candidate"
+    for path in (control, candidate):
+        write_run(path, "draw")
+    path = candidate / "games.csv"
+    with path.open() as stream:
+        rows = list(csv.DictReader(stream))
+    if defect == "duplicate":
+        rows.append(rows[0])
+    elif defect == "unpaired":
+        rows.pop()
+    elif defect == "blank_board":
+        rows[0]["board_id"] = ""
+    else:
+        np.savez(candidate / "boards.npz")
+    with path.open("w") as stream:
+        writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    with pytest.raises(ValueError, match=diagnostic):
+        compare(control, candidate, resamples=10)
