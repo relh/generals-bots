@@ -292,6 +292,11 @@ def test_export_preserves_matched_outcomes_and_board_identity(tmp_path):
     paired = report["paired_maps"]
     assert paired["control_seed"] == paired["candidate_seed"] == 19
     assert len(paired["maps"]) == 3
+    distinct_hashes = sorted({board["board_sha256"] for board in paired["maps"]})
+    assert len(distinct_hashes) == 2
+    assert matchup["board_hashes_by_seat"] == {
+        seat: {"paired": distinct_hashes, "unpaired_control": [], "unpaired_candidate": []} for seat in ("0", "1")
+    }
     for board in paired["maps"]:
         i = board["board_id"]
         assert (board["suite"], board["opponent"]) == ("tiny", "hunter")
@@ -304,6 +309,31 @@ def test_export_preserves_matched_outcomes_and_board_identity(tmp_path):
             assert case["control_result"] == "draw"
             outcomes = ("win", "loss") if i < 2 else ("draw", "win")
             assert case["candidate_result"] == outcomes[case["seat"]]
+
+
+def test_cli_rejects_one_sided_seat_results_and_identifies_each_arm(tmp_path):
+    control, candidate = tmp_path / "control", tmp_path / "candidate"
+    for path, missing_seat in ((control, "1"), (candidate, "0")):
+        write_run(path, "win", local=True)
+        games = path / "games.csv"
+        with games.open() as stream:
+            rows = list(csv.DictReader(stream))
+        with games.open("w") as stream:
+            writer = csv.DictWriter(stream, fieldnames=rows[0])
+            writer.writeheader()
+            writer.writerows(row for row in rows if row["seat"] != missing_seat)
+    with zipfile.ZipFile(control / "boards.npz") as archive:
+        digest = hashlib.sha256(archive.read("0.npy")).hexdigest()
+    script = Path(__file__).resolve().parents[1] / "scripts/compare_agent_runs.py"
+    output = tmp_path / "report.json"
+    command = [sys.executable, script, control, candidate, "--output", output]
+    run = subprocess.run(command, capture_output=True, text=True)
+    assert run.returncode != 0 and not run.stdout and not output.exists()
+    coverage = json.loads(run.stderr.split("board_hashes_by_seat=", 1)[1])
+    assert coverage["hunter"] == {
+        "0": {"paired": [], "unpaired_control": [digest], "unpaired_candidate": []},
+        "1": {"paired": [], "unpaired_control": [], "unpaired_candidate": [digest]},
+    }
 
 
 @pytest.mark.parametrize(

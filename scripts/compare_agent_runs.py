@@ -5,6 +5,9 @@ SHA-256 of its C-contiguous NumPy .npy encoding. Decode its cases using
 case_columns. A null action_seed means the runner did not record one. For each
 matchup and seat, equal_map_seat_deltas averages candidate minus control score
 (win=1, draw=0.5, loss=0) within each board hash, then across distinct hashes.
+board_hashes_by_seat lists the hashes contributing paired cases (the score
+denominator) and hashes with unmatched cases in each arm. A partially matched
+hash can appear in both lists. Unpaired comparisons fail before scoring.
 """
 
 import argparse
@@ -128,31 +131,72 @@ def board_sha256(grid):
     return hashlib.sha256(data.getbuffer()).hexdigest()
 
 
+def archive_hashes(directory):
+    archives = {}
+    for path in sorted(directory.glob("*boards.npz")):
+        with np.load(path, allow_pickle=False) as arrays:
+            archives[path.name] = {key: board_sha256(arrays[key]) for key in arrays.files}
+    if not archives:
+        raise ValueError(f"missing map identity: missing board archives in {directory}")
+    return archives
+
+
+def case_board_hashes(rows, archives):
+    hashes = {}
+    for suite, _, board, *_ in rows:
+        if (suite, board) in hashes:
+            continue
+        archive = f"{suite}_boards.npz" if suite else "boards.npz"
+        if archive not in archives and archives.keys() == {"boards.npz"}:
+            archive = "boards.npz"
+        try:
+            hashes[suite, board] = archives[archive][board]
+        except KeyError as exc:
+            raise ValueError(f"missing map identity: missing board array: {archive}/{board}") from exc
+    return hashes
+
+
+def hash_coverage(left, right, left_hashes, right_hashes):
+    coverage = {}
+    for key in left.keys() | right.keys():
+        suite, opponent, board, _, _, seat = key
+        matchup = f"{suite}/{opponent}".strip("/") or "external"
+        seats = coverage.setdefault(matchup, {})
+        hashes = seats.setdefault(seat, {"paired": set(), "unpaired_control": set(), "unpaired_candidate": set()})
+        old = left_hashes[suite, board] if key in left else None
+        new = right_hashes[suite, board] if key in right else None
+        if old == new and left[key].get("action_seed") == right[key].get("action_seed"):
+            hashes["paired"].add(old)
+        else:
+            if old is not None:
+                hashes["unpaired_control"].add(old)
+            if new is not None:
+                hashes["unpaired_candidate"].add(new)
+    return {
+        matchup: {
+            seat: {label: sorted(values) for label, values in hashes.items()} for seat, hashes in sorted(seats.items())
+        }
+        for matchup, seats in sorted(coverage.items())
+    }
+
+
 def compare(control, candidate, resamples=100000):
     control, candidate = Path(control), Path(candidate)
     left, right = indexed_rows(control), indexed_rows(candidate)
+    archives = [archive_hashes(path) for path in (control, candidate)]
+    board_hashes = case_board_hashes(left, archives[0])
+    coverage = hash_coverage(left, right, board_hashes, case_board_hashes(right, archives[1]))
     if left.keys() != right.keys():
         control_only = left.keys() - right.keys()
         candidate_only = right.keys() - left.keys()
         raise ValueError(
             f"unpaired cases: control-only={len(control_only)}, candidate-only={len(candidate_only)}; "
-            f"example={min(control_only | candidate_only)}"
+            f"example={min(control_only | candidate_only)}; board_hashes_by_seat={json.dumps(coverage)}"
         )
     metadata = [json.loads((p / "metadata.json").read_text()) for p in (control, candidate)]
     # Compare every retained board array, rather than trusting seed labels alone.
-    names = sorted(p.name for p in control.glob("*boards.npz"))
-    if not names or names != sorted(p.name for p in candidate.glob("*boards.npz")):
-        raise ValueError("missing map identity: missing or different board archives")
-    board_hashes = {}
-    for name in names:
-        with np.load(control / name, allow_pickle=False) as a, np.load(candidate / name, allow_pickle=False) as b:
-            if set(a.files) != set(b.files):
-                raise ValueError(f"missing map identity: board archive entries differ in {name}")
-            for board in a.files:
-                digest = board_sha256(a[board])
-                if digest != board_sha256(b[board]):
-                    raise ValueError(f"different boards: {name}/{board}")
-                board_hashes[name, board] = digest
+    if archives[0] != archives[1]:
+        raise ValueError(f"different boards: board_hashes_by_seat={json.dumps(coverage)}")
     for field in ("suite_rules", "rules"):
         if metadata[0].get(field) != metadata[1].get(field):
             raise ValueError(f"different {field}")
@@ -233,7 +277,9 @@ def compare(control, candidate, resamples=100000):
     for key, old in left.items():
         new = right[key]
         if old.get("action_seed") != new.get("action_seed"):
-            raise ValueError(f"unpaired case with different action seed: {key}")
+            raise ValueError(
+                f"unpaired case with different action seed: {key}; board_hashes_by_seat={json.dumps(coverage)}"
+            )
         group = groups.setdefault(key[:2], {})
         group.setdefault(key[2], []).append((old, new))
     results = {}
@@ -241,9 +287,6 @@ def compare(control, candidate, resamples=100000):
     rng = np.random.default_rng(19983)
     for group_key, maps in groups.items():
         suite, opponent = group_key
-        archive = f"{suite}_boards.npz" if suite else "boards.npz"
-        if archive not in names and names == ["boards.npz"]:
-            archive = "boards.npz"
         seat_deltas = {"0": {}, "1": {}}
         # Each map must contain all seat/label assignments for every repeat.
         for board, pairs in maps.items():
@@ -251,9 +294,7 @@ def compare(control, candidate, resamples=100000):
             repeats = {p[0]["repeat"] for p in pairs}
             if cases != {(r, s, p) for r in repeats for s in ("0", "1") for p in ("0", "1")}:
                 raise ValueError(f"incomplete map cluster: {group_key}/{board}")
-            if (archive, board) not in board_hashes:
-                raise ValueError(f"missing map identity: missing board array: {archive}/{board}")
-            board_hash = board_hashes[archive, board]
+            board_hash = board_hashes[suite, board]
             for old, new in pairs:
                 deltas = seat_deltas[old["seat"]].setdefault(board_hash, [])
                 deltas.append(values[new["result"]] - values[old["result"]])
@@ -282,7 +323,9 @@ def compare(control, candidate, resamples=100000):
         delta = map_scores[:, 1] - map_scores[:, 0]
         bootstrap = rng.choice(delta, (resamples, len(delta)), replace=True).mean(axis=1)
         all_pairs = [pair for pairs in maps.values() for pair in pairs]
-        results["/".join(group_key).strip("/") or "external"] = {
+        matchup = "/".join(group_key).strip("/") or "external"
+        results[matchup] = {
+            "board_hashes_by_seat": coverage[matchup],
             "maps": len(maps),
             "games_per_candidate": len(all_pairs),
             "control_score": float(map_scores[:, 0].mean()),
@@ -329,7 +372,10 @@ def main():
     parser.add_argument("candidate", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    result = compare(args.control, args.candidate)
+    try:
+        result = compare(args.control, args.candidate)
+    except ValueError as exc:
+        parser.exit(1, f"{exc}\n")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result["matchups"], indent=2))
